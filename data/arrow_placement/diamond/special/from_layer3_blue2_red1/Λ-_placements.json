@@ -1,0 +1,18 @@
+{
+  "Λ-": {
+    "(o, 1, 1, op, op)": {
+      "dash_from_layer2_rot_angle_override": true,
+      "blue": [-20, -145],
+      "red": [-20, -75]
+    },
+    "(0, 1, op)": {
+      "blue": [40, 55]
+    },
+    "(ccw, 1, op)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(o, 0.5, 1, cl, cl)": {
+      "blue": [45, -65]
+    }
+  }
+}

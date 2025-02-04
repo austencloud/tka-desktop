@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="950px" height="950px" viewBox="0 0 950 950"
+    xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .point {
+            fill: black;
+        }
+    </style>
+    <g id="non_radial_points">
+        <circle id="n_box_layer2_point" class="st0" cx="475" cy="272.6" r="8.8"/>
+        <circle id="e_box_layer2_point" class="st0" cx="677.4" cy="475" r="8.8"/>
+        <circle id="s_box_layer2_point" class="st0" cx="475" cy="677.4" r="8.8"/>
+        <circle id="w_box_layer2_point" class="st0" cx="272.6" cy="475" r="8.8"/>
+    </g>
+</svg>

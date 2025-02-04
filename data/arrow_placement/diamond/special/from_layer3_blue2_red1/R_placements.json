@@ -1,0 +1,15 @@
+{
+  "R": {
+    "(0, 0)": {
+      "pro_from_layer2": [95, -50],
+      "anti_from_layer1": [35, -35]
+    },
+    "(0.5, 0)": {
+      "pro_from_layer1": [0, 45]
+    },
+    "(2.5, 2.5)": {
+      "anti_from_layer1": [-85, 50],
+      "pro_from_layer2": [-5, 55]
+    }
+  }
+}

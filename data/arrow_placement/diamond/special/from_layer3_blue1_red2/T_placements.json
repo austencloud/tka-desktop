@@ -1,0 +1,11 @@
+{
+  "T": {
+    "(0, 0)": {
+      "blue": [10, -15],
+      "trailing_from_layer1": [10, -15]
+    },
+    "(0, 0.5)": {
+      "leading_from_layer2": null
+    }
+  }
+}

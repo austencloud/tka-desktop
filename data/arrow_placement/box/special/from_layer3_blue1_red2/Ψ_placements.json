@@ -1,0 +1,87 @@
+{
+  "Ψ": {
+    "(0, 0)": {},
+    "(o, 1, 0.5)": {
+      "swap_beta_s_radial_blue_dash_w_red_static_s": true,
+      "swap_beta_w_radial_blue_dash_n_red_static_w": true,
+      "swap_beta_n_radial_blue_dash_e_red_static_n": true,
+      "swap_beta_e_radial_blue_dash_s_red_static_e": true,
+      "swap_beta_se_radial_blue_dash_ne_red_static_se": true,
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(s, 1, 1)": {
+      "static_from_layer2": [65, -75],
+      "dash_from_layer1": [35, 85]
+    },
+    "(cw, 0, 1.5)": {
+      "static_from_layer1": [0, 20],
+      "static_from_layer1_rot_angle_override": true,
+      "swap_beta_e_nonradial_blue_static_e_red_dash_n": true
+    },
+    "(ccw, 0, 0.5)": {
+      "swap_beta_se_radial_blue_dash_ne_red_static_se": true
+    },
+    "(cw, 1.5, 0)": {
+      "swap_beta_se_radial_blue_static_se_red_dash_ne": true
+    },
+    "(s, 0.5, 0.5)": {},
+    "(ccw, 1, 0)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(o, 1, 1)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [-70, 70],
+      "dash_from_layer1": [45, 45]
+    },
+    "(cw, 3, 0)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(s, 2, 3)": {
+      "dash_from_layer1": [-30, 100]
+    },
+    "(o, 1, 2)": {
+      "dash_from_layer1": [25, 25]
+    },
+    "(cw, 0, 2.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [10, 15]
+    },
+    "(s, 0.5, 2.5)": {
+      "static_from_layer1_rot_angle_override": true,
+      "dash_from_layer2": [70, -35]
+    },
+    "(s, 1, 2.5)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(s, 1.5, 2.5)": {
+      "static_from_layer1": [15, 5],
+      "dash_from_layer2": [100, 110]
+    },
+    "(s, 2.5, 2.5)": {
+      "dash_from_layer2": [75, -50]
+    },
+    "(o, 2.5, 2.5)": {
+      "static_from_layer1_rot_angle_override": true,
+      "dash_from_layer2": [85, -50]
+    },
+    "(o, 1.5, 2.5)": {
+      "static_from_layer1": [0, 0],
+      "dash_from_layer2": [100, 110]
+    },
+    "(o, 0.5, 2.5)": {
+      "static_from_layer1_rot_angle_override": true,
+      "dash_from_layer2": [75, -40]
+    },
+    "(o, 1, 2.5)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(o, 3, 2.5)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(s, 3, 0.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [0, 160],
+      "swap_beta_sw_radial_blue_dash_se_red_static_sw": true
+    }
+  }
+}

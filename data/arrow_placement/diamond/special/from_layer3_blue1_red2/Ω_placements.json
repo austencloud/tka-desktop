@@ -1,0 +1,157 @@
+{
+  "Ω": {
+    "(o, 0, 1)": {
+      "static_from_layer1": [-70, 0],
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [0, -65],
+      "anti_from_layer1": [-40, -5]
+    },
+    "(o, 0, 1.5)": {
+      "anti_from_layer1": [55, -30],
+      "anti_from_layer2": [80, -40]
+    },
+    "(o, 0, 2)": {
+      "anti_from_layer2": [60, -50],
+      "anti_from_layer1": [100, -35]
+    },
+    "(o, 0, 2.5)": {
+      "anti_from_layer2": [70, -40],
+      "anti_from_layer1": [50, -30]
+    },
+    "(o, 0, 3)": {
+      "anti_from_layer2": [35, 40],
+      "anti_from_layer1": [95, -30]
+    },
+    "(o, 0.5, 1)": {
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [-70, 0],
+      "anti_from_layer2": [-60, 55]
+    },
+    "(o, 0.5, 2)": {
+      "static_from_layer1": [0, 20]
+    },
+    "(o, 0.5, 2.5)": {
+      "anti_from_layer1": [-115, 75],
+      "static_from_layer2": [-35, 0]
+    },
+    "(o, 0.5, 3)": {
+      "static_from_layer1": [0, 20]
+    },
+    "(o, 1, 0.5)": {
+      "static_from_layer1": [-100, -100]
+    },
+    "(o, 1, 1)": {
+      "static_from_layer1": [-70, 0]
+    },
+    "(o, 1.5, 1)": {
+      "static_from_layer1": [-70, 0]
+    },
+    "(o, 1.5, 1.5)": {
+      "static_from_layer2_rot_angle_override": true
+    },
+    "(o, 1.5, 2)": {
+      "static_from_layer1": [0, 20]
+    },
+    "(o, 1.5, 2.5)": {
+      "anti_from_layer2": [-100, 125]
+    },
+    "(o, 1.5, 3)": {
+      "anti_from_layer2": [-75, 130]
+    },
+    "(o, 2, 0.5)": {
+      "static_from_layer1": [-100, -100]
+    },
+    "(o, 2.5, 1)": {
+      "static_from_layer1": [-70, 0],
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [0, -70]
+    },
+    "(o, 2.5, 1.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [0, 10],
+      "static_from_layer1": [0, -5]
+    },
+    "(o, 2.5, 2)": {
+      "static_from_layer1": [0, 25],
+      "anti_from_layer2": [-55, 70],
+      "static_from_layer2": [-20, -10]
+    },
+    "(o, 2.5, 2.5)": {
+      "static_from_layer1": [-15, 0],
+      "anti_from_layer2": [-50, 65],
+      "static_from_layer2": [-30, 0]
+    },
+    "(o, 2.5, 3)": {
+      "static_from_layer2_rot_angle_override": true
+    },
+    "(o, 3, 0.5)": {
+      "static_from_layer1": [-100, -100]
+    },
+    "(o, 3, 1)": {
+      "static_from_layer1": [-70, 0]
+    },
+    "(s, 0, 0.5)": {
+      "static_from_layer2": [100, -100]
+    },
+    "(s, 0, 1)": {
+      "static_from_layer2": [0, 70]
+    },
+    "(s, 0, 1.5)": {
+      "anti_from_layer2": [70, -50],
+      "anti_from_layer1": [45, -50]
+    },
+    "(s, 0, 2)": {
+      "static_from_layer2_rot_angle_override": true,
+      "anti_from_layer2": [50, -50],
+      "anti_from_layer1": [100, -30]
+    },
+    "(s, 0, 2.5)": {
+      "anti_from_layer2": [75, -45],
+      "static_from_layer2_rot_angle_override": true,
+      "anti_from_layer1": [55, -30]
+    },
+    "(s, 0, 3)": {
+      "anti_from_layer2": [45, -50],
+      "anti_from_layer1": [95, -30]
+    },
+    "(s, 0.5, 1)": {
+      "static_from_layer1": [-70, 0]
+    },
+    "(s, 0.5, 3)": {
+      "anti_from_layer1": [-85, 75],
+      "static_from_layer1": [0, 30],
+      "anti_from_layer2": [-90, 75]
+    },
+    "(s, 1.5, 1)": {
+      "static_from_layer1": [-70, 5],
+      "anti_from_layer2": [-50, 130]
+    },
+    "(s, 2.5, 3)": {
+      "anti_from_layer2": [-85, 80],
+      "static_from_layer1": [0, 40],
+      "static_from_layer2": [35, 0],
+      "anti_from_layer1": [-65, 40],
+      "static_from_layer2_rot_angle_override": true
+    },
+    "(s, 2.5, 2.5)": {
+      "anti_from_layer2": [-55, 70],
+      "static_from_layer1": [25, -5],
+      "static_from_layer2_rot_angle_override": true,
+      "anti_from_layer1": [-85, 90]
+    },
+    "(s, 2.5, 1)": {
+      "static_from_layer1": [-70, 0]
+    },
+    "(s, 2.5, 1.5)": {
+      "anti_from_layer2": [-60, 70],
+      "static_from_layer1": [25, 0]
+    },
+    "(s, 2.5, 2)": {
+      "anti_from_layer2": [-55, 70],
+      "static_from_layer1": [0, 15]
+    },
+    "(0, 0)": {
+      "anti_from_layer1": [25, -20]
+    }
+  }
+}

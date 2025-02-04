@@ -1,0 +1,33 @@
+{
+  "Z": {
+    "(s, 0, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-100, 0],
+      "anti": [25, -35]
+    },
+    "(s, 1, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-100, 0]
+    },
+    "(s, 0, 3)": {
+      "static": [-20, 0],
+      "static_rot_angle_override": true
+    },
+    "(s, 3, 3)": {
+      "static_rot_angle_override": true,
+      "static": [-20, 0]
+    },
+    "(s, 2, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-100, 0]
+    },
+    "(o, 1, 2)": {
+      "static_rot_angle_override": true,
+      "static": [25, 0]
+    },
+    "(o, 0, 2)": {
+      "static_rot_angle_override": true,
+      "static": [20, 0]
+    }
+  }
+}

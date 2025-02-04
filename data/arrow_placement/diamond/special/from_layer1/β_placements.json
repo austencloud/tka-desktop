@@ -1,0 +1,285 @@
+{
+  "β": {
+    "(ccw, 3, 0)": {
+      "static_rot_angle": 0,
+      "blue": [35, 0],
+      "blue_rot_angle": 0
+    },
+    "(cw, 2, 0)": {
+      "static_rot_angle": 0,
+      "blue": [-25, 0],
+      "blue_rot_angle": 0
+    },
+    "(s, 1, 1.5)": {
+      "blue": [-100, -5],
+      "red_rot_angle": 0
+    },
+    "(o, 1, 1.5)": {
+      "red": [-5, 0],
+      "red_rot_angle": 0
+    },
+    "(s, 0.5, 2.5)": {
+      "red": [5, 20],
+      "red_rot_angle": 0
+    },
+    "(s, 1, 0.5)": {
+      "red_rot_angle": 0,
+      "red": [100, 100]
+    },
+    "(s, 1, 1)": {
+      "red": [100, 0],
+      "blue": [-100, 0],
+      "blue_rot_angle_override": true,
+      "swap_beta_s_radial_blue_static_s_red_static_s": true
+    },
+    "(s, 1, 2.5)": {
+      "red": [10, 0],
+      "red_rot_angle": 0
+    },
+    "(s, 1, 3)": {
+      "red": [40, -10],
+      "red_rot_angle": 0
+    },
+    "(s, 1.5, 3)": {
+      "red": [-50, 5],
+      "blue": [30, 0]
+    },
+    "(s, 2, 3)": {
+      "red": [40, -20],
+      "red_rot_angle": 0,
+      "blue_rot_angle": 0,
+      "blue": [-25, 15]
+    },
+    "(s, 0.5, 3)": {
+      "red_rot_angle": 0,
+      "red": [15, -10]
+    },
+    "(cw, 0, 3)": {
+      "red": [20, -10],
+      "red_rot_angle": 0
+    },
+    "(s, 2.5, 3)": {
+      "red": [55, -15],
+      "blue": [-35, -20],
+      "red_rot_angle": 0
+    },
+    "(s, 2.5, 2.5)": {
+      "red_rot_angle": 0,
+      "red": [10, 30],
+      "blue": [-10, -25]
+    },
+    "(s, 3, 2.5)": {
+      "red": [35, 5],
+      "blue": [-35, 15],
+      "red_rot_angle": 0
+    },
+    "(s, 2, 2.5)": {
+      "red": [20, 40],
+      "blue": [0, -10],
+      "red_rot_angle": 0
+    },
+    "(s, 1.5, 2.5)": {
+      "red": [15, 25],
+      "blue": [-20, -20],
+      "blue_rot_angle": 0,
+      "red_rot_angle": 0
+    },
+    "(s, 3, 1)": {
+      "red_rot_angle": 0,
+      "red": [100, -15]
+    },
+    "(s, 3, 1.5)": {
+      "red": [30, 0],
+      "blue": [-30, 15]
+    },
+    "(o, 3, 3)": {
+      "red": [-30, 0],
+      "blue": [-30, 0]
+    },
+    "(o, 3, 2.5)": {
+      "red": [-40, 5],
+      "blue": [-25, 20]
+    },
+    "(o, 3, 2)": {
+      "red_rot_angle": 0,
+      "red": [-30, 0],
+      "blue": [-40, 0],
+      "blue_rot_angle_override": true
+    },
+    "(o, 3, 1.5)": {
+      "red_rot_angle": 0,
+      "red": [-30, 0],
+      "blue": [-25, 20]
+    },
+    "(o, 3, 1)": {},
+    "(o, 2.5, 0.5)": {
+      "red_rot_angle": 0,
+      "red": [100, 120]
+    },
+    "(o, 2.5, 1)": {
+      "red": [-120, 5]
+    },
+    "(o, 2.5, 2)": {
+      "red": [0, 0],
+      "blue": [30, 35],
+      "blue_rot_angle": 0
+    },
+    "(o, 2.5, 2.5)": {
+      "red_rot_angle": 0,
+      "red": [0, 30],
+      "blue": [0, -30]
+    },
+    "(o, 2.5, 3)": {
+      "red": [-30, 40],
+      "blue": [-20, -25]
+    },
+    "(o, 2, 3)": {
+      "red": [-60, 0],
+      "blue_rot_angle": 0,
+      "blue": [-25, 10],
+      "blue_rot_angle_override": true
+    },
+    "(o, 2, 2.5)": {
+      "red": [-40, -10],
+      "blue_rot_angle": 0,
+      "blue": [0, 25]
+    },
+    "(o, 2, 1.5)": {
+      "red": [25, 20],
+      "blue": [0, -15]
+    },
+    "(o, 2, 1)": {
+      "blue_rot_angle": 0,
+      "blue": [-30, 0],
+      "red": [-90, 5],
+      "blue_rot_angle_override": true
+    },
+    "(o, 1.5, 0.5)": {
+      "blue_rot_angle": 0,
+      "blue": [0, -25],
+      "red_rot_angle": 0,
+      "red": [100, 120]
+    },
+    "(o, 1.5, 1.5)": {
+      "red": [-25, 25],
+      "blue": [-25, 25]
+    },
+    "(o, 1.5, 2)": {
+      "red": [0, -20],
+      "blue": [5, 25]
+    },
+    "(o, 1.5, 2.5)": {
+      "red_rot_angle": 0,
+      "red": [0, 25],
+      "blue": [0, -30],
+      "blue_rot_angle": 0
+    },
+    "(o, 1.5, 3)": {
+      "red": [-50, 15],
+      "blue": [-25, 0],
+      "blue_rot_angle": 0
+    },
+    "(o, 1, 2.5)": {
+      "blue": [-120, 5]
+    },
+    "(o, 1, 2)": {
+      "blue": [-100, 5],
+      "red_rot_angle": 0,
+      "red": [-25, 0],
+      "blue_rot_angle_override": true
+    },
+    "(o, 0.5, 2.5)": {
+      "red_rot_angle": 0,
+      "red": [0, 25]
+    },
+    "(cw, 0, 1)": {
+      "red_rot_angle": 0,
+      "red": [100, -5]
+    },
+    "(s, 0.5, 0.5)": {
+      "red": [100, 120],
+      "red_rot_angle": 0
+    },
+    "(s, 0.5, 1)": {
+      "blue": [100, 100],
+      "blue_rot_angle": 0
+    },
+    "(s, 1.5, 2)": {
+      "red": [-5, 15],
+      "blue_rot_angle": 0,
+      "blue": [-20, -20],
+      "red_rot_angle": 0
+    },
+    "(s, 2.5, 1.5)": {
+      "red": [0, 25],
+      "blue": [0, -35]
+    },
+    "(cw, 0, 2)": {},
+    "(s, 1, 2)": {},
+    "(s, 2, 2)": {
+      "red": [25, 0],
+      "blue_rot_angle": 0,
+      "blue": [-30, 0]
+    },
+    "(o, 1, 1)": {
+      "swap_beta_w_radial_blue_static_w_red_static_w": true,
+      "swap_beta_e_radial_blue_static_e_red_static_e": true,
+      "red": [100, 0],
+      "blue": [100, 0],
+      "swap_beta_s_radial_blue_static_s_red_static_s": true
+    },
+    "(o, 1, 3)": {},
+    "(ccw, 0, 3)": {},
+    "(ccw, 0, 2)": {
+      "red_rot_angle": 0,
+      "red": [-25, 0]
+    },
+    "(ccw, 0, 1)": {
+      "swap_beta_n_radial_blue_static_n_red_static_n": true,
+      "swap_beta_s_radial_blue_static_s_red_static_s": true,
+      "swap_beta_w_radial_blue_static_w_red_static_w": true,
+      "swap_beta_e_radial_blue_static_e_red_static_e": true
+    },
+    "(s, 2, 1)": {
+      "blue_rot_angle": 0,
+      "blue": [-25, 0],
+      "red_rot_angle": 0,
+      "red": [100, -10]
+    },
+    "(s, 2, 1.5)": {
+      "red": [-10, -25],
+      "red_rot_angle": 0,
+      "blue": [-10, 25]
+    },
+    "(o, 2, 2)": {
+      "red": [-25, 0],
+      "red_rot_angle": 0,
+      "blue": [-30, 0],
+      "blue_rot_angle": 0
+    },
+    "(s, 3, 2)": {
+      "blue": [-40, 0]
+    },
+    "(s, 3, 3)": {
+      "red_rot_angle": 0,
+      "red": [30, 0],
+      "blue": [-30, 0]
+    },
+    "(s, 3, 0.5)": {
+      "blue": [0, 0],
+      "blue_rot_angle": 0
+    },
+    "(0, 0)": {
+      "swap_beta_s_radial_blue_static_s_red_static_s": true
+    },
+    "(ccw, 2, 0)": {
+      "swap_beta_e_radial_blue_static_e_red_static_e": true
+    },
+    "(cw, 1, 0)": {
+      "swap_beta_w_radial_blue_static_w_red_static_w": true,
+      "swap_beta_s_radial_blue_static_s_red_static_s": true,
+      "swap_beta_e_radial_blue_static_e_red_static_e": true,
+      "swap_beta_n_radial_blue_static_n_red_static_n": true
+    }
+  }
+}

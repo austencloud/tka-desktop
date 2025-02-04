@@ -1,0 +1,63 @@
+{
+  "θ": {
+    "(s, 0, 1)": {
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [-50, -50]
+    },
+    "(s, 1, 0.5)": {
+      "static_from_layer2": {}
+    },
+    "(1, 0)": {
+      "pro_from_layer1": [20, 20]
+    },
+    "(o, 3, 2)": {
+      "static_from_layer2_rot_angle_override": true,
+      "pro_from_layer1": [-35, -20]
+    },
+    "(o, 0, 0.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [0, 140]
+    },
+    "(o, 1, 0.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [0, 140]
+    },
+    "(s, 0.5, 1)": {
+      "pro_from_layer1": [-20, 30]
+    },
+    "(o, 1, 1)": {
+      "static_from_layer1": [70, 55]
+    },
+    "null": {
+      "float_from_layer2": [40, 0]
+    },
+    "(o, 0.5, 0.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [0, 140]
+    },
+    "(o, 1.5, 0.5)": {
+      "static_from_layer2": [0, 140],
+      "static_from_layer2_rot_angle_override": true
+    },
+    "(o, 2, 0.5)": {
+      "static_from_layer2": [0, 140],
+      "static_from_layer2_rot_angle_override": true
+    },
+    "(o, 2.5, 0.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [0, 140]
+    },
+    "(o, 3, 0.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [0, 140]
+    },
+    "(s, 3, 0.5)": {
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [-140, 0]
+    },
+    "null": {
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [-140, 0]
+    }
+  }
+}

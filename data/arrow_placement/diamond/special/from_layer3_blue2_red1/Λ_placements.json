@@ -1,0 +1,13 @@
+{
+  "Λ": {
+    "(0, 1, cl)": {
+      "static_from_layer1": [-70, 0],
+      "static_from_layer1_rot_angle_override": true
+    },
+    "(o, 0.5, 2, op, op)": {
+      "static_from_layer2_rot_angle_override": true,
+      "dash_from_layer1": [-55, -105],
+      "static_from_layer2": [10, 0]
+    }
+  }
+}

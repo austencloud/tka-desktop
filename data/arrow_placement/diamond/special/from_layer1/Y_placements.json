@@ -1,0 +1,28 @@
+{
+  "Y": {
+    "(s, 0, 1)": {},
+    "(o, 1, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-95, 0]
+    },
+    "(o, 0, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-100, 0]
+    },
+    "(s, 0, 2)": {
+      "static_rot_angle_override": true,
+      "static": [20, 0]
+    },
+    "(s, 2, 2)": {
+      "static_rot_angle_override": true,
+      "static": [20, 0]
+    },
+    "(s, 1, 2)": {
+      "static_rot_angle_override": true,
+      "static": [20, 0]
+    },
+    "(s, 1.5, 1)": {
+      "static": [110, 0]
+    }
+  }
+}

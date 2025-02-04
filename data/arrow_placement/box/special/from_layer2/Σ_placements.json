@@ -1,0 +1,15 @@
+{
+  "Σ": {
+    "(s, 1.5, 2.5)": {
+      "static_rot_angle_override": true
+    },
+    "(o, 1.5, 1.5)": {
+      "static_rot_angle_override": true,
+      "static": [0, 10]
+    },
+    "(s, 1.5, 0.5)": {},
+    "(s, 1.5, 2)": {
+      "static_rot_angle_override": true
+    }
+  }
+}

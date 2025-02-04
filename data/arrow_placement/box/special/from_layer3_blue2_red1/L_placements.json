@@ -1,0 +1,187 @@
+{
+  "L": {
+    "(0.5, 0)": {
+      "pro_from_layer1": [-5, -10],
+      "anti_from_layer2": [5, -75]
+    },
+    "(0.5, 0.5)": {
+      "anti_from_layer2": [-40, 40],
+      "pro_from_layer1": [-25, 40],
+      "anti_from_layer1": [-120, 75]
+    },
+    "(0.5, 1.5)": {
+      "pro_from_layer1": [0, 85],
+      "anti_from_layer1": [-20, 65],
+      "pro_from_layer2": [-100, 10]
+    },
+    "(0.5, 2.5)": {
+      "pro_from_layer1": [-10, 50],
+      "anti_from_layer2": [-5, 65]
+    },
+    "(0.5, 3)": {
+      "anti_from_layer2": [45, -55]
+    },
+    "(1, 1.5)": {
+      "pro_from_layer1": [-50, -55],
+      "pro_from_layer2": [-45, 120],
+      "anti_from_layer1": [-10, 110]
+    },
+    "(1, 0.5)": {
+      "swap_beta_e_nonradial_blue_pro_se_red_anti_ne": true,
+      "swap_beta_n_nonradial_blue_pro_nw_red_anti_ne": true,
+      "swap_beta_w_nonradial_blue_pro_nw_red_anti_sw": true,
+      "swap_beta_s_nonradial_blue_pro_se_red_anti_sw": true
+    },
+    "(1, 2.5)": {
+      "swap_beta_e_nonradial_blue_pro_se_red_anti_ne": true,
+      "swap_beta_n_nonradial_blue_pro_nw_red_anti_ne": true,
+      "swap_beta_w_nonradial_blue_pro_nw_red_anti_sw": true,
+      "swap_beta_s_nonradial_blue_pro_se_red_anti_sw": true
+    },
+    "(1, 3)": {
+      "pro_from_layer1": [-80, -10]
+    },
+    "(1, 0)": {
+      "pro_from_layer1": [-80, -15],
+      "anti_from_layer1": [-10, -90]
+    },
+    "(1, 1)": {},
+    "(1, 2)": {
+      "pro_from_layer1": [-70, -10]
+    },
+    "(1.5, 0)": {
+      "anti_from_layer2": [35, -55],
+      "anti_from_layer1": [45, -75],
+      "swap_beta_e_nonradial_blue_anti_se_red_pro_ne": true,
+      "swap_beta_e_radial_blue_pro_se_red_anti_ne": true,
+      "swap_beta_n_radial_blue_pro_nw_red_anti_ne": true,
+      "swap_beta_s_radial_blue_pro_sw_red_anti_se": true,
+      "swap_beta_e_radial_blue_pro_ne_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_pro_sw": true,
+      "swap_beta_w_radial_blue_pro_nw_red_anti_sw": true,
+      "swap_beta_n_radial_blue_pro_ne_red_anti_nw": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_pro_sw": true,
+      "swap_beta_s_radial_blue_pro_se_red_anti_sw": true,
+      "swap_beta_w_radial_blue_pro_sw_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_pro_ne": true
+    },
+    "(1.5, 0.5)": {
+      "anti_from_layer2": [-65, 40],
+      "anti_from_layer1": [-100, 50]
+    },
+    "(1.5, 1)": {
+      "swap_beta_e_nonradial_blue_anti_se_red_pro_ne": true,
+      "swap_beta_e_radial_blue_pro_se_red_anti_ne": true,
+      "swap_beta_w_radial_blue_pro_sw_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_pro_ne": true,
+      "swap_beta_n_radial_blue_pro_nw_red_anti_ne": true,
+      "swap_beta_s_radial_blue_pro_sw_red_anti_se": true,
+      "swap_beta_e_radial_blue_pro_ne_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_pro_sw": true,
+      "swap_beta_w_radial_blue_pro_nw_red_anti_sw": true,
+      "swap_beta_n_radial_blue_pro_ne_red_anti_nw": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_pro_sw": true,
+      "swap_beta_s_radial_blue_pro_se_red_anti_sw": true
+    },
+    "(1.5, 1.5)": {
+      "pro_from_layer1": [-5, -30],
+      "anti_from_layer2": [-110, 90],
+      "anti_from_layer1": [0, -5],
+      "pro_from_layer2": [-105, 120]
+    },
+    "(1.5, 2)": {
+      "swap_beta_e_nonradial_blue_anti_se_red_pro_ne": true,
+      "swap_beta_e_radial_blue_pro_se_red_anti_ne": true,
+      "swap_beta_w_radial_blue_pro_sw_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_pro_ne": true,
+      "swap_beta_n_radial_blue_pro_nw_red_anti_ne": true,
+      "swap_beta_s_radial_blue_pro_sw_red_anti_se": true,
+      "swap_beta_e_radial_blue_pro_ne_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_pro_sw": true,
+      "swap_beta_w_radial_blue_pro_nw_red_anti_sw": true,
+      "swap_beta_n_radial_blue_pro_ne_red_anti_nw": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_pro_sw": true,
+      "swap_beta_s_radial_blue_pro_se_red_anti_sw": true
+    },
+    "(1.5, 2.5)": {
+      "pro_from_layer1": [0, 15],
+      "anti_from_layer2": [-70, 40],
+      "anti_from_layer1": [-70, 55]
+    },
+    "(1.5, 3)": {
+      "swap_beta_e_nonradial_blue_anti_se_red_pro_ne": true,
+      "swap_beta_e_radial_blue_pro_se_red_anti_ne": true,
+      "swap_beta_w_radial_blue_pro_sw_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_pro_ne": true,
+      "swap_beta_n_radial_blue_pro_nw_red_anti_ne": true,
+      "swap_beta_s_radial_blue_pro_sw_red_anti_se": true,
+      "swap_beta_e_radial_blue_pro_ne_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_pro_sw": true,
+      "swap_beta_w_radial_blue_pro_nw_red_anti_sw": true,
+      "swap_beta_n_radial_blue_pro_ne_red_anti_nw": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_pro_sw": true,
+      "swap_beta_s_radial_blue_pro_se_red_anti_sw": true,
+      "pro_from_layer2": [-100, 150]
+    },
+    "(2, 1.5)": {
+      "anti_from_layer1": [25, 30]
+    },
+    "(2, 2.5)": {
+      "swap_beta_e_nonradial_blue_pro_se_red_anti_ne": true,
+      "swap_beta_n_nonradial_blue_pro_nw_red_anti_ne": true,
+      "swap_beta_w_nonradial_blue_pro_nw_red_anti_sw": true,
+      "swap_beta_s_nonradial_blue_pro_se_red_anti_sw": true
+    },
+    "(2.5, 0)": {
+      "anti_from_layer2": [55, -50],
+      "swap_beta_w_nonradial_blue_anti_sw_red_pro_nw": true,
+      "swap_beta_s_nonradial_blue_anti_sw_red_pro_se": true,
+      "swap_beta_e_nonradial_blue_anti_ne_red_pro_se": true,
+      "swap_beta_n_nonradial_blue_anti_ne_red_pro_nw": true
+    },
+    "(2.5, 0.5)": {
+      "anti_from_layer2": [-45, 30]
+    },
+    "(2.5, 1)": {
+      "anti_from_layer2": [55, -40],
+      "swap_beta_w_nonradial_blue_anti_sw_red_pro_nw": true,
+      "swap_beta_s_nonradial_blue_anti_sw_red_pro_se": true,
+      "swap_beta_e_nonradial_blue_anti_ne_red_pro_se": true,
+      "swap_beta_n_nonradial_blue_anti_ne_red_pro_nw": true
+    },
+    "(2.5, 1.5)": {
+      "pro_from_layer1": [30, 65],
+      "pro_from_layer2": [-55, 30]
+    },
+    "(2.5, 2)": {
+      "swap_beta_w_nonradial_blue_anti_sw_red_pro_nw": true,
+      "swap_beta_s_nonradial_blue_anti_sw_red_pro_se": true,
+      "swap_beta_e_nonradial_blue_anti_ne_red_pro_se": true,
+      "swap_beta_n_nonradial_blue_anti_ne_red_pro_nw": true
+    },
+    "(2.5, 2.5)": {
+      "pro_from_layer1": [35, 35],
+      "anti_from_layer2": [-110, 45]
+    },
+    "(2.5, 3)": {
+      "swap_beta_w_nonradial_blue_anti_sw_red_pro_nw": true,
+      "swap_beta_s_nonradial_blue_anti_sw_red_pro_se": true,
+      "swap_beta_e_nonradial_blue_anti_ne_red_pro_se": true,
+      "swap_beta_n_nonradial_blue_anti_ne_red_pro_nw": true
+    },
+    "(3, 1.5)": {
+      "pro_from_layer1": [-95, -40],
+      "pro_from_layer2": [-30, 125]
+    },
+    "(3, 2.5)": {
+      "swap_beta_e_nonradial_blue_pro_se_red_anti_ne": true,
+      "swap_beta_n_nonradial_blue_pro_nw_red_anti_ne": true,
+      "swap_beta_w_nonradial_blue_pro_nw_red_anti_sw": true,
+      "swap_beta_s_nonradial_blue_pro_se_red_anti_sw": true
+    },
+    "(0.5, 1)": {
+      "anti_from_layer2": [0, -80],
+      "pro_from_layer1": {}
+    }
+  }
+}

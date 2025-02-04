@@ -1,0 +1,153 @@
+{
+  "Z-": {
+    "(0.5, 0)": {
+      "anti_from_layer1": [-120, 50]
+    },
+    "(o, 0.5, 1)": {
+      "anti_from_layer2": [-60, 5],
+      "dash_from_layer1": [-60, -60]
+    },
+    "(o, 0.5, 1.5)": {
+      "anti_from_layer2": [-80, 55]
+    },
+    "(o, 0.5, 2)": {
+      "anti_from_layer2": [-60, 5],
+      "dash_from_layer1": [-160, -45]
+    },
+    "(o, 0.5, 2.5)": {
+      "dash_from_layer1": [-95, -35]
+    },
+    "(o, 0.5, 3)": {
+      "dash_from_layer1": [-50, -65],
+      "anti_from_layer2": [-70, 5],
+      "anti_from_layer1": [-170, 80]
+    },
+    "(o, 1, 3)": {
+      "dash_from_layer1": [-20, -90]
+    },
+    "(o, 1, 0.5)": {
+      "anti_from_layer1": [45, -70]
+    },
+    "(o, 1.5, 3)": {
+      "dash_from_layer2": [-30, -145]
+    },
+    "(o, 1.5, 0.5)": {
+      "dash_from_layer2": [20, -70],
+      "anti_from_layer1": [25, 85]
+    },
+    "(o, 1.5, 1.5)": {
+      "anti_from_layer1": [0, 45],
+      "dash_from_layer2": [40, -125],
+      "anti_from_layer2": [-130, 90],
+      "dash_from_layer1": [-10, -170]
+    },
+    "(o, 1.5, 2)": {
+      "anti_from_layer1": [-10, 70],
+      "dash_from_layer1": [-150, -25]
+    },
+    "(o, 1.5, 2.5)": {
+      "anti_from_layer1": [-30, 95],
+      "dash_from_layer2": [60, -10]
+    },
+    "(o, 2, 0.5)": {
+      "anti_from_layer1": [65, -60]
+    },
+    "(o, 2, 1)": {
+      "anti_from_layer2": [50, -60]
+    },
+    "(o, 2.5, 0.5)": {
+      "dash_from_layer1": [-70, -25]
+    },
+    "(o, 2.5, 1)": {
+      "dash_from_layer2": [-15, -150],
+      "dash_from_layer1": [0, 0],
+      "anti_from_layer2": [-115, 45]
+    },
+    "(o, 2.5, 1.5)": {
+      "anti_from_layer1": [-115, 95],
+      "dash_from_layer2": [20, -115],
+      "anti_from_layer2": [-80, 50]
+    },
+    "(o, 2.5, 2)": {
+      "dash_from_layer1": [-170, -70],
+      "anti_from_layer2": [-90, 25]
+    },
+    "(o, 2.5, 2.5)": {
+      "anti_from_layer1": [-65, 75],
+      "dash_from_layer2": [70, -70],
+      "dash_from_layer1": [-75, -110],
+      "anti_from_layer2": [-85, 35]
+    },
+    "(o, 2.5, 3)": {
+      "anti_from_layer2": [-210, 55],
+      "dash_from_layer1": [0, -30]
+    },
+    "(o, 3, 3)": {
+      "dash_from_layer1": [0, -90]
+    },
+    "(s, 0.5, 0.5)": {
+      "anti_from_layer1": [-120, 45]
+    },
+    "(s, 0.5, 1.5)": {
+      "anti_from_layer1": [-100, 125],
+      "dash_from_layer1": [30, -160],
+      "anti_from_layer2": [-115, 75]
+    },
+    "(s, 0.5, 2)": {
+      "anti_from_layer1": [-100, 5],
+      "dash_from_layer2": [-45, -90]
+    },
+    "(s, 0.5, 2.5)": {
+      "anti_from_layer1": [-120, 145]
+    },
+    "(s, 0.5, 3)": {
+      "anti_from_layer1": [-135, 80],
+      "dash_from_layer2": [-20, -145]
+    },
+    "(s, 1.5, 0.5)": {
+      "dash_from_layer2": [80, -35]
+    },
+    "(s, 1.5, 1.5)": {
+      "anti_from_layer1": [-20, 70]
+    },
+    "(s, 1.5, 2.5)": {
+      "dash_from_layer2": [60, -15],
+      "dash_from_layer1": [-90, -35],
+      "anti_from_layer2": [-90, 115]
+    },
+    "(s, 1.5, 3)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(s, 2.5, 0.5)": {
+      "dash_from_layer2": [50, -65]
+    },
+    "(s, 2.5, 1.5)": {
+      "anti_from_layer1": [-105, 105],
+      "dash_from_layer2": [40, -140],
+      "dash_from_layer1": [30, -150],
+      "anti_from_layer2": [-100, 25]
+    },
+    "(s, 2.5, 2)": {
+      "anti_from_layer1": [-100, 5]
+    },
+    "(s, 2.5, 2.5)": {
+      "dash_from_layer2": [40, -60]
+    },
+    "(s, 2.5, 3)": {
+      "anti_from_layer1": [-85, 65]
+    },
+    "(s, 3, 3)": {
+      "dash_from_layer1": [0, -85],
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(s, 0, 1)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(o, 0, 0.5)": {
+      "anti_from_layer1": [45, -75]
+    },
+    "(s, 1, 1)": {
+      "dash_from_layer2_rot_angle_override": true
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "Σ": {
+    "(s, 1.5, 2)": {
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [0, 15]
+    },
+    "(o, 0, 1)": {
+      "static_from_layer1": [-70, 0]
+    },
+    "(o, 1.5, 3)": {
+      "static_from_layer1": [0, 30]
+    },
+    "(o, 1.5, 1)": {
+      "static_from_layer1": [-70, 0]
+    },
+    "(o, 1.5, 2)": {
+      "static_from_layer1": [0, 15]
+    },
+    "(0.5, 0)": {
+      "pro_from_layer2": [30, 100]
+    },
+    "(o, 1.5, 1.5)": {
+      "pro_from_layer2": [-30, 145]
+    },
+    "(o, 1, 1)": {
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [-50, -50]
+    }
+  }
+}
