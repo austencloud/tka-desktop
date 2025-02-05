@@ -105,3 +105,8 @@ class SequenceViewer(QWidget):
         self.variation_number_label.hide()
         min_height = self.height() // 5
         self.stacked_widget.setFixedHeight(min_height)
+
+    def get_thumbnail_at_current_index(self):
+        if self.current_index < len(self.thumbnails):
+            return self.thumbnails[self.current_index]
+        return None
