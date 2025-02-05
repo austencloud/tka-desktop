@@ -16,7 +16,7 @@ from utilities.path_helpers import get_images_and_data_path
 
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 SVG_PATHS = {
@@ -36,15 +36,14 @@ SVG_PATHS = {
 
 class ElementalGlyph(QGraphicsSvgItem):
     name = "Elemental"
-    
-    def __init__(self, pictograph: "BasePictograph") -> None:
+
+    def __init__(self, pictograph: "Pictograph") -> None:
         super().__init__()
         self.pictograph = pictograph
 
     def set_elemental_glyph(self) -> None:
         if not self.pictograph.letter_type in [LetterType.Type1]:
-            self.pictograph.removeItem(self)
-            return
+            self.setVisible(False)
         vtg_mode = self.pictograph.vtg_mode
         svg_path: str = SVG_PATHS.get(vtg_mode, "")
         if not svg_path:
@@ -57,7 +56,9 @@ class ElementalGlyph(QGraphicsSvgItem):
             self.position_elemental_glyph()
 
             self.setVisible(
-                self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility("Elemental")
+                self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
+                    "Elemental"
+                )
             )
 
     def position_elemental_glyph(self) -> None:
@@ -81,5 +82,7 @@ class ElementalGlyph(QGraphicsSvgItem):
         self.position_elemental_glyph()
 
         self.setVisible(
-            self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility("Elemental")
+            self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
+                "Elemental"
+            )
         )

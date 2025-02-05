@@ -59,7 +59,7 @@ class SequenceViewerActionButtonPanel(QWidget):
         self.layout.addStretch(2)
         for key, data in buttons_data.items():
             icon_path = get_images_and_data_path(
-                f"images/icons/sequence_widget_icons/{data['icon']}"
+                f"images/icons/sequence_workbench_icons/{data['icon']}"
             )
             button = QPushButton(QIcon(icon_path), "", self, toolTip=data["tooltip"])
             button.setToolTip(data["tooltip"])
@@ -94,7 +94,9 @@ class SequenceViewerActionButtonPanel(QWidget):
                 self.sequence_viewer.main_widget.main_construct_tab_index
             )
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-            populator = self.browse_tab.main_widget.sequence_widget.beat_frame.populator
+            populator = (
+                self.browse_tab.main_widget.sequence_workbench.beat_frame.populator
+            )
             if sequence_json:
                 populator.populate_beat_frame_from_json(sequence_json["sequence"])
             else:

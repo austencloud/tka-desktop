@@ -6,7 +6,7 @@ from PyQt6.QtCore import Qt
 from Enums.letters import LetterType
 from .codex_pictograph_view import CodexPictographView
 from .codex_section_type_label import CodexSectionTypeLabel
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
+from base_widgets.base_pictograph.pictograph import Pictograph
 
 if TYPE_CHECKING:
     from .codex import Codex
@@ -89,7 +89,7 @@ class CodexSectionManager:
             return
 
         if letter_str not in self.codex_views:
-            pictograph = BasePictograph(self.codex.main_widget)
+            pictograph = Pictograph(self.codex.main_widget)
             view = CodexPictographView(pictograph, self.codex)
             pictograph.updater.update_pictograph(p_dict)
             self.codex_views[letter_str] = view

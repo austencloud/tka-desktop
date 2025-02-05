@@ -4,11 +4,11 @@ from Enums.letters import LetterConditions
 from data.constants import *
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class PictographChecker:
-    def __init__(self, pictograph: "BasePictograph") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 
     def ends_with_beta(self) -> bool:
@@ -98,7 +98,7 @@ class PictographChecker:
                 return True
         return False
 
-    def is_pictograph_dict_complete(self, pictograph_dict: dict) -> bool:
+    def is_pictograph_data_complete(self, pictograph_data: dict) -> bool:
         required_keys = [
             "letter",
             "start_pos",
@@ -118,15 +118,15 @@ class PictographChecker:
         ]
         nested_red_required_keys = nested_blue_required_keys.copy()
 
-        if not all(key in pictograph_dict for key in required_keys):
+        if not all(key in pictograph_data for key in required_keys):
             return False
 
         for key in nested_blue_required_keys:
-            if key not in pictograph_dict["blue_attributes"]:
+            if key not in pictograph_data["blue_attributes"]:
                 return False
 
         for key in nested_red_required_keys:
-            if key not in pictograph_dict["red_attributes"]:
+            if key not in pictograph_data["red_attributes"]:
                 return False
 
         return True
@@ -189,8 +189,6 @@ class PictographChecker:
             self.pictograph.red_motion.motion_type
             != self.pictograph.blue_motion.motion_type
         )
-
-
 
     def has_all_props_of_type(self, prop_type: PropType) -> bool:
         return all(

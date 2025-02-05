@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     )
     from base_widgets.base_pictograph.glyphs.tka.tka_glyph import TKA_Glyph
     from base_widgets.base_pictograph.glyphs.vtg.vtg_glyph import VTG_Glyph
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
     from main_window.settings_manager.visibility_settings.visibility_settings import (
         VisibilitySettings,
     )

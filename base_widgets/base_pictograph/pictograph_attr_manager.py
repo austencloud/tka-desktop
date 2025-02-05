@@ -5,15 +5,15 @@ from data.constants import LETTER
 
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class PictographAttrManager:
-    def __init__(self, pictograph: "BasePictograph") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 
-    def update_attributes(self, pictograph_dict: dict) -> None:
-        for attr_name, attr_value in pictograph_dict.items():
+    def update_attributes(self, pictograph_data: dict) -> None:
+        for attr_name, attr_value in pictograph_data.items():
             if attr_name == LETTER:
                 attr_value = Letter.get_letter(attr_value)
                 self.pictograph.letter = attr_value

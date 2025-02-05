@@ -224,7 +224,7 @@ class MetadataUpdater:
                 if metadata:
                     return json.loads(metadata)
         except Exception as e:
-            print(f"Error loading sequence from thumbnail: {e}")
+            raise Exception(f"Error extracting metadata from image: {e}")
         return None
 
     def save_metadata_to_image(self, file_path, metadata):
@@ -235,10 +235,8 @@ class MetadataUpdater:
                 meta.add_text("metadata", json.dumps(metadata))
 
                 img.save(file_path, "PNG", pnginfo=meta)
-            print(f"Saved metadata to {file_path}")
         except Exception as e:
-            print(f"Failed to save metadata to {file_path}: {e}")
-
+            raise Exception(f"Error saving metadata to image: {e}")
 
 # To execute the metadata update process
 if __name__ == "__main__":

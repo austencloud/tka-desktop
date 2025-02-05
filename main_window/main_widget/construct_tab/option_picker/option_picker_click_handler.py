@@ -6,7 +6,7 @@ from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class OptionPickerClickHandler:
@@ -14,16 +14,16 @@ class OptionPickerClickHandler:
         self.option_picker = option_picker
         self.construct_tab = self.option_picker.construct_tab
         self.main_widget = self.construct_tab.main_widget
-        self.beat_frame = self.main_widget.sequence_widget.beat_frame
-        self.sequence_widget = self.main_widget.sequence_widget
+        self.beat_frame = self.main_widget.sequence_workbench.beat_frame
+        self.sequence_workbench = self.main_widget.sequence_workbench
         self.add_to_sequence_manager = self.construct_tab.add_to_sequence_manager
         self.settings_manager = self.main_widget.settings_manager
         self.layout_settings = self.settings_manager.sequence_layout
 
-    def get_click_handler(self, start_pos: "BasePictograph") -> callable:
+    def get_click_handler(self, start_pos: "Pictograph") -> callable:
         return lambda event: self.handle_click(start_pos)
 
-    def handle_click(self, clicked_option: "BasePictograph") -> None:
+    def handle_click(self, clicked_option: "Pictograph") -> None:
         """Handle the logic when an option is clicked."""
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
@@ -38,7 +38,7 @@ class OptionPickerClickHandler:
                 f"Can't add the beat. Sequence length is set to "
                 f"{next_beat_number - 1} beats."
             )
-            self.sequence_widget.indicator_label.show_message(error_message)
+            self.sequence_workbench.indicator_label.show_message(error_message)
             return
         self.beat_frame.beat_adder.add_beat_to_sequence(new_beat)
 

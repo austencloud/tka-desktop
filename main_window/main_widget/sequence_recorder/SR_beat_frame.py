@@ -8,14 +8,14 @@ import numpy as np
 from main_window.main_widget.sequence_recorder.SR_beat_selection_manager import (
     SR_BeatSelectionManager,
 )
-from main_window.main_widget.sequence_widget.beat_frame.beat import (
+from main_window.main_widget.sequence_workbench.beat_frame.beat import (
     Beat,
     BeatView,
 )
 from utilities.path_helpers import get_my_videos_path
 
 
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
+from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 if TYPE_CHECKING:
@@ -80,7 +80,7 @@ class SR_BeatFrame(QFrame):
         self.layout.addWidget(beat_view, row, col)
         self.beat_views.append(beat_view)
 
-    def add_scene_to_sequence(self, new_beat: "BasePictograph") -> None:
+    def add_scene_to_sequence(self, new_beat: "Pictograph") -> None:
         next_beat_index = self.find_next_available_beat()
         if next_beat_index is not None:
             self.beat_views[next_beat_index].set_beat(new_beat, next_beat_index + 2)
@@ -104,7 +104,7 @@ class SR_BeatFrame(QFrame):
             else:
                 beat = self.beat_views[i - 1].beat
                 if beat:
-                    if beat.pictograph_dict != entry:
+                    if beat.pictograph_data != entry:
                         beat.updater.update_pictograph(entry)
                         QApplication.processEvents()
 
@@ -127,17 +127,17 @@ class SR_BeatFrame(QFrame):
     def populate_beat_frame_scenes_from_json(self) -> None:
         sequence_json = self.json_manager.loader_saver.load_current_sequence_json()
         self.clear_beat_frame()
-        for pictograph_dict in sequence_json:
-            if pictograph_dict.get("sequence_start_position") or pictograph_dict.get(
+        for pictograph_data in sequence_json:
+            if pictograph_data.get("sequence_start_position") or pictograph_data.get(
                 "prop_type"
             ):
                 continue
             beat = Beat(self)
-            beat.updater.update_pictograph(pictograph_dict)
+            beat.updater.update_pictograph(pictograph_data)
             self.add_scene_to_sequence(beat)
             # pictograph_key = (
             #     beat.main_widget.pictograph_key_generator.generate_pictograph_key(
-            #         pictograph_dict
+            #         pictograph_data
             #     )
             # )
             # self.pictograph_cache[pictograph_key] = beat

@@ -28,11 +28,11 @@ class MotionManipulator:
         (new_start_loc, new_end_loc) = get_start_end_locs(
             self.motion.arrow.motion.motion_type, self.motion.prop_rot_dir, new_location
         )
-        pictograph_dict = {
+        pictograph_data = {
             f"{self.motion.color}_start_location": new_start_loc,
             f"{self.motion.color}_end_location": new_end_loc,
         }
-        self.motion.pictograph.updater.update_pictograph(pictograph_dict)
+        self.motion.pictograph.updater.update_pictograph(pictograph_data)
 
     ### MIRRORING ###
 
@@ -49,12 +49,12 @@ class MotionManipulator:
         new_start_loc = self.motion.end_loc
         new_end_loc = self.motion.start_loc
 
-        pictograph_dict = {
+        pictograph_data = {
             f"{self.motion.color}_start_location": new_start_loc,
             f"{self.motion.color}_end_location": new_end_loc,
             f"{self.motion.color}_prop_rot_dir": new_rot_dir,
         }
-        self.motion.pictograph.updater.update_pictograph(pictograph_dict)
+        self.motion.pictograph.updater.update_pictograph(pictograph_data)
 
     ### MOTION TYPE ###
 
@@ -75,12 +75,12 @@ class MotionManipulator:
         new_rot_dir = rotation_direction_map.get(self.motion.prop_rot_dir)
 
         self.motion.prop.attr_manager.swap_ori(self.motion.prop.ori)
-        pictograph_dict = {
+        pictograph_data = {
             f"{self.motion.color}_motion_type": new_motion_type,
             f"{self.motion.color}_prop_rot_dir": new_rot_dir,
             f"{self.motion.color}_end_ori": self.motion.prop.ori,
         }
-        self.motion.pictograph.updater.update_pictograph(pictograph_dict)
+        self.motion.pictograph.updater.update_pictograph(pictograph_data)
 
     ### ROTATION ###
 

@@ -5,7 +5,7 @@ from letter_determiner.letter_determiner import LetterDeterminer
 from utilities.path_helpers import get_images_and_data_path
 
 from .grid_mode_checker import GridModeChecker
-from .pictograph_dict_loader import PictographDictLoader
+from .pictograph_data_loader import PictographDictLoader
 from .sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )
@@ -36,7 +36,7 @@ class MainWidgetManager:
     def _initialize_managers(self):
         """Setup all the managers and helper components."""
         mw = self.main_widget
-        
+
         mw.json_manager = JsonManager(mw)
         mw.svg_manager = SvgManager(mw)
         mw.turns_tuple_generator = TurnsTupleGenerator()
@@ -63,8 +63,8 @@ class MainWidgetManager:
         self.main_widget.prop_type = PropType.get_prop_type(prop_type_value)
 
     def _setup_letters(self) -> None:
-        self.main_widget.pictograph_dict_loader = PictographDictLoader(self.main_widget)
-        self.main_widget.pictograph_dicts = (
-            self.main_widget.pictograph_dict_loader.load_all_pictograph_dicts()
+        self.main_widget.pictograph_data_loader = PictographDictLoader(self.main_widget)
+        self.main_widget.pictograph_dataset = (
+            self.main_widget.pictograph_data_loader.load_all_pictograph_datas()
         )
         self.main_widget.letter_determiner = LetterDeterminer(self.main_widget)

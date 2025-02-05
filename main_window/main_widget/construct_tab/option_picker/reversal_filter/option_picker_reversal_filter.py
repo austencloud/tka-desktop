@@ -33,7 +33,7 @@ class OptionPickerReversalFilter(QWidget):
     def on_filter_changed(self):
         """Called when the filter combo box selection changes."""
         self.save_filter()
-        self.option_picker.update_option_picker()
+        self.option_picker.updater.refresh_options()
 
     def save_filter(self):
         selected_filter = self.reversal_combobox.currentData()

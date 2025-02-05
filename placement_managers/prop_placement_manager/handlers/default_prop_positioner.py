@@ -8,14 +8,14 @@ import logging
 if TYPE_CHECKING:
     from base_widgets.base_pictograph.grid.grid import GridPoint
     from ..prop_placement_manager import PropPlacementManager
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 
 
 class DefaultPropPositioner:
     def __init__(self, prop_placement_manager: "PropPlacementManager") -> None:
-        self.pictograph: "BasePictograph" = prop_placement_manager.pictograph
+        self.pictograph: "Pictograph" = prop_placement_manager.pictograph
         self.prop_placement_manager = prop_placement_manager
         self.location_points_cache = {}
 

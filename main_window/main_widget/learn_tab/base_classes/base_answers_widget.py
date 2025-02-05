@@ -3,12 +3,12 @@ from PyQt6.QtWidgets import QWidget
 
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
     from .base_lesson_widget.base_lesson_widget import BaseLessonWidget
 
 
 class BaseAnswersWidget(QWidget):
-    pictographs: dict[str, "BasePictograph"]
+    pictographs: dict[str, "Pictograph"]
 
     def __init__(self, lesson_widget: "BaseLessonWidget"):
         super().__init__(lesson_widget)

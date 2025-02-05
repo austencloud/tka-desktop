@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QGraphicsView, QGraphicsTextItem, QMenu
 from PyQt6.QtCore import QPointF, Qt
 from PyQt6.QtGui import QFont, QAction
-from main_window.main_widget.sequence_widget.beat_frame.act_beat import ActBeat
+from main_window.main_widget.sequence_workbench.beat_frame.act_beat import ActBeat
 
 if TYPE_CHECKING:
     from main_window.main_widget.write_tab.act_sheet.act_splitter.act_beat_scroll.act_beat_frame.act_beat_frame import (
@@ -45,7 +45,7 @@ class ActBeatView(QGraphicsView):
         """Extract beat data for saving in act JSON."""
         return {
             "beat_number": self.get_beat_number_in_act_beat_frame(),
-            "pictograph_dict": self.beat.pictograph_dict,
+            "pictograph_data": self.beat.pictograph_data,
         }
 
     def get_beat_number_in_act_beat_frame(self):

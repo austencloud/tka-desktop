@@ -4,11 +4,11 @@ from base_widgets.base_pictograph.pictograph_view import PictographView
 
 if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.codex.codex import Codex
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class CodexPictographView(PictographView):
-    def __init__(self, pictograph: "BasePictograph", codex: "Codex") -> None:
+    def __init__(self, pictograph: "Pictograph", codex: "Codex") -> None:
         super().__init__(pictograph)
         self.pictograph = pictograph
         self.codex = codex

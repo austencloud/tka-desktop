@@ -4,13 +4,11 @@ from base_widgets.base_pictograph.bordered_pictograph_view import BorderedPictog
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class OptionView(BorderedPictographView):
-    def __init__(
-        self, option_picker: "OptionPicker", pictograph: "BasePictograph"
-    ) -> None:
+    def __init__(self, option_picker: "OptionPicker", pictograph: "Pictograph") -> None:
         super().__init__(pictograph)
         self.pictograph = pictograph
         self.option_picker = option_picker
@@ -24,11 +22,10 @@ class OptionView(BorderedPictographView):
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
-        spacing = self.option_picker.scroll_area.spacing
+        spacing = self.option_picker.option_scroll.spacing
 
-        calculated_width = (self.option_picker.width() // 8) - spacing
-        size = min(calculated_width, self.option_picker.height() // 8)
-
+        size = max(self.option_picker.construct_tab.start_pos_picker.width() // 8, 
+                     self.option_picker.width() // 8)
         border_width = max(1, int(size * 0.015))
         size -= 2 * border_width + spacing
         self.pictograph.view.update_border_widths()

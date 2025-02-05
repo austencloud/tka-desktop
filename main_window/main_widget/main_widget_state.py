@@ -13,7 +13,7 @@ class MainWidgetState:
             self.main_widget.json_manager.loader_saver.load_current_sequence_json()
         )
         if len(current_sequence) > 1:
-            self.main_widget.sequence_widget.beat_frame.populator.populate_beat_frame_from_json(
+            self.main_widget.sequence_workbench.beat_frame.populator.populate_beat_frame_from_json(
                 current_sequence
             )
         left_stack = self.main_widget.left_stack

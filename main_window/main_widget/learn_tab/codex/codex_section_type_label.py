@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import Qt
 from Enums.letters import LetterType
-from main_window.main_widget.construct_tab.option_picker.scroll_area.letter_type_text_painter import (
+from utilities.letter_type_text_painter import (
     LetterTypeTextPainter,
 )
 

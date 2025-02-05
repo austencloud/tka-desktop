@@ -1,6 +1,6 @@
 import random
 from typing import TYPE_CHECKING
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
+from base_widgets.base_pictograph.pictograph import Pictograph
 from main_window.main_widget.learn_tab.base_classes.base_question_generator import (
     BaseQuestionGenerator,
 )
@@ -32,7 +32,7 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
         wrong_pictographs = self.generate_wrong_answers(correct_pictograph)
 
         # Add the correct pictograph to the answers and shuffle
-        pictographs: list["BasePictograph"] = [correct_pictograph] + wrong_pictographs
+        pictographs: list["Pictograph"] = [correct_pictograph] + wrong_pictographs
         random.shuffle(pictographs)
 
         self.lesson_widget.answers_widget.display_answers(
@@ -44,28 +44,28 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
     def generate_initial_pictograph(self) -> dict:
         """Generate an initial pictograph randomly to display."""
         # Randomly select a Letter (key) from the dictionary, then select a random pictograph from the list
-        available_letters = list(self.main_widget.pictograph_dicts.keys())
-        pictograph_dicts = self.filter_pictograph_dicts_by_grid_mode()
+        available_letters = list(self.main_widget.pictograph_dataset.keys())
+        pictograph_datas = self.filter_pictograph_datas_by_grid_mode()
 
         available_letters = [
             letter
             for letter in available_letters
-            for pictograph in pictograph_dicts[letter]
+            for pictograph in pictograph_datas[letter]
             if pictograph["start_pos"] == pictograph["end_pos"]
         ]
         letter = random.choice(available_letters)
-        return random.choice(pictograph_dicts[letter])
+        return random.choice(pictograph_datas[letter])
 
     def generate_correct_answer(self, initial_pictograph: dict) -> dict:
         """Generate a valid pictograph that can follow the initial pictograph."""
         end_pos = initial_pictograph[
             "end_pos"
         ]  # Extract the end position of the initial pictograph
-        pictograph_dicts = self.filter_pictograph_dicts_by_grid_mode()
+        pictograph_datas = self.filter_pictograph_datas_by_grid_mode()
         # Find a pictograph where the start_pos matches the end_pos of the initial pictograph
         valid_pictographs = [
             pictograph
-            for letter_pictographs in pictograph_dicts.values()
+            for letter_pictographs in pictograph_datas.values()
             for pictograph in letter_pictographs
             if pictograph["start_pos"] == end_pos
         ]
@@ -101,10 +101,10 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
         )
 
     def generate_random_pictograph(self) -> dict:
-        pictograph_dicts = self.filter_pictograph_dicts_by_grid_mode()
+        pictograph_datas = self.filter_pictograph_datas_by_grid_mode()
         while True:
-            letter = random.choice(list(self.main_widget.pictograph_dicts.keys()))
-            random_pictograph = random.choice(pictograph_dicts[letter])
+            letter = random.choice(list(self.main_widget.pictograph_dataset.keys()))
+            random_pictograph = random.choice(pictograph_datas[letter])
             if random_pictograph["start_pos"] != random_pictograph["end_pos"]:
                 return random_pictograph
 

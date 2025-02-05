@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPainter, QPen, QColor
 from PyQt6.QtCore import Qt, QUrl, QTimer
 from typing import TYPE_CHECKING, Optional
-from main_window.main_widget.sequence_widget.beat_frame.beat_view import BeatView
+from main_window.main_widget.sequence_workbench.beat_frame.beat_view import BeatView
 from utilities.path_helpers import get_images_and_data_path
 from PyQt6.QtMultimedia import QAudioOutput, QSoundEffect
 
@@ -101,7 +101,7 @@ class SR_BeatSelectionManager(QWidget):
     #         red_turns = self.selected_beat.beat.red_motion.turns
     #         self.selected_beat.is_selected = True
     #         graph_editor = (
-    #             self.selected_beat.beat_frame.main_widget.sequence_widget.graph_editor
+    #             self.selected_beat.beat_frame.main_widget.sequence_workbench.graph_editor
     #         )
     #         graph_editor.update_GE_pictograph(self.selected_beat.beat)
 

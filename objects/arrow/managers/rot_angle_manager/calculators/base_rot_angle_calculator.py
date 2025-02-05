@@ -43,7 +43,7 @@ class BaseRotAngleCalculator(ABC):
         letter_data: dict[str, dict] = (
             special_placements.get(
                 self.arrow.pictograph.main_widget.grid_mode_checker.get_grid_mode(
-                    self.arrow.pictograph.pictograph_dict
+                    self.arrow.pictograph.pictograph_data
                 )
             )
             .get(ori_key, {})

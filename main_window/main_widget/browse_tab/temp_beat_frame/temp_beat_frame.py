@@ -8,16 +8,16 @@ from main_window.main_widget.browse_tab.temp_beat_frame.temp_beat_frame_layout_m
     TempBeatFrameLayoutManager,
 )
 
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
-from main_window.main_widget.sequence_widget.beat_frame.beat import Beat
-from main_window.main_widget.sequence_widget.beat_frame.beat_view import BeatView
-from main_window.main_widget.sequence_widget.beat_frame.image_export_manager.image_export_manager import (
+from base_widgets.base_pictograph.pictograph import Pictograph
+from main_window.main_widget.sequence_workbench.beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.beat_frame.beat_view import BeatView
+from main_window.main_widget.sequence_workbench.beat_frame.image_export_manager.image_export_manager import (
     ImageExportManager,
 )
-from main_window.main_widget.sequence_widget.beat_frame.start_pos_beat import (
+from main_window.main_widget.sequence_workbench.beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
-from main_window.main_widget.sequence_widget.beat_frame.start_pos_beat_view import (
+from main_window.main_widget.sequence_workbench.beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
 
@@ -70,7 +70,7 @@ class TempBeatFrame(BaseBeatFrame):
             self.layout.addWidget(beat, row + 1, col + 1)
         self.layout_manager.configure_beat_frame(16)
 
-    def add_beat_to_sequence(self, new_beat: "BasePictograph") -> None:
+    def add_beat_to_sequence(self, new_beat: "Pictograph") -> None:
         next_beat_index = self.get.next_available_beat()
 
         if (
@@ -109,7 +109,7 @@ class TempBeatFrame(BaseBeatFrame):
             elif i > 1:
                 beat = self.beat_views[i - 2].beat
                 if beat:
-                    if beat.pictograph_dict != entry:
+                    if beat.pictograph_data != entry:
                         beat.updater.update_pictograph(entry)
                         # QApplication.processEvents()
 
@@ -135,10 +135,10 @@ class TempBeatFrame(BaseBeatFrame):
         )
         self.json_manager.start_pos_handler.set_start_position_data(start_pos_beat)
         self.start_pos_view.set_start_pos(start_pos_beat)
-        for pictograph_dict in current_sequence_json[1:]:
-            if pictograph_dict.get("sequence_start_position"):
+        for pictograph_data in current_sequence_json[1:]:
+            if pictograph_data.get("sequence_start_position"):
                 continue
-            self.populate_sequence(pictograph_dict)
+            self.populate_sequence(pictograph_data)
 
         last_beat = self.get_last_filled_beat().beat
         self.construct_tab.last_beat = last_beat
@@ -146,9 +146,9 @@ class TempBeatFrame(BaseBeatFrame):
         if self.construct_tab.start_pos_picker.isVisible():
             self.construct_tab.transition_to_option_picker()
 
-    def populate_sequence(self, pictograph_dict: dict) -> None:
+    def populate_sequence(self, pictograph_data: dict) -> None:
         pictograph = Beat(self)
-        pictograph.updater.update_pictograph(pictograph_dict)
+        pictograph.updater.update_pictograph(pictograph_data)
         self.add_beat_to_sequence(pictograph)
         self.update_current_word()
 

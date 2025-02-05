@@ -22,7 +22,7 @@ class FreeformSequenceGeneratorFrame(BaseSequenceGeneratorFrame):
         self.builder = FreeFormSequenceGenerator(self)
         self.letter_type_picker.apply_settings()
         self.beat_deleter = (
-            self.tab.main_widget.sequence_widget.beat_frame.sequence_widget.beat_deleter
+            self.tab.main_widget.sequence_workbench.beat_frame.sequence_workbench.beat_deleter
         )
 
     def on_create_sequence(self, overwrite_sequence: bool):
@@ -49,4 +49,3 @@ class FreeformSequenceGeneratorFrame(BaseSequenceGeneratorFrame):
 
     def get_selected_letter_types(self) -> list[LetterType]:
         return self.letter_type_picker.get_selected_letter_types()
-

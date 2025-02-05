@@ -30,7 +30,7 @@ class SequenceCollector:
                 sequence_data["beats"].append(
                     {
                         "beat_number": beat_view.beat_number,
-                        "pictograph_dict": raw_beat_data["pictograph_dict"], 
+                        "pictograph_data": raw_beat_data["pictograph_data"],
                         "step_label": (
                             self.act_container.beat_scroll.act_beat_frame.beat_step_map[
                                 beat_view
@@ -77,7 +77,7 @@ class SequenceCollector:
                 # Collect metadata for each populated beat
                 beat_data = {
                     "beat_number": total_beats_collected + 1,
-                    "pictograph_dict": beat_view.extract_metadata(),
+                    "pictograph_data": beat_view.extract_metadata(),
                     "step_label": (
                         self.act_container.beat_scroll.act_beat_frame.beat_step_map[
                             beat_view

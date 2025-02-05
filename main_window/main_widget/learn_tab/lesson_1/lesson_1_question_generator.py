@@ -26,12 +26,12 @@ class Lesson1QuestionGenerator(BaseQuestionGenerator):
         correct_answer = self.generate_correct_answer()
         self.previous_correct_letter = correct_answer
 
-        pictograph_dicts = self.main_widget.pictograph_dicts
+        pictograph_datas = self.main_widget.pictograph_dataset
 
-        correct_pictograph_dict = random.choice(pictograph_dicts[correct_answer])
+        correct_pictograph_data = random.choice(pictograph_datas[correct_answer])
 
         wrong_answers = self.generate_wrong_answers(correct_answer)
-        self.lesson_1_widget.question_widget.load_pictograph(correct_pictograph_dict)
+        self.lesson_1_widget.question_widget.load_pictograph(correct_pictograph_data)
 
         letters = [correct_answer.value] + wrong_answers
         random.shuffle(letters)
@@ -44,7 +44,7 @@ class Lesson1QuestionGenerator(BaseQuestionGenerator):
 
     def generate_correct_answer(self) -> Letter:
         """Generate a new correct letter that is different from the previous one."""
-        letters = list(self.main_widget.pictograph_dicts.keys())
+        letters = list(self.main_widget.pictograph_dataset.keys())
         if self.previous_correct_letter:
             letters.remove(self.previous_correct_letter)
         return random.choice(letters)
@@ -54,7 +54,7 @@ class Lesson1QuestionGenerator(BaseQuestionGenerator):
         wrong_answers = random.sample(
             [
                 letter.value
-                for letter in self.main_widget.pictograph_dicts
+                for letter in self.main_widget.pictograph_dataset
                 if letter != correct_answer
             ],
             3,

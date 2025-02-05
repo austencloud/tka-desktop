@@ -1,5 +1,9 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QStackedLayout
+
+from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_results_widget import (
+    LessonResultsWidget,
+)
 from .lesson_selector import LessonSelector
 from .lesson_1.lesson_1_widget import Lesson1Widget
 from .lesson_2.lesson_2_widget import Lesson2Widget
@@ -16,6 +20,7 @@ class LearnTab(QWidget):
     def __init__(self, main_widget: "MainWidget") -> None:
         super().__init__(main_widget)
         self.main_widget = main_widget
+        self.stack = QStackedLayout()
         self._setup_components()
         self._setup_layout()
 
@@ -25,12 +30,13 @@ class LearnTab(QWidget):
         self.lesson_2_widget = Lesson2Widget(self)
         self.lesson_3_widget = Lesson3Widget(self)
         self.codex = Codex(self)
-        
+        self.results_widget = LessonResultsWidget(self)
+
     def _setup_layout(self) -> None:
-        self.stack = QStackedLayout()
         self.stack.addWidget(self.lesson_selector)
         self.stack.addWidget(self.lesson_1_widget)
         self.stack.addWidget(self.lesson_2_widget)
         self.stack.addWidget(self.lesson_3_widget)
         self.stack.setCurrentWidget(self.lesson_selector)
+        self.stack.addWidget(self.results_widget)
         self.setLayout(self.stack)

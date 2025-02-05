@@ -3,7 +3,7 @@ from data.constants import BLUE, RED
 from objects.prop.prop import Prop
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
     from ..settings_manager import SettingsManager
 
 
@@ -11,7 +11,7 @@ class PropTypeChanger:
     def __init__(self, settings_manager: "SettingsManager") -> None:
         self.main_window = settings_manager.main_window
 
-    def replace_props(self, new_prop_type, pictograph: "BasePictograph"):
+    def replace_props(self, new_prop_type, pictograph: "Pictograph"):
         for color, prop in pictograph.props.items():
             new_prop = pictograph.initializer.prop_factory.create_prop_of_type(
                 prop, new_prop_type
@@ -20,19 +20,20 @@ class PropTypeChanger:
         self._finalize_pictograph_update(pictograph)
 
     def _update_pictograph_prop(
-        self, pictograph: "BasePictograph", color, new_prop: "Prop"
+        self, pictograph: "Pictograph", color, new_prop: "Prop"
     ):
         old_prop = pictograph.props[color]
-        old_prop.deleteLater()
-        old_prop.hide()
-        old_prop_dict = old_prop.prop_dict
-        pictograph.props[color] = new_prop
-        pictograph.addItem(new_prop)
-        pictograph.motions[color].prop = new_prop
-        new_prop.motion.attr_manager.update_prop_ori()
-        new_prop.updater.update_prop(old_prop_dict)
+        if hasattr(old_prop, "loc"):
+            old_prop.deleteLater()
+            old_prop.hide()
+            old_prop_data = old_prop.prop_data
+            pictograph.props[color] = new_prop
+            pictograph.addItem(new_prop)
+            pictograph.motions[color].prop = new_prop
+            new_prop.motion.attr_manager.update_prop_ori()
+            new_prop.updater.update_prop(old_prop_data)
 
-    def _finalize_pictograph_update(self, pictograph: "BasePictograph"):
+    def _finalize_pictograph_update(self, pictograph: "Pictograph"):
         pictograph.red_prop = pictograph.props[RED]
         pictograph.blue_prop = pictograph.props[BLUE]
         pictograph.updater.update_pictograph()
@@ -53,7 +54,7 @@ class PropTypeChanger:
         self._update_start_pos_view(new_prop_type)
         self._update_json_manager(new_prop_type)
 
-    def _collect_all_pictographs(self) -> list["BasePictograph"]:
+    def _collect_all_pictographs(self) -> list["Pictograph"]:
         main_widget = self.main_window.main_widget
         pictographs = set()
 
@@ -64,7 +65,7 @@ class PropTypeChanger:
                     pictographs.add(pictograph)
 
         # Collect pictographs from the sequence widget's beat frame
-        for beat_view in main_widget.sequence_widget.beat_frame.beat_views:
+        for beat_view in main_widget.sequence_workbench.beat_frame.beat_views:
             if beat_view.is_filled:
                 pictographs.add(beat_view.beat)
 
@@ -79,7 +80,7 @@ class PropTypeChanger:
 
         # Collect the graph editor's pictograph
         graph_editor_pictograph = (
-            main_widget.sequence_widget.graph_editor.pictograph_container.GE_view.pictograph
+            main_widget.sequence_workbench.graph_editor.pictograph_container.GE_view.pictograph
         )
         if graph_editor_pictograph.red_arrow.loc:
             pictographs.add(graph_editor_pictograph)
@@ -106,21 +107,21 @@ class PropTypeChanger:
         )
         pictographs.add(lesson_3_question_pictograph)
         pictographs.update(lesson_3_answer_pictographs.values())
-        pictograph_list: list["BasePictograph"] = list(pictographs)
+        pictograph_list: list["Pictograph"] = list(pictographs)
 
         pictograph_list = [pictograph for pictograph in pictograph_list if pictograph]
 
         pictograph_list = [
             pictograph
             for pictograph in pictograph_list
-            if pictograph.red_prop.loc and pictograph.blue_prop.loc
+            if hasattr(pictograph.red_prop, 'loc') and hasattr(pictograph.blue_prop, 'loc')
         ]
 
         return pictograph_list
 
     def _update_start_pos_view(self, new_prop_type):
         start_pos_view = (
-            self.main_window.main_widget.sequence_widget.beat_frame.start_pos_view
+            self.main_window.main_widget.sequence_workbench.beat_frame.start_pos_view
         )
         if hasattr(start_pos_view, "start_pos"):
             start_pos = start_pos_view.start_pos

@@ -15,7 +15,7 @@ from .font_color_updater.font_color_updater import (
     FontColorUpdater,
 )
 from ..menu_bar.menu_bar import MenuBarWidget
-from .sequence_widget.sequence_widget import SequenceWorkbench
+from .sequence_workbench.sequence_workbench import SequenceWorkbench
 
 if TYPE_CHECKING:
     from .main_widget import MainWidget
@@ -40,7 +40,7 @@ class MainWidgetUI:
         self.mw.menu_bar = MenuBarWidget(self.mw)
 
         splash.updater.update_progress("SequenceWorkbench")
-        self.mw.sequence_widget = SequenceWorkbench(self.mw)
+        self.mw.sequence_workbench = SequenceWorkbench(self.mw)
         splash.updater.update_progress("ConstructTab")
         self.mw.construct_tab = ConstructTab(self.mw)
         splash.updater.update_progress("GenerateTab")
@@ -61,7 +61,7 @@ class MainWidgetUI:
         filter_selector = self.mw.browse_tab.sequence_picker.filter_stack
         construct_tab = self.mw.construct_tab
 
-        self.mw.left_stack.addWidget(self.mw.sequence_widget)  # 0
+        self.mw.left_stack.addWidget(self.mw.sequence_workbench)  # 0
         self.mw.left_stack.addWidget(self.mw.learn_tab.codex)  # 1
         self.mw.left_stack.addWidget(self.mw.write_tab.act_sheet)  # 2
         self.mw.left_stack.addWidget(filter_selector)  # 3

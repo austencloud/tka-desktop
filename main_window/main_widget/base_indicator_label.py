@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
         BaseLessonWidget,
     )
-    from main_window.main_widget.sequence_widget.sequence_widget import (
+    from main_window.main_widget.sequence_workbench.sequence_workbench import (
         SequenceWorkbench,
     )
 

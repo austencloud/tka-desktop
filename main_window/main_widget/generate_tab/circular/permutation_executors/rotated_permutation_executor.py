@@ -57,10 +57,10 @@ class RotatedPermutationExecuter(PermutationExecutor):
             new_entries.append(next_pictograph)
             sequence.append(next_pictograph)
 
-            sequence_widget = (
-                self.circular_sequence_generator.main_widget.sequence_widget
+            sequence_workbench = (
+                self.circular_sequence_generator.main_widget.sequence_workbench
             )
-            sequence_widget.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+            sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph, override_grow_sequence=True, update_word=False
             )
             # self.validation_engine.validate_last_pictograph()
@@ -69,7 +69,7 @@ class RotatedPermutationExecuter(PermutationExecutor):
             last_entry = next_pictograph
             next_beat_number += 1
 
-        sequence_widget.current_word_label.update_current_word_label_from_beats()
+        sequence_workbench.current_word_label.update_current_word_label_from_beats()
 
         if start_position_entry:
             start_position_entry["beat"] = 0

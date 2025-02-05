@@ -65,11 +65,11 @@ class JsonOrientationValidationEngine:
 
     def update_json_entry_end_orientation(self, index) -> None:
         """Recalculates and updates the end orientation of the current pictograph."""
-        pictograph_dict = self.sequence[index]
+        pictograph_data = self.sequence[index]
         for color in [RED, BLUE]:
-            end_ori = self.ori_calculator.calculate_end_ori(pictograph_dict, color)
-            pictograph_dict[f"{color}_attributes"]["end_ori"] = end_ori
-            self.sequence[index] = pictograph_dict
+            end_ori = self.ori_calculator.calculate_end_ori(pictograph_data, color)
+            pictograph_data[f"{color}_attributes"]["end_ori"] = end_ori
+            self.sequence[index] = pictograph_data
 
     def run(self, is_current_sequence=False) -> None:
         """Public method to run the sequence validation and update process."""

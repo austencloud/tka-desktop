@@ -42,10 +42,10 @@ class MirroredPermutationExecutor(PermutationExecutor):
             new_entries.append(next_pictograph)
             sequence.append(next_pictograph)
 
-            sequence_widget = (
-                self.circular_sequence_generator.top_builder_widget.sequence_widget
+            sequence_workbench = (
+                self.circular_sequence_generator.top_builder_widget.sequence_workbench
             )
-            sequence_widget.create_new_beat_and_add_to_sequence(
+            sequence_workbench.create_new_beat_and_add_to_sequence(
                 next_pictograph, override_grow_sequence=True, update_word=False
             )
             self.validation_engine.validate_last_pictograph()

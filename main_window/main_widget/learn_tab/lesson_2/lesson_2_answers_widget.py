@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 import logging
 
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
+from base_widgets.base_pictograph.pictograph import Pictograph
 from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
     BaseAnswersWidget,
 )
@@ -26,7 +26,7 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
 
     columns = 2
     spacing = 30
-    pictographs: dict[str, BasePictograph]
+    pictographs: dict[str, Pictograph]
 
     def __init__(self, lesson_2_widget: "Lesson2Widget"):
         super().__init__(lesson_2_widget)
@@ -38,7 +38,7 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
         self.setLayout(self.layout)
 
         self.pictograph_views: List[LessonPictographView] = []
-        self.pictographs: dict[str, BasePictograph] = {}
+        self.pictographs: dict[str, Pictograph] = {}
 
         self.layout.setSpacing(self.spacing)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -52,20 +52,20 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
         num_pictographs = len(pictographs)
         rows = (num_pictographs + self.columns - 1) // self.columns  # Ceiling division
 
-        for index, pictograph_dict in enumerate(pictographs):
-            key = self.key_generator.generate_pictograph_key(pictograph_dict)
-            pictograph = BasePictograph(self.lesson_2_widget.main_widget)
+        for index, pictograph_data in enumerate(pictographs):
+            key = self.key_generator.generate_pictograph_key(pictograph_data)
+            pictograph = Pictograph(self.lesson_2_widget.main_widget)
             view = LessonPictographView(pictograph)
             pictograph.view = view
             pictograph.disable_gold_overlay = False
-            pictograph.updater.update_pictograph(pictograph_dict)
+            pictograph.updater.update_pictograph(pictograph_data)
             pictograph.view.update_borders()
             self.pictographs[key] = pictograph
             pictograph.quiz_mode = True
             pictograph.tka_glyph.setVisible(False)
 
             view.mousePressEvent = (
-                lambda event, opt=pictograph_dict: check_answer_callback(
+                lambda event, opt=pictograph_data: check_answer_callback(
                     opt, correct_pictograph
                 )
             )

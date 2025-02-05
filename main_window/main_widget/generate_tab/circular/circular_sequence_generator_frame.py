@@ -21,7 +21,7 @@ class CircularSequenceGeneratorFrame(BaseSequenceGeneratorFrame):
 
         self.apply_settings()
         self.beat_deleter = (
-            self.tab.main_widget.sequence_widget.beat_frame.sequence_widget.beat_deleter
+            self.tab.main_widget.sequence_workbench.beat_frame.sequence_workbench.beat_deleter
         )
 
     def apply_settings(self):

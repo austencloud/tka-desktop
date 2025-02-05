@@ -51,8 +51,8 @@ class CodexOriSelector(QWidget):
         try:
             for letter_str, view in self.codex.section_manager.codex_views.items():
                 scene = view.pictograph
-                if scene.pictograph_dict:
-                    new_dict = scene.pictograph_dict.copy()
+                if scene.pictograph_data:
+                    new_dict = scene.pictograph_data.copy()
                     if "blue_attributes" in new_dict:
                         new_dict["blue_attributes"]["start_ori"] = orientation
                     if "red_attributes" in new_dict:

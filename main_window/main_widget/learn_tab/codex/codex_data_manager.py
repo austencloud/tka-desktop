@@ -23,29 +23,27 @@ class CodexDataManager:
 
         pictograph_data = {}
         for letter in letters:
-            params = self._get_pictograph_params(letter)
-            if params:
-                pictograph_dict = (
-                    self.main_widget.pictograph_dict_loader.find_pictograph_dict(
+            data = self._get_pictograph_data(letter)
+            if data:
+                current_data = (
+                    self.main_widget.pictograph_data_loader.find_pictograph_data(
                         {
                             "letter": letter,
-                            "start_pos": params["start_pos"],
-                            "end_pos": params["end_pos"],
-                            "blue_motion_type": params["blue_motion_type"],
-                            "red_motion_type": params["red_motion_type"],
+                            "start_pos": data["start_pos"],
+                            "end_pos": data["end_pos"],
+                            "blue_motion_type": data["blue_motion_type"],
+                            "red_motion_type": data["red_motion_type"],
                         }
                     )
                 )
-                pictograph_data[letter] = pictograph_dict
+                pictograph_data[letter] = current_data
             else:
                 pictograph_data[letter] = None  # Or handle as needed
 
         return pictograph_data
 
-    def _get_pictograph_params(self, letter: str) -> Optional[dict]:
+    def _get_pictograph_data(self, letter: str) -> Optional[dict]:
         """Returns the parameters for a given letter."""
-        # Define the parameters based on your existing initial_pictograph_data
-        # This can be refactored or loaded from a configuration file or database
         params_map = {
             "A": {
                 "start_pos": "alpha1",

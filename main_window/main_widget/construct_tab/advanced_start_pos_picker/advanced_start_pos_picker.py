@@ -2,7 +2,7 @@ from copy import deepcopy
 from PyQt6.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout
 from typing import TYPE_CHECKING
 
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
+from base_widgets.base_pictograph.pictograph import Pictograph
 from data.constants import BOX, DIAMOND
 from main_window.main_widget.construct_tab.advanced_start_pos_picker.advanced_start_pos_picker_pictograph_view import (
     AdvancedStartPosPickerPictographView,
@@ -25,9 +25,9 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         super().__init__(construct_tab)
         self.choose_your_start_pos_label = ChooseYourStartPosLabel(self)
         self._setup_layout()
-        self.start_pos_cache: dict[str, list[BasePictograph]] = {}
+        self.start_pos_cache: dict[str, list[Pictograph]] = {}
         self.start_position_adder = (
-            self.construct_tab.main_widget.sequence_widget.beat_frame.start_position_adder
+            self.construct_tab.main_widget.sequence_workbench.beat_frame.start_position_adder
         )
         self.generate_pictographs()
 
@@ -46,16 +46,16 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         self.layout.addStretch(1)
 
     def create_pictograph_from_dict(
-        self, pictograph_dict: dict, target_grid_mode: str
-    ) -> BasePictograph:
-        pictograph_key = self.generate_pictograph_key(pictograph_dict, target_grid_mode)
+        self, pictograph_data: dict, target_grid_mode: str
+    ) -> Pictograph:
+        pictograph_key = self.generate_pictograph_key(pictograph_data, target_grid_mode)
         if pictograph_key in self.pictograph_cache:
             return self.pictograph_cache[pictograph_key]
 
-        local_dict = deepcopy(pictograph_dict)
+        local_dict = deepcopy(pictograph_data)
         local_dict["grid_mode"] = target_grid_mode
 
-        pictograph = BasePictograph(self.main_widget)
+        pictograph = Pictograph(self.main_widget)
         pictograph.view = AdvancedStartPosPickerPictographView(self, pictograph)
         pictograph.updater.update_pictograph(local_dict)
         pictograph.view.update_borders()
@@ -85,7 +85,7 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
                 self.grid_layout.addWidget(variation.view, row, col)
 
     def generate_pictographs(self):
-        self.all_variations: dict[str, list[BasePictograph]] = {BOX: [], DIAMOND: []}
+        self.all_variations: dict[str, list[Pictograph]] = {BOX: [], DIAMOND: []}
 
         for grid_mode in [BOX, DIAMOND]:
             if grid_mode == BOX:
@@ -103,5 +103,5 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
                 )
                 variation.view.update_borders()
 
-    def on_variation_selected(self, variation: BasePictograph) -> None:
+    def on_variation_selected(self, variation: Pictograph) -> None:
         self.start_position_adder.add_start_pos_to_sequence(variation)

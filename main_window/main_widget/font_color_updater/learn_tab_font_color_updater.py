@@ -29,7 +29,7 @@ class LearnTabFontColorUpdater(BaseFontColorUpdater):
         for lesson_widget in lesson_widgets:
             self._apply_font_color(lesson_widget.question_widget)
             self._apply_font_color(lesson_widget.progress_label)
-            self._apply_font_color(lesson_widget.result_label)
+            self._apply_font_color(learn_tab.results_widget.result_label)
 
         self._apply_font_color(
             self.main_widget.learn_tab.codex.control_widget.ori_selector.start_ori_label

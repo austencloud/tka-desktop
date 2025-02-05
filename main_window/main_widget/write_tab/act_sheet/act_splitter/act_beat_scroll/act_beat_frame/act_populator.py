@@ -18,8 +18,8 @@ class ActPopulator:
         """Populate each row in the act based on row index and beat data."""
         for i, data in enumerate(beat_data):
             beat_view: "ActBeatView" = self.beat_frame.beats[row_index * 8 + i]
-            beat_view.beat.updater.update_pictograph(data["pictograph_dict"])
-            beat_view.beat.pictograph_dict = data
+            beat_view.beat.updater.update_pictograph(data["pictograph_data"])
+            beat_view.beat.pictograph_data = data
             if beat_view in self.beat_frame.beat_step_map:
                 self.beat_frame.beat_step_map[beat_view].label.setText(
                     data.get("step_label", "")
@@ -93,7 +93,7 @@ class ActPopulator:
             beat_view = self.beat_frame.beats[beat_index]
             step_label_text = beat_data.get("step_label", "")
             beat_view.beat.updater.update_pictograph(beat_data)
-            beat_view.beat.pictograph_dict = beat_data
+            beat_view.beat.pictograph_data = beat_data
             self.add_step_label(beat_view, step_label_text)
 
     def add_step_label(self, beat_view, label_text: str):

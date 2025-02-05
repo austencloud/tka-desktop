@@ -42,5 +42,7 @@ class TKALetter(QGraphicsSvgItem):
         if self.renderer.isValid():
             self.setSharedRenderer(self.renderer)
             x = int(self.boundingRect().height() / 1.5)
-            y = int(self.glyph.pictograph.height() - (self.boundingRect().height() * 1.7))
+            y = int(
+                self.glyph.pictograph.height() - (self.boundingRect().height() * 1.7)
+            )
             self.setPos(x, y)

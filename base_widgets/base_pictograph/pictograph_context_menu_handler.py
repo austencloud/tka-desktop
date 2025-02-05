@@ -3,13 +3,13 @@ from objects.prop.prop import Prop
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 from PyQt6.QtWidgets import QGraphicsSceneMouseEvent
 
 
 class PictographContextMenuHandler:
-    def __init__(self, pictograph: "BasePictograph") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 
     def handle_context_menu(self, event: "QGraphicsSceneMouseEvent") -> None:

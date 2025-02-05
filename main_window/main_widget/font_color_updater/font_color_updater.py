@@ -1,4 +1,8 @@
 from typing import TYPE_CHECKING
+
+from main_window.main_widget.font_color_updater.sequence_widget_font_color_updater import (
+    SequenceWorkbenchFontColorUpdater,
+)
 from .base_font_color_updater import BaseFontColorUpdater
 from .construct_tab_font_color_updater import ConstructTabFontColorUpdater
 from .generate_tab_font_color_updater import GenerateTabFontColorUpdater
@@ -6,7 +10,6 @@ from .browse_tab_font_color_updater import BrowseTabFontColorUpdater
 from .learn_tab_font_color_updater import LearnTabFontColorUpdater
 from .act_tab_font_color_updater import WriteTabFontColorUpdater
 from .menu_bar_font_color_updater import MenuBarFontColorUpdater
-from .sequence_widget_font_color_updater import SequenceWorkbenchFontColorUpdater
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget

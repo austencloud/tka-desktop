@@ -20,7 +20,7 @@ from .glyphs.tka.tka_glyph import TKA_Glyph
 from .glyphs.vtg.vtg_glyph import VTG_Glyph
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 # pictograph_initializer.py
@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 class PictographInitializer:
     default_grid_mode = DIAMOND
 
-    def __init__(self, pictograph: "BasePictograph") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
         self.pictograph.setSceneRect(0, 0, 950, 950)
         self.pictograph.setBackgroundBrush(Qt.GlobalColor.white)
@@ -223,7 +223,7 @@ class PictographInitializer:
         return arrow
 
     def _create_motion(self, color: str) -> Motion:
-        motion_dict = {
+        motion_data = {
             COLOR: color,
             ARROW: None,
             PROP: None,
@@ -234,4 +234,4 @@ class PictographInitializer:
             END_LOC: None,
             START_ORI: None,
         }
-        return Motion(self.pictograph, motion_dict)
+        return Motion(self.pictograph, motion_data)

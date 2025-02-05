@@ -2,7 +2,7 @@ import logging
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QGridLayout
 from PyQt6.QtCore import Qt
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
+from base_widgets.base_pictograph.pictograph import Pictograph
 from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
     BaseAnswersWidget,
 )
@@ -30,7 +30,7 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
         self.setLayout(self.layout)
 
         self.pictograph_views: list[QWidget] = []
-        self.pictographs: dict[str, BasePictograph] = {}
+        self.pictographs: dict[str, Pictograph] = {}
         # Define grid parameters
         self.columns = 2  # Number of columns in the grid
         self.spacing = 30  # Spacing between widgets
@@ -47,13 +47,13 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
         num_pictographs = len(pictographs)
         rows = (num_pictographs + self.columns - 1) // self.columns  # Ceiling division
 
-        for index, pictograph_dict in enumerate(pictographs):
-            key = self.key_generator.generate_pictograph_key(pictograph_dict)
-            pictograph = BasePictograph(self.lesson_3_widget.main_widget)
+        for index, pictograph_data in enumerate(pictographs):
+            key = self.key_generator.generate_pictograph_key(pictograph_data)
+            pictograph = Pictograph(self.lesson_3_widget.main_widget)
             view = LessonPictographView(pictograph)
             pictograph.view = view
             pictograph.disable_gold_overlay = False
-            pictograph.updater.update_pictograph(pictograph_dict)
+            pictograph.updater.update_pictograph(pictograph_data)
             pictograph.view.update_borders()
             self.pictographs[key] = pictograph
             # Configure view properties
@@ -62,9 +62,9 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
             pictograph.tka_glyph.setVisible(False)
 
             # Connect click event
-            # Use lambda with default arguments to capture current pictograph_dict and correct_pictograph
+            # Use lambda with default arguments to capture current pictograph_data and correct_pictograph
             view.mousePressEvent = (
-                lambda event, opt=pictograph_dict: check_answer_callback(
+                lambda event, opt=pictograph_data: check_answer_callback(
                     opt, correct_pictograph
                 )
             )
@@ -76,7 +76,6 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
 
             self.pictograph_views.append(view)
 
-
     def clear(self):
         """Clear all the displayed pictographs."""
         for view in self.pictograph_views:
@@ -85,7 +84,6 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
         self.pictograph_views.clear()
         self.pictographs.clear()
 
-
     def disable_answers(self, answer):
         """Disable a specific pictograph answer."""
         pictograph_key = self.key_generator.generate_pictograph_key(answer)
@@ -93,7 +91,7 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
         wrong_answer.view.setEnabled(False)
         wrong_answer.view.set_overlay_color("red")
 
-    def resizeEvent(self,event):
+    def resizeEvent(self, event):
         """Resize the pictograph views based on window size."""
         super().resizeEvent(event)
         for view in self.pictograph_views:

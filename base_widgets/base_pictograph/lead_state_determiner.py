@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from data.constants import *
-from objects.motion.managers.handpath_calculator import HandpathCalculator
+from objects.motion.handpath_calculator import HandpathCalculator
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:

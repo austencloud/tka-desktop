@@ -24,20 +24,20 @@ class JsonOriCalculator:
         self.main_widget = json_manager.main_widget
         self.handpath_calculator = HandpathCalculator()
 
-    def calculate_end_ori(self, pictograph_dict, color: str):
-        motion_type = pictograph_dict[f"{color}_attributes"]["motion_type"]
-        if (pictograph_dict[f"{color}_attributes"]["turns"]) != "fl":
-            turns = float(pictograph_dict[f"{color}_attributes"]["turns"])
+    def calculate_end_ori(self, pictograph_data, color: str):
+        motion_type = pictograph_data[f"{color}_attributes"]["motion_type"]
+        if (pictograph_data[f"{color}_attributes"]["turns"]) != "fl":
+            turns = float(pictograph_data[f"{color}_attributes"]["turns"])
         else:
-            turns = pictograph_dict[f"{color}_attributes"]["turns"]
-        start_ori = pictograph_dict[f"{color}_attributes"]["start_ori"]
-        prop_rot_dir = pictograph_dict[f"{color}_attributes"]["prop_rot_dir"]
-        start_loc = pictograph_dict[f"{color}_attributes"]["start_loc"]
-        end_loc = pictograph_dict[f"{color}_attributes"]["end_loc"]
+            turns = pictograph_data[f"{color}_attributes"]["turns"]
+        start_ori = pictograph_data[f"{color}_attributes"]["start_ori"]
+        prop_rot_dir = pictograph_data[f"{color}_attributes"]["prop_rot_dir"]
+        start_loc = pictograph_data[f"{color}_attributes"]["start_loc"]
+        end_loc = pictograph_data[f"{color}_attributes"]["end_loc"]
         if motion_type == "float":
             handpath_direction = self.handpath_calculator.get_hand_rot_dir(
-                pictograph_dict[f"{color}_attributes"]["start_loc"],
-                pictograph_dict[f"{color}_attributes"]["end_loc"],
+                pictograph_data[f"{color}_attributes"]["start_loc"],
+                pictograph_data[f"{color}_attributes"]["end_loc"],
             )
             return self.calculate_float_orientation(start_ori, handpath_direction)
         else:

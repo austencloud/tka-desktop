@@ -3,20 +3,20 @@ from PyQt6.QtWidgets import QGraphicsView, QFrame, QMenu
 from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QCursor, QAction
 
-from base_widgets.base_pictograph.pictograph_dict_copier import PictographDictCopier
+from base_widgets.base_pictograph.pictograph_data_copier import PictographDataCopier
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class PictographView(QGraphicsView):
-    def __init__(self, pictograph: "BasePictograph") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         super().__init__(pictograph)
         if pictograph:
             self.pictograph = pictograph
             self.pictograph.view = self
-        
-        self.dict_copier = PictographDictCopier(pictograph)
+
+        self.dict_copier = PictographDataCopier(pictograph)
 
         self.setFrameStyle(QFrame.Shape.NoFrame)
         self.setStyleSheet("background: transparent; border: none;")
@@ -40,6 +40,6 @@ class PictographView(QGraphicsView):
     def contextMenuEvent(self, event: QEvent) -> None:
         context_menu = QMenu(self)
         copy_action = QAction("Copy Dictionary", self)
-        copy_action.triggered.connect(self.dict_copier.copy_pictograph_dict)
+        copy_action.triggered.connect(self.dict_copier.copy_pictograph_data)
         context_menu.addAction(copy_action)
         context_menu.exec(QCursor.pos())

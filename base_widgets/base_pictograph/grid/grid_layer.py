@@ -11,7 +11,6 @@ class GridLayer:
                     x, y = map(float, coords.strip("()").split(", "))
                     self.points[name] = GridPoint(name, QPointF(x, y))
                 except ValueError:
-                    print(f"Warning: Invalid coordinates for point '{name}'.")
                     self.points[name] = GridPoint(name, None)
             else:
                 self.points[name] = GridPoint(name, None)

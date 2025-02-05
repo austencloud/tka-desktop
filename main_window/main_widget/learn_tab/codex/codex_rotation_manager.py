@@ -18,10 +18,10 @@ class CodexRotationManager:
     def rotate_codex(self):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
-        for letter, pictograph_dict in self.codex.data_manager.pictograph_data.items():
-            if pictograph_dict:
-                pictograph_dict = self._rotate_pictograph_dict(pictograph_dict)
-                self.codex.data_manager.pictograph_data[letter] = pictograph_dict
+        for letter, pictograph_data in self.codex.data_manager.pictograph_data.items():
+            if pictograph_data:
+                pictograph_data = self._rotate_pictograph_data(pictograph_data)
+                self.codex.data_manager.pictograph_data[letter] = pictograph_data
 
         for view in self.codex.section_manager.codex_views.values():
             view.pictograph.grid.update_grid_mode()
@@ -30,11 +30,11 @@ class CodexRotationManager:
 
         QApplication.restoreOverrideCursor()
 
-    def _rotate_pictograph_dict(self, pictograph_dict: dict) -> dict:
+    def _rotate_pictograph_data(self, pictograph_data: dict) -> dict:
         """Rotate a single pictograph dictionary."""
         for color in ["blue_attributes", "red_attributes"]:
-            if color in pictograph_dict:
-                attributes = pictograph_dict[color]
+            if color in pictograph_data:
+                attributes = pictograph_data[color]
                 if "start_loc" in attributes:
                     attributes["start_loc"] = self._rotate_location(
                         attributes["start_loc"]
@@ -42,18 +42,18 @@ class CodexRotationManager:
                 if "end_loc" in attributes:
                     attributes["end_loc"] = self._rotate_location(attributes["end_loc"])
 
-        if "blue_attributes" in pictograph_dict and "red_attributes" in pictograph_dict:
-            bl = pictograph_dict["blue_attributes"]
-            rl = pictograph_dict["red_attributes"]
+        if "blue_attributes" in pictograph_data and "red_attributes" in pictograph_data:
+            bl = pictograph_data["blue_attributes"]
+            rl = pictograph_data["red_attributes"]
             if "start_loc" in bl and "start_loc" in rl:
-                pictograph_dict["start_pos"] = positions_map[
+                pictograph_data["start_pos"] = positions_map[
                     (bl["start_loc"], rl["start_loc"])
                 ]
             if "end_loc" in bl and "end_loc" in rl:
-                pictograph_dict["end_pos"] = positions_map[
+                pictograph_data["end_pos"] = positions_map[
                     (bl["end_loc"], rl["end_loc"])
                 ]
-        return pictograph_dict
+        return pictograph_data
 
     def _rotate_location(self, location: str) -> str:
         """Rotate a single location by 45° increments."""
@@ -67,7 +67,7 @@ class CodexRotationManager:
     def update_grid_mode(self):
         for view in self.codex.section_manager.codex_views.values():
             grid_mode = self.codex.main_widget.grid_mode_checker.get_grid_mode(
-                view.pictograph.pictograph_dict
+                view.pictograph.pictograph_data
             )
             view.pictograph.grid.hide()
             view.pictograph.grid.__init__(
@@ -78,8 +78,8 @@ class CodexRotationManager:
         """Refresh all views to reflect the updated pictograph data."""
         for letter, view in self.codex.section_manager.codex_views.items():
             if letter in self.codex.data_manager.pictograph_data:
-                pictograph_dict = self.codex.data_manager.pictograph_data[letter]
+                pictograph_data = self.codex.data_manager.pictograph_data[letter]
                 view.pictograph.arrow_placement_manager.default_positioner.__init__(
                     view.pictograph.arrow_placement_manager
                 )
-                view.pictograph.updater.update_pictograph(pictograph_dict)
+                view.pictograph.updater.update_pictograph(pictograph_data)

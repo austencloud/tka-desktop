@@ -48,7 +48,8 @@ class MainWidgetTabSwitcher:
         right_construct_tab_index = self.get_construct_tab_index()
         if (
             index in [self.mw.main_generate_tab_index, self.mw.main_construct_tab_index]
-            and self.mw.left_stack.currentIndex() == self.mw.left_sequence_widget_index
+            and self.mw.left_stack.currentIndex()
+            == self.mw.left_sequence_workbench_index
         ):
             new_index = (
                 3
@@ -84,7 +85,7 @@ class MainWidgetTabSwitcher:
 
     def get_construct_tab_index(self):
         """Return the index of the construct tab."""
-        beat_frame = self.mw.sequence_widget.beat_frame
+        beat_frame = self.mw.sequence_workbench.beat_frame
         for beat in beat_frame.beat_views:
             if beat.is_filled:
                 return self.mw.right_option_picker_index

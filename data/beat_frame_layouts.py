@@ -1,4 +1,4 @@
-SEQUENCE_WIDGET_BEAT_FRAME_LAYOUTS = {
+sequence_workbench_BEAT_FRAME_LAYOUTS = {
     0: (0, 1),
     1: (1, 1),
     2: (2, 1),

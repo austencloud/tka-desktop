@@ -47,7 +47,7 @@ class GridData:
 
             return None
 
-    def get_static_coord(self, point_name: str) -> Optional[QPointF]:
+    def get_static_dash_coord(self, point_name: str) -> Optional[QPointF]:
         point = self.all_hand_points_normal.get(point_name)
         if point and point.coordinates:
             return point.coordinates

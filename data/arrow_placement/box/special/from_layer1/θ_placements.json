@@ -153,6 +153,10 @@
     "(s, 3, 0.5)": {
       "static_to_layer2_rot_angle_override": true,
       "static": [-140, 0]
+    },
+    "(o, fl, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [-140, 0]
     }
   }
 }

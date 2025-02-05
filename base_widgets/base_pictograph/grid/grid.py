@@ -5,15 +5,13 @@ from .grid_item import GridItem
 from .non_radial_points_group import NonRadialPointsGroup
 
 if TYPE_CHECKING:
-    from ..base_pictograph import BasePictograph
+    from ..pictograph import Pictograph
 
 GRID_DIR = "images/grid/"
 
 
 class Grid:
-    def __init__(
-        self, pictograph: "BasePictograph", grid_data: GridData, grid_mode: str
-    ):
+    def __init__(self, pictograph: "Pictograph", grid_data: GridData, grid_mode: str):
 
         self.pictograph = pictograph
         self.grid_data = grid_data
@@ -60,7 +58,7 @@ class Grid:
 
     def update_grid_mode(self):
         grid_mode = self.pictograph.main_widget.grid_mode_checker.get_grid_mode(
-            self.pictograph.pictograph_dict
+            self.pictograph.pictograph_data
         )
         self.pictograph.grid.hide()
         self.pictograph.grid.__init__(

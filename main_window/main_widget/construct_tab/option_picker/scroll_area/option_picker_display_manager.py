@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 from Enums.Enums import LetterType, Letter
 
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
+from base_widgets.base_pictograph.pictograph import Pictograph
 from Enums.Enums import LetterType
-from main_window.main_widget.sequence_widget.beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.beat_frame.beat import Beat
 from .section_manager.option_picker_section_widget import OptionPickerSectionWidget
 
 if TYPE_CHECKING:
@@ -24,7 +24,7 @@ class OptionPickerDisplayManager:
             for index, (key, pictograph) in enumerate(ordered_pictographs.items()):
                 self.add_pictograph_to_layout(pictograph, index)
 
-    def add_pictograph_to_layout(self, pictograph: BasePictograph, index: int) -> None:
+    def add_pictograph_to_layout(self, pictograph: Pictograph, index: int) -> None:
         row, col = divmod(index, self.scroll_area.option_picker.COLUMN_COUNT)
         letter_type = LetterType.get_letter_type(pictograph.letter)
         section = self.scroll_area.layout_manager.sections[letter_type]
@@ -34,9 +34,9 @@ class OptionPickerDisplayManager:
 
     def get_ordered_pictographs_for_section(
         self, letter_type: LetterType
-    ) -> dict[str, BasePictograph]:
+    ) -> dict[str, Pictograph]:
         last_beat = self.scroll_area.construct_tab.last_beat
-        relevant_pictographs: dict[str, BasePictograph] = {}
+        relevant_pictographs: dict[str, Pictograph] = {}
 
         for key, cached_pictograph in self.scroll_area.pictograph_cache.items():
             if self.is_pictograph_relevant(cached_pictograph, last_beat):
@@ -58,7 +58,7 @@ class OptionPickerDisplayManager:
         }
 
     def is_pictograph_relevant(
-        self, cached_pictograph: BasePictograph, last_beat: Beat
+        self, cached_pictograph: Pictograph, last_beat: Beat
     ) -> bool:
         """Check if a pictograph is a valid next option based on the current_pictograph."""
 
@@ -68,7 +68,7 @@ class OptionPickerDisplayManager:
         if last_beat.end_pos == cached_pictograph.start_pos:
             return True
 
-    def add_pictograph_to_section_layout(self, pictograph: BasePictograph):
+    def add_pictograph_to_section_layout(self, pictograph: Pictograph):
         """Add a pictograph to its corresponding section layout."""
         letter_type = LetterType.get_letter_type(pictograph.letter)
         section: OptionPickerSectionWidget = self.scroll_area.layout_manager.sections[

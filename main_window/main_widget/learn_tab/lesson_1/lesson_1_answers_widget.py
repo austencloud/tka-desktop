@@ -52,7 +52,7 @@ class Lesson1AnswersWidget(BaseAnswersWidget):
             )
             font_size = self.main_widget.width() // 40
             font = button.font()
-            font.setFamily("Georgia")  # Set the font family to Georgia
+            font.setFamily("Georgia")
             font.setPointSize(font_size)
             button.setFont(font)
             button.setStyleSheet(f"font-size: {font_size}px;")

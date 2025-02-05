@@ -25,7 +25,7 @@ from utilities.path_helpers import get_images_and_data_path
 
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 SVG_PATHS = {
@@ -45,8 +45,8 @@ SVG_PATHS = {
 
 class VTG_Glyph(QGraphicsSvgItem):
     name = "VTG"
-    
-    def __init__(self, pictograph: "BasePictograph") -> None:
+
+    def __init__(self, pictograph: "Pictograph") -> None:
         super().__init__()
         self.pictograph = pictograph
 
@@ -63,8 +63,7 @@ class VTG_Glyph(QGraphicsSvgItem):
         from utilities.path_helpers import get_images_and_data_path
 
         if not self.pictograph.letter_type in [LetterType.Type1]:
-            self.pictograph.removeItem(self)
-            return
+            self.setVisible(False)
 
         SVG_BASE_PATH = get_images_and_data_path("images/vtg_glyphs")
         SVG_PATHS = {
@@ -78,24 +77,25 @@ class VTG_Glyph(QGraphicsSvgItem):
 
         self.pictograph.vtg_mode = self.determine_vtg_mode()
         svg_path = SVG_PATHS.get(self.pictograph.vtg_mode, "")
-        self.renderer: QSvgRenderer = QSvgRenderer(svg_path)
-        if self.renderer.isValid():
-            self.setSharedRenderer(self.renderer)
-            if not self.scene():
-                self.pictograph.addItem(self)
-            self.position_vtg_glyph()
+        if svg_path:
+            self.renderer: QSvgRenderer = QSvgRenderer(svg_path)
+            if self.renderer.isValid():
+                self.setSharedRenderer(self.renderer)
+                if not self.scene():
+                    self.pictograph.addItem(self)
+                self.position_vtg_glyph()
 
-            self.setVisible(
-                self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
-                    "VTG"
+                self.setVisible(
+                    self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
+                        "VTG"
+                    )
                 )
-            )
 
     def determine_vtg_mode(self) -> Literal["SS", "SO", "TS", "TO", "QS", "QO"]:
         letter_str = self.pictograph.letter.value
         start_pos = self.pictograph.start_pos
         grid_mode = self.pictograph.main_widget.grid_mode_checker.get_grid_mode(
-            self.pictograph.pictograph_dict
+            self.pictograph.pictograph_data
         )
 
         mode_mapping = {

@@ -13,11 +13,13 @@ class GridModeChecker:
         self.main_widget = main_widget
 
     def get_grid_mode(
-        self, pictograph_dict: dict
+        self, pictograph_data: dict
     ) -> None | Literal["box"] | Literal["diamond"] | Literal["skewed"]:
-        start_pos = pictograph_dict.get("start_pos") or pictograph_dict.get("end_pos") # Handles the start position
-        end_pos = pictograph_dict.get("end_pos")
-        
+        start_pos = pictograph_data.get("start_pos") or pictograph_data.get(
+            "end_pos"
+        )  # Handles the start position
+        end_pos = pictograph_data.get("end_pos")
+
         if start_pos in box_positions and end_pos in box_positions:
             return BOX
         if start_pos in diamond_positions and end_pos in diamond_positions:

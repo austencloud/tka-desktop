@@ -21,8 +21,8 @@ class LessonAnswerChecker:
                 if self.lesson.current_question <= self.lesson.total_questions:
                     self.lesson.question_generator.start_new_question()
                 else:
-                    self.lesson.results_widget.show_results(
-                        self.lesson.incorrect_guesses
+                    self.lesson.learn_tab.results_widget.show_results(
+                       self.lesson,  self.lesson.incorrect_guesses
                     )
             elif self.lesson.mode == "countdown":
                 self.lesson.question_generator.start_new_question()

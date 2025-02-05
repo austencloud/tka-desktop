@@ -127,25 +127,25 @@ class JsonSequenceLoaderSaver:
         return 0
 
     def get_red_end_ori(self, sequence):
-        last_pictograph_dict = (
+        last_pictograph_data = (
             sequence[-1]
             if sequence[-1].get("is_placeholder", "") != True
             else sequence[-2]
         )
 
         if sequence:
-            return last_pictograph_dict["red_attributes"]["end_ori"]
+            return last_pictograph_data["red_attributes"]["end_ori"]
         return 0
 
     def get_blue_end_ori(self, sequence):
-        last_pictograph_dict = (
+        last_pictograph_data = (
             sequence[-1]
             if sequence[-1].get("is_placeholder", "") != True
             else sequence[-2]
         )
 
         if sequence:
-            return last_pictograph_dict["blue_attributes"]["end_ori"]
+            return last_pictograph_data["blue_attributes"]["end_ori"]
         return 0
 
     def load_last_beat_dict(self) -> dict:

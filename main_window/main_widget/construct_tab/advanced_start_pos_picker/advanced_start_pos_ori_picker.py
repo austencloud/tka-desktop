@@ -112,10 +112,10 @@ class AdvancedStartPosOriPicker(QWidget):
             start_pos_pictographs_by_letter
         ) in self.advanced_start_pos_picker.start_pos_cache.values():
             for pictograph in start_pos_pictographs_by_letter:
-                pictograph.pictograph_dict[f"{color}_attributes"]["start_ori"] = ori
+                pictograph.pictograph_data[f"{color}_attributes"]["start_ori"] = ori
                 if color == "red":
-                    pictograph.pictograph_dict["red_attributes"]["end_ori"] = ori
-                pictograph.updater.update_pictograph(pictograph.pictograph_dict)
+                    pictograph.pictograph_data["red_attributes"]["end_ori"] = ori
+                pictograph.updater.update_pictograph(pictograph.pictograph_data)
 
     def resize_default_ori_picker(self) -> None:
         width = int(self.advanced_start_pos_picker.construct_tab.width())

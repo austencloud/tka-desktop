@@ -64,7 +64,7 @@ class MirroredEntryRotAngleManager:
         self, other_letter_data, rotation_angle_override, mirrored_turns_tuple
     ):
         key = self.manager.data_updater.positioner.pictograph.wasd_manager.rotation_angle_override_manager.key_generator.generate_rotation_angle_override_key(
-            self.manager.data_updater.positioner.pictograph.main_widget.sequence_widget.graph_editor.selection_manager.selected_arrow
+            self.manager.data_updater.positioner.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow
         )
         if mirrored_turns_tuple not in other_letter_data:
             other_letter_data[mirrored_turns_tuple] = {}

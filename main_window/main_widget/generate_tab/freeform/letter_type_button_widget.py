@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor
 
 from Enums.letters import LetterType
-from main_window.main_widget.sequence_widget.beat_frame.button_styled_border_overlay import (
+from main_window.main_widget.sequence_workbench.beat_frame.button_styled_border_overlay import (
     StyledBorderOverlayForButton,
 )
 

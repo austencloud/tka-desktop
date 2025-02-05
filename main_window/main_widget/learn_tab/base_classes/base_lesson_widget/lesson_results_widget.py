@@ -2,9 +2,15 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFrame
 
-from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_start_over_button import LessonStartOverButton
+from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_results_label import (
+    LessonResultLabel,
+)
+from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_start_over_button import (
+    LessonStartOverButton,
+)
 
 if TYPE_CHECKING:
+    from main_window.main_widget.learn_tab.learn_tab import LearnTab
     from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
         BaseLessonWidget,
     )
@@ -13,24 +19,19 @@ if TYPE_CHECKING:
 class LessonResultsWidget(QWidget):
     """Widget containing the result label and the 'Start Over' button."""
 
-    def __init__(self, lesson_widget: "BaseLessonWidget"):
-        super().__init__(lesson_widget)
-        self.lesson_widget = lesson_widget
-        self.main_widget = lesson_widget.main_widget
+    def __init__(self, learn_tab: "LearnTab"):
+        super().__init__(learn_tab)
+        self.learn_tab = learn_tab
+        self.main_widget = learn_tab.main_widget
+        self.result_label = LessonResultLabel(self)
 
-        # Set an object name for styling
         self.setObjectName("ResultsWidget")
 
-        # Create result label and start over button
         self.result_label = QLabel(self)
         self.result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.result_label.setStyleSheet("color: white; font-weight: bold;")
-
-        # Create a frame to hold the result label (the semi-transparent section)
         self.result_section = QFrame(self)
         self.result_section.setObjectName("ResultSection")
-
-        # Apply styling for the result section to give it a semi-transparent background
         self.result_section.setStyleSheet(
             """
             QFrame#ResultSection {
@@ -41,23 +42,17 @@ class LessonResultsWidget(QWidget):
         """
         )
 
-        # Layout for the result section
         result_section_layout = QVBoxLayout(self.result_section)
         result_section_layout.addWidget(self.result_label)
         result_section_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # Start Over button
         self.start_over_button = LessonStartOverButton(self)
 
-        # Layout setup
         self.layout: QVBoxLayout = QVBoxLayout(self)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout.setContentsMargins(
-            20, 20, 20, 20
-        )  # Adjust margins for rounded edges
+        self.layout.setContentsMargins(20, 20, 20, 20)
         self.layout.setSpacing(10)
 
-        # Add the result section and the start over button to the main layout
         self.layout.addStretch(3)
         self.layout.addWidget(
             self.result_section, alignment=Qt.AlignmentFlag.AlignCenter
@@ -70,7 +65,6 @@ class LessonResultsWidget(QWidget):
 
         self.setLayout(self.layout)
 
-        # Apply stylesheet for the entire widget for consistency
         self.setStyleSheet(
             """
             QWidget#ResultsWidget {
@@ -88,16 +82,6 @@ class LessonResultsWidget(QWidget):
     def resizeEvent(self, event):
         """Resize the result label and start-over button to fit the content."""
         self._resize_result_label()
-        self._resize_start_over_button()
-
-    def _resize_start_over_button(self):
-        start_over_button_font_size = self.main_widget.width() // 60
-        self.start_over_button.setStyleSheet(
-            f"font-size: {start_over_button_font_size}px;"
-        )
-        self.start_over_button.setFixedSize(
-            self.main_widget.width() // 8, self.main_widget.height() // 12
-        )
 
     def _resize_result_label(self):
         result_label_font_size = self.main_widget.width() // 100
@@ -106,18 +90,41 @@ class LessonResultsWidget(QWidget):
         self.result_label.setFont(font)
         self.result_label.adjustSize()
 
-    def show_results(self, incorrect_guesses):
+    def show_results(self, lesson_widget: "BaseLessonWidget", incorrect_guesses):
         """Display the results after the quiz or countdown ends."""
-        self.lesson_widget.central_layout.addWidget(self)
-
         self.set_result_text(
             f"🎉 Well done!! 🎉\n\n"
-            + f"You successfully completed {self.lesson_widget.current_question - 1} question"
-            + f"{'s' if self.lesson_widget.current_question - 1 != 1 else ''}"
+            + f"You successfully completed {lesson_widget.current_question - 1} question"
+            + f"{'s' if lesson_widget.current_question - 1 != 1 else ''}"
             + (
                 f"!\nwithout making any mistakes! Great job!"
                 if incorrect_guesses == 0
                 else f" but you made {incorrect_guesses} mistake"
                 f"{'s' if incorrect_guesses != 1 else ''}.\nKeep on practicing!"
+            )
+        )
+        widgets_to_fade = [
+            lesson_widget.question_widget,
+            lesson_widget.answers_widget,
+            lesson_widget.indicator_label,
+            lesson_widget.progress_label,
+            self,
+        ]
+        widget_fader = self.main_widget.fade_manager.widget_fader
+        widget_fader.fade_and_update(
+            widgets_to_fade, lambda: self._fade_to_results(lesson_widget)
+        )
+
+    def _fade_to_results(self, lesson_widget: "BaseLessonWidget"):
+        lesson_widget.learn_tab.stack.setCurrentWidget(self)
+        lesson_widget.prepare_quiz_ui()
+        stack_fader = self.main_widget.fade_manager.stack_fader
+
+        self.start_over_button.clicked.connect(
+            lambda: stack_fader.fade_stack(
+                self.learn_tab.stack,
+                self.learn_tab.stack.indexOf(lesson_widget),
+                300,
+                lambda: self.learn_tab.stack.setCurrentWidget(lesson_widget),
             )
         )

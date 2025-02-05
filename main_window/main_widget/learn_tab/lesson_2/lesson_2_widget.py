@@ -10,10 +10,7 @@ class Lesson2Widget(BaseLessonWidget):
     def __init__(self, learn_widget):
         super().__init__(learn_widget)
 
-        # Override question and answer widgets
         self.question_widget = Lesson2QuestionWidget(self)
         self.answers_widget = Lesson2AnswersWidget(self)
         self.question_generator = Lesson2QuestionGenerator(self)
 
-        # Set up the layout
-        # self._setup_layout()

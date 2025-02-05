@@ -79,16 +79,16 @@ class CircularSequenceGenerator(BaseSequenceGenerator):
             )
 
             self.sequence.append(next_pictograph)
-            self.sequence_widget.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+            self.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph, override_grow_sequence=True
             )
             QApplication.processEvents()
 
         self._apply_permutations(self.sequence, permutation_type, rotation_type)
-        
+
         construct_tab = self.main_widget.construct_tab
         construct_tab.option_picker.update_option_picker(self.sequence)
-        
+
         QApplication.restoreOverrideCursor()
 
     def _generate_next_pictograph(

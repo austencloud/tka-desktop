@@ -1,4 +1,4 @@
-# sequence_widget_font_color_updater.py
+# sequence_workbench_font_color_updater.py
 from typing import TYPE_CHECKING
 from .base_font_color_updater import BaseFontColorUpdater
 
@@ -12,11 +12,11 @@ class SequenceWorkbenchFontColorUpdater(BaseFontColorUpdater):
         self.main_widget = main_widget
 
     def update(self):
-        sequence_widget = self.main_widget.sequence_widget
+        sequence_workbench = self.main_widget.sequence_workbench
         self._apply_font_colors(
             [
-                sequence_widget.current_word_label,
-                sequence_widget.difficulty_label,
-                sequence_widget.indicator_label,
+                sequence_workbench.current_word_label,
+                sequence_workbench.difficulty_label,
+                sequence_workbench.indicator_label,
             ]
         )

@@ -7,18 +7,18 @@ from base_widgets.base_pictograph.pictograph_view import PictographView
 from Enums.letters import LetterType
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class BorderedPictographView(PictographView):
-    def __init__(self, pictograph: "BasePictograph") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         super().__init__(pictograph)
         self.primary_color = None
         self.secondary_color = None
         self.original_primary_color = None
         self.original_secondary_color = None
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        
+
         self.update_borders()
 
     ### BORDER METHODS ###
@@ -37,10 +37,8 @@ class BorderedPictographView(PictographView):
         self.primary_color, self.secondary_color = border_colors_map.get(
             letter_type, ("black", "black")
         )
-        # Store original colors
         self.original_primary_color = self.primary_color
         self.original_secondary_color = self.secondary_color
-        # self.update()  # Trigger repaint
 
     def set_gold_border(self):
         """Set the border colors to gold, typically on hover."""

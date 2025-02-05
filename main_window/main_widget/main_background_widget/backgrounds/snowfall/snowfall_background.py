@@ -23,26 +23,28 @@ class SnowfallBackground(BaseBackground):
         super().__init__(widget)
         self.widget = widget
 
-        self.snowflake_manager = SnowflakeManager()
-        self.santa_manager = SantaManager()
-        self.shooting_star_manager = ShootingStarManager()
+        # self.snowflake_manager = SnowflakeManager()
+        # self.santa_manager = SantaManager()
+        # self.shooting_star_manager = ShootingStarManager()
 
-    def animate_background(self):
-        self.snowflake_manager.animate_snowflakes()
-        self.santa_manager.animate_santa()
-        self.shooting_star_manager.animate_shooting_star()
-        self.shooting_star_manager.manage_shooting_star(self.widget)
+    # def animate_background(self):
+    #     self.snowflake_manager.animate_snowflakes()
+    #     self.santa_manager.animate_santa()
+    #     self.shooting_star_manager.animate_shooting_star()
+    #     self.shooting_star_manager.manage_shooting_star(self.widget)
 
     def paint_background(self, widget: QWidget, painter: QPainter):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         gradient = QLinearGradient(0, 0, 0, widget.height())
-        gradient.setColorAt(0, QColor(20, 30, 48))
-        gradient.setColorAt(1, QColor(50, 80, 120))
+        gradient.setColorAt(0, QColor("#0b1d2a"))
+        gradient.setColorAt(0.3, QColor("#142030"))
+        gradient.setColorAt(0.7, QColor("#325078"))
+        gradient.setColorAt(1, QColor("#49708a"))
         painter.fillRect(widget.rect(), gradient)
 
-        self.snowflake_manager.draw_snowflakes(painter, widget)
-        if self.santa_manager.santa["active"]:
-            self.santa_manager.draw_santa(painter, widget)
+        # self.snowflake_manager.draw_snowflakes(painter, widget)
+        # if self.santa_manager.santa["active"]:
+        #     self.santa_manager.draw_santa(painter, widget)
 
-        self.shooting_star_manager.draw_shooting_star(painter, widget)
+        # self.shooting_star_manager.draw_shooting_star(painter, widget)

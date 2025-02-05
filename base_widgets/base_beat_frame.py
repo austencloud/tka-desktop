@@ -1,17 +1,17 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame
 
-from main_window.main_widget.sequence_widget.beat_frame.beat_view import BeatView
-from main_window.main_widget.sequence_widget.beat_frame.beat_frame_getter import (
+from main_window.main_widget.sequence_workbench.beat_frame.beat_view import BeatView
+from main_window.main_widget.sequence_workbench.beat_frame.beat_frame_getter import (
     BeatFrameGetter,
 )
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_widget.beat_frame.start_pos_beat_view import (
+    from main_window.main_widget.sequence_workbench.beat_frame.start_pos_beat_view import (
         StartPositionBeatView,
     )
-    from main_window.main_widget.sequence_widget.sequence_widget import (
+    from main_window.main_widget.sequence_workbench.sequence_workbench import (
         SequenceWorkbench,
     )
     from main_window.main_widget.main_widget import MainWidget
@@ -26,7 +26,7 @@ class BaseBeatFrame(QFrame):
         self.main_widget = main_widget
         self.json_manager = main_widget.json_manager
         self.settings_manager = main_widget.main_window.settings_manager
-        self.sequence_widget: "SequenceWorkbench" = None
+        self.sequence_workbench: "SequenceWorkbench" = None
         self.browse_tab: "BrowseTab" = None
         self.start_pos_view: "StartPositionBeatView" = None
         self.initialized = True

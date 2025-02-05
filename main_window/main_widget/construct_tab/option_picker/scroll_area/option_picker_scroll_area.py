@@ -3,10 +3,9 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea
 from PyQt6.QtCore import Qt
 
 
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
-from main_window.main_widget.sequence_widget.beat_frame.reversal_detector import (
-    ReversalDetector,
-)
+from base_widgets.base_pictograph.pictograph import Pictograph
+from utilities.reversal_detector import ReversalDetector
+
 from .section_manager.option_picker_layout_manager import OptionPickerLayoutManager
 from .option_picker_display_manager import OptionPickerDisplayManager
 
@@ -29,7 +28,7 @@ class OptionPickerScrollArea(QScrollArea):
         self.ori_calculator = self.main_widget.json_manager.ori_calculator
         self.json_manager = self.main_widget.json_manager
         self.json_loader = self.json_manager.loader_saver
-        self.pictograph_cache: dict[str, BasePictograph] = {}
+        self.pictograph_cache: dict[str, Pictograph] = {}
         self.disabled = False
 
         self.configure_ui()
@@ -62,14 +61,14 @@ class OptionPickerScrollArea(QScrollArea):
     def add_and_display_relevant_pictographs(self, next_options: list[dict]):
         for section in self.layout_manager.sections.values():
             section.clear_pictographs()
-        for i, pictograph_dict in enumerate(next_options):
+        for i, pictograph_data in enumerate(next_options):
             if i >= len(self.option_picker.option_pool):
                 break
             pictograph = self.option_picker.option_pool[i]
-            pictograph.updater.update_pictograph(pictograph_dict)
+            pictograph.updater.update_pictograph(pictograph_data)
             sequence_so_far = self.json_loader.load_current_sequence_json()
             reversal_info = ReversalDetector.detect_reversal(
-                sequence_so_far, pictograph.pictograph_dict
+                sequence_so_far, pictograph.pictograph_data
             )
             pictograph.blue_reversal = reversal_info.get("blue_reversal", False)
             pictograph.red_reversal = reversal_info.get("red_reversal", False)

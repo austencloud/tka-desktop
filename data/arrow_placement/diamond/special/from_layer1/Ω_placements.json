@@ -9,7 +9,9 @@
       "static": [100, 100]
     },
     "(o, 0, 0.5)": {
-      "anti": [90, -95]
+      "anti": [90, -95],
+      "static_to_layer2_rot_angle_override": true,
+      "static": [-100, -100]
     },
     "(s, 0, 1.5)": {
       "anti": [85, -75]

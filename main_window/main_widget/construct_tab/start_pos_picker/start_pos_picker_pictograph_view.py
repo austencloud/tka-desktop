@@ -5,18 +5,18 @@ from base_widgets.base_pictograph.bordered_pictograph_view import BorderedPictog
 
 if TYPE_CHECKING:
     from .start_pos_picker import StartPosPicker
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class StartPosPickerPictographView(BorderedPictographView):
     def __init__(
-        self, start_pos_picker: "StartPosPicker", pictograph: "BasePictograph"
+        self, start_pos_picker: "StartPosPicker", pictograph: "Pictograph"
     ) -> None:
         super().__init__(pictograph)
         self.start_pos_picker = start_pos_picker
         self.pictograph = pictograph
         self.start_position_adder = (
-            start_pos_picker.construct_tab.main_widget.sequence_widget.beat_frame.start_position_adder
+            start_pos_picker.construct_tab.main_widget.sequence_workbench.beat_frame.start_position_adder
         )
 
     ### EVENTS ###

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class LetterDeterminer:
     def __init__(self, main_widget: "MainWidget") -> None:
         self.main_widget = main_widget
-        self.letters = self.main_widget.pictograph_dicts
+        self.letters = self.main_widget.pictograph_dataset
         self.non_hybrid_shift_letter_determiner = NonHybridShiftLetterDeterminer(self)
         self.dual_float_letter_determiner = DualFloatLetterDeterminer(self)
         self.beat_frame = None
@@ -23,9 +23,7 @@ class LetterDeterminer:
     ) -> Letter:
         """Update the motion attributes based on the change in prop_rot_dir."""
         if not self.beat_frame:
-            self.beat_frame = (
-                self.main_widget.sequence_widget.beat_frame
-            )
+            self.beat_frame = self.main_widget.sequence_workbench.beat_frame
         other_motion = motion.pictograph.get.other_motion(motion)
         motion_type = motion.motion_type
         if swap_prop_rot_dir:
@@ -117,7 +115,8 @@ class LetterDeterminer:
                 self.beat_frame.get.index_of_currently_selected_beat() + 2,
                 motion.color,
             )
-            or example[f"{motion.color}_attributes"]["prop_rot_dir"] == motion.prop_rot_dir
+            or example[f"{motion.color}_attributes"]["prop_rot_dir"]
+            == motion.prop_rot_dir
         )
 
         return is_rot_dir_matching
@@ -183,8 +182,10 @@ class LetterDeterminer:
             and example[f"{shift.color}_attributes"]["start_loc"] == shift.start_loc
             and example[f"{shift.color}_attributes"]["end_loc"] == shift.end_loc
             and self._is_shift_prop_rot_dir_matching(shift, example)
-            and example[f"{non_shift.color}_attributes"]["motion_type"] == non_shift.motion_type
-            and example[f"{non_shift.color}_attributes"]["start_loc"] == non_shift.start_loc
+            and example[f"{non_shift.color}_attributes"]["motion_type"]
+            == non_shift.motion_type
+            and example[f"{non_shift.color}_attributes"]["start_loc"]
+            == non_shift.start_loc
             and example[f"{non_shift.color}_attributes"]["end_loc"] == non_shift.end_loc
         )
 

@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QFrame
 from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 from Enums.Enums import Letter
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
+from base_widgets.base_pictograph.pictograph import Pictograph
 
 from main_window.main_widget.construct_tab.start_pos_picker.start_pos_picker import (
     StartPosPicker,
@@ -27,10 +27,10 @@ class ConstructTab(QFrame):
     def __init__(self, main_widget: "MainWidget") -> None:
         super().__init__(main_widget)
         self.main_widget = main_widget
-        self.last_beat: "BasePictograph" = None
+        self.last_beat: "Pictograph" = None
         self.json_manager = self.main_widget.json_manager
         self.start_position_picked = False
-        self.pictograph_cache: dict[Letter, dict[str, BasePictograph]] = {
+        self.pictograph_cache: dict[Letter, dict[str, Pictograph]] = {
             letter: {} for letter in Letter
         }
 

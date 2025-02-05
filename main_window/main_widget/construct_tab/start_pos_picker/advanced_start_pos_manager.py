@@ -1,16 +1,17 @@
 from PyQt6.QtCore import QObject, pyqtSignal
-from base_widgets.base_pictograph.base_pictograph import BasePictograph
+from base_widgets.base_pictograph.pictograph import Pictograph
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
-    from ...advanced_start_pos_picker.advanced_start_pos_picker import (
+    from main_window.main_widget.construct_tab.advanced_start_pos_picker.advanced_start_pos_picker import (
         AdvancedStartPosPicker,
     )
 
 
 class AdvancedStartPosManager(QObject):
-    start_position_selected = pyqtSignal(BasePictograph)
+    start_position_selected = pyqtSignal(Pictograph)
 
     def __init__(self, advanced_start_pos_picker: "AdvancedStartPosPicker") -> None:
         super().__init__()
@@ -24,20 +25,20 @@ class AdvancedStartPosManager(QObject):
             start_position_pictograph_list
         ) in self.advanced_start_pos_picker.start_pos_cache.values():
             for start_position_pictograph in start_position_pictograph_list:
-                start_position_pictograph.pictograph_dict["blue_attributes"][
+                start_position_pictograph.pictograph_data["blue_attributes"][
                     "start_ori"
                 ] = "in"
-                start_position_pictograph.pictograph_dict["blue_attributes"][
+                start_position_pictograph.pictograph_data["blue_attributes"][
                     "end_ori"
                 ] = "in"
-                start_position_pictograph.pictograph_dict["red_attributes"][
+                start_position_pictograph.pictograph_data["red_attributes"][
                     "start_ori"
                 ] = "in"
-                start_position_pictograph.pictograph_dict["red_attributes"][
+                start_position_pictograph.pictograph_data["red_attributes"][
                     "end_ori"
                 ] = "in"
                 start_position_pictograph.updater.update_pictograph(
-                    start_position_pictograph.pictograph_dict
+                    start_position_pictograph.pictograph_data
                 )
 
     def update_left_default_ori(self, left_ori: str):
@@ -45,15 +46,15 @@ class AdvancedStartPosManager(QObject):
             start_pos_pictographs_by_letter
         ) in self.advanced_start_pos_picker.start_pos_cache.values():
             for pictograph in start_pos_pictographs_by_letter:
-                pictograph.pictograph_dict["blue_attributes"]["start_ori"] = left_ori
-                pictograph.pictograph_dict["red_attributes"]["blue_ori"] = left_ori
-                pictograph.updater.update_pictograph(pictograph.pictograph_dict)
+                pictograph.pictograph_data["blue_attributes"]["start_ori"] = left_ori
+                pictograph.pictograph_data["red_attributes"]["blue_ori"] = left_ori
+                pictograph.updater.update_pictograph(pictograph.pictograph_data)
 
     def update_right_default_ori(self, right_ori: str):
         for (
             start_pos_pictographs_by_letter
         ) in self.advanced_start_pos_picker.start_pos_cache.values():
             for pictograph in start_pos_pictographs_by_letter:
-                pictograph.pictograph_dict["red_attributes"]["start_ori"] = right_ori
-                pictograph.pictograph_dict["red_attributes"]["end_ori"] = right_ori
-                pictograph.updater.update_pictograph(pictograph.pictograph_dict)
+                pictograph.pictograph_data["red_attributes"]["start_ori"] = right_ori
+                pictograph.pictograph_data["red_attributes"]["end_ori"] = right_ori
+                pictograph.updater.update_pictograph(pictograph.pictograph_data)

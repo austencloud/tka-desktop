@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class CodexControlButton(QPushButton):
     """A reusable button class for the Codex control panel."""
 
-    ICON_BASE_PATH = "images/icons/sequence_widget_icons"
+    ICON_BASE_PATH = "images/icons/sequence_workbench_icons"
 
     def __init__(
         self, control_widget: "CodexControlWidget", icon_name: str, callback: Callable

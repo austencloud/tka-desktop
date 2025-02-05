@@ -5,7 +5,7 @@ from PyQt6.QtGui import QPainter, QColor, QPen
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_widget.beat_frame.button_styled_border_overlay import (
+    from main_window.main_widget.sequence_workbench.beat_frame.button_styled_border_overlay import (
         LetterTypeButtonWidget,
     )
 

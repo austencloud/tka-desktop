@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from base_widgets.base_pictograph.glyphs.tka.turns_parser import parse_turns_tuple_string
 from .dot import Dot
-from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, OPP, SAME
+from data.constants import OPP, SAME
 
 if TYPE_CHECKING:
     from ..tka_glyph import TKA_Glyph

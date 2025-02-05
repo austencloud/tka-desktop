@@ -1,13 +1,15 @@
 from typing import TYPE_CHECKING
 from data.constants import *
-from main_window.main_widget.turns_tuple_generator.turns_tuple_generators.base_turns_tuple_generator import BaseTurnsTupleGenerator
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generators.base_turns_tuple_generator import (
+    BaseTurnsTupleGenerator,
+)
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.base_pictograph import BasePictograph
+    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class Type1HybridTurnsTupleGenerator(BaseTurnsTupleGenerator):
-    def generate_turns_tuple(self, pictograph: "BasePictograph") -> str:
+    def generate_turns_tuple(self, pictograph: "Pictograph") -> str:
         super().set_pictograph(pictograph)
         # if one of the motions is not a float, proceed with the written logic
         if not pictograph.check.has_one_float():
