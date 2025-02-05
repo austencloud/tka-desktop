@@ -54,7 +54,7 @@ class NonHybridShiftLetterDeterminer:
         self, json_index: int, other_motion: "Motion", motion_type: str
     ) -> None:
         """Update JSON with pre-float motion type and rotation direction."""
-        self.main_widget.json_manager.updater.motion_type_updater.update_prefloat_motion_type_in_json(
+        self.main_widget.json_manager.updater.motion_type_updater.update_json_prefloat_motion_type(
             json_index,
             other_motion.color,
             motion_type,
@@ -70,7 +70,7 @@ class NonHybridShiftLetterDeterminer:
     def _get_prop_rot_dir(self, json_index: int, other_motion: "Motion") -> str:
         """Retrieve the prop rotation direction from JSON."""
         if other_motion.motion_type == FLOAT:
-            prop_rot_dir = self.main_widget.json_manager.loader_saver.get_prefloat_prop_rot_dir_from_json(
+            prop_rot_dir = self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
                 json_index,
                 other_motion.color,
             )
@@ -78,7 +78,7 @@ class NonHybridShiftLetterDeterminer:
                 prop_rot_dir = self._get_opposite_rotation_direction(prop_rot_dir)
         elif other_motion.motion_type in [PRO, ANTI]:
             prop_rot_dir = (
-                self.main_widget.json_manager.loader_saver.get_prop_rot_dir_from_json(
+                self.main_widget.json_manager.loader_saver.get_json_prop_rot_dir(
                     json_index,
                     other_motion.color,
                 )
@@ -125,7 +125,7 @@ class NonHybridShiftLetterDeterminer:
     def _is_shift_prop_rot_dir_matching(self, motion: "Motion", example):
         is_rot_dir_matching = example[f"{motion.color}_attributes"][
             "prop_rot_dir"
-        ] == self.main_widget.json_manager.loader_saver.get_prefloat_prop_rot_dir_from_json(
+        ] == self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
             self.main_widget.sequence_workbench.beat_frame.get.index_of_currently_selected_beat()
             + 2,
             motion.color,
@@ -133,7 +133,7 @@ class NonHybridShiftLetterDeterminer:
             f"{motion.color}_attributes"
         ][
             "prop_rot_dir"
-        ] == self.main_widget.json_manager.loader_saver.get_prop_rot_dir_from_json(
+        ] == self.main_widget.json_manager.loader_saver.get_json_prop_rot_dir(
             self.main_widget.sequence_workbench.beat_frame.get.index_of_currently_selected_beat()
             + 2,
             motion.color,
