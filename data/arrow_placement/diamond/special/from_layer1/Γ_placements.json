@@ -19,7 +19,6 @@
       "blue": [100, 100]
     },
     "(s, 0.5, 1.5, op, cl)": {
-      "blue_rot_angle_override": true,
       "blue": [100, 100]
     },
     "(s, 0.5, 2, op, cl)": {

@@ -34,9 +34,15 @@ class VisibilityPictograph(Pictograph):
         self.glyphs = self.get.glyphs()
         for glyph in self.glyphs:
             glyph.setVisible(True)
-            self.update_opacity(glyph.name, True)
         self.grid.toggle_non_radial_points(True)
-        self.update_opacity("non_radial_points", True)
+
+        for glyph in self.glyphs:
+            self.update_opacity(
+                glyph.name, self.settings.get_glyph_visibility(glyph.name)
+            )
+        self.update_opacity(
+            "non_radial_points", self.settings.get_non_radial_visibility()
+        )
 
     def update_opacity(self, glyph_name: str, state: bool):
         """Animate the opacity of the corresponding glyph."""

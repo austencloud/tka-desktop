@@ -30,7 +30,9 @@ class StackFader:
             return
 
         def on_fade_out_finished():
-            self.manager.graphics_effect_remover.clear_graphics_effects([current_widget, next_widget])
+            self.manager.graphics_effect_remover.clear_graphics_effects(
+                [current_widget, next_widget]
+            )
             stack.setCurrentIndex(new_index)
             self.manager.widget_fader.fade_widgets(
                 [next_widget], fade_in=True, duration=duration, callback=callback

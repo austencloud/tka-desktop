@@ -6,6 +6,7 @@ from Enums.PropTypes import PropType
 
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+from main_window.main_widget.startup_dialog import StartupDialog
 from .browse_tab.browse_tab import BrowseTab
 from .fade_manager.fade_manager import FadeManager
 from .full_screen_image_overlay import FullScreenImageOverlay
@@ -151,6 +152,20 @@ class MainWidget(QWidget):
 
         QTimer.singleShot(0, self.state_handler.load_state)
         QTimer.singleShot(0, self.ui_handler.load_current_tab)
+        QTimer.singleShot(10, self.ensure_user_exists)
+
+    def ensure_user_exists(self):
+        """Check if a user exists; if not, prompt for a name and show welcome info."""
+        show_welcome = self.settings_manager.global_settings.get_show_welcome_screen()
+        current_user = self.settings_manager.users.get_current_user()
+
+        if show_welcome or not current_user:
+            dialog = StartupDialog(self.settings_manager, self)  # Pass settings & window
+            if dialog.exec():  # If user submits a name
+                user_name = dialog.get_name()
+                self.settings_manager.users.set_current_user(user_name)
+
+
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)

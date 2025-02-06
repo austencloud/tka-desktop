@@ -108,13 +108,9 @@ class BrowseTabFilterManager:
         self.browse_tab.filter_manager.sort_and_display_thumbnail_boxes_by_current_filter(
             self.browse_tab.filter_manager.current_filter
         )
-        # QApplication.processEvents()
         self.browse_tab.main_widget.left_stack.setCurrentIndex(
             self.browse_tab.main_widget.left_sequence_picker_index
         )
-        # self.browse_tab.main_widget.left_stack.setGraphicsEffect(None)
-        # self.browse_tab.sequence_picker.setGraphicsEffect(None)
-        # self.main_widget.fade_manager.graphics_effect_remover.clear_graphics_effects()
 
     def sort_and_display_thumbnail_boxes_by_current_filter(
         self, initial_selection: dict
@@ -130,7 +126,7 @@ class BrowseTabFilterManager:
         grid_mode_section = filter_selector.grid_mode_section
         display_functions = {
             "starting_letter": starting_letter_section.display_only_thumbnails_starting_with_letter,
-            "sequence_length": length_section.display_only_thumbnails_with_sequence_length,
+            "length": length_section.display_only_thumbnails_with_sequence_length,
             "level": level_section.display_only_thumbnails_with_level,
             "contains_letters": contains_letter_section.display_only_thumbnails_containing_letters,
             "starting_position": starting_position_section.display_only_thumbnails_with_starting_position,
@@ -139,6 +135,7 @@ class BrowseTabFilterManager:
             "most_recent": self.browse_tab.filter_manager.show_most_recent_sequences,
             "grid_mode": grid_mode_section.display_only_thumbnails_with_grid_mode,
             "show_all": self.browse_tab.filter_manager.show_all_sequences,
+            "tag": self.browse_tab.filter_manager.show_sequences_with_tag,
         }
         if initial_selection:
             for key, value in initial_selection.items():
@@ -171,3 +168,16 @@ class BrowseTabFilterManager:
         self.browse_tab.sequence_picker.progress_bar.resize_progress_bar()
 
         # QApplication.processEvents()
+    def show_sequences_with_tag(self, tag: str):
+        """Show sequences that contain a specific tag."""
+        self.browse_tab.filter_manager.prepare_ui_for_filtering(f"sequences with tag '{tag}'")
+        dictionary_dir = get_images_and_data_path("dictionary")
+
+        tagged_sequences = [
+            (word, thumbnails, self.browse_tab.main_widget.metadata_extractor.get_sequence_length(thumbnails[0]))
+            for word, thumbnails in self.browse_tab.get.base_words(dictionary_dir)
+            if tag in self.browse_tab.main_widget.metadata_extractor.get_tags(thumbnails[0])
+        ]
+
+        self.browse_tab.sequence_picker.currently_displayed_sequences = tagged_sequences
+        self.browse_tab.ui_updater.update_and_display_ui(len(tagged_sequences))

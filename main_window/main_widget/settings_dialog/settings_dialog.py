@@ -29,12 +29,12 @@ class SettingsDialog(QDialog):
         self.tab_widget = QTabWidget(self)
         self.user_profile_tab = UserProfileTab(self)
         self.prop_type_tab = PropTypeTab(self)
-        self.background_tab = BackgroundTab(self)
+        # self.background_tab = BackgroundTab(self)
         self.visibility_tab = VisibilityTab(self)
 
         self.tab_widget.addTab(self.user_profile_tab, "User")
         self.tab_widget.addTab(self.prop_type_tab, "Prop Type")
-        self.tab_widget.addTab(self.background_tab, "Background")
+        # self.tab_widget.addTab(self.background_tab, "Background")
         self.tab_widget.addTab(self.visibility_tab, "Visibility")
 
         main_layout = QVBoxLayout(self)

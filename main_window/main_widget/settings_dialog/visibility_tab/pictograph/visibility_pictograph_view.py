@@ -13,13 +13,11 @@ if TYPE_CHECKING:
 class VisibilityPictographView(PictographView):
     pictograph: "VisibilityPictograph"
 
-    def __init__(
-        self, visibility_tab: "VisibilityTab", pictograph: "VisibilityPictograph"
-    ):
-        self.tab = visibility_tab
-        self.visibility_settings = visibility_tab.settings
-        self.main_widget = visibility_tab.main_widget
+    def __init__(self, tab: "VisibilityTab", pictograph: "VisibilityPictograph"):
         super().__init__(pictograph)
+        self.tab = tab
+        self.visibility_settings = tab.settings
+        self.main_widget = tab.main_widget
 
         self.interaction_manager = VisibilityPictographInteractionManager(self)
         self.setStyleSheet("border: 2px solid black;")

@@ -81,9 +81,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
             },
             "clear_sequence": {
                 "icon": "clear.svg",
-                "callback": lambda: self.beat_frame.sequence_workbench.beat_deleter.start_position_deleter.delete_all_beats(
-                    show_indicator=True
-                ),
+                "callback": lambda: self.clear_sequence(),
                 "tooltip": "Clear Sequence",
             },
         }
@@ -98,6 +96,22 @@ class SequenceWorkbenchButtonPanel(QFrame):
             setattr(self, f"{button_name}_button", button)
             self.buttons[button_name] = button
 
+    def clear_sequence(self):
+        sequence_length = len(
+            self.main_widget.json_manager.loader_saver.load_current_sequence_json()
+        )
+        # collapse the grpah editor
+        graph_editor = self.sequence_workbench.graph_editor
+        if sequence_length < 2:
+            self.indicator_label.show_message("No sequence to clear")
+            return
+        if graph_editor.is_toggled:
+            graph_editor.animator.toggle()
+        self.sequence_workbench.indicator_label.show_message("Sequence cleared")
+        self.beat_frame.sequence_workbench.beat_deleter.start_position_deleter.delete_all_beats(
+            show_indicator=True
+        )
+
     def _create_button(self, icon_path: str, callback, tooltip: str) -> QPushButton:
         icon = QIcon(icon_path)
         button = QPushButton()
@@ -111,16 +125,11 @@ class SequenceWorkbenchButtonPanel(QFrame):
         return button
 
     def toggle_swap_colors_icon(self):
-        if self.colors_swapped:
-            new_icon_path = get_images_and_data_path(
-                "images/icons/sequence_workbench_icons/yinyang1.png"
-            )
-            self.colors_swapped = False
-        else:
-            new_icon_path = get_images_and_data_path(
-                "images/icons/sequence_workbench_icons/yinyang2.png"
-            )
-            self.colors_swapped = True
+        icon_name = "yinyang1.png" if self.colors_swapped else "yinyang2.png"
+        new_icon_path = get_images_and_data_path(
+            f"images/icons/sequence_workbench_icons/{icon_name}"
+        )
+        self.colors_swapped = not self.colors_swapped
         new_icon = QIcon(new_icon_path)
         self.swap_colors_button.setIcon(new_icon)
         QApplication.processEvents()

@@ -55,8 +55,6 @@ class MainBackgroundWidget(QWidget):
 
     def apply_background(self):
         """Applies or reapplies the background."""
-        if self.background:
-            self.background.stop_animation()
 
         self._setup_background()
         self.main_widget.font_color_updater.update_main_widget_font_colors(

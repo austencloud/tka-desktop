@@ -35,7 +35,7 @@ class OrientationSetter:
         self._update_beats_from_current_sequence_json()
 
     def _update_graph_editor_orientation(self, orientation: str) -> None:
-        self.ori_picker_box.graph_editor.pictograph_container.GE_pictograph.updater.update_pictograph(
+        self.ori_picker_box.graph_editor.pictograph_container.GE_view.pictograph.updater.update_pictograph(
             {
                 f"{self.color}_attributes": {
                     START_ORI: orientation,

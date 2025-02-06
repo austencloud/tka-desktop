@@ -1,0 +1,89 @@
+import os
+import re
+import sys
+from PyQt6.QtWidgets import (
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QPushButton,
+    QFileDialog,
+    QLabel,
+    QMessageBox,
+)
+
+class ClassConcatenatorApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.init_ui()
+
+    def init_ui(self):
+        self.setWindowTitle("Python Class Concatenator")
+        self.setGeometry(100, 100, 400, 200)
+
+        layout = QVBoxLayout()
+
+        self.label = QLabel("Select a directory to concatenate classes:")
+        layout.addWidget(self.label)
+
+        self.select_dir_button = QPushButton("Select Directory")
+        self.select_dir_button.clicked.connect(self.select_directory)
+        layout.addWidget(self.select_dir_button)
+
+        self.run_button = QPushButton("Concatenate Classes")
+        self.run_button.clicked.connect(self.concatenate_classes)
+        layout.addWidget(self.run_button)
+
+        self.setLayout(layout)
+
+        self.selected_directory = ""
+
+    def select_directory(self):
+        directory = QFileDialog.getExistingDirectory(self, "Select Directory")
+        if directory:
+            self.selected_directory = directory
+            self.label.setText(f"Selected Directory: {directory}")
+
+    def concatenate_classes(self):
+        if not self.selected_directory:
+            QMessageBox.warning(self, "Error", "Please select a directory first.")
+            return
+
+        output_file = os.path.join(self.selected_directory, "concatenated_classes.py")
+        try:
+            imports = set()
+            class_definitions = []
+            with open(output_file, "w") as outfile:
+                for root, _, files in os.walk(self.selected_directory):
+                    for file in files:
+                        if file.endswith(".py"):
+                            file_path = os.path.join(root, file)
+                            with open(file_path, "r") as infile:
+                                content = infile.read()
+
+                                # Extract imports
+                                for line in content.splitlines():
+                                    if line.startswith("import") or line.startswith("from"):
+                                        imports.add(line)
+
+                                # Append full content for classes
+                                class_definitions.append(f"# From {file}\n" + content)
+
+                # Write imports to the output file
+                outfile.write("\n".join(sorted(imports)) + "\n\n")
+
+                # Write class definitions to the output file
+                for class_definition in class_definitions:
+                    outfile.write(class_definition + "\n\n")
+
+            QMessageBox.information(
+                self, "Success", f"Classes concatenated into {output_file}"
+            )
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"An error occurred: {e}")
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = ClassConcatenatorApp()
+    window.show()
+    sys.exit(app.exec())

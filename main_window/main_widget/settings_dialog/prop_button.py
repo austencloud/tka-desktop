@@ -3,12 +3,13 @@ from PyQt6.QtWidgets import (
     QPushButton,
 )
 from PyQt6.QtGui import QIcon, QColor
-from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, pyqtProperty, QSize
-
+from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize
+from PyQt6.QtCore import pyqtProperty
 from Enums.PropTypes import PropType
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.prop_type_tab import PropTypeTab
+
 
 
 class PropButton(QPushButton):

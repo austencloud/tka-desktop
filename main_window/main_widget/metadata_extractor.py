@@ -14,6 +14,31 @@ class MetaDataExtractor:
     def __init__(self, main_widget: "MainWidget"):
         self.main_widget = main_widget
 
+    def get_tags(self, file_path: str) -> list[str]:
+        """Retrieve the list of tags from the metadata."""
+        metadata = self.extract_metadata_from_file(file_path)
+        if metadata:
+            return metadata.get("tags", [])  # Default to an empty list if no tags exist
+        return []
+
+    def set_tags(self, file_path: str, tags: list[str]):
+        """Set the list of tags in the metadata."""
+        try:
+            with Image.open(file_path) as img:
+                metadata = self.extract_metadata_from_file(file_path) or {}
+                metadata["tags"] = tags  # Update or create the tags field
+
+                # Save the updated metadata back to the image
+                pnginfo = PngImagePlugin.PngInfo()
+                pnginfo.add_text("metadata", json.dumps(metadata))
+                img.save(file_path, pnginfo=pnginfo)
+        except Exception as e:
+            QMessageBox.critical(
+                self.main_widget,
+                "Error",
+                f"Error saving tags to thumbnail: {e}",
+            )
+
     def extract_metadata_from_file(self, file_path):
         # Check if a file exists at the path we're passing as "file_path"
         if not file_path:
