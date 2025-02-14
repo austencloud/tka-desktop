@@ -127,7 +127,7 @@ class ContainsLettersSection(FilterSectionBase):
 
     def apply_filter(self):
         """Apply the filter based on the selected letters."""
-        self.browse_tab.filter_manager.apply_filter(
+        self.browse_tab.filter_controller.apply_filter(
             {"contains_letters": list(self.selected_letters)}
         )
 

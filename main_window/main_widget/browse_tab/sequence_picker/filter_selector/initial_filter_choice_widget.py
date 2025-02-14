@@ -108,13 +108,13 @@ class InitialFilterChoiceWidget(QWidget):
             "Favorites": (
                 "Display your favorite sequences.",
                 partial(
-                    self.browse_tab.filter_manager.apply_filter, {"favorites": True}
+                    self.browse_tab.filter_controller.apply_filter, {"favorites": True}
                 ),
             ),
             "Most Recent": (
                 "Display sequences created in the last week.",
                 partial(
-                    self.browse_tab.filter_manager.apply_filter,
+                    self.browse_tab.filter_controller.apply_filter,
                     {"most_recent": datetime.now() - timedelta(weeks=1)},
                 ),
             ),
@@ -125,7 +125,7 @@ class InitialFilterChoiceWidget(QWidget):
             "Show All": (
                 "Display every sequence in the dictionary.",
                 partial(
-                    self.browse_tab.filter_manager.apply_filter, {"show_all": True}
+                    self.browse_tab.filter_controller.apply_filter, {"show_all": True}
                 ),
             ),
         }

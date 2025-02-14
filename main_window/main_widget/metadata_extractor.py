@@ -91,25 +91,25 @@ class MetaDataExtractor:
                 f"Error saving favorite status to thumbnail: {e}",
             )
 
-    def get_sequence_author(self, file_path):
+    def get_author(self, file_path):
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata:
             return metadata["sequence"][0]["author"]
         return
 
-    def get_sequence_level(self, file_path):
+    def get_level(self, file_path):
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata:
             return metadata["sequence"][0]["level"]
         return
 
-    def get_sequence_length(self, file_path):
+    def get_length(self, file_path):
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata:
             return len(metadata["sequence"]) - 2
         return 0  # Default to 0 if no valid sequence length is found
 
-    def get_sequence_start_position(self, file_path):
+    def get_start_pos(self, file_path):
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata:
             return metadata["sequence"][1]["sequence_start_position"]
@@ -133,7 +133,7 @@ class MetaDataExtractor:
 
         return metadata_and_thumbnail_dict
 
-    def get_sequence_grid_mode(self, file_path):
+    def get_grid_mode(self, file_path):
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata:
             return metadata["sequence"][0]["grid_mode"]

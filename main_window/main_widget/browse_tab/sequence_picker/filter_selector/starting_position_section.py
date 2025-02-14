@@ -137,7 +137,7 @@ class StartingPositionSection(FilterSectionBase):
 
     def handle_position_click(self, position: str):
         """Handle clicks on position buttons."""
-        self.browse_tab.filter_manager.apply_filter({"starting_position": position})
+        self.browse_tab.filter_controller.apply_filter({"starting_position": position})
 
     def handle_image_click(self, position: str, event):
         """Handle clicks on position images."""
@@ -192,9 +192,7 @@ class StartingPositionSection(FilterSectionBase):
     def get_sequence_starting_position(self, thumbnails: list[str]) -> str:
         """Extract the starting position from the metadata of the thumbnails."""
         for thumbnail in thumbnails:
-            start_position = self.metadata_extractor.get_sequence_start_position(
-                thumbnail
-            )
+            start_position = self.metadata_extractor.get_start_pos(thumbnail)
             if start_position:
                 return start_position
         return None
@@ -221,11 +219,10 @@ class StartingPositionSection(FilterSectionBase):
     def get_sequence_length_from_thumbnails(self, thumbnails: list[str]) -> int:
         """Extract the sequence length from the thumbnails' metadata."""
         for thumbnail in thumbnails:
-            length = self.metadata_extractor.get_sequence_length(thumbnail)
+            length = self.metadata_extractor.get_length(thumbnail)
             if length is not None:
                 return length
         return 0
-
 
     def apply_hover_effect(self, position: str, label: QLabel):
         """Add a border to the image when hovered."""

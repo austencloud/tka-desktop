@@ -74,7 +74,7 @@ class SequenceLengthSection(FilterSectionBase):
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.buttons[length] = button
         button.clicked.connect(
-            lambda: self.browse_tab.filter_manager.apply_filter({"length": length})
+            lambda: self.browse_tab.filter_controller.apply_filter({"length": length})
         )
         return button
 

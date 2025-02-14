@@ -1,6 +1,13 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget
 
+from main_window.main_widget.browse_tab.browse_tab_filter_controller import (
+    BrowseTabFilterController,
+)
+from main_window.main_widget.browse_tab.sequence_picker.filter_selector.initial_filter_choice_widget import (
+    InitialFilterChoiceWidget,
+)
+
 
 from .sequence_picker.sequence_picker import SequencePicker
 from .browse_tab_filter_manager import BrowseTabFilterManager
@@ -21,14 +28,18 @@ class BrowseTab(QWidget):
         self.main_widget.splash.updater.update_progress("BrowseTab")
 
         self.settings = self.main_widget.main_window.settings_manager.browse_settings
+        self.ui_updater = BrowseTabUIUpdater(self)
 
+        # Refactored Filtering Components
         self.filter_manager = BrowseTabFilterManager(self)
-        # Components
+        self.filter_controller = BrowseTabFilterController(self)
         self.sequence_picker = SequencePicker(self)
+
+
+        # Components
         self.sequence_viewer = SequenceViewer(self)
 
         # Managers
         self.deletion_handler = BrowseTabDeletionHandler(self)
         self.selection_handler = BrowseTabSelectionManager(self)
         self.get = BrowseTabGetter(self)
-        self.ui_updater = BrowseTabUIUpdater(self)

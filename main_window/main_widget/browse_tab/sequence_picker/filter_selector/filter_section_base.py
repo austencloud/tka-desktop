@@ -90,7 +90,7 @@ class FilterSectionBase(QWidget):
     def get_sequence_length_from_thumbnails(self, thumbnails):
         """Extract the sequence length from the first available thumbnail metadata."""
         for thumbnail in thumbnails:
-            length = self.metadata_extractor.get_sequence_length(thumbnail)
+            length = self.metadata_extractor.get_length(thumbnail)
             if length:
                 return length
         return None

@@ -130,7 +130,7 @@ class LevelSection(FilterSectionBase):
 
     def handle_level_click(self, level: int):
         """Handle clicks on level buttons."""
-        self.browse_tab.filter_manager.apply_filter({"level": level})
+        self.browse_tab.filter_controller.apply_filter({"level": level})
 
     def handle_image_click(self, level: int, event):
         """Handle clicks on level images."""
@@ -185,7 +185,7 @@ class LevelSection(FilterSectionBase):
     def get_sequence_level_from_thumbnails(self, thumbnails: list[str]) -> int:
         """Extract the level from the metadata of the thumbnails."""
         for thumbnail in thumbnails:
-            level = self.metadata_extractor.get_sequence_level(thumbnail)
+            level = self.metadata_extractor.get_level(thumbnail)
             if level is not None:
                 return level
         return None
@@ -210,7 +210,7 @@ class LevelSection(FilterSectionBase):
     def get_sequence_length_from_thumbnails(self, thumbnails: list[str]) -> int:
         """Extract the sequence length from the thumbnails' metadata."""
         for thumbnail in thumbnails:
-            length = self.metadata_extractor.get_sequence_length(thumbnail)
+            length = self.metadata_extractor.get_length(thumbnail)
             if length is not None:
                 return length
         return 0

@@ -10,15 +10,16 @@ if TYPE_CHECKING:
 class BrowseTabUIUpdater:
     def __init__(self, browse_tab: "BrowseTab"):
         self.browse_tab = browse_tab
-        self.sequence_picker = browse_tab.sequence_picker
-        self.control_panel = self.sequence_picker.control_panel
-        self.thumbnail_box_sorter = self.sequence_picker.sorter
-        self.progress_bar = self.sequence_picker.progress_bar
-        self.scroll_widget = self.sequence_picker.scroll_widget
+
         self.settings_manager = browse_tab.main_widget.main_window.settings_manager
         self.font_color_updater = browse_tab.main_widget.font_color_updater
 
     def update_and_display_ui(self, total_sequences: int):
+        self.sequence_picker = self.browse_tab.sequence_picker
+        self.control_panel = self.sequence_picker.control_panel
+        self.thumbnail_box_sorter = self.sequence_picker.sorter
+        self.progress_bar = self.sequence_picker.progress_bar
+        self.scroll_widget = self.sequence_picker.scroll_widget
         """Update the UI to display the sequences based on filter criteria."""
         if total_sequences == 0:
             total_sequences = 1

@@ -23,7 +23,7 @@ class SequencePickerFilterStack(QStackedWidget):
         self.selected_letters: set[str] = set()
 
         # Initialize sections
-        self.filter_choice_widget = InitialFilterChoiceWidget(self)
+        self.initial_filter_choice_widget = InitialFilterChoiceWidget(self)
         self.starting_letter_section = StartingLetterSection(self)
         self.contains_letter_section = ContainsLettersSection(self)
         self.length_section = SequenceLengthSection(self)
@@ -33,7 +33,7 @@ class SequencePickerFilterStack(QStackedWidget):
         self.grid_mode_section = GridModeSection(self)
 
         self.section_map: dict[str, QWidget] = {
-            "filter_choice": self.filter_choice_widget,
+            "filter_choice": self.initial_filter_choice_widget,
             "starting_letter": self.starting_letter_section,
             "contains_letters": self.contains_letter_section,
             "sequence_length": self.length_section,

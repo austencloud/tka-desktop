@@ -98,7 +98,7 @@ class AuthorSection(FilterSectionBase):
 
     def handle_author_click(self, author: str):
         """Handle clicks on author buttons."""
-        self.browse_tab.filter_manager.apply_filter({"author": author})
+        self.browse_tab.filter_controller.apply_filter({"author": author})
 
     def _get_all_sequences_with_authors(self) -> list[Tuple[str, list[str], str]]:
         """Retrieve and cache all sequences along with their authors."""
@@ -147,7 +147,7 @@ class AuthorSection(FilterSectionBase):
     def get_sequence_author(self, thumbnails: list[str]) -> str:
         """Extract the author from the metadata of the thumbnails."""
         for thumbnail in thumbnails:
-            author = self.main_widget.metadata_extractor.get_sequence_author(thumbnail)
+            author = self.main_widget.metadata_extractor.get_author(thumbnail)
             if author:
                 return author
         return None
@@ -172,7 +172,7 @@ class AuthorSection(FilterSectionBase):
     def get_sequence_length_from_thumbnails(self, thumbnails: list[str]) -> int:
         """Extract the sequence length from the thumbnails' metadata."""
         for thumbnail in thumbnails:
-            length = self.metadata_extractor.get_sequence_length(thumbnail)
+            length = self.metadata_extractor.get_length(thumbnail)
             if length is not None:
                 return length
         return 0

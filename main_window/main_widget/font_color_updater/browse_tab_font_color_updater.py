@@ -70,8 +70,10 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
         ]
 
         description_labels = (
-            [filter_selector.filter_choice_widget.header_label]
-            + list(filter_selector.filter_choice_widget.description_labels.values())
+            [filter_selector.initial_filter_choice_widget.header_label]
+            + list(
+                filter_selector.initial_filter_choice_widget.description_labels.values()
+            )
             + list(filter_selector.level_section.description_labels.values())
             + list(
                 filter_selector.starting_position_section.description_labels.values()

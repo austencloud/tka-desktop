@@ -17,7 +17,7 @@ class BrowseTabGetter:
             (
                 word,
                 thumbnails,
-                self.browse_tab.main_widget.metadata_extractor.get_sequence_length(
+                self.browse_tab.main_widget.metadata_extractor.get_length(
                     thumbnails[0]
                 ),
             )

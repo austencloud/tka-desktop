@@ -159,7 +159,7 @@ class GridModeSection(FilterSectionBase):
 
     def handle_grid_mode_click(self, grid_mode: str):
         """Handle clicks on grid mode buttons."""
-        self.browse_tab.filter_manager.apply_filter({"grid_mode": grid_mode})
+        self.browse_tab.filter_controller.apply_filter({"grid_mode": grid_mode})
 
     def handle_image_click(self, grid_mode: str, event):
         """Handle clicks on grid mode images."""
@@ -212,9 +212,7 @@ class GridModeSection(FilterSectionBase):
     def get_sequence_grid_mode(self, thumbnails: list) -> str:
         """Extract the grid mode from the metadata of the thumbnails."""
         for thumbnail in thumbnails:
-            grid_mode = self.main_widget.metadata_extractor.get_sequence_grid_mode(
-                thumbnail
-            )
+            grid_mode = self.main_widget.metadata_extractor.get_grid_mode(thumbnail)
             if grid_mode:
                 return grid_mode
         return None
@@ -241,7 +239,7 @@ class GridModeSection(FilterSectionBase):
     def get_sequence_length_from_thumbnails(self, thumbnails: list[str]) -> int:
         """Extract the sequence length from the thumbnails' metadata."""
         for thumbnail in thumbnails:
-            length = self.metadata_extractor.get_sequence_length(thumbnail)
+            length = self.metadata_extractor.get_length(thumbnail)
             if length is not None:
                 return length
         return 0

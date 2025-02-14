@@ -70,7 +70,7 @@ class StartingLetterSection(FilterSectionBase):
         button.installEventFilter(self)
         # Use partial to pass the letter to the slot
         button.clicked.connect(
-            lambda: self.browse_tab.filter_manager.apply_filter(
+            lambda: self.browse_tab.filter_controller.apply_filter(
                 {"starting_letter": letter}
             )
         )

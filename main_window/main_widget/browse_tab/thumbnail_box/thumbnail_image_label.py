@@ -32,7 +32,7 @@ class ThumbnailImageLabel(QLabel):
 
     def set_pixmap_to_fit(self, pixmap: QPixmap):
         current_index = self.state.current_index
-        sequence_length = self.metadata_extractor.get_sequence_length(
+        sequence_length = self.metadata_extractor.get_length(
             self.state.thumbnails[current_index]
         )
 
