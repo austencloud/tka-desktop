@@ -15,73 +15,81 @@ class BrowseTabUIUpdater:
         self.font_color_updater = browse_tab.main_widget.font_color_updater
 
     def update_and_display_ui(self, total_sequences: int):
+        """
+        1) Sort everything in final order
+        2) Create & show all thumbnails instantly, skipping scaling
+        3) (Optional) Wait ~0.5s
+        4) Then do a top-down scaling pass
+        """
+        # No more progress bar or cursor override if you don't want them
+        self.browse_tab.sequence_picker.progress_bar.setVisible(False)
+        QApplication.restoreOverrideCursor()
+
         if total_sequences == 0:
-            total_sequences = 1
+            # Just clear or show "no results" if you want
+            return
 
-        # Show and reset the progress bar
-        self.browse_tab.sequence_picker.progress_bar.setVisible(True)
-        self.browse_tab.sequence_picker.progress_bar.set_value(0)
-        QApplication.processEvents()
+        # 1) Sort only (no actual widget creation)
+        sort_method = self.settings_manager.browse_settings.get_sort_method()
+        self.browse_tab.sequence_picker.sorter._sort_only(sort_method)
 
-        # For easier reading
-        displayed_sequences = (
-            self.browse_tab.sequence_picker.currently_displayed_sequences
+        # 2) Create & show in sorted order, skipping the scaling
+        self._create_and_show_thumbnails_in_sorted_order(skip_scaling=True)
+
+        # 3) Wait 500 ms so the user sees "everything loaded"
+        QTimer.singleShot(500, self._resize_thumbnails_top_to_bottom)
+
+    def _create_and_show_thumbnails_in_sorted_order(self, skip_scaling: bool = True):
+        """
+        Actually place the thumbnails into the layout according to their already-sorted order.
+        If 'skip_scaling' = True, we skip the expensive thumbnail resizing at creation time.
+        """
+        sorter = self.browse_tab.sequence_picker.sorter
+        # This calls _display_sorted_sections(...) above, which calls update_ui(...)
+        sorter._display_sorted_sections(skip_scaling=skip_scaling)
+
+        # Now apply styling for font color, etc.
+        self._apply_font_color_styling()
+
+    def _resize_thumbnails_top_to_bottom(self):
+        """
+        Iterate over each thumbnail box from top to bottom,
+        triggering the actual 'update_thumbnail(...)' scaling
+        so the user sees them gradually get scaled without a big re-sort.
+        """
+        scroll_area = self.browse_tab.sequence_picker.scroll_widget.scroll_area
+        current_scroll_pos = scroll_area.verticalScrollBar().value()
+
+        # If you want row-major order, you'll have to read the grid layout items directly.
+        # For simplicity, this just uses the dictionary's values:
+        boxes = list(
+            self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.values()
         )
-        n = total_sequences
 
-        def update_ui():
-            ###############################################
-            # PHASE 1: Create all thumbnail boxes (0→50%)
-            ###############################################
-            for i, (word, thumbnails, _) in enumerate(displayed_sequences):
-                row_index = i // self.browse_tab.sequence_picker.sorter.num_columns
-                column_index = i % self.browse_tab.sequence_picker.sorter.num_columns
+        for tb in boxes:
+            tb.image_label.update_thumbnail(tb.state.current_index)
+            # Let the UI breathe so the scaling is visible
+            QApplication.processEvents()
 
-                # Create box but skip the immediate 'update_thumbnail'
-                self.browse_tab.sequence_picker.sorter.add_thumbnail_box(
-                    row_index,
-                    column_index,
-                    word,
-                    thumbnails,
-                    hidden=False,  # or True if you prefer to show them later
-                    skip_image=True,  # new parameter
-                )
+        # Restore the user's scroll position (prevents "jump to top")
+        scroll_area.verticalScrollBar().setValue(current_scroll_pos)
 
-                # Update progress bar from 0%→50%
-                fraction = (i + 1) / n  # e.g. 0.0..1.0
-                progress_val = int(fraction * 50)  # scale to 0..50
-                self.browse_tab.sequence_picker.progress_bar.set_value(progress_val)
+    def _apply_font_color_styling(self):
+        font_color = self.font_color_updater.get_font_color(
+            self.settings_manager.global_settings.get_background_type()
+        )
 
-                # Let the GUI remain responsive
-                QApplication.processEvents()
-
-            ###############################################
-            # PHASE 2: Scale each thumbnail (50%→100%)
-            ###############################################
-            # At this point, all boxes exist in self.scroll_widget.thumbnail_boxes
-            boxes = list(
-                self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.values()
+        for (
+            tb
+        ) in self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.values():
+            tb.word_label.setStyleSheet(f"color: {font_color};")
+            tb.word_label.star_icon_empty_path = (
+                "star_empty_white.png"
+                if font_color == "white"
+                else "star_empty_black.png"
             )
-            num_boxes = len(boxes)
-
-            for j, tb in enumerate(boxes):
-                # Actually do the scaling now:
-                # We call the same method that was skipped above.
-                tb.image_label.update_thumbnail(tb.state.current_index)
-
-                # Update progress from 50%→100%
-                fraction = (j + 1) / num_boxes
-                progress_val = 50 + int(fraction * 50)
-                self.browse_tab.sequence_picker.progress_bar.set_value(progress_val)
-
-                QApplication.processEvents()
-
-            # Hide progress bar, do final styling, restore cursor
-            self.browse_tab.sequence_picker.progress_bar.setVisible(False)
-            self._apply_sorting_and_styling()
-            QApplication.restoreOverrideCursor()
-
-        QTimer.singleShot(0, update_ui)
+            tb.word_label.reload_favorite_icon()
+            tb.variation_number_label.setStyleSheet(f"color: {font_color};")
 
     def _apply_sorting_and_styling(self):
         """Apply sorting to thumbnails and style elements based on current settings."""

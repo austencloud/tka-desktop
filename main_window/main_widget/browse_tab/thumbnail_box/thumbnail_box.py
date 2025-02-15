@@ -65,8 +65,8 @@ class ThumbnailBox(QWidget):
             - self.sequence_picker.nav_sidebar.width()
         )
 
-        width = scroll_widget_width // 3
-        self.setFixedWidth(width)
+        size = scroll_widget_width // 3
+        self.setFixedSize(size, int(size * 1.3))
 
     def update_thumbnails(self, thumbnails=[]):
         self.state.update_thumbnails(thumbnails)

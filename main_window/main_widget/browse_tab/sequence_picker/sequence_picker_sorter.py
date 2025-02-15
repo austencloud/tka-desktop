@@ -60,7 +60,42 @@ class SequencePickerSorter:
                 (word, thumbnails)
             )
 
-    def update_ui(self, sorted_sections: list[str], sort_method: str):
+    def _sort_only(self, sort_method: str):
+        """
+        Sorts the 'currently_displayed_sequences' in-place
+        WITHOUT actually creating/placing the thumbnail widgets yet.
+        """
+        self.section_manager = self.sequence_picker.section_manager
+        # Clear the layout so we start fresh
+        self.scroll_widget.clear_layout()
+        # Reset the sections dict so we can group them again
+        self.browse_tab.sequence_picker.sections = {}
+
+        sort_key = self.get_sort_key(sort_method)
+        self.sort_sequences(sort_key, sort_method)
+        self.group_sequences_by_section(sort_method)
+
+    def _display_sorted_sections(self, skip_scaling: bool = False):
+        """
+        Takes the sections that are already sorted/grouped from _sort_only(...)
+        and actually creates the thumbnail widgets in the final order.
+        Optionally skip the expensive scaling step in each 'add_thumbnail_box'.
+        """
+        sort_method = (
+            self.sequence_picker.control_panel.sort_widget.settings_manager.browse_settings.get_sort_method()
+        )
+        sorted_sections = self.section_manager.get_sorted_sections(
+            sort_method, self.browse_tab.sequence_picker.sections.keys()
+        )
+        self.update_ui(sorted_sections, sort_method, skip_scaling=skip_scaling)
+
+    def update_ui(
+        self, sorted_sections: list[str], sort_method: str, skip_scaling: bool = False
+    ):
+        """
+        Exactly like your existing update_ui, but we pass a new 'skip_scaling' flag
+        so 'add_thumbnail_box' knows whether or not to call update_thumbnail(...).
+        """
         self.sequence_picker.nav_sidebar.update_sidebar(sorted_sections, sort_method)
         self.sequence_picker.control_panel.sort_widget.highlight_appropriate_button(
             sort_method
@@ -68,6 +103,7 @@ class SequencePickerSorter:
 
         current_section = None
         row_index = 0
+
         for section in sorted_sections:
             if sort_method == "date_added" and section == "Unknown":
                 continue
@@ -75,23 +111,29 @@ class SequencePickerSorter:
             row_index = self.add_section_headers(
                 row_index, section, sort_method, current_section
             )
-            current_section = (
-                section if sort_method == "date_added" else current_section
-            )
+            if sort_method == "date_added":
+                current_section = section  # track the year if needed
 
             column_index = 0
             for word, thumbnails in self.browse_tab.sequence_picker.sections[section]:
+                # The only difference here: pass 'skip_scaling' as skip_image
                 self.add_thumbnail_box(
-                    row_index, column_index, word, thumbnails, hidden=False
+                    row_index,
+                    column_index,
+                    word,
+                    thumbnails,
+                    hidden=False,
+                    skip_image=skip_scaling,
                 )
                 column_index = (column_index + 1) % self.num_columns
                 if column_index == 0:
                     row_index += 1
 
+        # e.g. show the count of displayed sequences
         self.sequence_picker.control_panel.count_label.setText(
             f"Number of words: {len(self.browse_tab.sequence_picker.currently_displayed_sequences)}"
         )
-        QApplication.restoreOverrideCursor()
+        # No need to re-override or restore cursor if we’re not using a loading cursor
 
     def add_section_headers(
         self, row_index: int, section: str, sort_method: str, current_section: str
@@ -122,7 +164,7 @@ class SequencePickerSorter:
         word: str,
         thumbnails: list[str],
         hidden: bool,
-        skip_image: bool = False,
+        skip_image: bool = False,  # <-- NEW
     ):
         if word not in self.scroll_widget.thumbnail_boxes:
             thumbnail_box = ThumbnailBox(self.browse_tab, word, thumbnails)
@@ -138,7 +180,6 @@ class SequencePickerSorter:
         if not hidden:
             thumbnail_box.show()
             if not skip_image:
-                # The single call that triggers scaling:
                 thumbnail_box.image_label.update_thumbnail(
                     thumbnail_box.state.current_index
                 )
