@@ -10,12 +10,13 @@ from PyQt6.QtCore import Qt
 from functools import partial
 from datetime import datetime, timedelta
 
-from main_window.main_widget.browse_tab.sequence_picker.filter_selector.filter_button_group import (
-    FilterButtonGroup,
-)
-from main_window.main_widget.browse_tab.sequence_picker.filter_selector.choose_filter_label import (
+from main_window.main_widget.browse_tab.sequence_picker.filter_stack.choose_filter_label import (
     ChooseFilterLabel,
 )
+from main_window.main_widget.browse_tab.sequence_picker.filter_stack.filter_button_group import (
+    FilterButtonGroup,
+)
+
 
 if TYPE_CHECKING:
     from .sequence_picker_filter_stack import SequencePickerFilterStack
@@ -24,12 +25,12 @@ if TYPE_CHECKING:
 class InitialFilterChoiceWidget(QWidget):
     """Widget to display filter options for the dictionary browser."""
 
-    def __init__(self, filter_selector: "SequencePickerFilterStack"):
-        super().__init__(filter_selector)
-        self.filter_selector = filter_selector
-        self.main_widget = filter_selector.browse_tab.main_widget
+    def __init__(self, filter_stack: "SequencePickerFilterStack"):
+        super().__init__(filter_stack)
+        self.filter_selector = filter_stack
+        self.main_widget = filter_stack.browse_tab.main_widget
         self.settings_manager = self.main_widget.main_window.settings_manager
-        self.browse_tab = filter_selector.browse_tab
+        self.browse_tab = filter_stack.browse_tab
         self.button_groups: dict[str, QWidget] = {}
         self.buttons: dict[str, QPushButton] = {}
         self.description_labels: dict[str, QLabel] = {}

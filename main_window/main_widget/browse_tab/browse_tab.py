@@ -4,9 +4,6 @@ from PyQt6.QtWidgets import QWidget
 from main_window.main_widget.browse_tab.browse_tab_filter_controller import (
     BrowseTabFilterController,
 )
-from main_window.main_widget.browse_tab.sequence_picker.filter_selector.initial_filter_choice_widget import (
-    InitialFilterChoiceWidget,
-)
 
 
 from .sequence_picker.sequence_picker import SequencePicker
@@ -34,7 +31,6 @@ class BrowseTab(QWidget):
         self.filter_manager = BrowseTabFilterManager(self)
         self.filter_controller = BrowseTabFilterController(self)
         self.sequence_picker = SequencePicker(self)
-
 
         # Components
         self.sequence_viewer = SequenceViewer(self)

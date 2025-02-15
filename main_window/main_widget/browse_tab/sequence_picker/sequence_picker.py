@@ -1,25 +1,18 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
-
-
+from .filter_stack.sequence_picker_filter_stack import SequencePickerFilterStack
 from .sequence_picker_section_manager import SequencePickerSectionManager
 from .sequence_picker_sorter import SequencePickerSorter
 from .sequence_picker_control_panel import SequencePickerControlPanel
-from .filter_selector.sequence_picker_filter_stack import (
-    SequencePickerFilterStack,
-)
 from .sequence_picker_progress_bar import SequencePickerProgressBar
 from .nav_sidebar.sequence_picker_nav_sidebar import SequencePickerNavSidebar
 from .sequence_picker_scroll_widget import SequencePickerScrollWidget
 
 if TYPE_CHECKING:
-    from main_window.main_widget.browse_tab.sequence_picker.filter_selector.initial_filter_choice_widget import InitialFilterChoiceWidget
     from ..browse_tab import BrowseTab
 
-
 class SequencePicker(QWidget):
-    initial_filter_choice_widget: "InitialFilterChoiceWidget"
-    
+
     def __init__(self, browse_tab: "BrowseTab"):
         super().__init__(browse_tab)
         self.browse_tab = browse_tab
