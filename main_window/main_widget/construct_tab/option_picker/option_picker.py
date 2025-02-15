@@ -29,7 +29,7 @@ class OptionPicker(QWidget):
         super().__init__(construct_tab)
         self.construct_tab = construct_tab
         self.main_widget = construct_tab.main_widget
-        self.setObjectName("OptionPicker")
+        
         # Components
         self.choose_next_label = ChooseYourNextPictographLabel(self)
         self.reversal_filter = OptionPickerReversalFilter(self)

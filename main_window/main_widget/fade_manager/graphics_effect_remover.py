@@ -21,22 +21,10 @@ class GraphicsEffectRemover:
             self.manager.main_widget.right_stack,
             self.manager.main_widget.left_stack,
         ]
-        widget_names = []
         widgets = default_widgets + widgets
         for widget in widgets:
             if widget:
                 self._remove_all_graphics_effects(widget)
-                widget_names = []
-                for w in widgets:
-                    if w:
-                        name = (
-                            w.objectName()
-                            if hasattr(w, "objectName")
-                            else w.__class__.__name__
-                        )
-                        widget_names.append(name)
-        if widget_names:
-            print(f"Clearing effect on: {widget_names}")
 
         # self._clear_visibility_tab_graphics_effects()
 
