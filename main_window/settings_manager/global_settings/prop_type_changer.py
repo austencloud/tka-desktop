@@ -9,8 +9,9 @@ if TYPE_CHECKING:
 
 class PropTypeChanger:
     def __init__(self, settings_manager: "SettingsManager") -> None:
+        self.settings_manager = settings_manager
         self.main_window = settings_manager.main_window
-
+        
     def replace_props(self, new_prop_type, pictograph: "Pictograph"):
         for color, prop in pictograph.props.items():
             new_prop = pictograph.initializer.prop_factory.create_prop_of_type(
@@ -39,8 +40,7 @@ class PropTypeChanger:
         pictograph.updater.update_pictograph()
 
     def apply_prop_type(self) -> None:
-        prop_type = self.main_window.settings_manager.global_settings.get_prop_type()
-        self.main_window.main_widget.prop_type = prop_type
+        prop_type = self.settings_manager.global_settings.get_prop_type()
         self.update_props_to_type(prop_type)
 
     def update_props_to_type(self, new_prop_type) -> None:

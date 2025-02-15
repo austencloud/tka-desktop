@@ -125,7 +125,7 @@ class Pictograph(QGraphicsScene):
         StartPosPickerPictographView,
         CodexPictographView,
         "GE_PictographView",
-        "OptionView"
+        "OptionView",
     ]
 
     def __init__(self, main_widget: "MainWidget") -> None:
@@ -142,4 +142,3 @@ class Pictograph(QGraphicsScene):
         self.attr_manager = PictographDataUpdater(self)
         self.reversal_glyph = BeatReversalGroup(self)
         self.svg_manager = SvgManager(self)
-        

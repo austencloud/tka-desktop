@@ -12,6 +12,7 @@ from objects.motion.motion import Motion
 from objects.prop.prop import Prop
 from objects.prop.prop_classes import *
 from data.constants import *
+from settings_provider import SettingsProvider
 from utilities.path_helpers import get_images_and_data_path
 from .prop_factory import PropFactory
 from .glyphs.elemental_glyph.elemental_glyph import ElementalGlyph
@@ -38,6 +39,7 @@ class PictographInitializer:
 
     def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
+        self.settings = SettingsProvider.get_settings()
         self.pictograph.setSceneRect(0, 0, 950, 950)
         self.pictograph.setBackgroundBrush(Qt.GlobalColor.white)
         self.prop_factory = PropFactory()
@@ -61,7 +63,7 @@ class PictographInitializer:
         self.init_reversal_symbols()
 
         self.set_nonradial_points_visibility(
-            self.pictograph.main_widget.main_window.settings_manager.visibility.get_non_radial_visibility()
+            self.settings.value("global/show_non_radial_points", False)
         )
 
     def init_reversal_symbols(self) -> tuple[QGraphicsTextItem, QGraphicsTextItem]:
@@ -123,7 +125,7 @@ class PictographInitializer:
 
     def init_props(self) -> dict[str, Prop]:
         props: dict[str, Prop] = {}
-        prop_type = self.pictograph.main_widget.prop_type
+        prop_type = self.settings.value("global/prop_type", "Staff")
         for color in [RED, BLUE]:
             initial_prop_attributes = {
                 COLOR: color,
@@ -134,8 +136,8 @@ class PictographInitializer:
             initial_prop_class = prop_class_mapping.get(prop_type)
             if initial_prop_class is None:
                 raise ValueError(f"Invalid prop_type: {prop_type}")
-            initial_prop = initial_prop_class(
-                self.pictograph, initial_prop_attributes, None
+            initial_prop = Prop(
+                self.pictograph, initial_prop_attributes, None, initial_prop_class
             )
             props[color] = self.prop_factory.create_prop_of_type(
                 initial_prop, prop_type
