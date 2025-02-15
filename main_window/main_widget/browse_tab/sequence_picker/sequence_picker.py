@@ -20,7 +20,6 @@ class SequencePicker(QWidget):
         self.sections: dict[str, list[tuple[str, list[str]]]] = {}
         self.currently_displayed_sequences = []
         self.selected_sequence_dict = None
-        self.setObjectName("SequencePicker")
         self._setup_components()
         self._setup_layout()
 

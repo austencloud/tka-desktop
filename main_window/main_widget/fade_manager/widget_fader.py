@@ -32,12 +32,6 @@ class WidgetFader:
             return
 
         self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
-        import traceback
-
-        print(
-            f"Fading {'in' if fade_in else 'out'}: {[w.objectName() for w in widgets if w]}"
-        )
-        traceback.print_stack()
 
         animation_group = QParallelAnimationGroup(self.manager)
         for widget in widgets:

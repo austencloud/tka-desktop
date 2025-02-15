@@ -70,8 +70,6 @@ class MainWidgetUI:
         mw.background_widget = MainBackgroundWidget(mw)
         mw.background_widget.lower()
         mw.state_handler.load_state(mw.sequence_workbench.beat_frame)
-        mw.left_stack.setObjectName("LeftStack")
-        mw.right_stack.setObjectName("RightStack")
         self.splash_screen.updater.update_progress("Finalizing")
 
     def _populate_stacks(self):

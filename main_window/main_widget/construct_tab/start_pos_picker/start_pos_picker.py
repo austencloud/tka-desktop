@@ -21,13 +21,11 @@ class StartPosPicker(BaseStartPosPicker):
 
     def __init__(self, construct_tab: "ConstructTab"):
         super().__init__(construct_tab)
-        self.setObjectName("StartPosPicker")
         self.construct_tab = construct_tab
         self.pictograph_frame = StartPosPickerPictographFrame(self)
         self.choose_your_start_pos_label = ChooseYourStartPosLabel(self)
         self.button_layout = self._setup_variations_button_layout()
         self.setup_layout()
-        self.setObjectName("StartPosPicker")
         self.setStyleSheet("background-color: white;")
         self.initialized = False
         self.start_options: dict[str, Pictograph] = {}
