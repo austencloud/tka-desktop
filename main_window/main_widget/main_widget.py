@@ -164,3 +164,14 @@ class MainWidget(QWidget):
         super().resizeEvent(event)
         self.background_widget.resize_background()
         self.beat_frame = self.sequence_workbench.beat_frame
+        if self.left_stack.currentIndex() == self.left_sequence_picker_index and self.right_stack.currentIndex() == self.right_sequence_viewer_index:
+            total_width = self.width()
+            left_width = int(total_width * (2 / 3))
+            right_width = total_width - left_width
+            self.left_stack.setFixedWidth(left_width)
+            self.right_stack.setFixedWidth(right_width)
+        else:
+            total_width = self.width()
+            half_width = int(total_width / 2)
+            self.left_stack.setFixedWidth(half_width)
+            self.right_stack.setFixedWidth(half_width)

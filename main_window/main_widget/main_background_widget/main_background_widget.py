@@ -31,8 +31,8 @@ class MainBackgroundWidget(QWidget):
 
     def start_timer(self):
         self.animation_timer = QTimer(self)
-        self.animation_timer.timeout.connect(self._on_animation_tick)
-        self.animation_timer.start(60)
+        # self.animation_timer.timeout.connect(self._on_animation_tick)
+        # self.animation_timer.start(60)
 
     def _on_animation_tick(self):
         if self.main_widget.background_widget:
@@ -60,7 +60,7 @@ class MainBackgroundWidget(QWidget):
         self.main_widget.font_color_updater.update_main_widget_font_colors(
             self.main_widget.settings_manager.global_settings.get_background_type()
         )
-        
+
     def _get_background(self, bg_type: str) -> Optional[BaseBackground]:
         """Returns an instance of the appropriate Background based on bg_type."""
         background_map = {

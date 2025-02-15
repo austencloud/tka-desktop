@@ -1,13 +1,10 @@
-from PyQt6.QtCore import Qt, QEvent
-from PyQt6.QtGui import QPixmap, QCursor, QMouseEvent
+from PyQt6.QtCore import Qt, QEvent, QRect
+from PyQt6.QtGui import QPixmap, QCursor, QMouseEvent, QPainter, QColor, QPen
 from PyQt6.QtWidgets import QLabel
 from typing import TYPE_CHECKING
 
-
 if TYPE_CHECKING:
-    from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import (
-        ThumbnailBox,
-    )
+    from .thumbnail_box import ThumbnailBox
 
 
 class ThumbnailImageLabel(QLabel):
@@ -15,15 +12,16 @@ class ThumbnailImageLabel(QLabel):
     is_selected = False
     index = None
     pixmap: QPixmap = None
+    border_width = 4  # Define border width
 
     def __init__(self, thumbnail_box: "ThumbnailBox"):
         super().__init__()
         self.thumbnail_box = thumbnail_box
         self.state = thumbnail_box.state
         self.metadata_extractor = thumbnail_box.main_widget.metadata_extractor
-        self.setStyleSheet("border: 3px solid black;")
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._border_color = None  # Initialize border color
 
     def update_thumbnail(self, index):
         if self.state.thumbnails and 0 <= index < len(self.state.thumbnails):
@@ -31,18 +29,25 @@ class ThumbnailImageLabel(QLabel):
             self.set_pixmap_to_fit(pixmap)
 
     def set_pixmap_to_fit(self, pixmap: QPixmap):
-        current_index = self.state.current_index
-        sequence_length = self.metadata_extractor.get_length(
-            self.state.thumbnails[current_index]
+        max_width = self.thumbnail_box.width() - (self.thumbnail_box.margin * 2)
+        max_height = self.thumbnail_box.width() - (self.thumbnail_box.margin * 2)
+
+        seq_len = self.metadata_extractor.get_length(
+            self.state.thumbnails[self.state.current_index]
+        )
+        if seq_len == 1:
+            max_width = int(max_width * 0.6)
+
+        scaled_pm = pixmap.scaled(
+            max_width,
+            max_height,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
         )
 
-        target_width = self._get_target_width(sequence_length)
-
-        scaled_pixmap = pixmap.scaledToWidth(
-            target_width, Qt.TransformationMode.SmoothTransformation
-        )
-
-        self.setPixmap(scaled_pixmap)
+        self.pixmap = scaled_pm  # Store scaled pixmap
+        self.setPixmap(scaled_pm)
+        self.update()  # Trigger repaint to draw border
 
     def _get_target_width(self, sequence_length):
         if sequence_length == 1:
@@ -70,21 +75,47 @@ class ThumbnailImageLabel(QLabel):
                 self.thumbnail_box, self.state.current_index
             )
 
-    def set_selected(self, selected: bool):
-        self.is_selected = selected
-        if selected:
-            self.setStyleSheet("border: 3px solid blue;")
-        else:
-            self.setStyleSheet("border: 3px solid black;")
-
     def enterEvent(self, event: QEvent):
-        self.setStyleSheet("border: 3px solid gold;")
+        self._border_color = "gold"  # Set border color on hover
+        self.update()  # Trigger repaint
         super().enterEvent(event)
 
     def leaveEvent(self, event: QEvent):
-        self.setStyleSheet(
-            "border: 3px solid black;"
-            if not self.is_selected
-            else "border: 3px solid blue;"
-        )
+        if self.is_selected:
+            self._border_color = "blue"  # Set border color if selected
+        else:
+            self._border_color = None  # Remove border
+        self.update()  # Trigger repaint
         super().leaveEvent(event)
+
+    def set_selected(self, selected: bool):
+        self.is_selected = selected
+        if selected:
+            self._border_color = "blue"  # Set border color if selected
+        else:
+            self._border_color = None  # Remove border
+        self.update()  # Trigger repaint
+
+    def paintEvent(self, event):
+        super().paintEvent(event)  # Draw the base QLabel content (pixmap)
+
+        if self._border_color and self.pixmap:
+            painter = QPainter(self)
+            pen = QPen(QColor(self._border_color))
+            pen.setWidth(self.border_width)  # Set pen width
+            pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)  # Set hard edges
+            painter.setPen(pen)  # Use color name to get QColor
+
+            # Calculate the center position for the pixmap
+            x = (self.width() - self.pixmap.width()) // 2
+            y = (self.height() - self.pixmap.height()) // 2
+
+            rect = QRect(x, y, self.pixmap.width(), self.pixmap.height())
+            painter.drawRect(
+                rect.adjusted(
+                    self.border_width // 2,
+                    self.border_width // 2,
+                    -self.border_width // 2,
+                    -self.border_width // 2,
+                )
+            )

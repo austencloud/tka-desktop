@@ -49,6 +49,7 @@ class BrowseTabSelectionManager:
         thumbnail_pixmap = QPixmap(
             image_label.state.thumbnails[image_label.thumbnail_box.state.current_index]
         )
+        self.sequence_viewer.current_thumbnail_box = image_label.thumbnail_box
         self.sequence_viewer.image_label.setPixmap(
             thumbnail_pixmap.scaled(
                 self.sequence_viewer.image_label.size() * 0.9,

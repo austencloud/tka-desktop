@@ -5,7 +5,7 @@ from main_window.settings_manager.construct_tab_settings import ConstructTabSett
 from main_window.settings_manager.generate_tab_settings import GenerateTabSettings
 from .sequence_sharing_settings import SequenceShareSettings
 from .act_tab_settings import WriteTabSettings
-from .dictionary_settings import BrowseTabSettings
+from .browse_tab_settings import BrowseTabSettings
 from .image_export_settings import ImageExportSettings
 from .sequence_layout_settings import SequenceLayoutSettings
 from .user_profile_settings.user_profile_settings import UserProfileSettings

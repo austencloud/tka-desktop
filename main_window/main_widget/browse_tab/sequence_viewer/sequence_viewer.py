@@ -33,11 +33,13 @@ class SequenceViewer(QWidget):
     def _setup_layout(self):
         layout = QVBoxLayout(self)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.word_label)
-        layout.addWidget(self.variation_number_label)
-        layout.addWidget(self.stacked_widget)
-        layout.addWidget(self.nav_buttons_widget)
-        layout.addWidget(self.action_button_panel)
+        layout.addStretch(1)
+        layout.addWidget(self.word_label, 1)
+        layout.addWidget(self.stacked_widget, 8)
+        layout.addWidget(self.variation_number_label, 1)
+        layout.addWidget(self.nav_buttons_widget, 1)
+        layout.addWidget(self.action_button_panel, 1)
+        layout.addStretch(1)
 
         self.setLayout(layout)
 
@@ -78,7 +80,9 @@ class SequenceViewer(QWidget):
 
                 if self.current_thumbnail_box:
                     metadata_extractor = self.main_widget.metadata_extractor
-                    self.state.sequence_json = metadata_extractor.extract_metadata_from_file(current_thumbnail)
+                    self.state.sequence_json = (
+                        metadata_extractor.extract_metadata_from_file(current_thumbnail)
+                    )
 
         else:
             self.stacked_widget.setCurrentWidget(self.placeholder_label)
