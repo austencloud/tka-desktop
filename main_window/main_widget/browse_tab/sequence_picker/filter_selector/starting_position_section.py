@@ -197,25 +197,6 @@ class StartingPositionSection(FilterSectionBase):
                 return start_position
         return None
 
-    def display_only_thumbnails_with_starting_position(self, position: str):
-        """Display only the thumbnails that match the selected starting position."""
-        self.filter_selector.browse_tab.settings.set_current_filter(
-            {"starting_position": position.lower()}
-        )
-        self.browse_tab.filter_manager.prepare_ui_for_filtering(
-            f"sequences starting at {position}"
-        )
-
-        sequences = self.get_sequences_that_are_a_specific_position(position)
-        total_sequences = len(sequences)
-
-        self.browse_tab.sequence_picker.currently_displayed_sequences = [
-            (word, thumbnails, self.get_sequence_length_from_thumbnails(thumbnails))
-            for word, thumbnails in sequences
-        ]
-
-        self.browse_tab.ui_updater.update_and_display_ui(total_sequences)
-
     def get_sequence_length_from_thumbnails(self, thumbnails: list[str]) -> int:
         """Extract the sequence length from the thumbnails' metadata."""
         for thumbnail in thumbnails:

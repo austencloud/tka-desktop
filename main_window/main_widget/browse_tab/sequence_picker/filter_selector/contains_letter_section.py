@@ -131,40 +131,6 @@ class ContainsLettersSection(FilterSectionBase):
             {"contains_letters": list(self.selected_letters)}
         )
 
-    def display_only_thumbnails_containing_letters(self, letters: list[str]):
-        """Display only the thumbnails that contain the specified letters."""
-        letters = self.organize_letters(letters)
-        display_letters = self.format_display_letters(letters)
-
-        self.browse_tab.filter_manager.prepare_ui_for_filtering(
-            f"sequences containing\n{display_letters}"
-        )
-
-        base_words = self.get_sorted_base_words("sequence_length")
-
-        matching_sequences = [
-            (word, thumbnails, seq_length)
-            for word, thumbnails, seq_length in base_words
-            if any(
-                self._is_valid_letter_match(word, letter, letters) for letter in letters
-            )
-        ]
-
-        total_sequences = len(matching_sequences) or 1
-        self.browse_tab.sequence_picker.currently_displayed_sequences = (
-            matching_sequences
-        )
-        self.browse_tab.sequence_picker.control_panel.count_label.setText(
-            f"Number of words to be displayed: {len(matching_sequences)}"
-        )
-        self.browse_tab.ui_updater.update_and_display_ui(total_sequences)
-
-        QApplication.restoreOverrideCursor()
-
-        # QTimer.singleShot(0, update_ui)
-        self.filter_selector.browse_tab.settings.set_current_filter(
-            {"contains_letters": letters}
-        )
 
     def organize_letters(self, letters: Iterable[str]) -> list[str]:
         """Organize letters according to the predefined order."""

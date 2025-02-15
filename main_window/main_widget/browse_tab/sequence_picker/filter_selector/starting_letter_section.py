@@ -95,36 +95,6 @@ class StartingLetterSection(FilterSectionBase):
             return word[:2]
         return word[0]
 
-    def display_only_thumbnails_starting_with_letter(self, letter: str):
-        """Display thumbnails of sequences starting with the specified letter."""
-        self.browse_tab.settings.set_current_filter({"starting_letter": letter})
-
-        description = (
-            f"sequences starting with {letter}"
-            if letter != "show_all"
-            else "all sequences"
-        )
-        self.browse_tab.sequence_picker.nav_sidebar.clear_sidebar()
-        self.browse_tab.filter_manager.prepare_ui_for_filtering(description)
-
-        base_words = self.get_sorted_base_words("sequence_length")
-        if letter == "show_all":
-            matching_sequences = [
-                (word, thumbnails, seq_length)
-                for word, thumbnails, seq_length in base_words
-            ]
-        else:
-            matching_sequences = [
-                (word, thumbnails, seq_length)
-                for word, thumbnails, seq_length in base_words
-                if self._word_starts_with_letter(word, letter)
-            ]
-
-        total_sequences = len(matching_sequences) or 1  # Prevent division by zero
-        self.browse_tab.sequence_picker.currently_displayed_sequences = (
-            matching_sequences
-        )
-        self.browse_tab.ui_updater.update_and_display_ui(total_sequences)
 
     def _word_starts_with_letter(self, word: str, letter: str) -> bool:
         """Check if the word starts with the given letter."""

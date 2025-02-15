@@ -49,16 +49,16 @@ class SequenceViewerImageLabel(QLabel):
         # If height is too tall, reduce width iteratively until it fits
         while target_height > available_height and target_width > 0:
             target_width -= 1
-            target_height = int(target_width * aspect_ratio)
+            target_height = int(target_width * aspect_ratio) - 1
 
         # Final safeguard
         target_width = max(1, target_width)
         target_height = max(1, target_height)
 
         #  we need to change the taget_width or target_height according to the image's aspect ratio. Whichever is set to the available width/height should be kept, the other should be calculated based on the aspect ratio.
-        if target_width == available_width:
+        if target_width == available_width - 1:
             target_height = int(target_width * aspect_ratio)
-        elif target_height == available_height:
+        elif target_height == available_height - 1:
             target_width = int(target_height / aspect_ratio)
 
         # Scale the pixmap accordingly

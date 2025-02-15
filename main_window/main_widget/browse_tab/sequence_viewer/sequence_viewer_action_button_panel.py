@@ -92,7 +92,7 @@ class SequenceViewerActionButtonPanel(QWidget):
             QMessageBox.warning(self, "No Image", "Please select an image first.")
 
     def edit_sequence(self):
-        sequence_json = self.sequence_viewer.sequence_json
+        sequence_json = self.sequence_viewer.state.sequence_json
         if sequence_json:
             self.sequence_viewer.main_widget.menu_bar.navigation_widget.on_button_clicked(
                 self.sequence_viewer.main_widget.main_construct_tab_index
@@ -117,7 +117,7 @@ class SequenceViewerActionButtonPanel(QWidget):
             )
 
     def save_image(self):
-        sequence_json = self.sequence_viewer.sequence_json
+        sequence_json = self.sequence_viewer.state.sequence_json
         current_thumbnail = self.sequence_viewer.state.thumbnails[
             self.sequence_viewer.state.current_index
         ]

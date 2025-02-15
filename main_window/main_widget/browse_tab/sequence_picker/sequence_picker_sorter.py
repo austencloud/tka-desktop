@@ -122,6 +122,7 @@ class SequencePickerSorter:
         word: str,
         thumbnails: list[str],
         hidden: bool,
+        skip_image: bool = False,
     ):
         if word not in self.scroll_widget.thumbnail_boxes:
             thumbnail_box = ThumbnailBox(self.browse_tab, word, thumbnails)
@@ -136,9 +137,11 @@ class SequencePickerSorter:
 
         if not hidden:
             thumbnail_box.show()
-            thumbnail_box.image_label.update_thumbnail(
-                thumbnail_box.state.current_index
-            )
+            if not skip_image:
+                # The single call that triggers scaling:
+                thumbnail_box.image_label.update_thumbnail(
+                    thumbnail_box.state.current_index
+                )
 
     def reload_currently_displayed_filtered_sequences(self):
         sort_method = (
