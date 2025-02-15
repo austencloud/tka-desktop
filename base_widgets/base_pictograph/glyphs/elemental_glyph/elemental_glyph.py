@@ -55,12 +55,6 @@ class ElementalGlyph(QGraphicsSvgItem):
                 self.pictograph.addItem(self)
             self.position_elemental_glyph()
 
-            self.setVisible(
-                self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
-                    "Elemental"
-                )
-            )
-
     def position_elemental_glyph(self) -> None:
         pictograph_width = self.pictograph.width()
         pictograph_height = self.pictograph.height()

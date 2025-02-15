@@ -142,3 +142,4 @@ class Pictograph(QGraphicsScene):
         self.attr_manager = PictographDataUpdater(self)
         self.reversal_glyph = BeatReversalGroup(self)
         self.svg_manager = SvgManager(self)
+        
