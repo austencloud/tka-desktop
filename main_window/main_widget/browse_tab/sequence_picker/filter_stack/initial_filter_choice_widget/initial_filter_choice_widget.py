@@ -1,29 +1,23 @@
-from typing import TYPE_CHECKING, Callable, Union, Any
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QLabel,
-    QPushButton,
-    QGridLayout,
-)
+from typing import TYPE_CHECKING, Union, Any
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout
 from PyQt6.QtCore import Qt
 from functools import partial
 from datetime import datetime, timedelta
-
-from main_window.main_widget.browse_tab.sequence_picker.filter_stack.choose_filter_label import (
-    ChooseFilterLabel,
-)
-from main_window.main_widget.browse_tab.sequence_picker.filter_stack.filter_button_group import (
-    FilterButtonGroup,
-)
-
+from ..choose_filter_label import ChooseFilterLabel
+from .filter_button_group.filter_button_group import FilterButtonGroup
 
 if TYPE_CHECKING:
-    from .sequence_picker_filter_stack import SequencePickerFilterStack
+    from ..sequence_picker_filter_stack import SequencePickerFilterStack
 
 
 class InitialFilterChoiceWidget(QWidget):
     """Widget to display filter options for the dictionary browser."""
+
+    def _get_recent_date_string(self) -> str:
+        """Return a string representing the date one week ago."""
+        one_week_ago = datetime.now() - timedelta(weeks=1)
+        date_string = one_week_ago.strftime("%B %d")
+        return date_string.replace(" 0", " ")
 
     FILTER_OPTIONS: dict[str, tuple[str, Union[str, dict[str, Any]]]] = {
         "Starting Letter": (
@@ -101,6 +95,9 @@ class InitialFilterChoiceWidget(QWidget):
     def _setup_button_groups(self):
         """Create button groups for all filter options."""
         for label, (description, handler_arg) in self.FILTER_OPTIONS.items():
+            if label == "Most Recent":
+                date_string = self._get_recent_date_string()
+                description = f"Display sequences created since {date_string}."
             if isinstance(handler_arg, str):
                 handler = partial(self.filter_selector.show_section, handler_arg)
             else:

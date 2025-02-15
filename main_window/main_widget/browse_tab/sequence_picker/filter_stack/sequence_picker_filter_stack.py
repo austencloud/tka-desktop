@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QStackedWidget
 from .author_section import AuthorSection
 from .contains_letter_section import ContainsLettersSection
-from .initial_filter_choice_widget import InitialFilterChoiceWidget
+from .initial_filter_choice_widget.initial_filter_choice_widget import InitialFilterChoiceWidget
 from .grid_mode_section import GridModeSection
 from .level_section import LevelSection
 from .sequence_length_section import SequenceLengthSection

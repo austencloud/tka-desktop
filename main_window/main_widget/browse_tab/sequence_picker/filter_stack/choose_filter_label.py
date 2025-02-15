@@ -4,7 +4,7 @@ from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from .initial_filter_choice_widget import InitialFilterChoiceWidget
+    from .initial_filter_choice_widget.initial_filter_choice_widget import InitialFilterChoiceWidget
 
 
 class ChooseFilterLabel(QLabel):
