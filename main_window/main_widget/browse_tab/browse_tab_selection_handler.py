@@ -45,9 +45,13 @@ class BrowseTabSelectionManager:
         sequence_dict: dict,
     ) -> None:
         self.browse_tab.sequence_picker.selected_sequence_dict = sequence_dict
-        self.sequence_viewer.state.thumbnails = image_label.state.thumbnails
+        self.sequence_viewer.state.thumbnails = (
+            image_label.thumbnail_box.state.thumbnails
+        )
         thumbnail_pixmap = QPixmap(
-            image_label.state.thumbnails[image_label.thumbnail_box.state.current_index]
+            image_label.thumbnail_box.state.thumbnails[
+                image_label.thumbnail_box.state.current_index
+            ]
         )
         self.sequence_viewer.current_thumbnail_box = image_label.thumbnail_box
         self.sequence_viewer.image_label.setPixmap(
@@ -60,7 +64,9 @@ class BrowseTabSelectionManager:
         if self.current_thumbnail:
             self.current_thumbnail.set_selected(False)
 
-        self.sequence_viewer.update_thumbnails(image_label.state.thumbnails)
+        self.sequence_viewer.update_thumbnails(
+            image_label.thumbnail_box.state.thumbnails
+        )
         self.select_viewer_thumbnail(
             image_label.thumbnail_box,
             image_label.thumbnail_box.state.current_index,

@@ -17,23 +17,27 @@ class ThumbnailImageLabel(QLabel):
     def __init__(self, thumbnail_box: "ThumbnailBox"):
         super().__init__()
         self.thumbnail_box = thumbnail_box
-        self.state = thumbnail_box.state
         self.metadata_extractor = thumbnail_box.main_widget.metadata_extractor
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         self._border_color = None  # Initialize border color
 
     def update_thumbnail(self, index):
-        if self.state.thumbnails and 0 <= index < len(self.state.thumbnails):
-            pixmap = QPixmap(self.state.thumbnails[index])
+        if self.thumbnail_box.state.thumbnails and 0 <= index < len(
+            self.thumbnail_box.state.thumbnails
+        ):
+            pixmap = QPixmap(self.thumbnail_box.state.thumbnails[index])
             self.set_pixmap_to_fit(pixmap)
 
     def set_pixmap_to_fit(self, pixmap: QPixmap):
+
+        aspect_ratio = pixmap.width() / pixmap.height()
+
         max_width = self.thumbnail_box.width() - (self.thumbnail_box.margin * 2)
-        max_height = self.thumbnail_box.width() - (self.thumbnail_box.margin * 2)
+        max_height = int(max_width / aspect_ratio)
 
         seq_len = self.metadata_extractor.get_length(
-            self.state.thumbnails[self.state.current_index]
+            self.thumbnail_box.state.thumbnails[self.thumbnail_box.state.current_index]
         )
         if seq_len == 1:
             max_width = int(max_width * 0.6)
@@ -62,18 +66,16 @@ class ThumbnailImageLabel(QLabel):
         return target_width
 
     def mousePressEvent(self, event: "QMouseEvent"):
-        if self.state.thumbnails:
+        if self.thumbnail_box.state.thumbnails:
             metadata = self.metadata_extractor.extract_metadata_from_file(
-                self.state.thumbnails[0]
+                self.thumbnail_box.state.thumbnails[0]
             )
             self.thumbnail_box.browse_tab.selection_handler.on_box_thumbnail_clicked(
                 self, metadata
             )
 
         else:
-            self.thumbnail_box.browse_tab.deletion_handler.delete_variation(
-                self.thumbnail_box, self.state.current_index
-            )
+            ValueError(f"No thumbnails for {self.thumbnail_box.word}")
 
     def enterEvent(self, event: QEvent):
         self._border_color = "gold"  # Set border color on hover
@@ -106,9 +108,9 @@ class ThumbnailImageLabel(QLabel):
             pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)  # Set hard edges
             painter.setPen(pen)  # Use color name to get QColor
 
-            # Calculate the center position for the pixmap
+            # Calculate the top-center position for the pixmap
             x = (self.width() - self.pixmap.width()) // 2
-            y = (self.height() - self.pixmap.height()) // 2
+            y = 0  # Align to the top
 
             rect = QRect(x, y, self.pixmap.width(), self.pixmap.height())
             painter.drawRect(

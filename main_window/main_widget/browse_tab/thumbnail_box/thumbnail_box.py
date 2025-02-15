@@ -48,10 +48,11 @@ class ThumbnailBox(QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         layout = QVBoxLayout(self)
         layout.setSpacing(0)
-        layout.addWidget(self.word_label, 1)
-        layout.addWidget(self.image_label, 8)
-        layout.addWidget(self.variation_number_label, 1)
-        layout.addWidget(self.nav_buttons_widget, 1)
+        layout.addWidget(self.word_label)
+        layout.addWidget(self.image_label)
+        layout.addWidget(self.variation_number_label)
+        layout.addWidget(self.nav_buttons_widget)
+        layout.addStretch()
         layout.setContentsMargins(self.margin, self.margin, self.margin, self.margin)
 
     def resizeEvent(self, event):
@@ -78,7 +79,7 @@ class ThumbnailBox(QWidget):
     def update_thumbnails(self, thumbnails=[]):
         self.state.update_thumbnails(thumbnails)
         self.nav_buttons_widget.state.thumbnails = thumbnails
-        self.image_label.state.thumbnails = thumbnails
+        self.image_label.thumbnail_box.state.thumbnails = thumbnails
 
         if self == self.browse_tab.sequence_viewer.current_thumbnail_box:
             self.browse_tab.sequence_viewer.update_thumbnails(self.state.thumbnails)
