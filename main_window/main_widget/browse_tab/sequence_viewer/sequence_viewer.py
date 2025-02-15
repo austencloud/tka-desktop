@@ -25,7 +25,7 @@ class SequenceViewer(QWidget):
 
         self.current_thumbnail_box: Optional[ThumbnailBox] = None
         self.state = SequenceViewerState()
-
+        self.setObjectName("SequenceViewer")
         self._setup_components()
         self._setup_layout()
         self.clear()

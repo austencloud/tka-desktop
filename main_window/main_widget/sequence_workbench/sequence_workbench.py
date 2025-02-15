@@ -33,7 +33,7 @@ class SequenceWorkbench(QWidget):
         super().__init__()
         self.main_widget = main_widget
         self.main_widget.splash.updater.update_progress("SequenceWorkbench")
-
+        self.setObjectName("SequenceWorkbench")
         # Managers
         self.add_to_dictionary_manager = AddToDictionaryManager(self)
         self.autocompleter = SequenceAutoCompleter(self)
@@ -64,4 +64,3 @@ class SequenceWorkbench(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.graph_editor.resizeEvent(event)
-

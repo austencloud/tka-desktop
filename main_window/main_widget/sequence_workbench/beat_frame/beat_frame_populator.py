@@ -95,7 +95,6 @@ class BeatFramePopulator:
         last_beat = self.sequence_workbench.beat_frame.get.last_filled_beat().beat
         self.construct_tab.last_beat = last_beat
         self.construct_tab.option_picker.updater.update_options()
-        self.construct_tab.transition_to_option_picker()
 
     def modify_layout_for_chosen_number_of_beats(self, beat_count):
         self.beat_frame.layout_manager.configure_beat_frame(

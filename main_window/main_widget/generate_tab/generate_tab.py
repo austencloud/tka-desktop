@@ -30,7 +30,7 @@ class GenerateTab(QWidget):
         super().__init__(main_widget)
         self.main_widget = main_widget
         self.main_widget.splash.updater.update_progress("GenerateTab")
-        
+        self.setObjectName("GenerateTab")
         self.settings = main_widget.main_window.settings_manager.generate_tab_settings
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
@@ -66,9 +66,7 @@ class GenerateTab(QWidget):
         self.main_layout.update()
 
     def _create_spacer(self):
-        return QSpacerItem(
-            0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed
-        )
+        return QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
     def _resize_spacer(self, spacer: QSpacerItem, height: int):
         spacer.changeSize(

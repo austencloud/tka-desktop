@@ -24,12 +24,12 @@ class OptionPicker(QWidget):
     option_selected = pyqtSignal(str)
     layout: QVBoxLayout
     option_pool: list["Pictograph"]
-    
+
     def __init__(self, construct_tab: "ConstructTab"):
         super().__init__(construct_tab)
         self.construct_tab = construct_tab
         self.main_widget = construct_tab.main_widget
-
+        self.setObjectName("OptionPicker")
         # Components
         self.choose_next_label = ChooseYourNextPictographLabel(self)
         self.reversal_filter = OptionPickerReversalFilter(self)

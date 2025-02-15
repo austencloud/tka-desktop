@@ -12,4 +12,4 @@ class Lesson1Widget(BaseLessonWidget):
         self.question_widget = Lesson1QuestionWidget(self)
         self.answers_widget = Lesson1AnswersWidget(self)
         self.question_generator = Lesson1QuestionGenerator(self)
-        self.prepare_quiz_ui()
+        # self.prepare_quiz_ui()

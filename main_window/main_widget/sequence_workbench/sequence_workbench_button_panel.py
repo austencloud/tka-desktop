@@ -9,6 +9,8 @@ from PyQt6.QtWidgets import (
     QSpacerItem,
     QSizePolicy,
 )
+
+from main_window.main_widget.sequence_workbench.workbench_button import WorkbenchButton
 from .button_panel_placeholder import ButtonPanelPlaceholder
 from utilities.path_helpers import get_images_and_data_path
 
@@ -39,7 +41,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
         self._setup_layout()
 
     def _setup_buttons(self) -> None:
-        self.buttons: dict[str, QPushButton] = {}
+        self.buttons: dict[str, WorkbenchButton] = {}
 
         button_dict = {
             "add_to_dictionary": {
@@ -65,12 +67,12 @@ class SequenceWorkbenchButtonPanel(QFrame):
                 "tooltip": "Mirror Sequence",
             },
             "swap_colors": {
-                "icon": "yinyang1.png",
+                "icon": "yinyang1.svg",
                 "callback": lambda: self.sequence_workbench.color_swap_manager.swap_current_sequence(),
                 "tooltip": "Swap Colors",
             },
             "rotate_sequence": {
-                "icon": "rotate.png",
+                "icon": "rotate.svg",
                 "callback": lambda: self.sequence_workbench.rotation_manager.rotate_current_sequence(),
                 "tooltip": "Rotate Sequence",
             },
@@ -112,20 +114,13 @@ class SequenceWorkbenchButtonPanel(QFrame):
             show_indicator=True
         )
 
-    def _create_button(self, icon_path: str, callback, tooltip: str) -> QPushButton:
-        icon = QIcon(icon_path)
-        button = QPushButton()
-        button.clicked.connect(callback)
-        button.setToolTip(tooltip)
-        button.enterEvent = lambda event: button.setCursor(
-            Qt.CursorShape.PointingHandCursor
-        )
-        button.leaveEvent = lambda event: button.setCursor(Qt.CursorShape.ArrowCursor)
-        button.setIcon(icon)
+    def _create_button(self, icon_path: str, callback, tooltip: str) -> WorkbenchButton:
+        button_size = self.sequence_workbench.main_widget.height() // 20  # Initial size
+        button = WorkbenchButton(icon_path, tooltip, callback, button_size)
         return button
 
     def toggle_swap_colors_icon(self):
-        icon_name = "yinyang1.png" if self.colors_swapped else "yinyang2.png"
+        icon_name = "yinyang1.svg" if self.colors_swapped else "yinyang2.svg"
         new_icon_path = get_images_and_data_path(
             f"images/icons/sequence_workbench_icons/{icon_name}"
         )
@@ -185,15 +180,14 @@ class SequenceWorkbenchButtonPanel(QFrame):
         self.resize_button_panel()
 
     def resize_button_panel(self):
-        button_size = self.sequence_workbench.main_widget.height() // 22
+        button_size = self.sequence_workbench.main_widget.height() // 20
         for button in self.buttons.values():
-            button.setFixedSize(button_size, button_size)
-            button.setIconSize(button.size() * 0.8)
-            button.setStyleSheet(f"font-size: {self.font_size}px")
+            button.update_size(button_size)
 
         self.layout.setSpacing(
             self.sequence_workbench.beat_frame.main_widget.height() // 120
         )
+
         spacer_size = self.sequence_workbench.beat_frame.main_widget.height() // 20
         for spacer in self.spacers:
             spacer.changeSize(

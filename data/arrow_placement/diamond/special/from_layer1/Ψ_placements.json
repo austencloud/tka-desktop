@@ -207,7 +207,11 @@
       "swap_beta_s_radial_blue_static_s_red_dash_e": true,
       "swap_beta_e_radial_blue_static_e_red_dash_n": true,
       "swap_beta_n_radial_blue_static_n_red_dash_w": true,
-      "swap_beta_w_radial_blue_static_w_red_dash_s": true
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_n_radial_blue_dash_e_red_static_n": true,
+      "swap_beta_w_radial_blue_dash_n_red_static_w": true,
+      "swap_beta_e_radial_blue_dash_s_red_static_e": true,
+      "swap_beta_s_radial_blue_dash_w_red_static_s": true
     },
     "(o, 2, 1)": {
       "static_rot_angle_override": true,

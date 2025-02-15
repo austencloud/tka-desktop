@@ -21,6 +21,7 @@ class StartPosPicker(BaseStartPosPicker):
 
     def __init__(self, construct_tab: "ConstructTab"):
         super().__init__(construct_tab)
+        self.setObjectName("StartPosPicker")
         self.construct_tab = construct_tab
         self.pictograph_frame = StartPosPickerPictographFrame(self)
         self.choose_your_start_pos_label = ChooseYourStartPosLabel(self)
