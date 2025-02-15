@@ -19,6 +19,11 @@ class OptionPickerSectionWidget(QGroupBox):
         self.option_scroll = scroll_area
         self.letter_type = letter_type
         self.vtg_dir_btn_state: dict[str, bool] = {SAME: False, OPP: False}
+        self.is_groupable = letter_type in [
+            LetterType.Type4,
+            LetterType.Type5,
+            LetterType.Type6,
+        ]
 
     def setup_components(self) -> None:
         self.pictograph_frame = OptionPickerSectionPictographFrame(self)
@@ -54,7 +59,7 @@ class OptionPickerSectionWidget(QGroupBox):
     def add_pictograph(self, pictograph: Pictograph) -> None:
         COLUMN_COUNT = self.option_scroll.option_picker.COLUMN_COUNT
         self.pictographs[
-            self.option_scroll.main_widget.pictograph_key_generator.generate_pictograph_key(
+            self.option_scroll.option_picker.construct_tab.main_widget.pictograph_key_generator.generate_pictograph_key(
                 pictograph.pictograph_data
             )
         ] = pictograph
@@ -66,7 +71,10 @@ class OptionPickerSectionWidget(QGroupBox):
 
     def resizeEvent(self, event) -> None:
         """Resizes the section widget and ensures minimal space usage."""
-        width = self.option_scroll.construct_tab.option_picker.main_widget.width() // 2
+        width = (
+            self.option_scroll.construct_tab.option_picker.construct_tab.main_widget.width()
+            // 2
+        )
 
         if self.letter_type in [LetterType.Type1, LetterType.Type2, LetterType.Type3]:
             self.setFixedWidth(width)
@@ -81,8 +89,10 @@ class OptionPickerSectionWidget(QGroupBox):
             view_width = (
                 calculated_width
                 if calculated_width
-                < self.option_scroll.option_picker.main_widget.height() // 8
-                else self.option_scroll.option_picker.main_widget.height() // 8
+                < self.option_scroll.option_picker.construct_tab.main_widget.height()
+                // 8
+                else self.option_scroll.option_picker.construct_tab.main_widget.height()
+                // 8
             )
             width = int(view_width * 8) // 3
             self.setFixedWidth(width)

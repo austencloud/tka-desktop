@@ -11,7 +11,7 @@ class OptionPickerReversalFilter(QWidget):
     def __init__(self, option_picker: "OptionPicker"):
         super().__init__(option_picker)
         self.option_picker = option_picker
-        self.main_widget = option_picker.main_widget
+        self.settings = self.option_picker.construct_tab.settings
         self.reversal_combobox = ReversalCombobox(self)
         self.layout: QHBoxLayout = QHBoxLayout(self)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -37,14 +37,10 @@ class OptionPickerReversalFilter(QWidget):
 
     def save_filter(self):
         selected_filter = self.reversal_combobox.currentData()
-        self.main_widget.settings_manager.construct_tab_settings.set_filters(
-            selected_filter
-        )
+        self.settings.set_filters(selected_filter)
 
     def _load_filter(self):
-        selected_filter = (
-            self.main_widget.settings_manager.construct_tab_settings.get_filters()
-        )
+        selected_filter = self.settings.get_filters()
         index = self.reversal_combobox.findData(selected_filter)
         if index != -1:
             self.reversal_combobox.setCurrentIndex(index)

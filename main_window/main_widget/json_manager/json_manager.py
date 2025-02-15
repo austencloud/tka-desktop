@@ -7,7 +7,7 @@ from main_window.main_widget.json_manager.json_sequence_updater.json_sequence_up
 )
 from .json_ori_calculator import JsonOriCalculator
 
-from .json_ori_validation_engine import JsonOrientationValidationEngine
+from .json_ori_validation_engine import JsonOriValidationEngine
 from .json_start_position_handler import JsonStartPositionHandler
 from .sequence_data_loader_saver import SequenceDataLoaderSaver
 from .json_special_placement_handler import JsonSpecialPlacementHandler
@@ -29,7 +29,7 @@ class JsonManager:
         self.updater = JsonSequenceUpdater(self)
         self.start_pos_handler = JsonStartPositionHandler(self)
         self.ori_calculator = JsonOriCalculator(self)
-        self.ori_validation_engine = JsonOrientationValidationEngine(self)
+        self.ori_validation_engine = JsonOriValidationEngine(self)
         self.act_saver = JsonActSaver(self)
 
     def save_act(self, act_data: dict):

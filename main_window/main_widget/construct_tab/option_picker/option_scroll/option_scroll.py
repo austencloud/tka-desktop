@@ -1,11 +1,8 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QHBoxLayout
 from PyQt6.QtCore import Qt
-
-from main_window.main_widget.construct_tab.option_picker.option_scroll.section_widget.option_picker_section_group_widget import OptionPickerSectionGroupWidget
-
+from .section_widget.option_picker_section_group_widget import OptionPickerSectionGroupWidget
 from .section_widget.option_picker_section_widget import OptionPickerSectionWidget
-
 from Enums.Enums import LetterType
 
 if TYPE_CHECKING:
@@ -21,40 +18,34 @@ class OptionScroll(QScrollArea):
     def __init__(self, option_picker: "OptionPicker") -> None:
         super().__init__(option_picker)
         self.option_picker = option_picker
-        self.main_widget = option_picker.main_widget
         self.construct_tab = option_picker.construct_tab
 
         self._setup_layout()
         self._initialize_sections()
 
     def _initialize_sections(self) -> None:
-        self._create_sections()
-        self._add_sections_to_layout()
-
-    def _create_sections(self):
+        """Create and add sections to the layout. Handles groupable sections automatically."""
+        groupable_sections = []
         for letter_type in LetterType:
             section = OptionPickerSectionWidget(letter_type, self)
             self.sections[letter_type] = section
             section.setup_components()
 
-    def _add_sections_to_layout(self) -> None:
-        grouped_sections = [LetterType.Type4, LetterType.Type5, LetterType.Type6]
-        group_widget = None
+            if section.is_groupable:
+                groupable_sections.append(section)
+            else:
+                self.layout.addWidget(section)
 
-        for letter_type in list(LetterType):
-            section = self.sections.get(letter_type)
-            if section:
-                if letter_type in grouped_sections:
-                    if group_widget is None:
-                        group_widget = OptionPickerSectionGroupWidget(self)
-                        group_layout = QHBoxLayout()
-                        group_layout.addStretch()
-                        group_layout.addWidget(group_widget)
-                        group_layout.addStretch()
-                        self.layout.addLayout(group_layout, 3)
-                    group_widget.add_section_widget(section)
-                else:
-                    self.layout.addWidget(section, 3)
+        if groupable_sections:
+            group_widget = OptionPickerSectionGroupWidget(self)
+            for section in groupable_sections:
+                group_widget.add_section_widget(section)
+
+            group_layout = QHBoxLayout()
+            group_layout.addStretch()
+            group_layout.addWidget(group_widget)
+            group_layout.addStretch()
+            self.layout.addLayout(group_layout, 3)
 
     def _setup_layout(self):
         self.setWidgetResizable(True)
@@ -64,7 +55,6 @@ class OptionScroll(QScrollArea):
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
-        self.layout.setContentsMargins(0, 0, 0, 0)
 
         self.container = QWidget()
         self.container.setAutoFillBackground(True)

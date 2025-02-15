@@ -22,7 +22,7 @@ class OptionPickerScrollArea(QScrollArea):
     def __init__(self, option_picker: "OptionPicker") -> None:
         super().__init__(option_picker)
         self.option_picker = option_picker
-        self.main_widget = option_picker.main_widget
+        self.main_widget = option_picker.construct_tab.main_widget
         self.construct_tab = option_picker.construct_tab
         self.option_manager = self.option_picker.option_getter
         self.ori_calculator = self.main_widget.json_manager.ori_calculator

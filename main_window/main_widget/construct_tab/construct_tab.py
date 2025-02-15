@@ -34,9 +34,16 @@ class ConstructTab(QFrame):
         self.pictograph_cache: dict[Letter, dict[str, Pictograph]] = {
             letter: {} for letter in Letter
         }
-
+        self.settings = self.main_widget.settings_manager.construct_tab_settings
         self.add_to_sequence_manager = AddToSequenceManager(self)
-        self.option_picker = OptionPicker(self)
+        self.option_picker = OptionPicker(
+            construct_tab=self,
+            pictograph_dataset=self.main_widget.pictograph_dataset,
+            ori_calculator=self.main_widget.json_manager.ori_calculator,
+            ori_validation_engine=self.main_widget.json_manager.ori_validation_engine,
+            beat_frame=self.main_widget.sequence_workbench.beat_frame,
+            mw_height_provider=lambda: self.main_widget.height(),
+        )
         self.start_pos_picker = StartPosPicker(self)
         self.advanced_start_pos_picker = AdvancedStartPosPicker(self)
 

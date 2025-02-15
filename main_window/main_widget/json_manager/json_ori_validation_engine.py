@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_manager import JsonManager
 
 
-class JsonOrientationValidationEngine:
+class JsonOriValidationEngine:
     def __init__(self, json_manager: "JsonManager") -> None:
         self.json_manager = json_manager
         self.ori_calculator = self.json_manager.ori_calculator

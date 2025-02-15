@@ -12,13 +12,12 @@ class OptionFactory:
 
     def __init__(self, option_picker: "OptionPicker"):
         self.option_picker = option_picker
-        self.main_widget = option_picker.main_widget
         self.create_options()
 
     def create_options(self) -> list[Pictograph]:
         options = []
         for _ in range(self.MAX_PICTOGRAPHS):
-            option = Pictograph(self.main_widget)
+            option = Pictograph(self.option_picker.construct_tab.main_widget)
             option.view = OptionView(self.option_picker, option)
             options.append(option)
         self.option_picker.option_pool = options

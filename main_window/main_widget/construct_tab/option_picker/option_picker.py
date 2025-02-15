@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtCore import pyqtSignal
 
@@ -11,33 +11,41 @@ from .option_click_handler import OptionClickHandler
 from .reversal_filter.option_picker_reversal_filter import OptionPickerReversalFilter
 from .option_getter import OptionGetter
 from .choose_your_next_pictograph_label import ChooseYourNextPictographLabel
+from base_widgets.base_pictograph.pictograph import Pictograph
 
 if TYPE_CHECKING:
     from ..construct_tab import ConstructTab
-    from base_widgets.base_pictograph.pictograph import Pictograph
 
 
 class OptionPicker(QWidget):
-    """Contains the 'Choose Your Next Pictograph' label, reversal filter combo box, and the OptionPickerScrollArea."""
-
     COLUMN_COUNT = 8
     option_selected = pyqtSignal(str)
     layout: QVBoxLayout
     option_pool: list["Pictograph"]
 
-    def __init__(self, construct_tab: "ConstructTab"):
+    def __init__(
+        self,
+        construct_tab: "ConstructTab",
+        pictograph_dataset: dict,
+        ori_calculator,
+        ori_validation_engine,
+        beat_frame,
+        mw_height_provider: Callable[[], int],
+    ):
         super().__init__(construct_tab)
         self.construct_tab = construct_tab
-        self.main_widget = construct_tab.main_widget
-        
+        self.mw_height_provider = mw_height_provider
+
         # Components
-        self.choose_next_label = ChooseYourNextPictographLabel(self)
+        self.choose_next_label = ChooseYourNextPictographLabel(self.mw_height_provider)
         self.reversal_filter = OptionPickerReversalFilter(self)
         self.option_scroll = OptionScroll(self)
 
         # Managers
-        self.option_getter = OptionGetter(self)
-        self.click_handler = OptionClickHandler(self)
+        self.option_getter = OptionGetter(
+            pictograph_dataset, ori_calculator, ori_validation_engine
+        )
+        self.click_handler = OptionClickHandler(self, beat_frame)
         self.updater = OptionUpdater(self)
         self.option_factory = OptionFactory(self)
         self.layout_manager = OptionPickerLayoutManager(self)

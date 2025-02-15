@@ -11,7 +11,9 @@ class OptionUpdater:
     def __init__(self, option_picker: "OptionPicker"):
         self.option_picker = option_picker
         self.scroll_area = option_picker.option_scroll
-        self.json_loader = option_picker.main_widget.json_manager.loader_saver
+        self.json_loader = (
+            option_picker.construct_tab.main_widget.json_manager.loader_saver
+        )
         self.app_root = self._get_app_root()
 
     def _get_app_root(self) -> str:
@@ -27,7 +29,7 @@ class OptionUpdater:
                 section.pictograph_frame for section in sections.values()
             ]
 
-            self.option_picker.main_widget.fade_manager.widget_fader.fade_and_update(
+            self.option_picker.construct_tab.main_widget.fade_manager.widget_fader.fade_and_update(
                 pictograph_frames, self.update_options, 200
             )
 

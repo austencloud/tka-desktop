@@ -2,17 +2,28 @@ from typing import TYPE_CHECKING, Optional
 from data.constants import END_POS, START_POS
 
 if TYPE_CHECKING:
+    from main_window.main_widget.json_manager.json_ori_calculator import (
+        JsonOriCalculator,
+    )
+    from main_window.main_widget.json_manager.json_ori_validation_engine import (
+        JsonOriValidationEngine,
+    )
     from .option_picker import OptionPicker
 
 
 class OptionGetter:
     """Fetches and filters next pictograph options based on the current sequence."""
 
-    def __init__(self, option_picker: "OptionPicker"):
+    def __init__(
+        self,
+        pictograph_dataset: dict,
+        ori_calculator: "JsonOriCalculator",
+        ori_validation_engine: "JsonOriValidationEngine",
+    ):
         """Initialize with references to OptionPicker, JsonManager, and MainWidget."""
-        self.option_picker = option_picker
-        self.main_widget = option_picker.main_widget
-        self.json_manager = self.main_widget.json_manager
+        self.pictograph_dataset = pictograph_dataset
+        self.ori_calculator = ori_calculator
+        self.ori_validation_engine = ori_validation_engine
 
     def get_next_options(
         self, sequence: list, selected_filter: Optional[str] = None
@@ -38,12 +49,11 @@ class OptionGetter:
                 "end_ori"
             ]
 
-        ori_calculator = self.json_manager.ori_calculator
         for option in filtered_options:
-            option["blue_attributes"]["end_ori"] = ori_calculator.calculate_end_ori(
-                option, "blue"
+            option["blue_attributes"]["end_ori"] = (
+                self.ori_calculator.calculate_end_ori(option, "blue")
             )
-            option["red_attributes"]["end_ori"] = ori_calculator.calculate_end_ori(
+            option["red_attributes"]["end_ori"] = self.ori_calculator.calculate_end_ori(
                 option, "red"
             )
 
@@ -78,7 +88,7 @@ class OptionGetter:
         start_pos = last_pictograph[END_POS]
 
         if start_pos:
-            for dict_list in self.main_widget.pictograph_dataset.values():
+            for dict_list in self.pictograph_dataset.values():
                 for pict_dict in dict_list:
                     if pict_dict[START_POS] == start_pos:
                         next_opts.append(pict_dict)
@@ -88,9 +98,7 @@ class OptionGetter:
                 opt[f"{color}_attributes"]["start_ori"] = last_pictograph[
                     f"{color}_attributes"
                 ]["end_ori"]
-            self.json_manager.ori_validation_engine.validate_single_pictograph(
-                opt, last_pictograph
-            )
+            self.ori_validation_engine.validate_single_pictograph(opt, last_pictograph)
 
         return next_opts
 

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFontMetrics
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 if TYPE_CHECKING:
     from main_window.main_widget.construct_tab.option_picker.option_picker import (
@@ -10,10 +10,9 @@ if TYPE_CHECKING:
 
 
 class ChooseYourNextPictographLabel(QLabel):
-    def __init__(self, option_picker: "OptionPicker") -> None:
-        super().__init__(option_picker)
-        self.option_picker = option_picker
-        self.main_widget = option_picker.main_widget
+    def __init__(self, height_provider: Callable[[], int]):
+        super().__init__()
+        self.height_provider = height_provider
         self.set_default_text()
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         # self.hide()
@@ -22,7 +21,7 @@ class ChooseYourNextPictographLabel(QLabel):
         self.setText("Choose your next pictograph:")
 
     def resizeEvent(self, event) -> None:
-        height = self.main_widget.height()
+        height = self.height_provider()
         font_size = int(0.03 * height)
 
         font = self.font()
