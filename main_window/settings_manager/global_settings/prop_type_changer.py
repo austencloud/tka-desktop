@@ -3,7 +3,7 @@ from data.constants import BLUE, RED
 from objects.prop.prop import Prop
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
     from ..settings_manager import SettingsManager
 
 
@@ -11,7 +11,7 @@ class PropTypeChanger:
     def __init__(self, settings_manager: "SettingsManager") -> None:
         self.settings_manager = settings_manager
         self.main_window = settings_manager.main_window
-        
+
     def replace_props(self, new_prop_type, pictograph: "Pictograph"):
         for color, prop in pictograph.props.items():
             new_prop = pictograph.initializer.prop_factory.create_prop_of_type(
@@ -114,7 +114,8 @@ class PropTypeChanger:
         pictograph_list = [
             pictograph
             for pictograph in pictograph_list
-            if hasattr(pictograph.red_prop, 'loc') and hasattr(pictograph.blue_prop, 'loc')
+            if hasattr(pictograph.red_prop, "loc")
+            and hasattr(pictograph.blue_prop, "loc")
         ]
 
         return pictograph_list

@@ -6,9 +6,9 @@ from objects.prop.prop import Prop
 import logging
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.grid.grid import GridPoint
+    from base_widgets.pictograph.grid.grid import GridPoint
     from ..prop_placement_manager import PropPlacementManager
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 

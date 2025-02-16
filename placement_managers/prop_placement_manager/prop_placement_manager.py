@@ -3,7 +3,7 @@ from .handlers.beta_prop_positioner import BetaPropPositioner
 from .handlers.default_prop_positioner import DefaultPropPositioner
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class PropPlacementManager:

@@ -25,8 +25,8 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout, QComboBox, QVBoxLayout
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea
-from base_widgets.base_pictograph.pictograph import Pictograph
-from base_widgets.base_pictograph.pictograph_view import PictographView
+from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_view import PictographView
 from data.locations import cw_loc_order
 from data.locations import vertical_loc_mirror_map
 from data.positions import mirrored_positions
@@ -854,11 +854,11 @@ class CodexOriSelector(QWidget):
 # From codex_pictograph_view.py
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from base_widgets.base_pictograph.pictograph_view import PictographView
+from base_widgets.pictograph.pictograph_view import PictographView
 
 if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.codex.codex import Codex
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class CodexPictographView(PictographView):
@@ -993,7 +993,7 @@ from PyQt6.QtCore import Qt
 from Enums.letters import LetterType
 from .codex_pictograph_view import CodexPictographView
 from .codex_section_type_label import CodexSectionTypeLabel
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 
 if TYPE_CHECKING:
     from .codex import Codex

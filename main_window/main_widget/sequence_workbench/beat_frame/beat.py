@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Union
-from base_widgets.base_pictograph.pictograph import Pictograph
-from base_widgets.base_pictograph.glyphs.beat_reversal_group import BeatReversalGroup
+from base_widgets.pictograph.glyphs.beat_reversal_group import BeatReversalGroup
+from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.sequence_workbench.beat_frame.beat_grabber import (
     BeatGrabber,
 )

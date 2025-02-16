@@ -2,7 +2,7 @@ from copy import deepcopy
 from PyQt6.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout
 from typing import TYPE_CHECKING
 
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import BOX, DIAMOND
 from main_window.main_widget.construct_tab.advanced_start_pos_picker.advanced_start_pos_picker_pictograph_view import (
     AdvancedStartPosPickerPictographView,

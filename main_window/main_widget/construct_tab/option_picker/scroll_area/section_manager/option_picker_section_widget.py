@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QGroupBox
 from Enums.Enums import LetterType
 from data.constants import OPP, SAME
 from PyQt6.QtCore import Qt
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 from .option_picker_section_header import OptionPickerSectionHeader
 from .option_picker_section_pictograph_frame import OptionPickerSectionPictographFrame
 

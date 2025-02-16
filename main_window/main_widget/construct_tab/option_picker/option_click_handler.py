@@ -2,11 +2,13 @@ from PyQt6.QtWidgets import QApplication
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 
-from main_window.main_widget.sequence_workbench.beat_frame.sequence_beat_frame import SequenceBeatFrame
+from main_window.main_widget.sequence_workbench.beat_frame.sequence_beat_frame import (
+    SequenceBeatFrame,
+)
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class OptionClickHandler:

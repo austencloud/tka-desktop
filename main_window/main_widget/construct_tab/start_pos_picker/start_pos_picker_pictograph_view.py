@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from base_widgets.base_pictograph.bordered_pictograph_view import BorderedPictographView
+
+from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
 
 
 if TYPE_CHECKING:
     from .start_pos_picker import StartPosPicker
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class StartPosPickerPictographView(BorderedPictographView):

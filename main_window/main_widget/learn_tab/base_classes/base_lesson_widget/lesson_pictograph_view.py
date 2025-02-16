@@ -2,11 +2,11 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QGraphicsRectItem
 from PyQt6.QtGui import QBrush, QColor
 
-from base_widgets.base_pictograph.bordered_pictograph_view import BorderedPictographView
+from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
 
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class LessonPictographView(BorderedPictographView):

@@ -115,7 +115,7 @@ from PyQt6.QtCore import (
     QTimer,
 )
 from Enums.Enums import Glyph
-from base_widgets.base_pictograph.grid.non_radial_points_group import (
+from base_widgets.pictograph.grid.non_radial_points_group import (
     NonRadialPointsGroup,
 )
 from main_window.main_widget.fade_manager.fade_when_ready_helper import (

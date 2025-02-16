@@ -4,7 +4,7 @@ from Enums.PropTypes import PropType
 
 if TYPE_CHECKING:
     from objects.prop.prop import Prop
-    from base_widgets.base_pictograph.svg_manager import SvgManager
+    from base_widgets.pictograph.svg_manager import SvgManager
 from utilities.path_helpers import get_images_and_data_path
 
 from typing import TYPE_CHECKING
@@ -14,7 +14,7 @@ from Enums.PropTypes import PropType
 from data.constants import BLUE, PROP_DIR
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.svg_manager import (
+    from base_widgets.pictograph.svg_manager import (
         SvgManager,
     )
 

@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QFrame
 from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 from Enums.Enums import Letter
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 
 from main_window.main_widget.construct_tab.start_pos_picker.start_pos_picker import (
     StartPosPicker,

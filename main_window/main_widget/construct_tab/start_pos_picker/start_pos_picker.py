@@ -3,7 +3,7 @@ from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import BOX, DIAMOND, START_POS, END_POS
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 from ...sequence_workbench.beat_frame.start_pos_beat import StartPositionBeat
 from .start_pos_picker_variations_button import StartPosVariationsButton
 from .start_pos_pictograph_frame import StartPosPickerPictographFrame

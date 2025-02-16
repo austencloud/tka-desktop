@@ -1,10 +1,10 @@
 from typing import Union, TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from base_widgets.base_pictograph.glyphs.beat_reversal_group import BeatReversalGroup
-from base_widgets.base_pictograph.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
+from base_widgets.pictograph.glyphs.beat_reversal_group import BeatReversalGroup
+from base_widgets.pictograph.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
     StartToEndPosGlyph,
 )
-from base_widgets.base_pictograph.grid.grid import NonRadialPointsGroup
+from base_widgets.pictograph.grid.grid import NonRadialPointsGroup
 from Enums.Enums import Glyph
 
 if TYPE_CHECKING:

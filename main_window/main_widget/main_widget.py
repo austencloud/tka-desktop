@@ -34,7 +34,7 @@ if TYPE_CHECKING:
     from .json_manager.json_manager import JsonManager
     from .sequence_workbench.sequence_workbench import SequenceWorkbench
 
-    from base_widgets.base_pictograph.svg_manager import (
+    from base_widgets.pictograph.svg_manager import (
         SvgManager,
     )
     from .main_background_widget.backgrounds.base_background import (
@@ -50,7 +50,7 @@ if TYPE_CHECKING:
     )
     from .thumbnail_finder import ThumbnailFinder
     from .grid_mode_checker import GridModeChecker
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
     from Enums.Enums import Letter
     from letter_determiner.letter_determiner import LetterDeterminer
 
@@ -164,7 +164,10 @@ class MainWidget(QWidget):
         super().resizeEvent(event)
         self.background_widget.resize_background()
         self.beat_frame = self.sequence_workbench.beat_frame
-        if self.left_stack.currentIndex() == self.left_sequence_picker_index and self.right_stack.currentIndex() == self.right_sequence_viewer_index:
+        if (
+            self.left_stack.currentIndex() == self.left_sequence_picker_index
+            and self.right_stack.currentIndex() == self.right_sequence_viewer_index
+        ):
             total_width = self.width()
             left_width = int(total_width * (2 / 3))
             right_width = total_width - left_width

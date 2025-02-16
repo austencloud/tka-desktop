@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from Enums.letters import LetterType
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.pictograph_view import (
+    from base_widgets.pictograph.pictograph_view import (
         PictographView,
     )
 import math
@@ -25,7 +25,7 @@ class StyledBorderOverlay(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.border_colors_map = self._get_border_colors_map()
         self.setContentsMargins(0, 0, 0, 0)
-        
+
     def _get_border_colors_map(self) -> dict[LetterType, tuple[str, str]]:
         border_colors_map = {
             LetterType.Type1: ("#36c3ff", "#6F2DA8"),  # Cyan, Purple
@@ -131,7 +131,7 @@ class StyledBorderOverlay(QWidget):
             painter = QPainter(self)
             self._draw_borders(painter)
             painter.end()
-            
+
     def update_borders(self) -> None:
         primary_color, secondary_color = self.get_border_colors()
         self.update_border_color_and_width(primary_color, secondary_color)

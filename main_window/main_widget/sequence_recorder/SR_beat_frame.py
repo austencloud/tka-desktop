@@ -15,7 +15,7 @@ from main_window.main_widget.sequence_workbench.beat_frame.beat import (
 from utilities.path_helpers import get_my_videos_path
 
 
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 
 
 if TYPE_CHECKING:

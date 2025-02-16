@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from placement_managers.arrow_placement_manager.arrow_placement_manager import (
         ArrowPlacementManager,
     )
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class SpecialArrowPositioner:

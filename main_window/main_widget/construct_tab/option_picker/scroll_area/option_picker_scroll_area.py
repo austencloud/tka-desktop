@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea
 from PyQt6.QtCore import Qt
 
 
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 from utilities.reversal_detector import ReversalDetector
 
 from .section_manager.option_picker_layout_manager import OptionPickerLayoutManager

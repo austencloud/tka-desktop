@@ -3,7 +3,7 @@ from functools import partial
 from PyQt6.QtCore import QObject, pyqtSignal
 from Enums.letters import Letter
 from data.constants import BOX, DIAMOND, END_POS, START_POS
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 from data.position_maps import box_positions, diamond_positions
 
 from typing import TYPE_CHECKING

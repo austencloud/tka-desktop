@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from base_widgets.base_pictograph.pictograph_view import PictographView
+from base_widgets.pictograph.pictograph_view import PictographView
 from .beat import Beat
 
 if TYPE_CHECKING:

@@ -12,7 +12,7 @@ from data.constants import (
 
 if TYPE_CHECKING:
     from .turns_widget import TurnsWidget
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
     from objects.motion.motion import Motion
 
 PropRotDir = str

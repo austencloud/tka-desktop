@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from copy import deepcopy
 
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 
 from .start_pos_beat import StartPositionBeat
 
@@ -25,7 +25,7 @@ class StartPositionAdder:
         self.construct_tab = self.main_widget.construct_tab
         start_pos_dict = clicked_start_option.pictograph_data
         graph_editor = self.sequence_workbench.graph_editor
-        
+
         if not graph_editor.is_toggled:
             graph_editor.animator.toggle()
         start_pos_beat.updater.update_pictograph(deepcopy(start_pos_dict))

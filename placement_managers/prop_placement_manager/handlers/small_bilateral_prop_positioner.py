@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.components.placement_managers.prop_placement_manager.handlers.beta_prop_positioner import (
+    from base_widgets.pictograph.components.placement_managers.prop_placement_manager.handlers.beta_prop_positioner import (
         BetaPropPositioner,
     )
 

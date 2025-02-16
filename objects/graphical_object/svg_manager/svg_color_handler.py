@@ -3,7 +3,7 @@ import re
 from data.constants import BLUE, HEX_BLUE, HEX_RED, RED
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.svg_manager import (
+    from base_widgets.pictograph.svg_manager import (
         SvgManager,
     )
 
@@ -21,14 +21,14 @@ class SvgColorHandler:
         COLOR_MAP = {RED: HEX_RED, BLUE: HEX_BLUE}
 
         # 1) Detect if we already got a hex color
-        if new_color and new_color.startswith('#'):
+        if new_color and new_color.startswith("#"):
             new_hex_color = new_color
         else:
             # 2) Maybe "BLUE", "RED", or something else
             new_hex_color = COLOR_MAP.get(new_color, None)
 
         if not new_hex_color:
-            # If we still don't have a color, nothing to replace. 
+            # If we still don't have a color, nothing to replace.
             return svg_data
 
         class_color_pattern = re.compile(

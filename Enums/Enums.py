@@ -7,18 +7,18 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QGraphicsTextItem
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.glyphs.elemental_glyph.elemental_glyph import (
+    from base_widgets.pictograph.glyphs.elemental_glyph.elemental_glyph import (
         ElementalGlyph,
     )
-    from base_widgets.base_pictograph.glyphs.beat_reversal_group import (
+    from base_widgets.pictograph.glyphs.beat_reversal_group import (
         BeatReversalGroup,
     )
-    from base_widgets.base_pictograph.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
+    from base_widgets.pictograph.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
         StartToEndPosGlyph,
     )
-    from base_widgets.base_pictograph.glyphs.tka.tka_glyph import TKA_Glyph
-    from base_widgets.base_pictograph.glyphs.vtg.vtg_glyph import VTG_Glyph
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.glyphs.tka.tka_glyph import TKA_Glyph
+    from base_widgets.pictograph.glyphs.vtg.vtg_glyph import VTG_Glyph
+    from base_widgets.pictograph.pictograph import Pictograph
     from main_window.settings_manager.visibility_settings.visibility_settings import (
         VisibilitySettings,
     )

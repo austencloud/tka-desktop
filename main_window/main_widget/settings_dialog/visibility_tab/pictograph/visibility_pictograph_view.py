@@ -1,6 +1,6 @@
 from PyQt6.QtCore import QEvent
 from typing import TYPE_CHECKING
-from base_widgets.base_pictograph.pictograph_view import PictographView
+from base_widgets.pictograph.pictograph_view import PictographView
 from .visibility_pictograph_interaction_manager import (
     VisibilityPictographInteractionManager,
 )

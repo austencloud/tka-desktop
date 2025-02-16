@@ -4,13 +4,13 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPainter, QPen, QColor, QMouseEvent, QKeyEvent, QCursor
 from PyQt6.QtWidgets import QApplication
 
-from base_widgets.base_pictograph.pictograph_context_menu_handler import (
+from base_widgets.pictograph.pictograph_context_menu_handler import (
     PictographContextMenuHandler,
 )
-from base_widgets.base_pictograph.pictograph_view import (
+from base_widgets.pictograph.pictograph_view import (
     PictographView,
 )
-from base_widgets.base_pictograph.pictograph_view_key_event_handler import (
+from base_widgets.pictograph.pictograph_view_key_event_handler import (
     PictographViewKeyEventHandler,
 )
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
@@ -18,7 +18,7 @@ from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph impor
 )
 from .GE_pictograph_view_mouse_event_handler import GE_PictographViewMouseEventHandler
 
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 from ..beat_frame.beat_view import Beat
 
 if TYPE_CHECKING:

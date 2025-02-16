@@ -1,6 +1,6 @@
 # orientation_setter.py
 from typing import TYPE_CHECKING
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import BLUE, START_ORI, END_ORI, BOX, DIAMOND
 
 if TYPE_CHECKING:

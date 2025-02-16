@@ -7,7 +7,7 @@ from .motion_ori_calculator import MotionOriCalculator
 from .motion_updater import MotionUpdater
 
 if TYPE_CHECKING:
-    from base_widgets.base_pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph import Pictograph
 
     from objects.arrow.arrow import Arrow
     from objects.prop.prop import Prop

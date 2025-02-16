@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.visibility_tab.visibility_tab import (

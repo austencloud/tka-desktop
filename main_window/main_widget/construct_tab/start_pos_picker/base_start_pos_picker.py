@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget
 from copy import deepcopy
 from data.positions import box_positions, diamond_positions
-from base_widgets.base_pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import BOX, DIAMOND
 from .start_pos_picker_pictograph_view import StartPosPickerPictographView
 
