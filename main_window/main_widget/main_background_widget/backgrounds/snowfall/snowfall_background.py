@@ -1,7 +1,10 @@
 from typing import TYPE_CHECKING, Union
 from PyQt6.QtGui import QColor, QPainter, QLinearGradient
 from PyQt6.QtWidgets import QWidget
-from main_window.main_widget.main_background_widget.backgrounds.base_background import BaseBackground
+from main_window.main_widget.main_background_widget.backgrounds.base_background import (
+    BaseBackground,
+)
+
 if TYPE_CHECKING:
 
     from main_window.main_widget.browse_tab.browse_tab import (
@@ -23,16 +26,6 @@ class SnowfallBackground(BaseBackground):
         super().__init__(widget)
         self.widget = widget
 
-        # self.snowflake_manager = SnowflakeManager()
-        # self.santa_manager = SantaManager()
-        # self.shooting_star_manager = ShootingStarManager()
-
-    # def animate_background(self):
-    #     self.snowflake_manager.animate_snowflakes()
-    #     self.santa_manager.animate_santa()
-    #     self.shooting_star_manager.animate_shooting_star()
-    #     self.shooting_star_manager.manage_shooting_star(self.widget)
-
     def paint_background(self, widget: QWidget, painter: QPainter):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -42,9 +35,3 @@ class SnowfallBackground(BaseBackground):
         gradient.setColorAt(0.7, QColor("#325078"))
         gradient.setColorAt(1, QColor("#49708a"))
         painter.fillRect(widget.rect(), gradient)
-
-        # self.snowflake_manager.draw_snowflakes(painter, widget)
-        # if self.santa_manager.santa["active"]:
-        #     self.santa_manager.draw_santa(painter, widget)
-
-        # self.shooting_star_manager.draw_shooting_star(painter, widget)

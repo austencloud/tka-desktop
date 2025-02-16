@@ -12,9 +12,6 @@ class BaseBackground(QObject):
         super().__init__(parent)
         self.gradient_shift = 0
         self.color_shift = 0
-        # self.timer = QTimer(self)
-        # self.timer.timeout.connect(self.animate_background)
-        # self.timer.start(50)
 
     def animate_background(self):
         self.update_required.emit()

@@ -26,13 +26,7 @@ class MainBackgroundWidget(QWidget):
 
         self.setGeometry(main_widget.rect())
         self.setFixedSize(main_widget.size())
-        self.start_timer()
         self.apply_background()
-
-    def start_timer(self):
-        self.animation_timer = QTimer(self)
-        # self.animation_timer.timeout.connect(self._on_animation_tick)
-        # self.animation_timer.start(60)
 
     def _on_animation_tick(self):
         if self.main_widget.background_widget:
