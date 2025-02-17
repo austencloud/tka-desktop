@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class SettingsButton(QPushButton):
     def __init__(self, menu_bar: "MenuBarWidget") -> None:
         super().__init__(
-            QIcon("images\icons\sequence_workbench_icons\settings.png"), None, menu_bar
+            QIcon("images\\icons\\sequence_workbench_icons\\settings.png"), None, menu_bar
         )
         self.main_widget = menu_bar.main_widget
         self.clicked.connect(self.show_settings_dialog)

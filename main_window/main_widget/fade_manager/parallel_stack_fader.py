@@ -48,12 +48,23 @@ class ParallelStackFader:
             right_stack.setCurrentIndex(right_new_index)
             left_stack.setCurrentIndex(left_new_index)
 
+        def finalize():
+            if callback:
+                callback()
+
+        fade_enabled = self.manager.fades_enabled()
+
+        if not fade_enabled:
+            switch_and_resize()
+            finalize()
+            return
+
         def fade_in_new_widgets():
             self.manager.widget_fader.fade_widgets(
                 [self.right_new_widget, self.left_new_widget],
                 fade_in=True,
                 duration=duration,
-                callback=callback,
+                callback=finalize,
             )
 
         self.manager.widget_fader.fade_widgets(

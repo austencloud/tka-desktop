@@ -1,6 +1,7 @@
 from copy import deepcopy
 from functools import partial
-from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal, Qt
+from PyQt6.QtWidgets import QApplication
 from Enums.letters import Letter
 from data.constants import BOX, DIAMOND, END_POS, START_POS
 from base_widgets.pictograph.pictograph import Pictograph
@@ -144,34 +145,6 @@ class StartPosManager(QObject):
                     )
 
                     pictograph.start_to_end_pos_glyph.hide()
-
-    def add_start_pos_to_sequence(
-        self, clicked_start_option: Pictograph, event: QWidget = None
-    ) -> None:
-        """Handle user clicking a start position pictograph."""
-        seq_widget = self.main_widget.sequence_workbench
-        start_position_beat = StartPositionBeat(seq_widget.beat_frame)
-
-        clicked_start_option.updater.update_dict_from_attributes()
-
-        # Copy and set the data to the start_position_beat
-        start_position_beat.updater.update_pictograph(
-            deepcopy(clicked_start_option.pictograph_data)
-        )
-
-        seq_widget.beat_frame.start_pos_view.set_start_pos(start_position_beat)
-        self.construct_tab.last_beat = start_position_beat
-
-        # For selection
-        beat_frame = seq_widget.beat_frame
-        start_pos_view = beat_frame.start_pos_view
-        beat_frame.selection_overlay.select_beat(start_pos_view)
-
-        # If you store data in a JSON manager:
-        self.main_widget.json_manager.start_pos_handler.set_start_position_data(
-            start_position_beat
-        )
-        self.start_position_selected.emit(start_position_beat)
 
     def hide_start_positions(self) -> None:
         """Hides the start position pictographs."""

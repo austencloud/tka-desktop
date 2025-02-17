@@ -33,6 +33,18 @@ class WidgetFader:
 
         self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
 
+        # Skip animation if fades are disabled
+        if not self.manager.fades_enabled():
+            for widget in widgets:
+                effect = self._ensure_opacity_effect(widget)
+                effect.setOpacity(1.0 if fade_in else 0.0)
+                widget.setGraphicsEffect(effect)
+
+            if callback:
+                callback()
+            return
+
+        # Otherwise, animate as normal
         animation_group = QParallelAnimationGroup(self.manager)
         for widget in widgets:
             effect = self._ensure_opacity_effect(widget)
@@ -42,8 +54,10 @@ class WidgetFader:
             animation.setEndValue(1.0 if fade_in else 0.0)
             animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
             animation_group.addAnimation(animation)
+
         if callback:
             animation_group.finished.connect(callback)
+
         animation_group.start()
 
     def _ensure_opacity_effect(self, widget: QWidget) -> QGraphicsOpacityEffect:
@@ -55,27 +69,51 @@ class WidgetFader:
 
     def fade_and_update(
         self,
-        widget: list[QWidget],
+        widgets: list[QWidget],
         callback: Union[callable, tuple[callable, callable]] = None,
         duration: int = 250,
     ) -> None:
+        fade_enabled = self.manager.fades_enabled()
+
         def on_fade_out_finished():
-            self.manager.graphics_effect_remover.clear_graphics_effects(widget)
+            self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
 
             if callback:
                 if isinstance(callback, tuple):
                     callback[0]()
-                    self.fade_widgets(
-                        widget,
-                        True,
-                        duration,
-                        lambda: QTimer.singleShot(0, callback[1]),
-                    )
+                    if fade_enabled:
+                        self.fade_widgets(
+                            widgets,
+                            True,
+                            duration,
+                            lambda: QTimer.singleShot(0, callback[1]),
+                        )
+                    else:
+                        for widget in widgets:
+                            effect = self._ensure_opacity_effect(widget)
+                            effect.setOpacity(1.0)
+                            widget.setGraphicsEffect(effect)
+                        callback[1]()
                 else:
                     callback()
-                    self.fade_widgets(widget, True, duration)
+                    if fade_enabled:
+                        self.fade_widgets(widgets, True, duration)
+                    else:
+                        for widget in widgets:
+                            effect = self._ensure_opacity_effect(widget)
+                            effect.setOpacity(1.0)
+                            widget.setGraphicsEffect(effect)
 
-        self.fade_widgets(widget, False, duration, on_fade_out_finished)
+        if fade_enabled:
+            self.fade_widgets(widgets, False, duration, on_fade_out_finished)
+        else:
+            # Immediately set opacity and execute callback
+            for widget in widgets:
+                effect = self._ensure_opacity_effect(widget)
+                effect.setOpacity(1.0)
+                widget.setGraphicsEffect(effect)
+
+            on_fade_out_finished()
 
     def fade_visibility_items_to_opacity(
         self,
