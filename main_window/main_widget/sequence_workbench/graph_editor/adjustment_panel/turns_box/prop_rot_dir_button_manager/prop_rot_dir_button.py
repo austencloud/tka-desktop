@@ -15,24 +15,28 @@ class PropRotDirButton(BaseRotDirButton):
         self.prop_rot_dir = prop_rot_dir
 
     def get_button_style(self, pressed: bool) -> str:
+        button_size = int(self.turns_box.graph_editor.height() * 0.25)
+        border_radius = str(button_size // 2) + "px"  # Set border-radius to half the button size
         if pressed:
-            return """
-                QPushButton {
+            return f"""
+                QPushButton {{
                     background-color: #ccd9ff;
                     border: 2px solid #555555;
                     border-bottom-color: #888888; /* darker shadow on the bottom */
                     border-right-color: #888888; /* darker shadow on the right */
-                }
+                    border-radius: {border_radius};
+                }}
             """
         else:
-            return """
-                QPushButton {
+            return f"""
+                QPushButton {{
                     background-color: white;
                     border: 1px solid black;
-                }
-                QPushButton:hover {
+                    border-radius: {border_radius};
+                }}
+                QPushButton:hover {{
                     background-color: #e6f0ff;
-                }
+                }}
             """
 
     def update_state_dict(self, state_dict: dict, value: bool) -> None:
