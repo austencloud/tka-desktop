@@ -6,7 +6,6 @@ if TYPE_CHECKING:
 
 
 class StackFader:
-
     def __init__(self, manager: "FadeManager"):
         self.manager = manager
 
@@ -17,9 +16,6 @@ class StackFader:
         duration: int = 300,
         callback: Optional[callable] = None,
     ):
-        """
-        Fades out the current widget in the stack, switches to the new widget, and fades it in.
-        """
         current_widget = stack.currentWidget()
         next_widget = stack.widget(new_index)
         self.manager.graphics_effect_remover.clear_graphics_effects(
@@ -34,13 +30,24 @@ class StackFader:
                 [current_widget, next_widget]
             )
             stack.setCurrentIndex(new_index)
-            self.manager.widget_fader.fade_widgets(
-                [next_widget], fade_in=True, duration=duration, callback=callback
-            )
 
-        self.manager.widget_fader.fade_widgets(
-            [current_widget],
-            fade_in=False,
-            duration=duration,
-            callback=on_fade_out_finished,
-        )
+            if self.manager.fades_enabled():
+                self.manager.widget_fader.fade_widgets(
+                    [next_widget], fade_in=True, duration=duration, callback=callback
+                )
+            else:
+                effect = self.manager.widget_fader._ensure_opacity_effect(next_widget)
+                effect.setOpacity(1.0)
+                next_widget.setGraphicsEffect(effect)
+                if callback:
+                    callback()
+
+        if self.manager.fades_enabled():
+            self.manager.widget_fader.fade_widgets(
+                [current_widget], fade_in=False, duration=duration, callback=on_fade_out_finished
+            )
+        else:
+            effect = self.manager.widget_fader._ensure_opacity_effect(current_widget)
+            effect.setOpacity(0.0)
+            current_widget.setGraphicsEffect(effect)
+            on_fade_out_finished()
