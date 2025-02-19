@@ -23,7 +23,6 @@ class SequenceAutoCompleter:
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
         self.main_widget = sequence_workbench.main_widget
-        self.validation_engine = self.main_widget.json_manager.ori_validation_engine
         self.rotated_permutation_executor = RotatedPermutationExecuter(self)
         self.mirrored_permutation_executor = MirroredPermutationExecutor(self, False)
 

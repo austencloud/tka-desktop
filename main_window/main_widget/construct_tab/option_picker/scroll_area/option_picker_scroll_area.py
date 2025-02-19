@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 
 
 from base_widgets.pictograph.pictograph import Pictograph
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.reversal_detector import ReversalDetector
 
 from .section_manager.option_picker_layout_manager import OptionPickerLayoutManager
@@ -26,7 +27,7 @@ class OptionPickerScrollArea(QScrollArea):
         self.construct_tab = option_picker.construct_tab
         self.option_manager = self.option_picker.option_getter
         self.ori_calculator = self.main_widget.json_manager.ori_calculator
-        self.json_manager = self.main_widget.json_manager
+        self.json_manager = AppContext.json_manager()
         self.json_loader = self.json_manager.loader_saver
         self.pictograph_cache: dict[str, Pictograph] = {}
         self.disabled = False

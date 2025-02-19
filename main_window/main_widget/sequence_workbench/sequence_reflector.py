@@ -7,6 +7,7 @@ from data.locations import vertical_loc_mirror_map
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
     BaseSequenceModifier,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
@@ -22,7 +23,7 @@ class SequenceReflector(BaseSequenceModifier):
 
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
-        json_manager = self.sequence_workbench.main_widget.json_manager
+        json_manager = AppContext.json_manager()
         self.json_loader = json_manager.loader_saver
         self.json_updater = json_manager.updater
 

@@ -15,8 +15,9 @@ class PropPlacementManager:
         self.beta_positioner = BetaPropPositioner(self)
 
     def update_prop_positions(self) -> None:
-        for prop in self.pictograph.props.values():
-            self.default_positioner.set_prop_to_default_loc(prop)
+        if self.pictograph.letter:
+            for prop in self.pictograph.props.values():
+                self.default_positioner.set_prop_to_default_loc(prop)
 
-        if self.pictograph.check.ends_with_beta():
-            self.beta_positioner.reposition_beta_props()
+            if self.pictograph.check.ends_with_beta():
+                self.beta_positioner.reposition_beta_props()

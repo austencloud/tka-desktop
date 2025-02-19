@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtCore import pyqtSignal
 
 from main_window.main_widget.construct_tab.option_picker.option_view import OptionView
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .option_scroll.option_scroll import OptionScroll
 from .option_factory import OptionFactory
 from .option_picker_layout_manager import OptionPickerLayoutManager
@@ -27,8 +28,6 @@ class OptionPicker(QWidget):
         self,
         construct_tab: "ConstructTab",
         pictograph_dataset: dict,
-        ori_calculator,
-        ori_validation_engine,
         beat_frame,
         mw_height_provider: Callable[[], int],
     ):
@@ -42,9 +41,7 @@ class OptionPicker(QWidget):
         self.option_scroll = OptionScroll(self)
 
         # Managers
-        self.option_getter = OptionGetter(
-            pictograph_dataset, ori_calculator, ori_validation_engine
-        )
+        self.option_getter = OptionGetter(pictograph_dataset)
         self.click_handler = OptionClickHandler(self, beat_frame)
         self.updater = OptionUpdater(self)
         self.option_factory = OptionFactory(self)

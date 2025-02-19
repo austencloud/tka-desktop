@@ -3,6 +3,8 @@ from PyQt6.QtWidgets import QLabel
 
 from typing import TYPE_CHECKING, Union
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import (
@@ -38,7 +40,7 @@ class VariationNumberLabel(QLabel):
         font.setBold(True)
         self.setFont(font)
         color = (
-            self.parent.main_widget.main_window.settings_manager.global_settings.get_current_font_color()
+            AppContext.settings_manager().global_settings.get_current_font_color()
         )
         self.setStyleSheet(f"color: {color};")
 

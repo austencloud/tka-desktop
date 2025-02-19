@@ -2,6 +2,8 @@ import datetime
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt6.QtCore import Qt
+
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .title_label import TitleLabel
 
 if TYPE_CHECKING:
@@ -12,9 +14,7 @@ class ActHeader(QWidget):
     def __init__(self, act_sheet: "ActSheet"):
         super().__init__(act_sheet)
         self.act_sheet = act_sheet
-        self.settings_manager = (
-            self.act_sheet.write_tab.main_widget.main_window.settings_manager
-        )
+        self.settings_manager = AppContext.settings_manager()
 
         # Initial header setup
         self._configure_header_style()

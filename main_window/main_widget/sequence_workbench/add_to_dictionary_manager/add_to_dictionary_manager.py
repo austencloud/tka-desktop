@@ -2,6 +2,8 @@ import os
 import re
 
 from typing import TYPE_CHECKING
+
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .structural_variation_checker import StructuralVariationChecker
 from .thumbnail_generator import ThumbnailGenerator
 from utilities.path_helpers import get_images_and_data_path
@@ -15,13 +17,14 @@ if TYPE_CHECKING:
 class AddToDictionaryManager:
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
-        self.json_manager = self.sequence_workbench.main_widget.json_manager
         self.dictionary_dir = get_images_and_data_path("dictionary")
         self.structural_checker = StructuralVariationChecker(self)
         self.thumbnail_generator = ThumbnailGenerator(self)
 
     def add_to_dictionary(self):
-        current_sequence = self.json_manager.loader_saver.load_current_sequence()
+        current_sequence = (
+            AppContext().json_manager().loader_saver.load_current_sequence()
+        )
         if self.is_sequence_invalid(current_sequence):
             self.display_message(
                 "You must build a sequence to add it to your dictionary."

@@ -13,13 +13,10 @@ class BeatFrameResizer:
         self.beat_frame = beat_frame
         self.sequence_workbench = beat_frame.sequence_workbench
         self.main_widget = beat_frame.main_widget
-        self.json_manager = self.main_widget.json_manager
         self.scroll_area = self.sequence_workbench.scroll_area
         self.selection_overlay = beat_frame.selection_overlay
         self.start_pos_view = beat_frame.start_pos_view
 
-        # self.setMouseTracking(True)
-        # self.setCursor(Qt.CursorShape.SizeHorCursor)
 
     def resize_beat_frame(self) -> None:
         width, height = self.calculate_dimensions()

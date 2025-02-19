@@ -3,6 +3,7 @@ from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import pyqtSignal
 from data.constants import FLOAT
+from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
@@ -21,7 +22,7 @@ class TurnsAdjustmentManager(QObject):
         self.graph_editor = self.turns_widget.turns_box.graph_editor
         self.beat_frame = self.graph_editor.sequence_workbench.beat_frame
         self.main_widget = self.graph_editor.main_widget
-        self.json_manager = self.main_widget.json_manager
+        self.json_manager = AppContext.json_manager()
         self.json_validation_engine = self.json_manager.ori_validation_engine
         self.color = self.turns_widget.turns_box.color
 
@@ -54,7 +55,7 @@ class TurnsAdjustmentManager(QObject):
         matching_motion.turns = new_turns
         pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
         self.json_manager.updater.turns_updater.update_turns_in_json_at_index(
-            pictograph_index + 2, self.color, new_turns
+            pictograph_index + 2, self.color, new_turns, self.beat_frame
         )
         self.json_validation_engine.run(is_current_sequence=True)
         self.json_updater = self.json_manager.updater
@@ -112,7 +113,7 @@ class TurnsAdjustmentManager(QObject):
 
         pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
         self.json_manager.updater.turns_updater.update_turns_in_json_at_index(
-            pictograph_index + 2, self.color, new_turns
+            pictograph_index + 2, self.color, new_turns, self.beat_frame
         )
         self.reference_beat.motions[self.color].turns = new_turns
         # self.reference_beat.view.repaint()

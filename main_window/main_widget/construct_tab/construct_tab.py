@@ -7,6 +7,7 @@ from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.construct_tab.start_pos_picker.start_pos_picker import (
     StartPosPicker,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 from .advanced_start_pos_picker.advanced_start_pos_picker import AdvancedStartPosPicker
 
@@ -29,18 +30,16 @@ class ConstructTab(QFrame):
         main_widget.splash.updater.update_progress("ConstructTab")
         self.main_widget = main_widget
         self.last_beat: "Pictograph" = None
-        self.json_manager = self.main_widget.json_manager
+        self.json_manager = AppContext.json_manager()
         self.start_position_picked = False
         self.pictograph_cache: dict[Letter, dict[str, Pictograph]] = {
             letter: {} for letter in Letter
         }
-        self.settings = self.main_widget.settings_manager.construct_tab_settings
+        self.settings = AppContext.settings_manager().construct_tab_settings
         self.add_to_sequence_manager = AddToSequenceManager(self)
         self.option_picker = OptionPicker(
             construct_tab=self,
             pictograph_dataset=self.main_widget.pictograph_dataset,
-            ori_calculator=self.main_widget.json_manager.ori_calculator,
-            ori_validation_engine=self.main_widget.json_manager.ori_validation_engine,
             beat_frame=self.main_widget.sequence_workbench.beat_frame,
             mw_height_provider=lambda: self.main_widget.height(),
         )

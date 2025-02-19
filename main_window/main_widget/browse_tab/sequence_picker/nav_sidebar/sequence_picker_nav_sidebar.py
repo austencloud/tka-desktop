@@ -3,6 +3,8 @@ from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt, QPoint
 from typing import TYPE_CHECKING
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 
 if TYPE_CHECKING:
     from ..sequence_picker import SequencePicker
@@ -24,9 +26,7 @@ class SequencePickerNavSidebar(QWidget):
 
         self._setup_scroll_area()
 
-        self.settings_manager = (
-            self.sequence_picker.main_widget.main_window.settings_manager
-        )
+        self.settings_manager = AppContext.settings_manager()
 
         main_layout = QVBoxLayout(self)
         main_layout.addWidget(self.scroll_area)

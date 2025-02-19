@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
 from main_window.main_widget.write_tab.act_sheet.act_loader import ActLoader
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .act_header.act_header import ActHeader
 from .act_splitter.act_container import ActContainer
 from .act_saver import ActSaver
@@ -18,9 +19,7 @@ class ActSheet(QWidget):
     def __init__(self, write_tab: "WriteTab") -> None:
         super().__init__(write_tab)
         self.write_tab = write_tab
-        self.settings_manager = (
-            self.write_tab.main_widget.main_window.settings_manager.write_tab_settings
-        )
+        self.settings = AppContext.settings_manager().write_tab_settings
         self.act_header = ActHeader(self)
         self.act_container = ActContainer(self)
         self.setAcceptDrops(False)
@@ -31,7 +30,6 @@ class ActSheet(QWidget):
 
         self._setup_layout()
         self.act_container.connect_scroll_sync()
-
 
     def _setup_layout(self):
         layout = QVBoxLayout(self)

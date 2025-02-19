@@ -20,7 +20,6 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.profiler = profiler
         self.main_widget = None  # Initialize main_widget to None
-        self.settings_manager = SettingsManager(self)
         self.palette_manager = PaletteManager(self)
 
         self.geometry_manager = MainWindowGeometryManager(self)

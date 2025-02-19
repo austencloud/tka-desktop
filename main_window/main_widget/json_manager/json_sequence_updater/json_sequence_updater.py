@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from main_window.main_widget.sequence_workbench.beat_frame.beat import Beat
 from main_window.main_widget.sequence_workbench.beat_frame.beat_view import BeatView
+from main_window.main_widget.sequence_workbench.beat_frame.sequence_beat_frame import SequenceBeatFrame
 from .json_duration_updater import JsonDurationUpdater
 from .json_prop_rot_dir_updater import JsonstrUpdater
 from .json_prop_type_updater import JsonPropTypeUpdater
@@ -16,7 +17,6 @@ if TYPE_CHECKING:
 class JsonSequenceUpdater:
     def __init__(self, json_manager: "JsonManager"):
         self.json_manager = json_manager
-        self.main_widget = json_manager.main_widget
         self.turns_updater = JsonTurnsUpdater(self)
         self.motion_type_updater = JsonMotionTypeUpdater(self)
         self.prop_type_updater = JsonPropTypeUpdater(self)
@@ -75,9 +75,8 @@ class JsonSequenceUpdater:
 
         self.json_manager.loader_saver.save_current_sequence(sequence_data)
 
-    def clear_and_repopulate_json_from_beat_view(self):
+    def clear_and_repopulate_json_from_beat_view(self, beat_frame: "SequenceBeatFrame"):
         self.json_manager.loader_saver.clear_current_sequence_file()
-        beat_frame = self.json_manager.main_widget.sequence_workbench.beat_frame
         beat_views = beat_frame.beat_views
         start_pos = beat_frame.start_pos_view.start_pos
         if start_pos.view.is_filled:

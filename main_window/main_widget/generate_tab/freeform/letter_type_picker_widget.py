@@ -6,6 +6,7 @@ from Enums.letters import LetterType
 from main_window.main_widget.generate_tab.freeform.letter_type_button_widget import (
     LetterTypeButtonWidget,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.generate_tab.generate_tab import GenerateTab
@@ -108,7 +109,7 @@ class LetterTypePickerWidget(QWidget):
         f.setPointSize(font_size)
         self.filter_label.setFont(f)
         global_settings = (
-            self.generate_tab.main_widget.main_window.settings_manager.global_settings
+            AppContext.settings_manager().global_settings
         )
         color = self.generate_tab.main_widget.font_color_updater.get_font_color(
             global_settings.get_background_type()

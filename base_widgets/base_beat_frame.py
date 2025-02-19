@@ -24,8 +24,6 @@ class BaseBeatFrame(QFrame):
     def __init__(self, main_widget: "MainWidget"):
         super().__init__()
         self.main_widget = main_widget
-        self.json_manager = main_widget.json_manager
-        self.settings_manager = main_widget.main_window.settings_manager
         self.sequence_workbench: "SequenceWorkbench" = None
         self.browse_tab: "BrowseTab" = None
         self.start_pos_view: "StartPositionBeatView" = None

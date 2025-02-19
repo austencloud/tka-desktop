@@ -1,6 +1,11 @@
 import json
 from typing import TYPE_CHECKING
 from data.constants import DIAMOND
+from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
+from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
+    SequencePropertiesManager,
+)
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_user_editable_resource_path
 from utilities.word_simplifier import WordSimplifier
 
@@ -9,11 +14,11 @@ if TYPE_CHECKING:
 
 
 class SequenceDataLoaderSaver:
-    def __init__(self, json_manager: "JsonManager") -> None:
-        self.json_manager = json_manager
+    def __init__(self) -> None:
         self.current_sequence_json = get_user_editable_resource_path(
             "current_sequence.json"
         )
+        self.sequence_properties_manager = SequencePropertiesManager()
 
     def load_current_sequence(self) -> list[dict]:
         try:
@@ -36,9 +41,11 @@ class SequenceDataLoaderSaver:
         return [
             {
                 "word": "",
-                "author": self.json_manager.main_widget.main_window.settings_manager.users.user_manager.get_current_user(),
+                "author": AppContext.settings_manager().users.user_manager.get_current_user(),
                 "level": 0,
-                "prop_type": self.json_manager.main_widget.prop_type.name.lower(),
+                "prop_type": AppContext.settings_manager()
+                .global_settings.get_prop_type()
+                .name.lower(),
                 "grid_mode": DIAMOND,
                 "is_circular": False,
                 "is_permutable": False,
@@ -55,26 +62,22 @@ class SequenceDataLoaderSaver:
             sequence = self.get_default_sequence()
         else:
             sequence[0]["word"] = WordSimplifier.simplify_repeated_word(
-                self.json_manager.main_widget.sequence_properties_manager.calculate_word(
-                    sequence
-                )
+                self.sequence_properties_manager.calculate_word(sequence)
             )
             if "author" not in sequence[0]:
                 sequence[0][
                     "author"
-                ] = (
-                    self.json_manager.main_widget.main_window.settings_manager.users.user_manager.get_current_user()
-                )
+                ] = AppContext.settings_manager().users.user_manager.get_current_user()
             if "level" not in sequence[0]:
                 sequence[0]["level"] = (
-                    self.json_manager.main_widget.sequence_level_evaluator.get_sequence_difficulty_level(
-                        sequence
-                    )
+                    SequenceLevelEvaluator.get_sequence_difficulty_level(sequence)
                 )
             if "prop_type" not in sequence[0]:
-                sequence[0][
-                    "prop_type"
-                ] = self.json_manager.main_widget.prop_type.name.lower()
+                sequence[0]["prop_type"] = (
+                    AppContext.settings_manager()
+                    .global_settings.get_prop_type()
+                    .name.lower()
+                )
             if "is_circular" not in sequence[0]:
                 sequence[0]["is_circular"] = False
             if "is_permutable" not in sequence[0]:

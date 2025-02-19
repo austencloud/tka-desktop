@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 
 from .image_export_layout_handler import ImageExportLayoutHandler
 from .image_creator.image_creator import ImageCreator
@@ -30,9 +32,8 @@ class ImageExportManager:
             self.sequence_workbench = beat_frame.sequence_workbench
         elif beat_frame_class.__name__ == "TempBeatFrame":
             self.dictionary_widget = beat_frame.browse_tab
-        self.settings_manager = self.main_widget.main_window.settings_manager
         self.include_start_pos = (
-            self.settings_manager.image_export.get_image_export_setting(
+            AppContext.settings_manager().image_export.get_image_export_setting(
                 "include_start_position"
             )
         )

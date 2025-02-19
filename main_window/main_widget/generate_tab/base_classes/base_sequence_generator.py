@@ -28,6 +28,7 @@ from main_window.main_widget.sequence_workbench.beat_frame.start_pos_beat import
 from main_window.main_widget.sequence_workbench.sequence_workbench import (
     SequenceWorkbench,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
@@ -41,7 +42,7 @@ class BaseSequenceGenerator:
 
         self.main_widget = sequence_generator_frame.tab.main_widget
         self.validation_engine = self.main_widget.json_manager.ori_validation_engine
-        self.json_manager = self.main_widget.json_manager
+        self.json_manager = AppContext.json_manager()
         self.ori_calculator = self.main_widget.json_manager.ori_calculator
 
     def _initialize_sequence(self, length):

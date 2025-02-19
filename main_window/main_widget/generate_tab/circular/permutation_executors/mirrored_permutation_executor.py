@@ -15,7 +15,6 @@ class MirroredPermutationExecutor(PermutationExecutor):
     ):
         self.circular_sequence_generator = circular_sequence_generator
         self.color_swap_second_half = color_swap_second_half
-        self.validation_engine = circular_sequence_generator.validation_engine
 
     def create_permutations(self, sequence: list[dict], vertical_or_horizontal: str):
         if not self.can_perform_mirrored_permutation(sequence):
@@ -42,9 +41,7 @@ class MirroredPermutationExecutor(PermutationExecutor):
             new_entries.append(next_pictograph)
             sequence.append(next_pictograph)
 
-            sequence_workbench = (
-                self.circular_sequence_generator.sequence_workbench
-            )
+            sequence_workbench = self.circular_sequence_generator.sequence_workbench
             sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph, override_grow_sequence=True, update_word=False
             )

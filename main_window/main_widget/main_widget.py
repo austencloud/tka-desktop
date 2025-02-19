@@ -8,6 +8,7 @@ from main_window.main_widget.generate_tab.generate_tab import GenerateTab
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 from main_window.main_widget.startup_dialog import StartupDialog
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .browse_tab.browse_tab import BrowseTab
 from .fade_manager.fade_manager import FadeManager
 from .full_screen_image_overlay import FullScreenImageOverlay
@@ -57,7 +58,7 @@ if TYPE_CHECKING:
 
 class MainWidget(QWidget):
     main_window: "MainWindow"
-    settings_manager: "SettingsManager"
+    # settings_manager: "SettingsManager"
     splash: "SplashScreen"
     settings_dialog: "SettingsDialog"
 
@@ -137,17 +138,15 @@ class MainWidget(QWidget):
         super().__init__(main_window)
         self.main_window = main_window
         self.main_window.main_widget = self
-        self.settings_manager = main_window.settings_manager
         self.splash = splash_screen
-
+        self.settings_manager = AppContext.settings_manager()
+        self.json_manager = AppContext.json_manager()
         self.tab_switcher = MainWidgetTabSwitcher(self)
         self.manager = MainWidgetManagers(self)
         self.state_handler = MainWidgetState(self)
         self.ui_handler = MainWidgetUI(self)
         self.event_handler = MainWidgetEvents(self)
 
-        # QTimer.singleShot(0, self.ui_handler.load_current_tab)
-        # QTimer.singleShot(10, self.ensure_user_exists)
 
     def ensure_user_exists(self):
         """Check if a user exists; if not, prompt for a name and show welcome info."""

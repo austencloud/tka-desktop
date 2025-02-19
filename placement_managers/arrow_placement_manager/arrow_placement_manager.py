@@ -24,8 +24,9 @@ class ArrowPlacementManager:
         self.quadrant_index_handler = QuadrantIndexHandler(self)
 
     def update_arrow_placements(self) -> None:
-        for arrow in self.pictograph.arrows.values():
-            self.update_arrow_position(arrow)
+        if self.pictograph.letter:
+            for arrow in self.pictograph.arrows.values():
+                self.update_arrow_position(arrow)
 
     def update_arrow_position(self, arrow: Arrow) -> None:
         initial_pos = self.initial_pos_calculator.get_initial_coords(arrow)

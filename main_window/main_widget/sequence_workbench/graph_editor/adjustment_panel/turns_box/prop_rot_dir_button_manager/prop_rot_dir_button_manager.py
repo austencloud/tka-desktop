@@ -32,9 +32,8 @@ class PropRotDirButtonManager:
         self.buttons = self.prop_rot_dir_buttons
         self.graph_editor = turns_box.graph_editor
         self.beat_frame = self.graph_editor.sequence_workbench.beat_frame
-        self.json_manager = self.graph_editor.main_widget.json_manager
         self.main_widget = self.graph_editor.main_widget
-
+        self.json_manager = self.graph_editor.main_widget.json_manager
     def _setup_prop_rot_dir_buttons(self) -> list[PropRotDirButton]:
         cw_path = get_images_and_data_path(f"{ICON_DIR}clock/clockwise.png")
         ccw_path = get_images_and_data_path(f"{ICON_DIR}clock/counter_clockwise.png")

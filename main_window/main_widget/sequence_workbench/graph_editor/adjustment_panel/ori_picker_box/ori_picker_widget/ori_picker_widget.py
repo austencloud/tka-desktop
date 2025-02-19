@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal
 from typing import TYPE_CHECKING
 from data.constants import IN, COUNTER, OUT, CLOCK
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .ori_setter import OrientationSetter
 from .ori_text_label import OrientationTextLabel
 from .clickable_ori_label import ClickableOriLabel
@@ -28,7 +29,7 @@ class OriPickerWidget(QWidget):
         self.ori_picker_box = ori_picker_box
         self.color = self.ori_picker_box.color
 
-        self.json_manager = self.ori_picker_box.graph_editor.main_widget.json_manager
+        self.json_manager = AppContext.json_manager()
         self.json_validation_engine = self.json_manager.ori_validation_engine
         self.beat_frame = self.ori_picker_box.graph_editor.sequence_workbench.beat_frame
 

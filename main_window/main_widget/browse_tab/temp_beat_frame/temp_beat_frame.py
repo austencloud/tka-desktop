@@ -20,6 +20,7 @@ from main_window.main_widget.sequence_workbench.beat_frame.start_pos_beat import
 from main_window.main_widget.sequence_workbench.beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
@@ -35,9 +36,9 @@ class TempBeatFrame(BaseBeatFrame):
     def __init__(self, browse_tab: "BrowseTab") -> None:
         super().__init__(browse_tab.main_widget)
         self.main_widget = browse_tab.main_widget
-        self.json_manager = self.main_widget.json_manager
+        self.json_manager = AppContext.json_manager()
+        self.settings_manager = AppContext.settings_manager()
         self.browse_tab = browse_tab
-        self.settings_manager = self.main_widget.main_window.settings_manager
 
         self.initialized = True
         self.sequence_changed = False

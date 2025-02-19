@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_indices import LeftStackIndex, RightStackIndex
 from main_window.main_widget.tab_name import TabName
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
@@ -11,7 +12,6 @@ if TYPE_CHECKING:
 class MainWidgetTabSwitcher:
     def __init__(self, main_widget: "MainWidget"):
         self.mw = main_widget
-        self.settings = main_widget.main_window.settings_manager.global_settings
 
         self.tab_to_right_stack = {
             self.mw.main_browse_tab_index: RightStackIndex.SEQUENCE_VIEWER,
@@ -32,7 +32,7 @@ class MainWidgetTabSwitcher:
 
     def set_current_tab(self, tab_name: TabName):
         """Set the current tab name in the global settings."""
-        self.settings.set_current_tab(tab_name)
+        AppContext.settings_manager().global_settings.set_current_tab(tab_name)
 
     def switch_to_tab(self, tab_name: TabName):
         """Switch to a tab with an animated fade transition."""
@@ -43,7 +43,7 @@ class MainWidgetTabSwitcher:
         left_new_index, right_new_index = self.get_stack_indices_for_tab(index)
 
         tab_name = self.index_to_tab_name.get(index, TabName.CONSTRUCT)
-        self.settings.set_current_tab(tab_name.value)
+        AppContext.settings_manager().global_settings.set_current_tab(tab_name.value)
 
         is_browse_tab = index == self.mw.main_browse_tab_index
         width_ratio = (2 / 3, 1 / 3) if is_browse_tab else (1 / 2, 1 / 2)

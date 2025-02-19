@@ -1,6 +1,8 @@
 import os
 import logging
 from typing import TYPE_CHECKING
+
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .mirrored_entry_manager.mirrored_entry_manager import (
     MirroredEntryManager,
 )
@@ -29,9 +31,7 @@ logging.basicConfig(
 class SpecialPlacementDataUpdater:
     def __init__(self, positioner: "SpecialArrowPositioner") -> None:
         self.positioner = positioner
-        self.json_handler = (
-            positioner.pictograph.main_widget.json_manager.special_placement_handler
-        )
+
         self.entry_remover = SpecialPlacementEntryRemover(self)
         self.mirrored_entry_manager = MirroredEntryManager(self)
 
@@ -124,9 +124,9 @@ class SpecialPlacementDataUpdater:
             ori_key,
             f"{letter.value}_placements.json",
         )
-        existing_data = self.json_handler.load_json_data(file_path)
+        existing_data =AppContext.special_placement_handler().load_json_data(file_path)
         existing_data[letter.value] = letter_data
-        self.json_handler.write_json_data(existing_data, file_path)
+        AppContext.special_placement_handler().write_json_data(existing_data, file_path)
 
     def update_arrow_adjustments_in_json(
         self, adjustment: tuple[int, int], arrow: Arrow

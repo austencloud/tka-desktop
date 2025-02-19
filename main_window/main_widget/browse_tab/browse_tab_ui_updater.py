@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 class BrowseTabUIUpdater:
     def __init__(self, browse_tab: "BrowseTab"):
         self.browse_tab = browse_tab
-        self.settings_manager = browse_tab.main_widget.main_window.settings_manager
+        self.settings_manager = AppContext.settings_manager()
         self.font_color_updater = browse_tab.main_widget.font_color_updater
 
     def update_and_display_ui(self, total_sequences: int):

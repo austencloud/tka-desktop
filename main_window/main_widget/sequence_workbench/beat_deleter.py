@@ -1,4 +1,6 @@
 from typing import TYPE_CHECKING
+
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .beat_frame.beat_deleter.first_beat_deleter import FirstBeatDeleter
 from .beat_frame.beat_deleter.non_first_beat_deleter import NonFirstBeatDeleter
 from .beat_frame.beat_deleter.start_pos_deleter import StartPositionDeleter
@@ -16,8 +18,7 @@ class BeatDeleter:
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
         self.beat_frame = sequence_workbench.beat_frame
-        self.json_manager = sequence_workbench.main_widget.json_manager
-        self.settings_manager = sequence_workbench.main_widget.settings_manager
+        self.json_manager = AppContext.json_manager()
         self.main_widget = sequence_workbench.main_widget
         self.selection_overlay = self.beat_frame.selection_overlay
 
@@ -45,7 +46,7 @@ class BeatDeleter:
         self.sequence_workbench.indicator_label.show_message(self.message)
 
     def _post_deletion_updates(self) -> None:
-        self.json_manager.updater.clear_and_repopulate_json_from_beat_view()
+        self.json_manager.updater.clear_and_repopulate_json_from_beat_view(self.beat_frame)
         self.beat_frame.layout_manager.configure_beat_frame_for_filled_beats()
         self.beat_frame.sequence_workbench.current_word_label.update_current_word_label_from_beats()
         self.beat_frame.sequence_workbench.difficulty_label.update_difficulty_label()

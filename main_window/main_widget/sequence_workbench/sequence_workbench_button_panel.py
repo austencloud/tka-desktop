@@ -30,7 +30,6 @@ class SequenceWorkbenchButtonPanel(QFrame):
         self.beat_frame = self.sequence_workbench.beat_frame
         self.export_manager = self.beat_frame.image_export_manager
         self.indicator_label = self.sequence_workbench.indicator_label
-        self.settings_manager = self.main_widget.main_window.settings_manager
 
         self.font_size = self.sequence_workbench.width() // 45
 

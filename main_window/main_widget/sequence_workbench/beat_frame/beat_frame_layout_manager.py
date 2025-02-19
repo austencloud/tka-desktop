@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QGridLayout
 from main_window.main_widget.sequence_workbench.beat_frame.beat_view import BeatView
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .sequence_beat_frame import SequenceBeatFrame
@@ -12,7 +13,6 @@ class BeatFrameLayoutManager:
     def __init__(self, beat_frame: "SequenceBeatFrame"):
         self.beat_frame = beat_frame
         self.selection_manager = beat_frame.selection_overlay
-        self.settings_manager = beat_frame.main_widget.main_window.settings_manager
 
     def setup_layout(self) -> None:
         layout: QGridLayout = QGridLayout(self.beat_frame)
@@ -32,7 +32,9 @@ class BeatFrameLayoutManager:
 
     def calculate_layout(self, beat_count: int) -> tuple[int, int]:
         """Get the default layout for a given beat count from settings."""
-        return self.settings_manager.sequence_layout.get_layout_setting(str(beat_count))
+        return AppContext.settings_manager().sequence_layout.get_layout_setting(
+            str(beat_count)
+        )
 
     def get_cols(self):
         layout = self.beat_frame.layout
@@ -51,7 +53,7 @@ class BeatFrameLayoutManager:
         return rows
 
     def configure_beat_frame_for_filled_beats(self) -> None:
-        if self.settings_manager.global_settings.get_grow_sequence():
+        if AppContext.settings_manager().global_settings.get_grow_sequence():
             filled_beats = [
                 beat for beat in self.beat_frame.beat_views if beat.is_filled
             ]
@@ -59,7 +61,7 @@ class BeatFrameLayoutManager:
 
     def configure_beat_frame(self, num_beats, override_grow_sequence=False):
         if not override_grow_sequence:
-            grow_sequence = self.settings_manager.global_settings.get_grow_sequence()
+            grow_sequence = AppContext.settings_manager().global_settings.get_grow_sequence()
             if grow_sequence:
                 num_filled_beats = self.beat_frame.get.next_available_beat() or 0
                 num_beats = num_filled_beats

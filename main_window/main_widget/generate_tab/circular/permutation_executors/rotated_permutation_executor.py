@@ -31,7 +31,6 @@ if TYPE_CHECKING:
 class RotatedPermutationExecuter(PermutationExecutor):
     def __init__(self, circular_sequence_generator: "CircularSequenceBuilder"):
         self.circular_sequence_generator = circular_sequence_generator
-        self.validation_engine = circular_sequence_generator.validation_engine
         self.hand_rot_dir_calculator = HandpathCalculator()
 
     def create_permutations(self, sequence: list[dict]):

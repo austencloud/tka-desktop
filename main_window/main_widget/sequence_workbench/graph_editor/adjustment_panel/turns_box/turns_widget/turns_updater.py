@@ -9,6 +9,7 @@ from data.constants import (
     PRO,
     STATIC,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .turns_widget import TurnsWidget
@@ -23,9 +24,7 @@ class TurnsUpdater:
     def __init__(self, turns_widget: "TurnsWidget") -> None:
         self.turns_widget = turns_widget
         self.turns_box = turns_widget.turns_box
-        self.json_manager = (
-            turns_widget.turns_box.adjustment_panel.graph_editor.main_widget.json_manager
-        )
+        self.json_manager = AppContext.json_manager()
         self.json_updater = self.json_manager.updater
         self.beat_frame = (
             turns_widget.turns_box.adjustment_panel.graph_editor.sequence_workbench.beat_frame

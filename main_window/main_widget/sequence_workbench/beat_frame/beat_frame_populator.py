@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.reversal_detector import ReversalDetector
 from utilities.word_simplifier import WordSimplifier
 
@@ -15,7 +16,6 @@ class BeatFramePopulator:
         self.sequence_workbench = beat_frame.sequence_workbench
         self.start_pos_view = beat_frame.start_pos_view
         self.selection_overlay = beat_frame.selection_overlay
-        self.json_manager = beat_frame.json_manager
         self.current_sequence_json = []  # Initialize the instance variable
 
     def populate_beat_frame_from_json(
@@ -25,7 +25,7 @@ class BeatFramePopulator:
         self.current_sequence_json = current_sequence_json  # Store the sequence JSON
         indicator_label = self.sequence_workbench.indicator_label
         indicator_label.show_message(self.loading_text)
-        self.json_manager.loader_saver.clear_current_sequence_file()
+        AppContext.json_manager().loader_saver.clear_current_sequence_file()
         self.construct_tab = self.main_widget.construct_tab
 
         if not self.current_sequence_json:
@@ -48,7 +48,7 @@ class BeatFramePopulator:
         start_pos_beat = start_pos_picker.convert_current_sequence_json_entry_to_start_pos_pictograph(
             self.current_sequence_json
         )
-        self.json_manager.start_pos_handler.set_start_position_data(start_pos_beat)
+        AppContext.json_manager().start_pos_handler.set_start_position_data(start_pos_beat)
         self.start_pos_view.set_start_pos(start_pos_beat)
 
     def _update_sequence_layout(self):

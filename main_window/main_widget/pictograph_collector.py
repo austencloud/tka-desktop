@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
@@ -10,7 +10,7 @@ class PictographCollector:
     def __init__(self, main_widget: "MainWidget") -> None:
         self.main_widget = main_widget
 
-    def collect_all_pictographs(self) -> List["Pictograph"]:
+    def collect_all_pictographs(self) -> list["Pictograph"]:
         pictographs = []
 
         sequence_workbench = self.main_widget.sequence_workbench

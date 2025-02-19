@@ -71,8 +71,12 @@ class PropTypeTab(QWidget):
 
     def _set_current_prop_type(self, prop_type: str):
         settings_manager = self.main_widget.settings_manager
-        settings_manager.global_settings.set_prop_type(prop_type)
-        self.main_widget.settings_manager.global_settings.prop_type_changer.apply_prop_type()
+
+        # Collect pictographs from MainWidget's PictographCollector
+        pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
+
+        settings_manager.global_settings.set_prop_type(prop_type, pictographs)
+
 
     def resizeEvent(self, event):
         font = QFont()

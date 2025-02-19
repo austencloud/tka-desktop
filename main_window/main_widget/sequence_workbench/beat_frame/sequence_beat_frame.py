@@ -37,9 +37,7 @@ class SequenceBeatFrame(BaseBeatFrame):
     def __init__(self, sequence_workbench: "SequenceWorkbench") -> None:
         super().__init__(sequence_workbench.main_widget)
         self.main_widget = sequence_workbench.main_widget
-        self.json_manager = self.main_widget.json_manager
         self.sequence_workbench = sequence_workbench
-        self.settings_manager = self.main_widget.main_window.settings_manager
         self._init_beats()
         self._setup_components()
         self.layout_manager.setup_layout()

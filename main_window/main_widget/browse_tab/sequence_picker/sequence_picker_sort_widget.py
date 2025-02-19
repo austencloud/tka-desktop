@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel, QApplication
 from PyQt6.QtCore import Qt
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 
 if TYPE_CHECKING:
     from .sequence_picker import SequencePicker
@@ -15,7 +17,7 @@ class SequencePickerSortWidget(QWidget):
         self.sequence_picker = sequence_picker
         self.main_widget = self.sequence_picker.main_widget
         self.browse_tab = self.sequence_picker.browse_tab
-        self.settings_manager = self.main_widget.main_window.settings_manager
+        self.settings_manager = AppContext.settings_manager()
         self.selected_button: QPushButton = None  # Track the selected button
         self._setup_sort_buttons()
         self._setup_layout()

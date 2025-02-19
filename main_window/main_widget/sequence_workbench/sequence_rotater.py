@@ -21,7 +21,6 @@ class SequenceRotater(BaseSequenceModifier):
 
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
-        self.json_loader = self.sequence_workbench.main_widget.json_manager.loader_saver
 
     def rotate_current_sequence(self):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)

@@ -2,6 +2,8 @@ import os
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
+
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .image_export_dialog import ImageExportDialog
 
 if TYPE_CHECKING:
@@ -16,7 +18,6 @@ class ImageExportDialogExecutor:
         self.export_manager = export_manager
         self.beat_frame = export_manager.beat_frame
 
-        self.settings_manager = export_manager.settings_manager
         self.layout_manager = export_manager.layout_handler
         self.image_creator = export_manager.image_creator
         self.image_saver = export_manager.image_saver
@@ -49,7 +50,7 @@ class ImageExportDialogExecutor:
             self.export_manager.include_start_pos = options.get(
                 "include_start_position", self.export_manager.include_start_pos
             )
-            self.settings_manager.image_export.set_image_export_setting(
+            AppContext.settings_manager().image_export.set_image_export_setting(
                 "include_start_position", self.export_manager.include_start_pos
             )
 

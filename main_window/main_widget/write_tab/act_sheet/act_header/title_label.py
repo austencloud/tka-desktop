@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class TitleLabel(EditableLabel):
     def __init__(self, header_widget: "ActHeader", title_text: str):
-        title_text = header_widget.act_sheet.settings_manager.get_act_title()
+        title_text = header_widget.act_sheet.settings.get_act_title()
         super().__init__(header_widget, title_text)
         self.header_widget = header_widget
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -27,7 +27,7 @@ class TitleLabel(EditableLabel):
         """Save changes and hide the editor."""
         new_title = self.edit.text()
         self.label.setText(new_title or self.label.text())
-        self.header_widget.act_sheet.settings_manager.save_act_title(new_title)
+        self.header_widget.act_sheet.settings.save_act_title(new_title)
         self.layout.setCurrentWidget(self.label)
         super()._hide_edit()
         self.header_widget.act_sheet.act_saver.save_act()

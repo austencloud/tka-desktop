@@ -9,6 +9,7 @@ from PyQt6.QtGui import QFont, QIcon
 from typing import TYPE_CHECKING, Literal
 import os
 
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
@@ -21,6 +22,7 @@ class WordLabel(QWidget):
         self.thumbnail_box = thumbnail_box
         self.setContentsMargins(0, 0, 0, 0)
         self.setFixedHeight(60)  # Adjust the height as needed
+        self.settings_manager = AppContext.settings_manager()
 
         self.word_label = QLabel(thumbnail_box.word)
         self.word_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -52,12 +54,12 @@ class WordLabel(QWidget):
         self,
     ) -> None | Literal["black_star_outline.png"] | Literal["white_star_outline.png"]:
         if (
-            self.thumbnail_box.main_widget.main_window.settings_manager.global_settings.get_current_font_color()
+            self.settings_manager.global_settings.get_current_font_color()
             == "black"
         ):
             return "black_star_outline.png"
         elif (
-            self.thumbnail_box.main_widget.main_window.settings_manager.global_settings.get_current_font_color()
+            self.settings_manager.global_settings.get_current_font_color()
             == "white"
         ):
             return "white_star_outline.png"
@@ -72,7 +74,7 @@ class WordLabel(QWidget):
 
         offset = self.favorite_button.width()
         color = (
-            self.thumbnail_box.main_widget.main_window.settings_manager.global_settings.get_current_font_color()
+            self.settings_manager.global_settings.get_current_font_color()
         )
         self.word_label.setStyleSheet(f"padding-left: {offset}px; color: {color};")
 

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from main_window.main_widget.generate_tab.widgets.permutation_type_toggle import (
     PermutationTypeToggle,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 from .generate_tab_layout_manager import GenerateTabLayoutManager
 from .generate_tab_controller import GenerateTabController
@@ -30,7 +31,7 @@ class GenerateTab(QWidget):
         super().__init__(main_widget)
         self.main_widget = main_widget
         self.main_widget.splash.updater.update_progress("GenerateTab")
-        self.settings = main_widget.main_window.settings_manager.generate_tab_settings
+        self.settings = AppContext.settings_manager().generate_tab_settings
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
 

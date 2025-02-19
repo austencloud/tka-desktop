@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.reversal_detector import (
     ReversalDetector,
 )
@@ -17,8 +18,6 @@ class BeatAdder:
         self.beats = beat_frame.beat_views
         self.sequence_workbench = beat_frame.sequence_workbench
         self.main_widget = beat_frame.main_widget
-        self.settings_manager = self.main_widget.main_window.settings_manager
-        self.json_manager = self.main_widget.json_manager
 
     def add_beat_to_sequence(
         self,
@@ -29,7 +28,9 @@ class BeatAdder:
         select_beat=True,
     ) -> None:
         next_beat_number = self.calculate_next_beat_number()
-        grow_sequence = self.settings_manager.global_settings.get_grow_sequence()
+        grow_sequence = (
+            AppContext.settings_manager().global_settings.get_grow_sequence()
+        )
 
         if next_beat_number and update_level == 1:
             self.sequence_workbench.difficulty_label.set_difficulty_level(1)
@@ -42,7 +43,7 @@ class BeatAdder:
             return
 
         if next_beat_index is not None and not self.beats[next_beat_index].is_filled:
-            sequence_so_far = self.json_manager.loader_saver.load_current_sequence()
+            sequence_so_far = AppContext.json_manager().loader_saver.load_current_sequence()
             reversal_info = ReversalDetector.detect_reversal(
                 sequence_so_far, new_beat.pictograph_data
             )
@@ -60,7 +61,7 @@ class BeatAdder:
                 self.beat_frame.selection_overlay.select_beat(
                     self.beats[next_beat_index], toggle_animation=False
                 )
-            self.json_manager.updater.update_current_sequence_file_with_beat(
+            AppContext.json_manager().updater.update_current_sequence_file_with_beat(
                 self.beats[next_beat_index].beat
             )
             if update_word:

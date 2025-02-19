@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
         SequenceWorkbench,
@@ -13,7 +15,7 @@ class BaseSequenceModifier:
 
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
-        self.json_loader = self.sequence_workbench.main_widget.json_manager.loader_saver
+        self.json_loader = AppContext.json_manager().loader_saver
 
     def _update_ui(self):
         """Update all UI components after a modification."""

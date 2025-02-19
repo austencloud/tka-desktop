@@ -1,17 +1,20 @@
 from typing import TYPE_CHECKING
 from Enums.PropTypes import PropType
+from base_widgets.pictograph.pictograph import Pictograph
+from main_window.main_widget.font_color_updater.font_color_updater import (
+    FontColorUpdater,
+)
 from .prop_type_changer import PropTypeChanger
 
 if TYPE_CHECKING:
     from ..settings_manager import SettingsManager
+
 
 class GlobalSettings:
     def __init__(self, settings_manager: "SettingsManager") -> None:
         self.settings = settings_manager.settings
         self.settings_manager = settings_manager
         self.prop_type_changer = PropTypeChanger(self.settings_manager)
-        if settings_manager.main_window:
-            self.main_widget = settings_manager.main_window.main_widget
 
     def get_grow_sequence(self) -> bool:
         return self.settings.value("global/grow_sequence", True, type=bool)
@@ -20,12 +23,15 @@ class GlobalSettings:
         self.settings.setValue("global/grow_sequence", grow_sequence)
 
     def get_prop_type(self) -> PropType:
-        prop_type_key = self.settings.value("global/prop_type", "Staff").capitalize()
+        prop_type_key: str = self.settings.value("global/prop_type", "Staff")
+        prop_type_key = prop_type_key.capitalize()
         return PropType[prop_type_key]
 
-    def set_prop_type(self, prop_type: PropType) -> None:
+    def set_prop_type(
+        self, prop_type: PropType, pictographs: list["Pictograph"]
+    ) -> None:
         self.settings.setValue("global/prop_type", prop_type.name)
-        self.prop_type_changer.apply_prop_type()
+        self.prop_type_changer.apply_prop_type(pictographs)
 
     def get_background_type(self) -> str:
         return self.settings.value("global/background_type", "Snowfall")
@@ -35,9 +41,7 @@ class GlobalSettings:
         self.settings_manager.background_changed.emit(background_type)
 
     def get_current_font_color(self) -> str:
-        return self.settings_manager.main_window.main_widget.font_color_updater.get_font_color(
-            self.get_background_type()
-        )
+        return FontColorUpdater.get_font_color(self.get_background_type())
 
     def get_current_tab(self) -> str:
         return self.settings.value("global/current_tab", "sequence_builder")

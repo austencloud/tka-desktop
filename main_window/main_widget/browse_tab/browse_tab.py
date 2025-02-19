@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QWidget
 from main_window.main_widget.browse_tab.browse_tab_filter_controller import (
     BrowseTabFilterController,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 
 from .sequence_picker.sequence_picker import SequencePicker
@@ -24,7 +25,7 @@ class BrowseTab(QWidget):
         self.main_widget = main_widget
         self.main_widget.splash.updater.update_progress("BrowseTab")
 
-        self.settings = self.main_widget.main_window.settings_manager.browse_settings
+        self.settings_manager = AppContext.settings_manager().browse_settings
         self.ui_updater = BrowseTabUIUpdater(self)
 
         # Refactored Filtering Components

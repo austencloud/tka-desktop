@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QApplication, QMessageBox
 from main_window.main_widget.full_screen_image_overlay import (
     FullScreenImageOverlay,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ class FullScreenViewer:
         self.main_widget = sequence_workbench.main_widget
         self.beat_frame = sequence_workbench.beat_frame
         self.indicator_label = sequence_workbench.indicator_label
-        self.json_loader = self.main_widget.json_manager.loader_saver
+        self.json_loader = AppContext.json_manager().loader_saver
 
         self.full_screen_overlay = None
 

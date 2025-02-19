@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 
 from data.constants import DIAMOND
+from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .strictly_color_swapped_permutation_checker import (
     StrictlyColorSwappedPermutationChecker,
 )
@@ -18,10 +20,8 @@ if TYPE_CHECKING:
 
 
 class SequencePropertiesManager:
-    def __init__(self, main_widget: "MainWidget"):
-        self.main_widget = main_widget
-        self.json_manager = main_widget.json_manager
-        self.sequence = None
+    def __init__(self):
+        self.sequence: list[dict] = []
 
         # Default properties
         self.properties = {
@@ -55,7 +55,7 @@ class SequencePropertiesManager:
         self.sequence = sequence[1:]
 
     def update_sequence_properties(self):
-        sequence = self.json_manager.loader_saver.load_current_sequence()
+        sequence = AppContext.json_manager().loader_saver.load_current_sequence()
         if len(sequence) <= 1:
             return
 
@@ -63,11 +63,11 @@ class SequencePropertiesManager:
         # properties = self.check_all_properties()
         # sequence[0].update(properties)
 
-        self.json_manager.loader_saver.save_current_sequence(sequence)
+        AppContext.json_manager().loader_saver.save_current_sequence(sequence)
 
     def calculate_word(self, sequence):
         if sequence is None or not isinstance(sequence, list):
-            sequence = self.json_manager.loader_saver.load_current_sequence()
+            sequence = AppContext.json_manager().loader_saver.load_current_sequence()
 
         if len(sequence) < 2:
             return ""
@@ -109,10 +109,10 @@ class SequencePropertiesManager:
     def _gather_properties(self):
         return {
             "word": self.calculate_word(
-                self.json_manager.loader_saver.load_current_sequence()
+                AppContext.json_manager().loader_saver.load_current_sequence()
             ),
-            "author": self.main_widget.main_window.settings_manager.users.user_manager.get_current_user(),
-            "level": self.main_widget.sequence_level_evaluator.get_sequence_difficulty_level(
+            "author": AppContext.settings_manager().users.user_manager.get_current_user(),
+            "level": SequenceLevelEvaluator.get_sequence_difficulty_level(
                 self.sequence
             ),
             "grid_mode": self.properties["grid_mode"],
@@ -128,7 +128,7 @@ class SequencePropertiesManager:
     def _default_properties(self):
         return {
             "word": "",
-            "author": self.main_widget.main_window.settings_manager.users.user_manager.get_current_user(),
+            "author": AppContext.settings_manager().users.user_manager.get_current_user(),
             "level": 0,
             "grid_mode": DIAMOND,
             "is_circular": False,

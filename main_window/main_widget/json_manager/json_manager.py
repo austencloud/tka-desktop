@@ -17,20 +17,17 @@ if TYPE_CHECKING:
 
 
 class JsonManager:
-    def __init__(self, main_widget: "MainWidget") -> None:
-        self.main_widget = main_widget
+    def __init__(self) -> None:
         self.logger = logging.getLogger(__name__)
 
-        # special placement
-        self.special_placement_handler = JsonSpecialPlacementHandler(self)
 
         # current sequence
-        self.loader_saver = SequenceDataLoaderSaver(self)
+        self.loader_saver = SequenceDataLoaderSaver()
         self.updater = JsonSequenceUpdater(self)
         self.start_pos_handler = JsonStartPositionHandler(self)
-        self.ori_calculator = JsonOriCalculator(self)
+        self.ori_calculator = JsonOriCalculator()
         self.ori_validation_engine = JsonOriValidationEngine(self)
-        self.act_saver = JsonActSaver(self)
+        self.act_saver = JsonActSaver()
 
     def save_act(self, act_data: dict):
         """Save the act using the JsonActSaver."""

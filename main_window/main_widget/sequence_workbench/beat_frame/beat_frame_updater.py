@@ -1,6 +1,7 @@
 from copy import deepcopy
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QApplication
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.reversal_detector import (
     ReversalDetector,
 )
@@ -13,12 +14,11 @@ if TYPE_CHECKING:
 class BeatFrameUpdater:
     def __init__(self, beat_frame: "SequenceBeatFrame") -> None:
         self.bf = beat_frame
+        self.json_manager = AppContext.json_manager()
 
     def update_beats_from_current_sequence_json(self) -> None:
 
-        current_sequence_json = (
-            self.bf.json_manager.loader_saver.load_current_sequence()
-        )
+        current_sequence_json = self.json_manager.loader_saver.load_current_sequence()
         sequence_entries = current_sequence_json[1:]
 
         if sequence_entries and "sequence_start_position" in sequence_entries[0]:
@@ -39,7 +39,7 @@ class BeatFrameUpdater:
                 beat = beat_view.beat
                 pictograph_index = self.bf.get.index_of_beat(beat_view)
                 sequence_so_far = (
-                    self.bf.json_manager.loader_saver.load_current_sequence()[
+                    self.json_manager.loader_saver.load_current_sequence()[
                         : pictograph_index + 2
                     ]
                 )
@@ -63,7 +63,7 @@ class BeatFrameUpdater:
         self.bf.start_pos_view.start_pos.updater.update_pictograph(entry)
 
     def update_beats_from(self, modified_sequence_json: list[dict]):
-        self.json_manager = self.bf.json_manager
+        self.json_manager = self.json_manager
         json_updater = self.json_manager.updater
         self.json_manager.loader_saver.clear_current_sequence_file()
 
@@ -99,6 +99,4 @@ class BeatFrameUpdater:
         self.bf.selection_overlay.deselect_beat()
 
         self.bf.sequence_workbench.current_word_label.update_current_word_label_from_beats()
-        # self.bf.layout_manager.setup_layout()  # Re-setup layout
-        # self.bf.updateGeometry()               # Force layout recalculation
-        QApplication.processEvents()  # Process pending events
+        QApplication.processEvents()

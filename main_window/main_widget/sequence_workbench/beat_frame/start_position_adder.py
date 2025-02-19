@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
 from base_widgets.pictograph.pictograph import Pictograph
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 from .start_pos_beat import StartPositionBeat
 
@@ -16,7 +17,6 @@ class StartPositionAdder:
         self.beat_frame = beat_frame
         self.sequence_workbench = beat_frame.sequence_workbench
         self.main_widget = beat_frame.main_widget
-        self.json_manager = self.main_widget.json_manager
 
     def add_start_pos_to_sequence(self, clicked_start_option: "Pictograph") -> None:
         # Change cursor to busy
@@ -35,7 +35,7 @@ class StartPositionAdder:
                 graph_editor.animator.toggle()
             start_pos_beat.updater.update_pictograph(deepcopy(start_pos_dict))
             clicked_start_option.updater.update_dict_from_attributes()
-            self.json_manager.start_pos_handler.set_start_position_data(start_pos_beat)
+            AppContext.json_manager().start_pos_handler.set_start_position_data(start_pos_beat)
             self.beat_frame.start_pos_view.set_start_pos(start_pos_beat)
             self.beat_frame.selection_overlay.select_beat(start_pos_view, False)
             self.construct_tab.transition_to_option_picker()

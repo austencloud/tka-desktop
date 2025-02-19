@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 from data.constants import END_POS, START_POS
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_ori_calculator import (
@@ -14,16 +15,12 @@ if TYPE_CHECKING:
 class OptionGetter:
     """Fetches and filters next pictograph options based on the current sequence."""
 
-    def __init__(
-        self,
-        pictograph_dataset: dict,
-        ori_calculator: "JsonOriCalculator",
-        ori_validation_engine: "JsonOriValidationEngine",
-    ):
+    def __init__(self, pictograph_dataset: dict):
         """Initialize with references to OptionPicker, JsonManager, and MainWidget."""
         self.pictograph_dataset = pictograph_dataset
-        self.ori_calculator = ori_calculator
-        self.ori_validation_engine = ori_validation_engine
+        json_manager = AppContext.json_manager()
+        self.ori_calculator = json_manager.ori_calculator
+        self.ori_validation_engine = json_manager.ori_validation_engine
 
     def get_next_options(
         self, sequence: list, selected_filter: Optional[str] = None

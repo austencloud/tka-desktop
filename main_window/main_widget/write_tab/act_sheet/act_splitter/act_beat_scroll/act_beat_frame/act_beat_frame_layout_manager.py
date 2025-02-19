@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QGridLayout
 from data.act_beat_frame_layouts import ACT_BEAT_FRAME_LAYOUTS
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.write_tab.act_sheet.act_splitter.act_beat_scroll.act_beat_frame.act_beat_frame import (
@@ -14,9 +15,7 @@ class ActBeatFrameLayoutManager:
     def __init__(self, beat_frame: "ActBeatFrame"):
         self.beat_frame = beat_frame
         self.selection_manager = beat_frame.selection_overlay
-        self.settings_manager = (
-            beat_frame.write_tab.main_widget.main_window.settings_manager
-        )
+        self.settings_manager = AppContext.settings_manager()
         self.setup_layout()
 
     def setup_layout(self) -> None:

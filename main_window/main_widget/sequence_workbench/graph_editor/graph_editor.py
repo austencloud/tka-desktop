@@ -38,7 +38,6 @@ class GraphEditor(QFrame):
         super().__init__(sequence_workbench)
         self.sequence_workbench = sequence_workbench
         self.main_widget = sequence_workbench.main_widget
-        self.settings_manager = self.main_widget.main_window.settings_manager
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)

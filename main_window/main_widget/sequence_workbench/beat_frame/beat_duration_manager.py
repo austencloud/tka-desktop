@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 if TYPE_CHECKING:
     from .beat_view import BeatView
     from .sequence_beat_frame import SequenceBeatFrame
@@ -8,7 +10,7 @@ if TYPE_CHECKING:
 class BeatDurationManager:
     def __init__(self, beat_frame: "SequenceBeatFrame"):
         self.beat_frame = beat_frame
-        self.json_duration_updater = beat_frame.json_manager.updater.duration_updater
+        self.json_duration_updater = AppContext.json_manager().updater.duration_updater
 
     def update_beat_duration(
         self, changed_beat_view: "BeatView", new_duration: int
@@ -34,7 +36,7 @@ class BeatDurationManager:
         Update beat numbers for all beats based on the JSON data.
         """
         sequence_data = (
-            self.beat_frame.json_manager.loader_saver.load_current_sequence()
+           AppContext.json_manager().loader_saver.load_current_sequence()
         )
         sequence_beats = sequence_data[1:]  # Skip metadata
 

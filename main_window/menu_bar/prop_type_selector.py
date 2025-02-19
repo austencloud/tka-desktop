@@ -134,6 +134,12 @@ class PropTypeSelector(QWidget):
 
     def set_current_prop_type(self, prop_type: PropType):
         self.label.setText(prop_type.name)
-        self.settings_manager.global_settings.set_prop_type(prop_type)
-        self.prop_type_changer.apply_prop_type()
+
+        # Collect pictographs from MainWidget's PictographCollector
+        pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
+
+        # Pass them into set_prop_type
+        self.settings_manager.global_settings.set_prop_type(prop_type, pictographs)
+
         self.dialog.accept()
+

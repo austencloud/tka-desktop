@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 from data.beat_frame_layouts import sequence_workbench_BEAT_FRAME_LAYOUTS
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.temp_beat_frame.temp_beat_frame import (
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 class TempBeatFrameLayoutManager:
     def __init__(self, temp_beat_frame: "TempBeatFrame"):
         self.beat_frame = temp_beat_frame
-        self.settings_manager = temp_beat_frame.main_widget.main_window.settings_manager
+        self.settings_manager = AppContext.settings_manager()
 
     def calculate_layout(self, beat_count: int) -> tuple[int, int]:
         return sequence_workbench_BEAT_FRAME_LAYOUTS.get(beat_count, (1, beat_count))

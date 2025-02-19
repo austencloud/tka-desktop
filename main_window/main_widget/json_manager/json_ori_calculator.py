@@ -20,8 +20,7 @@ if TYPE_CHECKING:
 
 
 class JsonOriCalculator:
-    def __init__(self, json_manager: "JsonManager"):
-        self.main_widget = json_manager.main_widget
+    def __init__(self):
         self.handpath_calculator = HandpathCalculator()
 
     def calculate_end_ori(self, pictograph_data, color: str):

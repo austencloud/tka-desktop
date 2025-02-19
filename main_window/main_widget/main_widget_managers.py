@@ -4,6 +4,7 @@ from Enums.PropTypes import PropType
 from letter_determiner.letter_determiner import LetterDeterminer
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.pictograph_data_loader import PictographDataLoader
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
 
 from .grid_mode_checker import GridModeChecker
@@ -27,7 +28,6 @@ class MainWidgetManagers:
         self.main_widget = main_widget
         self.main_window = main_widget.main_window
         self.splash_screen = main_widget.splash
-        self.settings_manager = main_widget.settings_manager
         self._setup_pictograph_cache()
         self._set_prop_type()
         self._initialize_managers()
@@ -37,13 +37,12 @@ class MainWidgetManagers:
         """Setup all the managers and helper components."""
         mw = self.main_widget
 
-        mw.json_manager = JsonManager(mw)
         mw.turns_tuple_generator = TurnsTupleGenerator()
         mw.pictograph_key_generator = PictographKeyGenerator(mw)
         mw.special_placement_loader = SpecialPlacementLoader(mw)
         mw.metadata_extractor = MetaDataExtractor(mw)
         mw.sequence_level_evaluator = SequenceLevelEvaluator()
-        mw.sequence_properties_manager = SequencePropertiesManager(mw)
+        mw.sequence_properties_manager = SequencePropertiesManager()
         mw.thumbnail_finder = ThumbnailFinder(mw)
         mw.grid_mode_checker = GridModeChecker(self)
         mw.pictograph_collector = PictographCollector(mw)
@@ -56,7 +55,7 @@ class MainWidgetManagers:
             self.main_widget.pictograph_cache[letter] = {}
 
     def _set_prop_type(self) -> None:
-        prop_type = self.settings_manager.global_settings.get_prop_type()
+        prop_type = AppContext().settings_manager().global_settings.get_prop_type()
         self.main_widget.prop_type = prop_type
 
     def _setup_letters(self) -> None:
