@@ -22,7 +22,7 @@ class OptionView(BorderedPictographView):
 
     def mousePressEvent(self, event) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
-            self.click_handler.handle_click(self.pictograph)
+            self.click_handler.handle_option_click(self.pictograph)
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)

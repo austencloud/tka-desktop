@@ -1,7 +1,8 @@
-# main_window/main_widget/construct_tab/option_picker/resizable_mixin.py
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QFontMetrics
-from typing import Callable
+from typing import Callable, Union
+from PyQt6.QtWidgets import QLabel
+
 
 class ResizableMixin:
     def __init__(self, size_provider: Callable[[], QSize], *args, **kwargs):
@@ -9,7 +10,7 @@ class ResizableMixin:
         super().__init__(*args, **kwargs)
 
     def update_size_and_style(
-        self,
+        self: Union[QLabel, "ResizableMixin"],
         base_font_family: str = "Monotype Corsiva",
         scale_factor: float = 0.03,
         padding: int = 20,

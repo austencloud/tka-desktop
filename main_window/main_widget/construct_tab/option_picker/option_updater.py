@@ -49,6 +49,6 @@ class OptionUpdater:
             option.managers.updater.update_pictograph(option_data)
             option.elements.view.update_borders()
             letter_type = LetterType.get_letter_type(option.state.letter)
-            section = self.scroll_area.sections.get(letter_type)
+            section = self.option_picker.option_scroll.sections.get(letter_type)
             if section:
                 section.add_pictograph(option)

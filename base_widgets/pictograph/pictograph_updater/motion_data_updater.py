@@ -13,13 +13,13 @@ logger = logging.getLogger(__name__)
 
 
 class MotionDataUpdater:
-    def __init__(self, pictograph: "PictographScene", getter) -> None:
+    def __init__(self, pictograph: "PictographScene") -> None:
         """
         The 'getter' dependency is injected for accessing related motion data
         (instead of referencing self.pictograph.managers.get directly).
         """
         self.pictograph = pictograph
-        self.getter = getter
+        self.getter = pictograph.managers.get
 
     def update(self, data: dict) -> None:
         """
@@ -43,21 +43,32 @@ class MotionDataUpdater:
                 if turns_value is not None:
                     motion.turns = turns_value
             except Exception as e:
-                logger.error(f"Error updating motion for {motion.color}: {e}", exc_info=True)
+                logger.error(
+                    f"Error updating motion for {motion.color}: {e}", exc_info=True
+                )
 
         for motion in self.pictograph.elements.motions.values():
             try:
-                if motion.pictograph.state.letter in [Letter.S, Letter.T, Letter.U, Letter.V]:
+                if motion.pictograph.state.letter in [
+                    Letter.S,
+                    Letter.T,
+                    Letter.U,
+                    Letter.V,
+                ]:
                     motion.attr_manager.assign_lead_states()
             except Exception as e:
-                logger.error(f"Error assigning lead state for {motion.color}: {e}", exc_info=True)
+                logger.error(
+                    f"Error assigning lead state for {motion.color}: {e}", exc_info=True
+                )
 
     def _override_motion_type_if_needed(self, data: dict, motion: Motion) -> None:
         motion_type = motion.motion_type
         turns_key = f"{motion_type}_turns"
         if turns_key in data:
             motion.turns = data[turns_key]
-            logger.debug(f"Overriding motion type for {motion.color} using key {turns_key}.")
+            logger.debug(
+                f"Overriding motion type for {motion.color} using key {turns_key}."
+            )
 
     def _show_motion_graphics(self, color: str) -> None:
         try:
@@ -73,18 +84,37 @@ class MotionDataUpdater:
     @lru_cache(maxsize=None)
     def _get_motion_dataset_from_tuple(self, hashable_dict: tuple) -> dict:
         data = self._tuple_to_dict(hashable_dict)
-        motion_attributes = ["motion_type", "start_loc", "end_loc", "turns", "start_ori", "prop_rot_dir"]
+        motion_attributes = [
+            "motion_type",
+            "start_loc",
+            "end_loc",
+            "turns",
+            "start_ori",
+            "prop_rot_dir",
+        ]
         motion_dataset = {}
         for color in [RED, BLUE]:
             motion_data = data.get(f"{color}_attributes", {})
-            dataset_for_color = {attr: motion_data.get(attr) for attr in motion_attributes if attr in motion_data}
+            dataset_for_color = {
+                attr: motion_data.get(attr)
+                for attr in motion_attributes
+                if attr in motion_data
+            }
             prefloat_motion = motion_data.get("prefloat_motion_type")
             dataset_for_color["prefloat_motion_type"] = (
-                None if prefloat_motion == "float" else motion_data.get("prefloat_motion_type", dataset_for_color.get("motion_type"))
+                None
+                if prefloat_motion == "float"
+                else motion_data.get(
+                    "prefloat_motion_type", dataset_for_color.get("motion_type")
+                )
             )
             prefloat_prop_rot = motion_data.get("prefloat_prop_rot_dir")
             dataset_for_color["prefloat_prop_rot_dir"] = (
-                None if prefloat_prop_rot == "no_rot" else motion_data.get("prefloat_prop_rot_dir", dataset_for_color.get("prop_rot_dir"))
+                None
+                if prefloat_prop_rot == "no_rot"
+                else motion_data.get(
+                    "prefloat_prop_rot_dir", dataset_for_color.get("prop_rot_dir")
+                )
             )
             motion_dataset[color] = dataset_for_color
         return motion_dataset
@@ -97,7 +127,11 @@ class MotionDataUpdater:
         )
 
     def _tuple_to_dict(self, t: tuple) -> dict:
-        return {k: self._tuple_to_dict(v) if isinstance(v, tuple) else v for k, v in t if k != self.pictograph.state.letter.value}
+        return {
+            k: self._tuple_to_dict(v) if isinstance(v, tuple) else v
+            for k, v in t
+            if k != self.pictograph.state.letter.value
+        }
 
     def clear_cache(self) -> None:
         """

@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QGraphicsTextItem
 
 
 from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
+from main_window.main_widget.construct_tab.option_picker.option_view import OptionView
 from main_window.main_widget.construct_tab.start_pos_picker.start_pos_picker_pictograph_view import (
     StartPosPickerPictographView,
 )
@@ -45,6 +46,7 @@ class PictographElements:
         StartPosPickerPictographView,
         CodexPictographView,
         "GE_PictographView",
+        "OptionView",
     ] = None
 
     arrows: Dict[str, Arrow] = None

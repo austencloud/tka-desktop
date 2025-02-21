@@ -18,7 +18,7 @@ class OptionClickHandler:
         self.beat_frame = beat_frame
         self.add_to_sequence_manager = option_picker.add_to_sequence_manager
 
-    def handle_click(self, clicked_option: "PictographScene") -> None:
+    def handle_option_click(self, clicked_option: "PictographScene") -> None:
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
             new_beat = self.add_to_sequence_manager.create_new_beat(clicked_option)

@@ -34,7 +34,7 @@ class OptionPicker(QWidget):
     ):
         super().__init__()
         self.add_to_sequence_manager = add_to_sequence_manager
-        self.option_pool: List[PictographScene] = []
+        self.option_pool: list[PictographScene] = []
         self.choose_next_label = ChooseYourNextPictographLabel(mw_size_provider)
         self.option_scroll = OptionScroll(self, mw_size_provider)
         self.option_getter = OptionGetter(pictograph_dataset)
@@ -50,4 +50,4 @@ class OptionPicker(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         for option in self.option_pool:
-            option.view.resize_option_view()
+            option.elements.view.resize_option_view()

@@ -18,24 +18,13 @@ logger = logging.getLogger(__name__)
 class PictographUpdater:
     def __init__(self, pictograph: "PictographScene") -> None:
         self.pictograph = pictograph
-        # Inject dependencies from the pictograph's managers:
         self.attr_updater = AttributeUpdater(pictograph)
-        self.motion_updater = MotionDataUpdater(pictograph, pictograph.managers.get)
-        self.arrow_updater = ArrowDataUpdater(
-            pictograph,
-        )
+        self.motion_updater = MotionDataUpdater(pictograph)
+        self.arrow_updater = ArrowDataUpdater(pictograph)
         self.glyph_updater = GlyphUpdater(pictograph)
-        self.placement_updater = PlacementUpdater(
-            pictograph,
-        )
+        self.placement_updater = PlacementUpdater(pictograph)
 
     def update_pictograph(self, pictograph_data: dict = None) -> None:
-        """
-        High-level update method that:
-         - Ensures necessary initialization.
-         - Applies complete or partial updates based on provided data.
-         - Updates glyphs and layout.
-        """
         try:
             if not self.pictograph.managers.get.is_initialized:
                 self.pictograph.managers.get.initiallize_getter()
@@ -68,9 +57,6 @@ class PictographUpdater:
             logger.error(f"Error updating glyphs or layout: {e}", exc_info=True)
 
     def _apply_complete_update(self, pictograph_data: dict) -> None:
-        """
-        Applies a complete update when pictograph_data is complete.
-        """
         try:
             self.pictograph.state.pictograph_data = pictograph_data
             self.pictograph.state.grid_mode = GridModeChecker.get_grid_mode(

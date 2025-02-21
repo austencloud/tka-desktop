@@ -43,7 +43,7 @@ class StartPositionAdder:
             self.beat_frame.start_pos_view.set_start_pos(start_pos_beat)
             self.beat_frame.selection_overlay.select_beat(start_pos_view, False)
             self.construct_tab.transition_to_option_picker()
-            self.construct_tab.option_picker.updater.update_options()
+            self.construct_tab.option_picker.option_updater.update_options()
         finally:
             # Revert cursor back to default
             QApplication.restoreOverrideCursor()

@@ -3,9 +3,7 @@ from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.option_picker.option_picker import (
-        OptionPicker,
-    )
+    from main_window.main_widget.construct_tab.option_picker.option_picker import OptionPicker
 
 
 class OptionPickerLayoutManager:
