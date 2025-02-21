@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt
 from .section_widget.option_picker_section_group_widget import OptionPickerSectionGroupWidget
 from .section_widget.option_picker_section_widget import OptionPickerSectionWidget
 from Enums.Enums import LetterType
-from PyQt6.QtCore import pyqtSignal, QSize
+from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
     from ..option_picker import OptionPicker

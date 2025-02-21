@@ -8,7 +8,7 @@ from .start_pos_picker_pictograph_view import StartPosPickerPictographView
 from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.construct_tab import ConstructTab
+    pass
 
 
 class BaseStartPosPicker(QWidget):

@@ -1,14 +1,12 @@
 from copy import deepcopy
 from functools import partial
-from PyQt6.QtCore import QObject, pyqtSignal, Qt
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QObject, pyqtSignal
 from Enums.letters import Letter
 from data.constants import BOX, DIAMOND, END_POS, START_POS
 from base_widgets.pictograph.pictograph_scene import PictographScene
 from data.position_maps import box_positions, diamond_positions
 
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget
 
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
     StartPositionBeat,

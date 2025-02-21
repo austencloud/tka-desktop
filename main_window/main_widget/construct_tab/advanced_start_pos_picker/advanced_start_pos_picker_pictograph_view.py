@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtCore import QSize
 from typing import Callable
 
 from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView

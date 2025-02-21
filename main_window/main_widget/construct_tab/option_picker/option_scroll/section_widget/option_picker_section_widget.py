@@ -7,7 +7,7 @@ from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
 from .option_picker_section_header import OptionPickerSectionHeader
 from .option_picker_section_pictograph_frame import OptionPickerSectionPictographFrame
-from PyQt6.QtCore import pyqtSignal, QSize
+from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
     from ..option_scroll import OptionScroll

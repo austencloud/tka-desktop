@@ -9,9 +9,6 @@ if TYPE_CHECKING:
     )
     from base_widgets.pictograph.pictograph_scene import PictographScene
 
-    from main_window.main_widget.construct_tab.construct_tab import (
-        ConstructTab,
-    )
 
 
 class AddToSequenceManager:

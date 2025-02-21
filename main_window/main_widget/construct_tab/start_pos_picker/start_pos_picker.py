@@ -17,7 +17,6 @@ if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
-    from ..construct_tab import ConstructTab
 
 
 class StartPosPicker(BaseStartPosPicker):
