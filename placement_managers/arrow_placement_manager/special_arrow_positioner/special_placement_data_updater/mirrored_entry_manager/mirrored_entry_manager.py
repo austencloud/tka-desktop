@@ -16,9 +16,7 @@ if TYPE_CHECKING:
 class MirroredEntryManager:
     def __init__(self, data_updater: "SpecialPlacementDataUpdater") -> None:
         self.data_updater = data_updater
-        self.turns_tuple_generator = (
-            data_updater.positioner.placement_manager.pictograph.main_widget.turns_tuple_generator
-        )
+        self.turns_tuple_generator = data_updater.turns_tuple_generator
         self.mirrored_entry_creator = MirroredEntryCreator(self)
         self.mirrored_entry_updater = MirroredEntryUpdater(self)
         self.rot_angle_manager = MirroredEntryRotAngleManager(self)

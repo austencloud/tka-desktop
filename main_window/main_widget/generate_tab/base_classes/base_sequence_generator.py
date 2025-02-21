@@ -22,7 +22,7 @@ from data.constants import (
     COUNTER_CLOCKWISE,
     TURNS,
 )
-from main_window.main_widget.sequence_workbench.beat_frame.start_pos_beat import (
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
 from main_window.main_widget.sequence_workbench.sequence_workbench import (
@@ -54,7 +54,7 @@ class BaseSequenceGenerator:
             self.add_start_pos_pictograph()
             self.sequence = self.json_manager.loader_saver.load_current_sequence()
 
-        self.sequence_workbench.beat_frame.populator.modify_layout_for_chosen_number_of_beats(
+        self.sequence_workbench.sequence_beat_frame.populator.modify_layout_for_chosen_number_of_beats(
             int(length)
         )
 
@@ -79,7 +79,7 @@ class BaseSequenceGenerator:
                 ):
                     self.set_start_pos_to_in_orientation(pictograph_dict)
                     start_position_beat = StartPositionBeat(
-                        self.sequence_workbench.beat_frame
+                        self.sequence_workbench.sequence_beat_frame
                     )
                     start_position_beat.updater.update_pictograph(
                         deepcopy(pictograph_dict)
@@ -88,7 +88,7 @@ class BaseSequenceGenerator:
                     self.main_widget.json_manager.start_pos_handler.set_start_position_data(
                         start_position_beat
                     )
-                    self.sequence_workbench.beat_frame.start_pos_view.set_start_pos(
+                    self.sequence_workbench.sequence_beat_frame.start_pos_view.set_start_pos(
                         start_position_beat
                     )
                     return

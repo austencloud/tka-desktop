@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
 
 from data.constants import *
+from main_window.main_widget.grid_mode_checker import GridModeChecker
 from objects.motion.managers.handpath_calculator import (
     HandpathCalculator,
 )
@@ -42,7 +43,7 @@ class BaseRotAngleCalculator(ABC):
 
         letter_data: dict[str, dict] = (
             special_placements.get(
-                self.arrow.pictograph.main_widget.grid_mode_checker.get_grid_mode(
+                GridModeChecker.get_grid_mode(
                     self.arrow.pictograph.pictograph_data
                 )
             )

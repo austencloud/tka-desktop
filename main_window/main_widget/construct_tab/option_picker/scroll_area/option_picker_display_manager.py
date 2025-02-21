@@ -3,7 +3,7 @@ from Enums.Enums import LetterType, Letter
 
 from base_widgets.pictograph.pictograph import Pictograph
 from Enums.Enums import LetterType
-from main_window.main_widget.sequence_workbench.beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from .section_manager.option_picker_section_widget import OptionPickerSectionWidget
 
 if TYPE_CHECKING:

@@ -3,7 +3,10 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QGraphicsView, QGraphicsTextItem, QMenu
 from PyQt6.QtCore import QPointF, Qt
 from PyQt6.QtGui import QFont, QAction
-from main_window.main_widget.sequence_workbench.beat_frame.act_beat import ActBeat
+
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.act_beat import (
+    ActBeat,
+)
 
 if TYPE_CHECKING:
     from main_window.main_widget.write_tab.act_sheet.act_splitter.act_beat_scroll.act_beat_frame.act_beat_frame import (
@@ -82,7 +85,7 @@ class ActBeatView(QGraphicsView):
         if self.beat_number_item:
             self.beat_number_item.setVisible(False)
 
-    def resize_act_beat_view(self):
+    def resizeEvent(self, event):
         """Resize the beat view to fit the container."""
         size = self.beat_frame.beat_size
         self.setFixedSize(size, size)

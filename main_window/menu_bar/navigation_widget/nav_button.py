@@ -39,9 +39,7 @@ class NavButton(QPushButton):
 
         self._update_style()
 
-    def _update_style(
-        self, shadow: bool = False, custom_bg: str = None, force_active: bool = False
-    ):
+    def _update_style(self, custom_bg: str = None, force_active: bool = False):
         if self._is_active or force_active:
             bg_style = self.ACTIVE_BG_GRADIENT
             text_color = "white"
@@ -49,14 +47,6 @@ class NavButton(QPushButton):
             bg_color = custom_bg or self.DEFAULT_BG_COLOR
             bg_style = self.DEFAULT_BG_GRADIENT
             text_color = "black"
-
-        shadow_effect = (
-            """
-            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
-        """
-            if shadow and not self._is_active
-            else ""
-        )
 
         self.setStyleSheet(
             f"""
@@ -66,7 +56,6 @@ class NavButton(QPushButton):
                 color: {text_color};
                 padding: 5px;
                 border-radius: {self._radius}px;
-                {shadow_effect}
             }}
             QPushButton:hover {{
                 {"/* Disabled when active */" if self._is_active else self.HOVER_GRADIENT}
@@ -79,11 +68,11 @@ class NavButton(QPushButton):
 
     def enterEvent(self, event):
         if not self._is_active:
-            self._update_style(shadow=True)
+            self._update_style()
 
     def leaveEvent(self, event):
         if not self._is_active:
-            self._update_style(shadow=False)
+            self._update_style()
 
     def mousePressEvent(self, event):
         if not self._is_active:

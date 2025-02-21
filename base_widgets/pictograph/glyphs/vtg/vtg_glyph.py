@@ -21,6 +21,8 @@ from data.constants import (
     TOG_OPP,
     TOG_SAME,
 )
+from main_window.main_widget.grid_mode_checker import GridModeChecker
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
 
 
@@ -86,17 +88,13 @@ class VTG_Glyph(QGraphicsSvgItem):
                 self.position_vtg_glyph()
 
                 self.setVisible(
-                    self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
-                        "VTG"
-                    )
+                    AppContext.settings_manager().visibility.get_glyph_visibility("VTG")
                 )
 
     def determine_vtg_mode(self) -> Literal["SS", "SO", "TS", "TO", "QS", "QO"]:
         letter_str = self.pictograph.letter.value
         start_pos = self.pictograph.start_pos
-        grid_mode = self.pictograph.main_widget.grid_mode_checker.get_grid_mode(
-            self.pictograph.pictograph_data
-        )
+        grid_mode = GridModeChecker.get_grid_mode(self.pictograph.pictograph_data)
 
         mode_mapping = {
             DIAMOND: {

@@ -20,7 +20,7 @@ class TurnsAdjustmentManager(QObject):
         super().__init__(turns_widget)
         self.turns_widget = turns_widget
         self.graph_editor = self.turns_widget.turns_box.graph_editor
-        self.beat_frame = self.graph_editor.sequence_workbench.beat_frame
+        self.beat_frame = self.graph_editor.sequence_workbench.sequence_beat_frame
         self.main_widget = self.graph_editor.main_widget
         self.json_manager = AppContext.json_manager()
         self.json_validation_engine = self.json_manager.ori_validation_engine

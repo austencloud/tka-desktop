@@ -2,18 +2,19 @@ from typing import TYPE_CHECKING
 import os
 
 from Enums.letters import LetterType
+from main_window.main_widget.fade_manager.fade_manager import FadeManager
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
 
 
 class OptionUpdater:
-    def __init__(self, option_picker: "OptionPicker"):
+    def __init__(self, option_picker: "OptionPicker", fade_manager: "FadeManager"):
         self.option_picker = option_picker
         self.scroll_area = option_picker.option_scroll
-        self.json_loader = (
-            option_picker.construct_tab.main_widget.json_manager.loader_saver
-        )
+        self.fade_manager = fade_manager
+        self.json_loader = AppContext.json_manager().loader_saver
         self.app_root = self._get_app_root()
 
     def _get_app_root(self) -> str:
@@ -29,7 +30,7 @@ class OptionUpdater:
                 section.pictograph_frame for section in sections.values()
             ]
 
-            self.option_picker.construct_tab.main_widget.fade_manager.widget_fader.fade_and_update(
+            self.fade_manager.widget_fader.fade_and_update(
                 pictograph_frames, self.update_options, 200
             )
 

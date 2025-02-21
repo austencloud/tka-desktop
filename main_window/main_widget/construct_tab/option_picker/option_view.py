@@ -1,5 +1,5 @@
-from typing import TYPE_CHECKING
-from PyQt6.QtCore import Qt
+from typing import TYPE_CHECKING, Callable
+from PyQt6.QtCore import Qt, QSize
 
 from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
 
@@ -10,13 +10,18 @@ if TYPE_CHECKING:
 
 
 class OptionView(BorderedPictographView):
-    
-    
-    def __init__(self, option_picker: "OptionPicker", pictograph: "Pictograph") -> None:
+
+    def __init__(
+        self,
+        option_picker: "OptionPicker",
+        pictograph: "Pictograph",
+        mw_size_provider: Callable[[], QSize],
+    ):
         super().__init__(pictograph)
         self.pictograph = pictograph
         self.option_picker = option_picker
         self.click_handler = option_picker.click_handler
+        self.mw_size_provider = mw_size_provider
 
     ### EVENTS ###
 
@@ -32,8 +37,7 @@ class OptionView(BorderedPictographView):
         spacing = self.option_picker.option_scroll.spacing
 
         size = max(
-            self.option_picker.construct_tab.start_pos_picker.main_widget.right_stack.width()
-            // 8,
+            self.mw_size_provider().width() // 16,
             self.option_picker.width() // 8,
         )
         border_width = max(1, int(size * 0.015))

@@ -89,7 +89,7 @@ class CodexSectionManager:
             return
 
         if letter_str not in self.codex_views:
-            pictograph = Pictograph(self.codex.main_widget)
+            pictograph = Pictograph()
             view = CodexPictographView(pictograph, self.codex)
             pictograph.updater.update_pictograph(p_dict)
             self.codex_views[letter_str] = view

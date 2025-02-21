@@ -14,7 +14,7 @@ class OptionPickerClickHandler:
         self.option_picker = option_picker
         self.construct_tab = self.option_picker.construct_tab
         self.main_widget = self.construct_tab.main_widget
-        self.beat_frame = self.main_widget.sequence_workbench.beat_frame
+        self.beat_frame = self.main_widget.sequence_workbench.sequence_beat_frame
         self.sequence_workbench = self.main_widget.sequence_workbench
         self.add_to_sequence_manager = self.construct_tab.add_to_sequence_manager
         self.settings_manager = self.main_widget.settings_manager

@@ -2,6 +2,9 @@ from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
 
 from data.constants import *
+from main_window.main_widget.grid_mode_checker import GridModeChecker
+from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
+from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.motion.handpath_calculator import (
     HandpathCalculator,
 )
@@ -34,15 +37,13 @@ class BaseRotAngleCalculator(ABC):
         if self.arrow.motion.motion_type not in [DASH, STATIC]:
             return False
 
-        special_placements = (
-            self.arrow.pictograph.main_widget.special_placement_loader.special_placements
-        )
+        special_placements = AppContext.special_placement_loader().load_special_placements()
         ori_key = self.data_updater._generate_ori_key(self.arrow.motion)
         letter = self.arrow.pictograph.letter.value
 
         letter_data: dict[str, dict] = (
             special_placements.get(
-                self.arrow.pictograph.main_widget.grid_mode_checker.get_grid_mode(
+                GridModeChecker.get_grid_mode(
                     self.arrow.pictograph.pictograph_data
                 )
             )

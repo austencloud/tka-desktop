@@ -35,7 +35,7 @@ class PictographView(QGraphicsView):
     def resizeEvent(self, event):
         """Handle resizing and maintain aspect ratio."""
         super().resizeEvent(event)
-        self.setSceneRect(self.scene().itemsBoundingRect())
+        # self.setSceneRect(self.scene().itemsBoundingRect())
         self.fitInView(self.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
 
     def contextMenuEvent(self, event: QEvent) -> None:

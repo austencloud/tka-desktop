@@ -9,7 +9,7 @@ from .act_populator import ActPopulator
 from .act_beat_view import ActBeatView
 from .act_step_label import ActStepLabel
 from .act_beat_frame_layout_manager import ActBeatFrameLayoutManager
-from ......sequence_workbench.beat_frame.beat_selection_overlay import (
+from ......sequence_workbench.sequence_beat_frame.beat_selection_overlay import (
     BeatSelectionOverlay,
 )
 
@@ -69,9 +69,3 @@ class ActBeatFrame(BaseBeatFrame):
         width_without_scrollbar = self.width() - scrollbar_width
         self.beat_size = int(width_without_scrollbar // self.act_sheet.DEFAULT_COLUMNS)
         self.steps_label_height = int(self.beat_size * (2 / 3))
-
-        for view in self.beats:
-            view.resize_act_beat_view()
-
-        for label in self.step_labels:
-            label.resize_step_label()

@@ -4,9 +4,8 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QMouseEvent
 
 from Enums.letters import LetterType
-from main_window.main_widget.sequence_workbench.beat_frame.button_styled_border_overlay import (
-    StyledBorderOverlayForButton,
-)
+from main_window.main_widget.generate_tab.freeform.styled_border_overlay_for_button import StyledBorderOverlayForButton
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.generate_tab.freeform.letter_type_picker_widget import (

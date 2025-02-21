@@ -1,5 +1,8 @@
 from typing import TYPE_CHECKING
 
+from main_window.main_widget.grid_mode_checker import GridModeChecker
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 from .grid_data import GridData
 from .grid_item import GridItem
 from .non_radial_points_group import NonRadialPointsGroup
@@ -42,10 +45,10 @@ class Grid:
         if non_radial_path:
             non_radial_points = NonRadialPointsGroup(non_radial_path)
             self.pictograph.addItem(non_radial_points)
-            # is_visible = (
-            #     self.pictograph.main_widget.settings_manager.visibility.get_non_radial_visibility()
-            # )
-            # non_radial_points.setVisible(is_visible)
+            is_visible = (
+                AppContext.settings_manager().visibility.get_non_radial_visibility()
+            )
+            non_radial_points.setVisible(is_visible)
             self.items[f"{self.grid_mode}_nonradial"] = non_radial_points
 
     def toggle_non_radial_points(self, visible: bool):
@@ -57,9 +60,7 @@ class Grid:
             item.setVisible(False)
 
     def update_grid_mode(self):
-        grid_mode = self.pictograph.main_widget.grid_mode_checker.get_grid_mode(
-            self.pictograph.pictograph_data
-        )
+        grid_mode = GridModeChecker.get_grid_mode(self.pictograph.pictograph_data)
         self.pictograph.grid.hide()
         self.pictograph.grid.__init__(
             self.pictograph, self.pictograph.grid.grid_data, grid_mode

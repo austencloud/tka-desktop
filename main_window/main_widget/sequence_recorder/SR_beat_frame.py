@@ -8,7 +8,7 @@ import numpy as np
 from main_window.main_widget.sequence_recorder.SR_beat_selection_manager import (
     SR_BeatSelectionManager,
 )
-from main_window.main_widget.sequence_workbench.beat_frame.beat import (
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import (
     Beat,
     BeatView,
 )

@@ -46,7 +46,7 @@ class ArrowMovementManager:
 
     def get_visible_pictographs(self) -> list["Pictograph"]:
         visible_pictographs = []
-        for pictograph_list in self.pictograph.main_widget.pictograph_cache.values():
+        for pictograph_list in self.pictograph.main_widget.pictograph_dataset.values():
             for pictograph in pictograph_list.values():
                 if pictograph.view:
                     if pictograph.view.isVisible():

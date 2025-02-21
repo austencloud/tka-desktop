@@ -6,6 +6,7 @@ from data.locations import cw_loc_order
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
+from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
     BaseSequenceModifier,
 )
@@ -28,7 +29,9 @@ class SequenceRotater(BaseSequenceModifier):
             QApplication.restoreOverrideCursor()
             return
         rotated_sequence = self._rotate_sequence()
-        self.sequence_workbench.beat_frame.updater.update_beats_from(rotated_sequence)
+        self.sequence_workbench.sequence_beat_frame.updater.update_beats_from(
+            rotated_sequence
+        )
         self._update_ui()
         QApplication.restoreOverrideCursor()
 
@@ -40,12 +43,12 @@ class SequenceRotater(BaseSequenceModifier):
         rotated_sequence = [metadata]
 
         start_pos_beat_dict = (
-            self.sequence_workbench.beat_frame.start_pos_view.start_pos.pictograph_data.copy()
+            self.sequence_workbench.sequence_beat_frame.start_pos_view.start_pos.pictograph_data.copy()
         )
         self._rotate_dict(start_pos_beat_dict)
         rotated_sequence.append(start_pos_beat_dict)
 
-        for beat_dict in self.sequence_workbench.beat_frame.get.beat_dicts():
+        for beat_dict in self.sequence_workbench.sequence_beat_frame.get.beat_dicts():
             rotated_dict = beat_dict.copy()
             self._rotate_dict(rotated_dict)
             rotated_sequence.append(rotated_dict)
@@ -69,9 +72,7 @@ class SequenceRotater(BaseSequenceModifier):
                         (bl[loc], rl[loc])
                     ]
 
-        _dict["grid_mode"] = (
-            self.sequence_workbench.main_widget.grid_mode_checker.get_grid_mode(_dict)
-        )
+        _dict["grid_mode"] = GridModeChecker.get_grid_mode(_dict)
         return _dict
 
     def _rotate_location(self, location):

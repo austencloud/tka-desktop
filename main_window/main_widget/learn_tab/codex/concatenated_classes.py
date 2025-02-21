@@ -1,3 +1,4 @@
+from main_window.main_widget.grid_mode_checker import GridModeChecker
 from .codex_animation_manager import CodexAnimationManager
 from .codex_color_swap_manager import CodexColorSwapManager
 from .codex_control_button import CodexControlButton
@@ -945,9 +946,7 @@ class CodexRotationManager:
 
     def update_grid_mode(self):
         for view in self.codex.section_manager.codex_views.values():
-            grid_mode = self.codex.main_widget.grid_mode_checker.get_grid_mode(
-                view.pictograph.pictograph_data
-            )
+            grid_mode = GridModeChecker.get_grid_mode(view.pictograph.pictograph_data)
             view.pictograph.grid.hide()
             view.pictograph.grid.__init__(
                 view.pictograph, view.pictograph.grid.grid_data, grid_mode

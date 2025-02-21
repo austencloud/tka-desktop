@@ -19,7 +19,7 @@ class ThumbnailGenerator:
         self, sequence, structural_variation_number, directory
     ):
         """Generate and save thumbnail for a sequence variation."""
-        beat_frame_image = self.sequence_workbench.beat_frame.image_export_manager.image_creator.create_sequence_image(
+        beat_frame_image = self.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.create_sequence_image(
             sequence, include_start_pos=False
         )
         pil_image = self.qimage_to_pil(beat_frame_image)
@@ -64,7 +64,9 @@ class ThumbnailGenerator:
         return info
 
     def _create_image_filename(self, structural_variation_number):
-        base_word = self.manager.sequence_workbench.beat_frame.get.current_word()
+        base_word = (
+            self.manager.sequence_workbench.sequence_beat_frame.get.current_word()
+        )
         return f"{base_word}_ver{structural_variation_number}.png"
 
     def _save_image(

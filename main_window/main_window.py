@@ -39,3 +39,4 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         super().closeEvent(event)
         QApplication.instance().installEventFilter(self)
+

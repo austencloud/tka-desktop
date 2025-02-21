@@ -128,9 +128,8 @@ class Pictograph(QGraphicsScene):
         "OptionView",
     ]
 
-    def __init__(self, main_widget: "MainWidget") -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.main_widget = main_widget
         self.initializer = PictographInitializer(self)
         self.updater = PictographUpdater(self)
         self.get = PictographGetter(self)

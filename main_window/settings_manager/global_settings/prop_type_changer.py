@@ -42,18 +42,18 @@ class PropTypeChanger:
         prop_type = self.settings_manager.global_settings.get_prop_type()
         self.update_props_to_type(prop_type, pictographs)
 
-
-    def update_props_to_type(self, new_prop_type, pictographs: list["Pictograph"]) -> None:
+    def update_props_to_type(
+        self, new_prop_type, pictographs: list["Pictograph"]
+    ) -> None:
         for pictograph in pictographs:
             if pictograph:
                 self.replace_props(new_prop_type, pictograph)
                 pictograph.prop_type = new_prop_type
                 pictograph.updater.update_pictograph()
 
-
     def _update_start_pos_view(self, new_prop_type):
         start_pos_view = (
-            self.main_window.main_widget.sequence_workbench.beat_frame.start_pos_view
+            self.main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_view
         )
         if hasattr(start_pos_view, "start_pos"):
             start_pos = start_pos_view.start_pos

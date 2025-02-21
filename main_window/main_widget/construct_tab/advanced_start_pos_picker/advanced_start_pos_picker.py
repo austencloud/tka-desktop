@@ -15,20 +15,26 @@ from main_window.main_widget.construct_tab.start_pos_picker.choose_your_start_po
 )
 
 if TYPE_CHECKING:
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
     from ..construct_tab import ConstructTab
 
 
 class AdvancedStartPosPicker(BaseStartPosPicker):
     COLUMN_COUNT = 4
 
-    def __init__(self, construct_tab: "ConstructTab"):
-        super().__init__(construct_tab)
+    def __init__(
+        self,
+        construct_tab: "ConstructTab",
+        pictograph_dataset: dict,
+        beat_frame: "SequenceBeatFrame",
+    ):
+        super().__init__(construct_tab, pictograph_dataset)
         self.choose_your_start_pos_label = ChooseYourStartPosLabel(self)
         self._setup_layout()
         self.start_pos_cache: dict[str, list[Pictograph]] = {}
-        self.start_position_adder = (
-            self.construct_tab.main_widget.sequence_workbench.beat_frame.start_position_adder
-        )
+        self.start_position_adder = beat_frame.start_position_adder
         self.generate_pictographs()
 
     def _setup_layout(self):
@@ -55,7 +61,7 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         local_dict = deepcopy(pictograph_data)
         local_dict["grid_mode"] = target_grid_mode
 
-        pictograph = Pictograph(self.main_widget)
+        pictograph = Pictograph()
         pictograph.view = AdvancedStartPosPickerPictographView(self, pictograph)
         pictograph.updater.update_pictograph(local_dict)
         pictograph.view.update_borders()

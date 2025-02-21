@@ -4,6 +4,9 @@ from data.constants import STATIC, DASH
 from base_widgets.pictograph.wasd_adjustment_manager.rotation_angle_override_key_generator import (
     RotationAngleOverrideKeyGenerator,
 )
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
+    TurnsTupleGenerator,
+)
 
 
 if TYPE_CHECKING:
@@ -26,7 +29,6 @@ class RotationAngleOverrideManager:
         self.special_positioner = (
             self.pictograph.arrow_placement_manager.special_positioner
         )
-        self.turns_tuple_generator = self.pictograph.main_widget.turns_tuple_generator
         self.key_generator = RotationAngleOverrideKeyGenerator(self)
 
     def handle_rotation_angle_override(self) -> None:
@@ -48,7 +50,7 @@ class RotationAngleOverrideManager:
 
     def get_visible_pictographs(self) -> list["Pictograph"]:
         visible_pictographs = []
-        for pictograph_list in self.pictograph.main_widget.pictograph_cache.values():
+        for pictograph_list in self.pictograph.main_widget.pictograph_dataset.values():
             for pictograph in pictograph_list.values():
                 if pictograph.view:
                     if pictograph.view.isVisible():

@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
 from ..GE_pictograph_view import GE_PictographView, GE_Pictograph
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.beat_frame.beat import Beat
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
     from ..graph_editor import GraphEditor
 
 
@@ -27,7 +27,7 @@ class GraphEditorPictographContainer(QWidget):
 
     def update_pictograph(self, reference_beat: "Beat" = None) -> None:
         selected_beat_view = (
-            self.graph_editor.sequence_workbench.beat_frame.get.currently_selected_beat_view()
+            self.graph_editor.sequence_workbench.sequence_beat_frame.get.currently_selected_beat_view()
         )
         if not selected_beat_view:
             return

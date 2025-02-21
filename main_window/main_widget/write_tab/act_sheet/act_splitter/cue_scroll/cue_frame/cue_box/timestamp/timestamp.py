@@ -32,7 +32,7 @@ class Timestamp(EditableLabel):
             self.cue_box.cue_frame.cue_scroll.act_sheet.write_tab.height() // 80
         )
         font = self.label.font()
-        font.setPointSize(font_size)
+        font.setPointSize(max(font_size, 8))
         font.setBold(True)
         self.label.setFont(font)
         self.edit.setFont(font)

@@ -22,7 +22,6 @@ from .font_color_updater.font_color_updater import FontColorUpdater
 
 from .main_widget_managers import MainWidgetManagers
 from .main_widget_ui import MainWidgetUI
-from .main_widget_events import MainWidgetEvents
 from .main_widget_state import MainWidgetState
 
 if TYPE_CHECKING:
@@ -78,7 +77,6 @@ class MainWidget(QWidget):
     tab_switcher: "MainWidgetTabSwitcher"
     manager: "MainWidgetManagers"
     ui_handler: "MainWidgetUI"
-    event_handler: "MainWidgetEvents"
     state_handler: "MainWidgetState"
 
     # Managers and Helpers
@@ -145,8 +143,6 @@ class MainWidget(QWidget):
         self.manager = MainWidgetManagers(self)
         self.state_handler = MainWidgetState(self)
         self.ui_handler = MainWidgetUI(self)
-        self.event_handler = MainWidgetEvents(self)
-
 
     def ensure_user_exists(self):
         """Check if a user exists; if not, prompt for a name and show welcome info."""
@@ -162,7 +158,7 @@ class MainWidget(QWidget):
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self.background_widget.resize_background()
-        self.beat_frame = self.sequence_workbench.beat_frame
+        self.beat_frame = self.sequence_workbench.sequence_beat_frame
         if (
             self.left_stack.currentIndex() == self.left_sequence_picker_index
             and self.right_stack.currentIndex() == self.right_sequence_viewer_index

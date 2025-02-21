@@ -5,6 +5,7 @@ from PyQt6.QtSvg import QSvgRenderer
 import os
 
 from Enums.letters import Letter
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
@@ -58,7 +59,7 @@ class StartToEndPosGlyph(QGraphicsItemGroup):
             self.scale_and_position_glyphs()
 
             # Adjust visibility based on settings
-            visible = self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
+            visible = AppContext.settings_manager().visibility.get_glyph_visibility(
                 "Positions"
             )
             if self.scene() is None:

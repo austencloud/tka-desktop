@@ -5,6 +5,8 @@ from data.locations import cw_loc_order
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
+from main_window.main_widget.grid_mode_checker import GridModeChecker
+
 if TYPE_CHECKING:
     from .codex_control_widget import CodexControlWidget
 
@@ -66,7 +68,7 @@ class CodexRotationManager:
 
     def update_grid_mode(self):
         for view in self.codex.section_manager.codex_views.values():
-            grid_mode = self.codex.main_widget.grid_mode_checker.get_grid_mode(
+            grid_mode = GridModeChecker.get_grid_mode(
                 view.pictograph.pictograph_data
             )
             view.pictograph.grid.hide()

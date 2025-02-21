@@ -2,6 +2,11 @@ from typing import TYPE_CHECKING
 from Enums.Enums import LetterType
 from Enums.PropTypes import PropType
 from Enums.letters import Letter
+from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
+    TurnsTupleGenerator,
+)
+from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.prop.prop import Prop
 
 if TYPE_CHECKING:
@@ -146,15 +151,13 @@ class SwapBetaHandler:
         )
         grid_mode = self.pictograph.grid_mode
         if ori_key:
-            letter_data: dict = self.pictograph.main_widget.special_placements[
-                grid_mode
-            ][ori_key].get(self.pictograph.letter.value)
-
-        turns_tuple = (
-            self.pictograph.main_widget.turns_tuple_generator.generate_turns_tuple(
-                self.pictograph
+            letter_data: dict = (
+                AppContext.special_placement_loader()
+                .load_special_placements()[grid_mode][ori_key]
+                .get(self.pictograph.letter.value)
             )
-        )
+
+        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
         prop_loc = self.pictograph.blue_prop.loc
         if self.pictograph.check.ends_with_radial_ori():
             beta_ori = "radial"

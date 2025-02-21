@@ -13,7 +13,7 @@ class PictographDataLoader:
     def __init__(self, main_widget: "MainWidget") -> None:
         self.main_widget = main_widget
 
-    def load_all_pictograph_data(self) -> dict[Letter, list[dict]]:
+    def load_pictograph_dataset(self) -> dict[Letter, list[dict]]:
         diamond_csv_path = get_images_and_data_path(
             "data/DiamondPictographDataframe.csv"
         )

@@ -16,10 +16,10 @@ from base_widgets.pictograph.pictograph_view_key_event_handler import (
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
     GE_Pictograph,
 )
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from .GE_pictograph_view_mouse_event_handler import GE_PictographViewMouseEventHandler
 
 from base_widgets.pictograph.pictograph import Pictograph
-from ..beat_frame.beat_view import Beat
 
 if TYPE_CHECKING:
     from .pictograph_container.GE_pictograph_container import (

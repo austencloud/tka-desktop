@@ -27,7 +27,9 @@ class SequenceColorSwapper(BaseSequenceModifier):
             QApplication.restoreOverrideCursor()
             return
         swapped_sequence = self._color_swap_sequence()
-        self.sequence_workbench.beat_frame.updater.update_beats_from(swapped_sequence)
+        self.sequence_workbench.sequence_beat_frame.updater.update_beats_from(
+            swapped_sequence
+        )
         self._update_ui()
         QApplication.restoreOverrideCursor()
 
@@ -39,17 +41,17 @@ class SequenceColorSwapper(BaseSequenceModifier):
         swapped_sequence.append(metadata)
 
         start_pos_beat_dict: dict = (
-            self.sequence_workbench.beat_frame.start_pos_view.start_pos.pictograph_data.copy()
+            self.sequence_workbench.sequence_beat_frame.start_pos_view.start_pos.pictograph_data.copy()
         )
         self._color_swap_dict(start_pos_beat_dict)
         swapped_sequence.append(start_pos_beat_dict)
 
-        beat_dicts = self.sequence_workbench.beat_frame.get.beat_dicts()
+        beat_dicts = self.sequence_workbench.sequence_beat_frame.get.beat_dicts()
         for beat_dict in beat_dicts:
             swapped_beat = beat_dict.copy()
             self._color_swap_dict(swapped_beat)
             swapped_sequence.append(swapped_beat)
-        for beat_view in self.sequence_workbench.beat_frame.beat_views:
+        for beat_view in self.sequence_workbench.sequence_beat_frame.beat_views:
             beat = beat_view.beat
 
             red_reversal = beat.red_reversal

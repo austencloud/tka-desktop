@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from Enums.Enums import LetterType
 from Enums.letters import Letter
 from data.constants import LEADING, TRAILING, RED, BLUE
+from main_window.main_widget.grid_mode_checker import GridModeChecker
 from objects.motion.motion import Motion
 from functools import lru_cache
 
@@ -29,10 +30,8 @@ class PictographUpdater:
 
             if self.pictograph.check.is_pictograph_data_complete(pictograph_data):
                 self.pictograph.pictograph_data = pictograph_data
-                self.pictograph.grid_mode = (
-                    self.pictograph.main_widget.grid_mode_checker.get_grid_mode(
-                        self.pictograph.pictograph_data
-                    )
+                self.pictograph.grid_mode = GridModeChecker.get_grid_mode(
+                    self.pictograph.pictograph_data
                 )
                 self.pictograph.grid.update_grid_mode()
 

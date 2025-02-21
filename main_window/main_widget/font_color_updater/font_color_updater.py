@@ -9,7 +9,7 @@ from .generate_tab_font_color_updater import GenerateTabFontColorUpdater
 from .browse_tab_font_color_updater import BrowseTabFontColorUpdater
 from .learn_tab_font_color_updater import LearnTabFontColorUpdater
 from .act_tab_font_color_updater import WriteTabFontColorUpdater
-from .menu_bar_font_color_updater import MenuBarFontColorUpdater
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
@@ -21,7 +21,6 @@ class FontColorUpdater:
         self.font_color = "white"
 
         self.sub_updater_classes: list[BaseFontColorUpdater] = [
-            MenuBarFontColorUpdater,
             SequenceWorkbenchFontColorUpdater,
             ConstructTabFontColorUpdater,
             GenerateTabFontColorUpdater,

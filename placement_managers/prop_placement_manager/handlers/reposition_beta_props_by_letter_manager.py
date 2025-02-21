@@ -108,7 +108,7 @@ class RepositionBetaByLetterHandler:
                 self.dir_calculator.get_opposite_dir(direction),
             )
 
-    def reposition_Ψ(self) -> None:
+    def reposition_psi(self) -> None:
         direction = self.dir_calculator.get_dir_for_non_shift(self.pictograph.red_prop)
         if direction:
             self.move_prop(self.pictograph.red_prop, direction)
@@ -117,7 +117,7 @@ class RepositionBetaByLetterHandler:
                 self.dir_calculator.get_opposite_dir(direction),
             )
 
-    def reposition_Ψ_dash(self) -> None:
+    def reposition_psi_dash(self) -> None:
         direction = self.dir_calculator.get_dir_for_non_shift(self.pictograph.red_prop)
         if direction:
             self.move_prop(self.pictograph.red_prop, direction)
@@ -126,7 +126,7 @@ class RepositionBetaByLetterHandler:
                 self.dir_calculator.get_opposite_dir(direction),
             )
 
-    def reposition_β(self) -> None:
+    def reposition_beta(self) -> None:
         direction = self.dir_calculator.get_dir_for_non_shift(self.pictograph.red_prop)
         if direction:
             self.move_prop(self.pictograph.red_prop, direction)

@@ -15,12 +15,12 @@ TURNS_WIDGET_INDEX = 1
 class BeatAdjustmentPanel(QFrame):
     turns_boxes: list[TurnsBox]
     ori_picker_boxes: list[OriPickerBox]
-    
+
     def __init__(self, graph_editor: "GraphEditor") -> None:
         super().__init__(graph_editor)
         self.graph_editor = graph_editor
         self.GE_pictograph = graph_editor.pictograph_container.GE_pictograph
-        self.beat_frame = self.graph_editor.sequence_workbench.beat_frame
+        self.beat_frame = self.graph_editor.sequence_workbench.sequence_beat_frame
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self._initialize_ui()
 

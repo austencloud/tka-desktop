@@ -4,14 +4,17 @@ from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import BOX, DIAMOND, START_POS, END_POS
 from base_widgets.pictograph.pictograph import Pictograph
-from ...sequence_workbench.beat_frame.start_pos_beat import StartPositionBeat
+from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import StartPositionBeat
 from .start_pos_picker_variations_button import StartPosVariationsButton
 from .start_pos_pictograph_frame import StartPosPickerPictographFrame
 from .choose_your_start_pos_label import ChooseYourStartPosLabel
 from .base_start_pos_picker import BaseStartPosPicker
 
 if TYPE_CHECKING:
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
     from ..construct_tab import ConstructTab
+
 
 
 class StartPosPicker(BaseStartPosPicker):
@@ -19,9 +22,15 @@ class StartPosPicker(BaseStartPosPicker):
     start_position_selected = pyqtSignal(Pictograph)
     COLUMN_COUNT = 3
 
-    def __init__(self, construct_tab: "ConstructTab"):
-        super().__init__(construct_tab)
+    def __init__(
+        self,
+        construct_tab: "ConstructTab",
+        pictograph_dataset: dict,
+        beat_frame: "SequenceBeatFrame",
+    ):
+        super().__init__(construct_tab, pictograph_dataset)
         self.construct_tab = construct_tab
+        self.beat_frame = beat_frame  # ✅ Store the beat_frame
         self.pictograph_frame = StartPosPickerPictographFrame(self)
         self.choose_your_start_pos_label = ChooseYourStartPosLabel(self)
         self.button_layout = self._setup_variations_button_layout()
@@ -29,7 +38,7 @@ class StartPosPicker(BaseStartPosPicker):
         self.setStyleSheet("background-color: white;")
         self.initialized = False
         self.start_options: dict[str, Pictograph] = {}
-
+        self.pictograph_dataset = pictograph_dataset
         self.display_variations()
 
     def setup_layout(self) -> None:
@@ -86,11 +95,9 @@ class StartPosPicker(BaseStartPosPicker):
         self, position_key: str, grid_mode: str
     ) -> None:
         """Adds an option for the specified start position based on the current grid mode."""
-        self.start_position_adder = (
-            self.construct_tab.main_widget.sequence_workbench.beat_frame.start_position_adder
-        )
+        self.start_position_adder = self.construct_tab.beat_frame.start_position_adder
         start_pos, end_pos = position_key.split("_")
-        for letter, pictograph_datas in self.main_widget.pictograph_dataset.items():
+        for letter, pictograph_datas in self.pictograph_dataset.items():
             for pictograph_data in pictograph_datas:
                 if (
                     pictograph_data[START_POS] == start_pos
@@ -115,7 +122,7 @@ class StartPosPicker(BaseStartPosPicker):
             start_pos_entry[1] if start_pos_entry else None
         )
         start_pos_beat = StartPositionBeat(
-            self.main_widget.sequence_workbench.beat_frame,
+            self.beat_frame,
         )
         start_pos_beat.updater.update_pictograph(
             start_position_pictograph.pictograph_data
@@ -129,9 +136,7 @@ class StartPosPicker(BaseStartPosPicker):
         start_pos_key = start_pos_data["end_pos"]
         letter_str = self.start_pos_key_to_letter(start_pos_key)
         letter = Letter(letter_str)
-        matching_letter_pictographs = self.main_widget.pictograph_dataset.get(
-            letter, []
-        )
+        matching_letter_pictographs = self.pictograph_dataset.get(letter, [])
         for pictograph_data in matching_letter_pictographs:
             if pictograph_data["start_pos"] == start_pos_key:
 
@@ -141,13 +146,9 @@ class StartPosPicker(BaseStartPosPicker):
                 pictograph_data["red_attributes"]["start_ori"] = start_pos_data[
                     "red_attributes"
                 ]["end_ori"]
-                pictograph_factory = (
-                    self.main_widget.sequence_workbench.beat_frame.beat_factory
-                )
-                pictograph_key = (
-                    self.main_widget.pictograph_key_generator.generate_pictograph_key(
-                        pictograph_data
-                    )
+                pictograph_factory = self.beat_frame.beat_factory
+                pictograph_key = PictographKeyGenerator.generate_pictograph_key(
+                    pictograph_data
                 )
                 start_pos_pictograph = pictograph_factory.create_start_pos_beat(
                     pictograph_key, pictograph_data

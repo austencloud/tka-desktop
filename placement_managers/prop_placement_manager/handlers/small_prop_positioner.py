@@ -17,13 +17,12 @@ class SmallPropPositioner:
                     prop
                 )
         if (
-            ((
+            (
                 self.pictograph.check.ends_with_in_out_ori()
                 or self.pictograph.check.ends_with_clock_counter_ori()
             )
-            and len(self.beta_prop_positioner.classifier.small_uni) == 2)
-            or self.pictograph.check.ends_with_layer3()
-        ):
+            and len(self.beta_prop_positioner.classifier.small_uni) == 2
+        ) or self.pictograph.check.ends_with_layer3():
             return
 
         else:
@@ -36,10 +35,10 @@ class SmallPropPositioner:
             elif self.pictograph.letter.value in ["Y", "Z"]:
                 letter_handler.reposition_Y_Z()
             elif self.pictograph.letter.value == "β":
-                letter_handler.reposition_β()
+                letter_handler.reposition_beta()
             elif self.pictograph.letter.value in ["Y-", "Z-"]:
                 letter_handler.reposition_Y_dash_Z_dash()
             elif self.pictograph.letter.value == "Ψ":
-                letter_handler.reposition_Ψ()
+                letter_handler.reposition_psi()
             elif self.pictograph.letter.value == "Ψ-":
-                letter_handler.reposition_Ψ_dash()
+                letter_handler.reposition_psi_dash()

@@ -2,6 +2,10 @@ import logging
 import re
 from PyQt6.QtCore import QPointF
 from Enums.letters import Letter
+from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
+    TurnsTupleGenerator,
+)
 from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING, Optional
 
@@ -13,17 +17,16 @@ logger = logging.getLogger(__name__)
 
 
 class ArrowAdjustmentCalculator:
-    def __init__(self, placement_manager: "ArrowPlacementManager") -> None:
+    def __init__(self, placement_manager: "ArrowPlacementManager", special_placement_loader: "SpecialPlacementLoader") -> None:
         self.placement_manager = placement_manager
+        self.special_placement_loader = special_placement_loader
 
     def get_adjustment(self, arrow: Arrow) -> QPointF:
         if not arrow.motion.pictograph.letter:
             return QPointF(0, 0)
 
-        turns_tuple = (
-            arrow.pictograph.main_widget.turns_tuple_generator.generate_turns_tuple(
-                self.placement_manager.pictograph
-            )
+        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(
+            self.placement_manager.pictograph
         )
         ori_key = (
             self.placement_manager.special_positioner.data_updater._generate_ori_key(
@@ -31,9 +34,7 @@ class ArrowAdjustmentCalculator:
             )
         )
         special_placements = (
-            self.placement_manager.pictograph.main_widget.special_placements.get(
-                ori_key, {}
-            )
+            self.special_placement_loader.load_special_placements().get(ori_key, {})
         )
 
         if self.placement_manager.pictograph.letter not in special_placements:
@@ -78,9 +79,9 @@ class ArrowAdjustmentCalculator:
         self, letter: Letter, arrow: Arrow, turns_tuple: str, ori_key: str
     ) -> Optional[tuple[int, int]]:
         self.special_placements: dict[str, dict] = (
-            self.placement_manager.pictograph.main_widget.special_placements.get(
-                arrow.pictograph.grid_mode
-            ).get(ori_key, {})
+            self.special_placement_loader.load_special_placements()
+            .get(arrow.pictograph.grid_mode)
+            .get(ori_key, {})
         )
         letter_adjustments: dict[str, dict[str, list]] = self.special_placements.get(
             letter.value, {}

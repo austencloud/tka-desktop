@@ -13,7 +13,7 @@ class PropPlacementOverrideManager:
         self.special_positioner = (
             self.pictograph.arrow_placement_manager.special_positioner
         )
-        self.turns_tuple_generator = self.pictograph.main_widget.turns_tuple_generator
+        self.turns_tuple_generator = wasd_manager.turns_tuple_generator
 
     def handle_prop_placement_override(self, key) -> None:
         self.special_placements = self.pictograph.main_widget.special_placements

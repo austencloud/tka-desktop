@@ -11,11 +11,10 @@ if TYPE_CHECKING:
 
 
 class BaseStartPosPicker(QWidget):
-    def __init__(self, construct_tab: "ConstructTab"):
+    def __init__(self, construct_tab: "ConstructTab", pictograph_dataset: dict):
         super().__init__(construct_tab)
         self.construct_tab = construct_tab
-        self.main_widget = construct_tab.main_widget
-
+        self.pictograph_dataset = pictograph_dataset
         self.pictograph_cache: dict[str, Pictograph] = {}
         self.box_pictographs: list[Pictograph] = []
         self.diamond_pictographs: list[Pictograph] = []
@@ -34,8 +33,10 @@ class BaseStartPosPicker(QWidget):
         if pictograph_key in self.pictograph_cache:
             return self.pictograph_cache[pictograph_key]
 
-        pictograph = Pictograph(self.main_widget)
-        pictograph.view = StartPosPickerPictographView(self, pictograph)
+        pictograph = Pictograph()
+        pictograph.view = StartPosPickerPictographView(
+            self, pictograph, size_provider=self.construct_tab.mw_size_provider
+        )
         pictograph.updater.update_pictograph(local_dict)
         pictograph.view.update_borders()
         self.pictograph_cache[pictograph_key] = pictograph
@@ -57,7 +58,7 @@ class BaseStartPosPicker(QWidget):
         if self.box_pictographs:
             return self.box_pictographs
 
-        for letter, p_dicts in self.main_widget.pictograph_dataset.items():
+        for letter, p_dicts in self.pictograph_dataset.items():
             for p_dict in p_dicts:
                 if p_dict["start_pos"] == p_dict["end_pos"]:
                     if p_dict["start_pos"] in box_positions:
@@ -69,7 +70,7 @@ class BaseStartPosPicker(QWidget):
         if self.diamond_pictographs:
             return self.diamond_pictographs
 
-        for letter, p_dicts in self.main_widget.pictograph_dataset.items():
+        for letter, p_dicts in self.pictograph_dataset.items():
             for p_dict in p_dicts:
                 if p_dict["start_pos"] == p_dict["end_pos"]:
                     if p_dict["start_pos"] in diamond_positions:

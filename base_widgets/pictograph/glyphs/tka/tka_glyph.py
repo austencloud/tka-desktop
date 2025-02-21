@@ -1,14 +1,15 @@
+# tka_glyph.py
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QGraphicsItemGroup
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 from .dot_handler.dot import Dot
 from .dot_handler.dot_handler import DotHandler
-
 from .turns_number_group.turns_number import TurnsNumber
 from .tka_letter import TKALetter
 from .dash import Dash
 from .turns_number_group.turns_number_group import TurnsNumberGroup
-
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
@@ -45,16 +46,14 @@ class TKA_Glyph(QGraphicsItemGroup):
         if not self.letter:
             return
 
+        # Obtain the turns tuple and update dots, dash, and turn numbers.
         turns_tuple = self.pictograph.get.turns_tuple()
         self.dot_handler.update_dots(turns_tuple)
         self.dash.update_dash()
-
         self.turns_column.update_turns(turns_tuple)
 
         self.setVisible(
-            self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
-                "TKA"
-            )
+            AppContext.settings_manager().visibility.get_glyph_visibility("TKA")
             if visibility
             else False
         )

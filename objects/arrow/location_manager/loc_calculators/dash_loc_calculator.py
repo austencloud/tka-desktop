@@ -8,18 +8,18 @@ from .base_loc_calculator import BaseLocationCalculator
 class DashLocationCalculator(BaseLocationCalculator):
     def calculate_location(self) -> str:
         if self.pictograph.letter in [Letter.Φ_DASH, Letter.Ψ_DASH]:
-            return self._get_Φ_dash_Ψ_dash_location()
+            return self._get_phi_dash_psi_dash_location()
         elif (
             self.pictograph.letter in [Letter.Λ, Letter.Λ_DASH]
             and self.arrow.motion.turns == 0
         ):
-            return self._get_Λ_zero_turns_location()
+            return self._get_lambda_zero_turns_location()
         elif self.arrow.motion.turns == 0:
             return self._default_zero_turns_dash_location()
         else:
             return self._dash_location_non_zero_turns()
 
-    def _get_Φ_dash_Ψ_dash_location(self) -> str:
+    def _get_phi_dash_psi_dash_location(self) -> str:
         self.other_motion = self.pictograph.get.other_motion(self.arrow.motion)
 
         if self.arrow.motion.turns == 0 and self.other_motion.arrow.motion.turns == 0:
@@ -56,7 +56,7 @@ class DashLocationCalculator(BaseLocationCalculator):
         elif self.arrow.motion.turns != 0:
             return self._dash_location_non_zero_turns(self.arrow.motion)
 
-    def _get_Λ_zero_turns_location(self) -> str:
+    def _get_lambda_zero_turns_location(self) -> str:
         self.other_motion = self.pictograph.get.other_motion(self.arrow.motion)
         loc_map = {
             ((NORTH, SOUTH), WEST): EAST,

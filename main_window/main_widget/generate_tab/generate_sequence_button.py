@@ -49,7 +49,6 @@ class GenerateSequenceButton(QPushButton):
                 background-color: #2196F3;
                 color: white;
                 border: none;
-                transition: background-color 0.3s;
             }}
             QPushButton:hover {{
                 background-color: #1976D2;

@@ -26,7 +26,7 @@ class DefaultPropPositioner:
         strict = self.pictograph.check.has_strictly_placed_props()
 
         point_suffix = "_strict" if strict else ""
-        
+
         point_name = f"{prop.loc}_{prop.pictograph.grid_mode}_hand_point{point_suffix}"
 
         logger.debug(f"Attempting to place prop '{prop}' at point '{point_name}'.")

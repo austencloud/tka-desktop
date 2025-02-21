@@ -1,8 +1,12 @@
 from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal, QSize
 
+from main_window.main_widget.construct_tab.add_to_sequence_manager import (
+    AddToSequenceManager,
+)
 from main_window.main_widget.construct_tab.option_picker.option_view import OptionView
+from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.settings_manager.global_settings.app_context import AppContext
 from .option_scroll.option_scroll import OptionScroll
 from .option_factory import OptionFactory
@@ -26,25 +30,25 @@ class OptionPicker(QWidget):
 
     def __init__(
         self,
-        construct_tab: "ConstructTab",
+        add_to_sequence_manager: "AddToSequenceManager",
         pictograph_dataset: dict,
         beat_frame,
-        mw_height_provider: Callable[[], int],
+        mw_size_provider: Callable[[], QSize],
+        fade_manager: "FadeManager",
     ):
-        super().__init__(construct_tab)
-        self.construct_tab = construct_tab
-        self.mw_height_provider = mw_height_provider
-
+        super().__init__()
+        self.add_to_sequence_manager = add_to_sequence_manager
         # Components
-        self.choose_next_label = ChooseYourNextPictographLabel(self.mw_height_provider)
-        self.reversal_filter = OptionPickerReversalFilter(self)
-        self.option_scroll = OptionScroll(self)
+        self.choose_next_label = ChooseYourNextPictographLabel(mw_size_provider)
+        self.reversal_filter = OptionPickerReversalFilter(mw_size_provider)
+
+        self.option_scroll = OptionScroll(self, mw_size_provider)
 
         # Managers
         self.option_getter = OptionGetter(pictograph_dataset)
         self.click_handler = OptionClickHandler(self, beat_frame)
-        self.updater = OptionUpdater(self)
-        self.option_factory = OptionFactory(self)
+        self.updater = OptionUpdater(self, fade_manager)
+        self.option_factory = OptionFactory(self, mw_size_provider)
         self.layout_manager = OptionPickerLayoutManager(self)
 
     def resizeEvent(self, event):

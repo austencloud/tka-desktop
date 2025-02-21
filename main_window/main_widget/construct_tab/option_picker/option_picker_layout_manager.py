@@ -16,7 +16,7 @@ class OptionPickerLayoutManager:
     def setup_layout(self) -> None:
         layout = QVBoxLayout(self.op)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.op.choose_next_label.show()
+        # self.op.choose_next_label.show()
 
         header_layout = QVBoxLayout()
         header_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)

@@ -23,7 +23,7 @@ class VisibilityPictograph(Pictograph):
     blue_reversal = True
 
     def __init__(self, tab: "VisibilityTab"):
-        super().__init__(tab.main_widget)
+        super().__init__()
         self.tab = tab
         self.main_widget = tab.main_widget
         pictograph_data = self.main_widget.pictograph_data_loader.find_pictograph_data(

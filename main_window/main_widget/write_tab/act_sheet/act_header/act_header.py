@@ -24,8 +24,9 @@ class ActHeader(QWidget):
 
     def _configure_header_style(self):
         """Set up styling for the header widget."""
-        self.setObjectName("timelineHeader")
-        self.setStyleSheet(
+        self.header_container = QWidget(self)
+        self.header_container.setObjectName("timelineHeader")
+        self.header_container.setStyleSheet(
             """
             #timelineHeader {
                 background-color: rgba(255, 255, 255, 0.9);
@@ -50,12 +51,16 @@ class ActHeader(QWidget):
 
     def _layout_components(self):
         """Arrange components in a vertical layout for the header."""
-        layout = QVBoxLayout(self)
+        layout = QVBoxLayout(self.header_container)
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         layout.addWidget(self.date_label)
         layout.addWidget(self.title_label)
         layout.addWidget(self.author_label)
-        self.setLayout(layout)
+        self.header_container.setLayout(layout)
+
+        main_layout = QVBoxLayout(self)
+        main_layout.addWidget(self.header_container)
+        self.setLayout(main_layout)
 
     def _initialize_content(self):
         """Set initial content for date and author labels."""

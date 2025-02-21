@@ -59,9 +59,7 @@ class OptionPickerSectionTypeLabel(QLabel):
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Calculate font size based on parent widget's height
-        parent_height = (
-            self.section_widget.option_scroll.construct_tab.option_picker.construct_tab.main_widget.height()
-        )
+        parent_height = self.section_widget.mw_size_provider().height()
         font_size = max(parent_height // 70, 10)  # Ensure minimum font size
         label_height = max(int(font_size * 3), 20)  # Ensure minimum label height
         label_width = max(int(label_height * 6), 100)  # Ensure minimum label width

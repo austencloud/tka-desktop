@@ -12,6 +12,7 @@ from data.constants import (
     TOG_OPP,
     TOG_SAME,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
 
 
@@ -76,7 +77,5 @@ class ElementalGlyph(QGraphicsSvgItem):
         self.position_elemental_glyph()
 
         self.setVisible(
-            self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
-                "Elemental"
-            )
+            AppContext.settings_manager().visibility.get_glyph_visibility("Elemental")
         )

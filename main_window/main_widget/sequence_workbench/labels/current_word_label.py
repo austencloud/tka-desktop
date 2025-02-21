@@ -7,7 +7,9 @@ from PyQt6.QtWidgets import (
 )
 
 
-from ..beat_frame.current_word_line_edit import CurrentWordLineEdit
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.current_word_line_edit import (
+    CurrentWordLineEdit,
+)
 from utilities.word_simplifier import WordSimplifier
 
 if TYPE_CHECKING:
@@ -83,5 +85,5 @@ class CurrentWordLabel(QWidget):
         )
 
     def update_current_word_label_from_beats(self):
-        current_word = self.sequence_workbench.beat_frame.get.current_word()
+        current_word = self.sequence_workbench.sequence_beat_frame.get.current_word()
         self.set_current_word(current_word)

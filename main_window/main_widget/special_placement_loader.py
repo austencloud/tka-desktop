@@ -17,15 +17,17 @@ class SpecialPlacementLoader:
     ]
     SUPPORTED_MODES = ["diamond", "box"]
 
-    def __init__(self, main_widget: "MainWidget") -> None:
-        self.main_widget = main_widget
+    def __init__(self) -> None:
         self.special_placements: dict[str, dict[str, dict]] = {}
-        self.load_special_placements()
 
-    def load_special_placements(self) -> None:
+    def load_special_placements(self) -> dict[str, dict[str, dict]]:
+        # If we've already loaded everything, just return it!
+        if self.special_placements:
+            return self.special_placements
+
         for mode in self.SUPPORTED_MODES:
             self.special_placements[mode] = self._load_mode_subfolders(mode)
-        self.main_widget.special_placements = self.special_placements
+        return self.special_placements
 
     def _load_mode_subfolders(self, mode: str) -> dict[str, dict]:
         mode_data: dict[str, dict] = {}

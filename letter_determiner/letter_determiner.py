@@ -23,7 +23,7 @@ class LetterDeterminer:
     ) -> Letter:
         """Update the motion attributes based on the change in prop_rot_dir."""
         if not self.beat_frame:
-            self.beat_frame = self.main_widget.sequence_workbench.beat_frame
+            self.beat_frame = self.main_widget.sequence_workbench.sequence_beat_frame
         other_motion = motion.pictograph.get.other_motion(motion)
         motion_type = motion.motion_type
 

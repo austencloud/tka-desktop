@@ -36,7 +36,7 @@ class DualFloatLetterDeterminer:
 
     def _get_json_index_for_current_beat(self) -> int:
         return (
-            self.main_widget.sequence_workbench.beat_frame.get.index_of_currently_selected_beat()
+            self.main_widget.sequence_workbench.sequence_beat_frame.get.index_of_currently_selected_beat()
             + 2
         )
 
@@ -48,8 +48,10 @@ class DualFloatLetterDeterminer:
         )
 
     def _get_prefloat_prop_rot_dir(self, json_index: int, motion: "Motion") -> str:
-        return self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
-            json_index, motion.color
+        return (
+            self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
+                json_index, motion.color
+            )
         )
 
     def _get_opposite_rotation_direction(self, rotation_direction: str) -> str:

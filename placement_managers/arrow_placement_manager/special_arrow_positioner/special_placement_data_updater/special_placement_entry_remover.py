@@ -2,6 +2,8 @@ import os
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import BLUE, RED
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
+from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:
@@ -17,9 +19,7 @@ class SpecialPlacementEntryRemover:
     ) -> None:
         self.positioner = data_updater.positioner
         self.data_updater = data_updater
-        self.turns_tuple_generator = (
-            self.positioner.placement_manager.pictograph.main_widget.turns_tuple_generator
-        )
+        self.turns_tuple_generator = data_updater.turns_tuple_generator
 
     def remove_special_placement_entry(self, letter: Letter, arrow: Arrow) -> None:
         ori_key = self.data_updater._generate_ori_key(arrow.motion)
@@ -54,7 +54,7 @@ class SpecialPlacementEntryRemover:
                     letter, arrow, ori_key, letter_data, key
                 )
             data[letter.value] = letter_data
-            self.data_updater.json_handler.write_json_data(data, file_path)
+            AppContext.special_placement_handler().write_json_data(data, file_path)
 
     def _handle_standard_start_ori_mirrored_entry_removal(
         self, letter, arrow: Arrow, ori_key, letter_data, key

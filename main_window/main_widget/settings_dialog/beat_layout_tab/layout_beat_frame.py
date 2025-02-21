@@ -2,14 +2,13 @@ from typing import TYPE_CHECKING, Union
 from PyQt6.QtWidgets import QGridLayout, QFrame
 from PyQt6.QtCore import Qt, QSize
 
-from main_window.main_widget.sequence_workbench.beat_frame.beat import Beat
-from main_window.main_widget.sequence_workbench.beat_frame.beat_view import BeatView
-from main_window.main_widget.sequence_workbench.beat_frame.start_pos_beat import (
-    StartPositionBeat,
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+    BeatView,
 )
-from main_window.main_widget.sequence_workbench.beat_frame.start_pos_beat_view import (
-    StartPositionBeatView,
-)
+
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import StartPositionBeat
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import StartPositionBeatView
 from main_window.main_widget.settings_dialog.beat_layout_tab.layout_beat_view import (
     LayoutBeatView,
 )

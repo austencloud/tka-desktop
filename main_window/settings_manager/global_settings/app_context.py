@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_manager import JsonManager
@@ -15,10 +17,11 @@ class AppContext:
     _special_placement_handler = None
 
     @classmethod
-    def init(cls, settings_manager, json_manager, special_placement_handler):
+    def init(cls, settings_manager, json_manager, special_placement_handler, special_placement_loader):
         cls._settings_manager = settings_manager
         cls._json_manager = json_manager
         cls._special_placement_handler = special_placement_handler
+        cls._special_placement_loader = special_placement_loader
 
     @classmethod
     def settings_manager(cls) -> "SettingsManager":
@@ -39,3 +42,9 @@ class AppContext:
                 "AppContext.special_placement_handler() accessed before init()"
             )
         return cls._special_placement_handler
+
+    @classmethod
+    def special_placement_loader(cls) -> SpecialPlacementLoader:
+        if cls._special_placement_loader is None:
+            cls._special_placement_loader = SpecialPlacementLoader()
+        return cls._special_placement_loader

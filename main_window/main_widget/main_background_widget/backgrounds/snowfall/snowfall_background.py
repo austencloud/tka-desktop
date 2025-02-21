@@ -1,34 +1,20 @@
 from typing import TYPE_CHECKING, Union
 from PyQt6.QtGui import QColor, QPainter, QLinearGradient
 from PyQt6.QtWidgets import QWidget
-from main_window.main_widget.main_background_widget.backgrounds.base_background import (
-    BaseBackground,
-)
+from main_window.main_widget.main_background_widget.backgrounds.base_background import BaseBackground
 
 if TYPE_CHECKING:
-
-    from main_window.main_widget.browse_tab.browse_tab import (
-        BrowseTab,
-    )
+    from main_window.main_widget.browse_tab.browse_tab import BrowseTab
     from main_window.main_widget.learn_tab.learn_tab import LearnTab
     from main_window.main_widget.write_tab.write_tab import WriteTab
 
-from .snowflake_manager import SnowflakeManager
-from .santa_manager import SantaManager
-from .shooting_star_manager import ShootingStarManager
-
-
 class SnowfallBackground(BaseBackground):
-    def __init__(
-        self,
-        widget: Union["BrowseTab", "LearnTab", "WriteTab"],
-    ):
+    def __init__(self, widget: Union["BrowseTab", "LearnTab", "WriteTab"]):
         super().__init__(widget)
         self.widget = widget
 
     def paint_background(self, widget: QWidget, painter: QPainter):
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-
+        # Draw a static gradient
         gradient = QLinearGradient(0, 0, 0, widget.height())
         gradient.setColorAt(0, QColor("#0b1d2a"))
         gradient.setColorAt(0.3, QColor("#142030"))

@@ -35,8 +35,6 @@ if TYPE_CHECKING:
 
 
 class BetaPropDirectionCalculator:
-    def __init__(self, placement_manager: "PropPlacementManager") -> None:
-        self.main_widget = placement_manager.pictograph.main_widget
 
     def get_dir(self, motion: Motion) -> str:
         """Determine the translation direction based on the motion type, start location, end location, and end layer."""

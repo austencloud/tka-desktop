@@ -1,8 +1,9 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import (
     QComboBox,
 )
 from PyQt6.QtCore import Qt
+from PyQt6.QtCore import pyqtSignal, QSize
 
 if TYPE_CHECKING:
 
@@ -12,10 +13,14 @@ if TYPE_CHECKING:
 
 
 class ReversalCombobox(QComboBox):
-    def __init__(self, reversal_filter: "OptionPickerReversalFilter"):
+    def __init__(
+        self,
+        reversal_filter: "OptionPickerReversalFilter",
+        mw_size_provider: Callable[[], QSize],
+    ):
         super().__init__(reversal_filter)
         self.reversal_filter = reversal_filter
-
+        self.mw_size_provider = mw_size_provider
         self.addItem("All", userData=None)
         self.addItem("Continuous", userData="continuous")
         self.addItem("One Reversal", userData="one_reversal")
@@ -28,7 +33,7 @@ class ReversalCombobox(QComboBox):
         super().resizeEvent(event)
         font = self.font()
         font_size = int(
-            self.reversal_filter.option_picker.construct_tab.main_widget.width() // 100
+            self.mw_size_provider().width() // 100
         )
         font.setPointSize(font_size)
         font.setFamily("Georgia")

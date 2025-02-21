@@ -36,7 +36,7 @@ class StartPosPickerPictographFrame(QWidget):
         self.pictographs_layout.addWidget(start_pos.view)
         self.start_pos_picker.start_options[start_pos.letter] = start_pos
         key = f"{start_pos.letter}_{start_pos.start_pos}_{start_pos.end_pos}"
-        self.start_pos_picker.main_widget.pictograph_cache[start_pos.letter][
+        self.start_pos_picker.construct_tab.pictograph_cache[start_pos.letter][
             key
         ] = start_pos
         self.start_positions[start_pos.letter] = start_pos

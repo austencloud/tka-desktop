@@ -1,11 +1,15 @@
 from typing import TYPE_CHECKING, Union
 
 from data.constants import DASH, FLOAT, NO_ROT, STATIC
-from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import SequencePropertiesManager
+from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
+    SequencePropertiesManager,
+)
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.beat_frame.sequence_beat_frame import SequenceBeatFrame
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
     from main_window.main_widget.json_manager.json_sequence_updater.json_sequence_updater import (
         JsonSequenceUpdater,
     )
@@ -18,7 +22,11 @@ class JsonTurnsUpdater:
         self.json_manager = json_updater.json_manager
 
     def update_turns_in_json_at_index(
-        self, index: int, color: str, turns: Union[int, float], beat_frame: "SequenceBeatFrame"
+        self,
+        index: int,
+        color: str,
+        turns: Union[int, float],
+        beat_frame: "SequenceBeatFrame",
     ) -> None:
         sequence = self.json_manager.loader_saver.load_current_sequence()
         sequence[index][f"{color}_attributes"]["turns"] = turns
@@ -48,7 +56,3 @@ class JsonTurnsUpdater:
 
         self.json_manager.loader_saver.save_current_sequence(sequence)
         SequencePropertiesManager().update_sequence_properties()
-
-
-
-

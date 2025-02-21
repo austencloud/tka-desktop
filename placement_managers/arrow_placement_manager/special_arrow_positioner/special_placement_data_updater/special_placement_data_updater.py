@@ -2,6 +2,7 @@ import os
 import logging
 from typing import TYPE_CHECKING
 
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
 from main_window.settings_manager.global_settings.app_context import AppContext
 from .mirrored_entry_manager.mirrored_entry_manager import (
     MirroredEntryManager,
@@ -31,6 +32,7 @@ logging.basicConfig(
 class SpecialPlacementDataUpdater:
     def __init__(self, positioner: "SpecialArrowPositioner") -> None:
         self.positioner = positioner
+        self.turns_tuple_generator = TurnsTupleGenerator()
 
         self.entry_remover = SpecialPlacementEntryRemover(self)
         self.mirrored_entry_manager = MirroredEntryManager(self)

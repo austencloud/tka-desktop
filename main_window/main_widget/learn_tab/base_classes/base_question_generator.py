@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
+from main_window.main_widget.grid_mode_checker import GridModeChecker
 
 
 if TYPE_CHECKING:
@@ -23,7 +24,7 @@ class BaseQuestionGenerator:
             valid_dicts.setdefault(letter, [])
             for pictograph_data in self.main_widget.pictograph_dataset[letter]:
                 if (
-                    self.main_widget.grid_mode_checker.get_grid_mode(pictograph_data)
+                    GridModeChecker.get_grid_mode(pictograph_data)
                     # == grid_mode
                 ):
                     valid_dicts[letter].append(pictograph_data)

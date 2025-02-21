@@ -106,20 +106,20 @@ class EditableLabel(QWidget):
 
         EditableLabelManager.clear_active()
 
-    def eventFilter(self, source, event) -> bool:
-        """Filter for Enter key to commit and align height in edit mode."""
-        if (
-            source == self.edit
-            and event.type() == QEvent.Type.KeyPress
-            and event.key() == Qt.Key.Key_Return
-            and (
-                not self.multi_line
-                or event.modifiers() == Qt.KeyboardModifier.NoModifier
-            )
-        ):
-            self._hide_edit()
-            return True
-        return super().eventFilter(source, event)
+    # def eventFilter(self, source, event) -> bool:
+    #     """Filter for Enter key to commit and align height in edit mode."""
+    #     if (
+    #         source == self.edit
+    #         and event.type() == QEvent.Type.KeyPress
+    #         and event.key() == Qt.Key.Key_Return
+    #         and (
+    #             not self.multi_line
+    #             or event.modifiers() == Qt.KeyboardModifier.NoModifier
+    #         )
+    #     ):
+    #         self._hide_edit()
+    #         return True
+    #     return super().eventFilter(source, event)
 
     def resizeEvent(self, event: QResizeEvent) -> None:
         """Resize both label and edit widgets to prevent overflow."""

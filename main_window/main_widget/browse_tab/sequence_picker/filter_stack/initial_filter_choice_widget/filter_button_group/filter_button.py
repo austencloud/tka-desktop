@@ -17,15 +17,9 @@ class FilterButton(QPushButton):
         self.setStyleSheet(self._default_stylesheet)
         self._base_background_color = "lightgray"
 
-    def _update_style(self, background_color: str = None, shadow: bool = False):
+    def _update_style(self, background_color: str = None):
         background_color = background_color or self._base_background_color
-        shadow_effect = (
-            """
-            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
-        """
-            if shadow
-            else ""
-        )
+
 
         self.setStyleSheet(
             f"""
@@ -35,7 +29,6 @@ class FilterButton(QPushButton):
                 color: black;
                 padding: 5px;
                 border-radius: {self._radius}px;
-                {shadow_effect}
             }}
             QPushButton:hover {{
                 background: qlineargradient(
@@ -51,10 +44,10 @@ class FilterButton(QPushButton):
         )
 
     def enterEvent(self, event):
-        self._update_style(shadow=True)
+        self._update_style()
 
     def leaveEvent(self, event):
-        self._update_style(shadow=False)
+        self._update_style()
 
     def set_rounded_button_style(self, radius: int):
         self._radius = radius

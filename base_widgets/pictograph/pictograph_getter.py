@@ -2,9 +2,12 @@ from typing import TYPE_CHECKING, Optional
 from Enums.Enums import LetterType, Letter, Glyph
 
 
-from base_widgets.pictograph.grid.concatenated_classes import NonRadialPointsGroup
+from base_widgets.pictograph.grid.non_radial_points_group import NonRadialPointsGroup
 from base_widgets.pictograph.lead_state_determiner import LeadStateDeterminer
 from data.constants import *
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
+    TurnsTupleGenerator,
+)
 from objects.arrow.arrow import Arrow
 from objects.motion.motion import Motion
 
@@ -97,8 +100,7 @@ class PictographGetter:
         return opposite_locations.get(loc)
 
     def turns_tuple(self) -> tuple[int, int, int]:
-        generator = self.pictograph.main_widget.turns_tuple_generator
-        return generator.generate_turns_tuple(self.pictograph)
+        return TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
 
     def pictograph_data(self) -> dict:
         return {
