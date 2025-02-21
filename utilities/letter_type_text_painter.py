@@ -1,16 +1,16 @@
+# letter_type_text_painter.py
 class LetterTypeTextPainter:
     COLORS = {
-        "Shift": "#6F2DA8",  # purple
-        "Dual": "#00b3ff",  # cyan
-        "Dash": "#26e600",  # green
-        "Cross": "#26e600",  # green
-        "Static": "#eb7d00",  # orange
-        "-": "#000000",  # black
+        "Shift": "#6F2DA8",
+        "Dual": "#00b3ff",
+        "Dash": "#26e600",
+        "Cross": "#26e600",
+        "Static": "#eb7d00",
+        "-": "#000000",
     }
 
     @classmethod
     def get_colored_text(cls, text: str, bold: bool = False) -> str:
-        """Returns the input text colored based on type keywords and bold if specified."""
         type_words = text.split("-")
         styled_words = [
             (
@@ -19,4 +19,6 @@ class LetterTypeTextPainter:
             )
             for word in type_words
         ]
-        return "-".join(styled_words) if "-" in text else "".join(styled_words)
+        if "-" in text:
+            return "-".join(styled_words)
+        return "".join(styled_words)
