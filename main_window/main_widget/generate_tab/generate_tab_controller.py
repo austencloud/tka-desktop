@@ -16,7 +16,7 @@ class GenerateTabController:
             saved_mode = "freeform"
         self.current_mode = saved_mode
 
-        self.tab.mode_toggle.set_state(self.current_mode == "circular")
+        self.tab.generator_type_toggle.set_state(self.current_mode == "circular")
 
         self._apply_unified_settings()
 

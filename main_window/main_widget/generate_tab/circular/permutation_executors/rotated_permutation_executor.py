@@ -44,6 +44,9 @@ class RotatedPermutationExecuter(PermutationExecutor):
         next_beat_number = last_entry["beat"] + 1
         halved_or_quartered = self.get_halved_or_quartered()
 
+        sequence_workbench = (
+            self.circular_sequence_generator.main_widget.sequence_workbench
+        )
         entries_to_add = self.determine_how_many_entries_to_add(sequence_length)
         for _ in range(entries_to_add):
             next_pictograph = self.create_new_rotated_permutation_entry(
@@ -56,9 +59,6 @@ class RotatedPermutationExecuter(PermutationExecutor):
             new_entries.append(next_pictograph)
             sequence.append(next_pictograph)
 
-            sequence_workbench = (
-                self.circular_sequence_generator.main_widget.sequence_workbench
-            )
             sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph, override_grow_sequence=True, update_word=False
             )

@@ -11,7 +11,7 @@ from data.position_maps import (
 )
 from data.quartered_permutations import quartered_permutations
 from data.halved_permutations import halved_permutations
-from ..base_classes.base_sequence_builder import BaseSequenceBuilder
+from ..base_sequence_builder import BaseSequenceBuilder
 from .permutation_executors.mirrored_permutation_executor import (
     MirroredPermutationExecutor,
 )
@@ -41,7 +41,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         prop_continuity: bool,
     ):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        self._initialize_sequence(length)
+        self.initialize_sequence(length)
 
         if prop_continuity == "continuous":
             blue_rot_dir = random.choice([CLOCKWISE, COUNTER_CLOCKWISE])
@@ -108,7 +108,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         )
         options = [deepcopy(option) for option in options]
         if is_continuous_rot_dir == "continuous":
-            options = self._filter_options_by_rotation(
+            options = self.filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir
             )
         if permutation_type == "rotated":
@@ -129,23 +129,21 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 next_beat = random.choice(options)
 
         if level == 2 or level == 3:
-            next_beat = self._set_turns(next_beat, turn_blue, turn_red)
-        self._update_start_oris(next_beat, self.sequence[-1])
-        self._update_end_oris(next_beat)
+            next_beat = self.set_turns(next_beat, turn_blue, turn_red)
+        self.update_start_orientations(next_beat, self.sequence[-1])
+        self.update_end_orientations(next_beat)
 
         if next_beat["blue_attributes"]["motion_type"] in [DASH, STATIC] or next_beat[
             "red_attributes"
         ]["motion_type"] in [DASH, STATIC]:
-            self._update_dash_static_prop_rot_dirs(
+            self.update_dash_static_prop_rot_dirs(
                 next_beat,
                 is_continuous_rot_dir,
                 blue_rot_dir,
                 red_rot_dir,
             )
 
-        next_beat = self._update_beat_number_depending_on_sequence_length(
-            next_beat, self.sequence
-        )
+        next_beat = self.update_beat_number(next_beat, self.sequence)
         return next_beat
 
     def _determine_rotated_end_pos(self, slice_size: str) -> str:

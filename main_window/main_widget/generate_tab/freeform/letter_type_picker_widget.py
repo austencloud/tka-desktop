@@ -54,7 +54,7 @@ class LetterTypePickerWidget(QWidget):
         self.settings.set_setting(
             "selected_letter_types",
             chosen,
-            self.generate_tab.mode_toggle.current_mode(),
+            self.generate_tab.generator_type_toggle.current_mode(),
         )
 
     def _set_letter_type_buttons_visible(self, visible: bool):
@@ -108,9 +108,7 @@ class LetterTypePickerWidget(QWidget):
         f = self.filter_label.font()
         f.setPointSize(font_size)
         self.filter_label.setFont(f)
-        global_settings = (
-            AppContext.settings_manager().global_settings
-        )
+        global_settings = AppContext.settings_manager().global_settings
         color = self.generate_tab.main_widget.font_color_updater.get_font_color(
             global_settings.get_background_type()
         )
