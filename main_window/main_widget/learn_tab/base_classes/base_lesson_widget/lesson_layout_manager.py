@@ -25,9 +25,9 @@ class LessonLayoutManager:
         indicator_label_layout.addWidget(self.lesson_widget.indicator_label)
 
         main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setContentsMargins(20, 20, 20, 20)
         main_layout.addLayout(back_layout, 1)
-        main_layout.addLayout(self.central_layout, 10)
+        main_layout.addLayout(self.central_layout, 14)
         main_layout.addLayout(indicator_label_layout, 2)
         self.lesson_widget.setLayout(main_layout)
 

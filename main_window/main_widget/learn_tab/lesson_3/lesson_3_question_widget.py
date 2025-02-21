@@ -36,12 +36,7 @@ class Lesson3QuestionWidget(BaseQuestionWidget):
         if self.pictograph:
             self.pictograph.elements.tka_glyph.setVisible(True)
 
-    def clear(self) -> None:
-        """Clear the current pictograph."""
-        if self.pictograph:
-            self.layout.removeWidget(self.pictograph.elements.view)
-            self.pictograph.elements.view.deleteLater()
-            self.pictograph = None
+
 
     def resizeEvent(self, event) -> None:
         self._resize_question_label()

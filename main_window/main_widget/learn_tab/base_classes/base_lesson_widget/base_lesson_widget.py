@@ -44,8 +44,6 @@ class BaseLessonWidget(QWidget):
         self.go_back_button = LessonGoBackButton(self)
         self.progress_label = LessonProgressLabel(self)
         self.answer_checker = LessonAnswerChecker(self)
-
-        # Delegate layout management to LessonLayoutManager
         self.layout_manager = LessonLayoutManager(self)
 
     def update_progress_label(self):

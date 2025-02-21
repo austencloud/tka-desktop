@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING, List
-from PyQt6.QtWidgets import (
-    QGridLayout,
-)
+from PyQt6.QtWidgets import QGridLayout
 from PyQt6.QtCore import Qt
 import logging
 
@@ -14,88 +12,106 @@ from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_pi
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.lesson_2.lesson_2_widget import (
-        Lesson2Widget,
-    )
+    from main_window.main_widget.learn_tab.lesson_2.lesson_2_widget import Lesson2Widget
 
 logger = logging.getLogger(__name__)
 
 
 class Lesson2AnswersWidget(BaseAnswersWidget):
-    """Widget responsible for displaying the pictograph answers in a grid layout."""
-
     columns = 2
     spacing = 30
-    pictographs: dict[str, PictographScene]
 
     def __init__(self, lesson_2_widget: "Lesson2Widget"):
         super().__init__(lesson_2_widget)
         self.lesson_2_widget = lesson_2_widget
         self.key_generator = self.main_widget.pictograph_key_generator
-
         self.layout: QGridLayout = QGridLayout()
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(self.layout)
-
         self.pictograph_views: List[LessonPictographView] = []
         self.pictographs: dict[str, PictographScene] = {}
-
         self.layout.setSpacing(self.spacing)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
     def create_answer_buttons(
-        self, pictographs: List[dict], correct_pictograph: dict, check_answer_callback
-    ):
-        """Display the pictographs as answer options in a grid layout."""
-        self.create_answer_buttons()
-
-        num_pictographs = len(pictographs)
-        rows = (num_pictographs + self.columns - 1) // self.columns  # Ceiling division
-
-        for index, pictograph_data in enumerate(pictographs):
-            key = self.key_generator.generate_pictograph_key(pictograph_data)
-            pictograph = PictographScene()
-            view = LessonPictographView(pictograph)
-            pictograph.elements.view = view
-            pictograph.state.disable_gold_overlay = False
-            pictograph.managers.updater.update_pictograph(pictograph_data)
-            pictograph.elements.view.update_borders()
-            self.pictographs[key] = pictograph
-            pictograph.state.quiz_mode = True
-            pictograph.elements.tka_glyph.setVisible(False)
-
+        self,
+        pictograph_data_list: List[dict],
+        correct_pictograph: dict,
+        check_answer_callback,
+    ) -> None:
+        self.clear()
+        for i, data in enumerate(pictograph_data_list):
+            key = self.key_generator.generate_pictograph_key(data)
+            scene = PictographScene()
+            view = LessonPictographView(scene)
+            scene.elements.view = view
+            scene.state.disable_gold_overlay = False
+            scene.managers.updater.update_pictograph(data)
+            scene.elements.view.update_borders()
+            scene.state.quiz_mode = True
+            scene.elements.tka_glyph.setVisible(False)
             view.mousePressEvent = (
-                lambda event, opt=pictograph_data: check_answer_callback(
-                    opt, correct_pictograph
-                )
+                lambda event, opt=data: check_answer_callback(opt, correct_pictograph)
             )
-            row = index // self.columns
-            col = index % self.columns
+            row, col = divmod(i, self.columns)
             self.layout.addWidget(view, row, col)
-
             self.pictograph_views.append(view)
+            self.pictographs[key] = scene
 
-    def disable_answers(self, answer):
-        """Disable a specific pictograph answer."""
-        pictograph_key = self.key_generator.generate_pictograph_key(answer)
-        wrong_answer = self.pictographs[pictograph_key]
-        wrong_answer.elements.view.setEnabled(False)
-        wrong_answer.elements.view.set_overlay_color("red")
+    def update_answer_buttons(
+        self,
+        pictograph_data_list: List[dict],
+        correct_pictograph: dict,
+        check_answer_callback,
+    ) -> None:
+        if len(self.pictograph_views) != 4:
+            self.create_answer_buttons(
+                pictograph_data_list, correct_pictograph, check_answer_callback
+            )
+            return
 
-    def create_answer_buttons(self):
-        """Clear all the displayed pictographs."""
+        for view in self.pictograph_views:
+            scene = view.scene()
+            for item in scene.items():
+                if item.data(0) == "overlay":
+                    scene.removeItem(item)
+            view.setEnabled(True)
+
+        self.pictographs.clear()
+
+        for i, data in enumerate(pictograph_data_list):
+            key = self.key_generator.generate_pictograph_key(data)
+            view = self.pictograph_views[i]
+            scene = view.pictograph
+            scene.state.disable_gold_overlay = False
+            scene.managers.updater.update_pictograph(data)
+            scene.elements.view.update_borders()
+            scene.state.quiz_mode = True
+            scene.elements.tka_glyph.setVisible(False)
+            view.mousePressEvent = (
+                lambda event, opt=data: check_answer_callback(opt, correct_pictograph)
+            )
+            self.pictographs[key] = scene
+
+    def disable_answer(self, answer) -> None:
+        key = self.key_generator.generate_pictograph_key(answer)
+        if key in self.pictographs:
+            view = self.pictographs[key].elements.view
+            view.setEnabled(False)
+            view.set_overlay_color("red")
+
+    def clear(self) -> None:
         for view in self.pictograph_views:
             self.layout.removeWidget(view)
             view.deleteLater()
-            logger.debug("Removed and deleted a pictograph view from the grid.")
         self.pictograph_views.clear()
         self.pictographs.clear()
 
-    def resizeEvent(self, event):
-        """Resize the pictograph views based on window size."""
+    def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
-        for view in self.pictograph_views:
-            size = int(self.main_widget.height() // 5)
-            view.setFixedSize(size, size)
+        size = int(self.main_widget.height() // 5)
         spacing = self.main_widget.width() // 100
+
+        for view in self.pictograph_views:
+            view.setFixedSize(size, size)
         self.layout.setSpacing(spacing)

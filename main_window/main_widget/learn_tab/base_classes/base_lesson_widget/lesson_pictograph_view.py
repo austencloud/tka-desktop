@@ -17,7 +17,16 @@ class LessonPictographView(BorderedPictographView):
     ### EVENTS ###
 
     def set_overlay_color(self, color: str) -> None:
-        overlay = QGraphicsRectItem(self.sceneRect())
-        overlay.setBrush(QBrush(QColor(color)))
-        overlay.setOpacity(0.5)
-        self.scene().addItem(overlay)
+        # First, remove any existing overlay so we don't stack them.
+        for item in self.scene().items():
+            if item.data(0) == "overlay":
+                self.scene().removeItem(item)
+        # If color is None, don't add a new overlay.
+        if color is None:
+            return
+        # Otherwise, create and tag the new overlay.
+        self.overlay = QGraphicsRectItem(self.sceneRect())
+        self.overlay.setBrush(QBrush(QColor(color)))
+        self.overlay.setOpacity(0.5)
+        self.overlay.setData(0, "overlay")  # Tag it so we can find and remove it later.
+        self.scene().addItem(self.overlay)

@@ -19,23 +19,15 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
 
     def generate_question(self):
         """Generate a question for Lesson 3."""
-        self.lesson_widget.question_widget.clear()
-        self.lesson_widget.answers_widget.create_answer_buttons()
         initial_pictograph = self.generate_initial_pictograph()
         self.previous_pictograph = initial_pictograph
 
-        # Show the initial pictograph in the question widget
         self.lesson_widget.question_widget.update_pictograph(initial_pictograph)
-
-        # Generate answers (one correct and three wrong)
         correct_pictograph = self.generate_correct_answer(initial_pictograph)
         wrong_pictographs = self.generate_wrong_answers(correct_pictograph)
-
-        # Add the correct pictograph to the answers and shuffle
         pictographs: list["PictographScene"] = [correct_pictograph] + wrong_pictographs
         random.shuffle(pictographs)
-
-        self.lesson_widget.answers_widget.create_answer_buttons(
+        self.lesson_widget.answers_widget.update_answer_buttons(
             pictographs,
             correct_pictograph,
             self.lesson_widget.answer_checker.check_answer,
@@ -43,7 +35,6 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
 
     def generate_initial_pictograph(self) -> dict:
         """Generate an initial pictograph randomly to display."""
-        # Randomly select a Letter (key) from the dictionary, then select a random pictograph from the list
         available_letters = list(self.main_widget.pictograph_dataset.keys())
         pictograph_datas = self.filter_pictograph_datas_by_grid_mode()
 
@@ -60,9 +51,8 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
         """Generate a valid pictograph that can follow the initial pictograph."""
         end_pos = initial_pictograph[
             "end_pos"
-        ]  # Extract the end position of the initial pictograph
+        ] 
         pictograph_datas = self.filter_pictograph_datas_by_grid_mode()
-        # Find a pictograph where the start_pos matches the end_pos of the initial pictograph
         valid_pictographs = [
             pictograph
             for letter_pictographs in pictograph_datas.values()

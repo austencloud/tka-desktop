@@ -44,5 +44,5 @@ class LessonAnswerChecker:
                 self.lesson.question_generator.fade_to_new_question()
         else:
             self._update_indicator_style("red", "Wrong! Try again.")
-            self.lesson.answers_widget.disable_answers(selected_answer)
+            self.lesson.answers_widget.disable_answer(selected_answer)
             self.lesson.incorrect_guesses += 1

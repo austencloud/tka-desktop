@@ -58,7 +58,7 @@ class Lesson1AnswersWidget(BaseAnswersWidget):
                 )
                 self.buttons[letter] = button
 
-    def disable_answers(self, answer) -> None:
+    def disable_answer(self, answer) -> None:
         button = self.buttons[answer]
         button.setDisabled(True)
 

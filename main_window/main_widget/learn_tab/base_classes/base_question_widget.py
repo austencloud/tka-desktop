@@ -22,10 +22,6 @@ class BaseQuestionWidget(QWidget):
         self.layout: QVBoxLayout = None
         self.spacer: QSpacerItem = None
 
-    def clear(self) -> None:
-        raise NotImplementedError(
-            "This function should be implemented by the subclass."
-        )
 
     def _resize_question_widget(self) -> None:
         raise NotImplementedError(
@@ -43,13 +39,11 @@ class BaseQuestionWidget(QWidget):
         If no view exists yet, create one.
         """
         if self.pictograph is None:
-            # Create the persistent pictograph view if it doesn't exist
             self.pictograph = PictographScene()
             self.pictograph.elements.view = LessonPictographView(self.pictograph)
             self.layout.addWidget(
                 self.pictograph.elements.view, alignment=Qt.AlignmentFlag.AlignCenter
             )
-        # Update the pictograph’s content in place
         self.pictograph.state.disable_gold_overlay = True
         self.pictograph.managers.updater.update_pictograph(pictograph_data)
         self.pictograph.elements.view.update_borders()
