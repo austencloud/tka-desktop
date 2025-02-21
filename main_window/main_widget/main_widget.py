@@ -50,7 +50,7 @@ if TYPE_CHECKING:
     )
     from .thumbnail_finder import ThumbnailFinder
     from .grid_mode_checker import GridModeChecker
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
     from Enums.Enums import Letter
     from letter_determiner.letter_determiner import LetterDeterminer
 
@@ -125,7 +125,7 @@ class MainWidget(QWidget):
     json_manager: "JsonManager"
 
     # Other attributes
-    pictograph_cache: dict[str, dict[str, "Pictograph"]]
+    pictograph_cache: dict[str, dict[str, "PictographScene"]]
     prop_type: PropType
     pictograph_data_loader: "PictographDataLoader"
     pictograph_dataset: dict["Letter", list[dict]]

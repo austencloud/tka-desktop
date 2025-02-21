@@ -6,7 +6,7 @@ from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class OptionPickerClickHandler:

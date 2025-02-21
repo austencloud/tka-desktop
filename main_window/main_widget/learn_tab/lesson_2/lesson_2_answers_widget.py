@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 import logging
 
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
     BaseAnswersWidget,
 )
@@ -26,7 +26,7 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
 
     columns = 2
     spacing = 30
-    pictographs: dict[str, Pictograph]
+    pictographs: dict[str, PictographScene]
 
     def __init__(self, lesson_2_widget: "Lesson2Widget"):
         super().__init__(lesson_2_widget)
@@ -38,7 +38,7 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
         self.setLayout(self.layout)
 
         self.pictograph_views: List[LessonPictographView] = []
-        self.pictographs: dict[str, Pictograph] = {}
+        self.pictographs: dict[str, PictographScene] = {}
 
         self.layout.setSpacing(self.spacing)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -54,7 +54,7 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
 
         for index, pictograph_data in enumerate(pictographs):
             key = self.key_generator.generate_pictograph_key(pictograph_data)
-            pictograph = Pictograph(self.lesson_2_widget.main_widget)
+            pictograph = PictographScene(self.lesson_2_widget.main_widget)
             view = LessonPictographView(pictograph)
             pictograph.view = view
             pictograph.disable_gold_overlay = False

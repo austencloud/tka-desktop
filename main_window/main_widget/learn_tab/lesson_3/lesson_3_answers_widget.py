@@ -2,7 +2,7 @@ import logging
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QGridLayout
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
     BaseAnswersWidget,
 )
@@ -30,7 +30,7 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
         self.setLayout(self.layout)
 
         self.pictograph_views: list[QWidget] = []
-        self.pictographs: dict[str, Pictograph] = {}
+        self.pictographs: dict[str, PictographScene] = {}
         # Define grid parameters
         self.columns = 2  # Number of columns in the grid
         self.spacing = 30  # Spacing between widgets
@@ -49,7 +49,7 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
 
         for index, pictograph_data in enumerate(pictographs):
             key = self.key_generator.generate_pictograph_key(pictograph_data)
-            pictograph = Pictograph(self.lesson_3_widget.main_widget)
+            pictograph = PictographScene(self.lesson_3_widget.main_widget)
             view = LessonPictographView(pictograph)
             pictograph.view = view
             pictograph.disable_gold_overlay = False

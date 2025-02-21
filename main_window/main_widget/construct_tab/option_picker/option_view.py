@@ -5,7 +5,7 @@ from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographV
 
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
     from .option_picker import OptionPicker
 
 
@@ -14,7 +14,7 @@ class OptionView(BorderedPictographView):
     def __init__(
         self,
         option_picker: "OptionPicker",
-        pictograph: "Pictograph",
+        pictograph: "PictographScene",
         mw_size_provider: Callable[[], QSize],
     ):
         super().__init__(pictograph)

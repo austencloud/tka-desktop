@@ -4,7 +4,7 @@ from PyQt6.QtCore import QObject, pyqtSignal, Qt
 from PyQt6.QtWidgets import QApplication
 from Enums.letters import Letter
 from data.constants import BOX, DIAMOND, END_POS, START_POS
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from data.position_maps import box_positions, diamond_positions
 
 from typing import TYPE_CHECKING
@@ -25,7 +25,7 @@ class StartPosManager(QObject):
     or a temporary context manager.
     """
 
-    start_position_selected = pyqtSignal(Pictograph)
+    start_position_selected = pyqtSignal(PictographScene)
 
     def __init__(self, start_pos_picker: "StartPosPicker") -> None:
         super().__init__()
@@ -37,11 +37,11 @@ class StartPosManager(QObject):
         self.top_builder_widget = None
 
         # Track pictographs we create for box/diamond
-        self.box_pictographs: list[Pictograph] = []
-        self.diamond_pictographs: list[Pictograph] = []
+        self.box_pictographs: list[PictographScene] = []
+        self.diamond_pictographs: list[PictographScene] = []
 
         # Map letter -> pictograph (or however you prefer to store them)
-        self.start_options: dict[str, Pictograph] = {}
+        self.start_options: dict[str, PictographScene] = {}
 
         # When user picks a start position, proceed
         self.start_position_selected.connect(
@@ -52,7 +52,7 @@ class StartPosManager(QObject):
         # e.g., if the user can pick, or we have a default approach:
         self.load_relevant_start_positions()
 
-    def get_all_start_positions(self) -> list[Pictograph]:
+    def get_all_start_positions(self) -> list[PictographScene]:
         """
         Returns both box + diamond pictographs (or whichever ones
         are relevant if you only loaded one mode).
@@ -87,7 +87,7 @@ class StartPosManager(QObject):
                     position_key, DIAMOND
                 )
 
-    def get_box_variations(self) -> list[Pictograph]:
+    def get_box_variations(self) -> list[PictographScene]:
         """Retrieve box mode variations (without using a global or context manager)."""
         box_variations = []
         for letter, pictograph_datas in self.main_widget.pictograph_dataset.items():
@@ -100,7 +100,7 @@ class StartPosManager(QObject):
 
         return box_variations
 
-    def get_diamond_variations(self) -> list[Pictograph]:
+    def get_diamond_variations(self) -> list[PictographScene]:
         """Retrieve diamond mode variations."""
         diamond_variations = []
         for letter, pictograph_datas in self.main_widget.pictograph_dataset.items():
@@ -169,7 +169,7 @@ class StartPosManager(QObject):
         )
         return start_pos_beat
 
-    def get_start_pos_pictograph(self, start_pos_data) -> "Pictograph":
+    def get_start_pos_pictograph(self, start_pos_data) -> "PictographScene":
         if not start_pos_data:
             return None
 
@@ -217,7 +217,7 @@ class StartPosManager(QObject):
 
     def create_pictograph_from_dict(
         self, pictograph_data: dict, target_grid_mode: str
-    ) -> Pictograph:
+    ) -> PictographScene:
         """
         Create a pictograph with a local 'grid_mode' in its dictionary,
         no context manager or global flips.
@@ -225,7 +225,7 @@ class StartPosManager(QObject):
         local_dict = deepcopy(pictograph_data)
         local_dict["grid_mode"] = target_grid_mode
 
-        pictograph = Pictograph(self.main_widget)
+        pictograph = PictographScene(self.main_widget)
         pictograph.updater.update_pictograph(local_dict)
 
         # Append to the relevant list

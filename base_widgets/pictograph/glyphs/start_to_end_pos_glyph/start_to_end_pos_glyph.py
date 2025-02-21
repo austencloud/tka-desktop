@@ -9,13 +9,13 @@ from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class StartToEndPosGlyph(QGraphicsItemGroup):
     name = "Positions"
 
-    def __init__(self, pictograph: "Pictograph"):
+    def __init__(self, pictograph: "PictographScene"):
         super().__init__()
         self.pictograph = pictograph
 

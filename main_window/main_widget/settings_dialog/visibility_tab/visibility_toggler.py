@@ -3,7 +3,7 @@ from Enums.Enums import Glyph
 from base_widgets.pictograph.glyphs.beat_reversal_group import BeatReversalGroup
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
     from main_window.main_widget.settings_dialog.visibility_tab.visibility_tab import (
         VisibilityTab,
     )
@@ -26,7 +26,7 @@ class VisibilityToggler:
             self._apply_glyph_visibility_to_pictograph(pictograph, name, is_checked)
 
     def _apply_glyph_visibility_to_pictograph(
-        self, pictograph: "Pictograph", glyph_type: str, is_visible: bool
+        self, pictograph: "PictographScene", glyph_type: str, is_visible: bool
     ):
         """Apply glyph visibility to a specific pictograph."""
         glyph_mapping: dict[str, Glyph] = {

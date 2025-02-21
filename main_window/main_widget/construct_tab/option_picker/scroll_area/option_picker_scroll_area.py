@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea
 from PyQt6.QtCore import Qt
 
 
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.reversal_detector import ReversalDetector
 
@@ -29,7 +29,7 @@ class OptionPickerScrollArea(QScrollArea):
         self.ori_calculator = self.main_widget.json_manager.ori_calculator
         self.json_manager = AppContext.json_manager()
         self.json_loader = self.json_manager.loader_saver
-        self.pictograph_cache: dict[str, Pictograph] = {}
+        self.pictograph_cache: dict[str, PictographScene] = {}
         self.disabled = False
 
         self.configure_ui()

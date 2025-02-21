@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Union
 from base_widgets.pictograph.glyphs.beat_reversal_group import BeatReversalGroup
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_grabber import (
     BeatGrabber,
 )
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from .beat_view import BeatView
 
 
-class Beat(Pictograph):
+class Beat(PictographScene):
     view: "BeatView" = None
     is_placeholder = False
     parent_beat = None

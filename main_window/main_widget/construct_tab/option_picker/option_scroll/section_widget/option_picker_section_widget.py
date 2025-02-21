@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QGroupBox
 from Enums.Enums import LetterType
 from data.constants import OPP, SAME
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
 from .option_picker_section_header import OptionPickerSectionHeader
 from .option_picker_section_pictograph_frame import OptionPickerSectionPictographFrame
@@ -35,7 +35,7 @@ class OptionPickerSectionWidget(QGroupBox):
 
     def setup_components(self) -> None:
         self.pictograph_frame = OptionPickerSectionPictographFrame(self)
-        self.pictographs: dict[str, Pictograph] = {}
+        self.pictographs: dict[str, PictographScene] = {}
         self.pictograph_frame.setStyleSheet("QFrame {border: none;}")
         self._setup_header()
         self._setup_layout()
@@ -64,7 +64,7 @@ class OptionPickerSectionWidget(QGroupBox):
             pictograph.view.setVisible(False)
         self.pictographs = {}
 
-    def add_pictograph(self, pictograph: Pictograph) -> None:
+    def add_pictograph(self, pictograph: PictographScene) -> None:
         COLUMN_COUNT = self.option_scroll.option_picker.COLUMN_COUNT
         self.pictographs[
             PictographKeyGenerator.generate_pictograph_key(pictograph.pictograph_data)

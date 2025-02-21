@@ -9,13 +9,13 @@ from main_window.main_widget.json_manager.current_sequence_loader import (
 from utilities.reversal_detector import ReversalDetector
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class BeatReversalGroup(QGraphicsItemGroup):
     name = "Reversals"
 
-    def __init__(self, pictograph: "Pictograph"):
+    def __init__(self, pictograph: "PictographScene"):
         super().__init__()
         self.pictograph = pictograph
         self.reversal_items: dict[str, QGraphicsTextItem] = {}

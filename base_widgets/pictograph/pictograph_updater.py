@@ -7,11 +7,11 @@ from objects.motion.motion import Motion
 from functools import lru_cache
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class PictographUpdater:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "PictographScene") -> None:
         self.pictograph = pictograph
 
     def update_pictograph(self, pictograph_data: dict = None) -> None:

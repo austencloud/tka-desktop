@@ -5,11 +5,11 @@ from data.constants import LETTER
 
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class PictographAttrManager:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "PictographScene") -> None:
         self.pictograph = pictograph
 
     def update_attributes(self, pictograph_data: dict) -> None:

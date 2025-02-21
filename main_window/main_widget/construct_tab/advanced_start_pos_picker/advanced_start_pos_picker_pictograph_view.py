@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
     from .advanced_start_pos_picker import AdvancedStartPosPicker
 
 
@@ -11,7 +11,7 @@ class AdvancedStartPosPickerPictographView(BorderedPictographView):
     def __init__(
         self,
         advanced_start_pos_picker: "AdvancedStartPosPicker",
-        pictograph: "Pictograph",
+        pictograph: "PictographScene",
     ):
         super().__init__(pictograph)
         self.pictograph = pictograph

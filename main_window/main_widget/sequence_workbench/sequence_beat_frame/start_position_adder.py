@@ -3,7 +3,7 @@ from copy import deepcopy
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 from .start_pos_beat import StartPositionBeat
@@ -18,7 +18,9 @@ class StartPositionAdder:
         self.sequence_workbench = beat_frame.sequence_workbench
         self.main_widget = beat_frame.main_widget
 
-    def add_start_pos_to_sequence(self, clicked_start_option: "Pictograph") -> None:
+    def add_start_pos_to_sequence(
+        self, clicked_start_option: "PictographScene"
+    ) -> None:
         # Change cursor to busy
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 

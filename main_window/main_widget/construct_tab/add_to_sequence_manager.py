@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
     from main_window.main_widget.construct_tab.construct_tab import (
         ConstructTab,
@@ -25,7 +25,7 @@ class AddToSequenceManager:
         self.beat_frame = beat_frame
         self.last_beat = last_beat
 
-    def create_new_beat(self, clicked_option: "Pictograph") -> "Beat":
+    def create_new_beat(self, clicked_option: "PictographScene") -> "Beat":
         sequence = self.json_manager.loader_saver.load_current_sequence()
 
         last_beat_dict = None

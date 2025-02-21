@@ -3,9 +3,11 @@ from PyQt6.QtCore import pyqtSignal, QSize
 from typing import TYPE_CHECKING, Callable
 
 from Enums.Enums import Letter
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+    SequenceBeatFrame,
+)
 
 
 from .start_pos_picker.start_pos_picker import StartPosPicker
@@ -44,10 +46,10 @@ class ConstructTab(QFrame):
         self.mw_size_provider = size_provider
         self.fade_to_stack_index = fade_to_stack_index
         self.fade_manager = fade_manager
-        self.last_beat: "Pictograph" = None
+        self.last_beat: "PictographScene" = None
         self.start_position_picked = False
 
-        self.pictograph_cache: dict[Letter, dict[str, Pictograph]] = {
+        self.pictograph_cache: dict[Letter, dict[str, PictographScene]] = {
             letter: {} for letter in Letter
         }
 

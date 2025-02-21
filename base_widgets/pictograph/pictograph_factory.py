@@ -1,9 +1,9 @@
 from typing import Optional
 
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from base_widgets.pictograph.pictograph_checker import PictographChecker
 from base_widgets.pictograph.pictograph_getter import PictographGetter
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from base_widgets.pictograph.pictograph_updater import PictographUpdater
 from base_widgets.pictograph.wasd_adjustment_manager.wasd_adjustment_manager import (
     WASD_AdjustmentManager,
@@ -23,9 +23,9 @@ class PictographFactory:
 
     def create_pictograph(
         self, type_: str = "default", view_class: Optional[type] = None
-    ) -> Pictograph:
-        scene = Pictograph()
-        pictograph = Pictograph(scene, type_)
+    ) -> PictographScene:
+        scene = PictographScene()
+        pictograph = PictographScene(scene, type_)
 
         # Attach managers
         pictograph.updater = PictographUpdater(pictograph)

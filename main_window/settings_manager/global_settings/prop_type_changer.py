@@ -3,7 +3,7 @@ from data.constants import BLUE, RED
 from objects.prop.prop import Prop
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
     from ..settings_manager import SettingsManager
 
 
@@ -11,7 +11,7 @@ class PropTypeChanger:
     def __init__(self, settings_manager: "SettingsManager") -> None:
         self.settings_manager = settings_manager
 
-    def replace_props(self, new_prop_type, pictograph: "Pictograph"):
+    def replace_props(self, new_prop_type, pictograph: "PictographScene"):
         for color, prop in pictograph.props.items():
             new_prop = pictograph.initializer.prop_factory.create_prop_of_type(
                 prop, new_prop_type
@@ -20,7 +20,7 @@ class PropTypeChanger:
         self._finalize_pictograph_update(pictograph)
 
     def _update_pictograph_prop(
-        self, pictograph: "Pictograph", color, new_prop: "Prop"
+        self, pictograph: "PictographScene", color, new_prop: "Prop"
     ):
         old_prop = pictograph.props[color]
         if hasattr(old_prop, "loc"):
@@ -33,17 +33,17 @@ class PropTypeChanger:
             new_prop.motion.attr_manager.update_prop_ori()
             new_prop.updater.update_prop(old_prop_data)
 
-    def _finalize_pictograph_update(self, pictograph: "Pictograph"):
+    def _finalize_pictograph_update(self, pictograph: "PictographScene"):
         pictograph.red_prop = pictograph.props[RED]
         pictograph.blue_prop = pictograph.props[BLUE]
         pictograph.updater.update_pictograph()
 
-    def apply_prop_type(self, pictographs: list["Pictograph"]) -> None:
+    def apply_prop_type(self, pictographs: list["PictographScene"]) -> None:
         prop_type = self.settings_manager.global_settings.get_prop_type()
         self.update_props_to_type(prop_type, pictographs)
 
     def update_props_to_type(
-        self, new_prop_type, pictographs: list["Pictograph"]
+        self, new_prop_type, pictographs: list["PictographScene"]
     ) -> None:
         for pictograph in pictographs:
             if pictograph:

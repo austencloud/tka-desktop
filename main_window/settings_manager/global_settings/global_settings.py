@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from Enums.PropTypes import PropType
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.font_color_updater.font_color_updater import (
     FontColorUpdater,
 )
@@ -59,7 +59,7 @@ class GlobalSettings:
         self.settings.setValue("global/grow_sequence", grow_sequence)
 
     def set_prop_type(
-        self, prop_type: PropType, pictographs: list["Pictograph"]
+        self, prop_type: PropType, pictographs: list["PictographScene"]
     ) -> None:
         self.settings.setValue("global/prop_type", prop_type.name)
         self.prop_type_changer.apply_prop_type(pictographs)

@@ -3,23 +3,26 @@ from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import BOX, DIAMOND, START_POS, END_POS
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import StartPositionBeat
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
+    StartPositionBeat,
+)
 from .start_pos_picker_variations_button import StartPosVariationsButton
 from .start_pos_pictograph_frame import StartPosPickerPictographFrame
 from .choose_your_start_pos_label import ChooseYourStartPosLabel
 from .base_start_pos_picker import BaseStartPosPicker
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
     from ..construct_tab import ConstructTab
-
 
 
 class StartPosPicker(BaseStartPosPicker):
     SPACING = 10
-    start_position_selected = pyqtSignal(Pictograph)
+    start_position_selected = pyqtSignal(PictographScene)
     COLUMN_COUNT = 3
 
     def __init__(
@@ -37,7 +40,7 @@ class StartPosPicker(BaseStartPosPicker):
         self.setup_layout()
         self.setStyleSheet("background-color: white;")
         self.initialized = False
-        self.start_options: dict[str, Pictograph] = {}
+        self.start_options: dict[str, PictographScene] = {}
         self.pictograph_dataset = pictograph_dataset
         self.display_variations()
 
@@ -130,7 +133,7 @@ class StartPosPicker(BaseStartPosPicker):
 
         return start_pos_beat
 
-    def get_start_pos_pictograph(self, start_pos_data) -> "Pictograph":
+    def get_start_pos_pictograph(self, start_pos_data) -> "PictographScene":
         if not start_pos_data:
             return None
         start_pos_key = start_pos_data["end_pos"]

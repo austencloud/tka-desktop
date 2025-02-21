@@ -2,13 +2,14 @@ from PyQt6.QtWidgets import QApplication
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
-
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+    SequenceBeatFrame,
+)
 
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class OptionClickHandler:
@@ -17,7 +18,7 @@ class OptionClickHandler:
         self.beat_frame = beat_frame
         self.add_to_sequence_manager = self.option_picker.add_to_sequence_manager
 
-    def handle_click(self, clicked_option: "Pictograph") -> None:
+    def handle_click(self, clicked_option: "PictographScene") -> None:
         """Handle the logic when an option is clicked."""
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         new_beat = self.add_to_sequence_manager.create_new_beat(clicked_option)

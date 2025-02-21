@@ -16,7 +16,7 @@ from .option_click_handler import OptionClickHandler
 from .reversal_filter.option_picker_reversal_filter import OptionPickerReversalFilter
 from .option_getter import OptionGetter
 from .choose_your_next_pictograph_label import ChooseYourNextPictographLabel
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 
 if TYPE_CHECKING:
     from ..construct_tab import ConstructTab
@@ -26,7 +26,7 @@ class OptionPicker(QWidget):
     COLUMN_COUNT = 8
     option_selected = pyqtSignal(str)
     layout: QVBoxLayout
-    option_pool: list["Pictograph"]
+    option_pool: list["PictographScene"]
 
     def __init__(
         self,

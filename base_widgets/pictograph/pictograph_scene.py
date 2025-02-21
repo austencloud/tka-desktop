@@ -48,7 +48,7 @@ if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
 
 
-class Pictograph(QGraphicsScene):
+class PictographScene(QGraphicsScene):
     # dicts
     arrows: dict[str, Arrow]
     locations: dict[str, tuple[int, int, int, int]]

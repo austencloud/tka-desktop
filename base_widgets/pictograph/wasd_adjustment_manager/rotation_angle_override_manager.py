@@ -10,7 +10,7 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
     from ..wasd_adjustment_manager.wasd_adjustment_manager import WASD_AdjustmentManager
 
@@ -48,7 +48,7 @@ class RotationAngleOverrideManager:
             pictograph.updater.update_pictograph()
             pictograph.arrow_placement_manager.update_arrow_placements()
 
-    def get_visible_pictographs(self) -> list["Pictograph"]:
+    def get_visible_pictographs(self) -> list["PictographScene"]:
         visible_pictographs = []
         for pictograph_list in self.pictograph.main_widget.pictograph_dataset.values():
             for pictograph in pictograph_list.values():

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from data.constants import NO_ROT
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 if TYPE_CHECKING:
@@ -11,7 +11,7 @@ class JsonStartPositionHandler:
     def __init__(self, manager: "JsonManager"):
         self.manager = manager
 
-    def set_start_position_data(self, start_pos_pictograph: Pictograph) -> None:
+    def set_start_position_data(self, start_pos_pictograph: PictographScene) -> None:
         red_start_ori = start_pos_pictograph.pictograph_data["red_attributes"][
             "start_ori"
         ]
@@ -64,5 +64,5 @@ class JsonStartPositionHandler:
             sequence[1][f"{color}_attributes"]["start_ori"] = ori
             self.manager.loader_saver.save_current_sequence(sequence)
 
-    def get_sequence_start_position(self, start_pos_pictograph: Pictograph) -> str:
+    def get_sequence_start_position(self, start_pos_pictograph: PictographScene) -> str:
         return start_pos_pictograph.end_pos.rstrip("0123456789")

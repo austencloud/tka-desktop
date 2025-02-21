@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QGraphicsItem
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class GraphicalObject(QGraphicsSvgItem):
     color: str
     renderer: QSvgRenderer
 
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "PictographScene") -> None:
         super().__init__()
         self.pictograph = pictograph
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)

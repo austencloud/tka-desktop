@@ -3,14 +3,14 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class PictographCollector:
     def __init__(self, main_widget: "MainWidget") -> None:
         self.main_widget = main_widget
 
-    def collect_all_pictographs(self) -> list["Pictograph"]:
+    def collect_all_pictographs(self) -> list["PictographScene"]:
         pictographs = []
 
         sequence_workbench = self.main_widget.sequence_workbench

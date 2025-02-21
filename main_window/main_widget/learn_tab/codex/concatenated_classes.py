@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout, QComboBox, QVBoxLayout
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from base_widgets.pictograph.pictograph_view import PictographView
 from data.locations import cw_loc_order
 from data.locations import vertical_loc_mirror_map
@@ -859,11 +859,11 @@ from base_widgets.pictograph.pictograph_view import PictographView
 
 if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.codex.codex import Codex
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class CodexPictographView(PictographView):
-    def __init__(self, pictograph: "Pictograph", codex: "Codex") -> None:
+    def __init__(self, pictograph: "PictographScene", codex: "Codex") -> None:
         super().__init__(pictograph)
         self.pictograph = pictograph
         self.codex = codex
@@ -992,7 +992,7 @@ from PyQt6.QtCore import Qt
 from Enums.letters import LetterType
 from .codex_pictograph_view import CodexPictographView
 from .codex_section_type_label import CodexSectionTypeLabel
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 
 if TYPE_CHECKING:
     from .codex import Codex
@@ -1075,7 +1075,7 @@ class CodexSectionManager:
             return
 
         if letter_str not in self.codex_views:
-            pictograph = Pictograph(self.codex.main_widget)
+            pictograph = PictographScene(self.codex.main_widget)
             view = CodexPictographView(pictograph, self.codex)
             pictograph.updater.update_pictograph(p_dict)
             self.codex_views[letter_str] = view

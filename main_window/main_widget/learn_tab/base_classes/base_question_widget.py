@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QSpacerItem, QSizePolicy
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.pictograph import Pictograph
+from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_pictograph_view import (
     LessonPictographView,
 )
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class BaseQuestionWidget(QWidget):
     letter_label: QLabel = None
-    pictograph: Pictograph = None
+    pictograph: PictographScene = None
 
     def __init__(self, lesson_widget: "BaseLessonWidget"):
         super().__init__(lesson_widget)
@@ -39,7 +39,7 @@ class BaseQuestionWidget(QWidget):
 
     def load_pictograph(self, pictograph_data) -> None:
         """Load and display the pictograph."""
-        self.pictograph: Pictograph = Pictograph(self.main_widget)
+        self.pictograph: PictographScene = PictographScene(self.main_widget)
         self.pictograph.view = LessonPictographView(self.pictograph)
         self.pictograph.disable_gold_overlay = True
         self.pictograph.updater.update_pictograph(pictograph_data)

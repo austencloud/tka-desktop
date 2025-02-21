@@ -4,11 +4,11 @@ from Enums.letters import LetterConditions
 from data.constants import *
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class PictographChecker:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "PictographScene") -> None:
         self.pictograph = pictograph
 
     def ends_with_beta(self) -> bool:
