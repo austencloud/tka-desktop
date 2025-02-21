@@ -21,6 +21,7 @@ class BaseAnswersWidget(QWidget):
         self, lesson_widget: "BaseLessonWidget", renderer: BaseAnswersRenderer
     ):
         super().__init__(lesson_widget)
+        self.lesson_widget = lesson_widget
         self.main_widget = lesson_widget.main_widget
         self.renderer = renderer
         self.renderer_container = renderer.get_layout()

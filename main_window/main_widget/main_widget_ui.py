@@ -42,7 +42,8 @@ class MainWidgetUI:
 
         mw.tab_switcher.set_stacks_silently(left_index, right_index)
 
-        mw.menu_bar.navigation_widget.set_active_tab(tab_index)
+        mw.menu_bar.navigation_widget.current_index = tab_index
+        mw.menu_bar.navigation_widget.update_buttons()
         mw.tab_switcher.set_current_tab(current_tab_name)
 
     def _create_components(self):

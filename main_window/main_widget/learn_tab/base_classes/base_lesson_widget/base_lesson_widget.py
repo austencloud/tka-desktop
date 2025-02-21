@@ -60,7 +60,7 @@ class BaseLessonWidget(QWidget):
             )
 
 
-    def prepare_quiz_ui(self, mode):
+    def prepare_quiz_ui(self, mode, fade = True):
         self.current_question = 1
         self.incorrect_guesses = 0
         self.update_progress_label()
@@ -75,10 +75,13 @@ class BaseLessonWidget(QWidget):
             self.answers_widget,
             self.indicator_label,
         ]
-        self.fade_manager.widget_fader.fade_and_update(
-            widgets_to_fade,
-            callback=self.question_generator.generate_question,  # update content in-place
-        )
+        if fade:
+            self.fade_manager.widget_fader.fade_and_update(
+                widgets_to_fade,
+                callback=self.question_generator.generate_question,  # update content in-place
+            )
+        else: 
+            self.question_generator.generate_question()
 
     def resizeEvent(self, event):
         self._resize_question_prompt()
