@@ -5,12 +5,12 @@ from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:
     from .arrow_placement_manager import ArrowPlacementManager
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class ArrowInitialPosCalculator:
     def __init__(self, placement_manager: "ArrowPlacementManager") -> None:
-        self.pictograph: "PictographScene" = placement_manager.pictograph
+        self.pictograph: "Pictograph" = placement_manager.pictograph
 
     def get_initial_coords(self, arrow: Arrow) -> QPointF:
         if arrow.motion.motion_type in [PRO, ANTI, FLOAT]:

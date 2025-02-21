@@ -1,37 +1,53 @@
-from typing import TYPE_CHECKING
+# generic_answers_widget.py
+from typing import TYPE_CHECKING, Callable, Any, List, Dict
 from PyQt6.QtWidgets import QWidget
 
+from main_window.main_widget.learn_tab.base_classes.base_answers_renderer import (
+    BaseAnswersRenderer,
+)
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
-    from .base_lesson_widget.base_lesson_widget import BaseLessonWidget
+    from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
+        BaseLessonWidget,
+    )
 
 
 class BaseAnswersWidget(QWidget):
-    pictographs: dict[str, "PictographScene"]
+    """
+    A generic answer widget that uses a rendering strategy to display answer options.
+    """
 
-    def __init__(self, lesson_widget: "BaseLessonWidget"):
+    def __init__(
+        self, lesson_widget: "BaseLessonWidget", renderer: BaseAnswersRenderer
+    ):
         super().__init__(lesson_widget)
         self.main_widget = lesson_widget.main_widget
+        self.renderer = renderer
+        self.renderer_container = renderer.get_layout()
+        self.setLayout(self.renderer_container)
+        # Store answer option widgets for future reference if needed.
+        self.answer_widgets: Dict[Any, QWidget] = {}
 
-    def resize_answers_widget(self) -> None:
-        raise NotImplementedError(
-            "This function should be implemented by the subclass."
-        )
-
-    def create_answer_buttons(self, answers) -> None:
-        raise NotImplementedError(
-            "This function should be implemented by the subclass."
-        )
-
-    def update_answer_buttons(
-        self, letters, correct_answer, check_answer_callback
+    def create_answer_options(
+        self,
+        answers: List[Any],
+        correct_answer: Any,
+        check_callback: Callable[[Any, Any], None],
     ) -> None:
-        raise NotImplementedError(
-            "This function should be implemented by the subclass."
+        self.answer_widgets.clear()
+        self.renderer.create_answer_options(
+            self, answers, check_callback, correct_answer
         )
 
-    def disable_answer(self) -> None:
-        raise NotImplementedError(
-            "This function should be implemented by the subclass."
+    def update_answer_options(
+        self,
+        answers: List[Any],
+        correct_answer: Any,
+        check_callback: Callable[[Any, Any], None],
+    ) -> None:
+        self.renderer.update_answer_options(
+            self, answers, check_callback, correct_answer
         )
+
+    def disable_answer(self, answer: Any) -> None:
+        self.renderer.disable_answer_option(answer)

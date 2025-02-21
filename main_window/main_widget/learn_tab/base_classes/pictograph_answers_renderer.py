@@ -1,8 +1,7 @@
 from typing import Any, List, Callable
 from PyQt6.QtWidgets import QGridLayout, QWidget
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.pictograph_view import PictographView
-from base_widgets.pictograph.pictograph_scene import PictographScene
+from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.learn_tab.base_classes.base_answers_renderer import (
     BaseAnswersRenderer,
 )
@@ -15,7 +14,6 @@ from main_window.main_widget.pictograph_key_generator import PictographKeyGenera
 class PictographAnswersRenderer(BaseAnswersRenderer):
     def __init__(self, columns: int = 2, spacing: int = 30):
         """
-        :param key_generator: a function or object that can generate a unique, hashable key from the pictograph dict.
         :param columns: number of columns in the grid
         :param spacing: spacing between grid cells
         """
@@ -26,7 +24,7 @@ class PictographAnswersRenderer(BaseAnswersRenderer):
         self.columns = columns
         self.key_generator = PictographKeyGenerator()
 
-        # We'll store view widgets keyed by the generated string (or tuple).
+        # We'll store view widgets keyed by the generated string.
         self.pictograph_views: dict[str, LessonPictographView] = {}
 
     def get_layout(self):
@@ -51,16 +49,18 @@ class PictographAnswersRenderer(BaseAnswersRenderer):
             answer_key = self.key_generator.generate_pictograph_key(answer)
 
             # Create the pictograph scene and view
-            scene = PictographScene()
+            scene = Pictograph()
             view = LessonPictographView(scene)
             scene.elements.view = view
 
-            # Update the scene with the pictograph data
+            # Update the scene with the pictograph data and reset overlay
             scene.managers.updater.update_pictograph(answer)
             scene.elements.view.update_borders()
             scene.state.quiz_mode = True
             scene.elements.tka_glyph.setVisible(False)
-
+            # Reset overlay to ensure no old overlay remains.
+            scene.elements.view.set_overlay_color(None)
+            # re enable the view
             # Capture the current answer in the mouse event
             view.mousePressEvent = lambda event, a=answer: check_callback(
                 a, correct_answer
@@ -84,7 +84,7 @@ class PictographAnswersRenderer(BaseAnswersRenderer):
         If the number of answers differs from what's stored, we recreate everything.
         Otherwise, we just update each existing view in place.
         """
-        # If the number of new answers doesn't match existing, just recreate.
+        # If the number of new answers doesn't match existing, recreate.
         if len(self.pictograph_views) != len(answers):
             self.create_answer_options(parent, answers, check_callback, correct_answer)
             return
@@ -102,6 +102,9 @@ class PictographAnswersRenderer(BaseAnswersRenderer):
             scene.elements.view.update_borders()
             scene.state.quiz_mode = True
             scene.elements.tka_glyph.setVisible(False)
+            # Reset overlay so previous overlays don't persist.
+            scene.elements.view.set_overlay_color(None)
+            view.setEnabled(True)
 
             # Reassign the mousePressEvent
             view.mousePressEvent = lambda event, a=answer: check_callback(

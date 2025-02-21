@@ -22,13 +22,13 @@ class Lesson2QuestionGenerator(BaseQuestionGenerator):
     def generate_question(self):
         """Generate a question and update the question and answer widgets."""
         self.lesson_widget.update_progress_label()
-        
+
         correct_letter, correct_pictograph = self.generate_correct_answer()
 
         self.lesson_widget.question_widget._update_letter_label(correct_letter.value)
 
         pictographs = self._get_shuffled_pictographs(correct_pictograph)
-        self.lesson_widget.answers_widget.update_answer_buttons(
+        self.lesson_widget.answers_widget.update_answer_options(
             pictographs,
             correct_pictograph,
             self.lesson_widget.answer_checker.check_answer,

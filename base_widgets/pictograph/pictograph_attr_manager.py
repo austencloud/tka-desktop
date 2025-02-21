@@ -4,13 +4,13 @@ from Enums.letters import LetterType
 
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class PictographAttrManager:
     """Manages attribute assignment for the PictographScene."""
 
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 
     def load_from_dict(self, data: dict[str, Union[str, dict[str, str]]]) -> None:

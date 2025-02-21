@@ -1,6 +1,5 @@
 # base_classes/base_sequence_builder.py
 
-from copy import deepcopy
 import random
 from typing import TYPE_CHECKING, Dict, Any
 
@@ -8,11 +7,8 @@ from Enums.letters import Letter, LetterConditions
 from data.constants import (
     ANTI,
     BLUE,
-    BOX,
-    DIAMOND,
     END_ORI,
     FLOAT,
-    IN,
     MOTION_TYPE,
     PRO,
     PROP_ROT_DIR,
@@ -28,9 +24,6 @@ from data.constants import (
 
 from main_window.main_widget.generate_tab.sequence_builder_start_position_manager import (
     SequenceBuilderStartPosManager,
-)
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
-    StartPositionBeat,
 )
 from main_window.main_widget.sequence_workbench.sequence_workbench import (
     SequenceWorkbench,

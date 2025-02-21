@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QVBoxLayout, QLabel, QSizePolicy, QSpacerItem
+from PyQt6.QtWidgets import QVBoxLayout, QSizePolicy, QSpacerItem
 from PyQt6.QtCore import Qt
 from ..base_classes.base_question_widget import BaseQuestionWidget
 

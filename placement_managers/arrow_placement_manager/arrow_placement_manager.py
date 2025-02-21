@@ -10,13 +10,13 @@ from .special_arrow_positioner.special_arrow_positioner import SpecialArrowPosit
 from .default_arrow_positioner import DefaultArrowPositioner
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class ArrowPlacementManager:
     def __init__(
         self,
-        pictograph: "PictographScene",
+        pictograph: "Pictograph",
     ):
         self.pictograph = pictograph
         self.special_placement_loader = (

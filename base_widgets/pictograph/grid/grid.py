@@ -8,15 +8,13 @@ from .grid_item import GridItem
 from .non_radial_points_group import NonRadialPointsGroup
 
 if TYPE_CHECKING:
-    from ..pictograph_scene import PictographScene
+    from ..pictograph import Pictograph
 
 GRID_DIR = "images/grid/"
 
 
 class Grid:
-    def __init__(
-        self, pictograph: "PictographScene", grid_data: GridData, grid_mode: str
-    ):
+    def __init__(self, pictograph: "Pictograph", grid_data: GridData, grid_mode: str):
 
         self.pictograph = pictograph
         self.grid_data = grid_data

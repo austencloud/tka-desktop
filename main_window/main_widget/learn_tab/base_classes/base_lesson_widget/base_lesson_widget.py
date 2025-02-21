@@ -1,6 +1,10 @@
 # learn_tab/base_classes/base_lesson_widget/base_lesson_widget.py
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QLabel
+
+from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
+    BaseAnswersWidget,
+)
 from .lesson_layout_manager import LessonLayoutManager
 from .lesson_answer_checker import LessonAnswerChecker
 from .lesson_go_back_button import LessonGoBackButton
@@ -8,7 +12,6 @@ from .lesson_indicator_label import LessonIndicatorLabel
 from .lesson_progress_label import LessonProgressLabel
 from .lesson_quiz_timer_manager import QuizTimerManager
 
-from ..base_answers_widget import BaseAnswersWidget
 from ..base_question_generator import BaseQuestionGenerator
 from ..base_question_widget import BaseQuestionWidget
 
@@ -50,11 +53,12 @@ class BaseLessonWidget(QWidget):
     def update_progress_label(self):
         if self.mode == "countdown":
             minutes, seconds = divmod(self.quiz_time, 60)
-            self.progress_label.setText(f"Time Remaining: {minutes:02}:{seconds:02}")
+            self.progress_label.setText(f"Time Remaining: {minutes}:{seconds:02d}")
         else:
             self.progress_label.setText(
                 f"{self.current_question}/{self.total_questions}"
             )
+
 
     def prepare_quiz_ui(self, mode):
         self.current_question = 1

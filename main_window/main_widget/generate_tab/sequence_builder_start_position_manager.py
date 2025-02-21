@@ -4,7 +4,7 @@ from copy import deepcopy
 import random
 from typing import TYPE_CHECKING, Dict, Any
 
-from data.constants import DIAMOND, BOX, IN, START_ORI, END_ORI
+from data.constants import DIAMOND, IN, START_ORI, END_ORI
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )

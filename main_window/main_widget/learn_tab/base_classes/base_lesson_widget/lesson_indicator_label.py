@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QLabel, QGraphicsOpacityEffect
 
 from main_window.main_widget.base_indicator_label import BaseIndicatorLabel
 

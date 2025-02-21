@@ -27,7 +27,7 @@ from .mirrored_turns_tuple_generator import MirroredTurnsTupleGenerator
 from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class TurnsTupleGenerator:
@@ -62,7 +62,7 @@ class TurnsTupleGenerator:
         }
         self.mirrored_generator = MirroredTurnsTupleGenerator(self)
 
-    def generate_turns_tuple(self, pictograph: "PictographScene") -> str:
+    def generate_turns_tuple(self, pictograph: "Pictograph") -> str:
         generator_key = self._get_generator_key(pictograph)
         if generator_key and generator_key in self.generators:
             generator = self.generators[generator_key]
@@ -72,9 +72,7 @@ class TurnsTupleGenerator:
     def generate_mirrored_tuple(self, arrow: Arrow) -> Union[str, None]:
         return self.mirrored_generator.generate(arrow)
 
-    def _get_generator_key(
-        self, pictograph: "PictographScene"
-    ) -> Union[str, LetterType]:
+    def _get_generator_key(self, pictograph: "Pictograph") -> Union[str, LetterType]:
         letter = pictograph.state.letter
         if letter.value in [
             letter.value

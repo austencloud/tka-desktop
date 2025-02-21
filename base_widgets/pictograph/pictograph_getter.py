@@ -12,11 +12,11 @@ from objects.arrow.arrow import Arrow
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class PictographGetter:
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
         self.is_initialized = False
 

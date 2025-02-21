@@ -1,22 +1,5 @@
-from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QLabel,
-    QPushButton,
-    QApplication,
-)
+from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import Qt
-from functools import partial
-
-from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-    BaseLessonWidget,
-)
-
-from .lesson_mode_toggle_widget import LessonModeToggleWidget
-
-if TYPE_CHECKING:
-    from .learn_tab import LearnTab
 
 
 class LessonSelectorButton(QPushButton):

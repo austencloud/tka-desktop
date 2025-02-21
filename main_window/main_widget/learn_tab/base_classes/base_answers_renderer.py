@@ -1,5 +1,5 @@
 # generic_answers_widget.py
-from typing import Callable, Any, List, Dict
+from typing import Callable, Any, List
 from PyQt6.QtWidgets import QWidget, QLayout
 
 

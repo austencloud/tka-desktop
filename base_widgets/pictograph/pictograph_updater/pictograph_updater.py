@@ -10,13 +10,13 @@ from .motion_data_updater import MotionDataUpdater
 from .placement_updater import PlacementUpdater
 
 if TYPE_CHECKING:
-    from ..pictograph_scene import PictographScene
+    from ..pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 
 
 class PictographUpdater:
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
         self.attr_updater = AttributeUpdater(pictograph)
         self.motion_updater = MotionDataUpdater(pictograph)

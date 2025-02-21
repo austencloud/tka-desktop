@@ -16,7 +16,7 @@ from base_widgets.pictograph.pictograph_view_key_event_handler import (
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from .GE_pictograph_view_mouse_event_handler import GE_PictographViewMouseEventHandler
 
-from base_widgets.pictograph.pictograph_scene import PictographScene
+from base_widgets.pictograph.pictograph import Pictograph
 
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
     GE_Pictograph,
@@ -105,7 +105,7 @@ class GE_PictographView(PictographView):
         painter.end()
         super().paintEvent(event)
 
-    def get_current_pictograph(self) -> PictographScene:
+    def get_current_pictograph(self) -> Pictograph:
         return self.pictograph
 
     def set_scene(self, beat: "Beat") -> None:

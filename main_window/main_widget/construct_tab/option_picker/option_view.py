@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt, QSize
 from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
     from .option_picker import OptionPicker
 
 
@@ -11,7 +11,7 @@ class OptionView(BorderedPictographView):
     def __init__(
         self,
         op: "OptionPicker",
-        pictograph: "PictographScene",
+        pictograph: "Pictograph",
         mw_size_provider: Callable[[], QSize],
     ):
         super().__init__(pictograph)

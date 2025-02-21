@@ -19,7 +19,7 @@ from placement_managers.prop_placement_manager.prop_placement_manager import (
 )
 
 
-class PictographScene(QGraphicsScene):
+class Pictograph(QGraphicsScene):
     def __init__(self) -> None:
         super().__init__()
 
@@ -37,4 +37,3 @@ class PictographScene(QGraphicsScene):
         self.managers.wasd_manager = WASD_AdjustmentManager(self)
         self.managers.attr_manager = PictographAttrManager(self)
         self.managers.reversal_glyph = ReversalGlyph(self)
-

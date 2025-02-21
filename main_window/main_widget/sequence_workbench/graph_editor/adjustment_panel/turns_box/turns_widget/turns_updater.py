@@ -13,7 +13,7 @@ from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .turns_widget import TurnsWidget
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
     from objects.motion.motion import Motion
 
 PropRotDir = str
@@ -156,7 +156,7 @@ class TurnsUpdater:
         )
 
     def adjust_turns_for_pictograph(
-        self, pictograph: "PictographScene", new_turns: Union[int, float, str]
+        self, pictograph: "Pictograph", new_turns: Union[int, float, str]
     ) -> None:
         """Adjust turns for each relevant motion in the pictograph."""
         for motion in pictograph.elements.motions.values():

@@ -21,7 +21,7 @@ class Lesson1QuestionGenerator(BaseQuestionGenerator):
     def generate_question(self):
         """Generate a question for Lesson 1."""
         self.lesson_1_widget.update_progress_label()
-        
+
         correct_answer = self.generate_correct_answer()
         self.previous_correct_letter = correct_answer
         pictograph_dataset = self.main_widget.pictograph_dataset
@@ -31,7 +31,7 @@ class Lesson1QuestionGenerator(BaseQuestionGenerator):
         wrong_answers = self.generate_wrong_answers(correct_answer)
         letters = [correct_answer.value] + wrong_answers
         random.shuffle(letters)
-        self.lesson_1_widget.answers_widget.update_answer_buttons(
+        self.lesson_1_widget.answers_widget.update_answer_options(
             letters,
             correct_answer.value,
             self.lesson_1_widget.answer_checker.check_answer,

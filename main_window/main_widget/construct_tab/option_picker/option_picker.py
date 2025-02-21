@@ -1,8 +1,8 @@
-from typing import Callable, List
+from typing import Callable
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import pyqtSignal, QSize
 
-from base_widgets.pictograph.pictograph_scene import PictographScene
+from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.construct_tab.add_to_sequence_manager import (
     AddToSequenceManager,
 )
@@ -34,7 +34,7 @@ class OptionPicker(QWidget):
     ):
         super().__init__()
         self.add_to_sequence_manager = add_to_sequence_manager
-        self.option_pool: list[PictographScene] = []
+        self.option_pool: list[Pictograph] = []
         self.choose_next_label = ChooseYourNextPictographLabel(mw_size_provider)
         self.option_scroll = OptionScroll(self, mw_size_provider)
         self.option_getter = OptionGetter(pictograph_dataset)

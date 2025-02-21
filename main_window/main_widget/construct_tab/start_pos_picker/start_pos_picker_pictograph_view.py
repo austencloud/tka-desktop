@@ -7,14 +7,14 @@ from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographV
 
 if TYPE_CHECKING:
     from .start_pos_picker import StartPosPicker
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class StartPosPickerPictographView(BorderedPictographView):
     def __init__(
         self,
         start_pos_picker: "StartPosPicker",
-        pictograph: "PictographScene",
+        pictograph: "Pictograph",
         size_provider: Callable[[], QSize],
     ) -> None:
         super().__init__(pictograph)

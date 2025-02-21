@@ -1,8 +1,8 @@
 from copy import deepcopy
-from PyQt6.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout, QWidget
+from PyQt6.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout
 from typing import Callable, Dict, List, TYPE_CHECKING
 
-from base_widgets.pictograph.pictograph_scene import PictographScene
+from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import BOX, DIAMOND
 from main_window.main_widget.construct_tab.advanced_start_pos_picker.advanced_start_pos_picker_pictograph_view import (
     AdvancedStartPosPickerPictographView,
@@ -44,7 +44,7 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         super().__init__(pictograph_dataset, mw_size_provider=size_provider)
         self.beat_frame = beat_frame
         self.choose_start_pos_label = ChooseYourStartPosLabel(self)
-        self.start_pos_cache: Dict[str, List[PictographScene]] = {}
+        self.start_pos_cache: Dict[str, List[Pictograph]] = {}
         # Inject the start position adder dependency from the beat frame
         self.start_position_adder = beat_frame.start_position_adder
         self._init_layout()
@@ -72,7 +72,7 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
 
     def create_pictograph_from_dict(
         self, pictograph_data: Dict, target_grid_mode: str
-    ) -> PictographScene:
+    ) -> Pictograph:
         """
         Creates (or retrieves from cache) a PictographScene based on the given data,
         with the specified grid mode.
@@ -84,7 +84,7 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         local_data = deepcopy(pictograph_data)
         local_data["grid_mode"] = target_grid_mode
 
-        pictograph = PictographScene()
+        pictograph = Pictograph()
         # Use a specialized view for advanced start position selection
         pictograph.elements.view = AdvancedStartPosPickerPictographView(
             self, pictograph, size_provider=self.mw_size_provider
@@ -142,6 +142,6 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
                 )
                 view.update_borders()
 
-    def on_variation_selected(self, variation: PictographScene) -> None:
+    def on_variation_selected(self, variation: Pictograph) -> None:
         """Handles selection of a pictograph variation."""
         self.start_position_adder.add_start_pos_to_sequence(variation)

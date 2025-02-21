@@ -7,13 +7,13 @@ from data.constants import RED, BLUE
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
-    from ..pictograph_scene import PictographScene
+    from ..pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 
 
 class MotionDataUpdater:
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         """
         The 'getter' dependency is injected for accessing related motion data
         (instead of referencing self.pictograph.managers.get directly).

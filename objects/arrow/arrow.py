@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..motion.motion import Motion
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class Arrow(GraphicalObject):
@@ -22,7 +22,7 @@ class Arrow(GraphicalObject):
     def __init__(self, pictograph, arrow_data) -> None:
         super().__init__(pictograph)
         self.arrow_data = arrow_data
-        self.pictograph: PictographScene = pictograph
+        self.pictograph: Pictograph = pictograph
 
     def setup_components(self):
         self.location_manager = ArrowLocationManager(self)

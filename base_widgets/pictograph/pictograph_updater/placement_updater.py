@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING
 import logging
 
 if TYPE_CHECKING:
-    from ..pictograph_scene import PictographScene
+    from ..pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 
 
 class PlacementUpdater:
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 
     def update(self) -> None:

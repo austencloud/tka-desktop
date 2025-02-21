@@ -1,6 +1,6 @@
 import random
 from typing import TYPE_CHECKING
-from base_widgets.pictograph.pictograph_scene import PictographScene
+from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.learn_tab.base_classes.base_question_generator import (
     BaseQuestionGenerator,
 )
@@ -21,16 +21,15 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
         """Generate a question for Lesson 3."""
         self.lesson_widget.update_progress_label()
 
-        
         initial_pictograph = self.generate_initial_pictograph()
         self.previous_pictograph = initial_pictograph
 
         self.lesson_widget.question_widget.update_pictograph(initial_pictograph)
         correct_pictograph = self.generate_correct_answer(initial_pictograph)
         wrong_pictographs = self.generate_wrong_answers(correct_pictograph)
-        pictographs: list["PictographScene"] = [correct_pictograph] + wrong_pictographs
+        pictographs: list["Pictograph"] = [correct_pictograph] + wrong_pictographs
         random.shuffle(pictographs)
-        self.lesson_widget.answers_widget.update_answer_buttons(
+        self.lesson_widget.answers_widget.update_answer_options(
             pictographs,
             correct_pictograph,
             self.lesson_widget.answer_checker.check_answer,
@@ -52,9 +51,7 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
 
     def generate_correct_answer(self, initial_pictograph: dict) -> dict:
         """Generate a valid pictograph that can follow the initial pictograph."""
-        end_pos = initial_pictograph[
-            "end_pos"
-        ] 
+        end_pos = initial_pictograph["end_pos"]
         pictograph_datas = self.filter_pictograph_datas_by_grid_mode()
         valid_pictographs = [
             pictograph

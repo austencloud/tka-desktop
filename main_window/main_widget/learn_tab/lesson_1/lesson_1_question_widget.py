@@ -1,10 +1,6 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QVBoxLayout, QLabel, QSpacerItem, QSizePolicy
+from PyQt6.QtWidgets import QVBoxLayout, QSpacerItem, QSizePolicy
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.pictograph_scene import PictographScene
-from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_pictograph_view import (
-    LessonPictographView,
-)
 from main_window.main_widget.learn_tab.base_classes.base_question_widget import (
     BaseQuestionWidget,
 )

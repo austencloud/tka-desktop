@@ -9,13 +9,13 @@ if TYPE_CHECKING:
     from placement_managers.arrow_placement_manager.arrow_placement_manager import (
         ArrowPlacementManager,
     )
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class SpecialArrowPositioner:
     def __init__(self, placement_manager: "ArrowPlacementManager") -> None:
         self.placement_manager = placement_manager
-        self.pictograph: PictographScene = placement_manager.pictograph
+        self.pictograph: Pictograph = placement_manager.pictograph
         self.data_loader = self
         self.data_updater = SpecialPlacementDataUpdater(self)
         self.attr_key_generator = AttrKeyGenerator(self)

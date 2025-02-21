@@ -7,14 +7,14 @@ from .motion_ori_calculator import MotionOriCalculator
 from .motion_updater import MotionUpdater
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
     from objects.arrow.arrow import Arrow
     from objects.prop.prop import Prop
 
 
 class Motion:
-    pictograph: "PictographScene"
+    pictograph: "Pictograph"
     color: str
     turns: int
     arrow: "Arrow"
@@ -29,7 +29,7 @@ class Motion:
     prefloat_motion_type: str = None
     prefloat_prop_rot_dir: str
 
-    def __init__(self, pictograph: "PictographScene", motion_data: dict) -> None:
+    def __init__(self, pictograph: "Pictograph", motion_data: dict) -> None:
         self.pictograph = pictograph
         self.motion_data = motion_data
         self.ori_calculator = MotionOriCalculator(self)

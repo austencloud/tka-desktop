@@ -8,7 +8,7 @@ from main_window.main_widget.browse_tab.temp_beat_frame.temp_beat_frame_layout_m
     TempBeatFrameLayoutManager,
 )
 
-from base_widgets.pictograph.pictograph_scene import PictographScene
+from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
     BeatView,
@@ -74,7 +74,7 @@ class TempBeatFrame(BaseBeatFrame):
             self.layout.addWidget(beat, row + 1, col + 1)
         self.layout_manager.configure_beat_frame(16)
 
-    def add_beat_to_sequence(self, new_beat: "PictographScene") -> None:
+    def add_beat_to_sequence(self, new_beat: "Pictograph") -> None:
         next_beat_index = self.get.next_available_beat()
 
         if (

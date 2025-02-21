@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 from typing import TYPE_CHECKING
-from base_widgets.pictograph.pictograph_scene import PictographScene
+from base_widgets.pictograph.pictograph import Pictograph
 
 
 if TYPE_CHECKING:
@@ -20,4 +20,4 @@ class AdvancedStartPosPickerPictographFrame(QWidget):
         self.pictographs_layout = QHBoxLayout()
         self.layout.addLayout(self.pictographs_layout)
         self.variation_buttons: dict[str, QPushButton] = {}
-        self.start_positions: dict[str, PictographScene] = {}
+        self.start_positions: dict[str, Pictograph] = {}

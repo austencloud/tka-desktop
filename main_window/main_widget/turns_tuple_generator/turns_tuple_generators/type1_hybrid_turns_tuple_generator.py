@@ -5,11 +5,11 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generators.base_t
 )
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class Type1HybridTurnsTupleGenerator(BaseTurnsTupleGenerator):
-    def generate_turns_tuple(self, pictograph: "PictographScene") -> str:
+    def generate_turns_tuple(self, pictograph: "Pictograph") -> str:
         super().set_pictograph(pictograph)
         # if one of the motions is not a float, proceed with the written logic
         if not pictograph.managers.check.has_one_float():

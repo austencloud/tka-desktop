@@ -17,7 +17,7 @@ from utilities.path_helpers import get_images_and_data_path
 
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 SVG_PATHS = {
@@ -38,7 +38,7 @@ SVG_PATHS = {
 class ElementalGlyph(QGraphicsSvgItem):
     name = "Elemental"
 
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         super().__init__()
         self.pictograph = pictograph
 

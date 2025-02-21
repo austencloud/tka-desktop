@@ -9,14 +9,14 @@ if TYPE_CHECKING:
     from main_window.main_widget.construct_tab.advanced_start_pos_picker.advanced_start_pos_picker import (
         AdvancedStartPosPicker,
     )
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class AdvancedStartPosPickerPictographView(BorderedPictographView):
     def __init__(
         self,
         advanced_start_pos_picker: "AdvancedStartPosPicker",
-        pictograph: "PictographScene",
+        pictograph: "Pictograph",
         size_provider: Callable[[], QSize],
     ):
         super().__init__(pictograph)

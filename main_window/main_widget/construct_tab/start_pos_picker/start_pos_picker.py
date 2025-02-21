@@ -3,7 +3,7 @@ from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import BOX, DIAMOND, START_POS, END_POS
-from base_widgets.pictograph.pictograph_scene import PictographScene
+from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
     StartPositionBeat,
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 class StartPosPicker(BaseStartPosPicker):
     SPACING = 10
-    start_position_selected = pyqtSignal(PictographScene)
+    start_position_selected = pyqtSignal(Pictograph)
     COLUMN_COUNT = 3
 
     def __init__(
@@ -43,7 +43,7 @@ class StartPosPicker(BaseStartPosPicker):
         self.setup_layout()
         self.setStyleSheet("background-color: white;")
         self.initialized = False
-        self.start_options: dict[str, PictographScene] = {}
+        self.start_options: dict[str, Pictograph] = {}
         self.pictograph_dataset = pictograph_dataset
         self.display_variations()
 
@@ -134,7 +134,7 @@ class StartPosPicker(BaseStartPosPicker):
 
         return start_pos_beat
 
-    def get_start_pos_pictograph(self, start_pos_data) -> "PictographScene":
+    def get_start_pos_pictograph(self, start_pos_data) -> "Pictograph":
         if not start_pos_data:
             return None
         start_pos_key = start_pos_data["end_pos"]

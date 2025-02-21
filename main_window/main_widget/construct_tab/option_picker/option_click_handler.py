@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
@@ -18,7 +18,7 @@ class OptionClickHandler:
         self.beat_frame = beat_frame
         self.add_to_sequence_manager = option_picker.add_to_sequence_manager
 
-    def handle_option_click(self, clicked_option: "PictographScene") -> None:
+    def handle_option_click(self, clicked_option: "Pictograph") -> None:
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
             new_beat = self.add_to_sequence_manager.create_new_beat(clicked_option)

@@ -21,7 +21,7 @@ from .glyphs.tka_glyph.tka_glyph import TKA_Glyph
 from .glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
 
 if TYPE_CHECKING:
-    from .pictograph_scene import PictographScene
+    from .pictograph import Pictograph
 
 
 # pictograph_initializer.py
@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 class PictographInitializer:
     default_grid_mode = DIAMOND
 
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
         self.settings = SettingsProvider.get_settings()
         self.pictograph.setSceneRect(0, 0, 950, 950)

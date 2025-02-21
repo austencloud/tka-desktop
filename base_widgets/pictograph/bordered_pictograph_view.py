@@ -7,11 +7,11 @@ from Enums.letters import LetterType
 from base_widgets.pictograph.pictograph_view import PictographView
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class BorderedPictographView(PictographView):
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         super().__init__(pictograph)
         self.primary_color = None
         self.secondary_color = None

@@ -3,11 +3,11 @@ from .handlers.beta_prop_positioner import BetaPropPositioner
 from .handlers.default_prop_positioner import DefaultPropPositioner
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_scene import PictographScene
+    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class PropPlacementManager:
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 
         # Positioners

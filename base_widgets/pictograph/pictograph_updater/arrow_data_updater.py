@@ -5,14 +5,13 @@ from Enums.letters import LetterType
 from data.constants import RED, BLUE
 
 if TYPE_CHECKING:
-    from ..pictograph_scene import PictographScene
+    from ..pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 
 
-
 class ArrowDataUpdater:
-    def __init__(self, pictograph: "PictographScene") -> None:
+    def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 
     def update(self, data: dict) -> None:
@@ -24,8 +23,12 @@ class ArrowDataUpdater:
             self.pictograph.managers.get.shift().arrow.updater.update_arrow()
             self.pictograph.managers.get.dash().arrow.updater.update_arrow()
         else:
-            self.pictograph.elements.arrows.get(RED).updater.update_arrow(red_arrow_data)
-            self.pictograph.elements.arrows.get(BLUE).updater.update_arrow(blue_arrow_data)
+            self.pictograph.elements.arrows.get(RED).updater.update_arrow(
+                red_arrow_data
+            )
+            self.pictograph.elements.arrows.get(BLUE).updater.update_arrow(
+                blue_arrow_data
+            )
 
     def _extract_arrow_datasets(self, data: dict) -> Tuple[dict, dict]:
         red_data = data.get("red_attributes")

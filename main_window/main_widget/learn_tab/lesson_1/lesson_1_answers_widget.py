@@ -1,51 +1,32 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QPushButton, QHBoxLayout
-from PyQt6.QtCore import Qt
-
+from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
+    BaseAnswersWidget,
+)
 from main_window.main_widget.learn_tab.base_classes.button_answers_renderer import (
     ButtonAnswersRenderer,
 )
-from main_window.main_widget.learn_tab.base_classes.generic_answers_widget import (
-    GenericAnswersWidget,
-)
-
-from ..base_classes.base_answers_widget import BaseAnswersWidget
-
 
 if TYPE_CHECKING:
-    from ..learn_tab import LearnTab
+    from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
+        BaseLessonWidget,
+    )
 
 
 class Lesson1AnswersWidget(BaseAnswersWidget):
-    def __init__(self, learn_widget):
-        super().__init__(learn_widget)
-        self.learn_widget = learn_widget
+    """Minimal Lesson 1 answers widget that directly uses the generic widget + button renderer."""
 
-        self.buttons: dict[str, QPushButton] = {}
+    def __init__(self, lesson_widget: "BaseLessonWidget"):
+        # Instantiate the button renderer
         self.renderer = ButtonAnswersRenderer()
-        self.generic_widget = GenericAnswersWidget(
-            learn_widget, self.renderer
-        )
-        self.setLayout(self.generic_widget.layout())
+        # Pass it to the generic widget constructor
+        super().__init__(lesson_widget, self.renderer)
 
-    def create_answer_buttons(
-        self, answers, correct_answer, check_answer_callback
-    ) -> None:
-        self.generic_widget.create_answer_options(
-            answers, correct_answer, check_answer_callback
-        )
-
-    def update_answer_buttons(
-        self, answers, correct_answer, check_answer_callback
-    ) -> None:
-        self.generic_widget.update_answer_options(
-            answers, correct_answer, check_answer_callback
-        )
-
-    def disable_answer(self, answer) -> None:
-        self.generic_widget.disable_answer(answer)
-
-    def resizeEvent(self, event) -> None:
+    def resizeEvent(self, event):
+        """
+        Override if you need to resize the buttons for Lesson 1 specifically.
+        Otherwise, you can remove this method entirely.
+        """
+        super().resizeEvent(event)
         for button in self.renderer.buttons:
             size = self.main_widget.width() // 16
             button.setFixedSize(size, size)
