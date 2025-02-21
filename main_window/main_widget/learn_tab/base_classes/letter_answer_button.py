@@ -42,6 +42,7 @@ class LetterAnswerButton(QPushButton):
                 padding: 5px;
                 border-radius: {self.width() // 2}px;
                 margin: 5px;
+                border: 3px solid black;
             }}
             QPushButton:hover {{
                 background: qlineargradient(
@@ -49,6 +50,7 @@ class LetterAnswerButton(QPushButton):
                     stop:0 rgba(200, 200, 200, 1),
                     stop:1 rgba(150, 150, 150, 1)
                 );
+                border: 3px solid gold;
             }}
             QPushButton:pressed {{
                 background-color: #d0d0d0;
@@ -69,7 +71,6 @@ class LetterAnswerButton(QPushButton):
         font.setFamily("Georgia")
         font.setPointSize(font_size)
         self.setFont(font)
-        # self._update_style()
         super().resizeEvent(event)
 
     def update_answer(
@@ -86,4 +87,3 @@ class LetterAnswerButton(QPushButton):
         except Exception:
             pass
         self.clicked.connect(lambda _, a=answer: check_callback(a, correct_answer))
-

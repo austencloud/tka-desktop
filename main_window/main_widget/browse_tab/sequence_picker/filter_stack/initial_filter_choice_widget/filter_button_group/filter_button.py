@@ -19,8 +19,6 @@ class FilterButton(QPushButton):
 
     def _update_style(self, background_color: str = None):
         background_color = background_color or self._base_background_color
-
-
         self.setStyleSheet(
             f"""
             QPushButton {{
@@ -43,11 +41,7 @@ class FilterButton(QPushButton):
         """
         )
 
-    def enterEvent(self, event):
-        self._update_style()
 
-    def leaveEvent(self, event):
-        self._update_style()
 
     def set_rounded_button_style(self, radius: int):
         self._radius = radius
