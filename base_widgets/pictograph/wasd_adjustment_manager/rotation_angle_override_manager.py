@@ -70,7 +70,7 @@ class RotationAngleOverrideManager:
         rot_angle_key = self.key_generator.generate_rotation_angle_override_key(
             self.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow
         )
-        turns_tuple = self.turns_tuple_generator.generate_turns_tuple(self.pictograph)
+        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
         self._apply_rotation_override(letter, data, ori_key, turns_tuple, rot_angle_key)
 
     def _apply_rotation_override(

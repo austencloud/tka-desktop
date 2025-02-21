@@ -126,7 +126,7 @@ class BaseSequenceBuilder:
         def update_prop_rot_dir(color, rot_dir):
             attributes = next_beat[f"{color}_attributes"]
             if attributes[MOTION_TYPE] in [DASH, STATIC]:
-                if is_continuous_rot_dir:
+                if is_continuous_rot_dir == "continuous":
                     if attributes[TURNS] > 0:
                         attributes[PROP_ROT_DIR] = rot_dir
                     else:

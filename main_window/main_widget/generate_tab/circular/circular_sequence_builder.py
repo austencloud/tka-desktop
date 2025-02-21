@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication
 import random
 from copy import deepcopy
 from PyQt6.QtCore import Qt
-from data.constants import CLOCKWISE, COUNTER_CLOCKWISE
+from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, DASH, STATIC
 from data.position_maps import (
     half_position_map,
     quarter_position_map_cw,
@@ -99,15 +99,15 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         is_last_in_word: bool,
         rotation_type: str,
         permutation_type: str,
-        is_continuous_rot_dir,
-        blue_rot_dir,
-        red_rot_dir,
+        is_continuous_rot_dir: str,
+        blue_rot_dir: str,
+        red_rot_dir: str,
     ) -> dict:
         options = self.main_widget.construct_tab.option_picker.option_getter._load_all_next_option_dicts(
             self.sequence
         )
         options = [deepcopy(option) for option in options]
-        if is_continuous_rot_dir:
+        if is_continuous_rot_dir == "continuous":
             options = self._filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir
             )
@@ -132,12 +132,17 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             next_beat = self._set_turns(next_beat, turn_blue, turn_red)
         self._update_start_oris(next_beat, self.sequence[-1])
         self._update_end_oris(next_beat)
-        self._update_dash_static_prop_rot_dirs(
-            next_beat,
-            is_continuous_rot_dir,
-            blue_rot_dir,
-            red_rot_dir,
-        )
+
+        if next_beat["blue_attributes"]["motion_type"] in [DASH, STATIC] or next_beat[
+            "red_attributes"
+        ]["motion_type"] in [DASH, STATIC]:
+            self._update_dash_static_prop_rot_dirs(
+                next_beat,
+                is_continuous_rot_dir,
+                blue_rot_dir,
+                red_rot_dir,
+            )
+
         next_beat = self._update_beat_number_depending_on_sequence_length(
             next_beat, self.sequence
         )
