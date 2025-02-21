@@ -6,6 +6,8 @@ from PyQt6.QtWidgets import (
     QFrame,
     QStackedLayout,
 )
+
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .lesson_1.lesson_1_widget import Lesson1Widget
 from .lesson_2.lesson_2_widget import Lesson2Widget
 from .lesson_3.lesson_3_widget import Lesson3Widget
@@ -24,9 +26,7 @@ class LearnTab(QWidget):
         super().__init__(main_widget)
         self.main_widget = main_widget
         self.background_manager = None
-        self.global_settings = (
-            self.main_widget.main_window.settings_manager.global_settings
-        )
+        self.global_settings = AppContext.settings_manager().global_settings
 
         self._setup_components()
         self._setup_layout()

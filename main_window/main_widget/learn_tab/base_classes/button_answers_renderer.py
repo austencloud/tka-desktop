@@ -19,20 +19,6 @@ class ButtonAnswersRenderer(BaseAnswersRenderer):
     def get_layout(self):
         return self.layout
 
-    def create_answer_options(
-        self,
-        parent: QWidget,
-        answers: List[Any],
-        check_callback: Callable[[Any, Any], None],
-        correct_answer: Any,
-    ) -> None:
-        self._clear_layout()
-        self.buttons.clear()
-        for answer in answers:
-            button = LetterAnswerButton(answer, parent, check_callback, correct_answer)
-            self.layout.addWidget(button)
-            self.buttons.append(button)
-
     def update_answer_options(
         self,
         parent: QWidget,
@@ -40,14 +26,23 @@ class ButtonAnswersRenderer(BaseAnswersRenderer):
         check_callback: Callable[[Any, Any], None],
         correct_answer: Any,
     ) -> None:
-        for button in self.buttons:
-            button.hide()
-        self.buttons.clear()
-        for answer in answers:
-            button = LetterAnswerButton(answer, parent, check_callback, correct_answer)
-            self.layout.addWidget(button)
-            self.buttons.append(button)
-            button.show()
+        # If no buttons exist yet, create them.
+        if not self.buttons:
+            for answer in answers:
+                button = LetterAnswerButton(
+                    answer, parent, check_callback, correct_answer
+                )
+                self.layout.addWidget(button)
+                self.buttons.append(button)
+        else:
+            # Otherwise, update the existing buttons.
+            for i, answer in enumerate(answers):
+                self.buttons[i].update_answer(answer, check_callback, correct_answer)
+                self.buttons[i].show()  # ensure it's visible
+        # In case the new answer list is shorter than before, hide extra buttons.
+        for i in range(len(answers), len(self.buttons)):
+            self.buttons[i].hide()
+
 
     def disable_answer_option(self, answer: Any) -> None:
         for button in self.buttons:

@@ -34,6 +34,7 @@ class Lesson2QuestionGenerator(BaseQuestionGenerator):
             self.lesson_widget.answer_checker.check_answer,
         )
 
+
     def generate_correct_answer(self) -> tuple[Letter, dict]:
         """Retrieve a random correct letter and its corresponding pictograph, avoiding repetition."""
         # Get a list of available letters excluding the previous one

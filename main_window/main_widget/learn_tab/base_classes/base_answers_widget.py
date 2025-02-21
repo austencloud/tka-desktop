@@ -36,7 +36,7 @@ class BaseAnswersWidget(QWidget):
         check_callback: Callable[[Any, Any], None],
     ) -> None:
         self.answer_widgets.clear()
-        self.renderer.create_answer_options(
+        self.renderer.update_answer_options(
             self, answers, check_callback, correct_answer
         )
 

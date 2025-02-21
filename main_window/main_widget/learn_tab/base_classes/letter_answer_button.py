@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING, Any, Callable
 from PyQt6.QtWidgets import QPushButton, QWidget
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import QHBoxLayout
+from PyQt6.QtGui import QFont, QResizeEvent
 
 if TYPE_CHECKING:
-
     from main_window.main_widget.learn_tab.lesson_1.lesson_1_answers_widget import (
         Lesson1AnswersWidget,
     )
@@ -30,10 +30,38 @@ class LetterAnswerButton(QPushButton):
         self.correct_answer = correct_answer
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.clicked.connect(lambda _, a=answer: check_callback(a, correct_answer))
-        self.setStyleSheet("margin: 5px;")
+        self._radius = 0
+        self._update_style()
+
+    def _update_style(self):
+        self.setStyleSheet(
+            f"""
+            QPushButton {{
+                background-color: lightgray;
+                color: black;
+                padding: 5px;
+                border-radius: {self.width() // 2}px;
+                margin: 5px;
+            }}
+            QPushButton:hover {{
+                background: qlineargradient(
+                    spread:pad, x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(200, 200, 200, 1),
+                    stop:1 rgba(150, 150, 150, 1)
+                );
+            }}
+            QPushButton:pressed {{
+                background-color: #d0d0d0;
+            }}
+            QPushButton:disabled {{
+                color: gray;
+            }}
+        """
+        )
 
     def resizeEvent(self, event):
-        parent_width = self.answer_widget.lesson_widget.learn_tab.main_widget.width()
+        self.main_widget = self.answer_widget.lesson_widget.learn_tab.main_widget
+        parent_width = self.main_widget.width()
         size = parent_width // 16
         self.setFixedSize(size, size)
         font_size = parent_width // 50
@@ -41,7 +69,7 @@ class LetterAnswerButton(QPushButton):
         font.setFamily("Georgia")
         font.setPointSize(font_size)
         self.setFont(font)
-        self.setStyleSheet(f"font-size: {font_size}px; margin: 5px;")
+        # self._update_style()
         super().resizeEvent(event)
 
     def update_answer(
@@ -53,24 +81,9 @@ class LetterAnswerButton(QPushButton):
         self.setText(str(answer))
         self.answer = answer
         self.setEnabled(True)
-        self.setStyleSheet("margin: 5px;")
         try:
             self.clicked.disconnect()
         except Exception:
             pass
         self.clicked.connect(lambda _, a=answer: check_callback(a, correct_answer))
 
-    def showEvent(self, event):
-        super().showEvent(event)
-        QTimer.singleShot(50, self.updateSize)
-
-    def updateSize(self):
-        parent_width = self.answer_widget.lesson_widget.learn_tab.main_widget.width()
-        size = parent_width // 16
-        self.setFixedSize(size, size)
-        font_size = parent_width // 50
-        font = self.font()
-        font.setFamily("Georgia")
-        font.setPointSize(font_size)
-        self.setFont(font)
-        self.setStyleSheet(f"font-size: {font_size}px; margin: 5px;")
