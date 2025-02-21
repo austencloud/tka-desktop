@@ -9,11 +9,12 @@ if TYPE_CHECKING:
 
 
 class OptionPickerReversalFilter(QWidget):
-    def __init__(self, mw_size_provider: Callable[[], QSize]):
+    def __init__(self, mw_size_provider: Callable[[], QSize], update_options_callback: Callable
+    ) -> None:
         super().__init__()
         self.settings = AppContext.settings_manager().construct_tab_settings
         self.size_provider = mw_size_provider
-
+        self.update_options_callback = update_options_callback
         self.reversal_combobox = ReversalCombobox(self, mw_size_provider)
 
         self.combo_box_label = QLabel("Show:")
@@ -41,7 +42,9 @@ class OptionPickerReversalFilter(QWidget):
 
     def on_filter_changed(self):
         self.save_filter()
-
+        #  update the option picker
+        self.update_options_callback()    
+        
     def save_filter(self):
         selected_filter = self.reversal_combobox.currentData()
         self.settings.set_filters(selected_filter)

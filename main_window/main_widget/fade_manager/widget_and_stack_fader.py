@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 
 
 class WidgetAndStackFader:
+    """Handles simultaneous fading of widgets and a stack."""
     def __init__(self, manager: "FadeManager"):
         self.manager = manager
 
@@ -18,47 +19,50 @@ class WidgetAndStackFader:
         duration: int = 300,
         callback: Optional[callable] = None,
     ):
+        """Fades out widgets and stack in parallel, switches the stack, and fades both in,
+        respecting the fade settings."""
         current_widget = stack.currentWidget()
         next_widget = stack.widget(new_index)
-
         if not current_widget or not next_widget or stack.currentIndex() == new_index:
+            return
+
+        # Respect fade settings: if fades are disabled, immediately switch and call callback.
+        if not self.manager.fades_enabled():
+            stack.setCurrentIndex(new_index)
+            if callback:
+                callback()
             return
 
         self.manager.graphics_effect_remover.clear_graphics_effects(
             [current_widget, next_widget] + widgets
         )
-
-        fade_enabled = self.manager.fades_enabled()
-
-        def switch_stack():
-            stack.setCurrentIndex(new_index)
-
-        def finalize():
-            if callback:
-                callback()
-
-        if not fade_enabled:
-            switch_stack()
-            finalize()
-            return
-
         animation_group = QParallelAnimationGroup(self.manager)
 
         for widget in widgets + [current_widget]:
             if widget:
-                self._add_fade_animation(animation_group, widget, fade_in=False, duration=duration)
+                self._add_fade_animation(
+                    animation_group, widget, fade_in=False, duration=duration
+                )
 
         def on_fade_out_finished():
-            switch_stack()
-
+            # Clear effects and switch widget
+            self.manager.graphics_effect_remover.clear_graphics_effects(
+                [next_widget] + widgets
+            )
+            stack.setCurrentIndex(new_index)
             fade_in_group = QParallelAnimationGroup(self.manager)
-
-            for widget in widgets + [next_widget]:
+            if next_widget:
+                self._add_fade_animation(
+                    fade_in_group, next_widget, fade_in=True, duration=duration
+                )
+            for widget in widgets:
                 if widget:
-                    self._add_fade_animation(fade_in_group, widget, fade_in=True, duration=duration)
-
-            fade_in_group.finished.connect(finalize)
+                    self._add_fade_animation(
+                        fade_in_group, widget, fade_in=True, duration=duration
+                    )
             fade_in_group.start()
+            if callback:
+                callback()
 
         animation_group.finished.connect(on_fade_out_finished)
         animation_group.start()
@@ -70,6 +74,7 @@ class WidgetAndStackFader:
         fade_in: bool,
         duration: int,
     ):
+        """Helper to add fade animations to a QParallelAnimationGroup."""
         effect = self.manager.widget_fader._ensure_opacity_effect(widget)
         animation = QPropertyAnimation(effect, b"opacity")
         animation.setDuration(duration)
@@ -77,3 +82,4 @@ class WidgetAndStackFader:
         animation.setEndValue(1.0 if fade_in else 0.0)
         animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
         group.addAnimation(animation)
+

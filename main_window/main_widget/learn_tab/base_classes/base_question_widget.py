@@ -39,7 +39,7 @@ class BaseQuestionWidget(QWidget):
 
     def load_pictograph(self, pictograph_data) -> None:
         """Load and display the pictograph."""
-        self.pictograph: PictographScene = PictographScene(self.main_widget)
+        self.pictograph: PictographScene = PictographScene()
         self.pictograph.view = LessonPictographView(self.pictograph)
         self.pictograph.disable_gold_overlay = True
         self.pictograph.updater.update_pictograph(pictograph_data)

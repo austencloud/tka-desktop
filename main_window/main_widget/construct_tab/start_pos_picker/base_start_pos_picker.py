@@ -1,20 +1,21 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import QWidget
 from copy import deepcopy
 from data.positions import box_positions, diamond_positions
 from base_widgets.pictograph.pictograph_scene import PictographScene
 from data.constants import BOX, DIAMOND
 from .start_pos_picker_pictograph_view import StartPosPickerPictographView
+from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
     from main_window.main_widget.construct_tab.construct_tab import ConstructTab
 
 
 class BaseStartPosPicker(QWidget):
-    def __init__(self, construct_tab: "ConstructTab", pictograph_dataset: dict):
-        super().__init__(construct_tab)
-        self.construct_tab = construct_tab
+    def __init__(self, pictograph_dataset: dict, mw_size_provider: Callable[[], QSize]) -> None:
+        super().__init__()
         self.pictograph_dataset = pictograph_dataset
+        self.mw_size_provider = mw_size_provider
         self.pictograph_cache: dict[str, PictographScene] = {}
         self.box_pictographs: list[PictographScene] = []
         self.diamond_pictographs: list[PictographScene] = []
@@ -35,7 +36,7 @@ class BaseStartPosPicker(QWidget):
 
         pictograph = PictographScene()
         pictograph.view = StartPosPickerPictographView(
-            self, pictograph, size_provider=self.construct_tab.mw_size_provider
+            self, pictograph, size_provider=self.mw_size_provider
         )
         pictograph.updater.update_pictograph(local_dict)
         pictograph.view.update_borders()

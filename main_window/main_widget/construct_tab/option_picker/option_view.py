@@ -20,7 +20,7 @@ class OptionView(BorderedPictographView):
         super().__init__(pictograph)
         self.pictograph = pictograph
         self.option_picker = option_picker
-        self.click_handler = option_picker.click_handler
+        self.click_handler = option_picker.option_click_handler
         self.mw_size_provider = mw_size_provider
 
     ### EVENTS ###

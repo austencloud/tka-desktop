@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
 
 
+
 if TYPE_CHECKING:
-    from base_widgets.pictograph.components.placement_managers.prop_placement_manager.handlers.beta_prop_positioner import (
-        BetaPropPositioner,
-    )
+    from placement_managers.prop_placement_manager.handlers.beta_prop_positioner import BetaPropPositioner
+
 
 
 class SmallBilateralPropPositioner:
@@ -29,10 +29,10 @@ class SmallBilateralPropPositioner:
             elif self.pictograph.letter in ["Y", "Z"]:
                 letter_handler.reposition_Y_Z()
             elif self.pictograph.letter == "β":
-                letter_handler.reposition_β()
+                letter_handler.reposition_beta()
             elif self.pictograph.letter in ["Y-", "Z-"]:
                 letter_handler.reposition_Y_dash_Z_dash()
             elif self.pictograph.letter == "Ψ":
-                letter_handler.reposition_Ψ()
+                letter_handler.reposition_psi()
             elif self.pictograph.letter == "Ψ-":
-                letter_handler.reposition_Ψ_dash()
+                letter_handler.reposition_psi_dash()

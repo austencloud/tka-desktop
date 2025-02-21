@@ -27,14 +27,18 @@ class StartPosPicker(BaseStartPosPicker):
 
     def __init__(
         self,
-        construct_tab: "ConstructTab",
         pictograph_dataset: dict,
         beat_frame: "SequenceBeatFrame",
+        mw_size_provider,
+        option_click_handler,
+        advnaced_transition_handler,
     ):
-        super().__init__(construct_tab, pictograph_dataset)
-        self.construct_tab = construct_tab
+        super().__init__(pictograph_dataset, mw_size_provider=mw_size_provider)
         self.beat_frame = beat_frame  # ✅ Store the beat_frame
-        self.pictograph_frame = StartPosPickerPictographFrame(self)
+        self.advanced_transition_handler = advnaced_transition_handler
+        self.pictograph_frame = StartPosPickerPictographFrame(
+            self, option_click_handler=option_click_handler
+        )
         self.choose_your_start_pos_label = ChooseYourStartPosLabel(self)
         self.button_layout = self._setup_variations_button_layout()
         self.setup_layout()
@@ -65,9 +69,7 @@ class StartPosPicker(BaseStartPosPicker):
 
     def _setup_variations_button_layout(self) -> QHBoxLayout:
         self.variations_button = StartPosVariationsButton(self)
-        self.variations_button.clicked.connect(
-            self.construct_tab.transition_to_advanced_start_pos_picker
-        )
+        self.variations_button.clicked.connect(self.advanced_transition_handler)
         button_layout = QHBoxLayout()
         button_layout.addStretch(1)
         button_layout.addWidget(self.variations_button)
@@ -98,7 +100,7 @@ class StartPosPicker(BaseStartPosPicker):
         self, position_key: str, grid_mode: str
     ) -> None:
         """Adds an option for the specified start position based on the current grid mode."""
-        self.start_position_adder = self.construct_tab.beat_frame.start_position_adder
+        self.start_position_adder = self.beat_frame.start_position_adder
         start_pos, end_pos = position_key.split("_")
         for letter, pictograph_datas in self.pictograph_dataset.items():
             for pictograph_data in pictograph_datas:
