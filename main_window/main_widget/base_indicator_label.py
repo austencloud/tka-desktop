@@ -26,15 +26,16 @@ class BaseIndicatorLabel(QLabel):
         self.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
         self.clear()
         self.setContentsMargins(0, 0, 0, 0)
-
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
         self.timer.timeout.connect(self.start_fade_out)
 
     def show_message(self, text) -> None:
+        # if hidden, show it
+        self.show()
+        self.resizeEvent(None)
         self.opacity_effect = QGraphicsOpacityEffect(self)
         self.opacity_effect.setOpacity(1)
-        self.setGraphicsEffect(None)
         self.setGraphicsEffect(self.opacity_effect)
         self.animation = QPropertyAnimation(self.opacity_effect, b"opacity")
         self.animation.setDuration(2000)
@@ -55,3 +56,4 @@ class BaseIndicatorLabel(QLabel):
 
     def clear(self) -> None:
         self.setText(" ")
+        # self.hide()

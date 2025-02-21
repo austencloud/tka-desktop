@@ -21,22 +21,16 @@ class Lesson1QuestionGenerator(BaseQuestionGenerator):
 
     def generate_question(self):
         """Generate a question for Lesson 1."""
-        self.lesson_1_widget.question_widget.clear()
-        self.lesson_1_widget.answers_widget.clear()
         correct_answer = self.generate_correct_answer()
         self.previous_correct_letter = correct_answer
+        pictograph_dataset = self.main_widget.pictograph_dataset
 
-        pictograph_datas = self.main_widget.pictograph_dataset
-
-        correct_pictograph_data = random.choice(pictograph_datas[correct_answer])
-
+        correct_pictograph_data = random.choice(pictograph_dataset[correct_answer])
+        self.lesson_1_widget.question_widget.update_pictograph(correct_pictograph_data)
         wrong_answers = self.generate_wrong_answers(correct_answer)
-        self.lesson_1_widget.question_widget.load_pictograph(correct_pictograph_data)
-
         letters = [correct_answer.value] + wrong_answers
         random.shuffle(letters)
-
-        self.lesson_1_widget.answers_widget.display_answers(
+        self.lesson_1_widget.answers_widget.update_answer_buttons(
             letters,
             correct_answer.value,
             self.lesson_1_widget.answer_checker.check_answer,

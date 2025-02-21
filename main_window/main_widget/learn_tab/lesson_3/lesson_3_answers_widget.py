@@ -38,11 +38,11 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
         self.layout.setSpacing(self.spacing)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-    def display_answers(
+    def create_answer_buttons(
         self, pictographs: list[dict], correct_pictograph: dict, check_answer_callback
     ):
         """Display the pictographs as answer options in a grid layout."""
-        self.clear()
+        self.create_answer_buttons()
 
         num_pictographs = len(pictographs)
         rows = (num_pictographs + self.columns - 1) // self.columns  # Ceiling division
@@ -52,13 +52,13 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
             pictograph = PictographScene()
             view = LessonPictographView(pictograph)
             pictograph.elements.view = view
-            pictograph.disable_gold_overlay = False
+            pictograph.state.disable_gold_overlay = False
             pictograph.managers.updater.update_pictograph(pictograph_data)
             pictograph.elements.view.update_borders()
             self.pictographs[key] = pictograph
             # Configure view properties
             view.setCursor(Qt.CursorShape.PointingHandCursor)
-            pictograph.quiz_mode = True
+            pictograph.state.quiz_mode = True
             pictograph.elements.tka_glyph.setVisible(False)
 
             # Connect click event
@@ -76,7 +76,7 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
 
             self.pictograph_views.append(view)
 
-    def clear(self):
+    def create_answer_buttons(self):
         """Clear all the displayed pictographs."""
         for view in self.pictograph_views:
             self.layout.removeWidget(view)
@@ -88,8 +88,8 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
         """Disable a specific pictograph answer."""
         pictograph_key = self.key_generator.generate_pictograph_key(answer)
         wrong_answer = self.pictographs[pictograph_key]
-        wrong_answer.view.setEnabled(False)
-        wrong_answer.view.set_overlay_color("red")
+        wrong_answer.elements.view.setEnabled(False)
+        wrong_answer.elements.view.set_overlay_color("red")
 
     def resizeEvent(self, event):
         """Resize the pictograph views based on window size."""

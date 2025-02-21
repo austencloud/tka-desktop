@@ -20,12 +20,12 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
     def generate_question(self):
         """Generate a question for Lesson 3."""
         self.lesson_widget.question_widget.clear()
-        self.lesson_widget.answers_widget.clear()
+        self.lesson_widget.answers_widget.create_answer_buttons()
         initial_pictograph = self.generate_initial_pictograph()
         self.previous_pictograph = initial_pictograph
 
         # Show the initial pictograph in the question widget
-        self.lesson_widget.question_widget.load_pictograph(initial_pictograph)
+        self.lesson_widget.question_widget.update_pictograph(initial_pictograph)
 
         # Generate answers (one correct and three wrong)
         correct_pictograph = self.generate_correct_answer(initial_pictograph)
@@ -35,7 +35,7 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
         pictographs: list["PictographScene"] = [correct_pictograph] + wrong_pictographs
         random.shuffle(pictographs)
 
-        self.lesson_widget.answers_widget.display_answers(
+        self.lesson_widget.answers_widget.create_answer_buttons(
             pictographs,
             correct_pictograph,
             self.lesson_widget.answer_checker.check_answer,

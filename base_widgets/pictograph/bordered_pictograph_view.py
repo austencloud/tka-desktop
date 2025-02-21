@@ -42,7 +42,7 @@ class BorderedPictographView(PictographView):
 
     def set_gold_border(self):
         """Set the border colors to gold, typically on hover."""
-        if getattr(self.pictograph, "disable_gold_overlay", False):
+        if getattr(self.pictograph.state, "disable_gold_overlay", False):
             return
         self.primary_color = "gold"
         self.secondary_color = "gold"

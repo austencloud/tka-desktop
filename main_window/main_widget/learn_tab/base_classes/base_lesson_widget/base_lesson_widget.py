@@ -47,22 +47,28 @@ class BaseLessonWidget(QWidget):
 
         # Delegate layout management to LessonLayoutManager
         self.layout_manager = LessonLayoutManager(self)
-        self.layout_manager.setup_layout()
 
     def update_progress_label(self):
         self.progress_label.setText(f"{self.current_question}/{self.total_questions}")
 
     def prepare_quiz_ui(self):
-        """
-        Reset the lesson state and prepare the UI for a new quiz.
-        """
         self.current_question = 1
         self.incorrect_guesses = 0
         self.update_progress_label()
         self.indicator_label.clear()
-        self.question_generator.generate_question()
-        self.layout_manager.refresh_central_layout()
-
-    def clear_current_question(self):
-        self.question_widget.clear()
-        self.answers_widget.clear()
+        widgets_to_fade = [
+            self.question_widget,
+            self.answers_widget,
+            self.indicator_label,
+            self.progress_label,
+        ]
+        indicator_label = self.indicator_label
+        indicator_label.setStyleSheet(
+            f"LessonIndicatorLabel {{"
+            f" background-color: transparent;"
+            f"}}"
+        )
+        self.fade_manager.widget_fader.fade_and_update(
+            widgets_to_fade,
+            callback=self.question_generator.generate_question,  # Now update content in-place
+        )

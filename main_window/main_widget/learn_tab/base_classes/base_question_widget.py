@@ -37,17 +37,23 @@ class BaseQuestionWidget(QWidget):
             "This function should be implemented by the subclass."
         )
 
-    def load_pictograph(self, pictograph_data) -> None:
-        """Load and display the pictograph."""
-        self.pictograph: PictographScene = PictographScene()
-        self.pictograph.elements.view = LessonPictographView(self.pictograph)
-        self.pictograph.disable_gold_overlay = True
+    def update_pictograph(self, pictograph_data) -> None:
+        """
+        Update the existing pictograph view with new data.
+        If no view exists yet, create one.
+        """
+        if self.pictograph is None:
+            # Create the persistent pictograph view if it doesn't exist
+            self.pictograph = PictographScene()
+            self.pictograph.elements.view = LessonPictographView(self.pictograph)
+            self.layout.addWidget(
+                self.pictograph.elements.view, alignment=Qt.AlignmentFlag.AlignCenter
+            )
+        # Update the pictograph’s content in place
+        self.pictograph.state.disable_gold_overlay = True
         self.pictograph.managers.updater.update_pictograph(pictograph_data)
         self.pictograph.elements.view.update_borders()
-        self.pictograph.quiz_mode = True
-        self.layout.addWidget(
-            self.pictograph.elements.view, alignment=Qt.AlignmentFlag.AlignCenter
-        )
+        self.pictograph.elements.tka_glyph.setVisible(False)
 
     def _resize_question_label(self) -> None:
         question_label_font_size = self.main_widget.width() // 65

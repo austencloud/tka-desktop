@@ -43,11 +43,11 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
         self.layout.setSpacing(self.spacing)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-    def display_answers(
+    def create_answer_buttons(
         self, pictographs: List[dict], correct_pictograph: dict, check_answer_callback
     ):
         """Display the pictographs as answer options in a grid layout."""
-        self.clear()
+        self.create_answer_buttons()
 
         num_pictographs = len(pictographs)
         rows = (num_pictographs + self.columns - 1) // self.columns  # Ceiling division
@@ -82,7 +82,7 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
         wrong_answer.elements.view.setEnabled(False)
         wrong_answer.elements.view.set_overlay_color("red")
 
-    def clear(self):
+    def create_answer_buttons(self):
         """Clear all the displayed pictographs."""
         for view in self.pictograph_views:
             self.layout.removeWidget(view)

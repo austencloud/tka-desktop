@@ -1,6 +1,10 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QSpacerItem, QSizePolicy
 from PyQt6.QtCore import Qt
+from base_widgets.pictograph.pictograph_scene import PictographScene
+from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_pictograph_view import (
+    LessonPictographView,
+)
 from main_window.main_widget.learn_tab.base_classes.base_question_widget import (
     BaseQuestionWidget,
 )
@@ -43,9 +47,9 @@ class Lesson1QuestionWidget(BaseQuestionWidget):
 
         self.setLayout(self.layout)
 
-    def load_pictograph(self, pictograph_data) -> None:
+    def update_pictograph(self, pictograph_data) -> None:
         """Load and display the pictograph."""
-        super().load_pictograph(pictograph_data)
+        super().update_pictograph(pictograph_data)
         if self.pictograph:
             self.pictograph.elements.tka_glyph.setVisible(False)
 
