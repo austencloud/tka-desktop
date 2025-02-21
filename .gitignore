@@ -8,3 +8,4 @@ build/
 dist/
 settings.json
 settings.ini
+trace_log.txt
