@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QApplication
 from PyQt6.QtCore import Qt
 from functools import partial
 
@@ -134,19 +134,16 @@ class LessonSelector(QWidget):
             description.setFont(font)
 
     def start_lesson(self, lesson_number: int) -> None:
-        """Starts the specified lesson by switching to its widget in the stacked layout."""
         lesson_widgets: list[BaseLessonWidget] = [
             self.learn_widget.lesson_1_widget,
             self.learn_widget.lesson_2_widget,
             self.learn_widget.lesson_3_widget,
         ]
+        lesson_widget = lesson_widgets[lesson_number - 1]
+        lesson_widget_index = self.learn_widget.stack.indexOf(lesson_widget)
+        lesson_widget.prepare_quiz_ui()
+        QApplication.processEvents()
         if 1 <= lesson_number <= len(lesson_widgets):
-            lesson_widget = lesson_widgets[lesson_number - 1]
-            lesson_widget_index = self.learn_widget.stack.indexOf(lesson_widget)
             self.main_widget.fade_manager.stack_fader.fade_stack(
-                self.learn_widget.stack,
-                lesson_widget_index,
-                300,
-                lesson_widget.prepare_quiz_ui(),
+                self.learn_widget.stack, lesson_widget_index, 300
             )
-

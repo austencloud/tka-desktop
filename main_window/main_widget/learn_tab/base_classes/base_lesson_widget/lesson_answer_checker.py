@@ -19,13 +19,13 @@ class LessonAnswerChecker:
             if self.lesson.mode == "fixed_question":
                 self.lesson.update_progress_label()
                 if self.lesson.current_question <= self.lesson.total_questions:
-                    self.lesson.question_generator.start_new_question()
+                    self.lesson.question_generator.fade_to_new_question()
                 else:
                     self.lesson.learn_tab.results_widget.show_results(
-                       self.lesson,  self.lesson.incorrect_guesses
+                        self.lesson, self.lesson.incorrect_guesses
                     )
             elif self.lesson.mode == "countdown":
-                self.lesson.question_generator.start_new_question()
+                self.lesson.question_generator.fade_to_new_question()
         else:
             self.lesson.indicator_label.show_message("Wrong! Try again.")
             self.lesson.indicator_label.setStyleSheet("color: red;")

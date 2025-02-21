@@ -30,7 +30,7 @@ class BaseQuestionGenerator:
                     valid_dicts[letter].append(pictograph_data)
         return valid_dicts
 
-    def start_new_question(self):
+    def fade_to_new_question(self):
         widgets_to_fade = [
             self.lesson_widget.question_widget,
             self.lesson_widget.answers_widget,
