@@ -51,7 +51,7 @@ class OptionPickerSectionWidget(QGroupBox):
 
     def _setup_header(self) -> None:
         self.header = OptionPickerSectionHeader(self)
-        self.header.type_label.clicked.connect(self.toggle_section)
+        self.header.type_button.clicked.connect(self.toggle_section)
 
     def toggle_section(self) -> None:
         is_visible = not self.pictograph_frame.isVisible()
