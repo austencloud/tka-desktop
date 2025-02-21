@@ -29,7 +29,6 @@ if TYPE_CHECKING:
         GE_PictographView,
     )
 
-    pass
 
 from dataclasses import dataclass
 from typing import Dict, Optional, Union

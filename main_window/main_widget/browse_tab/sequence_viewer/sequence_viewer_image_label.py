@@ -1,5 +1,5 @@
-from PyQt6.QtCore import Qt, QEvent
-from PyQt6.QtGui import QPixmap, QResizeEvent
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QLabel, QSizePolicy
 from typing import TYPE_CHECKING
 

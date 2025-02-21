@@ -1,6 +1,6 @@
 import logging
 from functools import lru_cache
-from typing import TYPE_CHECKING, Dict, Tuple
+from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
 from data.constants import RED, BLUE

@@ -1,4 +1,3 @@
-from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget
 
 from typing import TYPE_CHECKING
@@ -26,7 +25,6 @@ from .main_widget_state import MainWidgetState
 
 if TYPE_CHECKING:
     from main_window.main_widget.pictograph_data_loader import PictographDataLoader
-    from main_window.settings_manager.settings_manager import SettingsManager
     from main_window.menu_bar.menu_bar import MenuBarWidget
     from splash_screen.splash_screen import SplashScreen
     from ..main_window import MainWindow

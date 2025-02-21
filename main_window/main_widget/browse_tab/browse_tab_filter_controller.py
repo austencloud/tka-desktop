@@ -5,7 +5,6 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
 from main_window.main_widget.tab_indices import LeftStackIndex
-from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
@@ -213,7 +212,6 @@ class BrowseTabFilterController:
     # -------------------------------------------------------------------------
     def _base_words(self):
         """Just a convenience function so we don't keep repeating ourselves."""
-        import os
         from utilities.path_helpers import get_images_and_data_path
         dictionary_dir = get_images_and_data_path("dictionary")
         return self.browse_tab.get.base_words(dictionary_dir)

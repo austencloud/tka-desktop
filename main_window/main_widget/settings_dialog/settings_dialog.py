@@ -8,7 +8,6 @@ from main_window.main_widget.settings_dialog.prop_type_tab.prop_type_tab import 
 from .settings_dialog_action_buttons import SettingsDialogActionButtons
 from .styles.settings_dialog_styler import SettingsDialogStyler
 from .user_profile_tab import UserProfileTab
-from .background_tab import BackgroundTab
 from .visibility_tab.visibility_tab import VisibilityTab
 
 if TYPE_CHECKING:

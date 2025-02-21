@@ -1,7 +1,4 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QLabel
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QPainter, QBrush, QPen
 
 from main_window.main_widget.base_indicator_label import BaseIndicatorLabel
 

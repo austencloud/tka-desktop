@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy
+from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 

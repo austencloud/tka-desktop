@@ -1,6 +1,6 @@
 # main_window/main_widget/construct_tab/option_picker/resizable_mixin.py
 from PyQt6.QtCore import QSize
-from PyQt6.QtGui import QFont, QFontMetrics
+from PyQt6.QtGui import QFontMetrics
 from typing import Callable
 
 class ResizableMixin:

@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (
     QTextEdit,
     QSizePolicy,
 )
-from PyQt6.QtCore import Qt, QEvent
+from PyQt6.QtCore import Qt
 from main_window.main_widget.write_tab.editable_label_manager import (
     EditableLabelManager,
 )

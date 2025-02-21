@@ -1,5 +1,5 @@
-from typing import Callable, List, Optional
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from typing import Callable, List
+from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import pyqtSignal, QSize
 
 from base_widgets.pictograph.pictograph_scene import PictographScene

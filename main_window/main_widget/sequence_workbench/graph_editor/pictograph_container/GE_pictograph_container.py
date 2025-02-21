@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
     GE_Pictograph,

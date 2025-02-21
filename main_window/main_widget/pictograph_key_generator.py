@@ -12,7 +12,7 @@ from data.constants import (
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    pass
 
 
 class PictographKeyGenerator:

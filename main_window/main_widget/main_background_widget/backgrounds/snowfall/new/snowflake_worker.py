@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QObject, pyqtSignal
 import random
 
-from PyQt6.QtCore import QThread, QObject, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal
 import time
 
 

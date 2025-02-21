@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Union
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import pyqtSignal
-from data.constants import FLOAT
 from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.motion.motion import Motion
 

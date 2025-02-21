@@ -13,7 +13,7 @@ from .global_settings.global_settings import GlobalSettings
 from .visibility_settings.visibility_settings import VisibilitySettings
 
 if TYPE_CHECKING:
-    from main_window.main_window import MainWindow
+    pass
 
 
 class SettingsManager(QObject):

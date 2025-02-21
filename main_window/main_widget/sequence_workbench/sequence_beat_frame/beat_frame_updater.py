@@ -1,6 +1,5 @@
-from copy import deepcopy
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QApplication
+from PyQt6.QtWidgets import QApplication
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.reversal_detector import (

@@ -16,7 +16,6 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QResizeEvent
 
-from main_window.settings_manager.global_settings.app_context import AppContext
 from .export_dialog_control_panel import ExportDialogControlPanel
 from .export_dialog_preview_panel import ExportDialogPreviewPanel
 from sequence_sharer_dialog.sequence_sharer_dialog import SequenceSharerDialog

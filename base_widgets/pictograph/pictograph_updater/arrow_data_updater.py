@@ -1,7 +1,6 @@
 import logging
-from typing import TYPE_CHECKING, Tuple, Dict, Any
+from typing import TYPE_CHECKING, Tuple
 
-from pydantic import BaseModel, ValidationError
 from Enums.letters import LetterType
 from data.constants import RED, BLUE
 

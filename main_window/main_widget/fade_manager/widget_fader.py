@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING, Optional, Union
-from PyQt6.QtWidgets import QWidget, QGraphicsOpacityEffect, QGraphicsItem, QApplication
+from PyQt6.QtWidgets import QWidget, QGraphicsOpacityEffect, QGraphicsItem
 from PyQt6.QtCore import (
     QParallelAnimationGroup,
     QPropertyAnimation,
     QEasingCurve,
-    QTimer,
 )
 from Enums.Enums import Glyph
 

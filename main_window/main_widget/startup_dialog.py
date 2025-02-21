@@ -9,8 +9,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import QRect, QUrl, Qt
-from typing import TYPE_CHECKING, Optional
+from PyQt6.QtCore import QRect, Qt
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget

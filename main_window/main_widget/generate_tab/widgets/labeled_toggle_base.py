@@ -43,7 +43,6 @@ class LabeledToggleBase(QWidget):
 
     def _handle_toggle_changed(self, state: bool):
         print("This method should be overridden in the subclass.")
-        pass
 
     def set_state(self, is_checked: bool):
         was_blocked = self.toggle.blockSignals(True)

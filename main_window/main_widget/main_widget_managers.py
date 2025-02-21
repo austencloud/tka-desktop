@@ -1,21 +1,15 @@
-import json
 from typing import TYPE_CHECKING
-from Enums.PropTypes import PropType
 from letter_determiner.letter_determiner import LetterDeterminer
-from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.pictograph_data_loader import PictographDataLoader
 from main_window.settings_manager.global_settings.app_context import AppContext
-from utilities.path_helpers import get_images_and_data_path
 
-from .grid_mode_checker import GridModeChecker
 from .sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )
 from .sequence_level_evaluator import SequenceLevelEvaluator
 from .thumbnail_finder import ThumbnailFinder
 from .metadata_extractor import MetaDataExtractor
-from .json_manager.json_manager import JsonManager
 from .turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
 from .pictograph_key_generator import PictographKeyGenerator
 from .special_placement_loader import SpecialPlacementLoader

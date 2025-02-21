@@ -1,12 +1,5 @@
-from PyQt6.QtWidgets import (
-    QHBoxLayout,
-)
-from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.generate_tab.generator_type_button import (
-    GeneratorTypeButton,
-)
 
 from .generate_sequence_button import GenerateSequenceButton
 
@@ -52,4 +45,3 @@ class GeneratorButtonManager:
         """
         Possibly unused now. The toggles handle their own styling.
         """
-        pass

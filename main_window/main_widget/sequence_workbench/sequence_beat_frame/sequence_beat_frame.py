@@ -1,11 +1,9 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QGridLayout
 from PyQt6.QtGui import QKeyEvent
-from PyQt6.QtCore import QTimer
 
 
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_frame_layout_manager import BeatFrameLayoutManager
-from main_window.settings_manager.global_settings.app_context import AppContext
 
 from .start_pos_beat import StartPositionBeat
 from .start_pos_beat_view import StartPositionBeatView

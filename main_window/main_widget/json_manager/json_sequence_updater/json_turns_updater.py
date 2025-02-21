@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Union
 
-from data.constants import DASH, FLOAT, NO_ROT, STATIC
+from data.constants import DASH, NO_ROT, STATIC
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )
@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_sequence_updater.json_sequence_updater import (
         JsonSequenceUpdater,
     )
-    from objects.motion.motion import Motion
 
 
 class JsonTurnsUpdater:

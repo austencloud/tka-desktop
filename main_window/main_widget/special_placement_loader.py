@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    pass
 
 
 class SpecialPlacementLoader:

@@ -3,7 +3,7 @@ from data.constants import BOX, DIAMOND
 from data.positions import box_positions, diamond_positions
 
 if TYPE_CHECKING:
-    from .main_widget import MainWidget
+    pass
 
 
 class GridModeChecker:

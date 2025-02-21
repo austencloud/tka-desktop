@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QApplication, QMessageBox
 
 if TYPE_CHECKING:
     from .generate_tab import GenerateTab

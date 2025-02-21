@@ -1,9 +1,6 @@
 from typing import TYPE_CHECKING
 from Enums.PropTypes import PropType
 from base_widgets.pictograph.pictograph_scene import PictographScene
-from main_window.main_widget.font_color_updater.font_color_updater import (
-    FontColorUpdater,
-)
 from .prop_type_changer import PropTypeChanger
 
 if TYPE_CHECKING:

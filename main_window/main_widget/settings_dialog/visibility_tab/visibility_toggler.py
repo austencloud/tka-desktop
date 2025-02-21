@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 from Enums.Enums import Glyph
-from base_widgets.pictograph.glyphs.reversal_glyph import ReversalGlyph
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph_scene import PictographScene

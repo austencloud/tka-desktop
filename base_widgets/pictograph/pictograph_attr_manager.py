@@ -1,12 +1,7 @@
 from typing import TYPE_CHECKING, Union
-from Enums.Enums import Letter, OpenCloseStates, VTG_Modes
-from Enums.PropTypes import PropType
+from Enums.Enums import Letter
 from Enums.letters import LetterType
-from PyQt6.QtWidgets import QGraphicsTextItem
 
-from objects.arrow.arrow import Arrow
-from objects.motion.motion import Motion
-from objects.prop.prop import Prop
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph_scene import PictographScene
