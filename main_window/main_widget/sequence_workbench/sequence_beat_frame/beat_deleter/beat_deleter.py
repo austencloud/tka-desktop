@@ -86,3 +86,4 @@ class BeatDeleter:
             callback=lambda: self.reset_widgets(show_indicator),
             duration=300,
         )
+

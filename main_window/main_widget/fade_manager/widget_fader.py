@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Optional, Union
-from PyQt6.QtWidgets import QWidget, QGraphicsOpacityEffect, QGraphicsItem
+from PyQt6.QtWidgets import QWidget, QGraphicsOpacityEffect, QGraphicsItem, QApplication
 from PyQt6.QtCore import (
     QParallelAnimationGroup,
     QPropertyAnimation,
@@ -20,23 +20,26 @@ if TYPE_CHECKING:
 class WidgetFader:
     def __init__(self, manager: "FadeManager"):
         self.manager = manager
-        # Cache animation groups keyed by a tuple of (widget_ids, fade_in, duration)
         self._animation_cache = {}
 
     def _get_animation_cache_key(
         self, widgets: list[QWidget], fade_in: bool, duration: int
     ):
-        # Create a key based on the unique ids of the widgets, fade direction, and duration.
         widget_ids = tuple(sorted(id(w) for w in widgets))
         return (widget_ids, fade_in, duration)
 
-    def fade_widgets(self, widgets, fade_in, duration, callback=None):
+    def fade_widgets(
+        self,
+        widgets: list[QWidget],
+        fade_in: bool,
+        duration: int = 250,
+        callback: Optional[callable] = None,
+    ) -> None:
         if not widgets:
             if callback:
                 callback()
             return
 
-        # 🛑 Before fading, ensure no active QPainter exists!
         for widget in widgets:
             widget.update()
 
@@ -58,7 +61,7 @@ class WidgetFader:
                 anim_group.finished.connect(callback)
             return
 
-        anim_group = QParallelAnimationGroup(self.manager)
+        anim_group: QParallelAnimationGroup = QParallelAnimationGroup(self.manager)
         for widget in widgets:
             effect = self._ensure_opacity_effect(widget)
             animation = QPropertyAnimation(effect, b"opacity")
@@ -78,7 +81,7 @@ class WidgetFader:
     def _ensure_opacity_effect(self, widget: QWidget) -> QGraphicsOpacityEffect:
         effect = widget.graphicsEffect()
         if effect and isinstance(effect, QGraphicsOpacityEffect):
-            return effect  # Don't create a new effect if one already exists
+            return effect
 
         effect = FadableOpacityEffect(widget)
         widget.setGraphicsEffect(effect)
@@ -91,41 +94,21 @@ class WidgetFader:
         duration: int = 250,
     ) -> None:
         fade_enabled = self.manager.fades_enabled()
+        update_callback = None
+        if callback:
+            update_callback = callback
 
         def on_fade_out_finished():
             self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
-            if callback:
-                if isinstance(callback, tuple):
-                    callback[0]()
-                    if fade_enabled:
-                        self.fade_widgets(
-                            widgets,
-                            True,
-                            duration,
-                            lambda: QTimer.singleShot(0, callback[1]),
-                        )
-                    else:
-                        for widget in widgets:
-                            effect = self._ensure_opacity_effect(widget)
-                            effect.setOpacity(1.0)
-                            widget.setGraphicsEffect(effect)
-                        callback[1]()
-                else:
-                    callback()
-                    if fade_enabled:
-                        self.fade_widgets(widgets, True, duration)
-                    else:
-                        for widget in widgets:
-                            effect = self._ensure_opacity_effect(widget)
-                            effect.setOpacity(1.0)
-                            widget.setGraphicsEffect(effect)
+            if update_callback:
+                update_callback()
 
         if fade_enabled:
             self.fade_widgets(widgets, False, duration, on_fade_out_finished)
         else:
             for widget in widgets:
                 effect = self._ensure_opacity_effect(widget)
-                effect.setOpacity(1.0)
+                effect.setOpacity(0.0)
                 widget.setGraphicsEffect(effect)
             on_fade_out_finished()
 

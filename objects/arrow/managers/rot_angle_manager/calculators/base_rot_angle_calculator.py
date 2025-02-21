@@ -58,7 +58,7 @@ class BaseRotAngleCalculator(ABC):
         )
 
         return bool(
-            letter_data.get(self.arrow.pictograph.state.turns_tuple, {}).get(
+            letter_data.get(self.arrow.pictograph.managers.get.turns_tuple(), {}).get(
                 rot_angle_override_key
             )
         )

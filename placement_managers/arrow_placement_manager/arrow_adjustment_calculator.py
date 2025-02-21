@@ -13,6 +13,7 @@ from .directional_tuple_manager.directional_tuple_manager import DirectionalTupl
 
 if TYPE_CHECKING:
     from .arrow_placement_manager import ArrowPlacementManager
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,6 +35,12 @@ class ArrowAdjustmentCalculator:
             )
             return QPointF(0, 0)
 
+        adjustment = self._calculate_adjustment(arrow)
+        return adjustment
+
+    def _calculate_adjustment(self, arrow: Arrow) -> QPointF:
+        """Calculates the adjustment based on special placements or defaults."""
+
         turns_tuple = TurnsTupleGenerator().generate_turns_tuple(
             self.placement_manager.pictograph
         )
@@ -43,30 +50,52 @@ class ArrowAdjustmentCalculator:
             )
         )
 
-        special_placements = (
-            self.special_placement_loader.load_special_placements().get(ori_key, {})
-        )
-
-        if self.placement_manager.pictograph.state.letter not in special_placements:
-            logger.warning(
-                f"No special placements found for letter {self.placement_manager.pictograph.state.letter}. Using fallback."
-            )
-            special_placements[self.placement_manager.pictograph.state.letter] = {}
+        special_placements = self._get_special_placements(arrow, ori_key)
 
         special_adjustment = self.get_adjustment_for_letter(
-            self.placement_manager.pictograph.state.letter, arrow, turns_tuple, ori_key
+            special_placements,
+            self.placement_manager.pictograph.state.letter,
+            arrow,
+            turns_tuple,
         )
 
         if special_adjustment:
-            logger.info(f"Using special adjustment for {arrow}: {special_adjustment}")
+
             x, y = special_adjustment
         else:
             x, y = self.placement_manager.default_positioner.get_default_adjustment(
                 arrow
             )
-            logger.info(f"Using default adjustment for {arrow}: {x, y}")
 
-        # Ensure directional tuples are correct
+        directional_adjustments = self._get_directional_adjustments(arrow, x, y)
+        quadrant_index = (
+            self.placement_manager.quadrant_index_handler.get_quadrant_index(arrow)
+        )
+
+        return self._get_final_adjustment(
+            arrow, directional_adjustments, quadrant_index
+        )
+
+    def _get_special_placements(self, arrow: Arrow, ori_key: str) -> dict:
+        """Loads and prepares special placements for the current grid mode and letter."""
+        special_placements_all_modes = (
+            self.special_placement_loader.load_special_placements()
+        )
+        special_placements_for_current_grid_mode = special_placements_all_modes.get(
+            arrow.pictograph.state.grid_mode, {}
+        ).get(ori_key, {})
+
+        if (
+            self.placement_manager.pictograph.state.letter.value
+            not in special_placements_for_current_grid_mode
+        ):
+            special_placements_for_current_grid_mode[
+                self.placement_manager.pictograph.state.letter
+            ] = {}
+        return special_placements_for_current_grid_mode
+
+    def _get_directional_adjustments(self, arrow: Arrow, x: float, y: float) -> list:
+        """Generates directional adjustments for the arrow."""
         directional_tuple_manager = DirectionalTupleManager(arrow.motion)
         directional_adjustments = directional_tuple_manager.generate_directional_tuples(
             x, y
@@ -76,17 +105,21 @@ class ArrowAdjustmentCalculator:
             logger.error(
                 f"Directional adjustments not found for motion type: {arrow.motion.motion_type}"
             )
-            return QPointF(0, 0)
+            return None
+        return directional_adjustments
 
-        quadrant_index = (
-            self.placement_manager.quadrant_index_handler.get_quadrant_index(arrow)
-        )
+    def _get_final_adjustment(
+        self, arrow: Arrow, directional_adjustments: list, quadrant_index: int
+    ) -> QPointF:
+        """Returns the final QPointF adjustment based on directional adjustments and quadrant index."""
+        if directional_adjustments is None:
+            return QPointF(0, 0)
 
         if quadrant_index < 0 or quadrant_index >= len(directional_adjustments):
             logger.error(
                 f"Quadrant index {quadrant_index} out of range for directional_adjustments with length {len(directional_adjustments)}."
             )
-            return QPointF(0, 0)  # Return a default value or handle appropriately
+            return QPointF(0, 0)
 
         return QPointF(*directional_adjustments[quadrant_index])
 
@@ -97,14 +130,13 @@ class ArrowAdjustmentCalculator:
         return None
 
     def get_adjustment_for_letter(
-        self, letter: Letter, arrow: Arrow, turns_tuple: str, ori_key: str
+        self,
+        special_placements: dict[str, dict[str, dict[str, dict]]],
+        letter: Letter,
+        arrow: Arrow,
+        turns_tuple: str,
     ) -> Optional[tuple[int, int]]:
-        self.special_placements: dict[str, dict] = (
-            self.special_placement_loader.load_special_placements()
-            .get(arrow.pictograph.state.grid_mode)
-            .get(ori_key, {})
-        )
-        letter_adjustments: dict[str, dict[str, list]] = self.special_placements.get(
+        letter_adjustments: dict[str, dict[str, list]] = special_placements.get(
             letter.value, {}
         ).get(turns_tuple, {})
 
@@ -112,4 +144,4 @@ class ArrowAdjustmentCalculator:
             arrow
         )
 
-        return letter_adjustments.get(key if isinstance(key, str) else key.value)
+        return letter_adjustments.get(key, None)

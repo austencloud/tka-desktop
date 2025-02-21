@@ -38,17 +38,13 @@ class PictographUpdater:
                 self.pictograph.elements.grid.update_grid_mode()
 
                 self._update_from_pictograph_data(pictograph_data)
-                self.pictograph.state.turns_tuple = (
-                    self.pictograph.managers.get.turns_tuple()
-                )
+
                 self.pictograph.elements.vtg_glyph.set_vtg_mode()
                 self.pictograph.elements.elemental_glyph.set_elemental_glyph()
                 self.pictograph.elements.start_to_end_pos_glyph.set_start_to_end_pos_glyph()
             else:
                 self._update_from_pictograph_data(pictograph_data)
-                self.pictograph.state.turns_tuple = (
-                    self.pictograph.managers.get.turns_tuple()
-                )
+
 
         self.pictograph.elements.tka_glyph.update_tka_glyph()
         self.pictograph.elements.elemental_glyph.update_elemental_glyph()
@@ -243,7 +239,7 @@ class PictographUpdater:
     def _position_objects(self) -> None:
         self.pictograph.managers.prop_placement_manager.update_prop_positions()
         self.pictograph.managers.arrow_placement_manager.update_arrow_placements()
-        self.pictograph.update()  # Add this line
+        self.pictograph.update() 
 
     def update_dict_from_attributes(self) -> dict:
         pictograph_data = self.pictograph.managers.get.pictograph_data()

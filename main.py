@@ -25,13 +25,15 @@ from PyQt6.QtCore import qInstallMessageHandler
 
 from PyQt6.QtCore import qInstallMessageHandler
 
+
 def my_message_handler(msg_type, context, message):
     # Suppress all QPainter-related warnings
     if "QPainter" in message or "Painter" in message:
         return  # Ignore and move on
-    
+
     # Print other messages if needed
     print(message)  # Or log them if necessary
+
 
 # Install the message handler to silence QPainter spam
 qInstallMessageHandler(my_message_handler)
@@ -63,7 +65,6 @@ def trace_calls(frame: FrameType, event: str, arg: Any) -> Callable | None:
         log_file.flush()  # Flush immediately to track real-time calls
 
     return trace_calls
-
 
 
 def main() -> None:

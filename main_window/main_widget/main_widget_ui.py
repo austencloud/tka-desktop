@@ -60,6 +60,7 @@ class MainWidgetUI:
 
         mw.menu_bar = MenuBarWidget(mw)
         mw.sequence_workbench = SequenceWorkbench(mw)
+        AppContext.set_sequence_beat_frame(mw.sequence_workbench.sequence_beat_frame)
 
         mw.construct_tab = ConstructTab(
             settings_manager=settings_manager,

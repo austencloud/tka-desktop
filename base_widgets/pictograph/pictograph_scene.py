@@ -38,4 +38,3 @@ class PictographScene(QGraphicsScene):
         self.managers.attr_manager = PictographAttrManager(self)
         self.managers.reversal_glyph = ReversalGlyph(self)
 
-        # Run initial setup

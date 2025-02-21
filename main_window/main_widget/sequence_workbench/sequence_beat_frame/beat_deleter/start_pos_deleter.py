@@ -2,9 +2,7 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_deleter.beat_deleter import (
-        BeatDeleter,
-    )
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_deleter.beat_deleter import BeatDeleter
 
 
 class StartPositionDeleter:

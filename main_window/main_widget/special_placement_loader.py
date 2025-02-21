@@ -21,7 +21,6 @@ class SpecialPlacementLoader:
         self.special_placements: dict[str, dict[str, dict]] = {}
 
     def load_special_placements(self) -> dict[str, dict[str, dict]]:
-        # If we've already loaded everything, just return it!
         if self.special_placements:
             return self.special_placements
 

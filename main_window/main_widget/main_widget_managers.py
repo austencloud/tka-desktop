@@ -47,7 +47,7 @@ class MainWidgetManagers:
         mw.thumbnail_finder = ThumbnailFinder(mw)
         mw.pictograph_collector = PictographCollector(mw)
 
-        mw.special_placements = mw.special_placement_loader.load_special_placements()
+        # mw.special_placements = mw.special_placement_loader.load_special_placements()
 
     def _setup_pictograph_cache(self) -> None:
         from Enums.Enums import Letter
