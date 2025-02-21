@@ -11,7 +11,7 @@ from .glyphs.reversal_glyph import ReversalGlyph
 from .pictograph_checker import PictographChecker
 from .pictograph_getter import PictographGetter
 from .wasd_adjustment_manager.wasd_adjustment_manager import WASD_AdjustmentManager
-from .pictograph_updater import PictographUpdater
+from .pictograph_updater.pictograph_updater import PictographUpdater
 from .pictograph_initializer import PictographInitializer
 
 
