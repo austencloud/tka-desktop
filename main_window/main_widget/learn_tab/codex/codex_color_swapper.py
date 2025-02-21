@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
-
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import Qt
 import logging
 
 logger = logging.getLogger(__name__)
@@ -10,11 +11,12 @@ if TYPE_CHECKING:
     )
 
 
-class CodexColorSwapManager:
+class CodexColorSwapper:
     def __init__(self, control_widget: "CodexControlWidget"):
         self.codex = control_widget.codex
 
     def _swap_colors(self, pictograph):
+
         if not pictograph:
             return
         pictograph["blue_attributes"], pictograph["red_attributes"] = (
@@ -23,6 +25,7 @@ class CodexColorSwapManager:
         )
 
     def swap_colors_in_codex(self):
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         for pictograph in self.codex.data_manager.pictograph_data.values():
             self._swap_colors(pictograph)
         try:
@@ -36,3 +39,4 @@ class CodexColorSwapManager:
                     logger.debug(f"Swapped colors for pictograph '{letter_str}'.")
         except Exception as e:
             logger.exception(f"Error during color_swap_all: {e}")
+        QApplication.restoreOverrideCursor()

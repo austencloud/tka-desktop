@@ -2,6 +2,13 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QPushButton, QHBoxLayout
 from PyQt6.QtCore import Qt
 
+from main_window.main_widget.learn_tab.base_classes.button_answers_renderer import (
+    ButtonAnswersRenderer,
+)
+from main_window.main_widget.learn_tab.base_classes.generic_answers_widget import (
+    GenericAnswersWidget,
+)
+
 from ..base_classes.base_answers_widget import BaseAnswersWidget
 
 
@@ -10,60 +17,36 @@ if TYPE_CHECKING:
 
 
 class Lesson1AnswersWidget(BaseAnswersWidget):
-    def __init__(self, learn_widget: "LearnTab"):
+    def __init__(self, learn_widget):
         super().__init__(learn_widget)
         self.learn_widget = learn_widget
-        self.layout: QHBoxLayout = QHBoxLayout()
-        self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setLayout(self.layout)
+
         self.buttons: dict[str, QPushButton] = {}
+        self.renderer = ButtonAnswersRenderer()
+        self.generic_widget = GenericAnswersWidget(
+            learn_widget, self.renderer
+        )
+        self.setLayout(self.generic_widget.layout())
 
     def create_answer_buttons(
-        self, letters, correct_answer, check_answer_callback
+        self, answers, correct_answer, check_answer_callback
     ) -> None:
-        for letter in letters:
-            button = QPushButton(letter)
-            button.setCursor(Qt.CursorShape.PointingHandCursor)
-            button.clicked.connect(
-                lambda _, opt=letter: check_answer_callback(opt, correct_answer)
-            )
-            self.layout.addWidget(button)
+        self.generic_widget.create_answer_options(
+            answers, correct_answer, check_answer_callback
+        )
 
     def update_answer_buttons(
-        self, letters, correct_answer, check_answer_callback
+        self, answers, correct_answer, check_answer_callback
     ) -> None:
-        if len(self.buttons) != 4:
-            self.buttons.clear()
-            for letter in letters:
-                button = QPushButton(letter)
-                button.setCursor(Qt.CursorShape.PointingHandCursor)
-                button.clicked.connect(
-                    lambda _, opt=letter: check_answer_callback(opt, correct_answer)
-                )
-                self.layout.addWidget(button)
-                self.buttons[letter] = button
-        else:
-            old_buttons = list(self.buttons.values())
-            self.buttons.clear()
-            for i, letter in enumerate(letters):
-                button = old_buttons[i]
-                button.setText(letter)
-                button.setDisabled(False)
-                try:
-                    button.clicked.disconnect()
-                except Exception:
-                    pass
-                button.clicked.connect(
-                    lambda _, opt=letter: check_answer_callback(opt, correct_answer)
-                )
-                self.buttons[letter] = button
+        self.generic_widget.update_answer_options(
+            answers, correct_answer, check_answer_callback
+        )
 
     def disable_answer(self, answer) -> None:
-        button = self.buttons[answer]
-        button.setDisabled(True)
+        self.generic_widget.disable_answer(answer)
 
     def resizeEvent(self, event) -> None:
-        for button in self.buttons.values():
+        for button in self.renderer.buttons:
             size = self.main_widget.width() // 16
             button.setFixedSize(size, size)
             font_size = self.main_widget.width() // 40

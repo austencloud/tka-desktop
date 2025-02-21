@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
 from PyQt6.QtCore import Qt
 
-from .codex_color_swap_manager import CodexColorSwapManager
-from .codex_mirror_manager import CodexMirrorManager
-from .codex_rotation_manager import CodexRotationManager
+from .codex_color_swapper import CodexColorSwapper
+from .codex_reflector import CodexReflector
+from .codex_rotater import CodexRotater
 from .codex_control_button import CodexControlButton
 from .codex_ori_selector import CodexOriSelector
 
@@ -21,9 +21,9 @@ class CodexControlWidget(QWidget):
         self.codex = codex
 
         # Managers
-        self.mirror_manager = CodexMirrorManager(self)
-        self.color_swap_manager = CodexColorSwapManager(self)
-        self.rotation_manager = CodexRotationManager(self)
+        self.mirror_manager = CodexReflector(self)
+        self.color_swap_manager = CodexColorSwapper(self)
+        self.rotation_manager = CodexRotater(self)
 
         # Components
         self.ori_selector = CodexOriSelector(self)
@@ -81,4 +81,3 @@ class CodexControlWidget(QWidget):
             self.button_layout.addWidget(button)
 
         return codex_buttons
-

@@ -36,7 +36,7 @@ class SplashComponents:
     def _create_label(self, text: str, bold: bool = False) -> QLabel:
         label = QLabel(text)
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        font = QFont("Arial", self.splash_screen.height() // 40)
+        font = QFont("Georgia", self.splash_screen.height() // 40)
         font.setBold(bold)
         label.setFont(font)
         return label

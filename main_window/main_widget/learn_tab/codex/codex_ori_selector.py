@@ -49,20 +49,24 @@ class CodexOriSelector(QWidget):
     def update_orientations(self, orientation: str):
         """Updates the 'start_ori' attribute of all pictographs to the selected orientation."""
         try:
+            self.setCursor(Qt.CursorShape.WaitCursor)
             for letter_str, view in self.codex.section_manager.codex_views.items():
                 scene = view.pictograph
-                if scene.pictograph_data:
-                    new_dict = scene.pictograph_data.copy()
+                if scene.state.pictograph_data:
+                    new_dict = scene.state.pictograph_data.copy()
                     if "blue_attributes" in new_dict:
                         new_dict["blue_attributes"]["start_ori"] = orientation
                     if "red_attributes" in new_dict:
                         new_dict["red_attributes"]["start_ori"] = orientation
-                    scene.updater.update_pictograph(new_dict)
+                    scene.managers.updater.update_pictograph(new_dict)
                     logger.debug(
                         f"Updated orientation for pictograph '{letter_str}' to '{orientation}'."
                     )
         except Exception as e:
             logger.exception(f"Error during update_orientation_all: {e}")
+        finally:
+            self.unsetCursor()
+
 
     def resizeEvent(self, event) -> None:
         """Handles resizing logic, adjusting label and combo box sizes proportionally."""

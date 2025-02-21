@@ -32,7 +32,7 @@ class DirectSetTurnsButton(QPushButton):
             self.turns_box.adjustment_panel.graph_editor.height() / 6
         )
         self.setFixedSize(QSize(button_size, button_size))
-        self.setFont(QFont("Arial", turns_display_font_size, QFont.Weight.Bold))
+        self.setFont(QFont("Georgia", turns_display_font_size, QFont.Weight.Bold))
         self.setStyleSheet(
             f"""
             QPushButton {{

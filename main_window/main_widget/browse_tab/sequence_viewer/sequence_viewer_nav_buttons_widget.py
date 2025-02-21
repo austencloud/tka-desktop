@@ -85,5 +85,5 @@ class SequenceViewerNavButtonsWidget(QWidget):
     def resizeEvent(self, event):
         font_size = self.sequence_viewer.main_widget.width() // 20
         for button in self.buttons:
-            button.setFont(QFont("Arial", font_size, QFont.Weight.Bold))
+            button.setFont(QFont("Georgia", font_size, QFont.Weight.Bold))
         super().resizeEvent(event)

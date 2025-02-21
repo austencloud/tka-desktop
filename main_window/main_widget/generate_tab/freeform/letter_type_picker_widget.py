@@ -95,7 +95,7 @@ class LetterTypePickerWidget(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         font_size = self.generate_tab.main_widget.height() // 50
-        self.filter_label.setFont(QFont("Arial", font_size))
+        self.filter_label.setFont(QFont("Georgia", font_size))
         self.layout().setSpacing(font_size)
         width = self.generate_tab.width() // 16
         for w in self.letter_type_widgets:

@@ -16,7 +16,7 @@ class DifficultyLabel(QLabel):
         super().__init__(sequence_workbench)
         self.main_widget = sequence_workbench.main_widget
         self.difficulty_level = 1
-        self.setFont(QFont("Arial", sequence_workbench.width() // 40))
+        self.setFont(QFont("Georgia", sequence_workbench.width() // 40))
         self.setToolTip("Difficulty Level")
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .codex_control_widget import CodexControlWidget
 
 
-class CodexRotationManager:
+class CodexRotater:
     """Handles rotating the codex in 45° increments."""
 
     def __init__(self, control_widget: "CodexControlWidget"):

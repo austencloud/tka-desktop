@@ -8,31 +8,25 @@ if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.codex.codex_control_widget import (
         CodexControlWidget,
     )
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import Qt
 
 
-class CodexMirrorManager:
+class CodexReflector:
     """Handles mirroring of pictographs in the Codex."""
 
     def __init__(self, control_widget: "CodexControlWidget"):
         self.codex = control_widget.codex
         self.vertical_mirror_positions = mirrored_positions["vertical"]
 
-    def mirror_all(self):
-        try:
-            for letter_str, view in self.codex.section_manager.codex_views.items():
-                scene = view.pictograph
-                if scene.state.pictograph_data:
-                    scene.managers.updater.update_pictograph(scene.state.pictograph_data)
-                    logger.debug(f"Mirrored pictograph for letter '{letter_str}'.")
-        except Exception as e:
-            logger.exception(f"Error during mirror_all: {e}")
-
     def mirror_codex(self):
         """Apply mirroring logic to all pictographs in the Codex."""
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         for letter, pictograph in self.codex.data_manager.pictograph_data.items():
             if pictograph:
                 self._mirror_pictograph(pictograph)
         self._refresh_pictograph_views()
+        QApplication.restoreOverrideCursor()
 
     def _mirror_pictograph(self, pictograph):
         """Mirror an individual pictograph dictionary."""

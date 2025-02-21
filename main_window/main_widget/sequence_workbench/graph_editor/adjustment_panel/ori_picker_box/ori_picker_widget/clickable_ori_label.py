@@ -36,7 +36,6 @@ class ClickableOriLabel(QLabel):
     def set_orientation(self, orientation):
         self.setText(orientation)
 
-
     def _get_border_color(
         self, color
     ) -> Literal["#ED1C24"] | Literal["#2E3192"] | Literal["black"]:
@@ -67,7 +66,7 @@ class ClickableOriLabel(QLabel):
 
     def resizeEvent(self, event):
         font_size = self.ori_picker_widget.ori_picker_box.graph_editor.width() // 30
-        font = QFont("Arial", font_size, QFont.Weight.Bold)
+        font = QFont("Georgia", font_size, QFont.Weight.Bold)
         self.setFont(font)
 
         font_metrics = QFontMetrics(font)

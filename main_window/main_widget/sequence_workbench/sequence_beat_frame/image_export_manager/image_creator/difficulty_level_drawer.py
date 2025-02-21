@@ -31,7 +31,7 @@ class DifficultyLevelDrawer:
         painter.drawEllipse(rect)
 
         # Set the font and get the metrics
-        font = QFont("Arial", font_size)
+        font = QFont("Georgia", font_size)
         painter.setFont(font)
         painter.setPen(Qt.GlobalColor.black)
         metrics = QFontMetrics(font)

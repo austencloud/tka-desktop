@@ -24,7 +24,7 @@ class OriButton(QPushButton):
         button_height = int(self.ori_picker_widget.ori_picker_box.height() // 3)
         font_size = int(button_height * 0.5)  # Font size based on button height
 
-        font = QFont("Arial", font_size, QFont.Weight.Bold)
+        font = QFont("Georgia", font_size, QFont.Weight.Bold)
         font_metrics = QFontMetrics(font)
 
         self.setFont(font)

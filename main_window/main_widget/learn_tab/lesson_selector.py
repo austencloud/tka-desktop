@@ -1,10 +1,19 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QApplication
+from PyQt6.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QPushButton,
+    QApplication,
+)
 from PyQt6.QtCore import Qt
 from functools import partial
 
 from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
     BaseLessonWidget,
+)
+from main_window.main_widget.learn_tab.lesson_selector_button import (
+    LessonSelectorButton,
 )
 
 from .lesson_mode_toggle_widget import LessonModeToggleWidget
@@ -22,7 +31,7 @@ class LessonSelector(QWidget):
         self.main_widget = learn_widget.main_widget
 
         # Store buttons and description labels for resizing
-        self.buttons: dict[str, QPushButton] = {}
+        self.buttons: dict[str, LessonSelectorButton] = {}
         self.description_labels: dict[str, QLabel] = {}
 
         # Layout setup
@@ -72,8 +81,7 @@ class LessonSelector(QWidget):
         lesson_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Create the button
-        button = QPushButton(button_text)
-        button.setCursor(Qt.CursorShape.PointingHandCursor)
+        button = LessonSelectorButton(button_text)
         button.clicked.connect(callback)
         self.buttons[button_text] = button
 
@@ -120,11 +128,18 @@ class LessonSelector(QWidget):
 
     def _resize_buttons(self):
         for button in self.buttons.values():
-            button_font_size = self.main_widget.width() // 50
+            button_font_size = self.main_widget.width() // 80
             button.setFixedSize(
                 self.main_widget.width() // 4, self.main_widget.height() // 10
             )
-            button.setStyleSheet(f"font-size: {button_font_size}px;")
+            font = button.font()
+            font.setFamily("Georgia")
+            font.setPointSize(button_font_size)
+            button.setFont(font)
+            button_width = self.main_widget.width() // 7
+            button_height = self.main_widget.height() // 10
+            border_radius = min(button_width, button_height) // 4
+            button.set_rounded_button_style(border_radius)
 
     def _resize_descriptions(self):
         for description in self.description_labels.values():

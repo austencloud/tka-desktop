@@ -94,7 +94,7 @@ class LetterTypePickerWidget(QWidget):
         """Resize child widgets, fonts, spacing, etc."""
         super().resizeEvent(event)
         font_size = self.generate_tab.main_widget.height() // 50
-        self.filter_label.setFont(QFont("Arial", font_size))
+        self.filter_label.setFont(QFont("Georgia", font_size))
         self.layout().setSpacing(font_size)
 
         # Dynamically size each button
