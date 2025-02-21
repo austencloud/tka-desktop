@@ -50,6 +50,9 @@ class ReversalGlyph(QGraphicsItemGroup):
                 )
                 blue_visible = reversal_dict.get("blue_reversal", False)
                 red_visible = reversal_dict.get("red_reversal", False)
+            elif self.pictograph.elements.view.__class__.__name__ == "BeatView":
+                blue_visible = self.pictograph.state.blue_reversal
+                red_visible = self.pictograph.state.red_reversal
             else:
                 blue_visible = self.pictograph.state.blue_reversal
                 red_visible = self.pictograph.state.red_reversal

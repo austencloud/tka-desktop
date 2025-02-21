@@ -1,10 +1,7 @@
 from Enums.letters import Letter
 
 from data.constants import *
-
-from placement_managers.arrow_placement_manager.special_arrow_positioner.special_placement_data_updater.mirrored_entry_manager.mirrored_entry_updater.base_mirrored_entry_updater import (
-    BaseMirroredEntryUpdater,
-)
+from .base_mirrored_entry_updater import BaseMirroredEntryUpdater
 
 
 class MixedOrientationUpdater(BaseMirroredEntryUpdater):

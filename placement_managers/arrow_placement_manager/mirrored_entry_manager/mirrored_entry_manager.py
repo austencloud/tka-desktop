@@ -8,9 +8,7 @@ from .mirrored_entry_creator import MirroredEntryCreator
 from .mirrored_entry_updater.mirrored_entry_updater import MirroredEntryUpdater
 
 if TYPE_CHECKING:
-    from ...special_placement_data_updater.special_placement_data_updater import (
-        SpecialPlacementDataUpdater,
-    )
+    from placement_managers.arrow_placement_manager.special_arrow_positioner.special_placement_data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
 
 
 class MirroredEntryManager:

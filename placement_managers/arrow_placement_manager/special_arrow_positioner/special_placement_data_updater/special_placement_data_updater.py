@@ -6,9 +6,10 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
     TurnsTupleGenerator,
 )
 from main_window.settings_manager.global_settings.app_context import AppContext
-from .mirrored_entry_manager.mirrored_entry_manager import (
+from placement_managers.arrow_placement_manager.mirrored_entry_manager.mirrored_entry_manager import (
     MirroredEntryManager,
 )
+
 
 from .special_placement_entry_remover import SpecialPlacementEntryRemover
 from data.constants import (
@@ -41,9 +42,11 @@ class SpecialPlacementDataUpdater:
 
     def _get_letter_data(self, letter: Letter, ori_key: str) -> dict:
         letter_data = (
-            self.positioner.placement_manager.pictograph.main_widget.special_placements[
-                self.positioner.pictograph.state.grid_mode
-            ][ori_key].get(letter.value, {})
+            AppContext.special_placement_loader()
+            .load_special_placements()[self.positioner.pictograph.state.grid_mode][
+                ori_key
+            ]
+            .get(letter.value, {})
         )
 
         return letter_data
@@ -139,7 +142,7 @@ class SpecialPlacementDataUpdater:
             return
 
         letter = self.positioner.pictograph.state.letter
-        turns_tuple = self.positioner.pictograph.main_widget.turns_tuple_generator.generate_turns_tuple(
+        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(
             self.positioner.pictograph
         )
         ori_key = self._generate_ori_key(arrow.motion)

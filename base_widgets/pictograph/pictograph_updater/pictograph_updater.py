@@ -80,6 +80,9 @@ class PictographUpdater:
             self.motion_updater.update(data)
             self.arrow_updater.update(data)
             self._update_lead_states()
+            self.pictograph.elements.tka_glyph.update_tka_glyph()
+            self.pictograph.elements.elemental_glyph.update_elemental_glyph()
+            self.pictograph.elements.reversal_glyph.update_reversal_symbols()
             logger.debug("Attribute and motion updates applied.")
         except Exception as e:
             logger.error(

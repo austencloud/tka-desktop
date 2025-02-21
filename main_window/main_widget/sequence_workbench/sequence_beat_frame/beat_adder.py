@@ -49,8 +49,8 @@ class BeatAdder:
             reversal_info = ReversalDetector.detect_reversal(
                 sequence_so_far, new_beat.state.pictograph_data
             )
-            new_beat.blue_reversal = reversal_info.get("blue_reversal", False)
-            new_beat.red_reversal = reversal_info.get("red_reversal", False)
+            new_beat.state.blue_reversal = reversal_info.get("blue_reversal", False)
+            new_beat.state.red_reversal = reversal_info.get("red_reversal", False)
             self.beats[next_beat_index].set_beat(new_beat, next_beat_number)
 
             if grow_sequence and not override_grow_sequence:
@@ -58,7 +58,7 @@ class BeatAdder:
             elif not grow_sequence or override_grow_sequence:
                 self._update_sequence_builder(next_beat_index)
 
-            new_beat.reversal_glyph.update_reversal_symbols()
+            new_beat.managers.updater.update_pictograph()
             if select_beat:
                 self.beat_frame.selection_overlay.select_beat(
                     self.beats[next_beat_index], toggle_animation=False

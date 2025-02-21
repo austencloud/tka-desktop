@@ -19,11 +19,11 @@ class VisibilityPictograph(PictographScene):
         "red_motion_type": "pro",
     }
     view: "VisibilityPictographView" = None
-    red_reversal = True
-    blue_reversal = True
 
     def __init__(self, tab: "VisibilityTab"):
         super().__init__()
+        self.state.red_reversal = True
+        self.state.blue_reversal = True
         self.tab = tab
         self.main_widget = tab.main_widget
         pictograph_data = self.main_widget.pictograph_data_loader.find_pictograph_data(
