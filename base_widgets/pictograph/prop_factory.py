@@ -1,4 +1,3 @@
-from objects.prop.prop_classes import *
 from Enums.PropTypes import PropType
 
 

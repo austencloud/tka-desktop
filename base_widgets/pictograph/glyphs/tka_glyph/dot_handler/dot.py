@@ -7,7 +7,9 @@ from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.glyphs.tka.dot_handler.dot_handler import DotHandler
+    from base_widgets.pictograph.glyphs.tka_glyphdot_handler.dot_handler import (
+        DotHandler,
+    )
 
 _DOT_RENDERER_CACHE = {}
 

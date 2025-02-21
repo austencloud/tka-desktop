@@ -51,7 +51,7 @@ class MotionTurnsManager:
         self.motion.turns = turns
         self.motion.arrow.motion.turns = turns
         other_motion_color = RED if self.motion.color == BLUE else BLUE
-        other_motion = self.motion.pictograph.get.other_motion(self.motion)
+        other_motion = self.motion.pictograph.managers.get.other_motion(self.motion)
         arrow_dict = {
             f"{self.motion.color}_attributes": {"turns": turns},
             f"{other_motion_color}_attributes": {"turns": other_motion.turns},

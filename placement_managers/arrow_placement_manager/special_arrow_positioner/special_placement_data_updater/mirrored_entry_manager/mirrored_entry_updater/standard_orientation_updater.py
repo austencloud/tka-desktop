@@ -41,9 +41,11 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
         )
         if (
             not self.arrow.motion.turns
-            == self.arrow.pictograph.get.other_arrow(self.arrow).turns
+            == self.arrow.pictograph.managers.get.other_arrow(self.arrow).turns
             and self.arrow.motion.motion_type
-            == self.arrow.pictograph.get.other_arrow(self.arrow).motion.motion_type
+            == self.arrow.pictograph.managers.get.other_arrow(
+                self.arrow
+            ).motion.motion_type
         ):
             if mirrored_turns_tuple not in letter_data:
                 letter_data[mirrored_turns_tuple] = {}
@@ -55,10 +57,12 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
             )
         elif (
             not self.arrow.motion.turns
-            == self.arrow.pictograph.get.other_arrow(self.arrow).turns
+            == self.arrow.pictograph.managers.get.other_arrow(self.arrow).turns
             and self.arrow.motion.motion_type
-            != self.arrow.pictograph.get.other_arrow(self.arrow).motion.motion_type
-            and not self.arrow.pictograph.check.has_one_float()
+            != self.arrow.pictograph.managers.get.other_arrow(
+                self.arrow
+            ).motion.motion_type
+            and not self.arrow.pictograph.managers.check.has_one_float()
         ):
             if mirrored_turns_tuple not in letter_data:
                 letter_data[mirrored_turns_tuple] = {}
@@ -70,10 +74,12 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
             )
         elif (
             not self.arrow.motion.turns
-            == self.arrow.pictograph.get.other_arrow(self.arrow).turns
+            == self.arrow.pictograph.managers.get.other_arrow(self.arrow).turns
             and self.arrow.motion.motion_type
-            != self.arrow.pictograph.get.other_arrow(self.arrow).motion.motion_type
-            and self.arrow.pictograph.check.has_one_float()
+            != self.arrow.pictograph.managers.get.other_arrow(
+                self.arrow
+            ).motion.motion_type
+            and self.arrow.pictograph.managers.check.has_one_float()
         ):
             if mirrored_turns_tuple not in letter_data:
                 letter_data[mirrored_turns_tuple] = {}
@@ -85,10 +91,10 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
             )
 
     def _determine_motion_attribute(self) -> str:
-        letter = self.arrow.pictograph.letter
+        letter = self.arrow.pictograph.state.letter
         if letter in ["S", "T"]:
             return self.arrow.motion.lead_state
-        elif self.arrow.pictograph.check.has_hybrid_motions():
+        elif self.arrow.pictograph.managers.check.has_hybrid_motions():
             return self.arrow.motion.motion_type
         else:
             return self.arrow.color

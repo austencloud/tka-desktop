@@ -7,13 +7,15 @@ from data.constants import (
     FLOAT,
 )
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import StartPositionBeat
-
-
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
+    StartPositionBeat,
+)
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
 
 
 class BeatFactory:
@@ -29,7 +31,7 @@ class BeatFactory:
 
         if pictograph_data is not None:
             start_pos_beat = StartPositionBeat(self.beat_frame)
-            start_pos_beat.updater.update_pictograph(pictograph_data)
+            start_pos_beat.managers.updater.update_pictograph(pictograph_data)
 
             if letter not in self.beat_frame.main_widget.pictograph_cache:
                 self.beat_frame.main_widget.pictograph_cache[letter] = {}
@@ -54,11 +56,11 @@ class BeatFactory:
         override_grow_sequence=False,
         update_word=True,
         update_level=True,
-        reversal_info=None,
+        reversal_info: dict = None,
         select_beat: bool = True,
     ) -> None:
         new_beat = Beat(self.beat_frame, duration=pictograph_data.get("duration", 1))
-        new_beat.updater.update_pictograph(pictograph_data)
+        new_beat.managers.updater.update_pictograph(pictograph_data)
 
         if reversal_info:
             new_beat.blue_reversal = reversal_info.get("blue_reversal", False)
@@ -71,9 +73,9 @@ class BeatFactory:
             update_level=update_level,
             select_beat=select_beat,
         )
-        for motion in new_beat.motions.values():
+        for motion in new_beat.elements.motions.values():
             if motion.motion_type == FLOAT:
                 letter = self.main_widget.letter_determiner.determine_letter(motion)
-                new_beat.letter = letter
-                new_beat.tka_glyph.update_tka_glyph()
+                new_beat.state.letter = letter
+                new_beat.elements.tka_glyph.update_tka_glyph()
         self.main_widget.sequence_properties_manager.update_sequence_properties()

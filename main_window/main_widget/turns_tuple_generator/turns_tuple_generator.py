@@ -75,7 +75,7 @@ class TurnsTupleGenerator:
     def _get_generator_key(
         self, pictograph: "PictographScene"
     ) -> Union[str, LetterType]:
-        letter = pictograph.letter
+        letter = pictograph.state.letter
         if letter.value in [
             letter.value
             for letter in letter.get_letters_by_condition(LetterConditions.TYPE1_HYBRID)

@@ -63,11 +63,11 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         local_dict["grid_mode"] = target_grid_mode
 
         pictograph = PictographScene()
-        pictograph.view = AdvancedStartPosPickerPictographView(
+        pictograph.elements.view = AdvancedStartPosPickerPictographView(
             self, pictograph, size_provider=self.mw_size_provider
         )
-        pictograph.updater.update_pictograph(local_dict)
-        pictograph.view.update_borders()
+        pictograph.managers.updater.update_pictograph(local_dict)
+        pictograph.elements.view.update_borders()
 
         self.pictograph_cache[pictograph_key] = pictograph
 
@@ -103,14 +103,19 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
                 pictographs = self.get_diamond_pictographs(advanced=True)
 
             # Sort variations by alpha, beta, gamma with ascending numbers
-            pictographs.sort(key=lambda p: (p.start_pos[:-1], int(p.start_pos[-1])))
+            pictographs.sort(
+                key=lambda pictograph: (
+                    pictograph.state.start_pos[:-1],
+                    int(pictograph.state.start_pos[-1]),
+                )
+            )
 
             for variation in pictographs:
                 self.all_variations[grid_mode].append(variation)
-                variation.view.mousePressEvent = (
+                variation.elements.view.mousePressEvent = (
                     lambda event, v=variation: self.on_variation_selected(v)
                 )
-                variation.view.update_borders()
+                variation.elements.view.update_borders()
 
     def on_variation_selected(self, variation: PictographScene) -> None:
         self.start_position_adder.add_start_pos_to_sequence(variation)

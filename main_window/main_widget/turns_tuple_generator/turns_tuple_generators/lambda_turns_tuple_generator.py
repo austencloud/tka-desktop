@@ -1,11 +1,25 @@
-from data.constants import EAST, NORTH, CLOCKWISE, OPENING, CLOSING, WEST, SOUTH, NORTHEAST, SOUTHEAST, NORTHWEST, SOUTHWEST, COUNTER_CLOCKWISE
+from data.constants import (
+    EAST,
+    NORTH,
+    CLOCKWISE,
+    OPENING,
+    CLOSING,
+    WEST,
+    SOUTH,
+    NORTHEAST,
+    SOUTHEAST,
+    NORTHWEST,
+    SOUTHWEST,
+    COUNTER_CLOCKWISE,
+)
 from .base_turns_tuple_generator import BaseTurnsTupleGenerator
+
 
 class LambdaTurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph) -> str:
         super().set_pictograph(pictograph)
-        dash = self.pictograph.get.dash()
-        static = self.pictograph.get.static()
+        dash = self.pictograph.managers.get.dash()
+        static = self.pictograph.managers.get.static()
         dash_direction_map, static_direction_map = self._get_direction_maps()
 
         if dash.turns == 0 and static.turns > 0:

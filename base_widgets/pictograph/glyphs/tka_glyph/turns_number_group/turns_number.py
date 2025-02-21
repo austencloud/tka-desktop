@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Union
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.glyphs.tka.turns_number_group.turns_number_group import (
+    from base_widgets.pictograph.glyphs.tka_glyphturns_number_group.turns_number_group import (
         TurnsNumberGroup,
     )
 
@@ -52,7 +52,7 @@ class TurnsNumber(QGraphicsSvgItem):
             svg_data = f.read()
 
         if self.current_color:
-            svg_data = self.turns_column.glyph.pictograph.svg_manager.color_manager.apply_color_transformations(
+            svg_data = self.turns_column.glyph.pictograph.managers.svg_manager.color_manager.apply_color_transformations(
                 svg_data, self.current_color
             )
 

@@ -13,13 +13,14 @@ from base_widgets.pictograph.pictograph_view import (
 from base_widgets.pictograph.pictograph_view_key_event_handler import (
     PictographViewKeyEventHandler,
 )
-from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
-    GE_Pictograph,
-)
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from .GE_pictograph_view_mouse_event_handler import GE_PictographViewMouseEventHandler
 
 from base_widgets.pictograph.pictograph_scene import PictographScene
+
+from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
+    GE_Pictograph,
+)
 
 if TYPE_CHECKING:
     from .pictograph_container.GE_pictograph_container import (
@@ -55,7 +56,7 @@ class GE_PictographView(PictographView):
     def set_to_blank_grid(self) -> None:
         self.pictograph = GE_Pictograph(self)
         self.setScene(self.pictograph)
-        self.pictograph.view = self
+        self.pictograph.elements.view = self
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if not self.key_event_handler.handle_key_press(event):

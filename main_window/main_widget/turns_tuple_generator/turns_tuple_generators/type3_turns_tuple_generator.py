@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 class Type3TurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph) -> str:
         super().set_pictograph(pictograph)
-        shift = self.pictograph.get.shift()
-        dash = self.pictograph.get.dash()
+        shift = self.pictograph.managers.get.shift()
+        dash = self.pictograph.managers.get.dash()
         if shift.motion_type in [PRO, ANTI]:
             direction = "s" if dash.prop_rot_dir == shift.prop_rot_dir else "o"
             if dash.turns > 0:

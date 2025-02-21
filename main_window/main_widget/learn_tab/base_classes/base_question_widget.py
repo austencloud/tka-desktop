@@ -40,13 +40,13 @@ class BaseQuestionWidget(QWidget):
     def load_pictograph(self, pictograph_data) -> None:
         """Load and display the pictograph."""
         self.pictograph: PictographScene = PictographScene()
-        self.pictograph.view = LessonPictographView(self.pictograph)
+        self.pictograph.elements.view = LessonPictographView(self.pictograph)
         self.pictograph.disable_gold_overlay = True
-        self.pictograph.updater.update_pictograph(pictograph_data)
-        self.pictograph.view.update_borders()
+        self.pictograph.managers.updater.update_pictograph(pictograph_data)
+        self.pictograph.elements.view.update_borders()
         self.pictograph.quiz_mode = True
         self.layout.addWidget(
-            self.pictograph.view, alignment=Qt.AlignmentFlag.AlignCenter
+            self.pictograph.elements.view, alignment=Qt.AlignmentFlag.AlignCenter
         )
 
     def _resize_question_label(self) -> None:

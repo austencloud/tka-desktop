@@ -14,7 +14,7 @@ class BeatView(PictographView):
     beat: "Beat" = None
 
     def __init__(self, beat_frame: "SequenceBeatFrame", number: int = None):
-        super().__init__(beat_frame)
+        super().__init__(None)
         self.beat_frame = beat_frame
         self.number = number
         self.setStyleSheet("border: none; border: 1px solid black;")
@@ -26,7 +26,7 @@ class BeatView(PictographView):
         self.blank_beat = Beat(self.beat_frame)
         self.beat = self.blank_beat
         self.setScene(self.blank_beat)
-        self.blank_beat.grid.hide()
+        self.blank_beat.elements.grid.hide()
         self.blank_beat.beat_number_item.update_beat_number()
 
     def set_beat(self, beat: "Beat", number: int) -> None:

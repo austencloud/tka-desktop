@@ -22,16 +22,16 @@ class PictographGetter:
 
     def initiallize_getter(self):
         self.is_initialized = True
-        self.blue_motion = self.pictograph.blue_motion
-        self.red_motion = self.pictograph.red_motion
-        self.blue_arrow = self.pictograph.blue_arrow
-        self.red_arrow = self.pictograph.red_arrow
+        self.blue_motion = self.pictograph.elements.blue_motion
+        self.red_motion = self.pictograph.elements.red_motion
+        self.blue_arrow = self.pictograph.elements.blue_arrow
+        self.red_arrow = self.pictograph.elements.red_arrow
         self.lead_state_determiner = LeadStateDeterminer(
             self.red_motion, self.blue_motion
         )
 
     def motion_by_color(self, color: str) -> Motion:
-        return self.pictograph.motions.get(color)
+        return self.pictograph.elements.motions.get(color)
 
     def letter_type(self, letter: Letter) -> Optional[str]:
         letter_type_map = {
@@ -44,7 +44,7 @@ class PictographGetter:
     def motions_by_type(self, motion_type: str) -> list[Motion]:
         return [
             motion
-            for motion in self.pictograph.motions.values()
+            for motion in self.pictograph.elements.motions.values()
             if motion.motion_type == motion_type
         ]
 
@@ -104,11 +104,11 @@ class PictographGetter:
 
     def pictograph_data(self) -> dict:
         return {
-            "letter": self.pictograph.letter.value,
-            "start_pos": self.pictograph.start_pos,
-            "end_pos": self.pictograph.end_pos,
-            "timing": self.pictograph.timing,
-            "direction": self.pictograph.direction,
+            "letter": self.pictograph.state.letter.value,
+            "start_pos": self.pictograph.state.start_pos,
+            "end_pos": self.pictograph.state.end_pos,
+            "timing": self.pictograph.state.timing,
+            "direction": self.pictograph.state.direction,
             "blue_attributes": {
                 "motion_type": self.blue_motion.motion_type,
                 "start_ori": self.blue_motion.start_ori,
@@ -131,24 +131,24 @@ class PictographGetter:
 
     def glyphs(self) -> list[Glyph]:
         return [
-            self.pictograph.tka_glyph,
-            self.pictograph.vtg_glyph,
-            self.pictograph.elemental_glyph,
-            self.pictograph.start_to_end_pos_glyph,
-            self.pictograph.reversal_glyph,
+            self.pictograph.elements.tka_glyph,
+            self.pictograph.elements.vtg_glyph,
+            self.pictograph.elements.elemental_glyph,
+            self.pictograph.elements.start_to_end_pos_glyph,
+            self.pictograph.elements.reversal_glyph,
         ]
 
     def non_radial_points(self) -> NonRadialPointsGroup:
-        return self.pictograph.grid.items.get(
-            f"{self.pictograph.grid.grid_mode}_nonradial"
+        return self.pictograph.elements.grid.items.get(
+            f"{self.pictograph.elements.grid.grid_mode}_nonradial"
         )
 
     def glyph(self, name: str) -> Glyph:
         glyph_map = {
-            "TKA": self.pictograph.tka_glyph,
-            "VTG": self.pictograph.vtg_glyph,
-            "Elemental": self.pictograph.elemental_glyph,
-            "Positions": self.pictograph.start_to_end_pos_glyph,
-            "Reversals": self.pictograph.reversal_glyph,
+            "TKA": self.pictograph.elements.tka_glyph,
+            "VTG": self.pictograph.elements.vtg_glyph,
+            "Elemental": self.pictograph.elements.elemental_glyph,
+            "Positions": self.pictograph.elements.start_to_end_pos_glyph,
+            "Reversals": self.pictograph.elements.reversal_glyph,
         }
         return glyph_map.get(name)

@@ -7,7 +7,7 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.glyphs.tka.tka_glyph import TKA_Glyph
+    from base_widgets.pictograph.glyphs.tka_glyph.tka_glyph import TKA_Glyph
 
 
 class TurnsTupleInterpreter:
@@ -25,32 +25,32 @@ class TurnsTupleInterpreter:
             return HEX_BLUE if m.color == "blue" else HEX_RED
 
         if generator_key == LetterType.Type2:
-            shift_motion = pictograph.get.shift()
-            static_motion = pictograph.get.static()
+            shift_motion = pictograph.managers.get.shift()
+            static_motion = pictograph.managers.get.static()
             top_color = color_for_motion(shift_motion)
             bot_color = color_for_motion(static_motion)
 
         elif generator_key == "Type1Hybrid":
-            pro_motion = pictograph.get.pro()
-            anti_motion = pictograph.get.anti()
+            pro_motion = pictograph.managers.get.pro()
+            anti_motion = pictograph.managers.get.anti()
             top_color = color_for_motion(pro_motion)
             bot_color = color_for_motion(anti_motion)
 
         elif generator_key == LetterType.Type3:
-            shift_motion = pictograph.get.shift()
-            dash_motion = pictograph.get.dash()
+            shift_motion = pictograph.managers.get.shift()
+            dash_motion = pictograph.managers.get.dash()
             top_color = color_for_motion(shift_motion)
             bot_color = color_for_motion(dash_motion)
 
         elif generator_key == LetterType.Type4 or generator_key == "Lambda":
-            dash_motion = pictograph.get.dash()
-            static_motion = pictograph.get.static()
+            dash_motion = pictograph.managers.get.dash()
+            static_motion = pictograph.managers.get.static()
             top_color = color_for_motion(dash_motion)
             bot_color = color_for_motion(static_motion)
 
         elif generator_key == "LeadState":
-            leading_motion = pictograph.get.leading_motion()
-            trailing_motion = pictograph.get.trailing_motion()
+            leading_motion = pictograph.managers.get.leading_motion()
+            trailing_motion = pictograph.managers.get.trailing_motion()
             if leading_motion and trailing_motion:
                 top_color = color_for_motion(leading_motion)
                 bot_color = color_for_motion(trailing_motion)

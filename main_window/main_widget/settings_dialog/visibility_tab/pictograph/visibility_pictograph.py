@@ -30,11 +30,11 @@ class VisibilityPictograph(PictographScene):
             self.example_data
         )
         self.settings = self.main_widget.settings_manager.visibility
-        self.updater.update_pictograph(pictograph_data)
-        self.glyphs = self.get.glyphs()
+        self.managers.updater.update_pictograph(pictograph_data)
+        self.glyphs = self.managers.get.glyphs()
         for glyph in self.glyphs:
             glyph.setVisible(True)
-        self.grid.toggle_non_radial_points(True)
+        self.elements.grid.toggle_non_radial_points(True)
 
         for glyph in self.glyphs:
             self.update_opacity(
@@ -55,7 +55,9 @@ class VisibilityPictograph(PictographScene):
                 )
 
         if glyph_name == "non_radial_points":
-            non_radial_points = self.grid.items.get(f"{self.grid.grid_mode}_nonradial")
+            non_radial_points = self.elements.grid.items.get(
+                f"{self.elements.grid.grid_mode}_nonradial"
+            )
             if non_radial_points:
                 self.main_widget.fade_manager.widget_fader.fade_visibility_items_to_opacity(
                     non_radial_points, target_opacity

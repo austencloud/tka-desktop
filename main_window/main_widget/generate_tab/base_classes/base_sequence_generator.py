@@ -81,7 +81,7 @@ class BaseSequenceGenerator:
                     start_position_beat = StartPositionBeat(
                         self.sequence_workbench.sequence_beat_frame
                     )
-                    start_position_beat.updater.update_pictograph(
+                    start_position_beat.managers.updater.update_pictograph(
                         deepcopy(pictograph_dict)
                     )
 

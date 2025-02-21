@@ -70,5 +70,5 @@ class CodexMirrorManager:
         for letter, view in self.codex.section_manager.codex_views.items():
             if letter in self.codex.data_manager.pictograph_data:
                 pictograph_data = self.codex.data_manager.pictograph_data[letter]
-                view.pictograph.updater.update_pictograph(pictograph_data)
+                view.pictograph.managers.updater.update_pictograph(pictograph_data)
                 view.scene().update()

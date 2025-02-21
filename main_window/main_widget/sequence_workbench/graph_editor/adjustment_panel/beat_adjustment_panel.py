@@ -70,7 +70,7 @@ class BeatAdjustmentPanel(QFrame):
     def update_adjustment_panel(self) -> None:
         """Update the panel view based on the current pictograph state."""
         view = self.graph_editor.pictograph_container.GE_view
-        is_blank = view.get_current_pictograph().is_blank
+        is_blank = view.get_current_pictograph().state.is_blank
         widget_index = (
             ORI_WIDGET_INDEX if is_blank or view.is_start_pos else TURNS_WIDGET_INDEX
         )
@@ -82,8 +82,8 @@ class BeatAdjustmentPanel(QFrame):
         """Update the rotation direction buttons based on the current pictograph state."""
         reference_beat = self.beat_frame.get.currently_selected_beat_view()
         if reference_beat:
-            blue_motion = reference_beat.beat.blue_motion
-            red_motion = reference_beat.beat.red_motion
+            blue_motion = reference_beat.beat.elements.blue_motion
+            red_motion = reference_beat.beat.elements.red_motion
 
             blue_rot_dir = blue_motion.prop_rot_dir
             red_rot_dir = red_motion.prop_rot_dir
@@ -105,8 +105,8 @@ class BeatAdjustmentPanel(QFrame):
         selected_beat_view = self.beat_frame.get.currently_selected_beat_view()
         if not selected_beat_view:
             return
-        blue_motion = selected_beat_view.beat.blue_motion
-        red_motion = selected_beat_view.beat.red_motion
+        blue_motion = selected_beat_view.beat.elements.blue_motion
+        red_motion = selected_beat_view.beat.elements.red_motion
         for box, motion in zip(
             [self.blue_turns_box, self.red_turns_box], [blue_motion, red_motion]
         ):
@@ -114,8 +114,8 @@ class BeatAdjustmentPanel(QFrame):
 
     def update_turns_panel(self) -> None:
         """Update the turns panel with new motion data."""
-        blue_motion = self.GE_pictograph.blue_motion
-        red_motion = self.GE_pictograph.red_motion
+        blue_motion = self.GE_pictograph.elements.blue_motion
+        red_motion = self.GE_pictograph.elements.red_motion
         self.update_turns_displays()
         [
             (

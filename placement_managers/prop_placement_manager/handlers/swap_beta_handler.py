@@ -18,8 +18,8 @@ class SwapBetaHandler:
         self.beta_prop_positioner = beta_prop_positioner
         self.pictograph = beta_prop_positioner.pictograph
         self.ppm = beta_prop_positioner.prop_placement_manager
-        self.blue_prop = self.pictograph.blue_prop
-        self.red_prop = self.pictograph.red_prop
+        self.blue_prop = self.pictograph.elements.blue_prop
+        self.red_prop = self.pictograph.elements.red_prop
         self.dir_calculator = self.beta_prop_positioner.dir_calculator
 
     def _swap_props(
@@ -31,17 +31,17 @@ class SwapBetaHandler:
         self.beta_prop_positioner.move_prop(prop_b, direction_b)
 
     def swap_beta(self) -> None:
-        letter_type = LetterType.get_letter_type(self.pictograph.letter)
+        letter_type = LetterType.get_letter_type(self.pictograph.state.letter)
 
         if (
             (
-                self.pictograph.check.ends_with_in_out_ori()
-                or self.pictograph.check.ends_with_clock_counter_ori()
+                self.pictograph.managers.check.ends_with_in_out_ori()
+                or self.pictograph.managers.check.ends_with_clock_counter_ori()
             )
             and len(self.beta_prop_positioner.classifier.small_uni) == 2
-        ) or self.pictograph.check.ends_with_layer3():
+        ) or self.pictograph.managers.check.ends_with_layer3():
             return
-        if self.pictograph.red_motion.prop.prop_type == PropType.Hand:
+        if self.pictograph.elements.red_motion.prop.prop_type == PropType.Hand:
             return
         swap_handlers = {
             LetterType.Type1: self._handle_type1_swap,
@@ -59,43 +59,51 @@ class SwapBetaHandler:
     def _handle_type1_swap(self) -> None:
         # if it's a hand, ignore it
 
-        if self.pictograph.letter in [Letter.G, Letter.H]:
-            further_direction = self.dir_calculator.get_dir(self.pictograph.red_motion)
+        if self.pictograph.state.letter in [Letter.G, Letter.H]:
+            further_direction = self.dir_calculator.get_dir(
+                self.pictograph.elements.red_motion
+            )
             other_direction = self.dir_calculator.get_opposite_dir(further_direction)
 
             self._swap_props(
-                self.pictograph.red_prop,
-                self.pictograph.blue_prop,
+                self.pictograph.elements.red_prop,
+                self.pictograph.elements.blue_prop,
                 other_direction,
                 further_direction,
             )
 
         else:
-            red_direction = self.dir_calculator.get_dir(self.pictograph.red_motion)
-            blue_direction = self.dir_calculator.get_dir(self.pictograph.blue_motion)
+            red_direction = self.dir_calculator.get_dir(
+                self.pictograph.elements.red_motion
+            )
+            blue_direction = self.dir_calculator.get_dir(
+                self.pictograph.elements.blue_motion
+            )
 
             self._swap_props(
-                self.pictograph.red_prop,
-                self.pictograph.blue_prop,
+                self.pictograph.elements.red_prop,
+                self.pictograph.elements.blue_prop,
                 blue_direction,
                 red_direction,
             )
 
     def _handle_type6_swap(self) -> None:
 
-        red_direction = self.dir_calculator.get_dir(self.pictograph.red_motion)
-        blue_direction = self.dir_calculator.get_dir(self.pictograph.blue_motion)
-        if self.pictograph.red_motion.prop.prop_type != PropType.Hand:
+        red_direction = self.dir_calculator.get_dir(self.pictograph.elements.red_motion)
+        blue_direction = self.dir_calculator.get_dir(
+            self.pictograph.elements.blue_motion
+        )
+        if self.pictograph.elements.red_motion.prop.prop_type != PropType.Hand:
             self._swap_props(
-                self.pictograph.red_prop,
-                self.pictograph.blue_prop,
+                self.pictograph.elements.red_prop,
+                self.pictograph.elements.blue_prop,
                 blue_direction,
                 red_direction,
             )
 
     def _handle_type2_swap(self) -> None:
-        shift = self.pictograph.get.shift()
-        static = self.pictograph.get.static()
+        shift = self.pictograph.managers.get.shift()
+        static = self.pictograph.managers.get.static()
 
         shift_direction = self.dir_calculator.get_dir(shift)
         static_direction = self.dir_calculator.get_opposite_dir(shift_direction)
@@ -103,22 +111,22 @@ class SwapBetaHandler:
         self._swap_props(shift.prop, static.prop, static_direction, shift_direction)
 
     def _handle_type3_swap(self) -> None:
-        shift = self.pictograph.get.shift()
-        dash = self.pictograph.get.dash()
+        shift = self.pictograph.managers.get.shift()
+        dash = self.pictograph.managers.get.dash()
 
         direction = self.dir_calculator.get_dir(shift)
 
         if direction:
             self._swap_props(
-                self.pictograph.props[shift.color],
-                self.pictograph.props[dash.color],
+                self.pictograph.elements.props[shift.color],
+                self.pictograph.elements.props[dash.color],
                 self.dir_calculator.get_opposite_dir(direction),
                 direction,
             )
 
     def _handle_type4_swap(self) -> None:
-        dash = self.pictograph.get.dash()
-        static = self.pictograph.get.static()
+        dash = self.pictograph.managers.get.dash()
+        static = self.pictograph.managers.get.static()
 
         dash_direction = self.dir_calculator.get_dir(dash)
         static_direction = self.dir_calculator.get_opposite_dir(dash_direction)
@@ -126,12 +134,14 @@ class SwapBetaHandler:
         self._swap_props(dash.prop, static.prop, static_direction, dash_direction)
 
     def _handle_type5_swap(self) -> None:
-        red_direction = self.dir_calculator.get_dir(self.pictograph.red_motion)
-        blue_direction = self.dir_calculator.get_dir(self.pictograph.blue_motion)
+        red_direction = self.dir_calculator.get_dir(self.pictograph.elements.red_motion)
+        blue_direction = self.dir_calculator.get_dir(
+            self.pictograph.elements.blue_motion
+        )
 
         self._swap_props(
-            self.pictograph.red_prop,
-            self.pictograph.blue_prop,
+            self.pictograph.elements.red_prop,
+            self.pictograph.elements.blue_prop,
             blue_direction,
             red_direction,
         )
@@ -146,22 +156,22 @@ class SwapBetaHandler:
         return override_key
 
     def swap_beta_if_needed(self) -> None:
-        ori_key = self.pictograph.arrow_placement_manager.special_positioner.data_updater._generate_ori_key(
-            self.pictograph.blue_motion
+        ori_key = self.pictograph.managers.arrow_placement_manager.special_positioner.data_updater._generate_ori_key(
+            self.pictograph.elements.blue_motion
         )
-        grid_mode = self.pictograph.grid_mode
+        grid_mode = self.pictograph.state.grid_mode
         if ori_key:
             letter_data: dict = (
                 AppContext.special_placement_loader()
                 .load_special_placements()[grid_mode][ori_key]
-                .get(self.pictograph.letter.value)
+                .get(self.pictograph.state.letter.value)
             )
 
         turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
-        prop_loc = self.pictograph.blue_prop.loc
-        if self.pictograph.check.ends_with_radial_ori():
+        prop_loc = self.pictograph.elements.blue_prop.loc
+        if self.pictograph.managers.check.ends_with_radial_ori():
             beta_ori = "radial"
-        elif self.pictograph.check.ends_with_nonradial_ori():
+        elif self.pictograph.managers.check.ends_with_nonradial_ori():
             beta_ori = "nonradial"
         else:
             return

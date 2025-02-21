@@ -62,7 +62,7 @@ class DefaultArrowPositioner:
     def _load_all_default_placements(self) -> None:
         """
         Load diamond AND box data for each motion type, so we never rely on
-        'pictograph.grid_mode' at init (avoiding 'Beat' object has no attribute grid_mode').
+        'pictograph.state.grid_mode' at init (avoiding 'Beat' object has no attribute grid_mode').
         """
         motion_types = [PRO, ANTI, FLOAT, DASH, STATIC]
 
@@ -108,12 +108,12 @@ class DefaultArrowPositioner:
         # Not reloading anything here, to avoid infinite recursion
         # self._load_all_default_placements()  # removed
 
-        has_beta_props = arrow.pictograph.check.ends_with_beta()
-        has_alpha_props = arrow.pictograph.check.ends_with_alpha()
-        has_gamma_props = arrow.pictograph.check.ends_with_gamma()
-        has_hybrid_orientation = arrow.pictograph.check.ends_with_layer3()
-        has_radial_props = arrow.pictograph.check.ends_with_radial_ori()
-        has_nonradial_props = arrow.pictograph.check.ends_with_nonradial_ori()
+        has_beta_props = arrow.pictograph.managers.check.ends_with_beta()
+        has_alpha_props = arrow.pictograph.managers.check.ends_with_alpha()
+        has_gamma_props = arrow.pictograph.managers.check.ends_with_gamma()
+        has_hybrid_orientation = arrow.pictograph.managers.check.ends_with_layer3()
+        has_radial_props = arrow.pictograph.managers.check.ends_with_radial_ori()
+        has_nonradial_props = arrow.pictograph.managers.check.ends_with_nonradial_ori()
         motion_end_ori = arrow.motion.end_ori
 
         key_suffix = "_to_"
@@ -126,24 +126,24 @@ class DefaultArrowPositioner:
 
         letter_suffix = ""
         if (
-            arrow.pictograph.letter.value
+            arrow.pictograph.state.letter.value
             and (
-                arrow.pictograph.letter
-                in arrow.pictograph.letter.get_letters_by_condition(
+                arrow.pictograph.state.letter
+                in arrow.pictograph.state.letter.get_letters_by_condition(
                     LetterConditions.TYPE3
                 )
             )
             or (
-                arrow.pictograph.letter
-                in arrow.pictograph.letter.get_letters_by_condition(
+                arrow.pictograph.state.letter
+                in arrow.pictograph.state.letter.get_letters_by_condition(
                     LetterConditions.TYPE5
                 )
             )
         ):
-            char = arrow.pictograph.letter.value[:-1]
+            char = arrow.pictograph.state.letter.value[:-1]
             letter_suffix = f"_{char}_dash"
-        elif arrow.pictograph.letter:
-            letter_suffix = f"_{arrow.pictograph.letter.value}"
+        elif arrow.pictograph.state.letter:
+            letter_suffix = f"_{arrow.pictograph.state.letter.value}"
 
         if has_radial_props:
             key_middle = "layer1"

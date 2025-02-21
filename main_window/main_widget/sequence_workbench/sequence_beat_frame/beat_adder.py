@@ -47,7 +47,7 @@ class BeatAdder:
                 AppContext.json_manager().loader_saver.load_current_sequence()
             )
             reversal_info = ReversalDetector.detect_reversal(
-                sequence_so_far, new_beat.pictograph_data
+                sequence_so_far, new_beat.state.pictograph_data
             )
             new_beat.blue_reversal = reversal_info.get("blue_reversal", False)
             new_beat.red_reversal = reversal_info.get("red_reversal", False)

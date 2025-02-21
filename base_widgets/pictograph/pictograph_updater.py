@@ -21,42 +21,50 @@ class PictographUpdater:
         If the dict is incomplete, it will be used to update the pictograph's attributes.
         If there is no dict, the pictograph will update its children without reference to a dict.
         """
-        if not self.pictograph.get.is_initialized:
-            self.pictograph.get.initiallize_getter()
+        if not self.pictograph.managers.get.is_initialized:
+            self.pictograph.managers.get.initiallize_getter()
 
         if pictograph_data:
             if pictograph_data.get("is_placeholder", False):
                 return
 
-            if self.pictograph.check.is_pictograph_data_complete(pictograph_data):
-                self.pictograph.pictograph_data = pictograph_data
-                self.pictograph.grid_mode = GridModeChecker.get_grid_mode(
-                    self.pictograph.pictograph_data
+            if self.pictograph.managers.check.is_pictograph_data_complete(
+                pictograph_data
+            ):
+                self.pictograph.state.pictograph_data = pictograph_data
+                self.pictograph.state.grid_mode = GridModeChecker.get_grid_mode(
+                    self.pictograph.state.pictograph_data
                 )
-                self.pictograph.grid.update_grid_mode()
+                self.pictograph.elements.grid.update_grid_mode()
 
                 self._update_from_pictograph_data(pictograph_data)
-                self.pictograph.turns_tuple = self.pictograph.get.turns_tuple()
-                self.pictograph.vtg_glyph.set_vtg_mode()
-                self.pictograph.elemental_glyph.set_elemental_glyph()
-                self.pictograph.start_to_end_pos_glyph.set_start_to_end_pos_glyph()
+                self.pictograph.state.turns_tuple = (
+                    self.pictograph.managers.get.turns_tuple()
+                )
+                self.pictograph.elements.vtg_glyph.set_vtg_mode()
+                self.pictograph.elements.elemental_glyph.set_elemental_glyph()
+                self.pictograph.elements.start_to_end_pos_glyph.set_start_to_end_pos_glyph()
             else:
                 self._update_from_pictograph_data(pictograph_data)
-                self.pictograph.turns_tuple = self.pictograph.get.turns_tuple()
+                self.pictograph.state.turns_tuple = (
+                    self.pictograph.managers.get.turns_tuple()
+                )
 
-        self.pictograph.tka_glyph.update_tka_glyph()
-        self.pictograph.elemental_glyph.update_elemental_glyph()
-        self.pictograph.reversal_glyph.update_reversal_symbols()
+        self.pictograph.elements.tka_glyph.update_tka_glyph()
+        self.pictograph.elements.elemental_glyph.update_elemental_glyph()
+        self.pictograph.elements.reversal_glyph.update_reversal_symbols()
 
         self._position_objects()
 
     def get_end_pos(self) -> str:
-        return self.pictograph.end_pos[:-1]
+        return self.pictograph.state.end_pos[:-1]
 
     def _update_from_pictograph_data(self, pictograph_data: dict) -> None:
-        self.pictograph.attr_manager.update_data(pictograph_data)
+        self.pictograph.managers.attr_manager.load_from_dict(pictograph_data)
         motion_dataset = self._get_motion_dataset(pictograph_data)
-        self.pictograph.letter_type = LetterType.get_letter_type(self.pictograph.letter)
+        self.pictograph.state.letter_type = LetterType.get_letter_type(
+            self.pictograph.state.letter
+        )
         red_arrow_data, blue_arrow_data = self.get_arrow_dataset(pictograph_data)
         self._update_motions(pictograph_data, motion_dataset)
         self._update_arrows(red_arrow_data, blue_arrow_data)
@@ -65,7 +73,7 @@ class PictographUpdater:
     def _update_motions(
         self, pictograph_data: dict, motion_dataset: dict[str, dict]
     ) -> None:
-        for motion in self.pictograph.motions.values():
+        for motion in self.pictograph.elements.motions.values():
             self.override_motion_type_if_necessary(pictograph_data, motion)
             if motion_dataset.get(motion.color) is not None:
                 self.show_graphical_objects(motion.color)
@@ -75,8 +83,8 @@ class PictographUpdater:
             turns_value = motion_dataset[motion.color].get("turns", None)
             if turns_value is not None:
                 motion.turns = turns_value
-        for motion in self.pictograph.motions.values():
-            if motion.pictograph.letter in [
+        for motion in self.pictograph.elements.motions.values():
+            if motion.pictograph.state.letter in [
                 Letter.S,
                 Letter.T,
                 Letter.U,
@@ -85,20 +93,24 @@ class PictographUpdater:
                 motion.attr_manager.assign_lead_states()
 
     def _set_lead_states(self):
-        if self.pictograph.letter.value in ["S", "T", "U", "V"]:
-            self.pictograph.get.leading_motion().lead_state = LEADING
-            self.pictograph.get.trailing_motion().lead_state = TRAILING
+        if self.pictograph.state.letter.value in ["S", "T", "U", "V"]:
+            self.pictograph.managers.get.leading_motion().lead_state = LEADING
+            self.pictograph.managers.get.trailing_motion().lead_state = TRAILING
         else:
-            for motion in self.pictograph.motions.values():
+            for motion in self.pictograph.elements.motions.values():
                 motion.lead_state = None
 
     def _update_arrows(self, red_arrow_data, blue_arrow_data):
-        if self.pictograph.letter_type == LetterType.Type3:
-            self.pictograph.get.shift().arrow.updater.update_arrow()
-            self.pictograph.get.dash().arrow.updater.update_arrow()
+        if self.pictograph.state.letter_type == LetterType.Type3:
+            self.pictograph.managers.get.shift().arrow.updater.update_arrow()
+            self.pictograph.managers.get.dash().arrow.updater.update_arrow()
         else:
-            self.pictograph.arrows.get(RED).updater.update_arrow(red_arrow_data)
-            self.pictograph.arrows.get(BLUE).updater.update_arrow(blue_arrow_data)
+            self.pictograph.elements.arrows.get(RED).updater.update_arrow(
+                red_arrow_data
+            )
+            self.pictograph.elements.arrows.get(BLUE).updater.update_arrow(
+                blue_arrow_data
+            )
 
     def get_arrow_dataset(self, pictograph_data):
         if pictograph_data.get("red_attributes") and not pictograph_data.get(
@@ -144,8 +156,8 @@ class PictographUpdater:
         return arrow_data
 
     def show_graphical_objects(self, color: str) -> None:
-        self.pictograph.props[color].show()
-        self.pictograph.arrows[color].show()
+        self.pictograph.elements.props[color].show()
+        self.pictograph.elements.arrows[color].show()
 
     def override_motion_type_if_necessary(
         self, pictograph_data: dict, motion: Motion
@@ -217,7 +229,7 @@ class PictographUpdater:
                 self._dict_to_tuple(v) if isinstance(v, dict) else v,
             )  # Now using actual dict type
             for k, v in sorted(d.items())  # Changed dict->d
-            if k != self.pictograph.letter.value
+            if k != self.pictograph.state.letter.value
         )
 
     def _tuple_to_dict(self, t: tuple) -> dict:  # Changed parameter name from tuple->t
@@ -225,15 +237,15 @@ class PictographUpdater:
         return {
             k: self._tuple_to_dict(v) if isinstance(v, tuple) else v
             for k, v in t  # Changed tuple->t
-            if k != self.pictograph.letter.value
+            if k != self.pictograph.state.letter.value
         }
 
     def _position_objects(self) -> None:
-        self.pictograph.prop_placement_manager.update_prop_positions()
-        self.pictograph.arrow_placement_manager.update_arrow_placements()
+        self.pictograph.managers.prop_placement_manager.update_prop_positions()
+        self.pictograph.managers.arrow_placement_manager.update_arrow_placements()
         self.pictograph.update()  # Add this line
 
     def update_dict_from_attributes(self) -> dict:
-        pictograph_data = self.pictograph.get.pictograph_data()
-        self.pictograph.pictograph_data = pictograph_data
+        pictograph_data = self.pictograph.managers.get.pictograph_data()
+        self.pictograph.state.pictograph_data = pictograph_data
         return pictograph_data

@@ -21,14 +21,14 @@ class MirroredEntryUpdater:
         self.turns_tuple_generator = self.manager.turns_tuple_generator
 
     def _get_mirrored_entry_updater(self, arrow: Arrow) -> BaseMirroredEntryUpdater:
-        if arrow.pictograph.check.starts_from_mixed_orientation():
+        if arrow.pictograph.managers.check.starts_from_mixed_orientation():
             return MixedOrientationUpdater(self, arrow)
         else:
             return StandardOrientationUpdater(self, arrow)
 
     def update_entry(self, arrow: Arrow):
         ori_key = self.manager.data_updater._generate_ori_key(arrow.motion)
-        letter = arrow.pictograph.letter
+        letter = arrow.pictograph.state.letter
         letter_data, original_turn_data = (
             self.manager.data_prep._fetch_letter_data_and_original_turn_data(
                 ori_key, letter, arrow
@@ -54,10 +54,10 @@ class MirroredEntryUpdater:
         other_letter_data[mirrored_turns_tuple][key] = original_turn_data.get(data_key)
 
     def _determine_data_key(self, arrow: Arrow, key: str) -> str:
-        if arrow.pictograph.check.starts_from_mixed_orientation():
-            if arrow.pictograph.letter in ["S", "T"]:
+        if arrow.pictograph.managers.check.starts_from_mixed_orientation():
+            if arrow.pictograph.state.letter in ["S", "T"]:
                 return f"{arrow.motion.lead_state}_from_layer{self._determine_layer(arrow)}"
-            elif arrow.pictograph.check.has_hybrid_motions():
+            elif arrow.pictograph.managers.check.has_hybrid_motions():
                 return f"{arrow.motion.motion_type}_from_layer{self._determine_layer(arrow)}"
             else:
                 return f"{arrow.color}"

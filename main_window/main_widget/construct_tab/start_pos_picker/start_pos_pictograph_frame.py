@@ -31,20 +31,22 @@ class StartPosPickerPictographFrame(QWidget):
         # self.start_pos_picker.choose_your_start_pos_label.set_stylesheet()
         for button in self.variation_buttons.values():
             button.setMaximumWidth(
-                self.start_positions[list(self.start_positions.keys())[0]].view.width()
+                self.start_positions[
+                    list(self.start_positions.keys())[0]
+                ].elements.view.width()
             )
 
     def _add_start_pos_to_layout(self, start_pos: PictographScene) -> None:
         # start_pos.view.mousePressEvent = self.option_click_handler.handle_click(
         #     start_pos
         # )
-        self.pictographs_layout.addWidget(start_pos.view)
-        self.start_pos_picker.start_options[start_pos.letter] = start_pos
-        key = f"{start_pos.letter}_{start_pos.start_pos}_{start_pos.end_pos}"
-        # self.start_pos_picker.construct_tab.pictograph_cache[start_pos.letter][
+        self.pictographs_layout.addWidget(start_pos.elements.view)
+        self.start_pos_picker.start_options[start_pos.state.letter] = start_pos
+        key = f"{start_pos.state.letter}_{start_pos.state.start_pos}_{start_pos.state.end_pos}"
+        # self.start_pos_picker.construct_tab.pictograph_cache[start_pos.state.letter][
         #     key
         # ] = start_pos
-        self.start_positions[start_pos.letter] = start_pos
+        self.start_positions[start_pos.state.letter] = start_pos
 
     def clear_pictographs(self) -> None:
         for i in reversed(range(self.pictographs_layout.count())):

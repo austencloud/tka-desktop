@@ -43,9 +43,9 @@ class ElementalGlyph(QGraphicsSvgItem):
         self.pictograph = pictograph
 
     def set_elemental_glyph(self) -> None:
-        if not self.pictograph.letter_type in [LetterType.Type1]:
+        if not self.pictograph.state.letter_type in [LetterType.Type1]:
             self.setVisible(False)
-        vtg_mode = self.pictograph.vtg_mode
+        vtg_mode = self.pictograph.state.vtg_mode
         svg_path: str = SVG_PATHS.get(vtg_mode, "")
         if not svg_path:
             return

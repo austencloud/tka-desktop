@@ -9,7 +9,7 @@ from objects.motion.motion import Motion
 class BaseDirectionalGenerator:
     def __init__(self, motion: Motion) -> None:
         self.motion = motion
-        self.other_motion = motion.pictograph.get.other_motion(motion)
+        self.other_motion = motion.pictograph.managers.get.other_motion(motion)
         self.hand_rot_dir_calculator = HandpathCalculator()
 
     def generate_directional_tuples(self, x: int, y: int) -> list[tuple[int, int]]:

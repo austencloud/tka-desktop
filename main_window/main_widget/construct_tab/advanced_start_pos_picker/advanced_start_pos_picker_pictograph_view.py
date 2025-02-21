@@ -23,7 +23,9 @@ class AdvancedStartPosPickerPictographView(BorderedPictographView):
         self.pictograph = pictograph
         self.picker = advanced_start_pos_picker
         self.pictograph = pictograph
-        self.start_position_adder = advanced_start_pos_picker.beat_frame.start_position_adder
+        self.start_position_adder = (
+            advanced_start_pos_picker.beat_frame.start_position_adder
+        )
         self.size_provider = size_provider
 
     def resizeEvent(self, event) -> None:
@@ -31,7 +33,7 @@ class AdvancedStartPosPickerPictographView(BorderedPictographView):
         size = self.size_provider().width() // 12
         border_width = max(1, int(size * 0.015))
         size -= 2 * border_width
-        self.pictograph.view.update_border_widths()
+        self.pictograph.elements.view.update_border_widths()
         self.setFixedSize(size, size)
         self.view_scale = size / self.pictograph.width()
         self.resetTransform()

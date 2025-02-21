@@ -10,7 +10,6 @@ if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
-
 class AddToSequenceManager:
     def __init__(
         self,
@@ -33,7 +32,7 @@ class AddToSequenceManager:
 
         new_beat = Beat(self.beat_frame)
         new_beat.setSceneRect(clicked_option.sceneRect())
-        pictograph_data = clicked_option.get.pictograph_data()
+        pictograph_data = clicked_option.managers.get.pictograph_data()
 
         pictograph_data["duration"] = 1
         pictograph_data = dict(
@@ -42,7 +41,7 @@ class AddToSequenceManager:
             + list(pictograph_data.items())[1:]
         )
 
-        new_beat.updater.update_pictograph(pictograph_data)
+        new_beat.managers.updater.update_pictograph(pictograph_data)
         self.last_beat = new_beat
         SW_beat_frame = self.beat_frame
         if not SW_beat_frame.sequence_changed:

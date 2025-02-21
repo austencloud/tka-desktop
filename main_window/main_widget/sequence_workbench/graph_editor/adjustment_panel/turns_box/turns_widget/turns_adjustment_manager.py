@@ -37,8 +37,8 @@ class TurnsAdjustmentManager(QObject):
         self.reference_beat = GE_view.reference_beat
 
         current_turns = self.get_current_turns_value()
-        GE_motion = self.GE_pictograph.motions[self.color]
-        matching_motion = self.reference_beat.motions[self.color]
+        GE_motion = self.GE_pictograph.elements.motions[self.color]
+        matching_motion = self.reference_beat.elements.motions[self.color]
 
         if current_turns == "fl" and adjustment > 0:
             new_turns = 0
@@ -100,8 +100,8 @@ class TurnsAdjustmentManager(QObject):
         GE_pictograph = (
             self.turns_widget.turns_box.adjustment_panel.graph_editor.pictograph_container.GE_view.get_current_pictograph()
         )
-        GE_pictograph.view.repaint()
-        # GE_pictograph.updater.update_pictograph()
+        GE_pictograph.elements.view.repaint()
+        # GE_pictograph.managers.updater.update_pictograph()
         QApplication.processEvents()
 
     def direct_set_turns(self, new_turns: int | float | str) -> None:
@@ -127,7 +127,7 @@ class TurnsAdjustmentManager(QObject):
             )
 
         matching_motion = self.reference_beat.motions[self.color]
-        GE_motion = self.GE_pictograph.motions[self.color]
+        GE_motion = self.GE_pictograph.elements.motions[self.color]
 
         for motion in [matching_motion, GE_motion]:
             motion.turns = new_turns
@@ -171,6 +171,6 @@ class TurnsAdjustmentManager(QObject):
     def _update_motion_properties(self, new_turns) -> None:
         for motion in [
             self.reference_beat.motions[self.color],
-            self.GE_pictograph.motions[self.color],
+            self.GE_pictograph.elements.motions[self.color],
         ]:
             self.turns_widget.turns_updater.set_motion_turns(motion, new_turns)

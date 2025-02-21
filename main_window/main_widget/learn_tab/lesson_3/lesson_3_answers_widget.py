@@ -51,15 +51,15 @@ class Lesson3AnswersWidget(BaseAnswersWidget):
             key = self.key_generator.generate_pictograph_key(pictograph_data)
             pictograph = PictographScene()
             view = LessonPictographView(pictograph)
-            pictograph.view = view
+            pictograph.elements.view = view
             pictograph.disable_gold_overlay = False
-            pictograph.updater.update_pictograph(pictograph_data)
-            pictograph.view.update_borders()
+            pictograph.managers.updater.update_pictograph(pictograph_data)
+            pictograph.elements.view.update_borders()
             self.pictographs[key] = pictograph
             # Configure view properties
             view.setCursor(Qt.CursorShape.PointingHandCursor)
             pictograph.quiz_mode = True
-            pictograph.tka_glyph.setVisible(False)
+            pictograph.elements.tka_glyph.setVisible(False)
 
             # Connect click event
             # Use lambda with default arguments to capture current pictograph_data and correct_pictograph

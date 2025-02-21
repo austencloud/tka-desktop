@@ -15,10 +15,10 @@ class BaseRotAngleCalculator(ABC):
     def __init__(self, arrow: "Arrow"):
         self.arrow = arrow
         self.rot_angle_key_generator = (
-            self.arrow.pictograph.wasd_manager.rotation_angle_override_manager.key_generator
+            self.arrow.pictograph.managers.wasd_manager.rotation_angle_override_manager.key_generator
         )
         self.data_updater = (
-            self.arrow.pictograph.arrow_placement_manager.special_positioner.data_updater
+            self.arrow.pictograph.managers.arrow_placement_manager.special_positioner.data_updater
         )
         self.handpath_calculator = HandpathCalculator()
 
@@ -39,12 +39,12 @@ class BaseRotAngleCalculator(ABC):
             self.arrow.pictograph.main_widget.special_placement_loader.special_placements
         )
         ori_key = self.data_updater._generate_ori_key(self.arrow.motion)
-        letter = self.arrow.pictograph.letter.value
+        letter = self.arrow.pictograph.state.letter.value
 
         letter_data: dict[str, dict] = (
             special_placements.get(
                 GridModeChecker.get_grid_mode(
-                    self.arrow.pictograph.pictograph_data
+                    self.arrow.pictograph.state.pictograph_data
                 )
             )
             .get(ori_key, {})
@@ -58,7 +58,7 @@ class BaseRotAngleCalculator(ABC):
         )
 
         return bool(
-            letter_data.get(self.arrow.pictograph.turns_tuple, {}).get(
+            letter_data.get(self.arrow.pictograph.state.turns_tuple, {}).get(
                 rot_angle_override_key
             )
         )

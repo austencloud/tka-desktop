@@ -111,12 +111,12 @@ class StartPosPicker(BaseStartPosPicker):
                         pictograph_data, grid_mode
                     )
                     self.start_options[letter] = pictograph
-                    pictograph.letter = letter
-                    pictograph.start_pos = start_pos
-                    pictograph.end_pos = end_pos
+                    pictograph.state.letter = letter
+                    pictograph.state.start_pos = start_pos
+                    pictograph.state.end_pos = end_pos
                     self.pictograph_frame._add_start_pos_to_layout(pictograph)
 
-                    pictograph.start_to_end_pos_glyph.hide()
+                    pictograph.elements.start_to_end_pos_glyph.hide()
                     break
 
     def convert_current_sequence_json_entry_to_start_pos_pictograph(
@@ -128,8 +128,8 @@ class StartPosPicker(BaseStartPosPicker):
         start_pos_beat = StartPositionBeat(
             self.beat_frame,
         )
-        start_pos_beat.updater.update_pictograph(
-            start_position_pictograph.pictograph_data
+        start_pos_beat.managers.updater.update_pictograph(
+            start_position_pictograph.state.pictograph_data
         )
 
         return start_pos_beat

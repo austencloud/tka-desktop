@@ -3,7 +3,7 @@ import re
 from data.constants import BLUE, HEX_BLUE, HEX_RED, RED
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.svg_manager import (
+    from base_widgets.pictograph.managers.svg_manager import (
         SvgManager,
     )
 

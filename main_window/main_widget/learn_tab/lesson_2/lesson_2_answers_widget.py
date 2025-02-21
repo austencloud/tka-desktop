@@ -56,13 +56,13 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
             key = self.key_generator.generate_pictograph_key(pictograph_data)
             pictograph = PictographScene()
             view = LessonPictographView(pictograph)
-            pictograph.view = view
-            pictograph.disable_gold_overlay = False
-            pictograph.updater.update_pictograph(pictograph_data)
-            pictograph.view.update_borders()
+            pictograph.elements.view = view
+            pictograph.state.disable_gold_overlay = False
+            pictograph.managers.updater.update_pictograph(pictograph_data)
+            pictograph.elements.view.update_borders()
             self.pictographs[key] = pictograph
-            pictograph.quiz_mode = True
-            pictograph.tka_glyph.setVisible(False)
+            pictograph.state.quiz_mode = True
+            pictograph.elements.tka_glyph.setVisible(False)
 
             view.mousePressEvent = (
                 lambda event, opt=pictograph_data: check_answer_callback(
@@ -79,8 +79,8 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
         """Disable a specific pictograph answer."""
         pictograph_key = self.key_generator.generate_pictograph_key(answer)
         wrong_answer = self.pictographs[pictograph_key]
-        wrong_answer.view.setEnabled(False)
-        wrong_answer.view.set_overlay_color("red")
+        wrong_answer.elements.view.setEnabled(False)
+        wrong_answer.elements.view.set_overlay_color("red")
 
     def clear(self):
         """Clear all the displayed pictographs."""

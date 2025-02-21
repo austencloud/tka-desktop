@@ -86,12 +86,12 @@ class VisibilityButton(QPushButton):
         target_opacity = 1.0 if self.is_toggled else 0.1
 
         if self.name in self.visibility_checkbox_widget.glyph_names:
-            element = self.view.pictograph.get.glyph(self.name)
+            element = self.view.pictograph.managers.get.glyph(self.name)
         else:
-            element = self.view.pictograph.get.non_radial_points()
+            element = self.view.pictograph.managers.get.non_radial_points()
 
         # Create a parallel fade animation
-        self.visibility_tab.pictograph.view.interaction_manager.fade_and_toggle_visibility(
+        self.visibility_tab.pictograph.elements.view.interaction_manager.fade_and_toggle_visibility(
             element, self.is_toggled
         )
 

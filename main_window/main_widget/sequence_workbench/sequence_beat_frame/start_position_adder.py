@@ -30,13 +30,13 @@ class StartPositionAdder:
             start_pos_view = self.beat_frame.start_pos_view
             self.main_widget.construct_tab.last_beat = start_pos_beat
             self.construct_tab = self.main_widget.construct_tab
-            start_pos_dict = clicked_start_option.pictograph_data
+            start_pos_dict = clicked_start_option.state.pictograph_data
             graph_editor = self.sequence_workbench.graph_editor
 
             if not graph_editor.is_toggled:
                 graph_editor.animator.toggle()
-            start_pos_beat.updater.update_pictograph(deepcopy(start_pos_dict))
-            clicked_start_option.updater.update_dict_from_attributes()
+            start_pos_beat.managers.updater.update_pictograph(deepcopy(start_pos_dict))
+            clicked_start_option.managers.updater.update_dict_from_attributes()
             AppContext.json_manager().start_pos_handler.set_start_position_data(
                 start_pos_beat
             )

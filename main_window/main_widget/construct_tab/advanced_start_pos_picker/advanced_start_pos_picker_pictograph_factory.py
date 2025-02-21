@@ -31,7 +31,7 @@ class AdvancedStartPosPickerPictographFactory:
 
         if pictograph_dict is not None:
             pictograph = self.create_pictograph()
-            pictograph.updater.update_pictograph(pictograph_dict)
+            pictograph.managers.updater.update_pictograph(pictograph_dict)
 
             if letter not in self.advanced_start_pos_cache:
                 self.advanced_start_pos_cache[letter] = {}
@@ -57,7 +57,7 @@ class AdvancedStartPosPickerPictographFactory:
         ]
         for key in keys_to_remove:
             pictograph = self.advanced_start_pos_cache.pop(key)
-            pictograph.view.setParent(None)
+            pictograph.elements.view.setParent(None)
 
     def get_pictograph(self, pictograph_key) -> BasePictograph:
         return self.advanced_start_pos_cache[pictograph_key]

@@ -57,7 +57,7 @@ class ImageExportBeatFactory:
     def create_beat_view_from_data(self, beat_data, number, temp_beat_frame):
         new_beat_view = BeatView(temp_beat_frame)
         beat = Beat(temp_beat_frame)
-        beat.pictograph_data = beat_data
-        beat.updater.update_pictograph(beat_data)
+        beat.state.pictograph_data = beat_data
+        beat.managers.updater.update_pictograph(beat_data)
         new_beat_view.set_beat(beat, number)
         return new_beat_view

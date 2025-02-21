@@ -36,7 +36,7 @@ class BeatFrameUpdater:
             beat_view = self.bf.get.beat_view_by_number(beat_num)
 
             if beat_view and beat_view.beat:
-                beat_view.beat.updater.update_pictograph(entry)
+                beat_view.beat.managers.updater.update_pictograph(entry)
                 beat = beat_view.beat
                 pictograph_index = self.bf.get.index_of_beat(beat_view)
                 sequence_so_far = (
@@ -45,7 +45,7 @@ class BeatFrameUpdater:
                     ]
                 )
                 reversal_info = ReversalDetector.detect_reversal(
-                    sequence_so_far, beat.pictograph_data
+                    sequence_so_far, beat.state.pictograph_data
                 )
                 beat.blue_reversal = reversal_info["blue_reversal"]
                 beat.red_reversal = reversal_info["red_reversal"]
@@ -61,7 +61,7 @@ class BeatFrameUpdater:
         entry["red_attributes"]["start_ori"] = entry["red_attributes"]["end_ori"]
         entry["blue_attributes"]["start_ori"] = entry["blue_attributes"]["end_ori"]
         entry["start_pos"] = entry["end_pos"]
-        self.bf.start_pos_view.start_pos.updater.update_pictograph(entry)
+        self.bf.start_pos_view.start_pos.managers.updater.update_pictograph(entry)
 
     def update_beats_from(self, modified_sequence_json: list[dict]):
         self.json_manager = self.json_manager
@@ -69,10 +69,10 @@ class BeatFrameUpdater:
         self.json_manager.loader_saver.clear_current_sequence_file()
 
         def update_beat(beat: "Beat", beat_dict: dict, start_pos: bool = False):
-            beat.updater.update_pictograph(beat_dict)
+            beat.managers.updater.update_pictograph(beat_dict)
             grid_mode = GridModeChecker.get_grid_mode(beat_dict)
-            beat.grid.hide()
-            beat.grid.__init__(beat, beat.grid.grid_data, grid_mode)
+            beat.elements.grid.hide()
+            beat.elements.grid.__init__(beat, beat.elements.grid.grid_data, grid_mode)
             if not start_pos:
                 json_updater.update_current_sequence_file_with_beat(beat)
 

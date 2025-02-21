@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from Enums.Enums import Glyph
-from base_widgets.pictograph.glyphs.beat_reversal_group import BeatReversalGroup
+from base_widgets.pictograph.glyphs.reversal_glyph import ReversalGlyph
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph_scene import PictographScene
@@ -30,11 +30,11 @@ class VisibilityToggler:
     ):
         """Apply glyph visibility to a specific pictograph."""
         glyph_mapping: dict[str, Glyph] = {
-            "VTG": pictograph.vtg_glyph,
-            "TKA": pictograph.tka_glyph,
-            "Elemental": pictograph.elemental_glyph,
-            "Positions": pictograph.start_to_end_pos_glyph,
-            "Reversals": pictograph.reversal_glyph,  # Reference the BeatReversalGroup
+            "VTG": pictograph.elements.vtg_glyph,
+            "TKA": pictograph.elements.tka_glyph,
+            "Elemental": pictograph.elements.elemental_glyph,
+            "Positions": pictograph.elements.start_to_end_pos_glyph,
+            "Reversals": pictograph.elements.reversal_glyph,  # Reference the BeatReversalGroup
         }
         glyphs = glyph_mapping.get(glyph_type, [])
         if not isinstance(glyphs, list):
@@ -47,11 +47,11 @@ class VisibilityToggler:
                 else:
                     glyph.setVisible(is_visible)
 
-        if pictograph.letter in ["α", "β", "Γ"]:
-            pictograph.start_to_end_pos_glyph.setVisible(False)
+        if pictograph.state.letter in ["α", "β", "Γ"]:
+            pictograph.elements.start_to_end_pos_glyph.setVisible(False)
 
     def toggle_non_radial_points(self, state: bool):
         """Toggle visibility for non-radial points."""
         pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
         for pictograph in pictographs:
-            pictograph.grid.toggle_non_radial_points(state)
+            pictograph.elements.grid.toggle_non_radial_points(state)

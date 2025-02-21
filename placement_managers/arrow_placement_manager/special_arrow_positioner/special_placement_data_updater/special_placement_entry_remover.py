@@ -2,7 +2,9 @@ import os
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import BLUE, RED
-from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
+    TurnsTupleGenerator,
+)
 from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 
@@ -45,11 +47,11 @@ class SpecialPlacementEntryRemover:
             key = self.data_updater.positioner.attr_key_generator.get_key(arrow)
             self._remove_turn_data_entry(letter_data, self.turns_tuple, key)
 
-            if arrow.pictograph.check.starts_from_mixed_orientation():
+            if arrow.pictograph.managers.check.starts_from_mixed_orientation():
                 self._handle_mixed_start_ori_mirrored_entry_removal(
                     letter, arrow, ori_key, letter_data, key
                 )
-            elif arrow.pictograph.check.starts_from_standard_orientation():
+            elif arrow.pictograph.managers.check.starts_from_standard_orientation():
                 self._handle_standard_start_ori_mirrored_entry_removal(
                     letter, arrow, ori_key, letter_data, key
                 )
@@ -60,9 +62,9 @@ class SpecialPlacementEntryRemover:
         self, letter, arrow: Arrow, ori_key, letter_data, key
     ):
         if (
-            arrow.motion.turns == arrow.pictograph.get.other_arrow(arrow).turns
+            arrow.motion.turns == arrow.pictograph.managers.get.other_arrow(arrow).turns
             or arrow.motion.motion_type
-            != arrow.pictograph.get.other_arrow(arrow).motion.motion_type
+            != arrow.pictograph.managers.get.other_arrow(arrow).motion.motion_type
             or letter in ["S", "T"]
         ):
             return
@@ -122,7 +124,7 @@ class SpecialPlacementEntryRemover:
         return self.data_updater.json_handler.load_json_data(file_path)
 
     def _generate_file_path(self, ori_key: str, letter: Letter) -> str:
-        grid_mode = self.positioner.placement_manager.pictograph.grid_mode
+        grid_mode = self.positioner.placement_manager.pictograph.state.grid_mode
         file_path = os.path.join(
             "data",
             "arrow_placement",

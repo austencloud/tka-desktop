@@ -41,13 +41,13 @@ class TKA_Glyph(QGraphicsItemGroup):
         self.turns_column = TurnsNumberGroup(self)
 
     def update_tka_glyph(self, visibility=True) -> None:
-        self.letter = self.pictograph.letter
+        self.letter = self.pictograph.state.letter
         self.letter_item.set_letter()
         if not self.letter:
             return
 
         # Obtain the turns tuple and update dots, dash, and turn numbers.
-        turns_tuple = self.pictograph.get.turns_tuple()
+        turns_tuple = self.pictograph.managers.get.turns_tuple()
         self.dot_handler.update_dots(turns_tuple)
         self.dash.update_dash()
         self.turns_column.update_turns(turns_tuple)

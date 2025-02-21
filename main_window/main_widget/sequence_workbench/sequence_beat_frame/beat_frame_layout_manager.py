@@ -22,7 +22,7 @@ class BeatFrameLayoutManager:
         layout.setContentsMargins(0, 0, 0, 0)
         self.beat_frame.setContentsMargins(0, 0, 0, 0)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.beat_frame.start_pos_view.start_pos.initializer.set_nonradial_points_visibility(
+        self.beat_frame.start_pos_view.start_pos.managers.initializer.set_nonradial_points_visibility(
             False
         )
         layout.addWidget(self.beat_frame.start_pos_view, 0, 0)

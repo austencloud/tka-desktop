@@ -4,10 +4,17 @@ from PyQt6.QtWidgets import QGraphicsTextItem
 from PyQt6.QtCore import QPointF
 from PyQt6.QtGui import QFont
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import BeatView
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import StartPositionBeat
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+    BeatView,
+)
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
+    StartPositionBeat,
+)
+
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
 
 
 class StartPositionBeatView(BeatView):
@@ -20,7 +27,7 @@ class StartPositionBeatView(BeatView):
     def _setup_blank_beat(self):
         self.blank_beat = StartPositionBeat(self.beat_frame)
         self.set_start_pos(self.blank_beat)
-        self.blank_beat.grid.hide()
+        self.blank_beat.elements.grid.hide()
 
     def set_start_pos(self, start_pos: "StartPositionBeat") -> None:
         self.start_pos = self.beat = start_pos

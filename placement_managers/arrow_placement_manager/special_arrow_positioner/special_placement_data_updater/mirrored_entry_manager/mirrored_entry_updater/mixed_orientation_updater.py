@@ -1,4 +1,3 @@
-
 from Enums.letters import Letter
 
 from data.constants import *
@@ -28,7 +27,7 @@ class MixedOrientationUpdater(BaseMirroredEntryUpdater):
         if letter.value in ["S", "T"]:
             attr = self.arrow.motion.lead_state
             key = f"{attr}_from_layer{layer}"
-        elif self.arrow.pictograph.check.has_hybrid_motions():
+        elif self.arrow.pictograph.managers.check.has_hybrid_motions():
             attr = self.arrow.motion.motion_type
             key = f"{attr}_from_layer{layer}"
         else:

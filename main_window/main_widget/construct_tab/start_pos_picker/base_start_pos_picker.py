@@ -12,7 +12,9 @@ if TYPE_CHECKING:
 
 
 class BaseStartPosPicker(QWidget):
-    def __init__(self, pictograph_dataset: dict, mw_size_provider: Callable[[], QSize]) -> None:
+    def __init__(
+        self, pictograph_dataset: dict, mw_size_provider: Callable[[], QSize]
+    ) -> None:
         super().__init__()
         self.pictograph_dataset = pictograph_dataset
         self.mw_size_provider = mw_size_provider
@@ -35,11 +37,11 @@ class BaseStartPosPicker(QWidget):
             return self.pictograph_cache[pictograph_key]
 
         pictograph = PictographScene()
-        pictograph.view = StartPosPickerPictographView(
+        pictograph.elements.view = StartPosPickerPictographView(
             self, pictograph, size_provider=self.mw_size_provider
         )
-        pictograph.updater.update_pictograph(local_dict)
-        pictograph.view.update_borders()
+        pictograph.managers.updater.update_pictograph(local_dict)
+        pictograph.elements.view.update_borders()
         self.pictograph_cache[pictograph_key] = pictograph
 
         if target_grid_mode == BOX:

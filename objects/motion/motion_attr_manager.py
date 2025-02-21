@@ -21,7 +21,7 @@ class MotionAttrManager:
         for attribute, value in motion_data.items():
             if value is not None:
                 setattr(self.motion, attribute, value)
-                self.motion.motion_data[attribute] = value 
+                self.motion.motion_data[attribute] = value
         if self.motion.check.is_shift():
             if "prefloat_motion_type" not in motion_data:
                 if self.motion.motion_type != FLOAT:
@@ -60,8 +60,8 @@ class MotionAttrManager:
         }
 
     def assign_lead_states(self) -> None:
-        leading_motion = self.motion.pictograph.get.leading_motion()
-        trailing_motion = self.motion.pictograph.get.trailing_motion()
-        if self.motion.pictograph.get.leading_motion():
+        leading_motion = self.motion.pictograph.managers.get.leading_motion()
+        trailing_motion = self.motion.pictograph.managers.get.trailing_motion()
+        if self.motion.pictograph.managers.get.leading_motion():
             leading_motion.arrow.motion.lead_state = LEADING
             trailing_motion.arrow.motion.lead_state = TRAILING

@@ -32,7 +32,7 @@ class MotionManipulator:
             f"{self.motion.color}_start_location": new_start_loc,
             f"{self.motion.color}_end_location": new_end_loc,
         }
-        self.motion.pictograph.updater.update_pictograph(pictograph_data)
+        self.motion.pictograph.managers.updater.update_pictograph(pictograph_data)
 
     ### MIRRORING ###
 
@@ -54,7 +54,7 @@ class MotionManipulator:
             f"{self.motion.color}_end_location": new_end_loc,
             f"{self.motion.color}_prop_rot_dir": new_rot_dir,
         }
-        self.motion.pictograph.updater.update_pictograph(pictograph_data)
+        self.motion.pictograph.managers.updater.update_pictograph(pictograph_data)
 
     ### MOTION TYPE ###
 
@@ -80,14 +80,17 @@ class MotionManipulator:
             f"{self.motion.color}_prop_rot_dir": new_rot_dir,
             f"{self.motion.color}_end_ori": self.motion.prop.ori,
         }
-        self.motion.pictograph.updater.update_pictograph(pictograph_data)
+        self.motion.pictograph.managers.updater.update_pictograph(pictograph_data)
 
     ### ROTATION ###
 
     def rotate_motion(self, rotation_direction: Handpaths) -> None:
         mode_mappings = self._get_mode_mappings()
         rotate_func, locations = mode_mappings.get(
-            (self.motion.motion_type, self.motion.arrow.pictograph.grid.grid_mode),
+            (
+                self.motion.motion_type,
+                self.motion.arrow.pictograph.elements.grid.grid_mode,
+            ),
             (None, None),
         )
 
@@ -157,7 +160,7 @@ class MotionManipulator:
         """
         Refresh the arrow and prop, and update the pictograph.
         """
-        self.motion.arrow.pictograph.updater.update_pictograph()
+        self.motion.arrow.pictograph.managers.updater.update_pictograph()
 
     def set_prop_rot_dir(self, prop_rot_dir: str) -> None:
         self.motion.prop_rot_dir = prop_rot_dir

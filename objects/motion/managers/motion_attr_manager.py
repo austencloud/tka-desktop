@@ -60,8 +60,8 @@ class MotionAttrManager:
         }
 
     def assign_lead_states(self) -> None:
-        leading_motion = self.motion.pictograph.get.leading_motion()
-        trailing_motion = self.motion.pictograph.get.trailing_motion()
-        if self.motion.pictograph.get.leading_motion():
+        leading_motion = self.motion.pictograph.managers.get.leading_motion()
+        trailing_motion = self.motion.pictograph.managers.get.trailing_motion()
+        if self.motion.pictograph.managers.get.leading_motion():
             leading_motion.arrow.motion.lead_state = LEADING
             trailing_motion.arrow.motion.lead_state = TRAILING

@@ -23,7 +23,7 @@ class NonHybridShiftLetterDeterminer:
         self, motion: "Motion", new_motion_type: str, swap_prop_rot_dir: bool
     ) -> Letter:
         """Handle the case where there is one float and one shift, and the user changes the motion type of the shift."""
-        other_motion = motion.pictograph.get.other_motion(motion)
+        other_motion = motion.pictograph.managers.get.other_motion(motion)
         if new_motion_type in [PRO, ANTI]:
             self._update_motion_attributes(motion, new_motion_type, other_motion)
             if swap_prop_rot_dir:
@@ -74,7 +74,7 @@ class NonHybridShiftLetterDeterminer:
                 json_index,
                 other_motion.color,
             )
-            if other_motion.pictograph.direction == OPP:
+            if other_motion.pictograph.state.direction == OPP:
                 prop_rot_dir = self._get_opposite_rotation_direction(prop_rot_dir)
         elif other_motion.motion_type in [PRO, ANTI]:
             prop_rot_dir = (
@@ -83,7 +83,7 @@ class NonHybridShiftLetterDeterminer:
                     other_motion.color,
                 )
             )
-            if other_motion.pictograph.direction == OPP:
+            if other_motion.pictograph.state.direction == OPP:
                 prop_rot_dir = self._get_opposite_rotation_direction(prop_rot_dir)
 
         return prop_rot_dir
@@ -102,8 +102,10 @@ class NonHybridShiftLetterDeterminer:
 
     def _compare_motion_attributes(self, motion: "Motion", example) -> bool:
         """Compare the motion attributes with the example to find a match."""
-        float_motion = motion.pictograph.get.float_motion()
-        non_float_motion = float_motion.pictograph.get.other_motion(float_motion)
+        float_motion = motion.pictograph.managers.get.float_motion()
+        non_float_motion = float_motion.pictograph.managers.get.other_motion(
+            float_motion
+        )
 
         does_example_match = (
             self._is_shift_motion_type_matching(float_motion, example)

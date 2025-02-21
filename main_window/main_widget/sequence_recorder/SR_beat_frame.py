@@ -104,8 +104,8 @@ class SR_BeatFrame(QFrame):
             else:
                 beat = self.beat_views[i - 1].beat
                 if beat:
-                    if beat.pictograph_data != entry:
-                        beat.updater.update_pictograph(entry)
+                    if beat.state.pictograph_data != entry:
+                        beat.managers.updater.update_pictograph(entry)
                         QApplication.processEvents()
 
     def update_start_pos_from_current_sequence_json(self, entry: dict) -> None:
@@ -133,7 +133,7 @@ class SR_BeatFrame(QFrame):
             ):
                 continue
             beat = Beat(self)
-            beat.updater.update_pictograph(pictograph_data)
+            beat.managers.updater.update_pictograph(pictograph_data)
             self.add_scene_to_sequence(beat)
             # pictograph_key = (
             #     beat.main_widget.pictograph_key_generator.generate_pictograph_key(

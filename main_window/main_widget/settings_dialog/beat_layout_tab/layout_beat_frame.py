@@ -7,8 +7,12 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view im
     BeatView,
 )
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import StartPositionBeat
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import StartPositionBeatView
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
+    StartPositionBeat,
+)
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import (
+    StartPositionBeatView,
+)
 from main_window.main_widget.settings_dialog.beat_layout_tab.layout_beat_view import (
     LayoutBeatView,
 )
@@ -72,7 +76,7 @@ class LayoutBeatFrame(QFrame):
         # Handle the start position beat view
         start_pos = StartPositionBeat(self)
         self.start_pos_view.set_start_pos(start_pos)
-        start_pos.grid.hide()
+        start_pos.elements.grid.hide()
         self.layout.addWidget(self.start_pos_view, 0, 0)
         self.start_pos_view.setVisible(True)
 
@@ -84,7 +88,7 @@ class LayoutBeatFrame(QFrame):
                     beat_view = self.beat_views[index]
                     beat = Beat(self)
                     beat_view.set_beat(beat, index + 1)
-                    beat.grid.hide()
+                    beat.elements.grid.hide()
                     self.layout.addWidget(beat_view, row, col)
                     beat_view.setVisible(True)
                     index += 1

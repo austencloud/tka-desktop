@@ -14,11 +14,11 @@ class PictographDictCopier:
     def copy_pictograph_data(self) -> None:
         if (
             hasattr(self.pictograph, "pictograph_data")
-            and self.pictograph.pictograph_data
+            and self.pictograph.state.pictograph_data
         ):
             try:
                 pictograph_json = json.dumps(
-                    self.pictograph.pictograph_data, indent=4, ensure_ascii=False
+                    self.pictograph.state.pictograph_data, indent=4, ensure_ascii=False
                 )
 
                 clipboard: QClipboard = QApplication.clipboard()

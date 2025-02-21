@@ -34,7 +34,7 @@ if TYPE_CHECKING:
     from .json_manager.json_manager import JsonManager
     from .sequence_workbench.sequence_workbench import SequenceWorkbench
 
-    from base_widgets.pictograph.svg_manager import (
+    from base_widgets.pictograph.managers.svg_manager import (
         SvgManager,
     )
     from .main_background_widget.backgrounds.base_background import (

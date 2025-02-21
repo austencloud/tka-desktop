@@ -27,7 +27,7 @@ class RotationAngleOverrideManager:
         self.wasd_manager = wasd_adjustment_manager
         self.pictograph = wasd_adjustment_manager.pictograph
         self.special_positioner = (
-            self.pictograph.arrow_placement_manager.special_positioner
+            self.pictograph.managers.arrow_placement_manager.special_positioner
         )
         self.key_generator = RotationAngleOverrideKeyGenerator(self)
 
@@ -39,21 +39,21 @@ class RotationAngleOverrideManager:
             self.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow.motion
         )
         data = self.pictograph.main_widget.special_placements
-        letter = self.pictograph.letter
+        letter = self.pictograph.state.letter
 
         self._apply_override_if_needed(letter, data, ori_key)
-        self.pictograph.arrow_placement_manager.update_arrow_placements()
+        self.pictograph.managers.arrow_placement_manager.update_arrow_placements()
         visible_pictographs = self.get_visible_pictographs()
         for pictograph in visible_pictographs:
-            pictograph.updater.update_pictograph()
-            pictograph.arrow_placement_manager.update_arrow_placements()
+            pictograph.managers.updater.update_pictograph()
+            pictograph.managers.arrow_placement_manager.update_arrow_placements()
 
     def get_visible_pictographs(self) -> list["PictographScene"]:
         visible_pictographs = []
         for pictograph_list in self.pictograph.main_widget.pictograph_dataset.values():
             for pictograph in pictograph_list.values():
-                if pictograph.view:
-                    if pictograph.view.isVisible():
+                if pictograph.elements.view:
+                    if pictograph.elements.view.isVisible():
                         visible_pictographs.append(pictograph)
         return visible_pictographs
 
@@ -81,12 +81,12 @@ class RotationAngleOverrideManager:
         turns_tuple: str,
         rot_angle_key: str,
     ) -> None:
-        letter_data = data[self.pictograph.grid_mode][ori_key].get(
+        letter_data = data[self.pictograph.state.grid_mode][ori_key].get(
             letter_enum.value, {}
         )
         turn_data = letter_data.get(turns_tuple, {})
         letter_data[turns_tuple] = turn_data
-        data[self.wasd_manager.pictograph.grid_mode][ori_key][
+        data[self.wasd_manager.pictograph.state.grid_mode][ori_key][
             letter_enum.value
         ] = letter_data
         if rot_angle_key in turn_data:
@@ -98,7 +98,7 @@ class RotationAngleOverrideManager:
         self.special_positioner.data_updater.update_specific_entry_in_json(
             letter_enum, letter_data, ori_key
         )
-        self.pictograph.updater.update_pictograph()
+        self.pictograph.managers.updater.update_pictograph()
 
     def handle_mirrored_rotation_angle_override(
         self, other_letter_data, rotation_angle_override, mirrored_turns_tuple
@@ -110,7 +110,7 @@ class RotationAngleOverrideManager:
 
     def _update_mirrored_entry_with_rotation_override(self, updated_turn_data: dict):
         mirrored_entry_manager = (
-            self.wasd_manager.pictograph.arrow_placement_manager.special_positioner.data_updater.mirrored_entry_manager
+            self.wasd_manager.pictograph.managers.arrow_placement_manager.special_positioner.data_updater.mirrored_entry_manager
         )
         mirrored_entry_manager.rot_angle_manager.update_rotation_angle_in_mirrored_entry(
             self.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow,
@@ -119,7 +119,7 @@ class RotationAngleOverrideManager:
 
     def _update_mirrored_entry_with_rotation_override_removal(self, hybrid_key: str):
         mirrored_entry_handler = (
-            self.wasd_manager.pictograph.arrow_placement_manager.special_positioner.data_updater.mirrored_entry_manager
+            self.wasd_manager.pictograph.managers.arrow_placement_manager.special_positioner.data_updater.mirrored_entry_manager
         )
         if mirrored_entry_handler:
             mirrored_entry_handler.rot_angle_manager.remove_rotation_angle_in_mirrored_entry(

@@ -1,11 +1,11 @@
 from typing import Union, TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.glyphs.beat_reversal_group import BeatReversalGroup
+from base_widgets.pictograph.glyphs.reversal_glyph import ReversalGlyph
 from base_widgets.pictograph.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
     StartToEndPosGlyph,
 )
-from base_widgets.pictograph.grid.grid import NonRadialPointsGroup
 from Enums.Enums import Glyph
+from base_widgets.pictograph.grid.non_radial_points_group import NonRadialPointsGroup
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.visibility_tab.pictograph.visibility_pictograph_view import (
@@ -22,8 +22,8 @@ class VisibilityPictographInteractionManager:
         self.visibility_settings = view.visibility_settings
         self.toggler = self.view.tab.toggler
 
-        self.glyphs = view.pictograph.get.glyphs()
-        self.non_radial_points = self.pictograph.get.non_radial_points()
+        self.glyphs = view.pictograph.managers.get.glyphs()
+        self.non_radial_points = self.pictograph.managers.get.non_radial_points()
         self._initialize_interactions()
 
     def _initialize_interactions(self):
@@ -39,7 +39,7 @@ class VisibilityPictographInteractionManager:
         glyph.hoverEnterEvent = self._create_hover_event(glyph, entering=True)
         glyph.hoverLeaveEvent = self._create_hover_event(glyph, entering=False)
 
-        if isinstance(glyph, (StartToEndPosGlyph, BeatReversalGroup)):
+        if isinstance(glyph, (StartToEndPosGlyph, ReversalGlyph)):
             for child in glyph.childItems():
                 child.setCursor(Qt.CursorShape.PointingHandCursor)
                 child.setAcceptHoverEvents(True)

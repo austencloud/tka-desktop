@@ -38,7 +38,7 @@ class StyledBorderOverlay(QWidget):
         return border_colors_map
 
     def get_border_colors(self) -> tuple[str, str]:
-        letter_type = self.view.pictograph.letter_type
+        letter_type = self.view.pictograph.state.letter_type
         return self.border_colors_map.get(letter_type, ("black", "black"))
 
     def update_border_widths(self) -> None:

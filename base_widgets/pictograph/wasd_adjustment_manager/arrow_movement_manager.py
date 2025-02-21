@@ -14,7 +14,7 @@ class ArrowMovementManager:
     def __init__(self, pictograph: "PictographScene") -> None:
         self.pictograph = pictograph
         self.data_updater = (
-            self.pictograph.arrow_placement_manager.special_positioner.data_updater
+            self.pictograph.managers.arrow_placement_manager.special_positioner.data_updater
         )
 
     def handle_arrow_movement(
@@ -38,18 +38,18 @@ class ArrowMovementManager:
         self.data_updater.mirrored_entry_manager.update_mirrored_entry_in_json(
             selected_arrow
         )
-        pictograph.arrow_placement_manager.update_arrow_placements()
+        pictograph.managers.arrow_placement_manager.update_arrow_placements()
         QApplication.processEvents()
         visible_pictographs = self.get_visible_pictographs()
         for pictograph in visible_pictographs:
-            pictograph.arrow_placement_manager.update_arrow_placements()
+            pictograph.managers.arrow_placement_manager.update_arrow_placements()
 
     def get_visible_pictographs(self) -> list["PictographScene"]:
         visible_pictographs = []
         for pictograph_list in self.pictograph.main_widget.pictograph_dataset.values():
             for pictograph in pictograph_list.values():
-                if pictograph.view:
-                    if pictograph.view.isVisible():
+                if pictograph.elements.view:
+                    if pictograph.elements.view.isVisible():
                         visible_pictographs.append(pictograph)
         return visible_pictographs
 

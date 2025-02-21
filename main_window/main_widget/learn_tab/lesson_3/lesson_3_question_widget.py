@@ -34,13 +34,13 @@ class Lesson3QuestionWidget(BaseQuestionWidget):
         """Load and display the pictograph."""
         super().load_pictograph(pictograph_data)
         if self.pictograph:
-            self.pictograph.tka_glyph.setVisible(True)
+            self.pictograph.elements.tka_glyph.setVisible(True)
 
     def clear(self) -> None:
         """Clear the current pictograph."""
         if self.pictograph:
-            self.layout.removeWidget(self.pictograph.view)
-            self.pictograph.view.deleteLater()
+            self.layout.removeWidget(self.pictograph.elements.view)
+            self.pictograph.elements.view.deleteLater()
             self.pictograph = None
 
     def resizeEvent(self, event) -> None:
@@ -51,4 +51,4 @@ class Lesson3QuestionWidget(BaseQuestionWidget):
     def _resize_pictograph(self) -> None:
         if self.pictograph:
             size = int(self.main_widget.height() // 5)
-            self.pictograph.view.setFixedSize(size, size)
+            self.pictograph.elements.view.setFixedSize(size, size)

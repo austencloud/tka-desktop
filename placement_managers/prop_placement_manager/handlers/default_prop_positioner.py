@@ -6,7 +6,7 @@ from objects.prop.prop import Prop
 import logging
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.grid.grid import GridPoint
+    from base_widgets.pictograph.grid.grid_point import GridPoint
     from ..prop_placement_manager import PropPlacementManager
     from base_widgets.pictograph.pictograph_scene import PictographScene
 
@@ -23,18 +23,24 @@ class DefaultPropPositioner:
         """
         Sets the prop to its default location based on its `loc` attribute.
         """
-        strict = self.pictograph.check.has_strictly_placed_props()
+        strict = self.pictograph.managers.check.has_strictly_placed_props()
 
         point_suffix = "_strict" if strict else ""
 
-        point_name = f"{prop.loc}_{prop.pictograph.grid_mode}_hand_point{point_suffix}"
+        point_name = (
+            f"{prop.loc}_{prop.pictograph.state.grid_mode}_hand_point{point_suffix}"
+        )
 
         logger.debug(f"Attempting to place prop '{prop}' at point '{point_name}'.")
 
         grid_point = (
-            self.pictograph.grid.grid_data.all_hand_points_strict.get(point_name)
+            self.pictograph.elements.grid.grid_data.all_hand_points_strict.get(
+                point_name
+            )
             if strict
-            else self.pictograph.grid.grid_data.all_hand_points_normal.get(point_name)
+            else self.pictograph.elements.grid.grid_data.all_hand_points_normal.get(
+                point_name
+            )
         )
 
         if grid_point and grid_point.coordinates:
@@ -78,8 +84,8 @@ class DefaultPropPositioner:
         Returns hand location points, depending on whether the props should be strictly placed.
         """
         location_points = (
-            self.pictograph.grid.grid_data.all_hand_points_strict
+            self.pictograph.elements.grid.grid_data.all_hand_points_strict
             if strict
-            else self.pictograph.grid.grid_data.all_hand_points_normal
+            else self.pictograph.elements.grid.grid_data.all_hand_points_normal
         )
         return location_points

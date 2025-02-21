@@ -3,7 +3,9 @@
 from PyQt6.QtCore import QPointF
 from typing import TYPE_CHECKING
 
-from base_widgets.pictograph.glyphs.tka.turns_parser import parse_turns_tuple_string
+from base_widgets.pictograph.glyphs.tka_glyph.turns_parser import (
+    parse_turns_tuple_string,
+)
 from .dot import Dot
 from data.constants import OPP, SAME
 
@@ -53,7 +55,8 @@ class DotHandler:
             # Center the dot vertically at the specified position
             dot_center = QPointF(
                 letter_scene_center.x(),
-                position + (-dot_height / 2 if dot == self.glyph.same_dot else dot_height / 2)
+                position
+                + (-dot_height / 2 if dot == self.glyph.same_dot else dot_height / 2),
             )
             # Offset by the dot’s own boundingRect center
             dot.setPos(dot_center - dot.boundingRect().center())

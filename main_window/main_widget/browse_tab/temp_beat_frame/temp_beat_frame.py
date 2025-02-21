@@ -111,8 +111,8 @@ class TempBeatFrame(BaseBeatFrame):
             elif i > 1:
                 beat = self.beat_views[i - 2].beat
                 if beat:
-                    if beat.pictograph_data != entry:
-                        beat.updater.update_pictograph(entry)
+                    if beat.state.pictograph_data != entry:
+                        beat.managers.updater.update_pictograph(entry)
                         # QApplication.processEvents()
 
     def update_start_pos_from_current_sequence_json(self, entry: dict) -> None:
@@ -150,7 +150,7 @@ class TempBeatFrame(BaseBeatFrame):
 
     def populate_sequence(self, pictograph_data: dict) -> None:
         pictograph = Beat(self)
-        pictograph.updater.update_pictograph(pictograph_data)
+        pictograph.managers.updater.update_pictograph(pictograph_data)
         self.add_beat_to_sequence(pictograph)
         self.update_current_word()
 

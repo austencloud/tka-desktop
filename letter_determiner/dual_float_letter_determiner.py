@@ -15,7 +15,7 @@ class DualFloatLetterDeterminer:
 
     def determine_letter(self, motion: "Motion") -> Letter:
         """Handle the motion attributes for dual float motions."""
-        other_motion = motion.pictograph.get.other_motion(motion)
+        other_motion = motion.pictograph.managers.get.other_motion(motion)
         self._update_prefloat_attributes(motion, other_motion)
         return self._find_matching_letter(motion)
 
@@ -65,7 +65,7 @@ class DualFloatLetterDeterminer:
         return None
 
     def _compare_motion_attributes(self, motion: "Motion", example) -> bool:
-        other_motion = motion.pictograph.get.other_motion(motion)
+        other_motion = motion.pictograph.managers.get.other_motion(motion)
         return (
             example[f"{motion.color}_attributes"]["start_loc"] == motion.start_loc
             and example[f"{motion.color}_attributes"]["end_loc"] == motion.end_loc

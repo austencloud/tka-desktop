@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 class Type4TurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph) -> str:
         super().set_pictograph(pictograph)
-        dash = self.pictograph.get.dash()
-        static = self.pictograph.get.static()
+        dash = self.pictograph.managers.get.dash()
+        static = self.pictograph.managers.get.static()
         if dash.turns == 0 and static.turns == 0:
             return f"({self._normalize_turns(dash)}, {self._normalize_turns(static)})"
         elif dash.turns == 0 or static.turns == 0:

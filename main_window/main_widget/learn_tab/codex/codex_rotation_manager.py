@@ -26,7 +26,7 @@ class CodexRotationManager:
                 self.codex.data_manager.pictograph_data[letter] = pictograph_data
 
         for view in self.codex.section_manager.codex_views.values():
-            view.pictograph.grid.update_grid_mode()
+            view.pictograph.elements.grid.update_grid_mode()
 
         self._refresh_pictograph_views()
 
@@ -69,11 +69,11 @@ class CodexRotationManager:
     def update_grid_mode(self):
         for view in self.codex.section_manager.codex_views.values():
             grid_mode = GridModeChecker.get_grid_mode(
-                view.pictograph.pictograph_data
+                view.pictograph.state.pictograph_data
             )
-            view.pictograph.grid.hide()
-            view.pictograph.grid.__init__(
-                view.pictograph, view.pictograph.grid.grid_data, grid_mode
+            view.pictograph.elements.grid.hide()
+            view.pictograph.elements.grid.__init__(
+                view.pictograph, view.pictograph.elements.grid.grid_data, grid_mode
             )
 
     def _refresh_pictograph_views(self):
@@ -81,7 +81,7 @@ class CodexRotationManager:
         for letter, view in self.codex.section_manager.codex_views.items():
             if letter in self.codex.data_manager.pictograph_data:
                 pictograph_data = self.codex.data_manager.pictograph_data[letter]
-                view.pictograph.arrow_placement_manager.default_positioner.__init__(
-                    view.pictograph.arrow_placement_manager
+                view.pictograph.managers.arrow_placement_manager.default_positioner.__init__(
+                    view.pictograph.managers.arrow_placement_manager
                 )
-                view.pictograph.updater.update_pictograph(pictograph_data)
+                view.pictograph.managers.updater.update_pictograph(pictograph_data)

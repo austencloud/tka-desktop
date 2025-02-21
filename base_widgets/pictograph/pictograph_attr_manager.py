@@ -1,25 +1,47 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
+from Enums.Enums import Letter, OpenCloseStates, VTG_Modes
+from Enums.PropTypes import PropType
+from Enums.letters import LetterType
+from PyQt6.QtWidgets import QGraphicsTextItem
 
-from Enums.Enums import Letter
-from data.constants import LETTER
-
+from objects.arrow.arrow import Arrow
+from objects.motion.motion import Motion
+from objects.prop.prop import Prop
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
 class PictographAttrManager:
+    """Manages attribute assignment for the PictographScene."""
+
     def __init__(self, pictograph: "PictographScene") -> None:
         self.pictograph = pictograph
 
-    def update_attributes(self, pictograph_data: dict) -> None:
-        for attr_name, attr_value in pictograph_data.items():
-            if attr_name == LETTER:
-                attr_value = Letter.get_letter(attr_value)
-                self.pictograph.letter = attr_value
-            elif isinstance(attr_value, dict):
-                for k, v in attr_value.items():
-                    attr_name = k
-                    attr_value = v
-            if attr_value is not None:
-                setattr(self.pictograph, attr_name, attr_value)
+    def load_from_dict(self, data: dict[str, Union[str, dict[str, str]]]) -> None:
+        """Loads pictograph attributes from a dictionary and assigns them to the right subcomponent."""
+
+        # ==== STATE ATTRIBUTES ====
+        state_mapping = {
+            "sequence_start_position": "sequence_start_pos",
+            "letter": "letter",
+            "start_pos": "start_pos",
+            "end_pos": "end_pos",
+            "timing": "timing",
+            "direction": "direction",
+        }
+
+        for data_key, attr_name in state_mapping.items():
+            if data_key in data:
+                setattr(self.pictograph.state, attr_name, data[data_key])
+
+        # Handle Enums separately
+        if "letter" in data:
+            self.pictograph.state.letter = self._convert_letter(data["letter"])
+
+    def _convert_letter(self, letter_str: str) -> Union[LetterType, str]:
+        """Converts a letter string into a LetterType enum if possible, otherwise returns it as a string."""
+        try:
+            return Letter.get_letter(letter_str)
+        except KeyError:
+            return letter_str  # Fallback to raw string if not found in LetterType

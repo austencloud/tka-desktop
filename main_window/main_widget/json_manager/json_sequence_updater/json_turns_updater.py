@@ -38,7 +38,7 @@ class JsonTurnsUpdater:
             if sequence[index][f"{color}_attributes"]["turns"] > 0:
                 pictograph = beat_frame.beat_views[index - 2].beat
                 if pictograph:
-                    motion = pictograph.get.motion_by_color(color)
+                    motion = pictograph.managers.get.motion_by_color(color)
                     prop_rot_dir = motion.prop_rot_dir
                     sequence[index][f"{color}_attributes"][
                         "prop_rot_dir"
@@ -47,7 +47,7 @@ class JsonTurnsUpdater:
         elif sequence[index][f"{color}_attributes"]["turns"] == "fl":
             pictograph = beat_frame.beat_views[index - 2].beat
             if pictograph:
-                motion = pictograph.get.motion_by_color(color)
+                motion = pictograph.managers.get.motion_by_color(color)
 
         if sequence[index][f"{color}_attributes"]["motion_type"] in [DASH, STATIC]:
             if sequence[index][f"{color}_attributes"]["turns"] == 0:

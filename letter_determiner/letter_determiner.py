@@ -24,7 +24,7 @@ class LetterDeterminer:
         """Update the motion attributes based on the change in prop_rot_dir."""
         if not self.beat_frame:
             self.beat_frame = self.main_widget.sequence_workbench.sequence_beat_frame
-        other_motion = motion.pictograph.get.other_motion(motion)
+        other_motion = motion.pictograph.managers.get.other_motion(motion)
         motion_type = motion.motion_type
 
         if motion_type == FLOAT and other_motion.motion_type == FLOAT:
@@ -38,7 +38,8 @@ class LetterDeterminer:
         if (
             swap_prop_rot_dir
             and other_motion.motion_type == FLOAT
-            and other_motion.pictograph.letter.get_letter_type() == LetterType.Type1
+            and other_motion.pictograph.state.letter.get_letter_type()
+            == LetterType.Type1
         ):
             return self.non_hybrid_shift_letter_determiner.determine_letter(
                 motion, new_motion_type, swap_prop_rot_dir
@@ -53,9 +54,9 @@ class LetterDeterminer:
         return new_letter
 
     def find_letter_based_on_attributes(self, motion: "Motion") -> str:
-        other_motion = motion.pictograph.get.other_motion(motion)
-        letter_type = motion.pictograph.letter.get_letter_type()
-        original_letter = motion.pictograph.letter
+        other_motion = motion.pictograph.managers.get.other_motion(motion)
+        letter_type = motion.pictograph.state.letter.get_letter_type()
+        original_letter = motion.pictograph.state.letter
         for letter, examples in self.letters.items():
 
             if letter_type == LetterType.Type1:
@@ -106,8 +107,10 @@ class LetterDeterminer:
     def compare_motion_attributes_for_type1_hybrids_with_one_float(
         self, motion: "Motion", example
     ):
-        float_motion = motion.pictograph.get.float_motion()
-        non_float_motion = float_motion.pictograph.get.other_motion(float_motion)
+        float_motion = motion.pictograph.managers.get.float_motion()
+        non_float_motion = float_motion.pictograph.managers.get.other_motion(
+            float_motion
+        )
         motion_attributes_match_example = (
             self.is_shift_motion_type_matching(float_motion, example)
             and example[f"{float_motion.color}_attributes"]["start_loc"]
@@ -133,7 +136,9 @@ class LetterDeterminer:
     def compare_motion_attributes_for_type1_nonhybrids_with_one_float(
         self, float_motion: "Motion", example
     ):
-        non_float_motion = float_motion.pictograph.get.other_motion(float_motion)
+        non_float_motion = float_motion.pictograph.managers.get.other_motion(
+            float_motion
+        )
         motion_attributes_match_example = (
             self.is_shift_motion_type_matching(float_motion, example)
             and example[f"{float_motion.color}_attributes"]["start_loc"]
@@ -157,8 +162,8 @@ class LetterDeterminer:
         return motion_attributes_match_example
 
     def compare_motion_attributes_for_type2_3(self, motion: "Motion", example):
-        shift = motion.pictograph.get.shift()
-        non_shift = motion.pictograph.get.other_motion(shift)
+        shift = motion.pictograph.managers.get.shift()
+        non_shift = motion.pictograph.managers.get.other_motion(shift)
         motion_attributes_match_example = (
             self.is_shift_motion_type_matching(shift, example)
             and example[f"{shift.color}_attributes"]["start_loc"] == shift.start_loc

@@ -14,7 +14,7 @@ class MirroredEntryDataPrep:
         """Determines if a new mirrored entry is needed for the given arrow."""
         ori_key = self._get_ori_key(arrow.motion)
         return (
-            arrow.pictograph.letter
+            arrow.pictograph.state.letter
             not in self.manager.data_updater.positioner.placement_manager.pictograph.main_widget.special_placements.get(
                 ori_key, {}
             )
@@ -27,7 +27,7 @@ class MirroredEntryDataPrep:
     def get_keys_for_mixed_start_ori(self, letter, ori_key) -> tuple[str, dict]:
         """Fetches keys and data for mixed start orientation cases."""
         if (
-            self.manager.data_updater.positioner.pictograph.check.starts_from_mixed_orientation()
+            self.manager.data_updater.positioner.pictograph.managers.check.starts_from_mixed_orientation()
         ):
             other_ori_key = self.manager.data_updater.get_other_layer3_ori_key(ori_key)
             other_letter_data = self._get_letter_data(other_ori_key, letter)

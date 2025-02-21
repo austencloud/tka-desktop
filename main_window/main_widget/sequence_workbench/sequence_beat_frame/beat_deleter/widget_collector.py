@@ -32,31 +32,31 @@ class WidgetCollector:
         )
 
         items = []
-        items.extend(GE_pictograph.arrows.values())
-        items.extend(GE_pictograph.props.values())
+        items.extend(GE_pictograph.elements.arrows.values())
+        items.extend(GE_pictograph.elements.props.values())
 
         glyph_items = [
             # TKA
-            GE_pictograph.tka_glyph.letter_item,
-            GE_pictograph.tka_glyph.dash,
-            GE_pictograph.tka_glyph.same_dot,
-            GE_pictograph.tka_glyph.opp_dot,
-            GE_pictograph.tka_glyph.top_number,
-            GE_pictograph.tka_glyph.bottom_number,
+            GE_pictograph.elements.tka_glyph.letter_item,
+            GE_pictograph.elements.tka_glyph.dash,
+            GE_pictograph.elements.tka_glyph.same_dot,
+            GE_pictograph.elements.tka_glyph.opp_dot,
+            GE_pictograph.elements.tka_glyph.top_number,
+            GE_pictograph.elements.tka_glyph.bottom_number,
             # VTG
-            GE_pictograph.vtg_glyph,
+            GE_pictograph.elements.vtg_glyph,
             # Elementals
-            GE_pictograph.elemental_glyph,
+            GE_pictograph.elements.elemental_glyph,
             # Positions
-            GE_pictograph.start_to_end_pos_glyph.start_glyph,
-            GE_pictograph.start_to_end_pos_glyph.end_glyph,
-            GE_pictograph.start_to_end_pos_glyph.arrow_glyph,
+            GE_pictograph.elements.start_to_end_pos_glyph.start_glyph,
+            GE_pictograph.elements.start_to_end_pos_glyph.end_glyph,
+            GE_pictograph.elements.start_to_end_pos_glyph.arrow_glyph,
             # Beat number
             GE_pictograph.beat_number_item,
             GE_pictograph.start_text_item,
             # Reversals
-            GE_pictograph.blue_reversal_symbol,
-            GE_pictograph.red_reversal_symbol,
+            GE_pictograph.elements.blue_reversal_symbol,
+            GE_pictograph.elements.red_reversal_symbol,
         ]
 
         items.extend(glyph_items)

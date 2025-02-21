@@ -35,7 +35,7 @@ class OptionView(BorderedPictographView):
         )
         bw = max(1, int(size * 0.015))
         size -= 2 * bw + spacing
-        self.pictograph.view.update_border_widths()
+        self.pictograph.elements.view.update_border_widths()
         self.setFixedSize(size, size)
         self.view_scale = size / self.pictograph.width()
         self.resetTransform()

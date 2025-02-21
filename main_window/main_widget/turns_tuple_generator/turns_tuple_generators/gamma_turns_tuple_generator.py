@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 class GammaTurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph) -> str:
         super().set_pictograph(pictograph)
-        blue_static = self.pictograph.blue_motion
-        red_static = self.pictograph.red_motion
+        blue_static = self.pictograph.elements.blue_motion
+        red_static = self.pictograph.elements.red_motion
         blue_static_map, red_static_map = self._get_direction_maps()
 
         if blue_static.turns == 0 and red_static.turns > 0:

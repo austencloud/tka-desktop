@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Union
-from base_widgets.pictograph.glyphs.beat_reversal_group import BeatReversalGroup
+from base_widgets.pictograph.glyphs.reversal_glyph import ReversalGlyph
 from base_widgets.pictograph.pictograph_scene import PictographScene
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_grabber import (
     BeatGrabber,
@@ -31,7 +31,7 @@ class Beat(PictographScene):
     ):
         super().__init__()
         self.main_widget = beat_frame.main_widget
-        self.reversal_glyph = BeatReversalGroup(self)
+        self.reversal_glyph = ReversalGlyph(self)
         self.beat_number_item = BeatNumberItem(self)
         self.grabber = BeatGrabber(self)
         self.duration = duration

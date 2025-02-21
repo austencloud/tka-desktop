@@ -35,9 +35,9 @@ class BeatFrameGetter:
         word = ""
         for beat_view in self.beat_frame.beat_views:
             if beat_view.is_filled:
-                if beat_view.beat.pictograph_data.get("is_placeholder", False):
+                if beat_view.beat.state.pictograph_data.get("is_placeholder", False):
                     continue
-                word += beat_view.beat.pictograph_data.get("letter", "")
+                word += beat_view.beat.state.pictograph_data.get("letter", "")
         return WordSimplifier.simplify_repeated_word(word)
 
     def index_of_currently_selected_beat(self) -> int:
@@ -68,19 +68,6 @@ class BeatFrameGetter:
                 return beat_view
         return None
 
-    def current_beat_frame_state(self) -> dict:
-        num_beats = sum(1 for beat in self.beat_frame.beat_views if beat.isVisible())
-        grow_sequence = (
-            self.beat_frame.settings_manager.global_settings.get_grow_sequence()
-        )
-        rows, cols = self.beat_frame.layout_manager.calculate_current_layout()
-
-        return {
-            "num_beats": num_beats,
-            "rows": rows,
-            "cols": cols,
-            "grow_sequence": grow_sequence,
-        }
 
     def beat_number(self, beat_view: QGraphicsView) -> int:
         """Get the beat number for a given beat view."""
@@ -92,7 +79,7 @@ class BeatFrameGetter:
 
     def beat_dicts(self):
         return [
-            beat.beat.get.pictograph_data()
+            beat.beat.managers.get.pictograph_data()
             for beat in self.beat_frame.beat_views
             if beat.is_filled
         ]

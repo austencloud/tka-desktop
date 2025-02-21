@@ -64,7 +64,7 @@ class VTG_Glyph(QGraphicsSvgItem):
         )
         from utilities.path_helpers import get_images_and_data_path
 
-        if not self.pictograph.letter_type in [LetterType.Type1]:
+        if not self.pictograph.state.letter_type in [LetterType.Type1]:
             self.setVisible(False)
 
         SVG_BASE_PATH = get_images_and_data_path("images/vtg_glyphs")
@@ -77,8 +77,8 @@ class VTG_Glyph(QGraphicsSvgItem):
             QUARTER_OPP: f"{SVG_BASE_PATH}/QO.svg",
         }
 
-        self.pictograph.vtg_mode = self.determine_vtg_mode()
-        svg_path = SVG_PATHS.get(self.pictograph.vtg_mode, "")
+        self.pictograph.state.vtg_mode = self.determine_vtg_mode()
+        svg_path = SVG_PATHS.get(self.pictograph.state.vtg_mode, "")
         if svg_path:
             self.renderer: QSvgRenderer = QSvgRenderer(svg_path)
             if self.renderer.isValid():
@@ -92,9 +92,9 @@ class VTG_Glyph(QGraphicsSvgItem):
                 )
 
     def determine_vtg_mode(self) -> Literal["SS", "SO", "TS", "TO", "QS", "QO"]:
-        letter_str = self.pictograph.letter.value
-        start_pos = self.pictograph.start_pos
-        grid_mode = GridModeChecker.get_grid_mode(self.pictograph.pictograph_data)
+        letter_str = self.pictograph.state.letter.value
+        start_pos = self.pictograph.state.start_pos
+        grid_mode = GridModeChecker.get_grid_mode(self.pictograph.state.pictograph_data)
 
         mode_mapping = {
             DIAMOND: {
@@ -171,7 +171,9 @@ class VTG_Glyph(QGraphicsSvgItem):
             },
         }
 
-        return mode_mapping.get(grid_mode, {}).get(letter_str, self.pictograph.vtg_mode)
+        return mode_mapping.get(grid_mode, {}).get(
+            letter_str, self.pictograph.state.vtg_mode
+        )
 
     def position_vtg_glyph(self) -> None:
         pictograph_width = self.pictograph.width()

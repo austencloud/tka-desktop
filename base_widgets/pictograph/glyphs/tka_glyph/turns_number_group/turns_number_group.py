@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QGraphicsItemGroup
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 from .turns_tuple_interpretor import TurnsTupleInterpreter
 from .turns_number import TurnsNumber
 from utilities.path_helpers import get_images_and_data_path

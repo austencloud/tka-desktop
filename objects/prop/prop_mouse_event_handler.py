@@ -135,7 +135,7 @@ class PropMouseEventHandler:
                 self.p.motion.arrow.ghost.loc = new_arrow_location
                 self.p.motion.start_loc = start_loc
                 self.p.motion.end_loc = end_loc
-                self.p.pictograph.updater.update_pictograph()
+                self.p.pictograph.managers.updater.update_pictograph()
 
         elif self.p.motion.motion_type == STATIC:
             self.p.motion.arrow.loc = new_arrow_location

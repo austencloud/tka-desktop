@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 class LambdaDashTurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph) -> str:
         super().set_pictograph(pictograph)
-        blue_dash = self.pictograph.blue_motion
-        red_dash = self.pictograph.red_motion
+        blue_dash = self.pictograph.elements.blue_motion
+        red_dash = self.pictograph.elements.red_motion
         blue_dash_map, red_dash_map = self._get_direction_maps()
 
         if blue_dash.turns == 0 and red_dash.turns > 0:

@@ -7,22 +7,19 @@ if TYPE_CHECKING:
     )
 
 
-
 class HandPositioner:
     def __init__(self, beta_prop_positioner: "BetaPropPositioner") -> None:
         self.beta_prop_positioner = beta_prop_positioner
         self.pictograph = beta_prop_positioner.pictograph
 
     def reposition_beta_hands(self) -> None:
-        red_hand = self.pictograph.red_prop
-        blue_hand = self.pictograph.blue_prop
+        red_hand = self.pictograph.elements.red_prop
+        blue_hand = self.pictograph.elements.blue_prop
         self.move_hand(red_hand, "right")
         self.move_hand(blue_hand, "left")
 
     def move_hand(self, prop: Prop, direction: str) -> None:
-        offset_calculator = (
-            self.beta_prop_positioner.beta_offset_calculator
-        )
+        offset_calculator = self.beta_prop_positioner.beta_offset_calculator
         offset = offset_calculator.calculate_new_position_with_offset(
             prop.pos(), direction
         )

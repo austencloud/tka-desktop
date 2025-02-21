@@ -34,9 +34,9 @@ class GE_PictographViewMouseEventHandler:
         return any(isinstance(item, Arrow) for item in items_at_pos)
 
     def clear_selections(self) -> None:
-        for arrow in self.pictograph.arrows.values():
+        for arrow in self.pictograph.elements.arrows.values():
             arrow.setSelected(False)
-        for prop in self.pictograph.props.values():
+        for prop in self.pictograph.elements.props.values():
             prop.setSelected(False)
         self.dragged_prop = None
         self.dragged_arrow = None

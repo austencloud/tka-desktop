@@ -2,7 +2,9 @@ import os
 import logging
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
+    TurnsTupleGenerator,
+)
 from main_window.settings_manager.global_settings.app_context import AppContext
 from .mirrored_entry_manager.mirrored_entry_manager import (
     MirroredEntryManager,
@@ -40,7 +42,7 @@ class SpecialPlacementDataUpdater:
     def _get_letter_data(self, letter: Letter, ori_key: str) -> dict:
         letter_data = (
             self.positioner.placement_manager.pictograph.main_widget.special_placements[
-                self.positioner.pictograph.grid_mode
+                self.positioner.pictograph.state.grid_mode
             ][ori_key].get(letter.value, {})
         )
 
@@ -70,12 +72,12 @@ class SpecialPlacementDataUpdater:
 
     def _get_default_adjustment(self, arrow: Arrow) -> tuple[int, int]:
         default_mgr = (
-            self.positioner.pictograph.arrow_placement_manager.default_positioner
+            self.positioner.pictograph.managers.arrow_placement_manager.default_positioner
         )
         return default_mgr.get_default_adjustment(arrow)
 
     def _generate_ori_key(self, motion: Motion) -> str:
-        other_motion = self.positioner.pictograph.get.other_motion(motion)
+        other_motion = self.positioner.pictograph.managers.get.other_motion(motion)
         if motion.start_ori in [IN, OUT] and other_motion.start_ori in [IN, OUT]:
             return "from_layer1"
         elif motion.start_ori in [CLOCK, COUNTER] and other_motion.start_ori in [
@@ -117,7 +119,7 @@ class SpecialPlacementDataUpdater:
     def _update_placement_json_data(
         self, letter: Letter, letter_data: dict, ori_key: str
     ) -> None:
-        grid_mode = self.positioner.pictograph.grid_mode
+        grid_mode = self.positioner.pictograph.state.grid_mode
         file_path = os.path.join(
             "data",
             "arrow_placement",
@@ -126,7 +128,7 @@ class SpecialPlacementDataUpdater:
             ori_key,
             f"{letter.value}_placements.json",
         )
-        existing_data =AppContext.special_placement_handler().load_json_data(file_path)
+        existing_data = AppContext.special_placement_handler().load_json_data(file_path)
         existing_data[letter.value] = letter_data
         AppContext.special_placement_handler().write_json_data(existing_data, file_path)
 
@@ -136,7 +138,7 @@ class SpecialPlacementDataUpdater:
         if not arrow:
             return
 
-        letter = self.positioner.pictograph.letter
+        letter = self.positioner.pictograph.state.letter
         turns_tuple = self.positioner.pictograph.main_widget.turns_tuple_generator.generate_turns_tuple(
             self.positioner.pictograph
         )
@@ -145,8 +147,6 @@ class SpecialPlacementDataUpdater:
         letter_data = self._get_letter_data(letter, ori_key)
         self._update_or_create_turn_data(letter_data, turns_tuple, arrow, adjustment)
         self._update_placement_json_data(letter, letter_data, ori_key)
-
-
 
     def update_specific_entry_in_json(
         self, letter: Letter, letter_data: dict, ori_key

@@ -24,6 +24,8 @@ class MirroredEntryManager:
 
     def update_mirrored_entry_in_json(self, arrow: "Arrow") -> None:
         if self.data_prep.is_new_entry_needed(arrow):
-            self.mirrored_entry_creator.create_entry(arrow.pictograph.letter, arrow)
+            self.mirrored_entry_creator.create_entry(
+                arrow.pictograph.state.letter, arrow
+            )
         else:
             self.mirrored_entry_updater.update_entry(arrow)

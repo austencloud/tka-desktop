@@ -7,8 +7,11 @@ from main_window.settings_manager.global_settings.app_context import AppContext
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
 
+
 class OptionUpdater:
-    def __init__(self, option_picker: "OptionPicker", fade_manager: FadeManager) -> None:
+    def __init__(
+        self, option_picker: "OptionPicker", fade_manager: FadeManager
+    ) -> None:
         self.option_picker = option_picker
         self.scroll_area = option_picker.option_scroll
         self.fade_manager = fade_manager
@@ -29,8 +32,12 @@ class OptionUpdater:
 
     def update_options(self) -> None:
         sequence = self.json_loader.load_current_sequence()
-        selected_filter = self.option_picker.reversal_filter.reversal_combobox.currentData()
-        next_options = self.option_picker.option_getter.get_next_options(sequence, selected_filter)
+        selected_filter = (
+            self.option_picker.reversal_filter.reversal_combobox.currentData()
+        )
+        next_options = self.option_picker.option_getter.get_next_options(
+            sequence, selected_filter
+        )
 
         for section in self.option_picker.option_scroll.sections.values():
             section.clear_pictographs()
@@ -39,9 +46,9 @@ class OptionUpdater:
             if i >= len(self.option_picker.option_pool):
                 break
             option = self.option_picker.option_pool[i]
-            option.updater.update_pictograph(option_data)
-            option.view.update_borders()
-            letter_type = LetterType.get_letter_type(option.letter)
+            option.managers.updater.update_pictograph(option_data)
+            option.elements.view.update_borders()
+            letter_type = LetterType.get_letter_type(option.state.letter)
             section = self.scroll_area.sections.get(letter_type)
             if section:
                 section.add_pictograph(option)

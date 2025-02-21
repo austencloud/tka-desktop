@@ -31,7 +31,7 @@ class DashDirectionalGenerator(BaseDirectionalGenerator):
 
         if grid_mode == DIAMOND:
             if (
-                self.motion.pictograph.letter_type == LetterType.Type5
+                self.motion.pictograph.state.letter_type == LetterType.Type5
                 and self.motion.turns == 0
             ):
                 return self._handle_type5_zero_turns(x, y)
@@ -45,7 +45,7 @@ class DashDirectionalGenerator(BaseDirectionalGenerator):
 
         elif grid_mode == BOX:
             if (
-                self.motion.pictograph.letter_type == LetterType.Type5
+                self.motion.pictograph.state.letter_type == LetterType.Type5
                 and self.motion.turns == 0
             ):
                 return self._handle_type5_zero_turns(x, y)
@@ -109,7 +109,7 @@ class DashDirectionalGenerator(BaseDirectionalGenerator):
             (RED, (SOUTHWEST, NORTHEAST)): [(x, y), (-y, -x), (-x, -y), (-y, -x)],
             (RED, (SOUTHEAST, NORTHWEST)): [(-x, y), (-y, -x), (-x, y), (y, x)],
         }
-        grid_mode = self.motion.pictograph.grid_mode
+        grid_mode = self.motion.pictograph.state.grid_mode
         if grid_mode == DIAMOND:
             return diamond_Type5_zero_turns_directional_tuples.get(
                 (self.motion.color, (self.motion.start_loc, self.motion.end_loc)), []

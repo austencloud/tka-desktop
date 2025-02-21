@@ -159,7 +159,7 @@ class TurnsUpdater:
         self, pictograph: "PictographScene", new_turns: Union[int, float, str]
     ) -> None:
         """Adjust turns for each relevant motion in the pictograph."""
-        for motion in pictograph.motions.values():
+        for motion in pictograph.elements.motions.values():
             if motion.color == self.turns_box.color:
                 if new_turns == "fl":
                     motion.motion_type = FLOAT

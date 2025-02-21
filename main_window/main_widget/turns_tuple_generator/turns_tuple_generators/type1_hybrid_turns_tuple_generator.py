@@ -12,7 +12,7 @@ class Type1HybridTurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph: "PictographScene") -> str:
         super().set_pictograph(pictograph)
         # if one of the motions is not a float, proceed with the written logic
-        if not pictograph.check.has_one_float():
+        if not pictograph.managers.check.has_one_float():
             pro_motion = (
                 self.blue_motion
                 if self.blue_motion.motion_type == PRO
@@ -24,6 +24,6 @@ class Type1HybridTurnsTupleGenerator(BaseTurnsTupleGenerator):
                 else self.red_motion
             )
             return f"({pro_motion.turns}, {anti_motion.turns})"
-        elif pictograph.check.has_one_float():
+        elif pictograph.managers.check.has_one_float():
             # return blue, then red tuple
             return f"({self._normalize_turns(self.blue_motion)}, {self._normalize_turns(self.red_motion)})"

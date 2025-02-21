@@ -24,7 +24,7 @@ class PropClassifier:
         self.big_bi: list[Prop] = []
         self.hands: list[Prop] = []
 
-        for prop in self.pictograph.props.values():
+        for prop in self.pictograph.elements.props.values():
 
             if prop.prop_type in big_unilateral_prop_types:
                 self.big_uni.append(prop)

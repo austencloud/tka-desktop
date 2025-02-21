@@ -1,8 +1,12 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
 
+from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
+    GE_Pictograph,
+)
 
-from ..GE_pictograph_view import GE_PictographView, GE_Pictograph
+
+from ..GE_pictograph_view import GE_PictographView
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
@@ -43,7 +47,9 @@ class GraphEditorPictographContainer(QWidget):
         pictograph.blue_reversal = reference_beat.blue_reversal
         pictograph.red_reversal = reference_beat.red_reversal
 
-        pictograph.updater.update_pictograph(reference_beat.pictograph_data)
+        pictograph.managers.updater.update_pictograph(
+            reference_beat.state.pictograph_data
+        )
 
         beat_number_text = reference_beat.beat_number_item.beat_number_int
         if beat_number_text:

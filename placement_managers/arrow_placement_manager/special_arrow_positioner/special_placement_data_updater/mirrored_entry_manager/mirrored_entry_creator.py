@@ -29,7 +29,7 @@ class MirroredEntryCreator:
             ori_key, letter, arrow
         )
 
-        if arrow.pictograph.check.starts_from_mixed_orientation():
+        if arrow.pictograph.managers.check.starts_from_mixed_orientation():
             other_ori_key, other_letter_data = self._get_keys_for_mixed_start_ori(
                 letter, ori_key
             )

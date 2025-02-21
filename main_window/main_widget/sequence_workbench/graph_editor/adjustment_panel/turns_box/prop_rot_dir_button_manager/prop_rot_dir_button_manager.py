@@ -75,7 +75,7 @@ class PropRotDirButtonManager:
         ]
 
         for pictograph in both_pictographs:
-            for motion in pictograph.motions.values():
+            for motion in pictograph.elements.motions.values():
                 if motion.color == self.turns_box.color:
                     motion.prop_rot_dir = prop_rot_dir
                     motion.motion_type = self._get_new_motion_type(motion)
@@ -91,11 +91,11 @@ class PropRotDirButtonManager:
                 : pictograph_index + 2
             ]
             reversal_info = ReversalDetector.detect_reversal(
-                sequence_so_far, pictograph.pictograph_data
+                sequence_so_far, pictograph.state.pictograph_data
             )
             pictograph.blue_reversal = reversal_info["blue_reversal"]
             pictograph.red_reversal = reversal_info["red_reversal"]
-            pictograph.reversal_glyph.update_reversal_symbols()
+            pictograph.elements.reversal_glyph.update_reversal_symbols()
 
         self._update_button_states(prop_rot_dir)
         self.option_picker = (
@@ -128,13 +128,13 @@ class PropRotDirButtonManager:
             "turns": motion.turns,
         }
 
-        beat.pictograph_data[motion.color + "_attributes"].update(new_dict)
+        beat.state.pictograph_data[motion.color + "_attributes"].update(new_dict)
 
         if new_letter:
-            beat.pictograph_data["letter"] = new_letter.value
+            beat.state.pictograph_data["letter"] = new_letter.value
             beat.letter = new_letter
 
-        beat.updater.update_pictograph(beat.pictograph_data)
+        beat.managers.updater.update_pictograph(beat.state.pictograph_data)
         json_index = pictograph_index + 2
         json_updater = self.json_manager.updater
         if new_letter:

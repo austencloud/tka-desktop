@@ -32,12 +32,12 @@ class TKALetter(QGraphicsSvgItem):
         self.renderer = None
 
     def set_letter(self) -> None:
-        if not self.glyph.pictograph.letter:
+        if not self.glyph.pictograph.state.letter:
             return
-        letter_type = LetterType.get_letter_type(self.glyph.pictograph.letter)
-        self.glyph.pictograph.letter_type = letter_type
+        letter_type = LetterType.get_letter_type(self.glyph.pictograph.state.letter)
+        self.glyph.pictograph.state.letter_type = letter_type
         svg_path: str = SVG_PATHS.get(letter_type, "")
-        svg_path = svg_path.format(letter=self.glyph.pictograph.letter.value)
+        svg_path = svg_path.format(letter=self.glyph.pictograph.state.letter.value)
         self.renderer: QSvgRenderer = QSvgRenderer(svg_path)
         if self.renderer.isValid():
             self.setSharedRenderer(self.renderer)

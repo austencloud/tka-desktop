@@ -6,6 +6,7 @@ from PyQt6.QtGui import QCursor, QAction
 from base_widgets.pictograph.pictograph_data_copier import PictographDataCopier
 
 
+
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph_scene import PictographScene
 
@@ -15,7 +16,7 @@ class PictographView(QGraphicsView):
         super().__init__(pictograph)
         if pictograph:
             self.pictograph = pictograph
-            self.pictograph.view = self
+            self.pictograph.elements.view = self
 
         self.dict_copier = PictographDataCopier(pictograph)
 

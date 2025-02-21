@@ -17,12 +17,21 @@ logger = logging.getLogger(__name__)
 
 
 class ArrowAdjustmentCalculator:
-    def __init__(self, placement_manager: "ArrowPlacementManager", special_placement_loader: "SpecialPlacementLoader") -> None:
+    def __init__(
+        self,
+        placement_manager: "ArrowPlacementManager",
+        special_placement_loader: "SpecialPlacementLoader",
+    ) -> None:
         self.placement_manager = placement_manager
         self.special_placement_loader = special_placement_loader
 
     def get_adjustment(self, arrow: Arrow) -> QPointF:
-        if not arrow.motion.pictograph.letter:
+        """Calculates the adjustment for an arrow based on special placements, motion type, and grid mode."""
+
+        if not arrow.motion.pictograph.state.letter:
+            logger.warning(
+                f"Arrow '{arrow}' has no assigned letter. Defaulting to (0, 0)."
+            )
             return QPointF(0, 0)
 
         turns_tuple = TurnsTupleGenerator().generate_turns_tuple(
@@ -33,30 +42,42 @@ class ArrowAdjustmentCalculator:
                 arrow.motion
             )
         )
+
         special_placements = (
             self.special_placement_loader.load_special_placements().get(ori_key, {})
         )
 
-        if self.placement_manager.pictograph.letter not in special_placements:
-            special_placements[self.placement_manager.pictograph.letter] = {}
+        if self.placement_manager.pictograph.state.letter not in special_placements:
+            logger.warning(
+                f"No special placements found for letter {self.placement_manager.pictograph.state.letter}. Using fallback."
+            )
+            special_placements[self.placement_manager.pictograph.state.letter] = {}
 
         special_adjustment = self.get_adjustment_for_letter(
-            self.placement_manager.pictograph.letter, arrow, turns_tuple, ori_key
+            self.placement_manager.pictograph.state.letter, arrow, turns_tuple, ori_key
         )
 
-        x, y = (
-            special_adjustment
-            or self.placement_manager.default_positioner.get_default_adjustment(arrow)
-        )
+        if special_adjustment:
+            logger.info(f"Using special adjustment for {arrow}: {special_adjustment}")
+            x, y = special_adjustment
+        else:
+            x, y = self.placement_manager.default_positioner.get_default_adjustment(
+                arrow
+            )
+            logger.info(f"Using default adjustment for {arrow}: {x, y}")
 
+        # Ensure directional tuples are correct
         directional_tuple_manager = DirectionalTupleManager(arrow.motion)
         directional_adjustments = directional_tuple_manager.generate_directional_tuples(
             x, y
         )
+
         if not directional_adjustments:
-            print(
+            logger.error(
                 f"Directional adjustments not found for motion type: {arrow.motion.motion_type}"
             )
+            return QPointF(0, 0)
+
         quadrant_index = (
             self.placement_manager.quadrant_index_handler.get_quadrant_index(arrow)
         )
@@ -80,7 +101,7 @@ class ArrowAdjustmentCalculator:
     ) -> Optional[tuple[int, int]]:
         self.special_placements: dict[str, dict] = (
             self.special_placement_loader.load_special_placements()
-            .get(arrow.pictograph.grid_mode)
+            .get(arrow.pictograph.state.grid_mode)
             .get(ori_key, {})
         )
         letter_adjustments: dict[str, dict[str, list]] = self.special_placements.get(

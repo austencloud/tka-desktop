@@ -12,12 +12,13 @@ if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph_scene import PictographScene
 
 
-class BeatReversalGroup(QGraphicsItemGroup):
+class ReversalGlyph(QGraphicsItemGroup):
     name = "Reversals"
 
     def __init__(self, pictograph: "PictographScene"):
         super().__init__()
         self.pictograph = pictograph
+        self.pictograph.elements.reversal_glyph = self
         self.reversal_items: dict[str, QGraphicsTextItem] = {}
         self.create_reversal_symbols()
 
@@ -30,8 +31,8 @@ class BeatReversalGroup(QGraphicsItemGroup):
 
         self.pictograph.addItem(self)
 
-        self.pictograph.blue_reversal_symbol = blue_R
-        self.pictograph.red_reversal_symbol = red_R
+        self.pictograph.elements.blue_reversal_symbol = blue_R
+        self.pictograph.elements.red_reversal_symbol = red_R
 
         self.reversal_items[RED] = red_R
         self.reversal_items[BLUE] = blue_R
@@ -40,18 +41,18 @@ class BeatReversalGroup(QGraphicsItemGroup):
 
     def update_reversal_symbols(self, visible: bool = True):
         if visible:
-            if self.pictograph.view.__class__.__name__ == "OptionView":
+            if self.pictograph.elements.view.__class__.__name__ == "OptionView":
                 sequence_so_far = CurrentSequenceLoader().load_current_sequence_json()
-                if not self.pictograph.pictograph_data:
+                if not self.pictograph.state.pictograph_data:
                     return
                 reversal_dict = ReversalDetector.detect_reversal(
-                    sequence_so_far, self.pictograph.pictograph_data
+                    sequence_so_far, self.pictograph.state.pictograph_data
                 )
                 blue_visible = reversal_dict.get("blue_reversal", False)
                 red_visible = reversal_dict.get("red_reversal", False)
             else:
-                blue_visible = self.pictograph.blue_reversal
-                red_visible = self.pictograph.red_reversal
+                blue_visible = self.pictograph.state.blue_reversal
+                red_visible = self.pictograph.state.red_reversal
         else:
             blue_visible = False
             red_visible = False
