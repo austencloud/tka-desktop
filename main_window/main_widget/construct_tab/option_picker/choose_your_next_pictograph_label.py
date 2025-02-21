@@ -1,27 +1,18 @@
+# main_window/main_widget/construct_tab/option_picker/choose_your_next_pictograph_label.py
 from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QFontMetrics
 from typing import Callable
+from main_window.main_widget.construct_tab.option_picker.resizable_mixin import ResizableMixin
 
-
-class ChooseYourNextPictographLabel(QLabel):
-    def __init__(self, size_provider: Callable[[], QSize]):
-        super().__init__()
-        self.size_provider = size_provider
+class ChooseYourNextPictographLabel(ResizableMixin, QLabel):
+    def __init__(self, size_provider: Callable[[], QSize], parent=None):
+        # Note: The mixin is first, so its __init__ will get called with the size_provider.
+        super().__init__(size_provider, parent)
         self.setText("Choose your next pictograph:")
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def resizeEvent(self, event):
-        size = self.size_provider()
-        font_size = int(0.03 * size.height())
-        font = self.font()
-        font.setPointSize(font_size)
-        font.setFamily("Monotype Corsiva")
-        self.setFont(font)
-        fm = QFontMetrics(font)
-        w = fm.horizontalAdvance(self.text()) + 20
-        h = fm.height() + 20
-        self.setFixedSize(w, h)
+        h = self.update_size_and_style()  # Use the mixin’s logic
         self.setStyleSheet(
             f"background-color: rgba(255,255,255,200); border-radius: {h//2}px;"
         )

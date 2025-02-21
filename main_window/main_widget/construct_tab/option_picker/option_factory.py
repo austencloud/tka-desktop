@@ -1,27 +1,23 @@
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, List
+from PyQt6.QtCore import QSize
 from base_widgets.pictograph.pictograph_scene import PictographScene
 from .option_view import OptionView
-from PyQt6.QtCore import QSize
-
 if TYPE_CHECKING:
-    from .option_picker import OptionPicker
-
-
+    from main_window.main_widget.construct_tab.option_picker.option_picker import OptionPicker
 class OptionFactory:
     MAX_PICTOGRAPHS = 36
 
-    def __init__(
-        self, op: "OptionPicker", mw_size_provider: Callable[[], QSize] = None
-    ):
-        self.option_picker = op
+    def __init__(self, option_picker: "OptionPicker", mw_size_provider: Callable[[], QSize]) -> None:
+        self.option_picker = option_picker
         self.mw_size_provider = mw_size_provider
-        self.create_options()
+        # Build the option pool upon instantiation.
+        self.option_picker.option_pool = self.create_options()
 
-    def create_options(self) -> list[PictographScene]:
-        opts = []
+    def create_options(self) -> List[PictographScene]:
+        options: List[PictographScene] = []
         for _ in range(self.MAX_PICTOGRAPHS):
             opt = PictographScene()
+            # Construct the view using OptionView, passing the picker and size provider.
             opt.view = OptionView(self.option_picker, opt, self.mw_size_provider)
-            opts.append(opt)
-        self.option_picker.option_pool = opts
-        return opts
+            options.append(opt)
+        return options

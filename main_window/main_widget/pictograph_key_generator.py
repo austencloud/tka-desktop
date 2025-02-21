@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class PictographKeyGenerator:
-    def generate_pictograph_key(pictograph_data: dict) -> str:
+    def generate_pictograph_key(self, pictograph_data: dict) -> str:
         blue_attrs = pictograph_data["blue_attributes"]
         red_attrs = pictograph_data["red_attributes"]
 

@@ -10,6 +10,7 @@ from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
     BaseSequenceModifier,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
@@ -37,7 +38,9 @@ class SequenceRotater(BaseSequenceModifier):
 
     def _rotate_sequence(self):
 
-        metadata = self.json_loader.load_current_sequence()[0].copy()
+        metadata = (
+            AppContext.json_manager().loader_saver.load_current_sequence()[0].copy()
+        )
         metadata["grid_mode"] = BOX if metadata["grid_mode"] == DIAMOND else DIAMOND
 
         rotated_sequence = [metadata]

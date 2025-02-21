@@ -151,7 +151,7 @@ class StartPosPicker(BaseStartPosPicker):
                     "red_attributes"
                 ]["end_ori"]
                 pictograph_factory = self.beat_frame.beat_factory
-                pictograph_key = PictographKeyGenerator.generate_pictograph_key(
+                pictograph_key = PictographKeyGenerator().generate_pictograph_key(
                     pictograph_data
                 )
                 start_pos_pictograph = pictograph_factory.create_start_pos_beat(

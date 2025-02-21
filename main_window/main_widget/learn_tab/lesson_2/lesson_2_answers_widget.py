@@ -54,7 +54,7 @@ class Lesson2AnswersWidget(BaseAnswersWidget):
 
         for index, pictograph_data in enumerate(pictographs):
             key = self.key_generator.generate_pictograph_key(pictograph_data)
-            pictograph = PictographScene(self.lesson_2_widget.main_widget)
+            pictograph = PictographScene()
             view = LessonPictographView(pictograph)
             pictograph.view = view
             pictograph.disable_gold_overlay = False

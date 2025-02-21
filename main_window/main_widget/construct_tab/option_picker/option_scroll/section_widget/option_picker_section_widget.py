@@ -67,7 +67,7 @@ class OptionPickerSectionWidget(QGroupBox):
     def add_pictograph(self, pictograph: PictographScene) -> None:
         COLUMN_COUNT = self.option_scroll.option_picker.COLUMN_COUNT
         self.pictographs[
-            PictographKeyGenerator.generate_pictograph_key(pictograph.pictograph_data)
+            PictographKeyGenerator().generate_pictograph_key(pictograph.pictograph_data)
         ] = pictograph
 
         count = len(self.pictographs)

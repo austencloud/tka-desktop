@@ -55,10 +55,15 @@ class OptionPickerSectionTypeLabel(QLabel):
         super().mousePressEvent(event)
 
     def resizeEvent(self, event) -> None:
+        # Set alignment to center
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Calculate font size based on parent widget's height
         parent_height = self.section_widget.mw_size_provider().height()
-        font_size = max(int(parent_height * 0.015), 10)  # Use percentage instead of 70
-        label_height = max(font_size * 2, 24)  # Slightly larger default min size
-        label_width = label_height * 5
+        font_size = max(parent_height // 70, 10)  # Ensure minimum font size
+        label_height = max(int(font_size * 3), 20)  # Ensure minimum label height
+        label_width = max(int(label_height * 6), 100)  # Ensure minimum label width
+
         self.setFixedSize(QSize(label_width, label_height))
 
         # Update font size

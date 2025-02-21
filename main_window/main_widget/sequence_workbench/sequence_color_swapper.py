@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QApplication
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
     BaseSequenceModifier,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
@@ -36,7 +37,7 @@ class SequenceColorSwapper(BaseSequenceModifier):
     def _color_swap_sequence(self) -> list[dict]:
 
         self.sequence_workbench.button_panel.toggle_swap_colors_icon()
-        metadata = self.json_loader.load_current_sequence()[0].copy()
+        metadata = AppContext.json_manager().loader_saver.load_current_sequence()[0].copy()
         swapped_sequence = []
         swapped_sequence.append(metadata)
 
