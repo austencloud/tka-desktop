@@ -33,7 +33,6 @@ class LessonAnswerChecker:
             self.lesson.current_question += 1
 
             if self.lesson.mode == "fixed_question":
-                self.lesson.update_progress_label()
                 if self.lesson.current_question <= self.lesson.total_questions:
                     self.lesson.question_generator.fade_to_new_question()
                 else:

@@ -18,7 +18,6 @@ class BaseQuestionWidget(QWidget):
         super().__init__(lesson_widget)
         self.lesson_widget = lesson_widget
         self.main_widget = lesson_widget.main_widget
-        self.question_label: QLabel = None
         self.layout: QVBoxLayout = None
         self.spacer: QSpacerItem = None
 
@@ -49,12 +48,6 @@ class BaseQuestionWidget(QWidget):
         self.pictograph.elements.view.update_borders()
         self.pictograph.elements.tka_glyph.setVisible(False)
 
-    def _resize_question_label(self) -> None:
-        question_label_font_size = self.main_widget.width() // 65
-        font = self.question_label.font()
-        font.setFamily("Georgia")
-        font.setPointSize(question_label_font_size)
-        self.question_label.setFont(font)
 
     def _resize_spacer(self) -> None:
         self.spacer.changeSize(

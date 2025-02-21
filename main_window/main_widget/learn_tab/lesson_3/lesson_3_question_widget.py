@@ -15,15 +15,12 @@ class Lesson3QuestionWidget(BaseQuestionWidget):
         self.learn_widget = learn_widget
         self.main_widget = learn_widget.main_widget
         self.pictograph = None
-        self.question_label = QLabel("Choose the pictograph that can follow:")
-        self.question_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self._setup_layout()
 
     def _setup_layout(self) -> None:
         self.layout: QVBoxLayout = QVBoxLayout()
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout.addWidget(self.question_label)
         self.spacer = QSpacerItem(
             20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
         )
@@ -36,10 +33,7 @@ class Lesson3QuestionWidget(BaseQuestionWidget):
         if self.pictograph:
             self.pictograph.elements.tka_glyph.setVisible(True)
 
-
-
     def resizeEvent(self, event) -> None:
-        self._resize_question_label()
         self._resize_pictograph()
         self._resize_spacer()
 

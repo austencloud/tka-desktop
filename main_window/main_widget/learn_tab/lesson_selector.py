@@ -141,7 +141,8 @@ class LessonSelector(QWidget):
         ]
         lesson_widget = lesson_widgets[lesson_number - 1]
         lesson_widget_index = self.learn_widget.stack.indexOf(lesson_widget)
-        lesson_widget.prepare_quiz_ui()
+        mode = self.mode_toggle_widget.get_selected_mode()
+        lesson_widget.prepare_quiz_ui(mode)
         QApplication.processEvents()
         if 1 <= lesson_number <= len(lesson_widgets):
             self.main_widget.fade_manager.stack_fader.fade_stack(

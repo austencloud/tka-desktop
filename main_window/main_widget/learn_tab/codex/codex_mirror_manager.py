@@ -21,8 +21,8 @@ class CodexMirrorManager:
         try:
             for letter_str, view in self.codex.section_manager.codex_views.items():
                 scene = view.pictograph
-                if scene.pictograph_data:
-                    scene.updater.update_pictograph(scene.pictograph_data)
+                if scene.state.pictograph_data:
+                    scene.managers.updater.update_pictograph(scene.state.pictograph_data)
                     logger.debug(f"Mirrored pictograph for letter '{letter_str}'.")
         except Exception as e:
             logger.exception(f"Error during mirror_all: {e}")

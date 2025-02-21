@@ -15,14 +15,12 @@ class Lesson2QuestionWidget(BaseQuestionWidget):
 
     def __init__(self, lesson_2_widget: "Lesson2Widget") -> None:
         super().__init__(lesson_2_widget)
-        self.lesson_2_widget = lesson_2_widget
+        self.lesson_widget = lesson_2_widget
         self.main_widget = lesson_2_widget.main_widget
         self._setup_labels()
         self._setup_layout()
 
     def _setup_labels(self) -> None:
-        self.question_label = QLabel("Choose the pictograph for:")
-        self.question_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.letter_label = QLabel()
         self.letter_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -30,7 +28,6 @@ class Lesson2QuestionWidget(BaseQuestionWidget):
     def _setup_layout(self) -> None:
         self.layout: QVBoxLayout = QVBoxLayout()
         self.setLayout(self.layout)
-        self.layout.addWidget(self.question_label)
         self.spacer = QSpacerItem(
             20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
         )
@@ -48,7 +45,6 @@ class Lesson2QuestionWidget(BaseQuestionWidget):
     def resizeEvent(self, event) -> None:
         """Resize the question labels based on window size."""
         super().resizeEvent(event)
-        self._resize_question_label()
         self._resize_letter_label()
         self._resize_spacer()
 

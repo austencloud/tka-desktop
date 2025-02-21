@@ -31,6 +31,7 @@ class BaseQuestionGenerator:
         return valid_dicts
 
     def fade_to_new_question(self):
+        
         widgets_to_fade = [
             self.lesson_widget.question_widget,
             self.lesson_widget.answers_widget,

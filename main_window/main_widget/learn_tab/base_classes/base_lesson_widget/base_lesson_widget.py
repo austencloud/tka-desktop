@@ -1,6 +1,6 @@
 # learn_tab/base_classes/base_lesson_widget/base_lesson_widget.py
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QLabel
 from .lesson_layout_manager import LessonLayoutManager
 from .lesson_answer_checker import LessonAnswerChecker
 from .lesson_go_back_button import LessonGoBackButton
@@ -23,6 +23,7 @@ class BaseLessonWidget(QWidget):
     progress indicator, timer, and go-back button.
     """
 
+    question_prompt: QLabel = None
     question_generator: BaseQuestionGenerator = None
     question_widget: BaseQuestionWidget = None
     answers_widget: BaseAnswersWidget = None
@@ -47,26 +48,46 @@ class BaseLessonWidget(QWidget):
         self.layout_manager = LessonLayoutManager(self)
 
     def update_progress_label(self):
-        self.progress_label.setText(f"{self.current_question}/{self.total_questions}")
+        if self.mode == "countdown":
+            minutes, seconds = divmod(self.quiz_time, 60)
+            self.progress_label.setText(f"Time Remaining: {minutes:02}:{seconds:02}")
+        else:
+            self.progress_label.setText(
+                f"{self.current_question}/{self.total_questions}"
+            )
 
-    def prepare_quiz_ui(self):
+    def prepare_quiz_ui(self, mode):
         self.current_question = 1
         self.incorrect_guesses = 0
         self.update_progress_label()
         self.indicator_label.clear()
+        self.mode = mode
+        if mode == "countdown":
+            self.timer_manager.start_timer(120)
+        else:
+            self.timer_manager.stop_timer()
         widgets_to_fade = [
             self.question_widget,
             self.answers_widget,
             self.indicator_label,
-            self.progress_label,
         ]
-        indicator_label = self.indicator_label
-        indicator_label.setStyleSheet(
-            f"LessonIndicatorLabel {{"
-            f" background-color: transparent;"
-            f"}}"
-        )
         self.fade_manager.widget_fader.fade_and_update(
             widgets_to_fade,
-            callback=self.question_generator.generate_question,  # Now update content in-place
+            callback=self.question_generator.generate_question,  # update content in-place
+        )
+
+    def resizeEvent(self, event):
+        self._resize_question_prompt()
+        super().resizeEvent(event)
+
+    def _resize_question_prompt(self) -> None:
+        question_prompt_font_size = self.main_widget.width() // 65
+        font = self.question_prompt.font()
+        font.setFamily("Georgia")
+        font.setPointSize(question_prompt_font_size)
+        self.question_prompt.setFont(font)
+        self.question_prompt.setStyleSheet(
+            f"color: {self.main_widget.font_color_updater.get_font_color(
+                self.main_widget.settings_manager.global_settings.get_background_type()
+                )};"
         )

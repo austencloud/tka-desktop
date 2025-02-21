@@ -21,24 +21,18 @@ class Lesson1QuestionWidget(BaseQuestionWidget):
 
     def __init__(self, lesson_1_widget: "Lesson1Widget"):
         super().__init__(lesson_1_widget)
-        self.lesson_1_widget = lesson_1_widget
+        self.lesson_widget = lesson_1_widget
         self.main_widget = lesson_1_widget.main_widget
         self.pictograph = None
-        self._setup_label()
         self._setup_layout()
 
         # Animation-related properties
         self.fade_out_animation = None
         self.fade_in_animation = None
 
-    def _setup_label(self):
-        self.question_label = QLabel("What letter matches the pictograph?")
-        self.question_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
     def _setup_layout(self) -> None:
         self.layout: QVBoxLayout = QVBoxLayout()
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout.addWidget(self.question_label)
 
         self.spacer = QSpacerItem(
             20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
@@ -62,7 +56,6 @@ class Lesson1QuestionWidget(BaseQuestionWidget):
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
-        self._resize_question_label()
         self._resize_pictograph()
         self._resize_spacer()
 

@@ -2,6 +2,7 @@ from ..base_classes.base_lesson_widget.base_lesson_widget import BaseLessonWidge
 from .lesson_3_question_widget import Lesson3QuestionWidget
 from .lesson_3_answers_widget import Lesson3AnswersWidget
 from .lesson_3_question_generator import Lesson3QuestionGenerator
+from PyQt6.QtWidgets import QLabel
 
 
 class Lesson3Widget(BaseLessonWidget):
@@ -13,5 +14,7 @@ class Lesson3Widget(BaseLessonWidget):
         self.question_widget = Lesson3QuestionWidget(self)
         self.answers_widget = Lesson3AnswersWidget(self)
         self.question_generator = Lesson3QuestionGenerator(self)
+        self.question_prompt = QLabel("Which pictograph can follow?")
+        
         self.layout_manager.setup_layout()
 

@@ -2,7 +2,7 @@ from ..base_classes.base_lesson_widget.base_lesson_widget import BaseLessonWidge
 from .lesson_1_question_widget import Lesson1QuestionWidget
 from .lesson_1_answers_widget import Lesson1AnswersWidget
 from .lesson_1_question_generator import Lesson1QuestionGenerator
-
+from PyQt6.QtWidgets import QLabel
 
 class Lesson1Widget(BaseLessonWidget):
     """Lesson 1 widget for handling letter to pictograph matching and quiz logic."""
@@ -12,4 +12,5 @@ class Lesson1Widget(BaseLessonWidget):
         self.question_widget = Lesson1QuestionWidget(self)
         self.answers_widget = Lesson1AnswersWidget(self)
         self.question_generator = Lesson1QuestionGenerator(self)
+        self.question_prompt = QLabel("Choose the letter for:")
         self.layout_manager.setup_layout()

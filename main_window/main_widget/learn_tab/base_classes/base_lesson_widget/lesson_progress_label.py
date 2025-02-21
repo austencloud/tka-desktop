@@ -11,9 +11,6 @@ class LessonProgressLabel(QLabel):
         super().__init__(lesson_widget)
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.lesson_widget = lesson_widget
-        
-    def update_progress(self, current_question, total_questions):
-        self.setText(f"{current_question}/{total_questions}")
 
     def resizeEvent(self,event):
         font_size = self.lesson_widget.main_widget.width() // 75

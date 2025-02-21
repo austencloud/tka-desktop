@@ -28,9 +28,11 @@ class CodexColorSwapManager:
         try:
             for letter_str, view in self.codex.section_manager.codex_views.items():
                 scene = view.pictograph
-                if scene.pictograph_data:
+                if scene.state.pictograph_data:
                     # Implement actual color swap logic here
-                    scene.updater.update_pictograph(scene.pictograph_data)
+                    scene.managers.updater.update_pictograph(
+                        scene.state.pictograph_data
+                    )
                     logger.debug(f"Swapped colors for pictograph '{letter_str}'.")
         except Exception as e:
             logger.exception(f"Error during color_swap_all: {e}")

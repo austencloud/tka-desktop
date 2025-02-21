@@ -21,7 +21,8 @@ class Lesson2QuestionGenerator(BaseQuestionGenerator):
 
     def generate_question(self):
         """Generate a question and update the question and answer widgets."""
-        self.lesson_widget.question_widget.clear()
+        self.lesson_widget.update_progress_label()
+        
         correct_letter, correct_pictograph = self.generate_correct_answer()
 
         self.lesson_widget.question_widget._update_letter_label(correct_letter.value)

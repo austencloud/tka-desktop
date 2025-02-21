@@ -19,6 +19,9 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
 
     def generate_question(self):
         """Generate a question for Lesson 3."""
+        self.lesson_widget.update_progress_label()
+
+        
         initial_pictograph = self.generate_initial_pictograph()
         self.previous_pictograph = initial_pictograph
 

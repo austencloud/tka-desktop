@@ -17,10 +17,11 @@ class Lesson1QuestionGenerator(BaseQuestionGenerator):
         super().__init__(lesson_1_widget)
         self.lesson_1_widget = lesson_1_widget
         self.previous_correct_letter: Letter = None
-        # self.start_new_question()
 
     def generate_question(self):
         """Generate a question for Lesson 1."""
+        self.lesson_1_widget.update_progress_label()
+        
         correct_answer = self.generate_correct_answer()
         self.previous_correct_letter = correct_answer
         pictograph_dataset = self.main_widget.pictograph_dataset
