@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .option_picker_section_widget import OptionPickerSectionWidget
 
 
-class OptionPickerSectionTypeHtmlButton(QPushButton):
+class OptionPickerSectionTypeButton(QPushButton):
     """
     A push-button that embeds a QLabel to display HTML from LetterTypeTextPainter,
     while the push-button itself handles hover, press, release, etc.

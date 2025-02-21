@@ -1,9 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QHBoxLayout
 
-from main_window.main_widget.construct_tab.option_picker.option_scroll.section_widget.html_button import (
-    OptionPickerSectionTypeButton,
-)
+from main_window.main_widget.construct_tab.option_picker.option_scroll.section_widget.option_picker_section_type_label import OptionPickerSectionTypeButton
 
 if TYPE_CHECKING:
     from .option_picker_section_widget import OptionPickerSectionWidget
