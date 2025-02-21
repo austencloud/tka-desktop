@@ -72,7 +72,7 @@ class TurnsAdjustmentManager(QObject):
             )
             motion.prefloat_motion_type
 
-        self.main_widget.construct_tab.option_picker.option_updater.update_options()
+        self.main_widget.construct_tab.option_picker.updater.update_options()
         sequence = self.json_manager.loader_saver.load_current_sequence()
         self.beat_frame.updater.update_beats_from(sequence)
         QApplication.restoreOverrideCursor()
@@ -135,7 +135,7 @@ class TurnsAdjustmentManager(QObject):
             )
 
         self.json_validation_engine.run(is_current_sequence=True)
-        self.main_widget.construct_tab.option_picker.option_updater.update_options()
+        self.main_widget.construct_tab.option_picker.updater.update_options()
         self.turns_adjusted.emit(new_turns)
         QApplication.restoreOverrideCursor()
 

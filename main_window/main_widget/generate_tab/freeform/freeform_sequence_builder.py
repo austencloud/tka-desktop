@@ -54,7 +54,7 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
             QApplication.processEvents()
 
         construct_tab = self.main_widget.construct_tab
-        construct_tab.option_picker.option_updater.update_options()
+        construct_tab.option_picker.updater.update_options()
 
         QApplication.restoreOverrideCursor()
 

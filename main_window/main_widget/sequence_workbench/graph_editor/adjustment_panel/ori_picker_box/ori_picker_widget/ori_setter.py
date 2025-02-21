@@ -83,7 +83,7 @@ class OrientationSetter:
             self.ori_picker_box.graph_editor.sequence_workbench.main_widget.construct_tab
         )
         self.option_picker = construct_tab.option_picker
-        self.option_picker.option_updater.refresh_options()
+        self.option_picker.updater.refresh_options()
 
     def _update_start_options(self, orientation: str) -> None:
         construct_tab = (
