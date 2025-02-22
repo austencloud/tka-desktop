@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation, pyqtSlot
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
+    from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
         LessonWidget,
     )
     from main_window.main_widget.sequence_workbench.sequence_workbench import (

@@ -1,16 +1,15 @@
 from typing import TYPE_CHECKING, Any
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
-from main_window.main_widget.learn_tab.base_classes.pictograph_question_renderer import (
+from main_window.main_widget.learn_tab.pictograph_question_renderer import (
     PictographQuestionRenderer,
 )
-from main_window.main_widget.learn_tab.base_classes.text_question_renderer import (
+from main_window.main_widget.learn_tab.text_question_renderer import (
     TextQuestionRenderer,
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-        LessonWidget,
-    )
+    from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import LessonWidget
+
 
 
 class QuestionWidget(QWidget):

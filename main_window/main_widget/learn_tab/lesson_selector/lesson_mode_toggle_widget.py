@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QSpacerItem, QWidg
 from pytoggle import PyToggle
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.lesson_selector import LessonSelector
+    from main_window.main_widget.learn_tab.lesson_selector.lesson_selector import LessonSelector
 
 
 class LessonModeToggleWidget(QWidget):

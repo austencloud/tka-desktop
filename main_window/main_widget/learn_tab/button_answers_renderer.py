@@ -1,8 +1,13 @@
 # button_answers_renderer.py
-from typing import Any, List, Callable
+from typing import TYPE_CHECKING, Any, List, Callable
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 from PyQt6.QtCore import Qt
-from main_window.main_widget.learn_tab.base_classes.letter_answer_button import (
+
+if TYPE_CHECKING:
+    from main_window.main_widget.learn_tab.lesson_widget.answers_widget import (
+        AnswersWidget,
+    )
+from main_window.main_widget.learn_tab.letter_answer_button import (
     LetterAnswerButton,
 )
 
@@ -18,16 +23,16 @@ class ButtonAnswersRenderer:
 
     def update_answer_options(
         self,
-        parent: QWidget,
         answers: List[Any],
         check_callback: Callable[[Any, Any], None],
         correct_answer: Any,
+        answers_widget: "AnswersWidget" 
     ) -> None:
         # If no buttons exist yet, create them.
         if not self.buttons:
             for answer in answers:
                 button = LetterAnswerButton(
-                    answer, parent, check_callback, correct_answer
+                    answer, answers_widget, check_callback, correct_answer
                 )
                 self.layout.addWidget(button)
                 self.buttons.append(button)
@@ -39,7 +44,6 @@ class ButtonAnswersRenderer:
         # In case the new answer list is shorter than before, hide extra buttons.
         for i in range(len(answers), len(self.buttons)):
             self.buttons[i].hide()
-
 
     def disable_answer_option(self, answer: Any) -> None:
         for button in self.buttons:

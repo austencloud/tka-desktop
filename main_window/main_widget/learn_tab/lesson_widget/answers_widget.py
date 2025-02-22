@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, Callable, Any, List, Dict
 from PyQt6.QtWidgets import QWidget
-from .button_answers_renderer import ButtonAnswersRenderer
-from .pictograph_answers_renderer import PictographAnswersRenderer
+from ..button_answers_renderer import ButtonAnswersRenderer
+from ..pictograph_answers_renderer import PictographAnswersRenderer
 
 if TYPE_CHECKING:
-    from .base_lesson_widget.base_lesson_widget import LessonWidget
+    from .lesson_widget import LessonWidget
 
 
 class AnswersWidget(QWidget):
@@ -48,7 +48,7 @@ class AnswersWidget(QWidget):
         check_callback: Callable[[Any, Any], None],
     ):
         self.answer_widgets.clear()
-        self.renderer.update_answer_options(answers, check_callback, correct_answer)
+        self.renderer.update_answer_options(answers, check_callback, correct_answer, self)
 
     def update_answer_options(
         self,
@@ -56,7 +56,7 @@ class AnswersWidget(QWidget):
         correct_answer: Any,
         check_callback: Callable[[Any, Any], None],
     ):
-        self.renderer.update_answer_options(answers, check_callback, correct_answer)
+        self.renderer.update_answer_options(answers, check_callback, correct_answer, self)
 
     def disable_answer(self, answer: Any):
         self.renderer.disable_answer_option(answer)

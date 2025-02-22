@@ -1,18 +1,10 @@
-# learn_tab/base_classes/base_lesson_widget/base_lesson_widget.py
+# learn_tab/base_classes/lesson_widget/lesson_widget.py
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QLabel
 
-
-from main_window.main_widget.learn_tab.base_classes.answers_widget import (
-    AnswersWidget,
-)
-
-from main_window.main_widget.learn_tab.base_classes.question_widget import (
-    QuestionWidget,
-)
-from main_window.main_widget.learn_tab.question_generator import (
-    QuestionGenerator,
-)
+from .answers_widget import AnswersWidget
+from .question_generator import QuestionGenerator
+from .question_widget import QuestionWidget
 from .lesson_layout_manager import LessonLayoutManager
 from .lesson_answer_checker import LessonAnswerChecker
 from .lesson_go_back_button import LessonGoBackButton
@@ -22,7 +14,7 @@ from .lesson_quiz_timer_manager import QuizTimerManager
 
 
 if TYPE_CHECKING:
-    from ...learn_tab import LearnTab
+    from main_window.main_widget.learn_tab.learn_tab import LearnTab
 
 
 class LessonWidget(QWidget):

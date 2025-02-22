@@ -1,10 +1,10 @@
-# learn_tab/base_classes/base_lesson_widget/lesson_layout_manager.py
+# learn_tab/base_classes/lesson_widget/lesson_layout_manager.py
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from .base_lesson_widget import LessonWidget
+    from .lesson_widget import LessonWidget
 
 
 class LessonLayoutManager:

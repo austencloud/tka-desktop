@@ -3,10 +3,10 @@ from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import Qt
 
 
+
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.base_classes.answers_widget import (
-        AnswersWidget,
-    )
+    from main_window.main_widget.learn_tab.lesson_widget.answers_widget import AnswersWidget
+
 
 
 class LetterAnswerButton(QPushButton):

@@ -6,7 +6,7 @@ from main_window.main_widget.grid_mode_checker import GridModeChecker
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
+    from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
         LessonWidget,
     )
 
@@ -230,4 +230,3 @@ class QuestionGenerator:
             widgets_to_fade,
             callback=self.generate_question,
         )
-

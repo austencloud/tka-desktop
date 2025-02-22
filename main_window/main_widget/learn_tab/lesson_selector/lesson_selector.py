@@ -8,17 +8,15 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from functools import partial
 
-from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
+from main_window.main_widget.learn_tab.lesson_selector.lesson_selector_button import LessonSelectorButton
+from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
     LessonWidget,
-)
-from main_window.main_widget.learn_tab.lesson_selector_button import (
-    LessonSelectorButton,
 )
 
 from .lesson_mode_toggle_widget import LessonModeToggleWidget
 
 if TYPE_CHECKING:
-    from .learn_tab import LearnTab
+    from main_window.main_widget.learn_tab.learn_tab import LearnTab
 
 
 class LessonSelector(QWidget):

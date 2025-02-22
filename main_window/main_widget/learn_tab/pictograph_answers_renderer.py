@@ -1,11 +1,17 @@
-from typing import Any, List, Callable
+from typing import TYPE_CHECKING, Any, List, Callable
 from PyQt6.QtWidgets import QGridLayout, QWidget
 from PyQt6.QtCore import Qt
 from base_widgets.pictograph.pictograph import Pictograph
-from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_pictograph_view import (
+
+from main_window.main_widget.learn_tab.lesson_widget.lesson_pictograph_view import (
     LessonPictographView,
 )
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
+
+if TYPE_CHECKING:
+    from main_window.main_widget.learn_tab.lesson_widget.answers_widget import (
+        AnswersWidget,
+    )
 
 
 class PictographAnswersRenderer:
@@ -49,9 +55,10 @@ class PictographAnswersRenderer:
         answers: List[Any],
         check_callback: Callable[[Any, Any], None],
         correct_answer: Any,
+        parent: "AnswersWidget",
     ) -> None:
         if len(self.pictograph_views) != len(answers):
-            self.create_answer_options (answers, check_callback, correct_answer)
+            self.create_answer_options(answers, check_callback, correct_answer)
             return
 
         self.pictograph_views.clear()

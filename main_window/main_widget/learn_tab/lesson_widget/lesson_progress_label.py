@@ -3,10 +3,10 @@ from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import Qt
 
 
+
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-        LessonWidget,
-    )
+    from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import LessonWidget
+
 
 
 class LessonProgressLabel(QLabel):

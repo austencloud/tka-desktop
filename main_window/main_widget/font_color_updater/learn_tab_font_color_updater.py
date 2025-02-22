@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from .base_font_color_updater import BaseFontColorUpdater
-from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
+from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
     LessonWidget,
 )
 

@@ -7,7 +7,7 @@ from main_window.main_widget.construct_tab.option_picker.option_view import Opti
 from main_window.main_widget.construct_tab.start_pos_picker.start_pos_picker_pictograph_view import (
     StartPosPickerPictographView,
 )
-from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_pictograph_view import (
+from main_window.main_widget.learn_tab.lesson_widget.lesson_pictograph_view import (
     LessonPictographView,
 )
 from main_window.main_widget.codex.codex_pictograph_view import (
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 
 
 from dataclasses import dataclass
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 
 @dataclass
@@ -49,12 +49,12 @@ class PictographElements:
         "OptionView",
     ] = None
 
-    arrows: Dict[str, Arrow] = None
-    motions: Dict[str, Motion] = None
-    props: Dict[str, Prop] = None
+    arrows: dict[str, Arrow] = None
+    motions: dict[str, Motion] = None
+    props: dict[str, Prop] = None
     motion_dict_list: list = None
-    pictograph_dict: Dict[str, Union[str, Dict[str, str]]] = None
-    locations: Dict[str, tuple[int, int, int, int]] = None
+    pictograph_dict: dict[str, Union[str, dict[str, str]]] = None
+    locations: dict[str, tuple[int, int, int, int]] = None
     grid: Optional[Grid] = None
 
     # Symbols

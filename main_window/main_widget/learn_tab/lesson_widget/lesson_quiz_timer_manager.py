@@ -4,7 +4,7 @@ from PyQt6.QtCore import QTimer
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .base_lesson_widget import LessonWidget
+    from .lesson_widget import LessonWidget
 
 
 class QuizTimerManager:
