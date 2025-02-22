@@ -13,6 +13,7 @@ from base_widgets.pictograph.pictograph_view import (
 from base_widgets.pictograph.pictograph_view_key_event_handler import (
     PictographViewKeyEventHandler,
 )
+from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_view_key_event_handler import GraphEditorViewKeyEventHandler
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from .GE_pictograph_view_mouse_event_handler import GE_PictographViewMouseEventHandler
 
@@ -45,7 +46,7 @@ class GE_PictographView(PictographView):
         self.setFrameShape(PictographView.Shape.Box)
         self.mouse_event_handler = GE_PictographViewMouseEventHandler(self)
         self.context_menu_handler = PictographContextMenuHandler(self)
-        self.key_event_handler = PictographViewKeyEventHandler(self)
+        self.key_event_handler = GraphEditorViewKeyEventHandler(self)
         self.graph_editor.selection_manager.selection_changed.connect(
             self.on_selection_changed
         )

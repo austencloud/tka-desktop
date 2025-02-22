@@ -9,20 +9,21 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
+    from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import GE_Pictograph
 
 
 from PyQt6.QtCore import Qt
 
 
 class ArrowMovementManager:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "GE_Pictograph") -> None:
         self.pictograph = pictograph
         self.data_updater = (
             self.pictograph.managers.arrow_placement_manager.special_positioner.data_updater
         )
 
     def handle_arrow_movement(
-        self, pictograph: "Pictograph", key, shift_held, ctrl_held
+        self, pictograph: "GE_Pictograph", key, shift_held, ctrl_held
     ) -> None:
         self.graph_editor = pictograph.main_widget.sequence_workbench.graph_editor
         selected_arrow = self.graph_editor.selection_manager.selected_arrow
@@ -48,9 +49,9 @@ class ArrowMovementManager:
         for pictograph in visible_pictographs:
             pictograph.managers.arrow_placement_manager.update_arrow_placements()
 
-    def get_visible_pictographs(self) -> list["Pictograph"]:
+    def get_visible_pictographs(self) -> list["GE_Pictograph"]:
         visible_pictographs = []
-        for pictograph_list in self.pictograph.main_widget.pictograph_dataset.values():
+        for pictograph_list in self.pictograph.main_widget.pictograph_cache.values():
             for pictograph in pictograph_list.values():
                 if pictograph.elements.view:
                     if pictograph.elements.view.isVisible():

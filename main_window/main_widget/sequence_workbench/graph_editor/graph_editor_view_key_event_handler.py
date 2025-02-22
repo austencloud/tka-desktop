@@ -2,14 +2,16 @@ from typing import TYPE_CHECKING
 from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtCore import Qt
 
+from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import GE_Pictograph
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 
 if TYPE_CHECKING:
+    from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view import GE_PictographView
     from base_widgets.pictograph.pictograph_view import PictographView
 
 
-class PictographViewKeyEventHandler:
-    def __init__(self, pictograph_view: "PictographView") -> None:
+class GraphEditorViewKeyEventHandler:
+    def __init__(self, pictograph_view: "GE_PictographView") -> None:
         self.pictograph_view = pictograph_view
 
     def handle_key_press(self, event: QKeyEvent) -> bool:
@@ -25,7 +27,12 @@ class PictographViewKeyEventHandler:
         elif event.key() == Qt.Key.Key_X:
             wasd_manager.rotation_angle_override_manager.handle_rotation_angle_override()
             return True
-
+        elif event.key() == Qt.Key.Key_Z:
+            wasd_manager.entry_remover.remove_special_placement_entry(
+                self.pictograph_view.pictograph.state.letter,
+                arrow=self.pictograph_view.graph_editor.selection_manager.selected_arrow,
+            )
+            return True
         elif event.key() == Qt.Key.Key_C:
             wasd_manager.prop_placement_override_manager.handle_prop_placement_override(
                 event.key()

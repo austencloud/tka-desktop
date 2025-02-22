@@ -2,6 +2,9 @@ import os
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import BLUE, RED
+from main_window.main_widget.json_manager.json_special_placement_handler import (
+    JsonSpecialPlacementHandler,
+)
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
@@ -23,6 +26,7 @@ class SpecialPlacementEntryRemover:
         self.positioner = data_updater.positioner
         self.data_updater = data_updater
         self.turns_tuple_generator = data_updater.turns_tuple_generator
+        self.special_placement_handler = JsonSpecialPlacementHandler()
 
     def remove_special_placement_entry(self, letter: Letter, arrow: Arrow) -> None:
         ori_key = self.data_updater._generate_ori_key(arrow.motion)
@@ -87,7 +91,7 @@ class SpecialPlacementEntryRemover:
 
         other_ori_key = self.data_updater.get_other_layer3_ori_key(ori_key)
         other_file_path = self._generate_file_path(other_ori_key, letter)
-        other_data = self.data_updater.json_handler.load_json_data(other_file_path)
+        other_data = self.special_placement_handler.load_json_data(other_file_path)
         other_letter_data = other_data.get(letter, {})
         mirrored_tuple = self.turns_tuple_generator.generate_mirrored_tuple(arrow)
         if key == BLUE:
@@ -114,12 +118,12 @@ class SpecialPlacementEntryRemover:
             elif key not in letter_data[self.turns_tuple]:
                 if other_data:
                     del other_data[letter][mirrored_tuple][new_key]
-            self.data_updater.json_handler.write_json_data(other_data, other_file_path)
+            self.special_placement_handler.write_json_data(other_data, other_file_path)
         new_turns_tuple = self.turns_tuple_generator.generate_mirrored_tuple(arrow)
         self._remove_turn_data_entry(other_letter_data, new_turns_tuple, new_key)
 
     def load_data(self, file_path):
-        return self.data_updater.json_handler.load_json_data(file_path)
+        return self.special_placement_handler.load_json_data(file_path)
 
     def _generate_file_path(self, ori_key: str, letter: Letter) -> str:
         grid_mode = self.positioner.placement_manager.pictograph.state.grid_mode

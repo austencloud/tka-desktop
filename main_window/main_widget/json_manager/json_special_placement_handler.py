@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Any
 
 if TYPE_CHECKING:
     pass
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class JsonSpecialPlacementHandler:
     
-    def load_json_data(self, file_path) -> dict:
+    def load_json_data(self, file_path) -> dict[str, dict[dict[str, Any]]]:
         try:
             if os.path.exists(file_path):
                 with open(file_path, "r", encoding="utf-8") as file:
