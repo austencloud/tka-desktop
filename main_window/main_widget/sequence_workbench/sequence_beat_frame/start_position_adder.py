@@ -19,7 +19,6 @@ class StartPositionAdder:
         self.main_widget = beat_frame.main_widget
 
     def add_start_pos_to_sequence(self, clicked_start_option: "Pictograph") -> None:
-        # Change cursor to busy
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         try:
