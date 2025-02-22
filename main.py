@@ -1,11 +1,8 @@
 import sys
-
 import os
-from types import FrameType
-from typing import Any, Callable
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication
-
+from call_tracer import CallTracer
 from main_window.main_widget.json_manager.json_manager import JsonManager
 from main_window.main_widget.json_manager.json_special_placement_handler import (
     JsonSpecialPlacementHandler,
@@ -13,6 +10,7 @@ from main_window.main_widget.json_manager.json_special_placement_handler import 
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.settings_manager.global_settings.app_context import AppContext
 from main_window.settings_manager.settings_manager import SettingsManager
+from paint_event_supressor import PaintEventSuppressor
 from splash_screen.splash_screen import SplashScreen
 from main_window.main_window import MainWindow
 from profiler import Profiler
@@ -20,56 +18,9 @@ from profiler import Profiler
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 LOG_FILE_PATH = "trace_log.txt"
 log_file = open(LOG_FILE_PATH, "w")
-import traceback
-from PyQt6.QtCore import qInstallMessageHandler
-
-from PyQt6.QtCore import qInstallMessageHandler
-
-
-def my_message_handler(msg_type, context, message):
-    # Suppress all QPainter-related warnings
-    if "QPainter" in message or "Painter" in message:
-        return  # Ignore and move on
-
-    # Print other messages if needed
-    print(message)  # Or log them if necessary
-
-
-# Install the message handler to silence QPainter spam
-qInstallMessageHandler(my_message_handler)
-
-
-def trace_calls(frame: FrameType, event: str, arg: Any) -> Callable | None:
-    if event != "call":
-        return
-
-    code = frame.f_code
-    filename = code.co_filename
-    func_name = code.co_name
-
-    # Only log functions from your project directory.
-    if PROJECT_DIR not in filename:
-        return
-
-    # Skip dunder methods.
-    if func_name.startswith("__") and func_name.endswith("__"):
-        return
-
-    lineno = frame.f_lineno
-    rel_path = os.path.relpath(filename, PROJECT_DIR)
-
-    # Log every paint event to find the one causing issues
-    if func_name == "paintEvent":
-        log_line = f"PAINT EVENT: {func_name}() at {rel_path}:{lineno}\n"
-        log_file.write(log_line)
-        log_file.flush()  # Flush immediately to track real-time calls
-
-    return trace_calls
 
 
 def main() -> None:
-    sys.settrace(trace_calls)
-
     app = QApplication(sys.argv)
     QApplication.setStyle("Fusion")
 
@@ -99,4 +50,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    PaintEventSuppressor.install_message_handler()
+    tracer = CallTracer(PROJECT_DIR, log_file)
+    sys.settrace(tracer.trace_calls)
     main()
