@@ -1,16 +1,25 @@
+import json
 import os
 from typing import TYPE_CHECKING
+
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 if TYPE_CHECKING:
     from .add_to_dictionary_manager import AddToDictionaryManager
 
+import hashlib
+
+def hash_sequence(sequence):
+    """Returns a hash of the sequence structure to compare variations quickly."""
+    sequence_str = json.dumps(sequence, sort_keys=True)  # Consistent ordering
+    return hashlib.sha256(sequence_str.encode()).hexdigest()
 
 class StructuralVariationChecker:
     def __init__(self, add_to_dictionary_manager: "AddToDictionaryManager"):
         self.add_to_dictionary_manager = add_to_dictionary_manager
         self.dictionary_dir = add_to_dictionary_manager.dictionary_dir
         self.metadata_extractor = (
-            add_to_dictionary_manager.sequence_workbench.main_widget.metadata_extractor
+            MetaDataExtractor()
         )
 
     def check_for_structural_variation(self, current_sequence, base_word):

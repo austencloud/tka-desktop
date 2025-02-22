@@ -51,7 +51,7 @@ class GE_PictographView(PictographView):
         )
 
     def on_selection_changed(self, selected_arrow):
-        self.scene().update()  # Ensure the view reflects the updated selection
+        self.scene().update()
 
     def set_to_blank_grid(self) -> None:
         self.pictograph = GE_Pictograph(self)
@@ -80,6 +80,7 @@ class GE_PictographView(PictographView):
                 self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
 
     def paintEvent(self, event) -> None:
+        super().paintEvent(event)
         painter = QPainter(self.viewport())
         pen = QPen(Qt.GlobalColor.black, 0)
         painter.setPen(pen)
@@ -103,13 +104,11 @@ class GE_PictographView(PictographView):
         )
         painter.drawRect(overlay_rect)
         painter.end()
-        super().paintEvent(event)
 
     def get_current_pictograph(self) -> Pictograph:
         return self.pictograph
 
     def set_scene(self, beat: "Beat") -> None:
-        # self.setScene(beat)
         self.reference_beat = beat
         if beat.view.is_start_pos:
             self.is_start_pos = True

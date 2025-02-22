@@ -17,7 +17,7 @@ class PictographView(QGraphicsView):
             self.pictograph = pictograph
             self.pictograph.elements.view = self
 
-        self.dict_copier = PictographDataCopier(pictograph)
+        self.data_copier = PictographDataCopier(pictograph)
 
         self.setFrameStyle(QFrame.Shape.NoFrame)
         self.setStyleSheet("background: transparent; border: none;")
@@ -35,12 +35,11 @@ class PictographView(QGraphicsView):
     def resizeEvent(self, event):
         """Handle resizing and maintain aspect ratio."""
         super().resizeEvent(event)
-        # self.setSceneRect(self.scene().itemsBoundingRect())
         self.fitInView(self.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
 
     def contextMenuEvent(self, event: QEvent) -> None:
         context_menu = QMenu(self)
         copy_action = QAction("Copy Dictionary", self)
-        copy_action.triggered.connect(self.dict_copier.copy_pictograph_data)
+        copy_action.triggered.connect(self.data_copier.copy_pictograph_data)
         context_menu.addAction(copy_action)
         context_menu.exec(QCursor.pos())
