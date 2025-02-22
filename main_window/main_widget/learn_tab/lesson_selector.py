@@ -9,7 +9,7 @@ from PyQt6.QtCore import Qt
 from functools import partial
 
 from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-    BaseLessonWidget,
+    LessonWidget,
 )
 from main_window.main_widget.learn_tab.lesson_selector_button import (
     LessonSelectorButton,
@@ -148,7 +148,7 @@ class LessonSelector(QWidget):
             description.setFont(font)
 
     def start_lesson(self, lesson_number: int) -> None:
-        lesson_widgets: list[BaseLessonWidget] = [
+        lesson_widgets: list[LessonWidget] = [
             self.learn_tab.lesson_1_widget,
             self.learn_tab.lesson_2_widget,
             self.learn_tab.lesson_3_widget,

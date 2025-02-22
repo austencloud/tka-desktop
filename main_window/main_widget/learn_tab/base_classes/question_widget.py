@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Any
-from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from main_window.main_widget.learn_tab.base_classes.pictograph_question_renderer import (
     PictographQuestionRenderer,
 )
@@ -9,7 +9,7 @@ from main_window.main_widget.learn_tab.base_classes.text_question_renderer impor
 
 if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-        BaseLessonWidget,
+        LessonWidget,
     )
 
 
@@ -19,7 +19,7 @@ class QuestionWidget(QWidget):
     (text, pictograph, etc.), eliminating the need for separate question widgets per lesson.
     """
 
-    def __init__(self, lesson_widget: "BaseLessonWidget", question_type: str):
+    def __init__(self, lesson_widget: "LessonWidget", question_format: str):
         super().__init__(lesson_widget)
         self.lesson_widget = lesson_widget
         self.main_widget = lesson_widget.main_widget
@@ -28,7 +28,7 @@ class QuestionWidget(QWidget):
         self.setLayout(self.layout)
 
         # Choose renderer based on question type
-        self.renderer = self.select_renderer(question_type)
+        self.renderer = self.select_renderer(question_format)
 
         # Add the rendered question to the layout
         self.layout.addWidget(self.renderer.get_widget())

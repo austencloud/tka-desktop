@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-        BaseLessonWidget,
+        LessonWidget,
     )
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
         SequenceWorkbench,
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class BaseIndicatorLabel(QLabel):
     def __init__(
-        self, parent_widget: Union["BaseLessonWidget", "SequenceWorkbench"]
+        self, parent_widget: Union["LessonWidget", "SequenceWorkbench"]
     ) -> None:
         super().__init__(parent_widget)
         self.parent_widget = parent_widget

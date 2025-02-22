@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from .base_font_color_updater import BaseFontColorUpdater
 from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-    BaseLessonWidget,
+    LessonWidget,
 )
 
 if TYPE_CHECKING:
@@ -21,7 +21,7 @@ class LearnTabFontColorUpdater(BaseFontColorUpdater):
         )
         learn_tab.lesson_selector.mode_toggle_widget.update_mode_label_styles()
 
-        lesson_widgets: list[BaseLessonWidget] = [
+        lesson_widgets: list[LessonWidget] = [
             learn_tab.lesson_1_widget,
             learn_tab.lesson_2_widget,
             learn_tab.lesson_3_widget,

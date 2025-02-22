@@ -4,13 +4,13 @@ from PyQt6.QtCore import QTimer
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .base_lesson_widget import BaseLessonWidget
+    from .base_lesson_widget import LessonWidget
 
 
 class QuizTimerManager:
     """Handles timer logic for the quiz."""
 
-    def __init__(self, lesson: "BaseLessonWidget"):
+    def __init__(self, lesson: "LessonWidget"):
         self.lesson = lesson
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_timer)

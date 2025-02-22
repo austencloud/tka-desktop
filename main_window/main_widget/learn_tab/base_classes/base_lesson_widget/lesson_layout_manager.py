@@ -4,11 +4,11 @@ from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from .base_lesson_widget import BaseLessonWidget
+    from .base_lesson_widget import LessonWidget
 
 
 class LessonLayoutManager:
-    def __init__(self, lesson_widget: "BaseLessonWidget"):
+    def __init__(self, lesson_widget: "LessonWidget"):
         self.lesson_widget = lesson_widget
         self.central_layout = QVBoxLayout()
         self.central_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -41,7 +41,6 @@ class LessonLayoutManager:
     def refresh_central_layout(self):
         self._clear_stretches(self.central_layout)
         for widget in [
-            
             self.lesson_widget.question_widget,
             self.lesson_widget.answers_widget,
         ]:

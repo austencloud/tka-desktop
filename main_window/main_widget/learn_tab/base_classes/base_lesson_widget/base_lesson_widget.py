@@ -2,17 +2,16 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QLabel
 
-from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
-    BaseAnswersWidget,
-)
+
 from main_window.main_widget.learn_tab.base_classes.answers_widget import (
     AnswersWidget,
 )
-from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.question_generator_factory import (
-    QuestionGeneratorFactory,
-)
+
 from main_window.main_widget.learn_tab.base_classes.question_widget import (
     QuestionWidget,
+)
+from main_window.main_widget.learn_tab.question_generator import (
+    QuestionGenerator,
 )
 from .lesson_layout_manager import LessonLayoutManager
 from .lesson_answer_checker import LessonAnswerChecker
@@ -21,22 +20,19 @@ from .lesson_indicator_label import LessonIndicatorLabel
 from .lesson_progress_label import LessonProgressLabel
 from .lesson_quiz_timer_manager import QuizTimerManager
 
-from ..base_question_generator import BaseQuestionGenerator
-from ..base_question_widget import BaseQuestionWidget
 
 if TYPE_CHECKING:
     from ...learn_tab import LearnTab
 
 
-class BaseLessonWidget(QWidget):
+class LessonWidget(QWidget):
     """
     BaseLessonWidget is responsible for managing the lesson UI:
     it holds components such as the question widget, answers widget,
     progress indicator, timer, and go-back button.
     """
 
-    question_prompt: QLabel = None
-    question_generator: BaseQuestionGenerator = None
+    question_generator: QuestionGenerator = None
     question_widget: QuestionWidget = None
     answers_widget: AnswersWidget = None
     total_questions = 30
@@ -49,8 +45,10 @@ class BaseLessonWidget(QWidget):
         self,
         learn_tab: "LearnTab",
         lesson_type: str,
-        question_type: str,
-        answer_type: str,
+        question_format: str,
+        answer_format: str,
+        quiz_description: str,
+        question_prompt: str,
     ):
         super().__init__(learn_tab)
         self.lesson_type = lesson_type
@@ -67,11 +65,14 @@ class BaseLessonWidget(QWidget):
         self.layout_manager = LessonLayoutManager(self)
 
         # Dynamically generate the correct question widget and generator
-        self.question_widget = QuestionWidget(self, question_type=question_type)
-        self.answers_widget = AnswersWidget(self, answer_type=answer_type)
-        self.question_generator = QuestionGeneratorFactory.create_generator(
-            lesson_type, self
+        self.question_widget = QuestionWidget(self, question_format=question_format)
+        self.answers_widget = AnswersWidget(self, answer_format=answer_format)
+        self.question_generator = QuestionGenerator(
+            self, quiz_description=quiz_description
         )
+        self.question_prompt = QLabel(question_prompt, self)
+
+        self.layout_manager.setup_layout()
 
     def update_progress_label(self):
         if self.mode == "countdown":

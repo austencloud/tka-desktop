@@ -12,7 +12,7 @@ from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_st
 if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.learn_tab import LearnTab
     from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-        BaseLessonWidget,
+        LessonWidget,
     )
 
 
@@ -90,7 +90,7 @@ class LessonResultsWidget(QWidget):
         self.result_label.setFont(font)
         self.result_label.adjustSize()
 
-    def show_results(self, lesson_widget: "BaseLessonWidget", incorrect_guesses):
+    def show_results(self, lesson_widget: "LessonWidget", incorrect_guesses):
         """Display the results after the quiz or countdown ends."""
         self.set_result_text(
             f"🎉 Well done!! 🎉\n\n"
@@ -115,7 +115,7 @@ class LessonResultsWidget(QWidget):
             widgets_to_fade, lambda: self._fade_to_results(lesson_widget)
         )
 
-    def _fade_to_results(self, lesson_widget: "BaseLessonWidget"):
+    def _fade_to_results(self, lesson_widget: "LessonWidget"):
         lesson_widget.learn_tab.stack.setCurrentWidget(self)
         lesson_widget.prepare_quiz_ui()
         stack_fader = self.main_widget.fade_manager.stack_fader

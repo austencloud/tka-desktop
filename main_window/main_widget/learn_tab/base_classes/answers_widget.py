@@ -4,7 +4,7 @@ from .button_answers_renderer import ButtonAnswersRenderer
 from .pictograph_answers_renderer import PictographAnswersRenderer
 
 if TYPE_CHECKING:
-    from .base_lesson_widget.base_lesson_widget import BaseLessonWidget
+    from .base_lesson_widget.base_lesson_widget import LessonWidget
 
 
 class AnswersWidget(QWidget):
@@ -15,8 +15,8 @@ class AnswersWidget(QWidget):
 
     def __init__(
         self,
-        lesson_widget: "BaseLessonWidget",
-        answer_type: str,
+        lesson_widget: "LessonWidget",
+        answer_format: str,
         columns: int = 2,
         spacing: int = 30,
     ):
@@ -26,7 +26,7 @@ class AnswersWidget(QWidget):
         self.answer_widgets: Dict[Any, QWidget] = {}
 
         # Dynamically select renderer
-        self.renderer = self._select_renderer(answer_type, columns, spacing)
+        self.renderer = self._select_renderer(answer_format, columns, spacing)
         self.renderer_container = self.renderer.get_layout()
         self.setLayout(self.renderer_container)
 
@@ -48,9 +48,7 @@ class AnswersWidget(QWidget):
         check_callback: Callable[[Any, Any], None],
     ):
         self.answer_widgets.clear()
-        self.renderer.update_answer_options(
-            self, answers, check_callback, correct_answer
-        )
+        self.renderer.update_answer_options(answers, check_callback, correct_answer)
 
     def update_answer_options(
         self,
@@ -58,9 +56,7 @@ class AnswersWidget(QWidget):
         correct_answer: Any,
         check_callback: Callable[[Any, Any], None],
     ):
-        self.renderer.update_answer_options(
-            self, answers, check_callback, correct_answer
-        )
+        self.renderer.update_answer_options(answers, check_callback, correct_answer)
 
     def disable_answer(self, answer: Any):
         self.renderer.disable_answer_option(answer)

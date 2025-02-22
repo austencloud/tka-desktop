@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .base_lesson_widget import BaseLessonWidget
+    from .base_lesson_widget import LessonWidget
 
 
 class LessonAnswerChecker:
     """Class to check answers and update the UI accordingly."""
 
-    def __init__(self, lesson_widget: "BaseLessonWidget"):
+    def __init__(self, lesson_widget: "LessonWidget"):
         self.lesson = lesson_widget
 
     def _update_indicator_style(self, color: str, message: str):

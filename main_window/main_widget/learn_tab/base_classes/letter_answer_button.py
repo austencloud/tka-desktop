@@ -1,16 +1,11 @@
 from typing import TYPE_CHECKING, Any, Callable
-from PyQt6.QtWidgets import QPushButton, QWidget
-from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtWidgets import QHBoxLayout
-from PyQt6.QtGui import QFont, QResizeEvent
+from PyQt6.QtWidgets import QPushButton
+from PyQt6.QtCore import Qt
 
 
 if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.base_classes.answers_widget import (
         AnswersWidget,
-    )
-    from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
-        BaseAnswersWidget,
     )
 
 

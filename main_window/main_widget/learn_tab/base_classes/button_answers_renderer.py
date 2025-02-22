@@ -2,15 +2,12 @@
 from typing import Any, List, Callable
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 from PyQt6.QtCore import Qt
-from main_window.main_widget.learn_tab.base_classes.base_answers_renderer import (
-    BaseAnswersRenderer,
-)
 from main_window.main_widget.learn_tab.base_classes.letter_answer_button import (
     LetterAnswerButton,
 )
 
 
-class ButtonAnswersRenderer(BaseAnswersRenderer):
+class ButtonAnswersRenderer:
     def __init__(self):
         self.buttons: List[LetterAnswerButton] = []
         self.layout = QHBoxLayout()

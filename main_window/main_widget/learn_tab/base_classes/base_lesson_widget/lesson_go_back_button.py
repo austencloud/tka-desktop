@@ -7,12 +7,12 @@ from base_widgets.base_go_back_button import (
 
 if TYPE_CHECKING:
     from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-        BaseLessonWidget,
+        LessonWidget,
     )
 
 
 class LessonGoBackButton(BaseGoBackButton):
-    def __init__(self, lesson_widget: "BaseLessonWidget"):
+    def __init__(self, lesson_widget: "LessonWidget"):
         super().__init__(lesson_widget.main_widget)
         self.lesson_widget = lesson_widget
         self.main_widget = self.lesson_widget.main_widget
