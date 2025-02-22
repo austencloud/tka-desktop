@@ -52,5 +52,5 @@ def main() -> None:
 if __name__ == "__main__":
     PaintEventSuppressor.install_message_handler()
     tracer = CallTracer(PROJECT_DIR, log_file)
-    sys.settrace(tracer.trace_calls)
+    # sys.settrace(tracer.trace_calls)
     main()
