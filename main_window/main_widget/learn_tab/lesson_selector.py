@@ -24,10 +24,10 @@ if TYPE_CHECKING:
 class LessonSelector(QWidget):
     """Widget for selecting lessons and quiz mode in the learning module."""
 
-    def __init__(self, learn_widget: "LearnTab") -> None:
-        super().__init__(learn_widget)
-        self.learn_widget = learn_widget
-        self.main_widget = learn_widget.main_widget
+    def __init__(self, learn_tab: "LearnTab") -> None:
+        super().__init__(learn_tab)
+        self.learn_tab = learn_tab
+        self.main_widget = learn_tab.main_widget
 
         # Store buttons and description labels for resizing
         self.buttons: dict[str, LessonSelectorButton] = {}
@@ -149,16 +149,16 @@ class LessonSelector(QWidget):
 
     def start_lesson(self, lesson_number: int) -> None:
         lesson_widgets: list[BaseLessonWidget] = [
-            self.learn_widget.lesson_1_widget,
-            self.learn_widget.lesson_2_widget,
-            self.learn_widget.lesson_3_widget,
+            self.learn_tab.lesson_1_widget,
+            self.learn_tab.lesson_2_widget,
+            self.learn_tab.lesson_3_widget,
         ]
         lesson_widget = lesson_widgets[lesson_number - 1]
-        lesson_widget_index = self.learn_widget.stack.indexOf(lesson_widget)
+        lesson_widget_index = self.learn_tab.stack.indexOf(lesson_widget)
         mode = self.mode_toggle_widget.get_selected_mode()
         lesson_widget.prepare_quiz_ui(mode, fade=False)
         QApplication.processEvents()
         if 1 <= lesson_number <= len(lesson_widgets):
             self.main_widget.fade_manager.stack_fader.fade_stack(
-                self.learn_widget.stack, lesson_widget_index, 300
+                self.learn_tab.stack, lesson_widget_index, 300
             )

@@ -21,7 +21,6 @@ class PictographState:
     
     pictograph_data: dict[str, Union[str, dict[str, str]]] = field(default_factory=dict)
     is_blank: bool = False
-    quiz_mode: bool = False
     disable_gold_overlay: bool = False
     blue_reversal: bool = False
     red_reversal: bool = False

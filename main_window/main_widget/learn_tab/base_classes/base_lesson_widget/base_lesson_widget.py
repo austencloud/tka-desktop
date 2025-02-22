@@ -5,6 +5,15 @@ from PyQt6.QtWidgets import QWidget, QLabel
 from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
     BaseAnswersWidget,
 )
+from main_window.main_widget.learn_tab.base_classes.answers_widget import (
+    AnswersWidget,
+)
+from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.question_generator_factory import (
+    QuestionGeneratorFactory,
+)
+from main_window.main_widget.learn_tab.base_classes.question_widget import (
+    QuestionWidget,
+)
 from .lesson_layout_manager import LessonLayoutManager
 from .lesson_answer_checker import LessonAnswerChecker
 from .lesson_go_back_button import LessonGoBackButton
@@ -28,16 +37,23 @@ class BaseLessonWidget(QWidget):
 
     question_prompt: QLabel = None
     question_generator: BaseQuestionGenerator = None
-    question_widget: BaseQuestionWidget = None
-    answers_widget: BaseAnswersWidget = None
+    question_widget: QuestionWidget = None
+    answers_widget: AnswersWidget = None
     total_questions = 30
     current_question = 1
     quiz_time = 120
     mode = "fixed_question"
     incorrect_guesses = 0
 
-    def __init__(self, learn_tab: "LearnTab"):
+    def __init__(
+        self,
+        learn_tab: "LearnTab",
+        lesson_type: str,
+        question_type: str,
+        answer_type: str,
+    ):
         super().__init__(learn_tab)
+        self.lesson_type = lesson_type
         self.learn_tab = learn_tab
         self.main_widget = learn_tab.main_widget
         self.fade_manager = self.main_widget.fade_manager
@@ -50,6 +66,13 @@ class BaseLessonWidget(QWidget):
         self.answer_checker = LessonAnswerChecker(self)
         self.layout_manager = LessonLayoutManager(self)
 
+        # Dynamically generate the correct question widget and generator
+        self.question_widget = QuestionWidget(self, question_type=question_type)
+        self.answers_widget = AnswersWidget(self, answer_type=answer_type)
+        self.question_generator = QuestionGeneratorFactory.create_generator(
+            lesson_type, self
+        )
+
     def update_progress_label(self):
         if self.mode == "countdown":
             minutes, seconds = divmod(self.quiz_time, 60)
@@ -59,28 +82,33 @@ class BaseLessonWidget(QWidget):
                 f"{self.current_question}/{self.total_questions}"
             )
 
-
-    def prepare_quiz_ui(self, mode, fade = True):
+    def prepare_quiz_ui(self, mode, fade=True):
+        """
+        Prepares the quiz UI and generates the first question.
+        """
         self.current_question = 1
         self.incorrect_guesses = 0
         self.update_progress_label()
         self.indicator_label.clear()
         self.mode = mode
+
         if mode == "countdown":
             self.timer_manager.start_timer(120)
         else:
             self.timer_manager.stop_timer()
+
         widgets_to_fade = [
             self.question_widget,
             self.answers_widget,
             self.indicator_label,
         ]
+
         if fade:
             self.fade_manager.widget_fader.fade_and_update(
                 widgets_to_fade,
-                callback=self.question_generator.generate_question,  # update content in-place
+                callback=self.question_generator.generate_question,
             )
-        else: 
+        else:
             self.question_generator.generate_question()
 
     def resizeEvent(self, event):

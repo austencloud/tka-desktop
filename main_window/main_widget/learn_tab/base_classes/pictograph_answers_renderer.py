@@ -56,7 +56,6 @@ class PictographAnswersRenderer(BaseAnswersRenderer):
             # Update the scene with the pictograph data and reset overlay
             scene.managers.updater.update_pictograph(answer)
             scene.elements.view.update_borders()
-            scene.state.quiz_mode = True
             scene.elements.tka_glyph.setVisible(False)
             # Reset overlay to ensure no old overlay remains.
             scene.elements.view.set_overlay_color(None)
@@ -100,7 +99,6 @@ class PictographAnswersRenderer(BaseAnswersRenderer):
 
             scene.managers.updater.update_pictograph(answer)
             scene.elements.view.update_borders()
-            scene.state.quiz_mode = True
             scene.elements.tka_glyph.setVisible(False)
             # Reset overlay so previous overlays don't persist.
             scene.elements.view.set_overlay_color(None)

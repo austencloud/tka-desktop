@@ -23,10 +23,12 @@ class Lesson2QuestionGenerator(BaseQuestionGenerator):
     def generate_question(self):
         """Generate a question and update the question and answer widgets."""
         self.lesson_widget.update_progress_label()
-
+        
         correct_letter, correct_pictograph = self.generate_correct_answer()
 
-        self.lesson_widget.question_widget._update_letter_label(correct_letter.value)
+        self.lesson_widget.question_widget.renderer.update_question(
+            correct_letter.value
+        )
 
         pictographs = self._get_shuffled_pictographs(correct_pictograph)
         self.lesson_widget.answers_widget.update_answer_options(
@@ -34,7 +36,6 @@ class Lesson2QuestionGenerator(BaseQuestionGenerator):
             correct_pictograph,
             self.lesson_widget.answer_checker.check_answer,
         )
-
 
     def generate_correct_answer(self) -> tuple[Letter, dict]:
         """Retrieve a random correct letter and its corresponding pictograph, avoiding repetition."""
@@ -95,10 +96,8 @@ class Lesson2QuestionGenerator(BaseQuestionGenerator):
 
     def _is_duplicate_pictograph(self, letter: str, pictograph_data: dict) -> bool:
         """Check if a pictograph has already been used."""
-        pictograph_key = (
-            PictographKeyGenerator().generate_pictograph_key(
-                pictograph_data
-            )
+        pictograph_key = PictographKeyGenerator().generate_pictograph_key(
+            pictograph_data
         )
         if pictograph_key in self.previous_pictographs:
             return True

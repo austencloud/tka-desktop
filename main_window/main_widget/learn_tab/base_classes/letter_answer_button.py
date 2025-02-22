@@ -4,9 +4,10 @@ from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import QHBoxLayout
 from PyQt6.QtGui import QFont, QResizeEvent
 
+
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.lesson_1.lesson_1_answers_widget import (
-        Lesson1AnswersWidget,
+    from main_window.main_widget.learn_tab.base_classes.answers_widget import (
+        AnswersWidget,
     )
     from main_window.main_widget.learn_tab.base_classes.base_answers_widget import (
         BaseAnswersWidget,
@@ -19,7 +20,7 @@ class LetterAnswerButton(QPushButton):
     def __init__(
         self,
         answer: Any,
-        answers_widget: "Lesson1AnswersWidget",
+        answers_widget: "AnswersWidget",
         check_callback: Callable[[Any, Any], None],
         correct_answer: Any,
     ):

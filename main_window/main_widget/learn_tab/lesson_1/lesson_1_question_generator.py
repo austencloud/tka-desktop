@@ -27,7 +27,7 @@ class Lesson1QuestionGenerator(BaseQuestionGenerator):
         pictograph_dataset = self.main_widget.pictograph_dataset
 
         correct_pictograph_data = random.choice(pictograph_dataset[correct_answer])
-        self.lesson_1_widget.question_widget.update_pictograph(correct_pictograph_data)
+        self.lesson_1_widget.question_widget.renderer.update_question(correct_pictograph_data)
         wrong_answers = self.generate_wrong_answers(correct_answer)
         letters = [correct_answer.value] + wrong_answers
         random.shuffle(letters)

@@ -24,7 +24,7 @@ class Lesson3QuestionGenerator(BaseQuestionGenerator):
         initial_pictograph = self.generate_initial_pictograph()
         self.previous_pictograph = initial_pictograph
 
-        self.lesson_widget.question_widget.update_pictograph(initial_pictograph)
+        self.lesson_widget.question_widget.renderer.update_question(initial_pictograph)
         correct_pictograph = self.generate_correct_answer(initial_pictograph)
         wrong_pictographs = self.generate_wrong_answers(correct_pictograph)
         pictographs: list["Pictograph"] = [correct_pictograph] + wrong_pictographs
