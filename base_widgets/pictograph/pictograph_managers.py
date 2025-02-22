@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from base_widgets.pictograph.pictograph_attr_manager import PictographAttrManager
 from .svg_manager import SvgManager
 from placement_managers.arrow_placement_manager.arrow_placement_manager import (
     ArrowPlacementManager,
@@ -25,7 +24,6 @@ from dataclasses import dataclass
 class PictographManagers:
     """Stores all manager objects to handle logic separately."""
 
-    attr_manager: PictographAttrManager = None
     arrow_placement_manager: ArrowPlacementManager = None
     prop_placement_manager: PropPlacementManager = None
     wasd_manager: WASD_AdjustmentManager = None

@@ -1,8 +1,10 @@
 from dataclasses import dataclass, field
 from typing import Optional, Union
+
 from Enums.Enums import Letter
 from Enums.PropTypes import PropType
 from Enums.letters import LetterType
+
 
 @dataclass
 class PictographState:
@@ -23,15 +25,19 @@ class PictographState:
     turns_tuple: str = ""
     grid_mode: str = ""
 
-    def merge_update(self, update: dict[str, Union[str, dict[str, str]]]) -> None:
-        for key, value in update.items():
+    def update_pictograph_state(
+        self, pictograph_data: dict[str, Union[str, dict[str, str]]]
+    ) -> None:
+        for key, value in pictograph_data.items():
             if key == "letter":
                 try:
                     letter_obj = Letter.get_letter(value)
                 except KeyError:
                     letter_obj = value
                 self.letter = letter_obj
-                self.pictograph_data["letter"] = letter_obj.value if hasattr(letter_obj, "value") else letter_obj
+                self.pictograph_data["letter"] = (
+                    letter_obj.value if hasattr(letter_obj, "value") else letter_obj
+                )
             elif key in ("blue_attributes", "red_attributes"):
                 if key not in self.pictograph_data:
                     self.pictograph_data[key] = {}

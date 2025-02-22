@@ -19,9 +19,7 @@ class ArrowPlacementManager:
         pictograph: "Pictograph",
     ):
         self.pictograph = pictograph
-        self.special_placement_loader = (
-            AppContext.special_placement_loader()
-        )  # Positioners
+        self.special_placement_loader = AppContext.special_placement_loader()
         self.default_positioner = DefaultArrowPositioner(self)
         self.special_positioner = SpecialArrowPositioner(self)
 

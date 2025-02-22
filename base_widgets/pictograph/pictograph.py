@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QGraphicsScene
 
 from base_widgets.pictograph.svg_manager import SvgManager
-from .pictograph_attr_manager import PictographAttrManager
 from .pictograph_elements import PictographElements
 from .pictograph_managers import PictographManagers
 from .pictograph_state import PictographState
@@ -35,5 +34,4 @@ class Pictograph(QGraphicsScene):
         self.managers.arrow_placement_manager = ArrowPlacementManager(self)
         self.managers.prop_placement_manager = PropPlacementManager(self)
         self.managers.wasd_manager = WASD_AdjustmentManager(self)
-        self.managers.attr_manager = PictographAttrManager(self)
         self.managers.reversal_glyph = ReversalGlyph(self)

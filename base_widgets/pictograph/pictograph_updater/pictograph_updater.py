@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 from data.constants import LEADING, TRAILING
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from .arrow_data_updater import ArrowDataUpdater
-from .attribute_updater import AttributeUpdater
 from .glyph_updater import GlyphUpdater
 from .motion_data_updater import MotionDataUpdater
 from .placement_updater import PlacementUpdater
@@ -18,7 +17,6 @@ logger = logging.getLogger(__name__)
 class PictographUpdater:
     def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
-        self.attr_updater = AttributeUpdater(pictograph)
         self.motion_updater = MotionDataUpdater(pictograph)
         self.arrow_updater = ArrowDataUpdater(pictograph)
         self.glyph_updater = GlyphUpdater(pictograph)
@@ -76,7 +74,7 @@ class PictographUpdater:
 
     def _apply_attribute_and_motion_updates(self, data: dict) -> None:
         try:
-            self.attr_updater.update(data)
+            self.pictograph.state.update_pictograph_state(data)
             self.motion_updater.update(data)
             self.arrow_updater.update(data)
             self._update_lead_states()
