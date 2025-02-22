@@ -17,7 +17,6 @@ class GraphEditorPictographContainer(QWidget):
     def __init__(self, graph_editor: "GraphEditor") -> None:
         super().__init__(graph_editor)
         self.graph_editor = graph_editor
-        # self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.setup_pictograph()
 
         self.layout: QVBoxLayout = QVBoxLayout(self)
@@ -44,8 +43,8 @@ class GraphEditorPictographContainer(QWidget):
         pictograph.is_blank = False
         view.reference_beat = reference_beat
         view.is_start_pos = reference_beat.view.is_start_pos
-        pictograph.blue_reversal = reference_beat.blue_reversal
-        pictograph.red_reversal = reference_beat.red_reversal
+        pictograph.state.blue_reversal = reference_beat.state.blue_reversal
+        pictograph.state.red_reversal = reference_beat.state.red_reversal
 
         pictograph.managers.updater.update_pictograph(
             reference_beat.state.pictograph_data

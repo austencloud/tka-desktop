@@ -29,7 +29,7 @@ class GE_TurnsLabel(QLabel):
         self.turns_display_font_size = int(
             (self.turns_box.adjustment_panel.graph_editor.width() / 22)
         )
-        self.setFont(QFont("Georgia", self.turns_display_font_size, QFont.Weight.Bold))
+        self.setFont(QFont("Arial", self.turns_display_font_size, QFont.Weight.Bold))
         self.setMaximumWidth(
             int(self.turns_box.adjustment_panel.graph_editor.width() / 9)
         )

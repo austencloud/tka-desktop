@@ -23,8 +23,6 @@ class Beat(Pictograph):
     is_placeholder = False
     parent_beat = None
     beat_number = 0
-    blue_reversal = False
-    red_reversal = False
 
     def __init__(
         self, beat_frame: "SequenceBeatFrame", duration: Union[int, float] = 1
