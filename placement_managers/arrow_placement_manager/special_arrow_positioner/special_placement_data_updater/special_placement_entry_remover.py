@@ -2,6 +2,7 @@ import os
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import BLUE, RED
+from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
@@ -30,10 +31,7 @@ class SpecialPlacementEntryRemover:
         if os.path.exists(file_path):
             data = self.load_data(file_path)
             self._process_removal(letter, arrow, ori_key, file_path, data)
-            special_placement_loader = (
-                arrow.pictograph.main_widget.special_placement_loader
-            )
-            special_placement_loader.load_special_placements()
+            SpecialPlacementLoader().load_special_placements()
 
     def _process_removal(
         self, letter: Letter, arrow: Arrow, ori_key: str, file_path: str, data: dict

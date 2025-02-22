@@ -86,6 +86,9 @@ class PictographGetter:
         float_map = {True: self.red_motion, False: self.blue_motion}
         return float_map.get(self.red_motion.check.is_float())
 
+    def grid_mode(self) -> str:
+        return self.pictograph.elements.grid.grid_mode
+
     def opposite_location(self, loc: str) -> str:
         opposite_locations = {
             NORTH: SOUTH,

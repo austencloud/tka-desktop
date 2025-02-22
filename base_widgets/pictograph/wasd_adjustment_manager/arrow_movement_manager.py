@@ -2,6 +2,10 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
+    TurnsTupleGenerator,
+)
+
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
@@ -33,8 +37,8 @@ class ArrowMovementManager:
             adjustment_increment = 200
 
         adjustment = self.get_adjustment(key, adjustment_increment)
-
-        self.data_updater.update_arrow_adjustments_in_json(adjustment, selected_arrow)
+        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
+        self.data_updater.update_arrow_adjustments_in_json(adjustment, selected_arrow, turns_tuple)
         self.data_updater.mirrored_entry_manager.update_mirrored_entry_in_json(
             selected_arrow
         )

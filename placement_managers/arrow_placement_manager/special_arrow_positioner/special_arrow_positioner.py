@@ -17,5 +17,11 @@ class SpecialArrowPositioner:
         self.placement_manager = placement_manager
         self.pictograph: Pictograph = placement_manager.pictograph
         self.data_loader = self
-        self.data_updater = SpecialPlacementDataUpdater(self)
         self.attr_key_generator = AttrKeyGenerator(self)
+        self.data_updater = SpecialPlacementDataUpdater(
+            self,
+            self.attr_key_generator,
+            self.pictograph.state,
+            lambda: self.placement_manager.default_positioner.get_default_adjustment(),
+            self.pictograph.managers.get,
+        )

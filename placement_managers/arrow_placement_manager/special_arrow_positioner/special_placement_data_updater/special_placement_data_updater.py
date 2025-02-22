@@ -1,13 +1,18 @@
 import os
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
+from base_widgets.pictograph.pictograph_getter import PictographGetter
+from base_widgets.pictograph.pictograph_state import PictographState
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
 from main_window.settings_manager.global_settings.app_context import AppContext
 from placement_managers.arrow_placement_manager.mirrored_entry_manager.mirrored_entry_manager import (
     MirroredEntryManager,
+)
+from placement_managers.arrow_placement_manager.special_arrow_positioner.attr_key_generator import (
+    AttrKeyGenerator,
 )
 
 
@@ -33,8 +38,21 @@ logging.basicConfig(
 
 
 class SpecialPlacementDataUpdater:
-    def __init__(self, positioner: "SpecialArrowPositioner") -> None:
+    def __init__(
+        self,
+        positioner: "SpecialArrowPositioner",
+        attr_key_generator: "AttrKeyGenerator",
+        state: "PictographState",
+        get_default_adjustment_callback: callable,
+        get: "PictographGetter",
+    ) -> None:
         self.positioner = positioner
+        self.state = state
+        self.attr_key_generator = attr_key_generator
+        self.default_adjustment_getter = get_default_adjustment_callback
+        self.get = get
+        self.get_grid_mode = get.grid_mode()
+
         self.turns_tuple_generator = TurnsTupleGenerator()
 
         self.entry_remover = SpecialPlacementEntryRemover(self)
@@ -43,9 +61,7 @@ class SpecialPlacementDataUpdater:
     def _get_letter_data(self, letter: Letter, ori_key: str) -> dict:
         letter_data = (
             AppContext.special_placement_loader()
-            .load_special_placements()[self.positioner.pictograph.state.grid_mode][
-                ori_key
-            ]
+            .load_special_placements()[self.state.grid_mode][ori_key]
             .get(letter.value, {})
         )
 
@@ -59,7 +75,7 @@ class SpecialPlacementDataUpdater:
         adjustment: tuple[int, int],
     ) -> None:
         turn_data = letter_data.get(turns_tuple, {})
-        key = self.positioner.attr_key_generator.get_key(arrow)
+        key = self.attr_key_generator.get_key(arrow)
 
         if key in turn_data and turn_data[key] != {}:
             turn_data[key][0] += adjustment[0]
@@ -74,13 +90,10 @@ class SpecialPlacementDataUpdater:
         letter_data[turns_tuple] = turn_data
 
     def _get_default_adjustment(self, arrow: Arrow) -> tuple[int, int]:
-        default_mgr = (
-            self.positioner.pictograph.managers.arrow_placement_manager.default_positioner
-        )
-        return default_mgr.get_default_adjustment(arrow)
+        return self.default_adjustment_getter()
 
     def _generate_ori_key(self, motion: Motion) -> str:
-        other_motion = self.positioner.pictograph.managers.get.other_motion(motion)
+        other_motion: Motion = self.get.other_motion(motion)
         if motion.start_ori in [IN, OUT] and other_motion.start_ori in [IN, OUT]:
             return "from_layer1"
         elif motion.start_ori in [CLOCK, COUNTER] and other_motion.start_ori in [
@@ -122,7 +135,7 @@ class SpecialPlacementDataUpdater:
     def _update_placement_json_data(
         self, letter: Letter, letter_data: dict, ori_key: str
     ) -> None:
-        grid_mode = self.positioner.pictograph.state.grid_mode
+        grid_mode = self.state.grid_mode
         file_path = os.path.join(
             "data",
             "arrow_placement",
@@ -136,15 +149,13 @@ class SpecialPlacementDataUpdater:
         AppContext.special_placement_handler().write_json_data(existing_data, file_path)
 
     def update_arrow_adjustments_in_json(
-        self, adjustment: tuple[int, int], arrow: Arrow
+        self, adjustment: tuple[int, int], arrow: Arrow, turns_tuple: str
     ) -> None:
         if not arrow:
             return
 
-        letter = self.positioner.pictograph.state.letter
-        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(
-            self.positioner.pictograph
-        )
+        letter = self.state.letter
+
         ori_key = self._generate_ori_key(arrow.motion)
 
         letter_data = self._get_letter_data(letter, ori_key)
