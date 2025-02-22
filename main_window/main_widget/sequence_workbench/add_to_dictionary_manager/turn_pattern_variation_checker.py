@@ -2,14 +2,15 @@ import json
 import os
 from typing import TYPE_CHECKING
 from PIL import Image
+
+from utilities.path_helpers import get_images_and_data_path
 if TYPE_CHECKING:
     from .add_to_dictionary_manager import AddToDictionaryManager
 
 
 class TurnPatternVariationChecker:
-    def __init__(self, add_to_dictionary_manager: "AddToDictionaryManager", directory: str):
-        self.manager = add_to_dictionary_manager
-        self.directory = directory
+    def __init__(self):
+        self.directory = get_images_and_data_path('dictionary')
 
     def check_for_turn_pattern_variation(self, sequence):
         # Iterate recursively through all files in the directory and subdirectories

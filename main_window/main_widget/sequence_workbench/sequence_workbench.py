@@ -23,7 +23,6 @@ from .sequence_reflector import SequenceReflector
 from .sequence_rotater import SequenceRotater
 from .sequence_workbench_layout_manager import SequenceWorkbenchLayoutManager
 from .sequence_auto_completer.sequence_auto_completer import SequenceAutoCompleter
-from .add_to_dictionary_manager.add_to_dictionary_manager import AddToDictionaryManager
 from .labels.current_word_label import CurrentWordLabel
 from .labels.difficulty_label import DifficultyLabel
 from .graph_editor.graph_editor import GraphEditor

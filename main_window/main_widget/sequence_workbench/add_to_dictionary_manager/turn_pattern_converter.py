@@ -8,9 +8,6 @@ if TYPE_CHECKING:
 
 
 class TurnPatternConverter:
-    def __init__(self, add_to_dictionary_manager: "AddToDictionaryManager"):
-        self.add_to_dictionary_manager = add_to_dictionary_manager
-
     def sequence_to_pattern(self, sequence: list[dict]) -> str:
         """
         Convert sequence data to a more readable turn pattern string, including tuples for differing turns.
