@@ -32,13 +32,10 @@ class MainWidgetManagers:
         """Setup all the managers and helper components."""
         mw = self.main_widget
 
-        mw.turns_tuple_generator = TurnsTupleGenerator()
-        mw.pictograph_key_generator = PictographKeyGenerator()
-        mw.special_placement_loader = SpecialPlacementLoader()
-        mw.metadata_extractor = MetaDataExtractor(mw)
+        mw.metadata_extractor = MetaDataExtractor()
         mw.sequence_level_evaluator = SequenceLevelEvaluator()
         mw.sequence_properties_manager = SequencePropertiesManager()
-        mw.thumbnail_finder = ThumbnailFinder(mw)
+        mw.thumbnail_finder = ThumbnailFinder()
         mw.pictograph_collector = PictographCollector(mw)
 
         # mw.special_placements = mw.special_placement_loader.load_special_placements()

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Union
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from main_window.main_widget.tab_indices import LeftStackIndex
 
 if TYPE_CHECKING:
@@ -21,7 +22,7 @@ class BrowseTabFilterController:
         self.filter_manager = browse_tab.filter_manager
         self.ui_updater = browse_tab.ui_updater
         self.fade_manager = browse_tab.main_widget.fade_manager
-
+        self.metadata_extractor = browse_tab.metadata_extractor
     # -------------------------------------------------------------------------
     # Public Method
     # -------------------------------------------------------------------------
@@ -158,31 +159,28 @@ class BrowseTabFilterController:
 
     def _dict_filter_level(self, level_value):
         base_words = self._base_words()
-        extractor = self.browse_tab.main_widget.metadata_extractor
         fm = self.filter_manager
         return [
             (w, t, fm._get_sequence_length(t[0]))
             for w, t in base_words
-            if extractor.get_level(t[0]) == level_value
+            if self.metadata_extractor.get_level(t[0]) == level_value
         ]
 
     def _dict_filter_author(self, author_value):
         base_words = self._base_words()
-        extractor = self.browse_tab.main_widget.metadata_extractor
         fm = self.filter_manager
         return [
             (w, t, fm._get_sequence_length(t[0]))
             for w, t in base_words
-            if extractor.get_author(t[0]) == author_value
+            if self.metadata_extractor.get_author(t[0]) == author_value
         ]
 
     def _dict_filter_starting_pos(self, pos_value):
         base_words = self._base_words()
-        extractor = self.browse_tab.main_widget.metadata_extractor
         fm = self.filter_manager
         result = []
         for w, t in base_words:
-            if extractor.get_start_pos(t[0]) == pos_value.lower():
+            if self.metadata_extractor.get_start_pos(t[0]) == pos_value.lower():
                 result.append((w, t, fm._get_sequence_length(t[0])))
         return result
 
@@ -196,12 +194,11 @@ class BrowseTabFilterController:
 
     def _dict_filter_grid_mode(self, grid_mode_value):
         base_words = self._base_words()
-        extractor = self.browse_tab.main_widget.metadata_extractor
         fm = self.filter_manager
         return [
             (w, t, fm._get_sequence_length(t[0]))
             for w, t in base_words
-            if extractor.get_grid_mode(t[0]) == grid_mode_value
+            if self.metadata_extractor.get_grid_mode(t[0]) == grid_mode_value
         ]
 
     def _dict_filter_show_all(self, _unused):

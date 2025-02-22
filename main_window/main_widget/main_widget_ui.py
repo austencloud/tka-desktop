@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QStackedWidget
 
+from main_window.main_widget.codex.codex import Codex
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
@@ -61,6 +62,8 @@ class MainWidgetUI:
 
         mw.menu_bar = MenuBarWidget(mw)
         mw.sequence_workbench = SequenceWorkbench(mw)
+        mw.codex = Codex(mw)
+
         AppContext.set_sequence_beat_frame(mw.sequence_workbench.sequence_beat_frame)
 
         mw.construct_tab = ConstructTab(
@@ -93,7 +96,7 @@ class MainWidgetUI:
         mw = self.mw
 
         mw.left_stack.addWidget(mw.sequence_workbench)  # 0
-        mw.left_stack.addWidget(mw.learn_tab.codex)  # 1
+        mw.left_stack.addWidget(mw.codex)  # 1
         mw.left_stack.addWidget(mw.write_tab.act_sheet)  # 2
         mw.left_stack.addWidget(mw.browse_tab.sequence_picker.filter_stack)  # 3
         mw.left_stack.addWidget(mw.browse_tab.sequence_picker)  # 4

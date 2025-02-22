@@ -13,17 +13,11 @@ if TYPE_CHECKING:
 
 
 class Lesson2AnswersWidget(BaseAnswersWidget):
-    """Minimal Lesson 2 answers widget that uses the pictograph renderer in a 2x2 grid."""
-
     def __init__(self, lesson_widget: "BaseLessonWidget"):
         self.renderer = PictographAnswersRenderer(columns=2, spacing=30)
         super().__init__(lesson_widget, self.renderer)
 
     def resizeEvent(self, event):
-        """
-        If you need to resize the pictograph views for Lesson 2, do it here.
-        Otherwise, remove this entirely if you don’t need special resizing.
-        """
         super().resizeEvent(event)
         size = int(self.main_widget.height() // 4)
         for view in self.renderer.pictograph_views.values():

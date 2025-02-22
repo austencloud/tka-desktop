@@ -5,8 +5,8 @@ from PyQt6.QtCore import Qt, QSize
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.codex.codex_control_widget import (
-        CodexControlWidget,
+    from .codex_control_widget import (
+        CodexControlWidget
     )
 
 

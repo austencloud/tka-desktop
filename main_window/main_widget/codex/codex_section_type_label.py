@@ -9,7 +9,7 @@ from utilities.letter_type_text_painter import (
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.codex.codex import Codex
+    from .codex import Codex
 
 
 class CodexSectionTypeLabel(QLabel):

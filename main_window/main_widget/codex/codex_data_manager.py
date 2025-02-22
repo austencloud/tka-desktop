@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 from Enums.letters import Letter
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.codex.codex import Codex
+    from .codex import Codex
 from Enums.letters import Letter
 
 

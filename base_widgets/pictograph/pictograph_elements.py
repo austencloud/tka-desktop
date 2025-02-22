@@ -10,7 +10,7 @@ from main_window.main_widget.construct_tab.start_pos_picker.start_pos_picker_pic
 from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_pictograph_view import (
     LessonPictographView,
 )
-from main_window.main_widget.learn_tab.codex.codex_pictograph_view import (
+from main_window.main_widget.codex.codex_pictograph_view import (
     CodexPictographView,
 )
 from objects.arrow.arrow import Arrow

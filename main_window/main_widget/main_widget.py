@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget
 from typing import TYPE_CHECKING
 from Enums.PropTypes import PropType
 
+from base_widgets.pictograph.svg_manager import SvgManager
 from main_window.main_widget.generate_tab.generate_tab import GenerateTab
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
@@ -24,6 +25,7 @@ from .main_widget_ui import MainWidgetUI
 from .main_widget_state import MainWidgetState
 
 if TYPE_CHECKING:
+    from main_window.main_widget.codex.codex import Codex
     from main_window.main_widget.pictograph_data_loader import PictographDataLoader
     from main_window.menu_bar.menu_bar import MenuBarWidget
     from splash_screen.splash_screen import SplashScreen
@@ -32,9 +34,7 @@ if TYPE_CHECKING:
     from .json_manager.json_manager import JsonManager
     from .sequence_workbench.sequence_workbench import SequenceWorkbench
 
-    from base_widgets.pictograph.managers.svg_manager import (
-        SvgManager,
-    )
+
     from .main_background_widget.backgrounds.base_background import (
         BaseBackground,
     )
@@ -70,7 +70,8 @@ class MainWidget(QWidget):
     sequence_workbench: "SequenceWorkbench"
     background_widget: "MainBackgroundWidget"
     full_screen_overlay: "FullScreenImageOverlay"
-
+    codex: "Codex"
+    
     # Handlers
     tab_switcher: "MainWidgetTabSwitcher"
     manager: "MainWidgetManagers"
@@ -78,11 +79,6 @@ class MainWidget(QWidget):
     state_handler: "MainWidgetState"
 
     # Managers and Helpers
-    svg_manager: "SvgManager"
-    turns_tuple_generator: "TurnsTupleGenerator"
-    pictograph_key_generator: "PictographKeyGenerator"
-    special_placement_loader: "SpecialPlacementLoader"
-    metadata_extractor: "MetaDataExtractor"
     sequence_level_evaluator: "SequenceLevelEvaluator"
     sequence_properties_manager: "SequencePropertiesManager"
     thumbnail_finder: "ThumbnailFinder"

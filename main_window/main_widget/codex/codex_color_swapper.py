@@ -3,12 +3,11 @@ from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.codex.codex_control_widget import (
-        CodexControlWidget,
-    )
+    from .codex_control_widget import CodexControlWidget
 
 
 class CodexColorSwapper:

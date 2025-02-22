@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QWidget
 from main_window.main_widget.browse_tab.browse_tab_filter_controller import (
     BrowseTabFilterController,
 )
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 
@@ -26,6 +27,8 @@ class BrowseTab(QWidget):
         self.main_widget.splash.updater.update_progress("BrowseTab")
 
         self.settings_manager = AppContext.settings_manager().browse_settings
+        self.metadata_extractor = MetaDataExtractor()
+
         self.ui_updater = BrowseTabUIUpdater(self)
 
         # Refactored Filtering Components

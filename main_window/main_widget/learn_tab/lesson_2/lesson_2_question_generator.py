@@ -5,6 +5,7 @@ from Enums.letters import Letter
 from main_window.main_widget.learn_tab.base_classes.base_question_generator import (
     BaseQuestionGenerator,
 )
+from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
 
 if TYPE_CHECKING:
     from .lesson_2_widget import Lesson2Widget
@@ -95,7 +96,7 @@ class Lesson2QuestionGenerator(BaseQuestionGenerator):
     def _is_duplicate_pictograph(self, letter: str, pictograph_data: dict) -> bool:
         """Check if a pictograph has already been used."""
         pictograph_key = (
-            self.main_widget.pictograph_key_generator.generate_pictograph_key(
+            PictographKeyGenerator().generate_pictograph_key(
                 pictograph_data
             )
         )

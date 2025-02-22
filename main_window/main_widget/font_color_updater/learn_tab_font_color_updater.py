@@ -32,5 +32,5 @@ class LearnTabFontColorUpdater(BaseFontColorUpdater):
             self._apply_font_color(learn_tab.results_widget.result_label)
 
         self._apply_font_color(
-            self.main_widget.learn_tab.codex.control_widget.ori_selector.start_ori_label
+            self.main_widget.codex.control_widget.ori_selector.start_ori_label
         )
