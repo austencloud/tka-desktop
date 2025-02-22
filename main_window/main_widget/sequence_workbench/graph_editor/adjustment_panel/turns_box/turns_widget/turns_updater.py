@@ -50,13 +50,16 @@ class TurnsUpdater:
 
     def _handle_float_turn(self, motion: "Motion", beat_index: int) -> None:
         """Handle the case when the new turns value is 'float'."""
-        motion.prefloat_motion_type = self._get_motion_type_from_json(
-            beat_index, motion.color
+        motion.prefloat_motion_type = (
+            self.json_manager.loader_saver.get_json_motion_type(
+                beat_index, motion.color
+            )
         )
-        motion.prefloat_prop_rot_dir = self._get_prop_rot_dir_from_json(
-            beat_index, motion.color
+        motion.prefloat_prop_rot_dir = (
+            self.json_manager.loader_saver.get_json_prop_rot_dir(
+                beat_index, motion.color
+            )
         )
-
         self._update_prefloat_values_in_json(motion, beat_index)
 
         motion.motion_type = FLOAT
@@ -64,13 +67,16 @@ class TurnsUpdater:
 
     def _restore_motion_from_prefloat(self, motion: "Motion", beat_index: int) -> None:
         """Restore motion properties from prefloat values."""
-        motion.prefloat_motion_type = self._get_prefloat_motion_type_from_json(
-            beat_index, motion.color
+        motion.prefloat_motion_type = (
+            self.json_manager.loader_saver.get_json_prefloat_motion_type(
+                beat_index, motion.color
+            )
         )
-        motion.prefloat_prop_rot_dir = self._get_prefloat_prop_rot_dir_from_json(
-            beat_index, motion.color
+        motion.prefloat_prop_rot_dir = (
+            self.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
+                beat_index, motion.color
+            )
         )
-
         motion.motion_type = motion.prefloat_motion_type
         motion.prop_rot_dir = motion.prefloat_prop_rot_dir
 
@@ -125,26 +131,6 @@ class TurnsUpdater:
         """Set the prop rotation direction state to clockwise by default."""
         self.turns_box.prop_rot_dir_btn_state[CLOCKWISE] = True
         self.turns_box.prop_rot_dir_btn_state[COUNTER_CLOCKWISE] = False
-
-    def _get_motion_type_from_json(self, index: int, color: str) -> int:
-        """Retrieve motion type from JSON at the given index."""
-        return self.json_manager.loader_saver.get_json_motion_type(index, color)
-
-    def _get_prop_rot_dir_from_json(self, index: int, color: str) -> int:
-        """Retrieve prop rotation direction from JSON at the given index."""
-        return self.json_manager.loader_saver.get_json_prop_rot_dir(index, color)
-
-    def _get_prefloat_motion_type_from_json(self, index: int, color: str) -> int:
-        """Retrieve prefloat motion type from JSON at the given index."""
-        return self.json_manager.loader_saver.get_json_prefloat_motion_type(
-            index, color
-        )
-
-    def _get_prefloat_prop_rot_dir_from_json(self, index: int, color: str) -> int:
-        """Retrieve prefloat prop rotation direction from JSON at the given index."""
-        return self.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
-            index, color
-        )
 
     def _update_prefloat_values_in_json(self, motion: "Motion", index: int) -> None:
         """Update prefloat values in JSON."""

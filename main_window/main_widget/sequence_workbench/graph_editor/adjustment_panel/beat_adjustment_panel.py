@@ -68,15 +68,21 @@ class BeatAdjustmentPanel(QFrame):
         return box_set
 
     def update_adjustment_panel(self) -> None:
-        """Update the panel view based on the current pictograph state."""
-        view = self.graph_editor.pictograph_container.GE_view
-        is_blank = view.get_current_pictograph().state.is_blank
-        widget_index = (
-            ORI_WIDGET_INDEX if is_blank or view.is_start_pos else TURNS_WIDGET_INDEX
-        )
+        # Get currently selected beat (if any)
+        selected = self.beat_frame.get.currently_selected_beat_view()
+        if selected is None:
+            # No beat is selected so show the ORI picker boxes
+            widget_index = ORI_WIDGET_INDEX
+        else:
+            # Otherwise, show the turns boxes
+            widget_index = TURNS_WIDGET_INDEX
+
         self._set_current_stack_widgets(widget_index)
-        self.update_turns_displays()
-        self.update_rot_dir_buttons()
+        
+        # Only update turns displays/buttons if we are showing the turns panel.
+        if widget_index == TURNS_WIDGET_INDEX:
+            self.update_turns_displays()
+            self.update_rot_dir_buttons()
 
     def update_rot_dir_buttons(self) -> None:
         """Update the rotation direction buttons based on the current pictograph state."""
