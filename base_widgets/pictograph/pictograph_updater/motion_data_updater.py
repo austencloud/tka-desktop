@@ -3,7 +3,7 @@ from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
-from data.constants import RED, BLUE
+from data.constants import LEADING, RED, BLUE, TRAILING
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
@@ -39,6 +39,8 @@ class MotionDataUpdater:
                 if motion_dataset[motion.state.color].get("turns", "") == "fl":
                     motion.state.turns = "fl"
                 motion.updater.update_motion(motion_dataset[motion.state.color])
+                if not motion.arrow.initialized:
+                    motion.arrow.setup_components()
                 turns_value = motion_dataset[motion.state.color].get("turns")
                 if turns_value is not None:
                     motion.state.turns = turns_value
@@ -56,12 +58,19 @@ class MotionDataUpdater:
                     Letter.U,
                     Letter.V,
                 ]:
-                    motion.attr_manager.assign_lead_states()
+                    self.assign_lead_states(motion)
             except Exception as e:
                 logger.error(
                     f"Error assigning lead state for {motion.state.color}: {e}",
                     exc_info=True,
                 )
+
+    def assign_lead_states(self, motion: "Motion") -> None:
+        leading_motion = motion.pictograph.managers.get.leading_motion()
+        trailing_motion = motion.pictograph.managers.get.trailing_motion()
+        if motion.pictograph.managers.get.leading_motion():
+            leading_motion.state.lead_state = LEADING
+            trailing_motion.state.lead_state = TRAILING
 
     def _override_motion_type_if_needed(self, data: dict, motion: Motion) -> None:
         motion_type = motion.state.motion_type

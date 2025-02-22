@@ -106,6 +106,7 @@ class PictographInitializer:
         motions: dict[str, Motion] = {}
         for color in [RED, BLUE]:
             motions[color] = self._create_motion(color)
+            motions[color].state.color = color
         self.pictograph.elements.red_motion, self.pictograph.elements.blue_motion = (
             motions[RED],
             motions[BLUE],
@@ -135,9 +136,6 @@ class PictographInitializer:
                 LOC: None,
                 ORI: None,
             }
-            # initial_prop_class = prop_class_mapping.get(prop_type)
-            # if initial_prop_class is None:
-            #     raise ValueError(f"Invalid prop_type: {prop_type}")
             initial_prop = Prop(
                 self.pictograph, initial_prop_attributes, None, prop_type
             )

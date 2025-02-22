@@ -23,7 +23,7 @@ class Arrow(GraphicalObject):
         super().__init__(pictograph)
         self.arrow_data = arrow_data
         self.pictograph: Pictograph = pictograph
-
+        
     def setup_components(self):
         self.location_manager = ArrowLocationManager(self)
         self.rot_angle_manager = ArrowRotAngleManager(self)

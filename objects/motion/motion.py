@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 from objects.motion.motion_state import MotionState
 from objects.motion.motion_turns_manager import MotionTurnsManager
 from .motion_checker import MotionChecker
-from .motion_attr_manager import MotionAttrManager
 from .motion_ori_calculator import MotionOriCalculator
 from .motion_updater import MotionUpdater
 
@@ -24,7 +23,6 @@ class Motion:
         self.motion_data = motion_data
         self.state = MotionState()
         self.ori_calculator = MotionOriCalculator(self)
-        self.attr_manager = MotionAttrManager(self)
         self.updater = MotionUpdater(self)
         self.check = MotionChecker(self)
         self.turns_manager = MotionTurnsManager(self)

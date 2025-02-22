@@ -11,10 +11,7 @@ class MotionUpdater:
 
     def update_motion(self, motion_data: dict = None) -> None:
         if motion_data:
-            self.motion.attr_manager.update_attributes(motion_data)
-
-        if not self.motion.arrow.initialized:
-            self.motion.arrow.setup_components()
+            self.motion.state.update_motion_state(motion_data)
 
         self.update_end_ori()
         prop_data = {
