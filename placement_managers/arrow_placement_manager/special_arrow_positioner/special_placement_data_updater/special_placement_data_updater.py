@@ -49,7 +49,7 @@ class SpecialPlacementDataUpdater:
         self.positioner = positioner
         self.state = state
         self.attr_key_generator = attr_key_generator
-        self.default_adjustment_getter = get_default_adjustment_callback
+        self.get_default_adjustment_callback = get_default_adjustment_callback
         self.get = get
         self.get_grid_mode = get.grid_mode()
 
@@ -81,16 +81,13 @@ class SpecialPlacementDataUpdater:
             turn_data[key][0] += adjustment[0]
             turn_data[key][1] += adjustment[1]
         else:
-            default_adjustment = self._get_default_adjustment(arrow)
+            default_adjustment = self.get_default_adjustment_callback(arrow)
             turn_data[key] = [
                 default_adjustment[0] + adjustment[0],
                 default_adjustment[1] + adjustment[1],
             ]
 
         letter_data[turns_tuple] = turn_data
-
-    def _get_default_adjustment(self, arrow: Arrow) -> tuple[int, int]:
-        return self.default_adjustment_getter()
 
     def _generate_ori_key(self, motion: Motion) -> str:
         other_motion: Motion = self.get.other_motion(motion)

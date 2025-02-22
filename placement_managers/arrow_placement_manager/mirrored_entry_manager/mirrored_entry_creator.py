@@ -1,14 +1,16 @@
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
+from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:
+    from placement_managers.arrow_placement_manager.special_arrow_positioner.special_placement_data_updater.special_placement_data_updater import (
+        SpecialPlacementDataUpdater,
+    )
     from .mirrored_entry_manager import (
         MirroredEntryManager,
     )
-    from ...special_placement_data_updater.special_placement_data_updater import (
-        SpecialPlacementDataUpdater,
-    )
+
     from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
         TurnsTupleGenerator,
     )
@@ -16,7 +18,7 @@ if TYPE_CHECKING:
 
 class MirroredEntryCreator:
     def __init__(self, mirrored_entry_manager: "MirroredEntryManager"):
-        self.data_updater: SpecialPlacementDataUpdater = (
+        self.data_updater: "SpecialPlacementDataUpdater" = (
             mirrored_entry_manager.data_updater
         )
         self.turns_tuple_generator: TurnsTupleGenerator = (
@@ -59,11 +61,10 @@ class MirroredEntryCreator:
         self, ori_key, letter: Letter, arrow: Arrow
     ) -> tuple[dict, dict]:
         letter_data: dict = (
-            self.data_updater.positioner.placement_manager.pictograph.main_widget.special_placements.get(
-                ori_key, {}
-            ).get(
-                letter.value, {}
-            )
+            SpecialPlacementLoader()
+            .load_special_placements()
+            .get(ori_key, {})
+            .get(letter.value, {})
         )
         original_turns_tuple = self.turns_tuple_generator.generate_turns_tuple(
             arrow.pictograph
@@ -74,9 +75,10 @@ class MirroredEntryCreator:
         self, letter: Letter, ori_key
     ) -> tuple[str, dict]:
         other_ori_key = self.data_updater.get_other_layer3_ori_key(ori_key)
-        other_letter_data = self.data_updater.positioner.placement_manager.pictograph.main_widget.special_placements.get(
-            other_ori_key, {}
-        ).get(
-            letter.value, {}
+        other_letter_data = (
+            SpecialPlacementLoader()
+            .load_special_placements()
+            .get(other_ori_key, {})
+            .get(letter.value, {})
         )
         return other_ori_key, other_letter_data

@@ -151,7 +151,7 @@
       "static_from_layer1": [0, 15]
     },
     "(0, 0)": {
-      "anti_from_layer1": [25, -20]
+      "anti_from_layer1": [20, -15]
     },
     "(o, fl, 0.5)": {
       "static_from_layer2_rot_angle_override": true,

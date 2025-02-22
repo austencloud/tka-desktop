@@ -1,4 +1,5 @@
 from Enums.letters import Letter
+from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING
 
@@ -15,7 +16,7 @@ class MirroredEntryDataPrep:
         ori_key = self._get_ori_key(arrow.motion)
         return (
             arrow.pictograph.state.letter
-            not in self.manager.data_updater.positioner.placement_manager.pictograph.main_widget.special_placements.get(
+            not in SpecialPlacementLoader().load_special_placements().get(
                 ori_key, {}
             )
         )
@@ -36,7 +37,7 @@ class MirroredEntryDataPrep:
 
     def _get_letter_data(self, ori_key: str, letter: Letter) -> dict:
         """Fetches letter data for a given orientation key and letter."""
-        return self.manager.data_updater.positioner.placement_manager.pictograph.main_widget.special_placements.get(
+        return SpecialPlacementLoader().load_special_placements().get(
             ori_key, {}
         ).get(
             letter.value, {}
