@@ -2,6 +2,12 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QHBoxLayout
 
 
+from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.add_to_dictionary_ui import (
+    AddToDictionaryUI,
+)
+from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.dictionary_service import (
+    DictionaryService,
+)
 from main_window.main_widget.sequence_workbench.labels.sequence_workbench_indicator_label import (
     SequenceWorkbenchIndicatorLabel,
 )
@@ -38,7 +44,16 @@ class SequenceWorkbench(QWidget):
         self.main_widget.splash.updater.update_progress("SequenceWorkbench")
         self.setObjectName("SequenceWorkbench")
         # Managers
-        self.add_to_dictionary_manager = AddToDictionaryManager(self)
+        dictionary_service = DictionaryService(
+            create_sequence_image_callback=lambda sequence, include_start_pos: self.sequence_beat_frame.image_export_manager.image_creator.create_sequence_image(
+                sequence, include_start_pos
+            ),
+            get_current_word_callback=lambda: self.sequence_beat_frame.get.current_word(),
+        )
+
+        # Create the “UI” class that uses it:
+        self.add_to_dictionary_ui = AddToDictionaryUI(self, dictionary_service)
+
         self.autocompleter = SequenceAutoCompleter(self)
 
         # Modification Managers

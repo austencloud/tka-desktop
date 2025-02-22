@@ -41,10 +41,10 @@ class WidgetFader:
 
         for widget in widgets:
             widget.update()
-            
-        import traceback
-        traceback.print_stack()
-        
+
+        # import traceback
+        # traceback.print_stack()
+
         self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
 
         if not self.manager.fades_enabled():

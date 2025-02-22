@@ -9,7 +9,6 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export
     BeatReversalProcessor,
 )
 
-
 from .height_determiner import HeightDeterminer
 from .beat_drawer import BeatDrawer
 from .user_info_drawer import UserInfoDrawer

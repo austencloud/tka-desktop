@@ -3,24 +3,24 @@ import os
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
+from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
     from .add_to_dictionary_manager import AddToDictionaryManager
 
 import hashlib
 
+
 def hash_sequence(sequence):
     """Returns a hash of the sequence structure to compare variations quickly."""
     sequence_str = json.dumps(sequence, sort_keys=True)  # Consistent ordering
     return hashlib.sha256(sequence_str.encode()).hexdigest()
 
+
 class StructuralVariationChecker:
-    def __init__(self, add_to_dictionary_manager: "AddToDictionaryManager"):
-        self.add_to_dictionary_manager = add_to_dictionary_manager
-        self.dictionary_dir = add_to_dictionary_manager.dictionary_dir
-        self.metadata_extractor = (
-            MetaDataExtractor()
-        )
+    def __init__(self):
+        self.dictionary_dir = get_images_and_data_path("dictionary")
+        self.metadata_extractor = MetaDataExtractor()
 
     def check_for_structural_variation(self, current_sequence, base_word):
         base_path = os.path.join(self.dictionary_dir, base_word)

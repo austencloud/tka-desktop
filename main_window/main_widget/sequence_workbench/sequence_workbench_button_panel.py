@@ -45,7 +45,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
         button_dict = {
             "add_to_dictionary": {
                 "icon": "add_to_dictionary.svg",
-                "callback": self.sequence_workbench.add_to_dictionary_manager.add_to_dictionary,
+                "callback": self.sequence_workbench.add_to_dictionary_ui.add_to_dictionary,
                 "tooltip": "Add to Dictionary",
             },
             "save_image": {

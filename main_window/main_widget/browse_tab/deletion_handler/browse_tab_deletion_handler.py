@@ -73,7 +73,10 @@ class BrowseTabDeletionHandler:
         shutil.rmtree(base_path)
         self.delete_empty_folders(get_images_and_data_path("dictionary"))
         self.variation_number_fixer.ensure_sequential_versions()
-
+        self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.pop(base_word)
+        self.browse_tab.sequence_viewer.update_thumbnails(
+            self.browse_tab.sequence_viewer.state.thumbnails
+        )
         self.sequence_picker.sorter.reload_currently_displayed_filtered_sequences()
 
     def delete_empty_folders(self, root_folder):

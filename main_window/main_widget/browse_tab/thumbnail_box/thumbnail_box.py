@@ -10,6 +10,7 @@ from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_nav_btns imp
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label import (
     ThumbnailImageLabel,
 )
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 from .word_label import WordLabel
 from .variation_number_label import VariationNumberLabel
@@ -67,15 +68,6 @@ class ThumbnailBox(QWidget):
         width = scroll_widget_width // 3
         self.setFixedWidth(width)
 
-    def _get_our_sequence_length(self) -> int:
-        if self.state.thumbnails:
-            first_thumb = self.state.thumbnails[0]
-            return (
-                self.browse_tab.main_widget.metadata_extractor.get_length(first_thumb)
-                or 0
-            )
-        return 0
-
     def update_thumbnails(self, thumbnails=[]):
         self.state.update_thumbnails(thumbnails)
         self.nav_buttons_widget.state.thumbnails = thumbnails
@@ -84,4 +76,4 @@ class ThumbnailBox(QWidget):
         if self == self.browse_tab.sequence_viewer.current_thumbnail_box:
             self.browse_tab.sequence_viewer.update_thumbnails(self.state.thumbnails)
 
-        self.variation_number_label.update_index()
+        self.variation_number_label.update_index(self.state.current_index)
