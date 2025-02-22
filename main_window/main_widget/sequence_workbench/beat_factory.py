@@ -74,7 +74,7 @@ class BeatFactory:
             select_beat=select_beat,
         )
         for motion in new_beat.elements.motions.values():
-            if motion.motion_type == FLOAT:
+            if motion.state.motion_type == FLOAT:
                 letter = self.main_widget.letter_determiner.determine_letter(motion)
                 new_beat.state.letter = letter
                 new_beat.elements.tka_glyph.update_tka_glyph()

@@ -111,8 +111,8 @@ class PictographInitializer:
             motions[BLUE],
         )
         for motion in motions.values():
-            motion.start_ori = None
-            motion.end_ori = None
+            motion.state.start_ori = None
+            motion.state.end_ori = None
         return motions
 
     def init_arrows(self) -> dict[str, Arrow]:
@@ -135,11 +135,11 @@ class PictographInitializer:
                 LOC: None,
                 ORI: None,
             }
-            initial_prop_class = prop_class_mapping.get(prop_type)
-            if initial_prop_class is None:
-                raise ValueError(f"Invalid prop_type: {prop_type}")
+            # initial_prop_class = prop_class_mapping.get(prop_type)
+            # if initial_prop_class is None:
+            #     raise ValueError(f"Invalid prop_type: {prop_type}")
             initial_prop = Prop(
-                self.pictograph, initial_prop_attributes, None, initial_prop_class
+                self.pictograph, initial_prop_attributes, None, prop_type
             )
             props[color] = self.prop_factory.create_prop_of_type(
                 initial_prop, prop_type

@@ -45,7 +45,7 @@ class PictographGetter:
         return [
             motion
             for motion in self.pictograph.elements.motions.values()
-            if motion.motion_type == motion_type
+            if motion.state.motion_type == motion_type
         ]
 
     def trailing_motion(self) -> Motion:
@@ -56,7 +56,7 @@ class PictographGetter:
 
     def other_motion(self, motion: Motion) -> Motion:
         other_motion_map = {RED: self.blue_motion, BLUE: self.red_motion}
-        return other_motion_map.get(motion.color)
+        return other_motion_map.get(motion.state.color)
 
     def other_arrow(self, arrow: Arrow) -> Arrow:
         other_arrow_map = {RED: self.blue_arrow, BLUE: self.red_arrow}
@@ -64,11 +64,11 @@ class PictographGetter:
 
     def pro(self) -> Motion:
         pro_map = {True: self.red_motion, False: self.blue_motion}
-        return pro_map.get(self.red_motion.motion_type == PRO)
+        return pro_map.get(self.red_motion.state.motion_type == PRO)
 
     def anti(self) -> Motion:
         anti_map = {True: self.red_motion, False: self.blue_motion}
-        return anti_map.get(self.red_motion.motion_type == ANTI)
+        return anti_map.get(self.red_motion.state.motion_type == ANTI)
 
     def dash(self) -> Motion:
         dash_map = {True: self.red_motion, False: self.blue_motion}
@@ -113,22 +113,22 @@ class PictographGetter:
             "timing": self.pictograph.state.timing,
             "direction": self.pictograph.state.direction,
             "blue_attributes": {
-                "motion_type": self.blue_motion.motion_type,
-                "start_ori": self.blue_motion.start_ori,
-                "prop_rot_dir": self.blue_motion.prop_rot_dir,
-                "start_loc": self.blue_motion.start_loc,
-                "end_loc": self.blue_motion.end_loc,
-                "turns": self.blue_motion.turns,
-                "end_ori": self.blue_motion.end_ori,
+                "motion_type": self.blue_motion.state.motion_type,
+                "start_ori": self.blue_motion.state.start_ori,
+                "prop_rot_dir": self.blue_motion.state.prop_rot_dir,
+                "start_loc": self.blue_motion.state.start_loc,
+                "end_loc": self.blue_motion.state.end_loc,
+                "turns": self.blue_motion.state.turns,
+                "end_ori": self.blue_motion.state.end_ori,
             },
             "red_attributes": {
-                "motion_type": self.red_motion.motion_type,
-                "start_ori": self.red_motion.start_ori,
-                "prop_rot_dir": self.red_motion.prop_rot_dir,
-                "start_loc": self.red_motion.start_loc,
-                "end_loc": self.red_motion.end_loc,
-                "turns": self.red_motion.turns,
-                "end_ori": self.red_motion.end_ori,
+                "motion_type": self.red_motion.state.motion_type,
+                "start_ori": self.red_motion.state.start_ori,
+                "prop_rot_dir": self.red_motion.state.prop_rot_dir,
+                "start_loc": self.red_motion.state.start_loc,
+                "end_loc": self.red_motion.state.end_loc,
+                "turns": self.red_motion.state.turns,
+                "end_ori": self.red_motion.state.end_ori,
             },
         }
 

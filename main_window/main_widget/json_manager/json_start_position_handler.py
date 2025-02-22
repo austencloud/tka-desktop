@@ -31,22 +31,22 @@ class JsonStartPositionHandler:
             "timing": start_pos_pictograph.state.timing,
             "direction": start_pos_pictograph.state.direction,
             "blue_attributes": {
-                "start_loc": start_pos_pictograph.elements.blue_motion.start_loc,
-                "end_loc": start_pos_pictograph.elements.blue_motion.end_loc,
+                "start_loc": start_pos_pictograph.elements.blue_motion.state.start_loc,
+                "end_loc": start_pos_pictograph.elements.blue_motion.state.end_loc,
                 "start_ori": blue_start_ori,
                 "end_ori": blue_start_ori,
                 "prop_rot_dir": NO_ROT,
                 "turns": 0,
-                "motion_type": start_pos_pictograph.elements.blue_motion.motion_type,
+                "motion_type": start_pos_pictograph.elements.blue_motion.state.motion_type,
             },
             "red_attributes": {
-                "start_loc": start_pos_pictograph.elements.red_motion.start_loc,
-                "end_loc": start_pos_pictograph.elements.red_motion.end_loc,
+                "start_loc": start_pos_pictograph.elements.red_motion.state.start_loc,
+                "end_loc": start_pos_pictograph.elements.red_motion.state.end_loc,
                 "start_ori": red_start_ori,
                 "end_ori": red_start_ori,
                 "prop_rot_dir": NO_ROT,
                 "turns": 0,
-                "motion_type": start_pos_pictograph.elements.red_motion.motion_type,
+                "motion_type": start_pos_pictograph.elements.red_motion.state.motion_type,
             },
         }
 

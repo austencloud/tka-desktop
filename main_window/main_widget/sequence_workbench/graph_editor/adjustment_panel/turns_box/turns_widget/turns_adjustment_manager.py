@@ -51,7 +51,7 @@ class TurnsAdjustmentManager(QObject):
             new_turns = self.convert_turn_floats_to_ints(new_turns)
 
         self.turns_widget.update_turns_display(matching_motion, new_turns)
-        matching_motion.turns = new_turns
+        matching_motion.state.turns = new_turns
         pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
         self.json_manager.updater.turns_updater.update_turns_in_json_at_index(
             pictograph_index + 2, self.color, new_turns, self.beat_frame
@@ -65,12 +65,12 @@ class TurnsAdjustmentManager(QObject):
             )
 
         for motion in [matching_motion, GE_motion]:
-            motion.turns = new_turns
+            motion.state.turns = new_turns
             new_letter = self.get_new_letter(new_turns, motion)
             self.turns_widget.turns_box.prop_rot_dir_button_manager._update_pictograph_and_json(
                 motion, new_letter
             )
-            motion.prefloat_motion_type
+            motion.state.prefloat_motion_type
 
         self.main_widget.construct_tab.option_picker.updater.update_options()
         sequence = self.json_manager.loader_saver.load_current_sequence()
@@ -90,7 +90,7 @@ class TurnsAdjustmentManager(QObject):
     def determine_if_new_letter_is_needed(self, motion: Motion, new_turns) -> bool:
         if new_turns == "fl":
             return True
-        if motion.turns == "fl" and new_turns >= 0:
+        if motion.state.turns == "fl" and new_turns >= 0:
             return True
 
     def _repaint_views(self):
@@ -129,7 +129,7 @@ class TurnsAdjustmentManager(QObject):
         GE_motion = self.GE_pictograph.elements.motions[self.color]
 
         for motion in [matching_motion, GE_motion]:
-            motion.turns = new_turns
+            motion.state.turns = new_turns
             self.turns_widget.turns_box.prop_rot_dir_button_manager._update_pictograph_and_json(
                 motion
             )

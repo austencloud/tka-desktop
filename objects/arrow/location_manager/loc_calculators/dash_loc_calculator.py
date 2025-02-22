@@ -11,10 +11,10 @@ class DashLocationCalculator(BaseLocationCalculator):
             return self._get_phi_dash_psi_dash_location()
         elif (
             self.pictograph.state.letter in [Letter.Λ, Letter.Λ_DASH]
-            and self.arrow.motion.turns == 0
+            and self.arrow.motion.state.turns == 0
         ):
             return self._get_lambda_zero_turns_location()
-        elif self.arrow.motion.turns == 0:
+        elif self.arrow.motion.state.turns == 0:
             return self._default_zero_turns_dash_location()
         else:
             return self._dash_location_non_zero_turns()
@@ -22,7 +22,10 @@ class DashLocationCalculator(BaseLocationCalculator):
     def _get_phi_dash_psi_dash_location(self) -> str:
         self.other_motion = self.pictograph.managers.get.other_motion(self.arrow.motion)
 
-        if self.arrow.motion.turns == 0 and self.other_motion.arrow.motion.turns == 0:
+        if (
+            self.arrow.motion.state.turns == 0
+            and self.other_motion.arrow.motion.state.turns == 0
+        ):
             location_map = {
                 (RED, (NORTH, SOUTH)): EAST,
                 (RED, (EAST, WEST)): NORTH,
@@ -44,16 +47,19 @@ class DashLocationCalculator(BaseLocationCalculator):
             arrow_location = location_map.get(
                 (
                     self.arrow.color,
-                    (self.arrow.motion.start_loc, self.arrow.motion.end_loc),
+                    (
+                        self.arrow.motion.state.start_loc,
+                        self.arrow.motion.state.end_loc,
+                    ),
                 )
             )
             return arrow_location
 
-        elif self.arrow.motion.turns == 0:
+        elif self.arrow.motion.state.turns == 0:
             return self.pictograph.managers.get.opposite_location(
                 self._dash_location_non_zero_turns(self.other_motion)
             )
-        elif self.arrow.motion.turns != 0:
+        elif self.arrow.motion.state.turns != 0:
             return self._dash_location_non_zero_turns(self.arrow.motion)
 
     def _get_lambda_zero_turns_location(self) -> str:
@@ -78,8 +84,8 @@ class DashLocationCalculator(BaseLocationCalculator):
         }
         arrow_location = loc_map.get(
             (
-                (self.arrow.motion.start_loc, self.arrow.motion.end_loc),
-                (self.other_motion.end_loc),
+                (self.arrow.motion.state.start_loc, self.arrow.motion.state.end_loc),
+                (self.other_motion.state.end_loc),
             )
         )
         return arrow_location
@@ -99,7 +105,7 @@ class DashLocationCalculator(BaseLocationCalculator):
             (SOUTHEAST, NORTHWEST): SOUTHWEST,
         }
         return location_map.get(
-            (self.arrow.motion.start_loc, self.arrow.motion.end_loc), ""
+            (self.arrow.motion.state.start_loc, self.arrow.motion.state.end_loc), ""
         )
 
     def _dash_location_non_zero_turns(self, motion: Motion = None) -> str:
@@ -126,7 +132,7 @@ class DashLocationCalculator(BaseLocationCalculator):
                 NORTHWEST: SOUTHWEST,
             },
         }
-        return loc_map[motion.prop_rot_dir][motion.start_loc]
+        return loc_map[motion.state.prop_rot_dir][motion.state.start_loc]
 
     def _calculate_dash_location_based_on_shift(self) -> str:
         shift_arrow = self.pictograph.managers.get.shift().arrow
@@ -169,7 +175,7 @@ class DashLocationCalculator(BaseLocationCalculator):
             (NORTHWEST, WEST): NORTHEAST,
         }
         grid_mode = self.pictograph.state.grid_mode
-        start_loc = self.arrow.motion.start_loc
+        start_loc = self.arrow.motion.state.start_loc
 
         if grid_mode == DIAMOND:
             return diamond_dash_location_map.get((start_loc, shift_location))

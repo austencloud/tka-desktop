@@ -65,9 +65,10 @@ class SpecialPlacementEntryRemover:
         self, letter, arrow: Arrow, ori_key, letter_data, key
     ):
         if (
-            arrow.motion.turns == arrow.pictograph.managers.get.other_arrow(arrow).turns
-            or arrow.motion.motion_type
-            != arrow.pictograph.managers.get.other_arrow(arrow).motion.motion_type
+            arrow.motion.state.turns
+            == arrow.pictograph.managers.get.other_arrow(arrow).turns
+            or arrow.motion.state.motion_type
+            != arrow.pictograph.managers.get.other_arrow(arrow).motion.state.motion_type
             or letter in ["S", "T"]
         ):
             return

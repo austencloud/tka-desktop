@@ -14,7 +14,7 @@ class PropMouseEventHandler:
         self.p = prop
 
     def update_arrow_location_during_prop_drag(self, new_arrow_location: str) -> None:
-        if self.p.motion.motion_type in [PRO, ANTI]:
+        if self.p.motion.state.motion_type in [PRO, ANTI]:
             shift_location_map: dict[
                 tuple[str, str, str],
                 dict[str, str],
@@ -120,8 +120,8 @@ class PropMouseEventHandler:
             }
 
             current_arrow_location = self.p.motion.arrow.loc
-            rot_dir = self.p.motion.prop_rot_dir
-            motion_type = self.p.motion.motion_type
+            rot_dir = self.p.motion.state.prop_rot_dir
+            motion_type = self.p.motion.state.motion_type
             new_arrow_location = shift_location_map.get(
                 (current_arrow_location, rot_dir, motion_type), {}
             ).get(new_arrow_location)
@@ -133,12 +133,12 @@ class PropMouseEventHandler:
 
                 self.p.motion.arrow.loc = new_arrow_location
                 self.p.motion.arrow.ghost.loc = new_arrow_location
-                self.p.motion.start_loc = start_loc
-                self.p.motion.end_loc = end_loc
+                self.p.motion.state.start_loc = start_loc
+                self.p.motion.state.end_loc = end_loc
                 self.p.pictograph.managers.updater.update_pictograph()
 
-        elif self.p.motion.motion_type == STATIC:
+        elif self.p.motion.state.motion_type == STATIC:
             self.p.motion.arrow.loc = new_arrow_location
-            self.p.motion.start_loc = new_arrow_location
-            self.p.motion.end_loc = new_arrow_location
+            self.p.motion.state.start_loc = new_arrow_location
+            self.p.motion.state.end_loc = new_arrow_location
             self.p.motion.arrow.updater.update_arrow()

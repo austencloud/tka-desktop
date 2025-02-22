@@ -13,41 +13,51 @@ class Type3TurnsTupleGenerator(BaseTurnsTupleGenerator):
         super().set_pictograph(pictograph)
         shift = self.pictograph.managers.get.shift()
         dash = self.pictograph.managers.get.dash()
-        if shift.motion_type in [PRO, ANTI]:
-            direction = "s" if dash.prop_rot_dir == shift.prop_rot_dir else "o"
-            if dash.turns > 0:
-                if isinstance(shift.turns, int) or isinstance(shift.turns, float):
-                    if shift.turns > 0:
+        if shift.state.motion_type in [PRO, ANTI]:
+            direction = (
+                "s" if dash.state.prop_rot_dir == shift.state.prop_rot_dir else "o"
+            )
+            if dash.state.turns > 0:
+                if isinstance(shift.state.turns, int) or isinstance(
+                    shift.state.turns, float
+                ):
+                    if shift.state.turns > 0:
                         return f"({direction}, {self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
-                    elif dash.turns > 0:
+                    elif dash.state.turns > 0:
                         return f"({direction}, {self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
                     else:
                         return f"({self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
-                elif shift.turns == "fl":
-                    if dash.turns > 0:
+                elif shift.state.turns == "fl":
+                    if dash.state.turns > 0:
                         return f"({direction}, {self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
                     else:
                         return f"({self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
-            elif dash.turns == 0:
+            elif dash.state.turns == 0:
                 return (
                     f"({self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
                 )
-        elif shift.motion_type == FLOAT:
-            direction = "s" if dash.prop_rot_dir == shift.prefloat_prop_rot_dir else "o"
-            if dash.turns > 0:
-                if isinstance(shift.turns, int) or isinstance(shift.turns, float):
-                    if shift.turns > 0:
+        elif shift.state.motion_type == FLOAT:
+            direction = (
+                "s"
+                if dash.state.prop_rot_dir == shift.state.prefloat_prop_rot_dir
+                else "o"
+            )
+            if dash.state.turns > 0:
+                if isinstance(shift.state.turns, int) or isinstance(
+                    shift.state.turns, float
+                ):
+                    if shift.state.turns > 0:
                         return f"({direction}, {self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
-                    elif dash.turns > 0:
+                    elif dash.state.turns > 0:
                         return f"({direction}, {self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
                     else:
                         return f"({self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
-                elif shift.turns == "fl":
-                    if dash.turns > 0:
+                elif shift.state.turns == "fl":
+                    if dash.state.turns > 0:
                         return f"({direction}, {self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
                     else:
                         return f"({self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
-            elif dash.turns == 0:
+            elif dash.state.turns == 0:
                 return (
                     f"({self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
                 )

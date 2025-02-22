@@ -4,7 +4,7 @@ from .base_rot_angle_calculator import BaseRotAngleCalculator
 
 class AntiRotAngleCalculator(BaseRotAngleCalculator):
     def calculate_angle(self):
-        if self.arrow.motion.start_ori in [IN, OUT]:
+        if self.arrow.motion.state.start_ori in [IN, OUT]:
             direction_map = {
                 CLOCKWISE: {
                     NORTH: 315,
@@ -27,9 +27,9 @@ class AntiRotAngleCalculator(BaseRotAngleCalculator):
                     NORTHWEST: 270,
                 },
             }
-        elif self.arrow.motion.start_ori in [CLOCK, COUNTER]:
+        elif self.arrow.motion.state.start_ori in [CLOCK, COUNTER]:
 
-            if self.arrow.motion.turns in [0.5, 1.5, 2.5]:
+            if self.arrow.motion.state.turns in [0.5, 1.5, 2.5]:
                 direction_map = {
                     CLOCKWISE: {
                         NORTH: 315,
@@ -76,6 +76,6 @@ class AntiRotAngleCalculator(BaseRotAngleCalculator):
                     },
                 }
 
-        prop_rot_dir = self.arrow.motion.prop_rot_dir
+        prop_rot_dir = self.arrow.motion.state.prop_rot_dir
         loc = self.arrow.loc
         return direction_map.get(prop_rot_dir, {}).get(loc, 0)

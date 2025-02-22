@@ -14,7 +14,7 @@ class OriUpdater:
         self.turns_widget = ori_picker_widget
 
     def set_motion_turns(self, motion: "Motion", new_turns: int) -> None:
-        pictograph_data = {f"{motion.color}_turns": new_turns}
+        pictograph_data = {f"{motion.state.color}_turns": new_turns}
         motion.pictograph.managers.updater.update_pictograph(pictograph_data)
 
     def _adjust_turns_for_pictograph(
@@ -22,8 +22,8 @@ class OriUpdater:
     ) -> None:
         """Adjust turns for each relevant motion in the pictograph."""
         for motion in pictograph.elements.motions.values():
-            if motion.color == self.ori_picker_box.color:
-                new_turns = self._calculate_new_turns(motion.turns, adjustment)
+            if motion.state.color == self.ori_picker_box.color:
+                new_turns = self._calculate_new_turns(motion.state.turns, adjustment)
                 self.set_motion_turns(motion, new_turns)
 
     def _calculate_new_turns(self, current_turns: int, adjustment: int) -> int:

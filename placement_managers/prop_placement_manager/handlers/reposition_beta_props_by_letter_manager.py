@@ -24,12 +24,12 @@ class RepositionBetaByLetterHandler:
     def reposition_I(self) -> None:
         pro_prop = (
             self.pictograph.elements.red_prop
-            if self.pictograph.elements.red_motion.motion_type == PRO
+            if self.pictograph.elements.red_motion.state.motion_type == PRO
             else self.pictograph.elements.blue_prop
         )
         anti_prop = (
             self.pictograph.elements.red_prop
-            if self.pictograph.elements.red_motion.motion_type == ANTI
+            if self.pictograph.elements.red_motion.state.motion_type == ANTI
             else self.pictograph.elements.blue_prop
         )
         pro_motion = self.pictograph.elements.motions[pro_prop.color]
@@ -66,7 +66,7 @@ class RepositionBetaByLetterHandler:
                 next(
                     prop
                     for prop in self.pictograph.elements.props.values()
-                    if prop.color == shift.color
+                    if prop.color == shift.state.color
                 ),
                 direction,
             )
@@ -74,7 +74,7 @@ class RepositionBetaByLetterHandler:
                 next(
                     prop
                     for prop in self.pictograph.elements.props.values()
-                    if prop.color == static_motion.color
+                    if prop.color == static_motion.state.color
                 ),
                 self.dir_calculator.get_opposite_dir(direction),
             )
@@ -97,7 +97,7 @@ class RepositionBetaByLetterHandler:
                 next(
                     prop
                     for prop in self.pictograph.elements.props.values()
-                    if prop.color == shift.color
+                    if prop.color == shift.state.color
                 ),
                 direction,
             )
@@ -105,7 +105,7 @@ class RepositionBetaByLetterHandler:
                 next(
                     prop
                     for prop in self.pictograph.elements.props.values()
-                    if prop.color == dash.color
+                    if prop.color == dash.state.color
                 ),
                 self.dir_calculator.get_opposite_dir(direction),
             )

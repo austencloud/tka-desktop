@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QStackedWidget, QWidget, QSizePolicy
 from data.constants import BLUE, RED, IN
+from main_window.main_widget.sequence_workbench.sequence_beat_frame import beat
 from .ori_picker_box.ori_picker_box import OriPickerBox
 from .turns_box.turns_box import TurnsBox
 
@@ -68,18 +69,14 @@ class BeatAdjustmentPanel(QFrame):
         return box_set
 
     def update_adjustment_panel(self) -> None:
-        # Get currently selected beat (if any)
         selected = self.beat_frame.get.currently_selected_beat_view()
-        if selected is None:
-            # No beat is selected so show the ORI picker boxes
+        if selected is None or selected == self.beat_frame.start_pos_view:
             widget_index = ORI_WIDGET_INDEX
         else:
-            # Otherwise, show the turns boxes
             widget_index = TURNS_WIDGET_INDEX
 
         self._set_current_stack_widgets(widget_index)
-        
-        # Only update turns displays/buttons if we are showing the turns panel.
+
         if widget_index == TURNS_WIDGET_INDEX:
             self.update_turns_displays()
             self.update_rot_dir_buttons()
@@ -91,8 +88,8 @@ class BeatAdjustmentPanel(QFrame):
             blue_motion = reference_beat.beat.elements.blue_motion
             red_motion = reference_beat.beat.elements.red_motion
 
-            blue_rot_dir = blue_motion.prop_rot_dir
-            red_rot_dir = red_motion.prop_rot_dir
+            blue_rot_dir = blue_motion.state.prop_rot_dir
+            red_rot_dir = red_motion.state.prop_rot_dir
 
             self.blue_turns_box.prop_rot_dir_button_manager._update_button_states(
                 blue_rot_dir
@@ -116,7 +113,9 @@ class BeatAdjustmentPanel(QFrame):
         for box, motion in zip(
             [self.blue_turns_box, self.red_turns_box], [blue_motion, red_motion]
         ):
-            box.turns_widget.display_frame.update_turns_display(motion, motion.turns)
+            box.turns_widget.display_frame.update_turns_display(
+                motion, motion.state.turns
+            )
 
     def update_turns_panel(self) -> None:
         """Update the turns panel with new motion data."""

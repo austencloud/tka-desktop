@@ -24,7 +24,7 @@ class ArrowRotAngleManager:
             STATIC: StaticRotAngleCalculator,
             FLOAT: FloatRotAngleCalculator,
         }
-        return calculator_class_map.get(self.arrow.motion.motion_type)
+        return calculator_class_map.get(self.arrow.motion.state.motion_type)
 
     def update_rotation(self) -> None:
         self.calculator_class = self._select_calculator_class()

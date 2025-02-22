@@ -79,9 +79,9 @@ class PropRotDirButtonManager:
 
         for pictograph in both_pictographs:
             for motion in pictograph.elements.motions.values():
-                if motion.color == self.turns_box.color:
-                    motion.prop_rot_dir = prop_rot_dir
-                    motion.motion_type = self._get_new_motion_type(motion)
+                if motion.state.color == self.turns_box.color:
+                    motion.state.prop_rot_dir = prop_rot_dir
+                    motion.state.motion_type = self._get_new_motion_type(motion)
                     new_letter = self.graph_editor.main_widget.letter_determiner.determine_letter(
                         motion, swap_prop_rot_dir=True
                     )
@@ -106,15 +106,15 @@ class PropRotDirButtonManager:
         )
         self.option_picker.updater.refresh_options()
         QApplication.restoreOverrideCursor()
-        
+
     def _get_new_motion_type(self, motion: "Motion"):
-        motion_type = motion.motion_type
+        motion_type = motion.state.motion_type
         if motion_type == ANTI:
             new_motion_type = PRO
-            motion.motion_type = new_motion_type
+            motion.state.motion_type = new_motion_type
         elif motion_type == PRO:
             new_motion_type = ANTI
-            motion.motion_type = new_motion_type
+            motion.state.motion_type = new_motion_type
         else:
             new_motion_type = motion_type
         return new_motion_type
@@ -126,13 +126,13 @@ class PropRotDirButtonManager:
         pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
         beat = motion.pictograph
         new_dict = {
-            "motion_type": motion.motion_type,
-            "prop_rot_dir": motion.prop_rot_dir,
-            "end_ori": motion.end_ori,
-            "turns": motion.turns,
+            "motion_type": motion.state.motion_type,
+            "prop_rot_dir": motion.state.prop_rot_dir,
+            "end_ori": motion.state.end_ori,
+            "turns": motion.state.turns,
         }
 
-        beat.state.pictograph_data[motion.color + "_attributes"].update(new_dict)
+        beat.state.pictograph_data[motion.state.color + "_attributes"].update(new_dict)
 
         if new_letter:
             beat.state.pictograph_data["letter"] = new_letter.value
@@ -145,12 +145,14 @@ class PropRotDirButtonManager:
             json_updater.letter_updater.update_letter_in_json_at_index(
                 json_index, new_letter.value
             )
-        self.turns_box.turns_widget.motion_type_label.update_display(motion.motion_type)
+        self.turns_box.turns_widget.motion_type_label.update_display(
+            motion.state.motion_type
+        )
         json_updater.motion_type_updater.update_json_motion_type(
-            json_index, motion.color, motion.motion_type
+            json_index, motion.state.color, motion.state.motion_type
         )
         json_updater.prop_rot_dir_updater.update_json_prop_rot_dir(
-            json_index, motion.color, motion.prop_rot_dir
+            json_index, motion.state.color, motion.state.prop_rot_dir
         )
         self.graph_editor.main_widget.json_manager.ori_validation_engine.run(
             is_current_sequence=True
@@ -201,25 +203,25 @@ class PropRotDirButtonManager:
 
     def _handle_zero_turns(self, motion: "Motion") -> None:
         """Handle button states when turns are zero."""
-        if motion.motion_type in [DASH, STATIC]:
-            motion.prop_rot_dir = NO_ROT
+        if motion.state.motion_type in [DASH, STATIC]:
+            motion.state.prop_rot_dir = NO_ROT
             self.unpress_prop_rot_dir_buttons()
             self.hide_prop_rot_dir_buttons()
-        elif motion.motion_type in [PRO, ANTI]:
+        elif motion.state.motion_type in [PRO, ANTI]:
             self.show_prop_rot_dir_buttons()
 
     def _handle_float_turn_buttons(self, motion: "Motion") -> None:
         """Handle button states when turns are 'float'."""
         self.unpress_prop_rot_dir_buttons()
         self.hide_prop_rot_dir_buttons()
-        motion.motion_type = FLOAT
-        motion.prop_rot_dir = NO_ROT
+        motion.state.motion_type = FLOAT
+        motion.state.prop_rot_dir = NO_ROT
 
     def _handle_positive_turns(self, motion: "Motion") -> None:
         """Handle button states when turns are positive."""
         self.show_prop_rot_dir_buttons()
-        if motion.prop_rot_dir == NO_ROT:
-            motion.prop_rot_dir = self._get_default_prop_rot_dir()
+        if motion.state.prop_rot_dir == NO_ROT:
+            motion.state.prop_rot_dir = self._get_default_prop_rot_dir()
             self.show_prop_rot_dir_buttons()
 
     def _get_default_prop_rot_dir(self) -> str:

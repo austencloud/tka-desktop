@@ -71,7 +71,7 @@ class MirroredEntryRotAngleManager:
         other_letter_data[mirrored_turns_tuple][key] = rotation_angle_override
 
     def _should_handle_rotation_angle(self, arrow: Arrow) -> bool:
-        return arrow.motion.motion_type in [STATIC, DASH]
+        return arrow.motion.state.motion_type in [STATIC, DASH]
 
     def _check_for_rotation_angle_override(self, turn_data: dict) -> Optional[int]:
         for key in turn_data.keys():

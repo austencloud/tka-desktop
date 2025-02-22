@@ -32,7 +32,7 @@ class BaseRotAngleCalculator(ABC):
         pass
 
     def has_rotation_angle_override(self) -> bool:
-        if self.arrow.motion.motion_type not in [DASH, STATIC]:
+        if self.arrow.motion.state.motion_type not in [DASH, STATIC]:
             return False
 
         special_placements = (

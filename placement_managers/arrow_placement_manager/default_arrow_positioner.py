@@ -85,7 +85,7 @@ class DefaultArrowPositioner:
         has_hybrid_orientation = check_manager.ends_with_layer3()
         has_radial_props = check_manager.ends_with_radial_ori()
         has_nonradial_props = check_manager.ends_with_nonradial_ori()
-        motion_end_ori = arrow.motion.end_ori
+        motion_end_ori = arrow.motion.state.end_ori
 
         key_suffix = "_to_"
 
@@ -104,13 +104,13 @@ class DefaultArrowPositioner:
             has_gamma_props,
         )
 
-        key = arrow.motion.motion_type + (
+        key = arrow.motion.state.motion_type + (
             key_suffix + motion_end_ori_key + key_middle if key_middle else ""
         )
         key_with_letter = f"{key}{letter_suffix}"
 
         return self._select_key(
-            key_with_letter, key, arrow.motion.motion_type, default_placements
+            key_with_letter, key, arrow.motion.state.motion_type, default_placements
         )
 
     def _get_motion_end_ori_key(
@@ -172,7 +172,7 @@ class DefaultArrowPositioner:
             return motion_type
 
     def get_default_adjustment(self, arrow: Arrow) -> tuple[int, int]:
-        motion_type = arrow.motion.motion_type
+        motion_type = arrow.motion.state.motion_type
         grid_mode = arrow.pictograph.state.grid_mode
         if grid_mode not in [DIAMOND, BOX]:
             grid_mode = DIAMOND
@@ -180,5 +180,5 @@ class DefaultArrowPositioner:
         default_placements = self.all_defaults.get(grid_mode, {}).get(motion_type, {})
         adjustment_key = self._get_adjustment_key(arrow, default_placements)
         return default_placements.get(adjustment_key, {}).get(
-            str(arrow.motion.turns), (0, 0)
+            str(arrow.motion.state.turns), (0, 0)
         )

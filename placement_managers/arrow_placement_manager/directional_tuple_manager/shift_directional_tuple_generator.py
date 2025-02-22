@@ -30,7 +30,7 @@ class ShiftDirectionalGenerator(BaseDirectionalGenerator):
         else:
             raise ValueError(f"Unsupported grid mode: {grid_mode}")
 
-        generator = directional_generators.get(self.motion.motion_type)
+        generator = directional_generators.get(self.motion.state.motion_type)
         if not generator:
             return []
         return generator(x, y)
@@ -42,7 +42,7 @@ class ShiftDirectionalGenerator(BaseDirectionalGenerator):
             CLOCKWISE: [(x, y), (-y, x), (-x, -y), (y, -x)],
             COUNTER_CLOCKWISE: [(-y, -x), (x, -y), (y, x), (-x, y)],
         }
-        return directional_tuples.get(self.motion.prop_rot_dir, [])
+        return directional_tuples.get(self.motion.state.prop_rot_dir, [])
 
     def _generate_diamond_anti_directional_tuples(
         self, x: int, y: int
@@ -51,7 +51,7 @@ class ShiftDirectionalGenerator(BaseDirectionalGenerator):
             CLOCKWISE: [(-y, -x), (x, -y), (y, x), (-x, y)],
             COUNTER_CLOCKWISE: [(x, y), (-y, x), (-x, -y), (y, -x)],
         }
-        return directional_tuples.get(self.motion.prop_rot_dir, [])
+        return directional_tuples.get(self.motion.state.prop_rot_dir, [])
 
     def _generate_diamond_float_directional_tuples(
         self, x: int, y: int
@@ -65,7 +65,7 @@ class ShiftDirectionalGenerator(BaseDirectionalGenerator):
             CLOCKWISE: [(-x, y), (-y, -x), (x, -y), (y, x)],
             COUNTER_CLOCKWISE: [(x, y), (-y, x), (-x, -y), (y, -x)],
         }
-        return directional_tuples.get(self.motion.prop_rot_dir, [])
+        return directional_tuples.get(self.motion.state.prop_rot_dir, [])
 
     def _generate_box_anti_directional_tuples(
         self, x: int, y: int
@@ -74,7 +74,7 @@ class ShiftDirectionalGenerator(BaseDirectionalGenerator):
             CLOCKWISE: [(-x, y), (-y, -x), (x, -y), (y, x)],
             COUNTER_CLOCKWISE: [(x, y), (-y, x), (-x, -y), (y, -x)],
         }
-        return directional_tuples.get(self.motion.prop_rot_dir, [])
+        return directional_tuples.get(self.motion.state.prop_rot_dir, [])
 
     def _generate_box_float_directional_tuples(
         self, x: int, y: int
@@ -85,7 +85,7 @@ class ShiftDirectionalGenerator(BaseDirectionalGenerator):
         self, x: int, y: int
     ) -> list[tuple[int, int]]:
         handpath_direction = self.hand_rot_dir_calculator.get_hand_rot_dir(
-            self.motion.start_loc, self.motion.end_loc
+            self.motion.state.start_loc, self.motion.state.end_loc
         )
         directional_tuples = {
             CW_HANDPATH: [(-y, -x), (x, -y), (y, x), (-x, y)],

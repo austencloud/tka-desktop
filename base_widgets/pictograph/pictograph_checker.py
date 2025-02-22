@@ -93,13 +93,13 @@ class PictographChecker:
 
     def has_a_dash(self) -> bool:
         for motion in self.pictograph.elements.motions.values():
-            if motion.motion_type == DASH:
+            if motion.state.motion_type == DASH:
                 return True
         return False
 
     def has_a_static_motion(self) -> bool:
         for motion in self.pictograph.elements.motions.values():
-            if motion.motion_type == STATIC:
+            if motion.state.motion_type == STATIC:
                 return True
         return False
 
@@ -138,61 +138,61 @@ class PictographChecker:
 
     def starts_from_mixed_orientation(self) -> bool:
         if (
-            self.pictograph.elements.red_motion.start_ori in [CLOCK, COUNTER]
-            and self.pictograph.elements.blue_motion.start_ori in [OUT, IN]
-            or self.pictograph.elements.red_motion.start_ori in [OUT, IN]
-            and self.pictograph.elements.blue_motion.start_ori in [CLOCK, COUNTER]
+            self.pictograph.elements.red_motion.state.start_ori in [CLOCK, COUNTER]
+            and self.pictograph.elements.blue_motion.state.start_ori in [OUT, IN]
+            or self.pictograph.elements.red_motion.state.start_ori in [OUT, IN]
+            and self.pictograph.elements.blue_motion.state.start_ori in [CLOCK, COUNTER]
         ):
             return True
         elif (
-            self.pictograph.elements.red_motion.start_ori in [CLOCK, COUNTER]
-            and self.pictograph.elements.blue_motion.start_ori in [CLOCK, COUNTER]
-            or self.pictograph.elements.red_motion.start_ori in [OUT, IN]
-            and self.pictograph.elements.blue_motion.start_ori in [OUT, IN]
+            self.pictograph.elements.red_motion.state.start_ori in [CLOCK, COUNTER]
+            and self.pictograph.elements.blue_motion.state.start_ori in [CLOCK, COUNTER]
+            or self.pictograph.elements.red_motion.state.start_ori in [OUT, IN]
+            and self.pictograph.elements.blue_motion.state.start_ori in [OUT, IN]
         ):
             return False
 
     def ends_in_mixed_orientation(self) -> bool:
         if (
-            self.pictograph.elements.red_motion.end_ori in [CLOCK, COUNTER]
-            and self.pictograph.elements.blue_motion.end_ori in [OUT, IN]
-            or self.pictograph.elements.red_motion.end_ori in [OUT, IN]
-            and self.pictograph.elements.blue_motion.end_ori in [CLOCK, COUNTER]
+            self.pictograph.elements.red_motion.state.end_ori in [CLOCK, COUNTER]
+            and self.pictograph.elements.blue_motion.state.end_ori in [OUT, IN]
+            or self.pictograph.elements.red_motion.state.end_ori in [OUT, IN]
+            and self.pictograph.elements.blue_motion.state.end_ori in [CLOCK, COUNTER]
         ):
             return True
         elif (
-            self.pictograph.elements.red_motion.end_ori in [CLOCK, COUNTER]
-            and self.pictograph.elements.blue_motion.end_ori in [CLOCK, COUNTER]
-            or self.pictograph.elements.red_motion.end_ori in [OUT, IN]
-            and self.pictograph.elements.blue_motion.end_ori in [OUT, IN]
+            self.pictograph.elements.red_motion.state.end_ori in [CLOCK, COUNTER]
+            and self.pictograph.elements.blue_motion.state.end_ori in [CLOCK, COUNTER]
+            or self.pictograph.elements.red_motion.state.end_ori in [OUT, IN]
+            and self.pictograph.elements.blue_motion.state.end_ori in [OUT, IN]
         ):
             return False
 
     def starts_from_standard_orientation(self) -> bool:
         return (
-            self.pictograph.elements.red_motion.start_ori in [IN, OUT]
-            and self.pictograph.elements.blue_motion.start_ori in [IN, OUT]
+            self.pictograph.elements.red_motion.state.start_ori in [IN, OUT]
+            and self.pictograph.elements.blue_motion.state.start_ori in [IN, OUT]
         ) or (
-            self.pictograph.elements.red_motion.start_ori in [CLOCK, COUNTER]
-            and self.pictograph.elements.blue_motion.start_ori in [CLOCK, COUNTER]
+            self.pictograph.elements.red_motion.state.start_ori in [CLOCK, COUNTER]
+            and self.pictograph.elements.blue_motion.state.start_ori in [CLOCK, COUNTER]
         )
 
     def starts_from_radial_orientation(self) -> bool:
-        return self.pictograph.elements.red_motion.start_ori in [
+        return self.pictograph.elements.red_motion.state.start_ori in [
             IN,
             OUT,
-        ] and self.pictograph.elements.blue_motion.start_ori in [IN, OUT]
+        ] and self.pictograph.elements.blue_motion.state.start_ori in [IN, OUT]
 
     def starts_from_nonradial_orientation(self) -> bool:
-        return self.pictograph.elements.red_motion.start_ori in [
+        return self.pictograph.elements.red_motion.state.start_ori in [
             CLOCK,
             COUNTER,
-        ] and self.pictograph.elements.blue_motion.start_ori in [CLOCK, COUNTER]
+        ] and self.pictograph.elements.blue_motion.state.start_ori in [CLOCK, COUNTER]
 
     def has_hybrid_motions(self) -> bool:
         return (
-            self.pictograph.elements.red_motion.motion_type
-            != self.pictograph.elements.blue_motion.motion_type
+            self.pictograph.elements.red_motion.state.motion_type
+            != self.pictograph.elements.blue_motion.state.motion_type
         )
 
     def has_all_props_of_type(self, prop_type: PropType) -> bool:
@@ -211,12 +211,12 @@ class PictographChecker:
 
     def has_one_float(self) -> bool:
         return any(
-            motion.motion_type == FLOAT
+            motion.state.motion_type == FLOAT
             for motion in self.pictograph.elements.motions.values()
         )
 
     def has_two_floats(self) -> bool:
         return all(
-            motion.motion_type == FLOAT
+            motion.state.motion_type == FLOAT
             for motion in self.pictograph.elements.motions.values()
         )

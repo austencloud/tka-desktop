@@ -58,11 +58,11 @@ class SequenceReflector(BaseSequenceModifier):
             if beat_view.is_filled:
                 beat = beat_view.beat
 
-                beat.elements.red_motion.prop_rot_dir = self.swap_dir(
-                    beat.elements.red_motion.prop_rot_dir
+                beat.elements.red_motion.state.prop_rot_dir = self.swap_dir(
+                    beat.elements.red_motion.state.prop_rot_dir
                 )
-                beat.elements.blue_motion.prop_rot_dir = self.swap_dir(
-                    beat.elements.blue_motion.prop_rot_dir
+                beat.elements.blue_motion.state.prop_rot_dir = self.swap_dir(
+                    beat.elements.blue_motion.state.prop_rot_dir
                 )
 
         return mirrored_sequence

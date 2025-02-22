@@ -22,24 +22,24 @@ class LambdaTurnsTupleGenerator(BaseTurnsTupleGenerator):
         static = self.pictograph.managers.get.static()
         dash_direction_map, static_direction_map = self._get_direction_maps()
 
-        if dash.turns == 0 and static.turns > 0:
+        if dash.state.turns == 0 and static.state.turns > 0:
             open_close_state = static_direction_map.get(
-                (dash.end_loc, static.end_loc, static.prop_rot_dir), ""
+                (dash.state.end_loc, static.state.end_loc, static.state.prop_rot_dir), ""
             )
             return f"({self._normalize_turns(dash)}, {self._normalize_turns(static)}, {open_close_state})"
-        elif static.turns == 0 and dash.turns > 0:
+        elif static.state.turns == 0 and dash.state.turns > 0:
             open_close_state = dash_direction_map.get(
-                (dash.end_loc, static.end_loc, dash.prop_rot_dir), ""
+                (dash.state.end_loc, static.state.end_loc, dash.state.prop_rot_dir), ""
             )
             return f"({self._normalize_turns(dash)}, {self._normalize_turns(static)}, {open_close_state})"
-        elif static.turns > 0 and dash.turns > 0:
+        elif static.state.turns > 0 and dash.state.turns > 0:
             static_open_close_state = static_direction_map.get(
-                (dash.end_loc, static.end_loc, static.prop_rot_dir), ""
+                (dash.state.end_loc, static.state.end_loc, static.state.prop_rot_dir), ""
             )
             dash_open_close_state = dash_direction_map.get(
-                (dash.end_loc, static.end_loc, dash.prop_rot_dir), ""
+                (dash.state.end_loc, static.state.end_loc, dash.state.prop_rot_dir), ""
             )
-            vtg_dir = "s" if static.prop_rot_dir == dash.prop_rot_dir else "o"
+            vtg_dir = "s" if static.state.prop_rot_dir == dash.state.prop_rot_dir else "o"
             return f"({vtg_dir}, {self._normalize_turns(dash)}, {self._normalize_turns(static)}, {dash_open_close_state}, {static_open_close_state})"
         else:
             return f"({self._normalize_turns(dash)}, {self._normalize_turns(static)})"

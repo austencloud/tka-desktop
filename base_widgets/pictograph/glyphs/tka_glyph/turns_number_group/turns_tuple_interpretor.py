@@ -21,8 +21,8 @@ class TurnsTupleInterpreter:
         top_color = HEX_BLUE
         bot_color = HEX_RED
 
-        def color_for_motion(m: Motion) -> str:
-            return HEX_BLUE if m.color == "blue" else HEX_RED
+        def color_for_motion(motion: Motion) -> str:
+            return HEX_BLUE if motion.state.color == "blue" else HEX_RED
 
         if generator_key == LetterType.Type2:
             shift_motion = pictograph.managers.get.shift()

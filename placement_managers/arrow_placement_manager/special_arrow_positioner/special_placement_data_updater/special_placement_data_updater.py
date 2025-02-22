@@ -91,35 +91,41 @@ class SpecialPlacementDataUpdater:
 
     def _generate_ori_key(self, motion: Motion) -> str:
         other_motion: Motion = self.get.other_motion(motion)
-        if motion.start_ori in [IN, OUT] and other_motion.start_ori in [IN, OUT]:
+        if motion.state.start_ori in [IN, OUT] and other_motion.state.start_ori in [
+            IN,
+            OUT,
+        ]:
             return "from_layer1"
-        elif motion.start_ori in [CLOCK, COUNTER] and other_motion.start_ori in [
+        elif motion.state.start_ori in [
+            CLOCK,
+            COUNTER,
+        ] and other_motion.state.start_ori in [
             CLOCK,
             COUNTER,
         ]:
             return "from_layer2"
         elif (
-            motion.color == RED
-            and motion.start_ori in [IN, OUT]
-            and other_motion.start_ori in [CLOCK, COUNTER]
+            motion.state.color == RED
+            and motion.state.start_ori in [IN, OUT]
+            and other_motion.state.start_ori in [CLOCK, COUNTER]
         ):
             return "from_layer3_blue2_red1"
         elif (
-            motion.color == RED
-            and motion.start_ori in [CLOCK, COUNTER]
-            and other_motion.start_ori in [IN, OUT]
+            motion.state.color == RED
+            and motion.state.start_ori in [CLOCK, COUNTER]
+            and other_motion.state.start_ori in [IN, OUT]
         ):
             return "from_layer3_blue1_red2"
         elif (
-            motion.color == BLUE
-            and motion.start_ori in [IN, OUT]
-            and other_motion.start_ori in [CLOCK, COUNTER]
+            motion.state.color == BLUE
+            and motion.state.start_ori in [IN, OUT]
+            and other_motion.state.start_ori in [CLOCK, COUNTER]
         ):
             return "from_layer3_blue1_red2"
         elif (
-            motion.color == BLUE
-            and motion.start_ori in [CLOCK, COUNTER]
-            and other_motion.start_ori in [IN, OUT]
+            motion.state.color == BLUE
+            and motion.state.start_ori in [CLOCK, COUNTER]
+            and other_motion.state.start_ori in [IN, OUT]
         ):
             return "from_layer3_blue2_red1"
 

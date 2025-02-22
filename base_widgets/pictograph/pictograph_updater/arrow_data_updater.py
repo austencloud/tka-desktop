@@ -31,17 +31,13 @@ class ArrowDataUpdater:
             )
 
     def _extract_arrow_datasets(self, data: dict) -> Tuple[dict, dict]:
-        red_data = data.get("red_attributes")
-        blue_data = data.get("blue_attributes")
-        red_arrow_data = blue_arrow_data = None
-        if red_data and not blue_data:
-            red_arrow_data = self._get_arrow_data(data, RED)
-        elif blue_data and not red_data:
-            blue_arrow_data = self._get_arrow_data(data, BLUE)
-        elif red_data and blue_data:
-            red_arrow_data = self._get_arrow_data(data, RED)
-            blue_arrow_data = self._get_arrow_data(data, BLUE)
-        return red_arrow_data, blue_arrow_data
+        red_data = (
+            self._get_arrow_data(data, RED) if data.get("red_attributes") else None
+        )
+        blue_data = (
+            self._get_arrow_data(data, BLUE) if data.get("blue_attributes") else None
+        )
+        return red_data, blue_data
 
     def _get_arrow_data(self, data: dict, color: str) -> dict:
         attributes = data[f"{color}_attributes"]

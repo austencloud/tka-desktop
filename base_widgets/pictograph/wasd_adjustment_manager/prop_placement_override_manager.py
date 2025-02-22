@@ -68,8 +68,8 @@ class PropPlacementOverrideManager:
     def _generate_override_key(self, beta_state) -> str:
         return (
             f"swap_beta_{self.pictograph.elements.blue_prop.loc}_{beta_state}_"
-            f"blue_{self.pictograph.elements.blue_motion.motion_type}_{self.pictograph.elements.blue_arrow.loc}_"
-            f"red_{self.pictograph.elements.red_motion.motion_type}_{self.pictograph.elements.red_arrow.loc}"
+            f"blue_{self.pictograph.elements.blue_motion.state.motion_type}_{self.pictograph.elements.blue_arrow.loc}_"
+            f"red_{self.pictograph.elements.red_motion.state.motion_type}_{self.pictograph.elements.red_arrow.loc}"
         )
 
     def _get_letter_data(self, ori_key, letter: Letter) -> dict:

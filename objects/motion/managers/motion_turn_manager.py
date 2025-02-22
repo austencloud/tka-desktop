@@ -13,13 +13,13 @@ class MotionTurnsManager:
 
     def adjust_turns(self, adjustment: float) -> None:
         """Adjust the turns of a given motion object"""
-        new_turns = MotionTurnsManager.clamp_turns(self.motion.turns + adjustment)
-        self.motion.turns_manager.set_motion_turns(new_turns)
+        new_turns = MotionTurnsManager.clamp_turns(self.motion.state.turns + adjustment)
+        self.motion.state.turns_manager.set_motion_turns(new_turns)
 
     def set_turns(self, new_turns: Turns) -> None:
         """set the turns for a given motion object"""
         clamped_turns = MotionTurnsManager.clamp_turns(new_turns)
-        self.motion.turns_manager.set_motion_turns(clamped_turns)
+        self.motion.state.turns_manager.set_motion_turns(clamped_turns)
 
     @staticmethod
     def clamp_turns(turns: Turns) -> Turns:
@@ -48,12 +48,12 @@ class MotionTurnsManager:
         self.adjust_turns(self.motion, -1)
 
     def set_motion_turns(self, turns: Union[str, int, float]) -> None:
-        self.motion.turns = turns
-        self.motion.arrow.motion.turns = turns
-        other_motion_color = RED if self.motion.color == BLUE else BLUE
+        self.motion.state.turns = turns
+        self.motion.arrow.motion.state.turns = turns
+        other_motion_color = RED if self.motion.state.color == BLUE else BLUE
         other_motion = self.motion.pictograph.managers.get.other_motion(self.motion)
         arrow_dict = {
-            f"{self.motion.color}_attributes": {"turns": turns},
-            f"{other_motion_color}_attributes": {"turns": other_motion.turns},
+            f"{self.motion.state.color}_attributes": {"turns": turns},
+            f"{other_motion_color}_attributes": {"turns": other_motion.state.turns},
         }
         self.motion.arrow.updater.update_arrow(arrow_dict)

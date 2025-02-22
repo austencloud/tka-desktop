@@ -118,8 +118,8 @@ class SwapBetaHandler:
 
         if direction:
             self._swap_props(
-                self.pictograph.elements.props[shift.color],
-                self.pictograph.elements.props[dash.color],
+                self.pictograph.elements.props[shift.state.color],
+                self.pictograph.elements.props[dash.state.color],
                 self.dir_calculator.get_opposite_dir(direction),
                 direction,
             )
@@ -149,8 +149,8 @@ class SwapBetaHandler:
     def _generate_override_key(self, prop_loc, beta_ori) -> str:
         override_key = (
             f"swap_beta_{prop_loc}_{beta_ori}_"
-            f"blue_{self.blue_prop.motion.motion_type}_{self.blue_prop.motion.arrow.loc}_"
-            f"red_{self.red_prop.motion.motion_type}_{self.red_prop.motion.arrow.loc}"
+            f"blue_{self.blue_prop.motion.state.motion_type}_{self.blue_prop.motion.arrow.loc}_"
+            f"red_{self.red_prop.motion.state.motion_type}_{self.red_prop.motion.arrow.loc}"
         )
 
         return override_key

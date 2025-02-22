@@ -21,16 +21,16 @@ class TurnsBoxHeader(BaseAdjustmentBoxHeaderWidget):
         motion = pictograph.managers.get.motion_by_color(self.turns_box.color)
         prop_rot_dir_button_mngr = self.turns_box.prop_rot_dir_button_manager
 
-        if motion.prop_rot_dir == NO_ROT:
+        if motion.state.prop_rot_dir == NO_ROT:
             prop_rot_dir_button_mngr.hide_prop_rot_dir_buttons()
         else:
             prop_rot_dir_button_mngr.show_prop_rot_dir_buttons()
-            if motion.prop_rot_dir == CLOCKWISE:
+            if motion.state.prop_rot_dir == CLOCKWISE:
                 prop_rot_dir_button_mngr.cw_button.press()
                 prop_rot_dir_button_mngr.ccw_button.unpress()
                 self.turns_box.prop_rot_dir_btn_state[CLOCKWISE] = True
                 self.turns_box.prop_rot_dir_btn_state[COUNTER_CLOCKWISE] = False
-            elif motion.prop_rot_dir == COUNTER_CLOCKWISE:
+            elif motion.state.prop_rot_dir == COUNTER_CLOCKWISE:
                 prop_rot_dir_button_mngr.ccw_button.press()
                 prop_rot_dir_button_mngr.cw_button.unpress()
                 self.turns_box.prop_rot_dir_btn_state[CLOCKWISE] = False

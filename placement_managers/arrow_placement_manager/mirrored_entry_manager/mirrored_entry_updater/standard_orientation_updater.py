@@ -4,7 +4,6 @@ from data.constants import *
 from .base_mirrored_entry_updater import BaseMirroredEntryUpdater
 
 
-
 class StandardOrientationUpdater(BaseMirroredEntryUpdater):
     def update_entry(self, letter: Letter, original_turn_data: dict):
         mirrored_turns_tuple = (
@@ -39,12 +38,12 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
             letter, letter_data, ori_key
         )
         if (
-            not self.arrow.motion.turns
+            not self.arrow.motion.state.turns
             == self.arrow.pictograph.managers.get.other_arrow(self.arrow).turns
-            and self.arrow.motion.motion_type
+            and self.arrow.motion.state.motion_type
             == self.arrow.pictograph.managers.get.other_arrow(
                 self.arrow
-            ).motion.motion_type
+            ).motion.state.motion_type
         ):
             if mirrored_turns_tuple not in letter_data:
                 letter_data[mirrored_turns_tuple] = {}
@@ -55,35 +54,35 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
                 letter, letter_data, ori_key
             )
         elif (
-            not self.arrow.motion.turns
+            not self.arrow.motion.state.turns
             == self.arrow.pictograph.managers.get.other_arrow(self.arrow).turns
-            and self.arrow.motion.motion_type
+            and self.arrow.motion.state.motion_type
             != self.arrow.pictograph.managers.get.other_arrow(
                 self.arrow
-            ).motion.motion_type
+            ).motion.state.motion_type
             and not self.arrow.pictograph.managers.check.has_one_float()
         ):
             if mirrored_turns_tuple not in letter_data:
                 letter_data[mirrored_turns_tuple] = {}
-            letter_data[mirrored_turns_tuple][self.arrow.motion.motion_type] = (
-                letter_data[turns_tuple][self.arrow.motion.motion_type]
+            letter_data[mirrored_turns_tuple][self.arrow.motion.state.motion_type] = (
+                letter_data[turns_tuple][self.arrow.motion.state.motion_type]
             )
             self.mirrored_entry_updater.manager.data_updater.update_specific_entry_in_json(
                 letter, letter_data, ori_key
             )
         elif (
-            not self.arrow.motion.turns
+            not self.arrow.motion.state.turns
             == self.arrow.pictograph.managers.get.other_arrow(self.arrow).turns
-            and self.arrow.motion.motion_type
+            and self.arrow.motion.state.motion_type
             != self.arrow.pictograph.managers.get.other_arrow(
                 self.arrow
-            ).motion.motion_type
+            ).motion.state.motion_type
             and self.arrow.pictograph.managers.check.has_one_float()
         ):
             if mirrored_turns_tuple not in letter_data:
                 letter_data[mirrored_turns_tuple] = {}
-            letter_data[mirrored_turns_tuple][self.arrow.motion.motion_type] = (
-                letter_data[turns_tuple][self.arrow.motion.motion_type]
+            letter_data[mirrored_turns_tuple][self.arrow.motion.state.motion_type] = (
+                letter_data[turns_tuple][self.arrow.motion.state.motion_type]
             )
             self.mirrored_entry_updater.manager.data_updater.update_specific_entry_in_json(
                 letter, letter_data, ori_key
@@ -92,8 +91,8 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
     def _determine_motion_attribute(self) -> str:
         letter = self.arrow.pictograph.state.letter
         if letter in ["S", "T"]:
-            return self.arrow.motion.lead_state
+            return self.arrow.motion.state.lead_state
         elif self.arrow.pictograph.managers.check.has_hybrid_motions():
-            return self.arrow.motion.motion_type
+            return self.arrow.motion.state.motion_type
         else:
             return self.arrow.color

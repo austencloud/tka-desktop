@@ -16,12 +16,10 @@ class Prop(GraphicalObject):
     loc: str
     ori: str
     previous_location: str
-    prop_type: "PropType"
+    prop_type: str
     arrow: "Arrow"
 
-    def __init__(
-        self, pictograph, prop_data: dict, motion: "Motion", prop_type: "PropType"
-    ):
+    def __init__(self, pictograph, prop_data: dict, motion: "Motion", prop_type: str):
         super().__init__(pictograph)
         self.motion = motion
         self.prop_data = prop_data

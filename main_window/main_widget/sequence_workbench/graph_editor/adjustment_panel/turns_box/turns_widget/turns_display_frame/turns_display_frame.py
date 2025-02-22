@@ -59,7 +59,7 @@ class TurnsDisplayFrame(QFrame):
         display_value = "fl" if new_turns == "fl" else str(new_turns)
         self.turns_label.setText(display_value)
 
-        if self.turns_box.matching_motion.motion_type in [PRO, ANTI, FLOAT]:
+        if self.turns_box.matching_motion.state.motion_type in [PRO, ANTI, FLOAT]:
             self.decrement_button.setEnabled(new_turns not in ["fl"])
         else:
             self.decrement_button.setEnabled(new_turns != 0)
@@ -69,7 +69,7 @@ class TurnsDisplayFrame(QFrame):
         else:
             self.increment_button.setEnabled(True)
 
-        self.turns_widget.motion_type_label.update_display(motion.motion_type)
+        self.turns_widget.motion_type_label.update_display(motion.state.motion_type)
 
     def on_turns_label_clicked(self) -> None:
         self.turns_widget.direct_set_dialog.show_direct_set_dialog()

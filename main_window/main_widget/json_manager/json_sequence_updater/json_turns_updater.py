@@ -38,7 +38,7 @@ class JsonTurnsUpdater:
                 pictograph = beat_frame.beat_views[index - 2].beat
                 if pictograph:
                     motion = pictograph.managers.get.motion_by_color(color)
-                    prop_rot_dir = motion.prop_rot_dir
+                    prop_rot_dir = motion.state.prop_rot_dir
                     sequence[index][f"{color}_attributes"][
                         "prop_rot_dir"
                     ] = prop_rot_dir

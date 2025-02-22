@@ -19,7 +19,7 @@ class MirroredTurnsTupleGenerator:
 
         if not arrow.pictograph.managers.check.has_one_float():
             if (
-                arrow.motion.motion_type
+                arrow.motion.state.motion_type
                 != arrow.pictograph.managers.get.other_motion(arrow.motion).motion_type
                 or letter.value in ["S", "T"]
                 or letter_type == LetterType.Type2
@@ -41,14 +41,14 @@ class MirroredTurnsTupleGenerator:
     def _handle_type1(self, arrow: Arrow):
         turns_tuple = self.turns_tuple_generator.generate_turns_tuple(arrow.pictograph)
         if (
-            arrow.motion.motion_type
+            arrow.motion.state.motion_type
             == arrow.pictograph.managers.get.other_motion(arrow.motion).motion_type
             and not arrow.pictograph.managers.check.has_one_float()
         ):
             items = turns_tuple.strip("()").split(", ")
             return f"({items[1]}, {items[0]})"
         elif (
-            arrow.motion.motion_type
+            arrow.motion.state.motion_type
             != arrow.pictograph.managers.get.other_motion(arrow.motion).motion_type
             and arrow.pictograph.managers.check.has_one_float()
         ):
@@ -69,10 +69,10 @@ class MirroredTurnsTupleGenerator:
     def _handle_type56(self, arrow: Arrow):
         turns_tuple = self.turns_tuple_generator.generate_turns_tuple(arrow.pictograph)
         other_arrow = arrow.pictograph.managers.get.other_arrow(arrow)
-        if arrow.motion.turns > 0 and other_arrow.motion.turns > 0:
+        if arrow.motion.state.turns > 0 and other_arrow.motion.state.turns > 0:
             items = turns_tuple.strip("()").split(", ")
             return f"({items[0]}, {items[2]}, {items[1]})"
-        elif arrow.motion.turns > 0 or other_arrow.motion.turns > 0:
+        elif arrow.motion.state.turns > 0 or other_arrow.motion.state.turns > 0:
             prop_rotation = "cw" if "ccw" in turns_tuple else "ccw"
             turns = turns_tuple[turns_tuple.find(",") + 2 : -1]
             return f"({prop_rotation}, {turns})"
@@ -80,20 +80,20 @@ class MirroredTurnsTupleGenerator:
     def handle_lambda_dash(self, arrow: Arrow):
         turns_tuple = self.turns_tuple_generator.generate_turns_tuple(arrow.pictograph)
         if (
-            arrow.motion.turns > 0
-            and arrow.pictograph.managers.get.other_arrow(arrow).motion.turns > 0
+            arrow.motion.state.turns > 0
+            and arrow.pictograph.managers.get.other_arrow(arrow).motion.state.turns > 0
         ):
             items = turns_tuple.strip("()").split(", ")
             return f"({items[0]}, {items[2]}, {items[1]}, {items[4]}, {items[3]})"
         elif (
-            arrow.motion.turns > 0
-            and arrow.pictograph.managers.get.other_arrow(arrow).motion.turns == 0
+            arrow.motion.state.turns > 0
+            and arrow.pictograph.managers.get.other_arrow(arrow).motion.state.turns == 0
         ):
             items = turns_tuple.strip("()").split(", ")
             return f"({items[1]}, {items[0]}, {items[2]})"
         elif (
-            arrow.motion.turns == 0
-            and arrow.pictograph.managers.get.other_arrow(arrow).motion.turns > 0
+            arrow.motion.state.turns == 0
+            and arrow.pictograph.managers.get.other_arrow(arrow).motion.state.turns > 0
         ):
             items = turns_tuple.strip("()").split(", ")
             return f"({items[1]}, {items[0]}, {items[2]})"

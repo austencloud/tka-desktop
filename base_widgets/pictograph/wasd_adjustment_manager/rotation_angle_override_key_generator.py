@@ -11,21 +11,21 @@ class RotationAngleOverrideKeyGenerator:
         self.manager = manager
 
     def get_start_ori_layer(self, arrow: Arrow) -> str:
-        if arrow.motion.start_ori in [IN, OUT]:
+        if arrow.motion.state.start_ori in [IN, OUT]:
             return "layer1"
-        elif arrow.motion.start_ori in [CLOCK, COUNTER]:
+        elif arrow.motion.state.start_ori in [CLOCK, COUNTER]:
             return "layer2"
 
     def get_end_ori_layer(self, arrow: Arrow) -> str:
-        if arrow.motion.end_ori in [IN, OUT]:
+        if arrow.motion.state.end_ori in [IN, OUT]:
             return "layer1"
-        elif arrow.motion.end_ori in [CLOCK, COUNTER]:
+        elif arrow.motion.state.end_ori in [CLOCK, COUNTER]:
             return "layer2"
 
     def generate_rotation_angle_override_key(self, arrow: Arrow) -> str:
-        motion_type = arrow.motion.motion_type
+        motion_type = arrow.motion.state.motion_type
         if arrow.pictograph.state.letter.value in ["α", "β", "Γ", "Φ-", "Ψ-", "Λ-"]:
-            return f"{arrow.motion.color}_rot_angle_override"
+            return f"{arrow.motion.state.color}_rot_angle_override"
         elif arrow.pictograph.managers.check.starts_from_mixed_orientation():
             start_ori_layer = self.get_start_ori_layer(arrow)
             return f"{motion_type}_from_{start_ori_layer}_rot_angle_override"

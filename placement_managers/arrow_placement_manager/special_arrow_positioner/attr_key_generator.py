@@ -14,15 +14,15 @@ class AttrKeyGenerator:
     def get_key(self, arrow: "Arrow") -> str:
         if arrow.pictograph.managers.check.starts_from_mixed_orientation():
             if self.positioner.pictograph.state.letter.value in ["S", "T"]:
-                return f"{arrow.motion.lead_state}"
+                return f"{arrow.motion.state.lead_state}"
             elif arrow.pictograph.managers.check.starts_from_mixed_orientation():
                 if arrow.pictograph.managers.check.has_hybrid_motions():
-                    if arrow.motion.start_ori in [IN, OUT]:
-                        return f"{arrow.motion.motion_type}_from_layer1"
-                    elif arrow.motion.start_ori in [CLOCK, COUNTER]:
-                        return f"{arrow.motion.motion_type}_from_layer2"
+                    if arrow.motion.state.start_ori in [IN, OUT]:
+                        return f"{arrow.motion.state.motion_type}_from_layer1"
+                    elif arrow.motion.state.start_ori in [CLOCK, COUNTER]:
+                        return f"{arrow.motion.state.motion_type}_from_layer2"
                 else:
-                    return arrow.motion.color
+                    return arrow.motion.state.color
             elif (
                 self.positioner.pictograph.state.letter
                 in self.positioner.pictograph.state.letter.get_letters_by_condition(
@@ -31,16 +31,16 @@ class AttrKeyGenerator:
             ):
                 return arrow.color
             else:
-                return arrow.motion.motion_type
+                return arrow.motion.state.motion_type
 
         elif arrow.pictograph.managers.check.starts_from_standard_orientation():
 
             if arrow.pictograph.state.letter.value in ["S", "T"]:
-                return f"{arrow.color}_{arrow.motion.lead_state}"
+                return f"{arrow.color}_{arrow.motion.state.lead_state}"
             elif arrow.pictograph.managers.check.has_hybrid_motions():
-                return arrow.motion.motion_type
+                return arrow.motion.state.motion_type
             else:
                 return arrow.color
 
     def _determine_layer(self, arrow: "Arrow") -> int:
-        return 1 if arrow.motion.start_ori in [IN, OUT] else 2
+        return 1 if arrow.motion.state.start_ori in [IN, OUT] else 2

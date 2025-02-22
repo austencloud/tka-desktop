@@ -34,17 +34,18 @@ class MotionDataUpdater:
         for motion in self.pictograph.elements.motions.values():
             try:
                 self._override_motion_type_if_needed(data, motion)
-                if motion_dataset.get(motion.color):
-                    self._show_motion_graphics(motion.color)
-                if motion_dataset[motion.color].get("turns", "") == "fl":
-                    motion.turns = "fl"
-                motion.updater.update_motion(motion_dataset[motion.color])
-                turns_value = motion_dataset[motion.color].get("turns")
+                if motion_dataset.get(motion.state.color):
+                    self._show_motion_graphics(motion.state.color)
+                if motion_dataset[motion.state.color].get("turns", "") == "fl":
+                    motion.state.turns = "fl"
+                motion.updater.update_motion(motion_dataset[motion.state.color])
+                turns_value = motion_dataset[motion.state.color].get("turns")
                 if turns_value is not None:
-                    motion.turns = turns_value
+                    motion.state.turns = turns_value
             except Exception as e:
                 logger.error(
-                    f"Error updating motion for {motion.color}: {e}", exc_info=True
+                    f"Error updating motion for {motion.state.color}: {e}",
+                    exc_info=True,
                 )
 
         for motion in self.pictograph.elements.motions.values():
@@ -58,16 +59,17 @@ class MotionDataUpdater:
                     motion.attr_manager.assign_lead_states()
             except Exception as e:
                 logger.error(
-                    f"Error assigning lead state for {motion.color}: {e}", exc_info=True
+                    f"Error assigning lead state for {motion.state.color}: {e}",
+                    exc_info=True,
                 )
 
     def _override_motion_type_if_needed(self, data: dict, motion: Motion) -> None:
-        motion_type = motion.motion_type
+        motion_type = motion.state.motion_type
         turns_key = f"{motion_type}_turns"
         if turns_key in data:
-            motion.turns = data[turns_key]
+            motion.state.turns = data[turns_key]
             logger.debug(
-                f"Overriding motion type for {motion.color} using key {turns_key}."
+                f"Overriding motion type for {motion.state.color} using key {turns_key}."
             )
 
     def _show_motion_graphics(self, color: str) -> None:

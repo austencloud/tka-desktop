@@ -1,22 +1,13 @@
 from typing import TYPE_CHECKING
 from data.constants import BLUE, PROP_DIR
 from Enums.PropTypes import PropType
-
-if TYPE_CHECKING:
-    from objects.prop.prop import Prop
-    from base_widgets.pictograph.managers.svg_manager import SvgManager
-from utilities.path_helpers import get_images_and_data_path
-
-from typing import TYPE_CHECKING
-from PyQt6.QtSvg import QSvgRenderer
 from objects.prop.prop import Prop
-from Enums.PropTypes import PropType
-from data.constants import BLUE, PROP_DIR
+from utilities.path_helpers import get_images_and_data_path
+from PyQt6.QtSvg import QSvgRenderer
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.managers.svg_manager import (
-        SvgManager,
-    )
+    from base_widgets.pictograph.svg_manager import SvgManager
+    from objects.prop.prop import Prop
 
 
 class PropSvgManager:
@@ -35,7 +26,7 @@ class PropSvgManager:
         self._setup_prop_svg_renderer(prop, colored_svg_data)
 
     def _get_prop_svg_file(self, prop: "Prop") -> str:
-        prop_type_str = prop.prop_type.name.lower()
+        prop_type_str = prop.prop_type
         if prop.prop_type == PropType.Hand:
             return self._get_hand_svg_file(prop)
 

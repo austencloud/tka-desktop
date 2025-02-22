@@ -15,15 +15,15 @@ class Type1HybridTurnsTupleGenerator(BaseTurnsTupleGenerator):
         if not pictograph.managers.check.has_one_float():
             pro_motion = (
                 self.blue_motion
-                if self.blue_motion.motion_type == PRO
+                if self.blue_motion.state.motion_type == PRO
                 else self.red_motion
             )
             anti_motion = (
                 self.blue_motion
-                if self.blue_motion.motion_type == ANTI
+                if self.blue_motion.state.motion_type == ANTI
                 else self.red_motion
             )
-            return f"({pro_motion.turns}, {anti_motion.turns})"
+            return f"({pro_motion.state.turns}, {anti_motion.state.turns})"
         elif pictograph.managers.check.has_one_float():
             # return blue, then red tuple
             return f"({self._normalize_turns(self.blue_motion)}, {self._normalize_turns(self.red_motion)})"

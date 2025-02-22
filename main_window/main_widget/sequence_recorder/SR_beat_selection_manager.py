@@ -99,8 +99,8 @@ class SR_BeatSelectionManager(QWidget):
     #         if self.selected_beat:
     #             self.selected_beat.deselect()
     #         self.selected_beat = beat_view
-    #         blue_turns = self.selected_beat.beat.blue_motion.turns
-    #         red_turns = self.selected_beat.beat.red_motion.turns
+    #         blue_turns = self.selected_beat.beat.blue_motion.state.turns
+    #         red_turns = self.selected_beat.beat.red_motion.state.turns
     #         self.selected_beat.is_selected = True
     #         graph_editor = (
     #             self.selected_beat.beat_frame.main_widget.sequence_workbench.graph_editor

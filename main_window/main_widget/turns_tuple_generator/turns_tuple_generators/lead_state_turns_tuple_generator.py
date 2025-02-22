@@ -13,6 +13,6 @@ class LeadStateTurnsTupleGenerator(BaseTurnsTupleGenerator):
         leading_motion = self.pictograph.managers.get.leading_motion()
         trailing_motion = self.pictograph.managers.get.trailing_motion()
         if leading_motion:
-            return f"({leading_motion.turns}, {trailing_motion.turns})"
+            return f"({leading_motion.state.turns}, {trailing_motion.state.turns})"
         else:
             return f"({self._normalize_turns(self.blue_motion)}, {self._normalize_turns(self.red_motion)})"

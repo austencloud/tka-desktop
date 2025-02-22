@@ -60,7 +60,7 @@ class RotationAngleOverrideManager:
     def _is_valid_for_override(self) -> bool:
         return (
             self.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow
-            and self.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow.motion.motion_type
+            and self.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow.motion.state.motion_type
             in [STATIC, DASH]
         )
 

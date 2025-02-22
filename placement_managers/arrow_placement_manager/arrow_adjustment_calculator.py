@@ -103,7 +103,7 @@ class ArrowAdjustmentCalculator:
 
         if not directional_adjustments:
             logger.error(
-                f"Directional adjustments not found for motion type: {arrow.motion.motion_type}"
+                f"Directional adjustments not found for motion type: {arrow.motion.state.motion_type}"
             )
             return None
         return directional_adjustments
