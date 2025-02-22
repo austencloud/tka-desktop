@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import Qt
 from Enums.letters import Letter
 from data.constants import (
     ANTI,
@@ -64,6 +66,7 @@ class PropRotDirButtonManager:
 
     def _set_prop_rot_dir(self, prop_rot_dir: str) -> None:
         """Set the prop rotation direction and update the motion and letter."""
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         if self.turns_box.prop_rot_dir_btn_state[prop_rot_dir]:
             return
         selected_beat = (
@@ -93,8 +96,8 @@ class PropRotDirButtonManager:
             reversal_info = ReversalDetector.detect_reversal(
                 sequence_so_far, pictograph.state.pictograph_data
             )
-            pictograph.blue_reversal = reversal_info["blue_reversal"]
-            pictograph.red_reversal = reversal_info["red_reversal"]
+            pictograph.state.blue_reversal = reversal_info["blue_reversal"]
+            pictograph.state.red_reversal = reversal_info["red_reversal"]
             pictograph.elements.reversal_glyph.update_reversal_symbols()
 
         self._update_button_states(prop_rot_dir)
@@ -102,7 +105,8 @@ class PropRotDirButtonManager:
             self.turns_box.graph_editor.sequence_workbench.main_widget.construct_tab.option_picker
         )
         self.option_picker.updater.refresh_options()
-
+        QApplication.restoreOverrideCursor()
+        
     def _get_new_motion_type(self, motion: "Motion"):
         motion_type = motion.motion_type
         if motion_type == ANTI:
@@ -132,7 +136,7 @@ class PropRotDirButtonManager:
 
         if new_letter:
             beat.state.pictograph_data["letter"] = new_letter.value
-            beat.letter = new_letter
+            beat.state.letter = new_letter
 
         beat.managers.updater.update_pictograph(beat.state.pictograph_data)
         json_index = pictograph_index + 2

@@ -37,13 +37,14 @@ class SequenceColorSwapper(BaseSequenceModifier):
     def _color_swap_sequence(self) -> list[dict]:
 
         self.sequence_workbench.button_panel.toggle_swap_colors_icon()
-        metadata = AppContext.json_manager().loader_saver.load_current_sequence()[0].copy()
+        metadata = (
+            AppContext.json_manager().loader_saver.load_current_sequence()[0].copy()
+        )
         swapped_sequence = []
         swapped_sequence.append(metadata)
 
         start_pos_beat_dict: dict = (
-            self.sequence_workbench.sequence_beat_frame.start_pos_view.start_pos.state
-            .pictograph_data.copy()
+            self.sequence_workbench.sequence_beat_frame.start_pos_view.start_pos.state.pictograph_data.copy()
         )
         self._color_swap_dict(start_pos_beat_dict)
         swapped_sequence.append(start_pos_beat_dict)
@@ -56,10 +57,10 @@ class SequenceColorSwapper(BaseSequenceModifier):
         for beat_view in self.sequence_workbench.sequence_beat_frame.beat_views:
             beat = beat_view.beat
 
-            red_reversal = beat.red_reversal
-            blue_reversal = beat.blue_reversal
-            beat.red_reversal = blue_reversal
-            beat.blue_reversal = red_reversal
+            red_reversal = beat.state.red_reversal
+            blue_reversal = beat.state.blue_reversal
+            beat.state.red_reversal = blue_reversal
+            beat.state.blue_reversal = red_reversal
 
         return swapped_sequence
 
