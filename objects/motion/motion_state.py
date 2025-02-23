@@ -21,10 +21,10 @@ class MotionState:
     def __post_init__(self):
         self.prefloat_handler = PrefloatStateUpdater(self)
 
-    def update_motion_state(self, data: dict) -> None:
+    def update_motion_state(self, motion_data: dict) -> None:
         SHIFT_MOTIONS = ["pro", "anti", "float"]
 
-        for key, value in data.items():
+        for key, value in motion_data.items():
             if value is not None:
                 if key in ["prefloat_motion_type", "prefloat_prop_rot_dir"]:
                     if self.motion_type in SHIFT_MOTIONS:
@@ -33,4 +33,4 @@ class MotionState:
                     if hasattr(self, key):
                         setattr(self, key, value)
 
-        self.prefloat_handler.update_prefloat_state(data)
+        self.prefloat_handler.update_prefloat_state(motion_data)

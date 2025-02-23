@@ -2,8 +2,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from main_window.settings_manager.settings_manager import SettingsManager
-
-
 class ConstructTabSettings:
     DEFAULT_SETTINGS = {
         "filters": {
@@ -13,20 +11,30 @@ class ConstructTabSettings:
         }
     }
 
-    def __init__(self, settings_manager: "SettingsManager"):
+    def __init__(self, settings_manager: "SettingsManager") -> None:
         self.settings_manager = settings_manager
-        self.settings = self.settings_manager.settings  # QSettings instance
+        self.settings = self.settings_manager.settings
 
     def get_filters(self) -> dict:
-        # Attempt to load filters setting as a dictionary
-        filters = self.settings.value("builder/construct_tab/filters", None)
+        default_filters = self.DEFAULT_SETTINGS["filters"].copy()
+        result = {}
 
-        # Check if filters loaded successfully; otherwise, use defaults
-        if isinstance(filters, dict):
-            return filters
-        else:
-            # Return default filters if conversion fails
-            return self.DEFAULT_SETTINGS["filters"]
+        for key, default_value in default_filters.items():
+            raw_val = self.settings.value(f"construct_tab/filters/{key}", str(default_value))
+            if raw_val.lower() == "true":
+                result[key] = True
+            elif raw_val.lower() == "false":
+                result[key] = False
+            else:
+                result[key] = raw_val
 
-    def set_filters(self, filters: dict):
-        self.settings.setValue("builder/construct_tab/filters", filters)
+        return result
+
+
+    def set_filters(self, filter: str):
+        if filter == None:
+            return
+        self.settings.setValue(f"construct_tab/filters/{filter}", True)
+        for key in self.DEFAULT_SETTINGS["filters"]:
+            if key != filter:
+                self.settings.setValue(f"construct_tab/filters/{key}", False)

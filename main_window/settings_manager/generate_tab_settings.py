@@ -36,10 +36,10 @@ class GenerateTabSettings:
     def get_setting(self, key: str, mode: str = None):
         """Get setting with fallback to unified defaults"""
         if mode and key in self.MODE_SPECIFIC_DEFAULTS.get(mode, {}):
-            prefix = f"builder/sequence_generator/{mode}/"
+            prefix = f"generator/{mode}/"
             default = self.MODE_SPECIFIC_DEFAULTS[mode].get(key)
         else:
-            prefix = "builder/sequence_generator/"
+            prefix = "generator/"
             default = self.SHARED_DEFAULTS.get(key)
 
         return self.settings.value(prefix + key, default)
@@ -47,16 +47,16 @@ class GenerateTabSettings:
     def set_setting(self, key: str, value, mode: str = None):
         """Set setting in appropriate section"""
         if mode and key in self.MODE_SPECIFIC_DEFAULTS.get(mode, {}):
-            prefix = f"builder/sequence_generator/{mode}/"
+            prefix = f"generator/{mode}/"
         else:
-            prefix = "builder/sequence_generator/"
+            prefix = "generator/"
 
         self.settings.setValue(prefix + key, value)
 
     def get_current_mode(self) -> str:
         return self.settings.value(
-            "builder/sequence_generator/current_mode", "freeform"
+            "generator/current_mode", "freeform"
         )
 
     def set_current_mode(self, mode: str):
-        self.settings.setValue("builder/sequence_generator/current_mode", mode)
+        self.settings.setValue("generator/current_mode", mode)

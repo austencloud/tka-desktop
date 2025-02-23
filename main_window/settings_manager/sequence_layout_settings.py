@@ -1,5 +1,5 @@
+# main_window/settings_manager/sequence_layout_settings.py
 import json
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -7,38 +7,53 @@ if TYPE_CHECKING:
 
 
 class SequenceLayoutSettings:
-    LAYOUTS_FILE = Path("data/default_layouts.json")
-
     def __init__(self, settings_manager: "SettingsManager"):
         self.settings_manager = settings_manager
+        self.settings = settings_manager.settings
 
     def get_layout_setting(self, beat_count: str) -> list[int]:
-        """Retrieve layout setting for a specific beat count."""
         layouts = self._load_layouts()
-        return layouts.get(beat_count, [1, int(beat_count)])
+        default_value = layouts.get(beat_count, [1, int(beat_count)])
+
+        override_str = self.settings.value(
+            f"sequence_layout/overrides/{beat_count}", ""
+        )
+        if override_str:
+            try:
+                row_col = list(map(int, override_str.split(",")))
+                return row_col
+            except:
+                pass
+
+        return default_value
 
     def set_layout_setting(self, beat_count: str, layout: list[int]):
-        """Update the layout setting for a specific beat count."""
-        layouts = self._load_layouts()
-        layouts[beat_count] = layout
-        self._save_layouts(layouts)
+        override_str = ",".join(map(str, layout))
+        self.settings.setValue(f"sequence_layout/overrides/{beat_count}", override_str)
 
-    def _load_layouts(self):
-        """Load layouts from JSON."""
-        if not self.LAYOUTS_FILE.exists():
+    def _load_layouts(self) -> dict:
+        raw_val = self.settings.value("sequence_layout/default_layouts", "")
+
+        if not raw_val:
             return {}
-        with open(self.LAYOUTS_FILE, "r") as file:
-            return json.load(file)
 
-    def _save_layouts(self, layouts):
-        """Save layouts to JSON with inline lists and readable formatting."""
-        with open(self.LAYOUTS_FILE, "w") as file:
-            # Generate a JSON string with pre-formatted lists
-            formatted_json = json.dumps(layouts, indent=2)
-            # Post-process to ensure lists are inline
-            formatted_json = (
-                formatted_json.replace("[\n    ", "[")
-                .replace("\n  ]", "]")
-                .replace(",\n    ", ", ")
-            )
-            file.write(formatted_json)
+        if isinstance(raw_val, dict):
+            json_str = json.dumps(raw_val)
+            self.settings.setValue("sequence_layout/default_layouts", json_str)
+            return raw_val
+
+        try:
+            return json.loads(raw_val)
+        except (ValueError, TypeError):
+            return {}
+
+    def _save_layouts(self, layouts: dict) -> None:
+        json_str = json.dumps(layouts, indent=2)
+
+        json_str = (
+            json_str.replace("[\n    ", "[")
+            .replace("\n  ]", "]")
+            .replace(",\n    ", ", ")
+        )
+
+        self.settings.setValue("sequence_layout/default_layouts", json_str)

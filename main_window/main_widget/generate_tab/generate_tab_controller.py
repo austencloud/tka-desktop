@@ -97,7 +97,7 @@ class GenerateTabController:
             self.tab.permutation_type_toggle.set_state(permutation_type == "rotated")
 
     def _load_freeform_settings(self):
-        letter_types = self.settings.get_setting("selected_letter_types", "freeform")
+        letter_types = self.settings.get_setting("selected_letter_types")
         if letter_types:
             self.tab.letter_picker.set_selected_types(letter_types)
 

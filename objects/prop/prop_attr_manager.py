@@ -23,8 +23,14 @@ class PropAttrManager:
             value = prop_data.get(attr)
             if attr == PROP_TYPE:
                 if prop_data.get(PROP_TYPE) is not None:
-                    self.prop.prop_type = PropType.get_prop_type(value)
-            elif value is not None:
+                    # if the value being passed in is a PropType, convert it to a string with its .name. Otherwise, if its a string, use it directly
+                    value = (
+                        value.name
+                        if isinstance(value, PropType)
+                        else value
+                    )
+                    
+            if value is not None:
                 setattr(self.prop, attr, value)
         self.set_z_value_based_on_color()
 
