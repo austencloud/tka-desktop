@@ -158,6 +158,9 @@
     },
     "(o, 1, 2)": {
       "swap_beta_e_radial_blue_dash_s_red_dash_n": true
+    },
+    "(o, 0.5, 1)": {
+      "pro": [-10, 75]
     }
   }
 }

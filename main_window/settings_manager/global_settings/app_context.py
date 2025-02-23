@@ -5,8 +5,8 @@ from main_window.main_widget.special_placement_loader import SpecialPlacementLoa
 
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_manager import JsonManager
-    from main_window.main_widget.json_manager.json_special_placement_handler import (
-        JsonSpecialPlacementHandler,
+    from main_window.main_widget.json_manager.special_placement_saver import (
+        SpecialPlacementSaver,
     )
     from main_window.settings_manager.settings_manager import SettingsManager
 
@@ -58,7 +58,9 @@ class AppContext:
         return cls._json_manager
 
     @classmethod
-    def special_placement_handler(cls) -> "JsonSpecialPlacementHandler":
+    def special_placement_saver(
+        cls,
+    ) -> "SpecialPlacementSaver":
         if cls._special_placement_handler is None:
             raise RuntimeError(
                 "AppContext.special_placement_handler() accessed before init()"

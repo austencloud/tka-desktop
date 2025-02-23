@@ -23,7 +23,7 @@ class PictographViewKeyEventHandler:
             )
             return True
         elif event.key() == Qt.Key.Key_X:
-            wasd_manager.rotation_angle_override_manager.handle_rotation_angle_override()
+            wasd_manager.rotation_angle_override_manager.handle_arrow_rot_angle_override()
             return True
 
         elif event.key() == Qt.Key.Key_C:

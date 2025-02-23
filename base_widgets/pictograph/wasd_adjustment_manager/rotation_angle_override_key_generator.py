@@ -3,10 +3,10 @@ from data.constants import CLOCK, COUNTER, IN, OUT
 
 if TYPE_CHECKING:
     from objects.arrow.arrow import Arrow
-    from .rotation_angle_override_manager import RotationAngleOverrideManager
+    from .arrow_rot_angle_override_manager import ArrowRotAngleOverrideManager
 
 
-class RotationAngleOverrideKeyGenerator:
+class ArrowRotAngleOverrideKeyGenerator:
     def get_start_ori_layer(self, arrow: "Arrow") -> str:
         if arrow.motion.state.start_ori in [IN, OUT]:
             return "layer1"

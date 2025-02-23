@@ -19,7 +19,7 @@ class MirroredEntryDataPrep:
         return (
             arrow.pictograph.state.letter
             not in AppContext.special_placement_loader()
-            .load_special_placements()
+            .load_or_return_special_placements()
             .get(ori_key, {})
         )
 
@@ -41,7 +41,7 @@ class MirroredEntryDataPrep:
         """Fetches letter data for a given orientation key and letter."""
         return (
             AppContext.special_placement_loader()
-            .load_special_placements()
+            .load_or_return_special_placements()
             .get(ori_key, {})
             .get(letter.value, {})
         )

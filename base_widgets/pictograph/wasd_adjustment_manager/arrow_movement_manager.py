@@ -45,7 +45,6 @@ class ArrowMovementManager:
         self.data_updater.mirrored_entry_manager.update_mirrored_entry_in_json(
             selected_arrow
         )
-        GE_pictograph.managers.arrow_placement_manager.update_arrow_placements()
         QApplication.processEvents()
 
 

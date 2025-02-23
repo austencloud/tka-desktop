@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 from .mirrored_entry_data_prep import MirroredEntryDataPrep
 
@@ -8,7 +9,9 @@ from .mirrored_entry_creator import MirroredEntryCreator
 from .mirrored_entry_updater.mirrored_entry_updater import MirroredEntryUpdater
 
 if TYPE_CHECKING:
-    from placement_managers.arrow_placement_manager.special_arrow_positioner.special_placement_data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
+    from placement_managers.arrow_placement_manager.special_arrow_positioner.special_placement_data_updater.special_placement_data_updater import (
+        SpecialPlacementDataUpdater,
+    )
 
 
 class MirroredEntryManager:
@@ -27,3 +30,4 @@ class MirroredEntryManager:
             )
         else:
             self.mirrored_entry_updater.update_entry(arrow)
+        AppContext.special_placement_loader().reload()

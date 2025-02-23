@@ -2,8 +2,8 @@ import os
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import BLUE, RED
-from main_window.main_widget.json_manager.json_special_placement_handler import (
-    JsonSpecialPlacementHandler,
+from main_window.main_widget.json_manager.special_placement_saver import (
+    SpecialPlacementSaver,
 )
 
 from main_window.settings_manager.global_settings.app_context import AppContext
@@ -23,7 +23,7 @@ class SpecialPlacementEntryRemover:
         self.positioner = data_updater.positioner
         self.data_updater = data_updater
         self.turns_tuple_generator = data_updater.turns_tuple_generator
-        self.special_placement_handler = JsonSpecialPlacementHandler()
+        self.special_placement_handler = SpecialPlacementSaver()
 
     def remove_special_placement_entry(self, letter: Letter, arrow: Arrow) -> None:
         ori_key = self.data_updater._generate_ori_key(arrow.motion)
@@ -32,7 +32,7 @@ class SpecialPlacementEntryRemover:
         if os.path.exists(file_path):
             data = self.load_data(file_path)
             self._process_removal(letter, arrow, ori_key, file_path, data)
-            AppContext.special_placement_loader().load_special_placements()
+            AppContext.special_placement_loader().load_or_return_special_placements()
         arrow.pictograph.managers.updater.placement_updater.update()
 
     def _process_removal(
@@ -56,7 +56,7 @@ class SpecialPlacementEntryRemover:
                     letter, arrow, ori_key, letter_data, key
                 )
             data[letter.value] = letter_data
-            AppContext.special_placement_handler().write_json_data(data, file_path)
+            AppContext.special_placement_saver().save_json_data(data, file_path)
 
     def _handle_standard_start_ori_mirrored_entry_removal(
         self, letter, arrow: Arrow, ori_key, letter_data, key
@@ -117,7 +117,7 @@ class SpecialPlacementEntryRemover:
             elif key not in letter_data[self.turns_tuple]:
                 if other_data:
                     del other_data[letter][mirrored_tuple][new_key]
-            self.special_placement_handler.write_json_data(other_data, other_file_path)
+            self.special_placement_handler.save_json_data(other_data, other_file_path)
         new_turns_tuple = self.turns_tuple_generator.generate_mirrored_tuple(arrow)
         self._remove_turn_data_entry(other_letter_data, new_turns_tuple, new_key)
 

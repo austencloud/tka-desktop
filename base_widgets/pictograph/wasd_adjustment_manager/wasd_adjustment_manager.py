@@ -9,11 +9,13 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 
 
 from .arrow_movement_manager import ArrowMovementManager
-from .rotation_angle_override_manager import RotationAngleOverrideManager
+from .arrow_rot_angle_override_manager import ArrowRotAngleOverrideManager
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
-    from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import GE_Pictograph
+    from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
+        GE_Pictograph,
+    )
 
 
 class WASD_AdjustmentManager:
@@ -25,5 +27,5 @@ class WASD_AdjustmentManager:
         self.movement_manager = ArrowMovementManager(pictograph)
         self.turns_tuple_generator = TurnsTupleGenerator()
 
-        self.rotation_angle_override_manager = RotationAngleOverrideManager(self)
+        self.rotation_angle_override_manager = ArrowRotAngleOverrideManager(self)
         self.prop_placement_override_manager = PropPlacementOverrideManager(self)

@@ -21,10 +21,13 @@ class SpecialPlacementLoader:
     def __init__(self) -> None:
         self.special_placements: dict[str, dict[str, dict]] = {}
 
-    def load_special_placements(self) -> dict[str, dict[str, dict]]:
+    def load_or_return_special_placements(self) -> dict[str, dict[str, dict]]:
         if self.special_placements:
             return self.special_placements
+        else:
+            return self.load_special_placements_fresh()
 
+    def load_special_placements_fresh(self):
         for mode in self.SUPPORTED_MODES:
             self.special_placements[mode] = self._load_mode_subfolders(mode)
         return self.special_placements

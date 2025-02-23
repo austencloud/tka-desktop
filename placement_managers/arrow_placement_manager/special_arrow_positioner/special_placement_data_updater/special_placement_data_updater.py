@@ -61,7 +61,7 @@ class SpecialPlacementDataUpdater:
     def _get_letter_data(self, letter: Letter, ori_key: str) -> dict:
         letter_data = (
             AppContext.special_placement_loader()
-            .load_special_placements()[self.state.grid_mode][ori_key]
+            .load_or_return_special_placements()[self.state.grid_mode][ori_key]
             .get(letter.value, {})
         )
 
@@ -136,9 +136,8 @@ class SpecialPlacementDataUpdater:
             return "from_layer3_blue1_red2"
 
     def _update_placement_json_data(
-        self, letter: Letter, letter_data: dict, ori_key: str
+        self, letter: Letter, letter_data: dict, ori_key: str, grid_mode: str
     ) -> None:
-        grid_mode = self.state.grid_mode
         file_path = os.path.join(
             "data",
             "arrow_placement",
@@ -147,9 +146,7 @@ class SpecialPlacementDataUpdater:
             ori_key,
             f"{letter.value}_placements.json",
         )
-        existing_data = AppContext.special_placement_handler().load_json_data(file_path)
-        existing_data[letter.value] = letter_data
-        AppContext.special_placement_handler().write_json_data(existing_data, file_path)
+        AppContext.special_placement_saver().save_json_data(letter_data, file_path)
 
     def update_arrow_adjustments_in_json(
         self, adjustment: tuple[int, int], arrow: Arrow, turns_tuple: str
@@ -163,13 +160,17 @@ class SpecialPlacementDataUpdater:
 
         letter_data = self._get_letter_data(letter, ori_key)
         self._update_or_create_turn_data(letter_data, turns_tuple, arrow, adjustment)
-        self._update_placement_json_data(letter, letter_data, ori_key)
+        self._update_placement_json_data(
+            letter, letter_data, ori_key, self.state.grid_mode
+        )
         AppContext().special_placement_loader().reload()
 
     def update_specific_entry_in_json(
         self, letter: Letter, letter_data: dict, ori_key
     ) -> None:
         try:
-            self._update_placement_json_data(letter, letter_data, ori_key)
+            self._update_placement_json_data(
+                letter, letter_data, ori_key, self.state.grid_mode
+            )
         except Exception as e:
             logging.error(f"Error in update_specific_entry_in_json: {e}")

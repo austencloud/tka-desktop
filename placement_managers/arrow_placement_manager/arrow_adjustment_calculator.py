@@ -79,7 +79,7 @@ class ArrowAdjustmentCalculator:
     def _get_special_placements(self, arrow: Arrow, ori_key: str) -> dict:
         """Loads and prepares special placements for the current grid mode and letter."""
         special_placements_all_modes = (
-            self.special_placement_loader.load_special_placements()
+            self.special_placement_loader.load_or_return_special_placements()
         )
         special_placements_for_current_grid_mode = special_placements_all_modes.get(
             arrow.pictograph.state.grid_mode, {}

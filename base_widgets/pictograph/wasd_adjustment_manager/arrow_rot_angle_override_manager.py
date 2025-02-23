@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import STATIC, DASH
 from base_widgets.pictograph.wasd_adjustment_manager.rotation_angle_override_key_generator import (
-    RotationAngleOverrideKeyGenerator,
+    ArrowRotAngleOverrideKeyGenerator,
 )
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
@@ -14,10 +14,10 @@ from main_window.settings_manager.global_settings.app_context import AppContext
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
 
-    from ..wasd_adjustment_manager.wasd_adjustment_manager import WASD_AdjustmentManager
+    from .wasd_adjustment_manager import WASD_AdjustmentManager
 
 
-class RotationAngleOverrideManager:
+class ArrowRotAngleOverrideManager:
     """
     Manages rotation angle overrides for arrows in a pictograph based on specific letter types and motions.
 
@@ -31,16 +31,16 @@ class RotationAngleOverrideManager:
         self.special_positioner = (
             self.pictograph.managers.arrow_placement_manager.special_positioner
         )
-        self.key_generator = RotationAngleOverrideKeyGenerator()
+        self.key_generator = ArrowRotAngleOverrideKeyGenerator()
 
-    def handle_rotation_angle_override(self) -> None:
+    def handle_arrow_rot_angle_override(self) -> None:
         if not self._is_valid_for_override():
             return
 
         ori_key = self.special_positioner.data_updater._generate_ori_key(
             self.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow.motion
         )
-        data = AppContext.special_placement_loader().load_special_placements()
+        data = AppContext.special_placement_loader().load_or_return_special_placements()
         letter = self.pictograph.state.letter
         self._apply_override_if_needed(letter, data, ori_key)
         AppContext.special_placement_loader().reload()

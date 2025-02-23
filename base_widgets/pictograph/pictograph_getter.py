@@ -55,7 +55,10 @@ class PictographGetter:
         return self.lead_state_determiner.leading_motion()
 
     def other_motion(self, motion: Motion) -> Motion:
-        other_motion_map = {RED: self.blue_motion, BLUE: self.red_motion}
+        other_motion_map = {
+            RED: self.pictograph.elements.blue_motion,
+            BLUE: self.pictograph.elements.red_motion,
+        }
         return other_motion_map.get(motion.state.color)
 
     def other_arrow(self, arrow: Arrow) -> Arrow:

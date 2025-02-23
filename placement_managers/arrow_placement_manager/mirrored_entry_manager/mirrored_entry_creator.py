@@ -61,12 +61,13 @@ class MirroredEntryCreator:
     def _fetch_letter_data_and_original_turn_data(
         self, ori_key, letter: Letter, arrow: Arrow
     ) -> tuple[dict, dict]:
-        letter_data: dict = (
-            AppContext.special_placement_loader()
-            .load_special_placements()
-            .get(ori_key, {})
-            .get(letter.value, {})
+        letter_data = (
+            AppContext.special_placement_loader().load_or_return_special_placements()[
+                arrow.pictograph.state.grid_mode
+            ][ori_key][letter.value]
         )
+
+        letter_data: dict = letter_data
         original_turns_tuple = self.turns_tuple_generator.generate_turns_tuple(
             arrow.pictograph
         )
@@ -79,7 +80,7 @@ class MirroredEntryCreator:
         other_ori_key = self.data_updater.get_other_layer3_ori_key(ori_key)
         other_letter_data = (
             AppContext.special_placement_loader()
-            .load_special_placements()
+            .load_or_return_special_placements()
             .get(other_ori_key, {})
             .get(letter.value, {})
         )

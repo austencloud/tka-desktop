@@ -163,7 +163,7 @@ class SwapBetaHandler:
         if ori_key:
             letter_data: dict = (
                 AppContext.special_placement_loader()
-                .load_special_placements()[grid_mode][ori_key]
+                .load_or_return_special_placements()[grid_mode][ori_key]
                 .get(self.pictograph.state.letter.value)
             )
 

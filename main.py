@@ -4,8 +4,8 @@ from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication
 from call_tracer import CallTracer
 from main_window.main_widget.json_manager.json_manager import JsonManager
-from main_window.main_widget.json_manager.json_special_placement_handler import (
-    JsonSpecialPlacementHandler,
+from main_window.main_widget.json_manager.special_placement_saver import (
+    SpecialPlacementSaver,
 )
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.settings_manager.global_settings.app_context import AppContext
@@ -30,7 +30,7 @@ def main() -> None:
 
     profiler = Profiler()
     json_manager = JsonManager()
-    special_placement_handler = JsonSpecialPlacementHandler()
+    special_placement_handler = SpecialPlacementSaver()
     special_placement_loader = SpecialPlacementLoader()
     AppContext.init(
         settings_manager,

@@ -26,7 +26,7 @@ class GraphEditorViewKeyEventHandler:
                 self.pictograph_view.pictograph, key, shift_held, ctrl_held
             )
         elif key == Qt.Key.Key_X:
-            self.wasd_manager.rotation_angle_override_manager.handle_rotation_angle_override()
+            self.wasd_manager.rotation_angle_override_manager.handle_arrow_rot_angle_override()
             # update arrow placements after rotation
             self.pictograph.managers.updater.update_pictograph()
         elif key == Qt.Key.Key_Z:
@@ -41,7 +41,9 @@ class GraphEditorViewKeyEventHandler:
         else:
             return False
 
-        for pictograph in self.pictograph.main_widget.pictograph_collector.collect_all_pictographs():
+        for (
+            pictograph
+        ) in self.pictograph.main_widget.pictograph_collector.collect_all_pictographs():
             pictograph.managers.arrow_placement_manager.update_arrow_placements()
 
         return True
