@@ -2,6 +2,9 @@
   "Ψ": {
     "(s, 1, 0.5)": {
       "static_from_layer2_rot_angle_override": true
+    },
+    "(1, fl)": {
+      "pro": [-60, 80]
     }
   }
 }

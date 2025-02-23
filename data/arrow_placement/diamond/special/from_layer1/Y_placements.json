@@ -27,6 +27,10 @@
     "(o, 3, 1)": {
       "static_rot_angle_override": true,
       "static": [-100, 0]
+    },
+    "(s, 0.5, 1)": {
+      "static": [100, 10],
+      "pro": [-25, 45]
     }
   }
 }

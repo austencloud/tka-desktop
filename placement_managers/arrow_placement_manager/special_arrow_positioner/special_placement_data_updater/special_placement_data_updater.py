@@ -164,6 +164,7 @@ class SpecialPlacementDataUpdater:
         letter_data = self._get_letter_data(letter, ori_key)
         self._update_or_create_turn_data(letter_data, turns_tuple, arrow, adjustment)
         self._update_placement_json_data(letter, letter_data, ori_key)
+        AppContext().special_placement_loader().reload()
 
     def update_specific_entry_in_json(
         self, letter: Letter, letter_data: dict, ori_key
