@@ -29,7 +29,7 @@ class GenerateTabController:
 
     def on_mode_changed(self, new_mode: str):
         self.current_mode = new_mode
-        self.settings.set_setting("generator_mode", new_mode, "global")
+        self.settings.set_setting("generator_mode", new_mode)
         self._update_ui_visibility()
 
     def handle_generate_sequence(self, overwrite: bool):
