@@ -1,9 +1,11 @@
-from PyQt6.QtWidgets import QWidget, QGridLayout
-from .visibility_button import VisibilityButton
+from PyQt6.QtWidgets import QWidget, QGridLayout, QSizePolicy
+from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
+from main_window.main_widget.settings_dialog.visibility_tab.buttons_widget.visibility_button import VisibilityButton
+
 if TYPE_CHECKING:
-    from ..visibility_tab import VisibilityTab
+    from main_window.main_widget.settings_dialog.visibility_tab.visibility_tab import VisibilityTab
 
 
 class VisibilityButtonsWidget(QWidget):
@@ -17,9 +19,30 @@ class VisibilityButtonsWidget(QWidget):
         self.visibility_tab = visibility_tab
         self.toggler = visibility_tab.toggler
 
+        # 🛠 Ensure this widget EXPANDS inside `VisibilityTab`
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
         self._create_buttons()
         self._setup_layout()
         self.update_button_flags()
+
+    def _setup_layout(self):
+        """Organizes buttons into a 3x2 grid layout."""
+        self.layout = QGridLayout(self)
+        self.layout.setSpacing(10)
+
+        button_list = list(self.glyph_buttons.values()) + [self.non_radial_button]
+
+        # Dynamically place buttons in a 3x2 grid
+        for i, button in enumerate(button_list):
+            row = i // 3  # 3 buttons per row
+            col = i % 3  # Max 2 rows
+            self.layout.addWidget(button, row, col)
+
+            # 🛠 Ensure the buttons expand properly
+            button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
+        self.setLayout(self.layout)
 
     def _create_buttons(self):
         """Creates all buttons for toggling visibility."""
@@ -28,22 +51,6 @@ class VisibilityButtonsWidget(QWidget):
             self.glyph_buttons[name] = button
 
         self.non_radial_button = VisibilityButton(self.grid_name, self)
-
-    def _setup_layout(self):
-        """Organizes the buttons in a grid layout."""
-        grid_layout = QGridLayout(self)
-        grid_layout.setSpacing(10)
-
-        button_list = list(self.glyph_buttons.values()) + [
-            self.non_radial_button
-        ]
-
-        for i, button in enumerate(button_list):
-            row = i // 3  # 3 buttons per row
-            col = i % 3
-            grid_layout.addWidget(button, row, col)
-
-        self.setLayout(grid_layout)
 
     def update_button_flags(self):
         """Synchronize button states with visibility settings."""

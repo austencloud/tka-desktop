@@ -9,16 +9,14 @@ if TYPE_CHECKING:
 
 
 class VisibilityButton(QPushButton):
-    def __init__(
-        self, name: str, visibility_checkbox_widget: "VisibilityButtonsWidget"
-    ):
+    def __init__(self, name: str, visibility_buttons_widget: "VisibilityButtonsWidget"):
         super().__init__(name)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.visibility_checkbox_widget = visibility_checkbox_widget
-        self.toggler = self.visibility_checkbox_widget.toggler
+        self.visibility_buttons_widget = visibility_buttons_widget
+        self.toggler = self.visibility_buttons_widget.toggler
         self.name = name
-        self.view = self.visibility_checkbox_widget.visibility_tab.pictograph_view
-        self.visibility_tab = self.visibility_checkbox_widget.visibility_tab
+        self.view = self.visibility_buttons_widget.visibility_tab.pictograph_view
+        self.visibility_tab = self.visibility_buttons_widget.visibility_tab
 
         # Custom properties
         self.is_hovered = False
@@ -64,13 +62,13 @@ class VisibilityButton(QPushButton):
 
     def update_is_toggled(self, name):
         """Update toggle state based on settings."""
-        if name in self.visibility_checkbox_widget.glyph_names:
-            self.is_toggled = self.visibility_checkbox_widget.visibility_tab.settings.get_glyph_visibility(
+        if name in self.visibility_buttons_widget.glyph_names:
+            self.is_toggled = self.visibility_buttons_widget.visibility_tab.settings.get_glyph_visibility(
                 name
             )
         else:
             self.is_toggled = (
-                self.visibility_checkbox_widget.visibility_tab.settings.get_non_radial_visibility()
+                self.visibility_buttons_widget.visibility_tab.settings.get_non_radial_visibility()
             )
         self.update_colors()
 
@@ -85,7 +83,7 @@ class VisibilityButton(QPushButton):
 
         target_opacity = 1.0 if self.is_toggled else 0.1
 
-        if self.name in self.visibility_checkbox_widget.glyph_names:
+        if self.name in self.visibility_buttons_widget.glyph_names:
             element = self.view.pictograph.managers.get.glyph(self.name)
         else:
             element = self.view.pictograph.managers.get.non_radial_points()
@@ -129,10 +127,10 @@ class VisibilityButton(QPushButton):
         self.is_hovered = False
         self.update()  # Repaint on hover exit
 
-    def resizeEvent(self, event: QEvent):
-        """Adjust font size dynamically on resize."""
-        width = self.visibility_tab.width()
-        font_size = max(10, width // 40)
+    def resizeEvent(self, event):
+        """Adjust font and button size dynamically on resize."""
+        height = self.visibility_buttons_widget.height()
+        font_size = height // 10
         font = QFont()
         font.setPointSize(font_size)
         self.setFont(font)

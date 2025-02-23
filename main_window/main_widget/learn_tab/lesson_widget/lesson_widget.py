@@ -27,7 +27,7 @@ class LessonWidget(QWidget):
     question_generator: QuestionGenerator = None
     question_widget: QuestionWidget = None
     answers_widget: AnswersWidget = None
-    total_questions = 30
+    total_questions = 20
     current_question = 1
     quiz_time = 120
     mode = "fixed_question"
@@ -75,7 +75,7 @@ class LessonWidget(QWidget):
                 f"{self.current_question}/{self.total_questions}"
             )
 
-    def prepare_quiz_ui(self, mode, fade=True):
+    def prepare_quiz_ui(self, mode: str, fade=True):
         """
         Prepares the quiz UI and generates the first question.
         """
@@ -84,6 +84,8 @@ class LessonWidget(QWidget):
         self.update_progress_label()
         self.indicator_label.clear()
         self.mode = mode
+        self.indicator_label.setGraphicsEffect(None)  # Reset effects
+        self.indicator_label.setStyleSheet("opacity: 0.0")  # Ensure it's fully hidden
 
         if mode == "countdown":
             self.timer_manager.start_timer(120)

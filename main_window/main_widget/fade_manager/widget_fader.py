@@ -8,6 +8,7 @@ from PyQt6.QtCore import (
 from Enums.Enums import Glyph
 
 from base_widgets.pictograph.grid.non_radial_points_group import NonRadialPointsGroup
+from main_window.main_widget.base_indicator_label import BaseIndicatorLabel
 from main_window.main_widget.fade_manager.fadeable_opacity_effect import (
     FadableOpacityEffect,
 )
@@ -39,16 +40,25 @@ class WidgetFader:
                 callback()
             return
 
-        for widget in widgets:
+        # Ensure lesson indicator label is NOT included when fading in a new question
+        filtered_widgets = [
+            widget
+            for widget in widgets
+            if not isinstance(widget, BaseIndicatorLabel) or not fade_in
+        ]
+
+        if not filtered_widgets:
+            if callback:
+                callback()
+            return
+
+        for widget in filtered_widgets:
             widget.update()
 
-        # import traceback
-        # traceback.print_stack()
-
-        self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
+        self.manager.graphics_effect_remover.clear_graphics_effects(filtered_widgets)
 
         if not self.manager.fades_enabled():
-            for widget in widgets:
+            for widget in filtered_widgets:
                 effect = self._ensure_opacity_effect(widget)
                 effect.setOpacity(1.0 if fade_in else 0.0)
                 widget.setGraphicsEffect(effect)
@@ -56,15 +66,15 @@ class WidgetFader:
                 callback()
             return
 
-        key = self._get_animation_cache_key(widgets, fade_in, duration)
-        anim_group = self._animation_cache.get(key)
+        key = self._get_animation_cache_key(filtered_widgets, fade_in, duration)
+        anim_group : QParallelAnimationGroup = self._animation_cache.get(key)
         if anim_group and anim_group.state() == QParallelAnimationGroup.State.Running:
             if callback:
                 anim_group.finished.connect(callback)
             return
 
-        anim_group: QParallelAnimationGroup = QParallelAnimationGroup(self.manager)
-        for widget in widgets:
+        anim_group = QParallelAnimationGroup(self.manager)
+        for widget in filtered_widgets:
             effect = self._ensure_opacity_effect(widget)
             animation = QPropertyAnimation(effect, b"opacity")
             animation.setDuration(duration)
@@ -79,6 +89,7 @@ class WidgetFader:
         self._animation_cache[key] = anim_group
         anim_group.finished.connect(lambda: self._animation_cache.pop(key, None))
         anim_group.start()
+
 
     def _ensure_opacity_effect(self, widget: QWidget) -> QGraphicsOpacityEffect:
         effect = widget.graphicsEffect()

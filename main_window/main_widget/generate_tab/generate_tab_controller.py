@@ -88,11 +88,11 @@ class GenerateTabController:
         self.tab.auto_complete_button.setEnabled(int(current_sequence_length) > 1)
 
     def _load_circular_settings(self):
-        rotation_type = self.settings.get_setting("rotation_type", "circular")
+        rotation_type = self.settings.get_setting("rotation_type")
         if rotation_type:
             self.tab.slice_size_toggle.set_state(rotation_type == "quartered")
 
-        permutation_type = self.settings.get_setting("permutation_type", "circular")
+        permutation_type = self.settings.get_setting("permutation_type")
         if permutation_type:
             self.tab.permutation_type_toggle.set_state(permutation_type == "rotated")
 

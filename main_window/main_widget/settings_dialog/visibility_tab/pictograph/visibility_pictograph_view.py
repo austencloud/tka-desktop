@@ -23,7 +23,7 @@ class VisibilityPictographView(PictographView):
         self.setStyleSheet("border: 2px solid black;")
 
     def resizeEvent(self, event: QEvent):
-        available_width = self.tab.dialog.width() - self.tab.buttons_widget.width()
-        size = int(available_width * 0.7)
+        available_height = self.tab.dialog.height()
+        size = int(available_height * 0.75)
         self.setFixedSize(size, size)
         super().resizeEvent(event)

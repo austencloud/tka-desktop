@@ -2,8 +2,12 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFrame
 
-from main_window.main_widget.learn_tab.lesson_widget.lesson_results_label import LessonResultLabel
-from main_window.main_widget.learn_tab.lesson_widget.lesson_start_over_button import LessonStartOverButton
+from main_window.main_widget.learn_tab.lesson_widget.lesson_results_label import (
+    LessonResultLabel,
+)
+from main_window.main_widget.learn_tab.lesson_widget.lesson_start_over_button import (
+    LessonStartOverButton,
+)
 
 
 if TYPE_CHECKING:
@@ -114,7 +118,7 @@ class LessonResultsWidget(QWidget):
 
     def _fade_to_results(self, lesson_widget: "LessonWidget"):
         lesson_widget.learn_tab.stack.setCurrentWidget(self)
-        lesson_widget.prepare_quiz_ui()
+        lesson_widget.prepare_quiz_ui(lesson_widget.mode)
         stack_fader = self.main_widget.fade_manager.stack_fader
 
         self.start_over_button.clicked.connect(

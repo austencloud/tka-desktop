@@ -15,10 +15,16 @@ class UserProfileUIManager:
         self.tab = user_profile_tab
 
     def update_user_button_styles(self):
-        """Updates the styles of all user buttons to show the selected user."""
+        """Smoothly updates styles when switching users."""
         current_user = self.tab.user_manager.get_current_user()
         for user_name, user_button in self.tab.tab_controller.user_buttons.items():
-            user_button.set_button_style(user_name == current_user)
+            user_button.set_button_style(user_name == current_user, animate=True)
+
+    def handle_resize_event(self):
+        """Handles resizing of the user buttons dynamically."""
+        self.tab.header.setFont(self.tab.ui_manager.get_title_font())
+        for user_button in self.tab.tab_controller.user_buttons.values():
+            user_button.button.setFont(user_button._get_scaled_font())
 
     def confirm_deletion(self, user_name):
         """Asks for user confirmation before deletion."""
@@ -42,8 +48,3 @@ class UserProfileUIManager:
         font.setBold(True)
         return font
 
-    def handle_resize_event(self):
-        """Handles resizing of the user buttons."""
-        self.tab.header.setFont(self.tab.ui_manager.get_title_font())
-        for user_button in self.tab.tab_controller.user_buttons.values():
-            user_button.button.setFont(user_button._get_scaled_font())

@@ -13,6 +13,7 @@ from main_window.main_widget.learn_tab.lesson_widget.lesson_pictograph_view impo
 from main_window.main_widget.codex.codex_pictograph_view import (
     CodexPictographView,
 )
+
 from objects.arrow.arrow import Arrow
 from .grid.grid import Grid
 from objects.motion.motion import Motion
@@ -26,6 +27,9 @@ from .pictograph_view import PictographView
 
 
 if TYPE_CHECKING:
+    from main_window.main_widget.settings_dialog.visibility_tab.pictograph.visibility_pictograph_view import (
+        VisibilityPictographView,
+    )
     from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view import (
         GE_PictographView,
     )
@@ -47,6 +51,7 @@ class PictographElements:
         CodexPictographView,
         "GE_PictographView",
         "OptionView",
+        "VisibilityPictographView",
     ] = None
 
     arrows: dict[str, Arrow] = None

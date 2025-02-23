@@ -38,6 +38,8 @@ class LayoutControlsWidget(QWidget):
         layout.addWidget(self.update_layout_button)
 
     def resizeEvent(self, event):
+        super().resizeEvent(event)
+        font_size = max(12, self.width() // 50)
         font = self.font()
-        font.setPointSize(max(10, self.layout_tab.width() // 50))
+        font.setPointSize(font_size)
         self.setFont(font)
