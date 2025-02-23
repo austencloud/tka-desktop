@@ -8,6 +8,7 @@ from main_window.main_widget.special_placement_loader import SpecialPlacementLoa
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
@@ -39,24 +40,15 @@ class RotationAngleOverrideManager:
         ori_key = self.special_positioner.data_updater._generate_ori_key(
             self.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow.motion
         )
-        data = SpecialPlacementLoader().load_special_placements()
+        data = AppContext.special_placement_loader().load_special_placements()
         letter = self.pictograph.state.letter
-
         self._apply_override_if_needed(letter, data, ori_key)
-        self.pictograph.managers.arrow_placement_manager.update_arrow_placements()
-        visible_pictographs = self.get_visible_pictographs()
-        for pictograph in visible_pictographs:
+        AppContext.special_placement_loader().reload()
+        for (
+            pictograph
+        ) in self.pictograph.main_widget.pictograph_collector.collect_all_pictographs():
             pictograph.managers.updater.update_pictograph()
             pictograph.managers.arrow_placement_manager.update_arrow_placements()
-
-    def get_visible_pictographs(self) -> list["Pictograph"]:
-        visible_pictographs = []
-        for pictograph_list in self.pictograph.main_widget.pictograph_cache.values():
-            for pictograph in pictograph_list.values():
-                if pictograph.elements.view:
-                    if pictograph.elements.view.isVisible():
-                        visible_pictographs.append(pictograph)
-        return visible_pictographs
 
     def _is_valid_for_override(self) -> bool:
         return (
