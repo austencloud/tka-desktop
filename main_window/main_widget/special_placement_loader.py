@@ -1,6 +1,7 @@
 import json
+import logging
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
@@ -20,7 +21,17 @@ class SpecialPlacementLoader:
 
     def __init__(self) -> None:
         self.special_placements: dict[str, dict[str, dict]] = {}
-
+        
+    def load_json_data(self, file_path) -> dict[str, dict[dict[str, Any]]]:
+        try:
+            if os.path.exists(file_path):
+                with open(file_path, "r", encoding="utf-8") as file:
+                    return json.load(file)
+            return {}
+        except Exception as e:
+            logging.error(f"Error loading JSON data from {file_path}: {e}")
+            return {}
+        
     def load_or_return_special_placements(self) -> dict[str, dict[str, dict]]:
         if self.special_placements:
             return self.special_placements

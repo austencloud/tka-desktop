@@ -51,10 +51,7 @@ class JsonOriCalculator:
             end_ori = self.calculate_turn_orientation(
                 motion_type, turns, start_ori, prop_rot_dir, start_loc, end_loc
             )
-        if end_ori is None:
-            raise ValueError(
-                f"Could not determine end orientation for {color} motion. Check orientation and rotation direction."
-            )
+
         return end_ori
 
     def calculate_turn_orientation(

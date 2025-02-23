@@ -5,12 +5,11 @@ from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:
-    from placement_managers.arrow_placement_manager.special_arrow_positioner.special_placement_data_updater.special_placement_data_updater import (
+    from base_widgets.pictograph.wasd_adjustment_manager.special_placement_data_updater.special_placement_data_updater import (
         SpecialPlacementDataUpdater,
     )
-    from .mirrored_entry_manager import (
-        MirroredEntryManager,
-    )
+
+    from .mirrored_entry_manager import MirroredEntryManager
 
     from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
         TurnsTupleGenerator,
@@ -62,9 +61,11 @@ class MirroredEntryCreator:
         self, ori_key, letter: Letter, arrow: Arrow
     ) -> tuple[dict, dict]:
         letter_data = (
-            AppContext.special_placement_loader().load_or_return_special_placements()[
-                arrow.pictograph.state.grid_mode
-            ][ori_key][letter.value]
+            AppContext.special_placement_loader()
+            .load_or_return_special_placements()
+            .get(arrow.pictograph.state.grid_mode, {})
+            .get(ori_key, {})
+            .get(letter.value, {})
         )
 
         letter_data: dict = letter_data

@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 class WASD_AdjustmentManager:
     def __init__(self, pictograph: "GE_Pictograph") -> None:
         self.pictograph = pictograph
+        self.view = pictograph.view
         self.entry_remover = (
             self.pictograph.managers.arrow_placement_manager.special_positioner.data_updater.entry_remover
         )

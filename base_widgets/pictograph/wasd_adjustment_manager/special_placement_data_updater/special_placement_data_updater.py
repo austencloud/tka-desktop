@@ -30,7 +30,9 @@ from objects.motion.motion import Motion
 from Enums.Enums import Letter
 
 if TYPE_CHECKING:
-    from ..special_arrow_positioner import SpecialArrowPositioner
+    from placement_managers.arrow_placement_manager.special_arrow_positioner.special_arrow_positioner import (
+        SpecialArrowPositioner,
+    )
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -61,7 +63,9 @@ class SpecialPlacementDataUpdater:
     def _get_letter_data(self, letter: Letter, ori_key: str) -> dict:
         letter_data = (
             AppContext.special_placement_loader()
-            .load_or_return_special_placements()[self.state.grid_mode][ori_key]
+            .load_special_placements_fresh()
+            .get(self.state.grid_mode, {})
+            .get(ori_key, {})
             .get(letter.value, {})
         )
 

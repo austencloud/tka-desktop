@@ -10,15 +10,7 @@ if TYPE_CHECKING:
 
 class SpecialPlacementSaver:
 
-    def load_json_data(self, file_path) -> dict[str, dict[dict[str, Any]]]:
-        try:
-            if os.path.exists(file_path):
-                with open(file_path, "r", encoding="utf-8") as file:
-                    return json.load(file)
-            return {}
-        except Exception as e:
-            logging.error(f"Error loading JSON data from {file_path}: {e}")
-            return {}
+
 
     def save_json_data(self, data, file_path) -> None:
         """Write JSON data to a file with specific formatting."""
