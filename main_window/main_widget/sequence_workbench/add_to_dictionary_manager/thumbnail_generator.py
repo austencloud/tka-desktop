@@ -1,6 +1,5 @@
 import os
 import json
-from typing import TYPE_CHECKING
 from PyQt6.QtGui import QImage
 from PIL import Image, PngImagePlugin, ImageEnhance
 import numpy as np

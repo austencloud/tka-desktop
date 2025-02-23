@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 from Enums.PropTypes import PropType
 from data.constants import BLUE, RED
-from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.prop.prop import Prop
 
 if TYPE_CHECKING:

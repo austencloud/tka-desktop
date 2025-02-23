@@ -2,12 +2,9 @@ from typing import TYPE_CHECKING
 from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtCore import Qt
 
-from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import GE_Pictograph
-from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view import GE_PictographView
-    from base_widgets.pictograph.pictograph_view import PictographView
 
 
 class GraphEditorViewKeyEventHandler:

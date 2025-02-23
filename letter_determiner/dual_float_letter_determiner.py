@@ -4,7 +4,6 @@ from data.constants import COUNTER_CLOCKWISE, CLOCKWISE
 
 if TYPE_CHECKING:
     from .letter_determiner import LetterDeterminer
-    from main_window.main_widget.main_widget import MainWidget
     from objects.motion.motion import Motion
 
 

@@ -10,9 +10,6 @@ from .sequence_properties_manager.sequence_properties_manager import (
 from .sequence_level_evaluator import SequenceLevelEvaluator
 from .thumbnail_finder import ThumbnailFinder
 from .metadata_extractor import MetaDataExtractor
-from .turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
-from .pictograph_key_generator import PictographKeyGenerator
-from .special_placement_loader import SpecialPlacementLoader
 
 if TYPE_CHECKING:
     from .main_widget import MainWidget

@@ -3,9 +3,8 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QCursor
 
-from main_window.main_widget.settings_dialog.styles.dark_theme_styler import (
-    DarkThemeStyler,
-)
+from styles.dark_theme_styler import DarkThemeStyler
+
 
 if TYPE_CHECKING:
     pass

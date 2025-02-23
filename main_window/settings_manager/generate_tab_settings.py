@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import QSettings
 
 if TYPE_CHECKING:
-    from settings_manager.settings_manager import SettingsManager
+    pass
 
 
 # In GenerateTabSettings class

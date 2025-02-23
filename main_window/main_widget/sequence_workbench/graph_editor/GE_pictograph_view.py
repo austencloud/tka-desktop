@@ -10,9 +10,6 @@ from base_widgets.pictograph.pictograph_context_menu_handler import (
 from base_widgets.pictograph.pictograph_view import (
     PictographView,
 )
-from base_widgets.pictograph.pictograph_view_key_event_handler import (
-    PictographViewKeyEventHandler,
-)
 from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_view_key_event_handler import GraphEditorViewKeyEventHandler
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from .GE_pictograph_view_mouse_event_handler import GE_PictographViewMouseEventHandler

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
-from Enums.letters import Letter, LetterConditions, LetterType
-from data.constants import ANTI, COUNTER_CLOCKWISE, DASH, FLOAT, PRO, CLOCKWISE, STATIC
+from Enums.letters import Letter, LetterType
+from data.constants import ANTI, DASH, FLOAT, PRO, STATIC
 from .dual_float_letter_determiner import DualFloatLetterDeterminer
 from .non_hybrid_letter_determiner import NonHybridShiftLetterDeterminer
 from objects.motion.motion_ori_calculator import MotionOriCalculator
@@ -173,7 +173,8 @@ class LetterDeterminer:
             self.is_shift_motion_type_matching(shift, example)
             and example[f"{shift.state.color}_attributes"]["start_loc"]
             == shift.state.start_loc
-            and example[f"{shift.state.color}_attributes"]["end_loc"] == shift.end_loc
+            and example[f"{shift.state.color}_attributes"]["end_loc"]
+            == shift.state.end_loc
             and self._is_shift_prop_rot_dir_matching(shift, example)
             and example[f"{non_shift.state.color}_attributes"]["motion_type"]
             == non_shift.state.motion_type

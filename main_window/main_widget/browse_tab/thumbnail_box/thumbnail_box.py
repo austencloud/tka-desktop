@@ -10,7 +10,6 @@ from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_nav_btns imp
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label import (
     ThumbnailImageLabel,
 )
-from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 from .word_label import WordLabel
 from .variation_number_label import VariationNumberLabel

@@ -1,6 +1,6 @@
 # button_answers_renderer.py
 from typing import TYPE_CHECKING, Any, List, Callable
-from PyQt6.QtWidgets import QHBoxLayout, QWidget
+from PyQt6.QtWidgets import QHBoxLayout
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:

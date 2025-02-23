@@ -6,7 +6,6 @@ from PyQt6.QtCore import Qt, pyqtSignal
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 
-    pass
 
 
 class SettingsDialogSidebar(QListWidget):

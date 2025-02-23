@@ -3,9 +3,7 @@ from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QIcon, QCursor
 from PyQt6.QtCore import Qt, QSize
 from Enums.PropTypes import PropType
-from main_window.main_widget.settings_dialog.styles.dark_theme_styler import (
-    DarkThemeStyler,
-)
+from styles.dark_theme_styler import DarkThemeStyler
 
 if TYPE_CHECKING:
     from .prop_type_tab import PropTypeTab

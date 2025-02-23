@@ -8,7 +8,7 @@ from main_window.main_widget.thumbnail_finder import ThumbnailFinder
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    pass
 
 
 class MetaDataExtractor:        

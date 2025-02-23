@@ -16,11 +16,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QResizeEvent
 
-from main_window.main_widget.settings_dialog.styles.base_dialog_styler import BaseDialogStyler
-from main_window.main_widget.settings_dialog.styles.settings_dialog_styler import (
-    SettingsDialogStyler,
-)
-
+from styles.base_dialog_styler import BaseDialogStyler
 from .export_dialog_control_panel import ExportDialogControlPanel
 from .export_dialog_preview_panel import ExportDialogPreviewPanel
 from sequence_sharer_dialog.sequence_sharer_dialog import SequenceSharerDialog

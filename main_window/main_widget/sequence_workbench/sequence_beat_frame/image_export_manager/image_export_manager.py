@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 from main_window.settings_manager.global_settings.app_context import AppContext
-from PyQt6.QtWidgets import QFileDialog
 from .image_export_layout_handler import ImageExportLayoutHandler
 from .image_creator.image_creator import ImageCreator
 from .image_export_beat_factory import ImageExportBeatFactory

@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QStackedWidget, QWidget, QSizePolicy
 from data.constants import BLUE, RED, IN
-from main_window.main_widget.sequence_workbench.sequence_beat_frame import beat
 from .ori_picker_box.ori_picker_box import OriPickerBox
 from .turns_box.turns_box import TurnsBox
 

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Union
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
-from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from main_window.main_widget.tab_indices import LeftStackIndex
 
 if TYPE_CHECKING:

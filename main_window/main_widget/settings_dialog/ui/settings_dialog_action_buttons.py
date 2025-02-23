@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QSpacerItem, QSizePolicy, QWidget, QPushButton
-from ..hover_button import HoverButton
 
 if TYPE_CHECKING:
     from ..settings_dialog import SettingsDialog

@@ -2,7 +2,8 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QDialog, QHBoxLayout
 from PyQt6.QtCore import QEvent
 
-from .styles.settings_dialog_styler import SettingsDialogStyler
+from styles.settings_dialog_styler import SettingsDialogStyler
+
 from .ui.settings_dialog_ui import SettingsDialogUI
 from main_window.settings_manager.global_settings.app_context import AppContext
 
@@ -56,6 +57,14 @@ class SettingsDialog(QDialog):
 
         elif last_tab == "Visibility":
             self.ui.visibility_tab.buttons_widget.update_visibility_buttons_from_settings()
+
+        elif last_tab == "Beat Layout":
+            self.ui.beat_layout_tab.on_sequence_length_changed(
+                self.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+            )
+            self.ui.beat_layout_tab.controls.length_selector.num_beats_spinbox.setValue(
+                self.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+            )
 
     def update_size(self, force: bool = False):
         """Updates the size of the settings dialog, only resizing if necessary."""

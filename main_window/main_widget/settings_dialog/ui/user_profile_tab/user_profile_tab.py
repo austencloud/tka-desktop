@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
+from main_window.main_widget.settings_dialog.card_frame import CardFrame
+
 from .user_profile_tab_controller import UserProfileTabController
 from .user_profile_ui_factory import UserProfileUIFactory
 from .user_profile_ui_manager import UserProfileUIManager
@@ -23,7 +25,6 @@ class UserProfileTab(QWidget):
         self._setup_ui()
 
     def _setup_ui(self):
-        from main_window.main_widget.settings_dialog.styles.card_frame import CardFrame
 
         card = CardFrame(self)
         layout = QVBoxLayout(card)
@@ -47,4 +48,3 @@ class UserProfileTab(QWidget):
 
     def resizeEvent(self, event):
         self.ui_manager.handle_resize_event()
-

@@ -1,11 +1,8 @@
 from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtGui import QCursor, QFont, QColor
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QCursor, QFont
+from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
-from main_window.main_widget.settings_dialog.styles.dark_theme_styler import (
-    DarkThemeStyler,
-)
-
+from styles.dark_theme_styler import DarkThemeStyler
 if TYPE_CHECKING:
     from .visibility_buttons_widget import VisibilityButtonsWidget
 

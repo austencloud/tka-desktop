@@ -4,6 +4,9 @@ from PyQt6.QtWidgets import (
 )
 
 
+from main_window.main_widget.settings_dialog.ui.beat_layout_tab.beat_layout_tab import (
+    BeatLayoutTab,
+)
 from main_window.main_widget.settings_dialog.ui.prop_type_tab.prop_type_tab import (
     PropTypeTab,
 )
@@ -53,6 +56,13 @@ class SettingsDialogTabManager:
             selected_tab.ui_manager.update_active_user_from_settings()
         elif isinstance(selected_tab, VisibilityTab):
             selected_tab.buttons_widget.update_visibility_buttons_from_settings()
+        elif isinstance(selected_tab, BeatLayoutTab):
+            selected_tab.controls.layout_selector._update_valid_layouts(
+                self.dialog.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+            )
+            selected_tab.controls.length_selector.num_beats_spinbox.setValue(
+                self.dialog.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+            )
         self.dialog.ui.content_area.setCurrentIndex(index)
 
     def get_tab_index(self, tab_name: str) -> int:

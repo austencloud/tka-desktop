@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QApplicat
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 from Enums.PropTypes import PropType
-from ...styles.card_frame import CardFrame
+from main_window.main_widget.settings_dialog.card_frame import CardFrame
 from ...ui.prop_type_tab.prop_button import (
     PropButton,
 )

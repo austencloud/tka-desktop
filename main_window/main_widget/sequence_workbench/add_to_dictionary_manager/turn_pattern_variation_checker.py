@@ -1,6 +1,5 @@
 import json
 import os
-from typing import TYPE_CHECKING
 from PIL import Image
 
 from utilities.path_helpers import get_images_and_data_path

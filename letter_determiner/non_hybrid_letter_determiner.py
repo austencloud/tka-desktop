@@ -3,7 +3,6 @@ from Enums.letters import Letter
 from data.constants import ANTI, COUNTER_CLOCKWISE, CLOCKWISE, FLOAT, OPP, PRO
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
     from objects.motion.motion import Motion
     from .letter_determiner import LetterDeterminer
 

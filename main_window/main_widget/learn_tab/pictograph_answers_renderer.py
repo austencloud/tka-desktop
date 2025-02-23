@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Any, List, Callable
-from PyQt6.QtWidgets import QGridLayout, QWidget
+from PyQt6.QtWidgets import QGridLayout
 from PyQt6.QtCore import Qt
 from base_widgets.pictograph.pictograph import Pictograph
 

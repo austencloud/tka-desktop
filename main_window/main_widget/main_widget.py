@@ -3,7 +3,6 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget
 from typing import TYPE_CHECKING
 from Enums.PropTypes import PropType
 
-from svg_manager.svg_manager import SvgManager
 from main_window.main_widget.generate_tab.generate_tab import GenerateTab
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
@@ -38,10 +37,6 @@ if TYPE_CHECKING:
     from .main_background_widget.backgrounds.base_background import (
         BaseBackground,
     )
-    from .turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
-    from .pictograph_key_generator import PictographKeyGenerator
-    from .special_placement_loader import SpecialPlacementLoader
-    from .metadata_extractor import MetaDataExtractor
     from .sequence_level_evaluator import SequenceLevelEvaluator
     from .sequence_properties_manager.sequence_properties_manager import (
         SequencePropertiesManager,
