@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal
 
 from main_window.main_widget.settings_dialog.beat_layout_tab.layout_controls.layout_selector.layout_selector import (
@@ -52,10 +52,22 @@ class LayoutControls(QWidget):
         self.default_layout_label.update_text(layout_text)
 
     def _setup_layout(self):
-        layout = QVBoxLayout(self)
-        layout.setSpacing(15)
-        layout.setContentsMargins(10, 10, 10, 10)
-        layout.addWidget(self.length_selector)
-        layout.addWidget(self.default_layout_label)
-        layout.addWidget(self.layout_selector)
-        layout.addWidget(self.update_layout_button)
+        layout = QHBoxLayout(self)
+
+        # Length controls group
+        length_group = QGroupBox("Sequence Length")
+        length_layout = QVBoxLayout()
+        length_layout.addWidget(self.length_selector.sequence_length_label)
+        length_layout.addWidget(self.length_selector)
+        length_layout.addWidget(self.default_layout_label)
+        length_group.setLayout(length_layout)
+
+        # Layout controls group
+        layout_group = QGroupBox("Grid Configuration")
+        layout_config = QVBoxLayout()
+        layout_config.addWidget(self.layout_selector)
+        layout_config.addWidget(self.update_layout_button)
+        layout_group.setLayout(layout_config)
+
+        layout.addWidget(length_group, 2)
+        layout.addWidget(layout_group, 3)

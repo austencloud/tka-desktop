@@ -22,7 +22,7 @@ class LayoutSelector(QFrame):
         num_beats = self.controls_widget.layout_tab.num_beats
         self._update_valid_layouts(num_beats)
 
-        self.layout_dropdown_label = SelectLayoutLabel(self)
+        self.select_layout_label = SelectLayoutLabel(self)
         self.layout_dropdown = LayoutDropdown(self)
         self._setup_layout()
         self._connect_signals()
@@ -48,14 +48,33 @@ class LayoutSelector(QFrame):
     def _setup_layout(self):
         self.layout: QHBoxLayout = QHBoxLayout(self)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout.addWidget(self.layout_dropdown_label)
+        self.layout.addWidget(self.select_layout_label)
         self.layout.addWidget(self.layout_dropdown)
 
     def _connect_signals(self):
         self.layout_dropdown.current_layout_changed.connect(self.layout_selected.emit)
 
     def resizeEvent(self, event):
-        self.layout.setSpacing(self.controls_widget.layout_tab.width() // 50)
+        self.layout.setSpacing(self.controls_widget.width() // 20)
+        base_size = int(self.controls_widget.width() // 30)
+        padding = int(base_size / 5)
+        self.select_layout_label.setStyleSheet(
+            f"""
+            QLabel {{
+                padding: {padding}px;
+                font-size: {base_size}px;
+            }}
+            """
+        )
+        self.layout_dropdown.setStyleSheet(
+            f"""
+            QComboBox {{
+                padding: {padding}px;
+                min-width: {base_size * 3}px;
+                font-size: {base_size}px;
+            }}
+            """
+        )
 
     def current_layout(self):
         return self.layout_dropdown.currentText()

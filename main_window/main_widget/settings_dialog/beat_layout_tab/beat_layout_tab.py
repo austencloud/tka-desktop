@@ -23,7 +23,6 @@ class BeatLayoutTab(QWidget):
 
         self.beat_frame = LayoutBeatFrame(self)
         self.controls = LayoutControls(self)
-
         self._connect_signals()
         self._setup_layout()
         default_layout = self.layout_settings.get_layout_setting(str(self.num_beats))
@@ -38,7 +37,8 @@ class BeatLayoutTab(QWidget):
 
     def _setup_layout(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
         layout.addWidget(self.controls)
         layout.addWidget(self.beat_frame, stretch=1)
         self.setLayout(layout)
@@ -49,7 +49,7 @@ class BeatLayoutTab(QWidget):
             self.beat_frame.current_layout = (rows, cols)
             self.beat_frame.update_preview()
 
-        self.controls.default_layout_label.update_text(layout_text)
+        # self.controls.default_layout_label.update_text(layout_text)
 
     def on_sequence_length_changed(self, new_length: int):
         self.controls = self.controls
