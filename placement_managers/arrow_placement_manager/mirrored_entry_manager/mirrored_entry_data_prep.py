@@ -1,7 +1,8 @@
 from Enums.letters import Letter
-from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
-from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING
+
+from main_window.settings_manager.global_settings.app_context import AppContext
+from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:
     from .mirrored_entry_manager import MirroredEntryManager
@@ -13,12 +14,13 @@ class MirroredEntryDataPrep:
 
     def is_new_entry_needed(self, arrow: Arrow) -> bool:
         """Determines if a new mirrored entry is needed for the given arrow."""
+        AppContext.special_placement_loader().reload()
         ori_key = self._get_ori_key(arrow.motion)
         return (
             arrow.pictograph.state.letter
-            not in SpecialPlacementLoader().load_special_placements().get(
-                ori_key, {}
-            )
+            not in AppContext.special_placement_loader()
+            .load_special_placements()
+            .get(ori_key, {})
         )
 
     def _get_ori_key(self, motion):
@@ -37,10 +39,11 @@ class MirroredEntryDataPrep:
 
     def _get_letter_data(self, ori_key: str, letter: Letter) -> dict:
         """Fetches letter data for a given orientation key and letter."""
-        return SpecialPlacementLoader().load_special_placements().get(
-            ori_key, {}
-        ).get(
-            letter.value, {}
+        return (
+            AppContext.special_placement_loader()
+            .load_special_placements()
+            .get(ori_key, {})
+            .get(letter.value, {})
         )
 
     def _fetch_letter_data_and_original_turn_data(

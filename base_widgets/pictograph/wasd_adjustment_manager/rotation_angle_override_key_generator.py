@@ -1,28 +1,25 @@
 from typing import TYPE_CHECKING
 from data.constants import CLOCK, COUNTER, IN, OUT
-from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:
+    from objects.arrow.arrow import Arrow
     from .rotation_angle_override_manager import RotationAngleOverrideManager
 
 
 class RotationAngleOverrideKeyGenerator:
-    def __init__(self, manager: "RotationAngleOverrideManager"):
-        self.manager = manager
-
-    def get_start_ori_layer(self, arrow: Arrow) -> str:
+    def get_start_ori_layer(self, arrow: "Arrow") -> str:
         if arrow.motion.state.start_ori in [IN, OUT]:
             return "layer1"
         elif arrow.motion.state.start_ori in [CLOCK, COUNTER]:
             return "layer2"
 
-    def get_end_ori_layer(self, arrow: Arrow) -> str:
+    def get_end_ori_layer(self, arrow: "Arrow") -> str:
         if arrow.motion.state.end_ori in [IN, OUT]:
             return "layer1"
         elif arrow.motion.state.end_ori in [CLOCK, COUNTER]:
             return "layer2"
 
-    def generate_rotation_angle_override_key(self, arrow: Arrow) -> str:
+    def generate_rotation_angle_override_key(self, arrow: "Arrow") -> str:
         motion_type = arrow.motion.state.motion_type
         if arrow.pictograph.state.letter.value in ["α", "β", "Γ", "Φ-", "Ψ-", "Λ-"]:
             return f"{arrow.motion.state.color}_rot_angle_override"

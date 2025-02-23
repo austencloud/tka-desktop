@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
+from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:
@@ -61,7 +62,7 @@ class MirroredEntryCreator:
         self, ori_key, letter: Letter, arrow: Arrow
     ) -> tuple[dict, dict]:
         letter_data: dict = (
-            SpecialPlacementLoader()
+            AppContext.special_placement_loader()
             .load_special_placements()
             .get(ori_key, {})
             .get(letter.value, {})
@@ -76,7 +77,7 @@ class MirroredEntryCreator:
     ) -> tuple[str, dict]:
         other_ori_key = self.data_updater.get_other_layer3_ori_key(ori_key)
         other_letter_data = (
-            SpecialPlacementLoader()
+            AppContext.special_placement_loader()
             .load_special_placements()
             .get(other_ori_key, {})
             .get(letter.value, {})

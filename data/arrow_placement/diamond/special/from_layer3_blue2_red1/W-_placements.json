@@ -2,6 +2,9 @@
   "W-": {
     "null": {
       "float_from_layer2": {}
+    },
+    "(o, 0, 1)": {
+      "pro_from_layer2": [30, -25]
     }
   }
 }

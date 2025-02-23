@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 class SpecialPlacementLoader:
     """Loads special placements for the arrow placement manager."""
+
     SUBFOLDERS = [
         "from_layer1",
         "from_layer2",
@@ -27,6 +28,10 @@ class SpecialPlacementLoader:
         for mode in self.SUPPORTED_MODES:
             self.special_placements[mode] = self._load_mode_subfolders(mode)
         return self.special_placements
+
+    def reload(self) -> None:
+        """Manually clear the cache so that special placements are reloaded on next call."""
+        self.special_placements = {}
 
     def _load_mode_subfolders(self, mode: str) -> dict[str, dict]:
         mode_data: dict[str, dict] = {}

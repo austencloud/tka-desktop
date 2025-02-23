@@ -5,10 +5,7 @@ from data.constants import BLUE, RED
 from main_window.main_widget.json_manager.json_special_placement_handler import (
     JsonSpecialPlacementHandler,
 )
-from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
-from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
-    TurnsTupleGenerator,
-)
+
 from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 
@@ -35,7 +32,7 @@ class SpecialPlacementEntryRemover:
         if os.path.exists(file_path):
             data = self.load_data(file_path)
             self._process_removal(letter, arrow, ori_key, file_path, data)
-            SpecialPlacementLoader().load_special_placements()
+            AppContext.special_placement_loader().load_special_placements()
         arrow.pictograph.managers.updater.placement_updater.update()
 
     def _process_removal(
@@ -66,7 +63,7 @@ class SpecialPlacementEntryRemover:
     ):
         if (
             arrow.motion.state.turns
-            == arrow.pictograph.managers.get.other_arrow(arrow).turns
+            == arrow.pictograph.managers.get.other_arrow(arrow).motion.state.turns
             or arrow.motion.state.motion_type
             != arrow.pictograph.managers.get.other_arrow(arrow).motion.state.motion_type
             or letter in ["S", "T"]

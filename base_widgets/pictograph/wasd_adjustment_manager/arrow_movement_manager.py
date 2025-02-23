@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
+from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
@@ -23,9 +24,10 @@ class ArrowMovementManager:
         )
 
     def handle_arrow_movement(
-        self, pictograph: "GE_Pictograph", key, shift_held, ctrl_held
+        self, GE_pictograph: "GE_Pictograph", key, shift_held, ctrl_held
     ) -> None:
-        self.graph_editor = pictograph.main_widget.sequence_workbench.graph_editor
+        self.pictograph = GE_pictograph
+        self.graph_editor = GE_pictograph.main_widget.sequence_workbench.graph_editor
         selected_arrow = self.graph_editor.selection_manager.selected_arrow
 
         if not selected_arrow:
@@ -43,20 +45,9 @@ class ArrowMovementManager:
         self.data_updater.mirrored_entry_manager.update_mirrored_entry_in_json(
             selected_arrow
         )
-        pictograph.managers.arrow_placement_manager.update_arrow_placements()
+        GE_pictograph.managers.arrow_placement_manager.update_arrow_placements()
         QApplication.processEvents()
-        visible_pictographs = self.get_visible_pictographs()
-        for pictograph in visible_pictographs:
-            pictograph.managers.arrow_placement_manager.update_arrow_placements()
 
-    def get_visible_pictographs(self) -> list["GE_Pictograph"]:
-        visible_pictographs = []
-        for pictograph_list in self.pictograph.main_widget.pictograph_cache.values():
-            for pictograph in pictograph_list.values():
-                if pictograph.elements.view:
-                    if pictograph.elements.view.isVisible():
-                        visible_pictographs.append(pictograph)
-        return visible_pictographs
 
     def get_adjustment(self, key, increment) -> tuple[int, int]:
         direction_map = {

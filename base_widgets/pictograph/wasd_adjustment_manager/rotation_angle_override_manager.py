@@ -30,7 +30,7 @@ class RotationAngleOverrideManager:
         self.special_positioner = (
             self.pictograph.managers.arrow_placement_manager.special_positioner
         )
-        self.key_generator = RotationAngleOverrideKeyGenerator(self)
+        self.key_generator = RotationAngleOverrideKeyGenerator()
 
     def handle_rotation_angle_override(self) -> None:
         if not self._is_valid_for_override():

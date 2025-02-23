@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from base_widgets.pictograph.wasd_adjustment_manager.rotation_angle_override_key_generator import (
+    RotationAngleOverrideKeyGenerator,
+)
 from data.constants import *
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
@@ -16,9 +19,7 @@ if TYPE_CHECKING:
 class BaseRotAngleCalculator(ABC):
     def __init__(self, arrow: "Arrow"):
         self.arrow = arrow
-        self.rot_angle_key_generator = (
-            self.arrow.pictograph.managers.wasd_manager.rotation_angle_override_manager.key_generator
-        )
+        self.rot_angle_key_generator = RotationAngleOverrideKeyGenerator()
         self.data_updater = (
             self.arrow.pictograph.managers.arrow_placement_manager.special_positioner.data_updater
         )

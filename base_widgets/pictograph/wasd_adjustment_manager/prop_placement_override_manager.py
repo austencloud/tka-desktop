@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
@@ -17,7 +18,7 @@ class PropPlacementOverrideManager:
         self.turns_tuple_generator = wasd_manager.turns_tuple_generator
 
     def handle_prop_placement_override(self, key) -> None:
-        self.special_placements = SpecialPlacementLoader().load_special_placements()
+        self.special_placements = AppContext.special_placement_loader().load_special_placements()
         if self._is_mixed_ori():
             return
         beta_ori = self._get_beta_ori()
@@ -40,7 +41,7 @@ class PropPlacementOverrideManager:
             self._update_json_entry(self.letter, letter_data)
             self.pictograph.managers.updater.update_pictograph()
 
-        SpecialPlacementLoader().load_special_placements()
+        AppContext.special_placement_loader().load_special_placements()
 
     def _get_keys(self, beta_ori):
         adjustment_key_str = self._generate_adjustment_key_str(self.letter)
@@ -75,7 +76,7 @@ class PropPlacementOverrideManager:
 
     def _get_letter_data(self, ori_key, letter: Letter) -> dict:
         return (
-            SpecialPlacementLoader()
+            AppContext.special_placement_loader()
             .load_special_placements()[self.pictograph.state.grid_mode][ori_key]
             .get(letter.value, {})
         )

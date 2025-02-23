@@ -33,5 +33,4 @@ class Pictograph(QGraphicsScene):
         self.managers.svg_manager = SvgManager(self)
         self.managers.arrow_placement_manager = ArrowPlacementManager(self)
         self.managers.prop_placement_manager = PropPlacementManager(self)
-        self.managers.wasd_manager = WASD_AdjustmentManager(self)
         self.managers.reversal_glyph = ReversalGlyph(self)
