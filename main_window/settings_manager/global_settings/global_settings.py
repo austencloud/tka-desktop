@@ -36,7 +36,8 @@ class GlobalSettings:
         return self.settings.value("global/background_type", "Snowfall")
 
     def get_current_tab(self) -> str:
-        return self.settings.value("global/current_tab", "sequence_builder")
+        """Retrieve the current tab as a simple string instead of an ugly PyQt serialized object."""
+        return self.settings.value("global/current_tab", "construct", type=str)
 
     def get_grid_mode(self) -> str:
         return self.settings.value("global/grid_mode", "diamond")
@@ -69,7 +70,8 @@ class GlobalSettings:
             self.settings_manager.background_changed.emit(background_type)
 
     def set_current_tab(self, tab: str) -> None:
-        self.settings.setValue("global/current_tab", tab)
+        """Store the current tab as a plain string to avoid @Variant(PyQt_PyObject)."""
+        self.settings.setValue("global/current_tab", str(tab))
 
     def set_grid_mode(self, grid_mode: str) -> None:
         self.settings.setValue("global/grid_mode", grid_mode)
