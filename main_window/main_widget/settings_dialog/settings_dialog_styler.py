@@ -57,8 +57,8 @@ class SettingsDialogStyler:
 
         # Apply styling once instead of looping unnecessarily
         DarkThemeStyler.apply_dark_mode(dialog)
-        
-        for tab in dialog.ui.tab_manager.tabs.values():
+
+        for tab in dialog.ui.tab_selection_manager.tabs.values():
             DarkThemeStyler.style_tab_widget(tab)
 
         elements = {

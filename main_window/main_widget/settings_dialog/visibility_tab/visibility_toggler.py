@@ -21,6 +21,10 @@ class VisibilityToggler:
         self.settings.set_glyph_visibility(name, state)
 
         pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
+        pictographs.pop(
+            pictographs.index(self.visibility_tab.pictograph_view.pictograph)
+        )
+
         for pictograph in pictographs:
             self._apply_glyph_visibility_to_pictograph(pictograph, name, is_checked)
 

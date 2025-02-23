@@ -3,6 +3,10 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from main_window.main_widget.settings_dialog.visibility_tab.visibility_tab import (
+    VisibilityTab,
+)
+
 from .prop_type_tab.prop_type_tab import PropTypeTab
 from .user_profile_tab.user_profile_tab import UserProfileTab
 from main_window.settings_manager.global_settings.app_context import AppContext
@@ -11,7 +15,7 @@ if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 
 
-class SettingsDialogTabManager:
+class SettingsDialogTabSelectionManager:
     def __init__(self, dialog: "SettingsDialog"):
         self.dialog = dialog
         self.tabs = {}
@@ -40,9 +44,11 @@ class SettingsDialogTabManager:
         )
 
         if isinstance(selected_tab, PropTypeTab):
-            selected_tab.update_active_button_from_settings()
+            selected_tab.update_active_prop_type_from_settings()
         elif isinstance(selected_tab, UserProfileTab):
-            selected_tab.ui_manager.update_user_button_styles()
+            selected_tab.ui_manager.update_active_user_from_settings()
+        elif isinstance(selected_tab, VisibilityTab):
+            selected_tab.buttons_widget.update_visibility_buttons_from_settings()
         self.dialog.ui.content_area.setCurrentIndex(index)
 
     def get_tab_index(self, tab_name: str) -> int:

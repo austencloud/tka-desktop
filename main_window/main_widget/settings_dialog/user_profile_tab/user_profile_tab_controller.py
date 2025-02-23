@@ -32,14 +32,13 @@ class UserProfileTabController:
         self.user_buttons.clear()
 
         for user in users:
-            is_current = (user == current_user)
+            is_current = user == current_user
             print(f"[DEBUG] Creating button for user: {user} (is_current={is_current})")
             self.create_user_button(user, is_current=is_current)
 
         # 🔥 Ensure we apply styles after all buttons are created
-        self.tab.ui_manager.update_user_button_styles()
+        self.tab.ui_manager.update_active_user_from_settings()
         self.tab.update()
-
 
     def create_user_button(self, user_name, is_current=False):
         """Creates a button for a user and adds it to the layout."""
@@ -58,7 +57,7 @@ class UserProfileTabController:
         """Switches to the selected user and updates UI."""
         self.user_manager.set_current_user(user_name)
         self.tab.main_widget.sequence_properties_manager.update_sequence_properties()
-        self.tab.ui_manager.update_user_button_styles()
+        self.tab.ui_manager.update_active_user_from_settings()
 
     def add_user(self):
         """Adds a new user and creates a button for them."""
@@ -66,7 +65,7 @@ class UserProfileTabController:
         if new_user:
             if self.user_manager.add_new_user(new_user):
                 self.create_user_button(new_user, is_current=True)
-                self.tab.ui_manager.update_user_button_styles()
+                self.tab.ui_manager.update_active_user_from_settings()
                 self.tab.new_user_field.clear()
             else:
                 self.tab.ui_manager.show_warning(f"User '{new_user}' already exists.")
@@ -79,6 +78,6 @@ class UserProfileTabController:
         if confirm and self.user_manager.remove_user(user_name):
             user_button = self.user_buttons.pop(user_name)
             user_button.deleteLater()
-            self.tab.ui_manager.update_user_button_styles()
+            self.tab.ui_manager.update_active_user_from_settings()
         elif confirm:
             self.tab.ui_manager.show_warning(f"Failed to remove user '{user_name}'.")

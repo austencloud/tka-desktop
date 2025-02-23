@@ -14,7 +14,7 @@ class UserProfileUIManager:
     def __init__(self, user_profile_tab: "UserProfileTab"):
         self.tab = user_profile_tab
 
-    def update_user_button_styles(self):
+    def update_active_user_from_settings(self):
         """Ensure only the selected user button is highlighted."""
         current_user = self.tab.user_manager.get_current_user()
 

@@ -35,19 +35,27 @@ class SettingsDialog(QDialog):
         )
 
         # Ensure tab exists, otherwise default to first tab
-        if last_tab not in self.ui.tab_manager.tabs:
+        if last_tab not in self.ui.tab_selection_manager.tabs:
             print(f"[WARNING] Tab '{last_tab}' not found, defaulting to first tab.")
-            last_tab = next(iter(self.ui.tab_manager.tabs))  # First tab as fallback
+            last_tab = next(
+                iter(self.ui.tab_selection_manager.tabs)
+            )  # First tab as fallback
 
-        tab_index = self.ui.tab_manager.get_tab_index(last_tab)
+        tab_index = self.ui.tab_selection_manager.get_tab_index(last_tab)
 
         self.ui.sidebar.setCurrentRow(tab_index)
         self.ui.content_area.setCurrentIndex(tab_index)
 
         if last_tab == "User Profile":
             self.ui.user_profile_tab.tab_controller.populate_user_buttons()
-            self.ui.user_profile_tab.ui_manager.update_user_button_styles()
+            self.ui.user_profile_tab.ui_manager.update_active_user_from_settings()
             self.ui.user_profile_tab.update()
+
+        elif last_tab == "Prop Type":
+            self.ui.prop_type_tab.update_active_prop_type_from_settings()
+
+        elif last_tab == "Visibility":
+            self.ui.visibility_tab.buttons_widget.update_visibility_buttons_from_settings()
 
     def update_size(self, force: bool = False):
         """Updates the size of the settings dialog, only resizing if necessary."""

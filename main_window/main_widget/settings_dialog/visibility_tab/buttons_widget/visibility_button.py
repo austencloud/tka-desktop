@@ -1,137 +1,112 @@
 from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtCore import Qt, pyqtProperty
-from PyQt6.QtGui import QCursor, QFont, QColor, QPainter, QPen, QBrush
+from PyQt6.QtGui import QCursor, QFont, QColor
+from PyQt6.QtCore import Qt, QSize
 from typing import TYPE_CHECKING
-from .visibility_button_animation import VisibilityButtonAnimation
+from main_window.main_widget.settings_dialog.styles.dark_theme_styler import (
+    DarkThemeStyler,
+)
 
 if TYPE_CHECKING:
     from .visibility_buttons_widget import VisibilityButtonsWidget
 
 
 class VisibilityButton(QPushButton):
+    """A visibility toggle button styled with modern effects."""
+
     def __init__(self, name: str, visibility_buttons_widget: "VisibilityButtonsWidget"):
         super().__init__(name)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.visibility_buttons_widget = visibility_buttons_widget
-        self.toggler = self.visibility_buttons_widget.toggler
         self.name = name
-        self.view = self.visibility_buttons_widget.visibility_tab.pictograph_view
-        self.visibility_tab = self.visibility_buttons_widget.visibility_tab
+        self.is_toggled = False  # Track active state
 
-        # Custom properties
-        self.is_hovered = False
-        self.is_toggled = False
-        self._background_color = QColor("#F5F5F5")
-        self._text_color = QColor("#000000")
+        self.clicked.connect(self._toggle_state)
 
-        # Animation manager
-        self.animations = VisibilityButtonAnimation(self)
-
-        self._connect_signals()
-        self._initialize_state()
+        # 🔥 Ensure the button starts with the correct style
 
     def _initialize_state(self):
-        """Initialize the toggle state and colors based on settings."""
+        """Retrieve toggle state and apply styles on initialization."""
         self.update_is_toggled(self.name)
-        self.update_colors()
+        self.repaint()  # Ensure UI updates immediately
 
-    def update_colors(self):
-        """Update the background and text colors based on the toggle state."""
-        self.background_color = QColor("#4CAF50" if self.is_toggled else "#F5F5F5")
-        self.text_color = QColor("#FFFFFF" if self.is_toggled else "#000000")
-
-    @pyqtProperty(QColor)
-    def background_color(self):
-        """Custom property for animating background color."""
-        return self._background_color
-
-    @background_color.setter
-    def background_color(self, color: QColor):
-        self._background_color = color
-        self.update()  # Trigger a repaint when the color changes
-
-    @pyqtProperty(QColor)
-    def text_color(self):
-        """Custom property for animating text color."""
-        return self._text_color
-
-    @text_color.setter
-    def text_color(self, color: QColor):
-        self._text_color = color
-        self.update()  # Trigger a repaint when the color changes
-
-    def update_is_toggled(self, name):
-        """Update toggle state based on settings."""
-        if name in self.visibility_buttons_widget.glyph_names:
-            self.is_toggled = self.visibility_buttons_widget.visibility_tab.settings.get_glyph_visibility(
+    def update_is_toggled(self, name: str):
+        """Updates the button state based on saved settings."""
+        is_toggled = (
+            self.visibility_buttons_widget.visibility_tab.settings.get_glyph_visibility(
                 name
             )
-        else:
-            self.is_toggled = (
-                self.visibility_buttons_widget.visibility_tab.settings.get_non_radial_visibility()
-            )
-        self.update_colors()
-
-    def _connect_signals(self):
-        self.clicked.connect(self._toggle_state)
+        )
+        self.is_toggled = is_toggled
+        self._apply_style(self.is_toggled)  # Apply correct styles on init
 
     def _toggle_state(self):
         """Handle button toggle state with parallel fading."""
         self.is_toggled = not self.is_toggled
-
-        self.animations.play_toggle_animation(self.is_toggled)
-
-        target_opacity = 1.0 if self.is_toggled else 0.1
+        view = self.visibility_buttons_widget.visibility_tab.pictograph_view
 
         if self.name in self.visibility_buttons_widget.glyph_names:
-            element = self.view.pictograph.managers.get.glyph(self.name)
+            element = view.pictograph.managers.get.glyph(self.name)
         else:
-            element = self.view.pictograph.managers.get.non_radial_points()
+            element = view.pictograph.managers.get.non_radial_points()
 
         # Create a parallel fade animation
-        self.visibility_tab.pictograph.elements.view.interaction_manager.fade_and_toggle_visibility(
-            element, self.is_toggled
-        )
+        view.interaction_manager.fade_and_toggle_visibility(element, self.is_toggled)
+        self._apply_style(self.is_toggled)  # Update button style
 
-    def paintEvent(self, event):
-        """Custom paint event for button visuals."""
-        painter = QPainter(self)
-        rect = self.rect()
+    def set_active(self, is_active: bool):
+        """Updates the button style when toggled."""
+        self.is_toggled = is_active
+        self._apply_style(is_active)
 
-        # Set the background color
-        painter.setBrush(QBrush(self.background_color))
-        painter.setPen(Qt.PenStyle.NoPen)
-        painter.drawRoundedRect(rect, self.height() // 5, self.height() // 5)
-
-        # Draw border
-        border_color = QColor("#388E3C" if self.is_toggled else "#9E9E9E")
-        pen = QPen(border_color, 2 if self.is_hovered or self.is_toggled else 1)
-        painter.setPen(pen)
-        painter.drawRoundedRect(rect, self.height() // 5, self.height() // 5)
-
-        # Draw text
-        painter.setPen(self.text_color)
-        font = self.font()
-        font.setBold(True)
-        painter.setFont(font)
-        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, self.text())
-        painter.end()
-
-    def enterEvent(self, event):
-        """Mouse enters the button area."""
-        self.is_hovered = True
-        self.update()  # Repaint on hover
-
-    def leaveEvent(self, event):
-        """Mouse leaves the button area."""
-        self.is_hovered = False
-        self.update()  # Repaint on hover exit
+    def _apply_style(self, is_active=False):
+        """Applies styling dynamically based on active state."""
+        if is_active:
+            self.setStyleSheet(
+                f"""
+                QPushButton {{
+                    {DarkThemeStyler.ACTIVE_BG_GRADIENT}
+                    border: 2px solid {DarkThemeStyler.ACCENT_COLOR};
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    font-weight: bold;
+                }}
+                QPushButton:hover {{
+                    {DarkThemeStyler.ACTIVE_BG_GRADIENT}
+                }}
+                QPushButton:pressed {{
+                    background-color: {DarkThemeStyler.BORDER_COLOR};
+                }}
+            """
+            )
+        else:
+            self.setStyleSheet(
+                f"""
+                QPushButton {{
+                    {DarkThemeStyler.DEFAULT_BG_GRADIENT}
+                    border: 2px solid {DarkThemeStyler.BORDER_COLOR};
+                    color: {DarkThemeStyler.TEXT_COLOR};
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    font-weight: bold;
+                }}
+                QPushButton:hover {{
+                    {DarkThemeStyler.DARK_HOVER_GRADIENT}
+                }}
+                QPushButton:pressed {{
+                    background-color: {DarkThemeStyler.BORDER_COLOR};
+                }}
+            """
+            )
+        self.update()  # Ensure the UI updates
+        self.repaint()  # Force an immediate refresh
 
     def resizeEvent(self, event):
-        """Adjust font and button size dynamically on resize."""
-        height = self.visibility_buttons_widget.height()
-        font_size = height // 10
+        """Dynamically adjust button size without affecting layout."""
+        super().resizeEvent(event)
+        # Calculate font size based on the visibility_tab's width
+        tab_width = self.visibility_buttons_widget.visibility_tab.width()
+        font_size = int(tab_width / 40)  # Adjust divisor as needed
         font = QFont()
         font.setPointSize(font_size)
         self.setFont(font)
-        super().resizeEvent(event)

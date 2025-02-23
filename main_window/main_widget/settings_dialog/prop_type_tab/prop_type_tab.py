@@ -86,7 +86,7 @@ class PropTypeTab(QWidget):
         for prop, button in self.buttons.items():
             button.set_active(prop == active_prop_name)
 
-    def update_active_button_from_settings(self):
+    def update_active_prop_type_from_settings(self):
         """Retrieve the currently selected prop from settings and update the UI."""
         current_prop = self.main_widget.settings_manager.global_settings.get_prop_type()
         self._update_active_button(current_prop)
