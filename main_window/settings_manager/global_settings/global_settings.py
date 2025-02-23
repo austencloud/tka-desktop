@@ -36,7 +36,6 @@ class GlobalSettings:
         return self.settings.value("global/background_type", "Snowfall")
 
     def get_current_tab(self) -> str:
-        """Retrieve the current tab as a simple string instead of an ugly PyQt serialized object."""
         return self.settings.value("global/current_tab", "construct", type=str)
 
     def get_grid_mode(self) -> str:

@@ -25,7 +25,7 @@ class LevelSelector(QWidget):
         self.grayscale_pixmaps: list[QPixmap] = []
         self.buttons: list[QToolButton] = []
         self.info_labels: list[QLabel] = []
-        self.current_level = self.generate_tab.settings.get_setting("level", 1)
+        self.current_level = self.generate_tab.settings.get_setting("level")
         self.default_icon_size = QSize(64, 64)
         self._load_pixmaps()
         self._init_ui()

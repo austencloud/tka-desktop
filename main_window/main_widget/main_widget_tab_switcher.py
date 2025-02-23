@@ -32,7 +32,7 @@ class MainWidgetTabSwitcher:
 
     def set_current_tab(self, tab_name: TabName):
         """Set the current tab name in the global settings."""
-        AppContext.settings_manager().global_settings.set_current_tab(tab_name)
+        AppContext.settings_manager().global_settings.set_current_tab(tab_name.value)
 
     def switch_to_tab(self, tab_name: TabName):
         """Switch to a tab with an animated fade transition."""

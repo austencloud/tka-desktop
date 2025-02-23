@@ -11,7 +11,7 @@ class GenerateTabController:
         self.current_mode = "freeform"
 
     def init_from_settings(self):
-        saved_mode = self.settings.get_setting("generator_mode", "global") or "freeform"
+        saved_mode = self.settings.get_setting("generator_mode") or "freeform"
         if saved_mode not in ["freeform", "circular"]:
             saved_mode = "freeform"
         self.current_mode = saved_mode

@@ -1,7 +1,11 @@
 from typing import TYPE_CHECKING
 
+from PyQt6.QtCore import QSettings
+
 if TYPE_CHECKING:
     from main_window.settings_manager.settings_manager import SettingsManager
+
+
 class ConstructTabSettings:
     DEFAULT_SETTINGS = {
         "filters": {
@@ -11,30 +15,22 @@ class ConstructTabSettings:
         }
     }
 
-    def __init__(self, settings_manager: "SettingsManager") -> None:
-        self.settings_manager = settings_manager
-        self.settings = self.settings_manager.settings
+    def __init__(self, settings: QSettings) -> None:
+        self.settings = settings
 
     def get_filters(self) -> dict:
-        default_filters = self.DEFAULT_SETTINGS["filters"].copy()
-        result = {}
-
-        for key, default_value in default_filters.items():
-            raw_val = self.settings.value(f"construct_tab/filters/{key}", str(default_value))
-            if raw_val.lower() == "true":
-                result[key] = True
-            elif raw_val.lower() == "false":
-                result[key] = False
-            else:
-                result[key] = raw_val
-
-        return result
-
+        filters = {}
+        for key, default_value in self.DEFAULT_SETTINGS["filters"].items():
+            raw_val = self.settings.value(
+                f"construct_tab/filters/{key}", str(default_value)
+            ).lower()
+            filters[key] = (
+                raw_val == "true" if raw_val in ("true", "false") else raw_val
+            )
+        return filters
 
     def set_filters(self, filter: str):
-        if filter == None:
+        if not filter:
             return
-        self.settings.setValue(f"construct_tab/filters/{filter}", True)
         for key in self.DEFAULT_SETTINGS["filters"]:
-            if key != filter:
-                self.settings.setValue(f"construct_tab/filters/{key}", False)
+            self.settings.setValue(f"construct_tab/filters/{key}", key == filter)
