@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtCore import Qt, QEvent, pyqtProperty
+from PyQt6.QtCore import Qt, pyqtProperty
 from PyQt6.QtGui import QCursor, QFont, QColor, QPainter, QPen, QBrush
 from typing import TYPE_CHECKING
 from .visibility_button_animation import VisibilityButtonAnimation

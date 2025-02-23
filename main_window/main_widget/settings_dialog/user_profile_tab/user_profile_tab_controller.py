@@ -20,11 +20,26 @@ class UserProfileTabController:
         self.user_buttons_layout = QVBoxLayout()
 
     def populate_user_buttons(self):
-        """Creates buttons for existing users."""
+        """Creates buttons for existing users and ensures the current user is highlighted."""
         users = self.user_manager.get_all_users()
         current_user = self.user_manager.get_current_user()
+
+        print(f"[DEBUG] Populating user buttons... Current user: {current_user}")
+
+        # Clear existing buttons (prevents duplicates)
+        for user_button in self.user_buttons.values():
+            user_button.deleteLater()
+        self.user_buttons.clear()
+
         for user in users:
-            self.create_user_button(user, is_current=(user == current_user))
+            is_current = (user == current_user)
+            print(f"[DEBUG] Creating button for user: {user} (is_current={is_current})")
+            self.create_user_button(user, is_current=is_current)
+
+        # 🔥 Ensure we apply styles after all buttons are created
+        self.tab.ui_manager.update_user_button_styles()
+        self.tab.update()
+
 
     def create_user_button(self, user_name, is_current=False):
         """Creates a button for a user and adds it to the layout."""

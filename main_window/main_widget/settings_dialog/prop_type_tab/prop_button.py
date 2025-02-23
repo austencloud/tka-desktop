@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtGui import QIcon, QColor, QCursor
-from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize
+from PyQt6.QtGui import QIcon, QCursor
+from PyQt6.QtCore import Qt, QSize
 from Enums.PropTypes import PropType
 from main_window.main_widget.settings_dialog.styles.dark_theme_styler import (
     DarkThemeStyler,
@@ -34,6 +34,7 @@ class PropButton(QPushButton):
         """Updates the button's active state and applies styling accordingly."""
         self._is_active = is_active
         self.set_button_style(is_active)
+        # self.update()
 
     def set_button_style(self, is_active=False):
         """Set the button style dynamically based on whether it's active."""
@@ -73,6 +74,9 @@ class PropButton(QPushButton):
                 }}
             """
             )
+
+        self.update()  # Force Qt to update the button appearance
+        self.repaint()  # Immediately refresh the button
 
     def resizeEvent(self, event):
         """Resize the button and its icon dynamically."""

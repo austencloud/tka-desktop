@@ -51,3 +51,4 @@ class UserProfileTab(QWidget):
 
     def resizeEvent(self, event):
         self.ui_manager.handle_resize_event()
+

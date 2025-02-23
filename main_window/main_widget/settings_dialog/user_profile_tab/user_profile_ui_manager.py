@@ -15,10 +15,19 @@ class UserProfileUIManager:
         self.tab = user_profile_tab
 
     def update_user_button_styles(self):
-        """Smoothly updates styles when switching users."""
+        """Ensure only the selected user button is highlighted."""
         current_user = self.tab.user_manager.get_current_user()
+
         for user_name, user_button in self.tab.tab_controller.user_buttons.items():
-            user_button.set_button_style(user_name == current_user, animate=True)
+            is_current = user_name == current_user
+            print(f"[DEBUG] Updating button {user_name}: is_current={is_current}")
+
+            # 🔥 Always apply style, even if `is_current` did not change
+            user_button.apply_style(is_current)
+
+        # 🔥 Force UI update after all buttons are updated
+        self.tab.repaint()
+        self.tab.update()
 
     def handle_resize_event(self):
         """Handles resizing of the user buttons dynamically."""
@@ -47,4 +56,3 @@ class UserProfileUIManager:
         font.setPointSize(16)
         font.setBold(True)
         return font
-

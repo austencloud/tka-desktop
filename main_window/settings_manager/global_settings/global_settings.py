@@ -23,6 +23,16 @@ class GlobalSettings:
         )
 
     # GETTERS
+    def get_current_settings_dialog_tab(self) -> str:
+        """Retrieve the last opened tab from settings."""
+        return self.settings.value(
+            "global/current_settings_dialog_tab", "User Profile", type=str
+        )
+
+    def set_current_settings_dialog_tab(self, tab: str) -> None:
+        """Store the currently active tab."""
+        print(f"[DEBUG] Storing last opened tab: {tab}")
+        self.settings.setValue("global/current_settings_dialog_tab", str(tab))
 
     def get_grow_sequence(self) -> bool:
         return self.settings.value("global/grow_sequence", True, type=bool)

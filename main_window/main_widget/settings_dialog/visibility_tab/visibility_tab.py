@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from .pictograph.visibility_pictograph import VisibilityPictograph
 from .visibility_toggler import VisibilityToggler
 from .buttons_widget.visibility_buttons_widget import VisibilityButtonsWidget

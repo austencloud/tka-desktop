@@ -1,37 +1,10 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QHBoxLayout,
-    QListWidget,
-    QListWidgetItem,
-    QStackedWidget,
-    QWidget,
-    QPushButton,
-    QLabel,
-    QComboBox,
-    QSpinBox,
-    QFrame,
-)
-from PyQt6.QtGui import QFont
-from PyQt6.QtCore import Qt, QEvent
+from PyQt6.QtWidgets import QDialog, QHBoxLayout
+from PyQt6.QtCore import QEvent
 
-from main_window.main_widget.settings_dialog.beat_layout_tab.beat_layout_tab import (
-    BeatLayoutTab,
-)
-from main_window.main_widget.settings_dialog.prop_type_tab.prop_type_tab import (
-    PropTypeTab,
-)
-from main_window.main_widget.settings_dialog.styles.card_frame import CardFrame
-from main_window.main_widget.settings_dialog.styles.dark_theme_styler import (
-    DarkThemeStyler,
-)
-from main_window.main_widget.settings_dialog.user_profile_tab.user_profile_tab import (
-    UserProfileTab,
-)
-from main_window.main_widget.settings_dialog.visibility_tab.visibility_tab import (
-    VisibilityTab,
-)
+from .settings_dialog_styler import SettingsDialogStyler
+from .settings_dialog_ui import SettingsDialogUI
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
@@ -43,113 +16,48 @@ class SettingsDialog(QDialog):
         self.main_widget = main_widget
         self.setWindowTitle("Settings")
 
-        self._setup_ui()
-        self._apply_styles()
-
-    def _setup_ui(self):
+        self.ui = SettingsDialogUI(self)
+        self.ui.setup_ui()
         main_layout = QHBoxLayout(self)
+        main_layout.addWidget(self.ui)
         self.setLayout(main_layout)
 
-        self.sidebar = QListWidget(self)
-        self.sidebar.setFixedWidth(220)
-        self.sidebar.setSpacing(10)
-        self.sidebar.setCursor(Qt.CursorShape.PointingHandCursor)
-
-        self.content_area = QStackedWidget(self)
-
-        self.user_profile_tab = UserProfileTab(self)
-        self.prop_type_tab = PropTypeTab(self)
-        self.visibility_tab = VisibilityTab(self)
-        self.beat_layout_tab = BeatLayoutTab(self)
-
-        self._add_sidebar_item("User Profile", self.user_profile_tab)
-        self._add_sidebar_item("Prop Type", self.prop_type_tab)
-        self._add_sidebar_item("Visibility", self.visibility_tab)
-        self._add_sidebar_item("Beat Layout", self.beat_layout_tab)
-
-        self.sidebar.setCurrentRow(0)
-
-        main_layout.addWidget(self.sidebar)
-        main_layout.addWidget(self.content_area, stretch=1)
-
-    def _add_sidebar_item(self, name: str, widget: QWidget):
-        item = QListWidgetItem(name)
-        self.sidebar.addItem(item)
-        self.content_area.addWidget(widget)
-
-        self.sidebar.currentRowChanged.connect(
-            lambda index: self.content_area.setCurrentIndex(index)
-        )
-
-    def _apply_styles(self):
-        font = QFont()
-        font.setPointSize(14)
-        self.sidebar.setFont(font)
-
-        # self.setStyleSheet("color: white;")
-
-        self.content_area.setStyleSheet(
-            """
-            QStackedWidget {
-                background-color: #1E1E1E;
-                border-radius: 10px;
-                padding: 10px;
-            }
-        """
-        )
-
-        self.sidebar.setStyleSheet(
-            """
-            QListWidget {
-                background-color: #2E2E2E;
-                border-radius: 5px;
-                font-size: 14px;
-            }
-            QListWidget::item {
-                padding: 10px;
-                border-radius: 5px;
-            }
-            QListWidget::item:hover {
-                background-color: #505050;
-            }
-            QListWidget::item:selected {
-                background-color: #6A6A6A;
-                font-weight: bold;
-            }
-        """
-        )
-
-        """Apply dark mode styles to all relevant widgets in settings dialog."""
-        DarkThemeStyler.apply_dark_mode(self)
-        self.tabs = [
-            self.user_profile_tab,
-            self.prop_type_tab,
-            self.visibility_tab,
-            self.beat_layout_tab,
-        ]
-        for tab in self.tabs:
-            DarkThemeStyler.style_tab_widget(tab)
-
-        for button in self.findChildren(QPushButton):
-            DarkThemeStyler.style_button(button)
-
-        for label in self.findChildren(QLabel):
-            DarkThemeStyler.style_label(label)
-
-        for combo_box in self.findChildren(QComboBox):
-            DarkThemeStyler.style_combo_box(combo_box)
-
-        for spinbox in self.findChildren(QSpinBox):
-            DarkThemeStyler.style_spinbox(spinbox)
-
-        for frame in self.findChildren(CardFrame):
-            DarkThemeStyler.style_frame(frame)
-
-    def resizeEvent(self, event: QEvent):
         self.update_size()
-        super().resizeEvent(event)
+        SettingsDialogStyler.apply_styles(self)
 
-    def update_size(self):
+    def showEvent(self, event: QEvent):
+        """Triggered every time the dialog is shown."""
+        super().showEvent(event)
+        print("[DEBUG] Settings dialog shown - Restoring last tab")
+
+        last_tab = (
+            AppContext.settings_manager().global_settings.get_current_settings_dialog_tab()
+        )
+
+        # Ensure tab exists, otherwise default to first tab
+        if last_tab not in self.ui.tab_manager.tabs:
+            print(f"[WARNING] Tab '{last_tab}' not found, defaulting to first tab.")
+            last_tab = next(iter(self.ui.tab_manager.tabs))  # First tab as fallback
+
+        tab_index = self.ui.tab_manager.get_tab_index(last_tab)
+
+        self.ui.sidebar.setCurrentRow(tab_index)
+        self.ui.content_area.setCurrentIndex(tab_index)
+
+        if last_tab == "User Profile":
+            self.ui.user_profile_tab.tab_controller.populate_user_buttons()
+            self.ui.user_profile_tab.ui_manager.update_user_button_styles()
+            self.ui.user_profile_tab.update()
+
+    def update_size(self, force: bool = False):
+        """Updates the size of the settings dialog, only resizing if necessary."""
         height = int(self.main_widget.height() * 0.8)
         width = int(height * 1.2)
-        self.setFixedSize(width, height)
+
+        if force or (self.width() != width or self.height() != height):
+            self.setFixedSize(width, height)
+
+    def resizeEvent(self, event: QEvent):
+        """Handle window resizing more efficiently."""
+        self.update_size(force=False)  # Only resize if it has changed
+        super().resizeEvent(event)

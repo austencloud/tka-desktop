@@ -1,18 +1,18 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton
-from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, pyqtProperty
-from PyQt6.QtGui import QFont, QCursor, QColor
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont, QCursor
 
 from main_window.main_widget.settings_dialog.styles.dark_theme_styler import (
     DarkThemeStyler,
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+    pass
 
 
 class UserProfileButton(QWidget):
-    """A widget containing a user button and a remove button, with smooth transitions."""
+    """A widget containing a user button and a remove button."""
 
     def __init__(self, user_name: str, parent: QWidget, is_current: bool = False):
         super().__init__(parent)
@@ -20,19 +20,13 @@ class UserProfileButton(QWidget):
         self.button = QPushButton(user_name, self)
         self.remove_button = QPushButton("❌", self)
         self._is_current = is_current
-        self._opacity = 1.0  # Track fade effect
         self._setup_ui()
-
-        # Fade Animation
-        self.animation = QPropertyAnimation(self, b"opacity")
-        self.animation.setDuration(300)
-        self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
 
     def _setup_ui(self):
         """Sets up the UI for the user profile button with dark mode styles."""
         self.button.setFont(self._get_scaled_font())
         self.button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.set_button_style(self._is_current)
+        self.apply_style(self._is_current)
 
         # Remove Button (styled for better contrast)
         self.remove_button.setFixedSize(30, 30)
@@ -70,24 +64,8 @@ class UserProfileButton(QWidget):
         font.setPointSize(font_size)
         return font
 
-    def set_button_style(self, is_current: bool, animate: bool = True):
-        """Updates the button style with a smooth transition."""
-        if self._is_current == is_current:
-            return  # No need to change style if already selected
-
-        self._is_current = is_current
-
-        if animate:
-            self.animation.stop()
-            self.animation.setStartValue(1.0 if is_current else 0.0)
-            self.animation.setEndValue(0.0 if is_current else 1.0)
-            self.animation.start()
-            self.animation.finished.connect(lambda: self._apply_style(is_current))
-        else:
-            self._apply_style(is_current)
-
-    def _apply_style(self, is_current: bool):
-        """Applies the button style after the fade effect."""
+    def apply_style(self, is_current: bool):
+        """Applies the button style."""
         if is_current:
             self.button.setStyleSheet(
                 f"""
@@ -126,13 +104,5 @@ class UserProfileButton(QWidget):
                 }}
             """
             )
-
-    # Fade effect property
-    def get_opacity(self):
-        return self._opacity
-
-    def set_opacity(self, value):
-        self._opacity = value
-        self.setWindowOpacity(value)
-
-    opacity = pyqtProperty(float, get_opacity, set_opacity)
+        self.button.update()
+        self.button.repaint()

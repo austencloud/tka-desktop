@@ -1,5 +1,4 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QSizePolicy
-from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.settings_dialog.visibility_tab.buttons_widget.visibility_button import VisibilityButton

@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QApplication
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 from Enums.PropTypes import PropType
@@ -18,7 +18,6 @@ class PropTypeTab(QWidget):
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget
         self._setup_ui()
-        self._update_active_button_from_settings()
 
     def _setup_ui(self):
         """Set up the prop type selection UI."""
@@ -65,20 +64,29 @@ class PropTypeTab(QWidget):
     def _set_current_prop_type(self, prop_type: str):
         """Update the active prop type when a button is clicked."""
         settings_manager = self.main_widget.settings_manager
+        self._update_active_button(prop_type)
+        QApplication.processEvents()
 
         # Collect pictographs from MainWidget's PictographCollector
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
         settings_manager.global_settings.set_prop_type(prop_type, pictographs)
-
+        QApplication.restoreOverrideCursor()
         # Update button states
-        self._update_active_button(prop_type)
 
     def _update_active_button(self, active_prop: PropType):
         """Ensure only the selected prop is highlighted."""
-        for prop, button in self.buttons.items():
-            button.set_active(prop == active_prop.name)
+        if not active_prop:
+            return  # Safety check in case settings didn't load properly
 
-    def _update_active_button_from_settings(self):
+        active_prop_name = (
+            active_prop.name if isinstance(active_prop, PropType) else str(active_prop)
+        )
+
+        for prop, button in self.buttons.items():
+            button.set_active(prop == active_prop_name)
+
+    def update_active_button_from_settings(self):
         """Retrieve the currently selected prop from settings and update the UI."""
         current_prop = self.main_widget.settings_manager.global_settings.get_prop_type()
         self._update_active_button(current_prop)
