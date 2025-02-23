@@ -13,19 +13,18 @@ class SequenceLayoutSettings:
 
     def get_layout_setting(self, beat_count: str) -> list[int]:
         layouts = self._load_layouts()
-        default_value = layouts.get(beat_count, [1, int(beat_count)])
+        default_value = layouts.get(beat_count, [1, int(beat_count)])  # Default to 1 column if unknown.
 
-        override_str = self.settings.value(
-            f"sequence_layout/overrides/{beat_count}", ""
-        )
+        override_str = self.settings.value(f"sequence_layout/overrides/{beat_count}", "")
+
         if override_str:
             try:
-                row_col = list(map(int, override_str.split(",")))
-                return row_col
-            except:
-                pass
+                return list(map(int, override_str.split(",")))
+            except ValueError:
+                pass  # Ignore invalid user settings.
 
         return default_value
+
 
     def set_layout_setting(self, beat_count: str, layout: list[int]):
         override_str = ",".join(map(str, layout))
@@ -35,15 +34,17 @@ class SequenceLayoutSettings:
         raw_val = self.settings.value("sequence_layout/default_layouts", "")
 
         if not raw_val:
-            return {}
+            # load the values from the json file
+            with open("data/default_layouts.json", "r") as file:
+                layouts = json.load(file)
+                return layouts
+            
 
         if isinstance(raw_val, dict):
-            json_str = json.dumps(raw_val)
-            self.settings.setValue("sequence_layout/default_layouts", json_str)
-            return raw_val
+            return raw_val  # If it's already a dict, return it directly.
 
         try:
-            return json.loads(raw_val)
+            return json.loads(raw_val)  # Convert string back to dictionary.
         except (ValueError, TypeError):
             return {}
 

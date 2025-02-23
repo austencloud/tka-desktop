@@ -14,6 +14,7 @@ class ArrowLocationManager:
         self.arrow = arrow
 
     def _select_calculator(self) -> "BaseLocationCalculator":
+        # self.arrow.setup_components()  # Ensure arrow is initialized
         calculator_map = {
             PRO: ShiftLocationCalculator,
             ANTI: ShiftLocationCalculator,

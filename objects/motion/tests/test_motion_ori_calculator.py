@@ -10,6 +10,7 @@ from data.constants import (
     IN,
     NORTH,
     OUT,
+    PRO,
     WEST,
 )
 from objects.motion.motion import Motion
@@ -69,3 +70,27 @@ def test_float_scenario_parametrized(start_loc, end_loc, start_ori, expected_end
     assert (
         end_ori == expected_end_ori
     ), f"For float from {start_ori}, expected {expected_end_ori} but got {end_ori}"
+
+
+@pytest.mark.parametrize(
+    "motion_type, turns, start_ori, expected_exception",
+    [
+        (None, 1, IN, ValueError),          # Missing motion type
+        (PRO, None, IN, ValueError),        # Missing turns
+        (PRO, 1, None, ValueError),         # Missing start orientation
+        (PRO, 3.5, IN, ValueError),         # Unsupported turns value
+        (FLOAT, 1, IN, ValueError),         # FLOAT should not have turns=1
+    ],
+)
+def test_invalid_motion_parameters(motion_type, turns, start_ori, expected_exception):
+    motion = Motion(pictograph=None, motion_data={})
+    motion.state.motion_type = motion_type
+    motion.state.turns = turns
+    motion.state.start_ori = start_ori
+
+    ori_calc = MotionOriCalculator(motion)
+
+    with pytest.raises(expected_exception):
+        ori_calc.get_end_ori()
+        
+        

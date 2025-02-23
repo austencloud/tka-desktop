@@ -12,7 +12,7 @@ class MotionUpdater:
     def update_motion(self, motion_data: dict = None) -> None:
         if motion_data:
             self.motion.state.update_motion_state(motion_data)
-
+        self.motion.arrow.setup_components()
         self.update_end_ori()
         prop_data = {
             COLOR: self.motion.state.color,

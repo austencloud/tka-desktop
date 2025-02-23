@@ -35,3 +35,4 @@ class BeatLayoutTab(QWidget):
             rows, cols = map(int, layout_text.split(" x "))
             self.beat_frame.current_layout = (rows, cols)
             self.beat_frame.update_preview()
+

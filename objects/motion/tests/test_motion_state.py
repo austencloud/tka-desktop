@@ -1,4 +1,3 @@
-import pytest
 
 from objects.motion.motion_state import MotionState
 
@@ -32,13 +31,13 @@ def test_motion_state_handles_prefloat_logic():
 
     new_data = {
         "prefloat_motion_type": "anti",
-        "prefloat_prop_rot_dir": "something",
+        "prefloat_prop_rot_dir": "cw",
     }
 
     state.update_motion_state(new_data)
 
     assert state.prefloat_motion_type == "anti"
-    assert state.prefloat_prop_rot_dir == "something"
+    assert state.prefloat_prop_rot_dir == "cw"
 
 def test_motion_state_doesnt_set_prefloat_for_non_shift():
     state = MotionState(motion_type="dash")
