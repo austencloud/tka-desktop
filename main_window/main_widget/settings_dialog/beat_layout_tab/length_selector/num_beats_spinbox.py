@@ -14,5 +14,13 @@ class NumBeatsSpinbox(QSpinBox):
         self.setRange(2, 64)
         self.setValue(self.length_selector.layout_tab.num_beats)
         self.valueChanged.connect(
-            lambda: self.length_selector.on_sequence_length_changed(self.value())
+            lambda: self.length_selector.value_changed.emit(self.value())
         )
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        # update the font size of the spinbox
+        font = self.font()
+        font.setPointSize(self.length_selector.layout_tab.width() // 20)
+        self.setFont(font)
+        

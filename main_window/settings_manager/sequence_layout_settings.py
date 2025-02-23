@@ -15,9 +15,7 @@ class SequenceLayoutSettings:
 
     def get_layout_setting(self, beat_count: str) -> list[int]:
         layouts = self._load_layouts()
-        default_value = layouts.get(
-            beat_count, [1, int(beat_count)]
-        )  # Default to 1 column if unknown.
+        default_value = layouts.get(beat_count, [1, int(beat_count)])
 
         overrides = self._load_overrides()
         return overrides.get(str(beat_count), default_value)
@@ -90,3 +88,9 @@ class SequenceLayoutSettings:
 
         with open(OVERRIDES_FILE, "w") as file:
             file.write(formatted_json + "\n")  # Write manually to ensure formatting
+
+    def set_num_beats(self, new_length: int):
+        self.settings.setValue("sequence_layout/num_beats", new_length)
+
+    def get_num_beats(self):
+        return self.settings.value("sequence_layout/num_beats", 8)

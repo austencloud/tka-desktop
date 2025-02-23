@@ -1,18 +1,21 @@
 import json
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QHBoxLayout
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
+
 from .layout_dropdown import LayoutDropdown
 from .select_layout_label import SelectLayoutLabel
 
 if TYPE_CHECKING:
-    from .layout_controls_widget import LayoutControlsWidget
-    
+    from ..layout_controls import LayoutControls
+
 BEAT_FRAME_LAYOUT_OPTIONS_PATH = "data/beat_frame_layout_options.json"
 
 
 class LayoutSelector(QFrame):
-    def __init__(self, controls_widget: "LayoutControlsWidget"):
+    layout_selected = pyqtSignal(str)  # Changed from list to str
+
+    def __init__(self, controls_widget: "LayoutControls"):
         super().__init__(controls_widget)
         self.controls_widget = controls_widget
         self.layout_tab = controls_widget.layout_tab
@@ -22,6 +25,7 @@ class LayoutSelector(QFrame):
         self.layout_dropdown_label = SelectLayoutLabel(self)
         self.layout_dropdown = LayoutDropdown(self)
         self._setup_layout()
+        self._connect_signals()
 
     def _update_valid_layouts(self, num_beats):
         beat_frame_layout_options = self.load_beat_frame_layout_options(
@@ -47,5 +51,11 @@ class LayoutSelector(QFrame):
         self.layout.addWidget(self.layout_dropdown_label)
         self.layout.addWidget(self.layout_dropdown)
 
+    def _connect_signals(self):
+        self.layout_dropdown.current_layout_changed.connect(self.layout_selected.emit)
+
     def resizeEvent(self, event):
         self.layout.setSpacing(self.controls_widget.layout_tab.width() // 50)
+
+    def current_layout(self):
+        return self.layout_dropdown.currentText()

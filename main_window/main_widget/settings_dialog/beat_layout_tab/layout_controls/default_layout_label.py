@@ -2,12 +2,15 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import Qt
 
+
 if TYPE_CHECKING:
-    from .layout_controls_widget import LayoutControlsWidget
+    from main_window.main_widget.settings_dialog.beat_layout_tab.layout_controls.layout_controls import (
+        LayoutControls,
+    )
 
 
 class DefaultLayoutLabel(QLabel):
-    def __init__(self, control_widget: "LayoutControlsWidget"):
+    def __init__(self, control_widget: "LayoutControls"):
         super().__init__(control_widget)
         layout_settings = (
             control_widget.layout_tab.main_widget.settings_manager.sequence_layout
@@ -26,3 +29,8 @@ class DefaultLayoutLabel(QLabel):
         font = self.font()
         font.setPointSize(self.control_widget.layout_tab.width() // 50)
         self.setFont(font)
+
+    def update_text(self, layout_text: str):
+        """Update label text programmatically"""
+        self.setText(f"Default: {layout_text}")
+        self.setFont(self.font())  # Trigger font update

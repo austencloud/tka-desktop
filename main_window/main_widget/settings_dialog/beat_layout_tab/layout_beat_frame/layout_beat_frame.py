@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Union
-from PyQt6.QtWidgets import QGridLayout, QFrame
+from PyQt6.QtWidgets import QGridLayout, QFrame, QSizePolicy
 from PyQt6.QtCore import Qt, QSize
 
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
@@ -13,14 +13,10 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_be
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
-from main_window.main_widget.settings_dialog.beat_layout_tab.layout_beat_view import (
-    LayoutBeatView,
-)
+from ..layout_beat_view import LayoutBeatView
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.beat_layout_tab.beat_layout_tab import (
-        BeatLayoutTab,
-    )
+    from ..beat_layout_tab import BeatLayoutTab
 
 
 class LayoutBeatFrame(QFrame):
@@ -57,10 +53,11 @@ class LayoutBeatFrame(QFrame):
         self.layout.setSpacing(0)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
     def update_preview(self):
         """Update the preview based on the current layout."""
-        self.cols, self.rows = self.current_layout
+        self.rows, self.cols = self.current_layout  # Fixed order
         num_beats = self.tab.controls.length_selector.num_beats_spinbox.value()
         self._perform_relayout(num_beats)
 

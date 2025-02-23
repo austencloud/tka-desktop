@@ -3,11 +3,11 @@ from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from .layout_controls_widget import LayoutControlsWidget
+    from .layout_controls import LayoutControls
 
 
 class UpdateLayoutButton(QPushButton):
-    def __init__(self, control_widget: "LayoutControlsWidget"):
+    def __init__(self, control_widget: "LayoutControls"):
         self.control_widget = control_widget
 
         super().__init__("Update Layout", control_widget)

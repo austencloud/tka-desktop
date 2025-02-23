@@ -1,22 +1,25 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout
-
-from main_window.main_widget.settings_dialog.beat_layout_tab.layout_length_button import (
+from PyQt6.QtCore import pyqtSignal
+from main_window.main_widget.settings_dialog.beat_layout_tab.length_selector.layout_length_button import (
     LayoutLengthButton,
 )
-from main_window.main_widget.settings_dialog.beat_layout_tab.num_beats_spinbox import (
+from main_window.main_widget.settings_dialog.beat_layout_tab.length_selector.num_beats_spinbox import (
     NumBeatsSpinbox,
 )
-from main_window.main_widget.settings_dialog.beat_layout_tab.sequence_length_label import (
+from main_window.main_widget.settings_dialog.beat_layout_tab.length_selector.sequence_length_label import (
     SequenceLengthLabel,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
-    from .layout_controls_widget import LayoutControlsWidget
+    from ..layout_controls.layout_controls import LayoutControls
 
 
 class LengthSelector(QFrame):
-    def __init__(self, controls_widget: "LayoutControlsWidget"):
+    value_changed = pyqtSignal(int)  # Add signal
+
+    def __init__(self, controls_widget: "LayoutControls"):
         super().__init__(controls_widget)
         self.controls_widget = controls_widget
         self.layout_tab = controls_widget.layout_tab
@@ -25,7 +28,12 @@ class LengthSelector(QFrame):
         self.plus_button = LayoutLengthButton("+", self, self._increase_length)
         self.num_beats_spinbox = NumBeatsSpinbox(self)
 
+        # Connect spinbox changes to signal
+        self.num_beats_spinbox.valueChanged.connect(self.value_changed.emit)
+        beat_count = AppContext.settings_manager().sequence_layout.get_num_beats()
+        self.num_beats_spinbox.setValue(int(beat_count))
         self._setup_layout()
+
 
     def _setup_layout(self):
         spinbox_layout = QHBoxLayout()
@@ -48,24 +56,3 @@ class LengthSelector(QFrame):
         """Increase the sequence length and emit the change."""
         self.num_beats_spinbox.setValue(self.num_beats_spinbox.value() + 1)
 
-    def on_sequence_length_changed(self, new_length: int):
-        self.controls_widget = self.controls_widget
-        self.layout_dropdown = self.controls_widget.layout_selector.layout_dropdown
-        self.num_beats = new_length
-        self.layout_dropdown.clear()
-        layout_selector = self.controls_widget.layout_selector
-        layout_selector._update_valid_layouts(new_length)
-        self.layout_dropdown.addItems(
-            [f"{rows} x {cols}" for rows, cols in layout_selector.valid_layouts]
-        )
-        self.controls_widget.layout_tab.beat_frame.current_layout = (
-            self.layout_tab.layout_settings.get_layout_setting(str(self.num_beats))
-        )
-        layout_text = (
-            f"{self.controls_widget.layout_tab.beat_frame.current_layout[0]} x "
-            f"{self.controls_widget.layout_tab.beat_frame.current_layout[1]}"
-        )
-        self.layout_dropdown.setCurrentText(layout_text)
-
-        self.controls_widget.beat_frame.update_preview()
-        self.controls_widget.default_layout_label.setText(f"Default: {layout_text}")

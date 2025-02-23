@@ -5,7 +5,7 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view im
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from .layout_beat_frame import LayoutBeatFrame
+    from .layout_beat_frame.layout_beat_frame import LayoutBeatFrame
 
 
 class LayoutBeatView(BeatView):
