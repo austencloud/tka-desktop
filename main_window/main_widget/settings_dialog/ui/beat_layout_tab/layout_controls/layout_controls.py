@@ -2,16 +2,23 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal
 
-from main_window.main_widget.settings_dialog.ui.beat_layout_tab.layout_controls.layout_selector.layout_selector import LayoutSelector
-from main_window.main_widget.settings_dialog.ui.beat_layout_tab.layout_controls.update_layout_button import UpdateLayoutButton
-from main_window.main_widget.settings_dialog.ui.beat_layout_tab.length_selector.length_selector import LengthSelector
-
+from main_window.main_widget.settings_dialog.ui.beat_layout_tab.layout_controls.layout_selector.layout_selector import (
+    LayoutSelector,
+)
+from main_window.main_widget.settings_dialog.ui.beat_layout_tab.layout_controls.update_default_layout_button import (
+    UpdateDefaultLayoutButton,
+)
+from main_window.main_widget.settings_dialog.ui.beat_layout_tab.length_selector.length_selector import (
+    LengthSelector,
+)
 
 
 from .default_layout_label import DefaultLayoutLabel
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.ui.beat_layout_tab.beat_layout_tab import BeatLayoutTab
+    from main_window.main_widget.settings_dialog.ui.beat_layout_tab.beat_layout_tab import (
+        BeatLayoutTab,
+    )
 
 
 class LayoutControls(QWidget):
@@ -29,7 +36,7 @@ class LayoutControls(QWidget):
         self.layout_selector = LayoutSelector(self)
         self.length_selector = LengthSelector(self)
         self.default_layout_label = DefaultLayoutLabel(self)
-        self.update_layout_button = UpdateLayoutButton(self)
+        self.update_layout_button = UpdateDefaultLayoutButton(self)
 
         self._setup_layout()
         self._connect_signals()
@@ -51,6 +58,7 @@ class LayoutControls(QWidget):
 
         # Length controls group
         length_group = QGroupBox("Sequence Length")
+        length_group.setAlignment(Qt.AlignmentFlag.AlignCenter)
         length_layout = QVBoxLayout()
         length_layout.addWidget(self.length_selector.sequence_length_label)
         length_layout.addWidget(self.length_selector)
@@ -59,6 +67,7 @@ class LayoutControls(QWidget):
 
         # Layout controls group
         layout_group = QGroupBox("Grid Configuration")
+        layout_group.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout_config = QVBoxLayout()
         layout_config.addWidget(self.layout_selector)
         layout_config.addWidget(self.update_layout_button)

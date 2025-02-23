@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from utilities.path_helpers import get_images_and_data_path
 
-if TYPE_CHECKING:
-    from .add_to_dictionary_manager import AddToDictionaryManager
 
 
 def hash_sequence(sequence):

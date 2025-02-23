@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget
 from typing import TYPE_CHECKING
 from Enums.PropTypes import PropType
 
-from base_widgets.pictograph.svg_manager import SvgManager
+from svg_manager.svg_manager import SvgManager
 from main_window.main_widget.generate_tab.generate_tab import GenerateTab
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog

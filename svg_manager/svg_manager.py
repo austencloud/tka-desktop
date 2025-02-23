@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from objects.arrow.arrow_svg_manager import ArrowSvgManager
-from objects.graphical_object.svg_manager.svg_color_handler import SvgColorHandler
-from objects.prop.prop_svg_manager import PropSvgManager
+from svg_manager.svg_color_handler import SvgColorHandler
+from svg_manager.prop_svg_manager import PropSvgManager
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:

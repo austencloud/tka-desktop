@@ -8,10 +8,7 @@ from main_window.main_widget.settings_dialog.styles.dark_theme_styler import (
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.prop_type_tab.prop_type_tab import (
-        PropTypeTab,
-    )
-
+    from .prop_type_tab import PropTypeTab
 
 class PropButton(QPushButton):
     """A button representing a prop type, styled with dark mode and hover animations."""
@@ -24,17 +21,13 @@ class PropButton(QPushButton):
         self.prop = prop
         self.setIcon(QIcon(icon_path))
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.setToolTip(prop)
         self.clicked.connect(lambda: callback(PropType.get_prop_type(prop)))
 
-        self._is_active = False  # Track if this button is currently selected
-        # self.set_button_style(is_active=False)
-
+        self._is_active = False
     def set_active(self, is_active: bool):
         """Updates the button's active state and applies styling accordingly."""
         self._is_active = is_active
         self.set_button_style(is_active)
-        # self.update()
 
     def set_button_style(self, is_active=False):
         """Set the button style dynamically based on whether it's active."""
@@ -75,8 +68,8 @@ class PropButton(QPushButton):
             """
             )
 
-        self.update()  # Force Qt to update the button appearance
-        self.repaint()  # Immediately refresh the button
+        self.update()
+        self.repaint()
 
     def resizeEvent(self, event):
         """Resize the button and its icon dynamically."""

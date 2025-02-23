@@ -5,7 +5,7 @@ from objects.arrow.arrow import Arrow
 from data.constants import CLOCK, COUNTER, IN, OUT, FLOAT
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.svg_manager import SvgManager
+    from svg_manager.svg_manager import SvgManager
 
 
 class ArrowSvgManager:

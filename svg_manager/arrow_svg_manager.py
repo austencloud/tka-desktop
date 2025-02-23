@@ -5,7 +5,7 @@ from objects.arrow.arrow import Arrow
 from data.constants import CLOCK, COUNTER, IN, NO_ROT, OUT, FLOAT  # Add FLOAT here
 
 if TYPE_CHECKING:
-    from objects.graphical_object.svg_manager.graphical_object_svg_manager import (
+    from svg_manager.graphical_object_svg_manager import (
         SvgManager,
     )
 

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from objects.graphical_object.svg_manager.graphical_object_svg_manager import (
+    from svg_manager.graphical_object_svg_manager import (
         SvgManager,
     )
 

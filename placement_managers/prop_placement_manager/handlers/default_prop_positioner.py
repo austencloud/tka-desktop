@@ -53,14 +53,28 @@ class DefaultPropPositioner:
                 f"Hand point '{point_name}' not found or has no coordinates."
             )
 
+    # default_prop_positioner.py
+
     def place_prop_at_hand_point(self, prop: Prop, hand_point: QPointF) -> None:
         """
-        Align the prop's center to the hand point using the 'centerPoint' defined in the SVG.
+        Align the prop's center to the hand point using either:
+        - The 'centerPoint' from the SVG (for normal SVG props), or
+        - The boundingRect's center (for Chicken's PNG).
         """
-        center_point_in_svg = self.get_svg_center_point(prop)
-        center_point_in_scene = prop.mapToScene(center_point_in_svg)
+        # 1) Decide which center method to call
+        if prop.prop_type == "Chicken":
+            center_point_in_local_coords = self.get_png_center_point(prop)
+        else:
+            center_point_in_local_coords = self.get_svg_center_point(prop)
+
+        # 2) Convert that local coordinate to scene coords
+        center_point_in_scene = prop.mapToScene(center_point_in_local_coords)
+
+        # 3) Calculate how far we need to shift to place it at 'hand_point'
         offset = hand_point - center_point_in_scene
         new_position = prop.pos() + offset
+
+        # 4) Move the prop
         prop.setPos(new_position)
 
     def _get_grid_mode_from_prop_loc(self, prop: "Prop") -> str:
@@ -69,6 +83,14 @@ class DefaultPropPositioner:
         elif prop.loc in ["n", "s", "e", "w"]:
             grid_mode = "diamond"
         return grid_mode
+
+    def get_png_center_point(self, prop: Prop) -> QPointF:
+        """
+        For PNG-based props (like Chicken), compute the center
+        by looking at the boundingRect, i.e. half the width/height.
+        """
+        bounding_rect = prop.boundingRect()
+        return bounding_rect.center()
 
     def get_svg_center_point(self, prop: Prop) -> QPointF:
         """

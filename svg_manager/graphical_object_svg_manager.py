@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from utilities.path_helpers import get_images_and_data_path
 from .arrow_svg_manager import ArrowSvgManager
 from .prop_svg_manager import PropSvgManager
-from .svg_color_manager import SvgColorManager
+from ....svg_manager.svg_color_manager import SvgColorManager
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
 

@@ -1,10 +1,7 @@
 from typing import TYPE_CHECKING
 
 
-if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.add_to_dictionary_manager import (
-        AddToDictionaryManager,
-    )
+
 
 
 class TurnPatternConverter:

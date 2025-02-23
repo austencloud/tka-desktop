@@ -47,7 +47,7 @@ class FullScreenViewer:
 
     def create_thumbnail(self):
         self.thumbnail_generator = (
-            self.sequence_workbench.add_to_dictionary_manager.thumbnail_generator
+            self.sequence_workbench.dictionary_service.thumbnail_generator
         )
         current_sequence = self.json_loader.load_current_sequence()
         temp_path = get_images_and_data_path("temp")

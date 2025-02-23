@@ -24,6 +24,6 @@ class VisibilityPictographView(PictographView):
 
     def resizeEvent(self, event: QEvent):
         available_height = self.tab.dialog.height()
-        size = int(available_height * 0.75)
+        size = int(available_height * 0.65)
         self.setFixedSize(size, size)
         super().resizeEvent(event)

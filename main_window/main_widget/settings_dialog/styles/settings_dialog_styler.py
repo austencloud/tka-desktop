@@ -11,6 +11,9 @@ from main_window.main_widget.settings_dialog.styles.card_frame import CardFrame
 from main_window.main_widget.settings_dialog.styles.dark_theme_styler import (
     DarkThemeStyler,
 )
+from main_window.main_widget.settings_dialog.ui.settings_dialog_action_buttons import (
+    SettingsDialogActionButtons,
+)
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
@@ -67,6 +70,7 @@ class SettingsDialogStyler:
             QComboBox: DarkThemeStyler.style_combo_box,
             QSpinBox: DarkThemeStyler.style_spinbox,
             CardFrame: DarkThemeStyler.style_frame,
+            SettingsDialogActionButtons: DarkThemeStyler.style_frame,
         }
 
         for widget_type, style_function in elements.items():

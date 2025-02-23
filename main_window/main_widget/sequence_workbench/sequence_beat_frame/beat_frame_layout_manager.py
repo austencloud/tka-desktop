@@ -69,16 +69,16 @@ class BeatFrameLayoutManager:
             if grow_sequence:
                 num_filled_beats = self.beat_frame.get.next_available_beat() or 0
                 num_beats = num_filled_beats
-        columns, rows = self.calculate_layout(num_beats)
+        rows, columns = self.calculate_layout(num_beats)
 
         self.beat_frame.sequence_workbench.scroll_area.verticalScrollBarPolicy = (
             Qt.ScrollBarPolicy.ScrollBarAlwaysOn
             if rows > 4
             else Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
-        self.rearrange_beats(num_beats, columns, rows)
+        self.rearrange_beats(num_beats, rows, columns)
 
-    def rearrange_beats(self, num_beats, columns, rows):
+    def rearrange_beats(self, num_beats, rows, columns):
         while self.beat_frame.layout.count():
             self.beat_frame.layout.takeAt(0).widget().hide()
 

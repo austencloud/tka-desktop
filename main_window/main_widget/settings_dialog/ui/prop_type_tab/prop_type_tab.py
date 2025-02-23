@@ -22,7 +22,6 @@ class PropTypeTab(QWidget):
         self._setup_ui()
 
     def _setup_ui(self):
-        """Set up the prop type selection UI."""
         card = CardFrame(self)
         main_layout = QVBoxLayout(card)
 
@@ -31,7 +30,7 @@ class PropTypeTab(QWidget):
         self.header.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(self.header)
 
-        # Grid layout for prop buttons
+        # Grid layout for prop "cells"
         grid_layout = QGridLayout()
         main_layout.addLayout(grid_layout)
 
@@ -44,16 +43,33 @@ class PropTypeTab(QWidget):
             "Minihoop": "images/props/minihoop.svg",
             "Buugeng": "images/props/buugeng.svg",
             "Triquetra": "images/props/triquetra.svg",
+            "Sword": "images/props/sword.svg",
+            "Chicken": "images/props/chicken.png",
         }
 
-        # Create buttons and add them to the layout
         row, col = 0, 0
         for prop, icon_path in props.items():
+            # Create the icon‐only button
             button = PropButton(prop, icon_path, self, self._set_current_prop_type)
             self.buttons[prop] = button
-            grid_layout.addWidget(button, row, col)
 
-            # Move to the next grid cell
+            # Create a label for the prop name
+            label = QLabel(prop, self)
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            # Optionally style the label text color/size:
+            # label.setStyleSheet("color: #FFFFFF; margin-top: 5px;")
+
+            # Put the button + label in a vertical layout
+            cell_widget = QWidget(self)
+            v_layout = QVBoxLayout(cell_widget)
+            v_layout.setContentsMargins(0, 0, 0, 0)
+            v_layout.setSpacing(5)
+            v_layout.addWidget(button, alignment=Qt.AlignmentFlag.AlignCenter)
+            v_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            # Add that widget to the grid
+            grid_layout.addWidget(cell_widget, row, col)
+
             col += 1
             if col >= 3:  # 3 columns per row
                 col = 0
@@ -64,22 +80,18 @@ class PropTypeTab(QWidget):
         self.setLayout(outer_layout)
 
     def _set_current_prop_type(self, prop_type: str):
-        """Update the active prop type when a button is clicked."""
         settings_manager = self.main_widget.settings_manager
         self._update_active_button(prop_type)
         QApplication.processEvents()
 
-        # Collect pictographs from MainWidget's PictographCollector
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
         settings_manager.global_settings.set_prop_type(prop_type, pictographs)
         QApplication.restoreOverrideCursor()
-        # Update button states
 
     def _update_active_button(self, active_prop: PropType):
-        """Ensure only the selected prop is highlighted."""
         if not active_prop:
-            return  # Safety check in case settings didn't load properly
+            return
 
         active_prop_name = (
             active_prop.name if isinstance(active_prop, PropType) else str(active_prop)
@@ -89,12 +101,10 @@ class PropTypeTab(QWidget):
             button.set_active(prop == active_prop_name)
 
     def update_active_prop_type_from_settings(self):
-        """Retrieve the currently selected prop from settings and update the UI."""
         current_prop = self.main_widget.settings_manager.global_settings.get_prop_type()
         self._update_active_button(current_prop)
 
     def resizeEvent(self, event):
-        """Dynamically update font size on resize."""
         font = QFont()
         font_size = self.settings_dialog.width() // 30
         font.setPointSize(font_size)

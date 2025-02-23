@@ -43,7 +43,7 @@ class SequenceWorkbench(QWidget):
         self.main_widget.splash.updater.update_progress("SequenceWorkbench")
         self.setObjectName("SequenceWorkbench")
         # Managers
-        dictionary_service = DictionaryService(
+        self.dictionary_service = DictionaryService(
             create_sequence_image_callback=lambda sequence, include_start_pos: self.sequence_beat_frame.image_export_manager.image_creator.create_sequence_image(
                 sequence, include_start_pos
             ),
@@ -51,7 +51,7 @@ class SequenceWorkbench(QWidget):
         )
 
         # Create the “UI” class that uses it:
-        self.add_to_dictionary_ui = AddToDictionaryUI(self, dictionary_service)
+        self.add_to_dictionary_ui = AddToDictionaryUI(self, self.dictionary_service)
 
         self.autocompleter = SequenceAutoCompleter(self)
 
@@ -77,6 +77,8 @@ class SequenceWorkbench(QWidget):
         # Layout
         self.layout_manager = SequenceWorkbenchLayoutManager(self)
         self.beat_deleter = BeatDeleter(self)
+
+
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

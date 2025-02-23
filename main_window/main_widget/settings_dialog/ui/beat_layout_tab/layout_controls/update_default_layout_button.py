@@ -6,11 +6,11 @@ if TYPE_CHECKING:
     from .layout_controls import LayoutControls
 
 
-class UpdateLayoutButton(QPushButton):
+class UpdateDefaultLayoutButton(QPushButton):
     def __init__(self, control_widget: "LayoutControls"):
         self.control_widget = control_widget
 
-        super().__init__("Update Layout", control_widget)
+        super().__init__("Update Default Layout", control_widget)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.clicked.connect(
             lambda: self.set_default_layout(

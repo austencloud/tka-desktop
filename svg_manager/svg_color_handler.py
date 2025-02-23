@@ -3,9 +3,8 @@ import re
 from data.constants import BLUE, HEX_BLUE, HEX_RED, RED
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.managers.svg_manager import (
-        SvgManager,
-    )
+    from svg_manager.svg_manager import SvgManager
+
 
 
 class SvgColorHandler:

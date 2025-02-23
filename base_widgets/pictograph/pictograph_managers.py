@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
-from .svg_manager import SvgManager
 from placement_managers.arrow_placement_manager.arrow_placement_manager import (
     ArrowPlacementManager,
 )
 from placement_managers.prop_placement_manager.prop_placement_manager import (
     PropPlacementManager,
 )
+from svg_manager.svg_manager import SvgManager
 from .glyphs.reversal_glyph import ReversalGlyph
 from .pictograph_checker import PictographChecker
 from .pictograph_getter import PictographGetter

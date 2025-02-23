@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QGraphicsScene
 
-from base_widgets.pictograph.svg_manager import SvgManager
+from svg_manager.svg_manager import SvgManager
 from .pictograph_elements import PictographElements
 from .pictograph_managers import PictographManagers
 from .pictograph_state import PictographState

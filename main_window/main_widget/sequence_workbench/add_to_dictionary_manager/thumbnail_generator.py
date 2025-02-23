@@ -6,8 +6,6 @@ from PIL import Image, PngImagePlugin, ImageEnhance
 import numpy as np
 from datetime import datetime
 
-if TYPE_CHECKING:
-    from .add_to_dictionary_manager import AddToDictionaryManager
 
 
 class ThumbnailGenerator:
