@@ -16,6 +16,11 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QResizeEvent
 
+from main_window.main_widget.settings_dialog.styles.base_dialog_styler import BaseDialogStyler
+from main_window.main_widget.settings_dialog.styles.settings_dialog_styler import (
+    SettingsDialogStyler,
+)
+
 from .export_dialog_control_panel import ExportDialogControlPanel
 from .export_dialog_preview_panel import ExportDialogPreviewPanel
 from sequence_sharer_dialog.sequence_sharer_dialog import SequenceSharerDialog
@@ -36,6 +41,7 @@ class ImageExportDialog(QDialog):
         self._setup_components()
         self._setup_layout()
         self._resize_image_export_dialog()
+        BaseDialogStyler.apply_styles(self)
 
     def _setup_okay_cancel_buttons(self):
         """Setup Save, Cancel, and Share buttons with dynamic size."""

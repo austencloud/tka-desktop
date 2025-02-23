@@ -36,7 +36,6 @@ big_unilateral_prop_types = [
     PropType.Bighoop,
     PropType.Guitar,
     PropType.Sword,
-    PropType.Chicken,
 ]
 small_unilateral_prop_types = [
     PropType.Fan,
@@ -60,6 +59,7 @@ small_bilateral_prop_types = [
     PropType.Quiad,
     PropType.Fractalgeng,
     PropType.Eightrings,
+    PropType.Chicken,
 ]
 non_strictly_placed_props = [
     PropType.Staff,

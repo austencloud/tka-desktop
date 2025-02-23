@@ -110,8 +110,6 @@ class DarkThemeStyler:
             QFrame {{
                 background-color: {DarkThemeStyler.LIGHT_BG};
                 border: 1px solid {DarkThemeStyler.BORDER_COLOR};
-                border-radius: 10px;
-                padding: 10px;
             }}
         """)
 
