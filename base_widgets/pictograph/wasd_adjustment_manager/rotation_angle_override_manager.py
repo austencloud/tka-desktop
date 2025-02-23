@@ -4,6 +4,7 @@ from data.constants import STATIC, DASH
 from base_widgets.pictograph.wasd_adjustment_manager.rotation_angle_override_key_generator import (
     RotationAngleOverrideKeyGenerator,
 )
+from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
@@ -38,7 +39,7 @@ class RotationAngleOverrideManager:
         ori_key = self.special_positioner.data_updater._generate_ori_key(
             self.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow.motion
         )
-        data = self.pictograph.main_widget.special_placements
+        data = SpecialPlacementLoader().load_special_placements()
         letter = self.pictograph.state.letter
 
         self._apply_override_if_needed(letter, data, ori_key)
@@ -50,7 +51,7 @@ class RotationAngleOverrideManager:
 
     def get_visible_pictographs(self) -> list["Pictograph"]:
         visible_pictographs = []
-        for pictograph_list in self.pictograph.main_widget.pictograph_dataset.values():
+        for pictograph_list in self.pictograph.main_widget.pictograph_cache.values():
             for pictograph in pictograph_list.values():
                 if pictograph.elements.view:
                     if pictograph.elements.view.isVisible():

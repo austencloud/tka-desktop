@@ -13,10 +13,11 @@ from .rotation_angle_override_manager import RotationAngleOverrideManager
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
+    from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import GE_Pictograph
 
 
 class WASD_AdjustmentManager:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "GE_Pictograph") -> None:
         self.pictograph = pictograph
         self.entry_remover = (
             self.pictograph.managers.arrow_placement_manager.special_positioner.data_updater.entry_remover

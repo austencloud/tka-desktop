@@ -20,7 +20,9 @@ class MirroredTurnsTupleGenerator:
         if not arrow.pictograph.managers.check.has_one_float():
             if (
                 arrow.motion.state.motion_type
-                != arrow.pictograph.managers.get.other_motion(arrow.motion).motion_type
+                != arrow.pictograph.managers.get.other_motion(
+                    arrow.motion
+                ).state.motion_type
                 or letter.value in ["S", "T"]
                 or letter_type == LetterType.Type2
             ):
@@ -42,14 +44,18 @@ class MirroredTurnsTupleGenerator:
         turns_tuple = self.turns_tuple_generator.generate_turns_tuple(arrow.pictograph)
         if (
             arrow.motion.state.motion_type
-            == arrow.pictograph.managers.get.other_motion(arrow.motion).motion_type
+            == arrow.pictograph.managers.get.other_motion(
+                arrow.motion
+            ).state.motion_type
             and not arrow.pictograph.managers.check.has_one_float()
         ):
             items = turns_tuple.strip("()").split(", ")
             return f"({items[1]}, {items[0]})"
         elif (
             arrow.motion.state.motion_type
-            != arrow.pictograph.managers.get.other_motion(arrow.motion).motion_type
+            != arrow.pictograph.managers.get.other_motion(
+                arrow.motion
+            ).state.motion_type
             and arrow.pictograph.managers.check.has_one_float()
         ):
             items = turns_tuple.strip("()").split(", ")

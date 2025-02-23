@@ -1,7 +1,7 @@
 # base_classes/base_sequence_builder.py
 
 import random
-from typing import TYPE_CHECKING, Dict, Any
+from typing import TYPE_CHECKING, Any
 
 from Enums.letters import Letter, LetterConditions
 from data.constants import (
@@ -69,29 +69,45 @@ class BaseSequenceBuilder:
             raise
 
     def update_start_orientations(
-        self, next_data: Dict[str, Any], last_data: Dict[str, Any]
+        self, next_data: dict[str, Any], last_data: dict[str, Any]
     ) -> None:
         """
         Updates the start orientations of the next beat based on the end orientations of the last beat.
         """
-        next_data["blue_attributes"][START_ORI] = last_data["blue_attributes"][END_ORI]
-        next_data["red_attributes"][START_ORI] = last_data["red_attributes"][END_ORI]
+        blue_end_ori = last_data["blue_attributes"][END_ORI]
+        red_end_ori = last_data["red_attributes"][END_ORI]
 
-    def update_end_orientations(self, next_data: Dict[str, Any]) -> None:
+        if blue_end_ori is None or red_end_ori is None:
+            raise ValueError(
+                "End orientations cannot be None. Please ensure the previous beat has valid orientations."
+            )
+
+        next_data["blue_attributes"][START_ORI] = blue_end_ori
+        next_data["red_attributes"][START_ORI] = red_end_ori
+
+
+    def update_end_orientations(self, next_data: dict[str, Any]) -> None:
         """
         Updates the end orientations of the next beat using the orientation calculator.
         """
         next_data["blue_attributes"][END_ORI] = self.ori_calculator.calculate_end_ori(
             next_data, BLUE
         )
-        next_data["red_attributes"][END_ORI] = self.ori_calculator.calculate_end_ori(
-            next_data, RED
-        )
+        blue_end_ori = self.ori_calculator.calculate_end_ori(next_data, BLUE)
+        red_end_ori = self.ori_calculator.calculate_end_ori(next_data, RED)
+
+        if blue_end_ori is None or red_end_ori is None:
+            raise ValueError(
+                "Calculated end orientations cannot be None. Please check the input data and orientation calculator."
+            )
+
+        next_data["blue_attributes"][END_ORI] = blue_end_ori
+        next_data["red_attributes"][END_ORI] = red_end_ori
 
     def update_dash_static_prop_rot_dirs(
         self,
-        next_beat: Dict[str, Any],
-        continuous_rot: bool,
+        next_beat: dict[str, Any],
+        prop_continuity: str,
         blue_rot_dir: str,
         red_rot_dir: str,
     ) -> None:
@@ -100,35 +116,41 @@ class BaseSequenceBuilder:
         """
 
         def update_attr(color: str, rot_dir: str):
-            attrs = next_beat[f"{color}_attributes"]
-            if attrs.get(MOTION_TYPE) in [DASH, STATIC]:
-                if continuous_rot:
-                    attrs[PROP_ROT_DIR] = rot_dir if attrs.get(TURNS, 0) > 0 else NO_ROT
+            motion_data = next_beat[f"{color}_attributes"]
+            if motion_data.get(MOTION_TYPE) in [DASH, STATIC]:
+                turns = motion_data.get(TURNS, 0)
+                if prop_continuity == "continuous":
+                    motion_data[PROP_ROT_DIR] = rot_dir if turns > 0 else NO_ROT
                 else:
-                    if attrs.get(TURNS, 0) > 0:
+                    if turns > 0:
                         self._set_random_prop_rot_dir(next_beat, color)
                     else:
-                        attrs[PROP_ROT_DIR] = NO_ROT
+                        motion_data[PROP_ROT_DIR] = NO_ROT
+
+                if motion_data[PROP_ROT_DIR] == NO_ROT and turns > 0:
+                    raise ValueError(
+                        f"{color.capitalize()} prop rotation direction cannot be {NO_ROT} when turns are greater than 0."
+                    )
 
         update_attr(BLUE, blue_rot_dir)
         update_attr(RED, red_rot_dir)
 
-    def _set_random_prop_rot_dir(self, next_data: Dict[str, Any], color: str) -> None:
+    def _set_random_prop_rot_dir(self, next_data: dict[str, Any], color: str) -> None:
         """Randomly sets the prop rotation direction for the specified color."""
         next_data[f"{color}_attributes"][PROP_ROT_DIR] = random.choice(
             [CLOCKWISE, COUNTER_CLOCKWISE]
         )
 
     def update_beat_number(
-        self, next_data: Dict[str, Any], sequence: list
-    ) -> Dict[str, Any]:
+        self, next_data: dict[str, Any], sequence: list
+    ) -> dict[str, Any]:
         """Sets the beat number based on the sequence length."""
         next_data["beat"] = len(sequence) - 1
         return next_data
 
     def filter_options_by_rotation(
-        self, options: list[Dict[str, Any]], blue_rot: str, red_rot: str
-    ) -> list[Dict[str, Any]]:
+        self, options: list[dict[str, Any]], blue_rot: str, red_rot: str
+    ) -> list[dict[str, Any]]:
         """Filters options to match the given rotation directions."""
         filtered = [
             opt
@@ -139,8 +161,8 @@ class BaseSequenceBuilder:
         return filtered if filtered else options
 
     def set_turns(
-        self, next_beat: Dict[str, Any], turn_blue: float, turn_red: float
-    ) -> Dict[str, Any]:
+        self, next_beat: dict[str, Any], turn_blue: float, turn_red: float
+    ) -> dict[str, Any]:
         """
         Sets the number of turns for both blue and red attributes.
         Adjusts motion types if special flag 'fl' is present.

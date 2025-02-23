@@ -63,8 +63,8 @@ class BeatFactory:
         new_beat.managers.updater.update_pictograph(pictograph_data)
 
         if reversal_info:
-            new_beat.blue_reversal = reversal_info.get("blue_reversal", False)
-            new_beat.red_reversal = reversal_info.get("red_reversal", False)
+            new_beat.state.blue_reversal = reversal_info.get("blue_reversal", False)
+            new_beat.state.red_reversal = reversal_info.get("red_reversal", False)
 
         self.beat_frame.beat_adder.add_beat_to_sequence(
             new_beat,

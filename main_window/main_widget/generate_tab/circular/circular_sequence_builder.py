@@ -99,7 +99,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         is_last_in_word: bool,
         rotation_type: str,
         permutation_type: str,
-        is_continuous_rot_dir: str,
+        prop_continuity: str,
         blue_rot_dir: str,
         red_rot_dir: str,
     ) -> dict:
@@ -107,7 +107,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             self.sequence
         )
         options = [deepcopy(option) for option in options]
-        if is_continuous_rot_dir == "continuous":
+        if prop_continuity == "continuous":
             options = self.filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir
             )
@@ -130,18 +130,17 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         if level == 2 or level == 3:
             next_beat = self.set_turns(next_beat, turn_blue, turn_red)
-        self.update_start_orientations(next_beat, self.sequence[-1])
-        self.update_end_orientations(next_beat)
-
         if next_beat["blue_attributes"]["motion_type"] in [DASH, STATIC] or next_beat[
             "red_attributes"
         ]["motion_type"] in [DASH, STATIC]:
             self.update_dash_static_prop_rot_dirs(
                 next_beat,
-                is_continuous_rot_dir,
+                prop_continuity,
                 blue_rot_dir,
                 red_rot_dir,
             )
+        self.update_start_orientations(next_beat, self.sequence[-1])
+        self.update_end_orientations(next_beat)
 
         next_beat = self.update_beat_number(next_beat, self.sequence)
         return next_beat

@@ -10,7 +10,9 @@ from base_widgets.pictograph.pictograph_context_menu_handler import (
 from base_widgets.pictograph.pictograph_view import (
     PictographView,
 )
-from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_view_key_event_handler import GraphEditorViewKeyEventHandler
+from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_view_key_event_handler import (
+    GraphEditorViewKeyEventHandler,
+)
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from .GE_pictograph_view_mouse_event_handler import GE_PictographViewMouseEventHandler
 
@@ -48,7 +50,7 @@ class GE_PictographView(PictographView):
             self.on_selection_changed
         )
 
-    def on_selection_changed(self, selected_arrow):
+    def on_selection_changed(self):
         self.scene().update()
 
     def set_to_blank_grid(self) -> None:

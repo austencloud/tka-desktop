@@ -8,10 +8,15 @@ from data.constants import (
     COUNTER_CLOCKWISE,
     CW_HANDPATH,
     DASH,
+    END_LOC,
     IN,
     OUT,
     PRO,
+    PROP_ROT_DIR,
+    START_LOC,
+    START_ORI,
     STATIC,
+    TURNS,
 )
 from objects.motion.managers.handpath_calculator import HandpathCalculator
 
@@ -25,24 +30,32 @@ class JsonOriCalculator:
 
     def calculate_end_ori(self, pictograph_data, color: str):
         motion_type = pictograph_data[f"{color}_attributes"]["motion_type"]
-        if (pictograph_data[f"{color}_attributes"]["turns"]) != "fl":
-            turns = float(pictograph_data[f"{color}_attributes"]["turns"])
+        
+        if (pictograph_data[f"{color}_attributes"][TURNS]) != "fl":
+            turns = float(pictograph_data[f"{color}_attributes"][TURNS])
         else:
-            turns = pictograph_data[f"{color}_attributes"]["turns"]
-        start_ori = pictograph_data[f"{color}_attributes"]["start_ori"]
-        prop_rot_dir = pictograph_data[f"{color}_attributes"]["prop_rot_dir"]
-        start_loc = pictograph_data[f"{color}_attributes"]["start_loc"]
-        end_loc = pictograph_data[f"{color}_attributes"]["end_loc"]
+            turns = pictograph_data[f"{color}_attributes"][TURNS]
+            
+        start_ori = pictograph_data[f"{color}_attributes"][START_ORI]
+        prop_rot_dir = pictograph_data[f"{color}_attributes"][PROP_ROT_DIR]
+        start_loc = pictograph_data[f"{color}_attributes"][START_LOC]
+        end_loc = pictograph_data[f"{color}_attributes"][END_LOC]
+        
         if motion_type == "float":
             handpath_direction = self.handpath_calculator.get_hand_rot_dir(
-                pictograph_data[f"{color}_attributes"]["start_loc"],
-                pictograph_data[f"{color}_attributes"]["end_loc"],
+                pictograph_data[f"{color}_attributes"][START_LOC],
+                pictograph_data[f"{color}_attributes"][END_LOC],
             )
-            return self.calculate_float_orientation(start_ori, handpath_direction)
+            end_ori = self.calculate_float_orientation(start_ori, handpath_direction)
         else:
-            return self.calculate_turn_orientation(
+            end_ori = self.calculate_turn_orientation(
                 motion_type, turns, start_ori, prop_rot_dir, start_loc, end_loc
             )
+        if end_ori is None:
+            raise ValueError(
+                f"Could not determine end orientation for {color} motion. Check orientation and rotation direction."
+            )
+        return end_ori
 
     def calculate_turn_orientation(
         self, motion_type, turns, start_ori, prop_rot_dir, start_loc, end_loc

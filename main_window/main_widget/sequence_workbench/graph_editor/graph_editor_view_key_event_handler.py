@@ -10,7 +10,8 @@ if TYPE_CHECKING:
 class GraphEditorViewKeyEventHandler:
     def __init__(self, pictograph_view: "GE_PictographView") -> None:
         self.pictograph_view = pictograph_view
-
+        self.graph_editor = pictograph_view.graph_editor
+        
     def handle_key_press(self, event: QKeyEvent) -> bool:
         shift_held = event.modifiers() & Qt.KeyboardModifier.ShiftModifier
         ctrl_held = event.modifiers() & Qt.KeyboardModifier.ControlModifier

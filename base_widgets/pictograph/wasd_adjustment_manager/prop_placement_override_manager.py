@@ -17,7 +17,7 @@ class PropPlacementOverrideManager:
         self.turns_tuple_generator = wasd_manager.turns_tuple_generator
 
     def handle_prop_placement_override(self, key) -> None:
-        self.special_placements = self.pictograph.main_widget.special_placements
+        self.special_placements = SpecialPlacementLoader().load_special_placements()
         if self._is_mixed_ori():
             return
         beta_ori = self._get_beta_ori()
