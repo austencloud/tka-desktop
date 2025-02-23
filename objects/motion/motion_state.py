@@ -22,9 +22,15 @@ class MotionState:
         self.prefloat_handler = PrefloatStateUpdater(self)
 
     def update_motion_state(self, data: dict) -> None:
+        SHIFT_MOTIONS = ["pro", "anti", "float"]
+
         for key, value in data.items():
             if value is not None:
-                if hasattr(self, key):
-                    setattr(self, key, value)
+                if key in ["prefloat_motion_type", "prefloat_prop_rot_dir"]:
+                    if self.motion_type in SHIFT_MOTIONS:
+                        setattr(self, key, value)
+                else:
+                    if hasattr(self, key):
+                        setattr(self, key, value)
 
         self.prefloat_handler.update_prefloat_state(data)
