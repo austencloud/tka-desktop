@@ -1,8 +1,6 @@
 from typing import TYPE_CHECKING
-
 from main_window.settings_manager.global_settings.app_context import AppContext
-
-
+from PyQt6.QtWidgets import QFileDialog
 from .image_export_layout_handler import ImageExportLayoutHandler
 from .image_creator.image_creator import ImageCreator
 from .image_export_beat_factory import ImageExportBeatFactory
@@ -44,3 +42,46 @@ class ImageExportManager:
         self.image_creator = ImageCreator(self)
         self.image_saver = ImageSaver(self)
         self.dialog_executor = ImageExportDialogExecutor(self)
+
+# main_window/main_widget/sequence_workbench/sequence_beat_frame/image_export_manager.py
+    def export_sequence_image(self):
+        # Get all settings at once
+        export_settings = self.main_widget.settings_manager.image_export.get_all_settings()
+        
+        # Create image with stored settings
+        image = self.image_creator.create_sequence_image(
+            AppContext.json_manager().loader_saver.load_current_sequence(),
+            include_start_pos=export_settings["include_start_position"],
+            options={
+                "add_beat_numbers": export_settings["add_beat_numbers"],
+                "add_reversal_symbols": export_settings["add_reversal_symbols"],
+                "add_info": export_settings["add_info"],
+                "add_word": export_settings["add_word"],
+                "add_difficulty_level": export_settings["add_difficulty_level"]
+            }
+        )
+        
+        # Save and handle post-export actions
+        file_path = self._get_save_path()
+        if file_path:
+            image.save(file_path)
+            if export_settings["open_directory_on_export"]:
+                self._open_export_directory(file_path)
+
+    def _open_export_directory(self, file_path: str):
+        import platform
+        import subprocess
+        if platform.system() == "Windows":
+            subprocess.Popen(f'explorer /select,"{file_path}"')
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", "-R", file_path])
+        elif platform.system() == "Linux":
+            subprocess.Popen(["xdg-open", file_path])
+
+    def _get_save_path(self):
+        return QFileDialog.getSaveFileName(
+            self.beat_frame,
+            "Save Sequence Image",
+            "",
+            "PNG Images (*.png);;JPEG Images (*.jpg *.jpeg)"
+        )[0]

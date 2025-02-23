@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QSpacerItem, QSizePolicy, QWidget
-from .hover_button import HoverButton
+from ..hover_button import HoverButton
 
 if TYPE_CHECKING:
-    from .settings_dialog import SettingsDialog
+    from ..settings_dialog import SettingsDialog
 
 
 class SettingsDialogActionButtons(QWidget):

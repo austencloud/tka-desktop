@@ -1,14 +1,10 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
-from main_window.main_widget.settings_dialog.user_profile_tab.user_profile_tab_controller import (
-    UserProfileTabController,
-)
-from main_window.main_widget.settings_dialog.user_profile_tab.user_profile_ui_manager import (
-    UserProfileUIManager,
-)
-from main_window.main_widget.settings_dialog.user_profile_tab.user_profile_ui_factory import (
-    UserProfileUIFactory,
-)
+
+from .user_profile_tab_controller import UserProfileTabController
+from .user_profile_ui_factory import UserProfileUIFactory
+from .user_profile_ui_manager import UserProfileUIManager
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog

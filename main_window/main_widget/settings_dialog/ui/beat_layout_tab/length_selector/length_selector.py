@@ -3,7 +3,6 @@ from PyQt6.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import pyqtSignal
 
-from main_window.main_widget.settings_dialog.beat_layout_tab.layout_controls.default_layout_label import DefaultLayoutLabel
 from .layout_length_button import LayoutLengthButton
 from .num_beats_spinbox import NumBeatsSpinbox
 from .sequence_length_label import SequenceLengthLabel

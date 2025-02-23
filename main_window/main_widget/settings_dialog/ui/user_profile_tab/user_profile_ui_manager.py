@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtGui import QFont
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.user_profile_tab.user_profile_tab import (
+    from main_window.main_widget.settings_dialog.ui.user_profile_tab.user_profile_tab import (
         UserProfileTab,
     )
 

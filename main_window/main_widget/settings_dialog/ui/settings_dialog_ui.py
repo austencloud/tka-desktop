@@ -1,13 +1,25 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QStackedWidget, QWidget
 
+from main_window.main_widget.settings_dialog.ui.beat_layout_tab.beat_layout_tab import (
+    BeatLayoutTab,
+)
+from main_window.main_widget.settings_dialog.ui.image_export_tab.image_export_tab import (
+    ImageExportTab,
+)
+from main_window.main_widget.settings_dialog.ui.prop_type_tab.prop_type_tab import (
+    PropTypeTab,
+)
+from main_window.main_widget.settings_dialog.ui.user_profile_tab.user_profile_tab import (
+    UserProfileTab,
+)
+from main_window.main_widget.settings_dialog.ui.visibility_tab.visibility_tab import (
+    VisibilityTab,
+)
+
 
 from .settings_dialog_sidebar import SettingsDialogSidebar
-from .settings_dialog_tab_selection_manager import SettingsDialogTabSelectionManager
-from .beat_layout_tab.beat_layout_tab import BeatLayoutTab
-from .prop_type_tab.prop_type_tab import PropTypeTab
-from .user_profile_tab.user_profile_tab import UserProfileTab
-from .visibility_tab.visibility_tab import VisibilityTab
+from .settings_dialog_tab_manager import SettingsDialogTabManager
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
@@ -19,7 +31,7 @@ class SettingsDialogUI(QWidget):
         self.dialog = dialog
         self.sidebar = SettingsDialogSidebar(dialog)
         self.content_area = QStackedWidget(self)
-        self.tab_selection_manager = SettingsDialogTabSelectionManager(dialog)
+        self.tab_selection_manager = SettingsDialogTabManager(dialog)
 
     def setup_ui(self):
         """Initializes UI components and layout."""
@@ -31,6 +43,7 @@ class SettingsDialogUI(QWidget):
             "Prop Type": PropTypeTab(self.dialog),
             "Visibility": VisibilityTab(self.dialog),
             "Beat Layout": BeatLayoutTab(self.dialog),
+            "Image Export": ImageExportTab(self.dialog),  # New tab
         }
 
         # Store individual tab references for easier access

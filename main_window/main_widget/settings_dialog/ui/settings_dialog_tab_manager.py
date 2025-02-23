@@ -3,19 +3,23 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from main_window.main_widget.settings_dialog.visibility_tab.visibility_tab import (
+
+from main_window.main_widget.settings_dialog.ui.prop_type_tab.prop_type_tab import (
+    PropTypeTab,
+)
+from main_window.main_widget.settings_dialog.ui.user_profile_tab.user_profile_tab import (
+    UserProfileTab,
+)
+from main_window.main_widget.settings_dialog.ui.visibility_tab.visibility_tab import (
     VisibilityTab,
 )
-
-from .prop_type_tab.prop_type_tab import PropTypeTab
-from .user_profile_tab.user_profile_tab import UserProfileTab
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 
 
-class SettingsDialogTabSelectionManager:
+class SettingsDialogTabManager:
     def __init__(self, dialog: "SettingsDialog"):
         self.dialog = dialog
         self.tabs = {}

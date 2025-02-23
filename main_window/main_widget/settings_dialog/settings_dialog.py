@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QDialog, QHBoxLayout
 from PyQt6.QtCore import QEvent
 
-from .settings_dialog_styler import SettingsDialogStyler
-from .settings_dialog_ui import SettingsDialogUI
+from .styles.settings_dialog_styler import SettingsDialogStyler
+from .ui.settings_dialog_ui import SettingsDialogUI
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
