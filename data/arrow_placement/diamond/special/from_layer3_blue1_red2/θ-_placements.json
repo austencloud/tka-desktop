@@ -19,6 +19,9 @@
     "(s, 2, 3)": {
       "dash_from_layer2_rot_angle_override": true,
       "dash_from_layer2": [-5, -140]
+    },
+    "(1, 0)": {
+      "dash_from_layer2": [-5, 0]
     }
   }
 }

@@ -75,6 +75,7 @@ class MirroredEntryCreator:
     def _get_keys_for_mixed_start_ori(
         self, letter: Letter, ori_key
     ) -> tuple[str, dict]:
+        AppContext.special_placement_loader().reload()
         other_ori_key = self.data_updater.get_other_layer3_ori_key(ori_key)
         other_letter_data = (
             AppContext.special_placement_loader()

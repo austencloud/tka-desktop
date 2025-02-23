@@ -142,6 +142,9 @@
     "(o, 2.5, 3)": {
       "dash_rot_angle_override": true,
       "dash": [-30, -130]
+    },
+    "(o, fl, 0.5)": {
+      "float_from_layer2": [10, -30]
     }
   }
 }
