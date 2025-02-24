@@ -1,10 +1,7 @@
 from typing import TYPE_CHECKING
 
-
-from base_widgets.pictograph.hotkey_graph_adjuster.prop_placement_override_manager import (
-    PropPlacementOverrideManager,
-)
-from base_widgets.pictograph.hotkey_graph_adjuster.arrow_movement_manager import ArrowMovementManager
+from hotkey_graph_adjuster.arrow_movement_manager import ArrowMovementManager
+from hotkey_graph_adjuster.prop_placement_override_manager import PropPlacementOverrideManager
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )

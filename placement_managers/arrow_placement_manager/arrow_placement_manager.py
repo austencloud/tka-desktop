@@ -1,9 +1,9 @@
 from email.policy import default
 from typing import TYPE_CHECKING
 from venv import logger
-from base_widgets.pictograph.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import (
-    SpecialPlacementDataUpdater,
-)
+
+from hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
+
 from .arrow_placement_context import ArrowPlacementContext
 from .quadrant_index_handler import QuadrantIndexHandler
 from .arrow_adjustment_calculator import ArrowAdjustmentCalculator

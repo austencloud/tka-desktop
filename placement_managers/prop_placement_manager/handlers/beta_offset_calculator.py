@@ -61,9 +61,4 @@ class BetaOffsetCalculator:
         }
 
         offset = offset_map.get(direction, QPointF(0, 0))
-
-        print(
-            f"[DEBUG] Moving {direction}: Offset = {offset}"
-        )  # 🔍 Print the offset before moving
-
         return current_position + offset

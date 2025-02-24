@@ -1,7 +1,5 @@
 from typing import Optional
-from base_widgets.pictograph.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
-    ArrowRotAngleOverrideKeyGenerator,
-)
+from hotkey_graph_adjuster.rotation_angle_override_key_generator import ArrowRotAngleOverrideKeyGenerator
 from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING

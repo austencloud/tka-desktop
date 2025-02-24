@@ -20,12 +20,14 @@ from PyQt6.QtCore import QPointF
 
 if TYPE_CHECKING:
 
+    from base_widgets.pictograph.pictograph_checker import PictographChecker
+    from base_widgets.pictograph.pictograph_getter import PictographGetter
+    from base_widgets.pictograph.pictograph_state import PictographState
+
     from placement_managers.arrow_placement_manager.arrow_placement_manager import (
         ArrowPlacementManager,
     )
-    from ...pictograph_checker import PictographChecker
-    from ...pictograph_getter import PictographGetter
-    from ...pictograph_state import PictographState
+
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

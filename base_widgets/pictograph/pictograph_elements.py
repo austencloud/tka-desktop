@@ -27,9 +27,8 @@ from .pictograph_view import PictographView
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.visibility_tab.pictograph.visibility_pictograph_view import (
-        VisibilityPictographView,
-    )
+    from main_window.main_widget.settings_dialog.ui.visibility_tab.pictograph.visibility_pictograph_view import VisibilityPictographView
+
     from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view import (
         GE_PictographView,
     )

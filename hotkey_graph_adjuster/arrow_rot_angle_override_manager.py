@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import STATIC, DASH
-from base_widgets.pictograph.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
-    ArrowRotAngleOverrideKeyGenerator,
-)
+
+from hotkey_graph_adjuster.rotation_angle_override_key_generator import ArrowRotAngleOverrideKeyGenerator
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
