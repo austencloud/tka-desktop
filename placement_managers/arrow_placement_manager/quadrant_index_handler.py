@@ -19,7 +19,7 @@ from data.constants import (
 )
 
 if TYPE_CHECKING:
-    from .arrow_placement_manager import ArrowPlacementManager
+    from placement_managers.arrow_placement_manager.arrow_placement_manager import ArrowPlacementManager
 
 
 class QuadrantIndexHandler:

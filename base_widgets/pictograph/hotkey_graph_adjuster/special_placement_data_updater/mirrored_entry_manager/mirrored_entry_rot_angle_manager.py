@@ -1,6 +1,8 @@
-import logging
-import sys
 from typing import Optional
+from base_widgets.pictograph.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
+    ArrowRotAngleOverrideKeyGenerator,
+)
+from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING
 
@@ -23,7 +25,11 @@ class MirroredEntryRotAngleManager:
         if rot_angle_override is None:
             return
 
-        ori_key = self.manager.data_updater._generate_ori_key(arrow.motion)
+        ori_key = (
+            self.manager.data_updater.ori_key_generator.generate_ori_key_from_motion(
+                arrow.motion
+            )
+        )
         letter = arrow.pictograph.state.letter
         other_ori_key, other_letter_data = (
             self.manager.data_prep.get_keys_for_mixed_start_ori(letter, ori_key)
@@ -45,7 +51,11 @@ class MirroredEntryRotAngleManager:
 
     def remove_rotation_angle_in_mirrored_entry(self, arrow: Arrow, hybrid_key: str):
         letter = arrow.pictograph.state.letter
-        ori_key = self.manager.data_updater._generate_ori_key(arrow.motion)
+        ori_key = (
+            self.manager.data_updater.ori_key_generator.generate_ori_key_from_motion(
+                arrow.motion
+            )
+        )
         other_ori_key, other_letter_data = (
             self.manager.data_prep.get_keys_for_mixed_start_ori(letter, ori_key)
         )
@@ -63,8 +73,8 @@ class MirroredEntryRotAngleManager:
     def _handle_mirrored_rotation_angle_override(
         self, other_letter_data, rotation_angle_override, mirrored_turns_tuple
     ):
-        key = self.manager.data_updater.positioner.pictograph.managers.wasd_manager.rotation_angle_override_manager.key_generator.generate_rotation_angle_override_key(
-            self.manager.data_updater.positioner.pictograph.main_widget.sequence_workbench.graph_editor.selection_manager.selected_arrow
+        key = ArrowRotAngleOverrideKeyGenerator().generate_rotation_angle_override_key(
+            AppContext.get_selected_arrow()
         )
         if mirrored_turns_tuple not in other_letter_data:
             other_letter_data[mirrored_turns_tuple] = {}

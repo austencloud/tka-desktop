@@ -25,14 +25,18 @@ class MirroredEntryDataPrep:
 
     def _get_ori_key(self, motion):
         """Fetches the orientation key based on the motion's properties."""
-        return self.manager.data_updater._generate_ori_key(motion)
+        return self.manager.data_updater.ori_key_generator.generate_ori_key_from_motion(
+            motion
+        )
 
     def get_keys_for_mixed_start_ori(self, letter, ori_key) -> tuple[str, dict]:
         """Fetches keys and data for mixed start orientation cases."""
-        if (
-            self.manager.data_updater.positioner.pictograph.managers.check.starts_from_mixed_orientation()
-        ):
-            other_ori_key = self.manager.data_updater.get_other_layer3_ori_key(ori_key)
+        if self.manager.data_updater.checker.starts_from_mixed_orientation():
+            other_ori_key = (
+                self.manager.data_updater.ori_key_generator.get_other_layer3_ori_key(
+                    ori_key
+                )
+            )
             other_letter_data = self._get_letter_data(other_ori_key, letter)
             return other_ori_key, other_letter_data
         return ori_key, self._get_letter_data(ori_key, letter)

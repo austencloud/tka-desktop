@@ -1,6 +1,7 @@
 from Enums.letters import LetterConditions, Letter
 
 from data.constants import *
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .base_mirrored_entry_updater import BaseMirroredEntryUpdater
 
 
@@ -18,15 +19,18 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
             LetterConditions.HYBRID
         ):
             return
-        ori_key = self.mirrored_entry_updater.manager.data_updater._generate_ori_key(
+        ori_key = self.mirrored_entry_updater.manager.data_updater.ori_key_generator.generate_ori_key_from_motion(
             self.arrow.motion
         )
 
-        letter_data = self.mirrored_entry_updater.manager.data_updater.positioner.placement_manager.pictograph.main_widget.special_placements.get(
-            ori_key,
-            {},
-        ).get(
-            letter.value, {}
+        letter_data = (
+            AppContext.special_placement_loader()
+            .load_special_placements_fresh()
+            .get(
+                ori_key,
+                {},
+            )
+            .get(letter.value, {})
         )
         turns_tuple = (
             self.mirrored_entry_updater.turns_tuple_generator.generate_turns_tuple(

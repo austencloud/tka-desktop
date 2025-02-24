@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
 from base_widgets.pictograph.hotkey_graph_adjuster.hotkey_graph_adjuster import HotkeyGraphAdjuster
-from placement_managers.arrow_placement_manager.arrow_placement_manager import (
-    ArrowPlacementManager,
-)
+
+from placement_managers.arrow_placement_manager.arrow_placement_manager import ArrowPlacementManager
 from placement_managers.prop_placement_manager.prop_placement_manager import (
     PropPlacementManager,
 )

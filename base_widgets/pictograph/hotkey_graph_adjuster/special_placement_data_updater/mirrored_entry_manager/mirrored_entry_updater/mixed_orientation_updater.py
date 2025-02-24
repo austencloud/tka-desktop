@@ -14,7 +14,7 @@ class MixedOrientationUpdater(BaseMirroredEntryUpdater):
         other_ori_key, other_letter_data = (
             self.mirrored_entry_updater._get_keys_for_mixed_start_ori(
                 letter,
-                self.mirrored_entry_updater.manager.data_updater._generate_ori_key(
+                self.mirrored_entry_updater.manager.data_updater.ori_key_generator.generate_ori_key_from_motion(
                     self.arrow.motion
                 ),
             )

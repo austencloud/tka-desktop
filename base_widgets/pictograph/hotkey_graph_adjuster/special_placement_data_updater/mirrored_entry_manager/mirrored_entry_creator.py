@@ -1,8 +1,10 @@
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
-from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
+from placement_managers.attr_key_generator import (
+    AttrKeyGenerator,
+)
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import (
@@ -26,7 +28,9 @@ class MirroredEntryCreator:
         )
 
     def create_entry(self, letter: Letter, arrow: Arrow):
-        ori_key = self.data_updater._generate_ori_key(arrow.motion)
+        ori_key = self.data_updater.ori_key_generator.generate_ori_key_from_motion(
+            arrow.motion
+        )
         letter_data, _ = self._fetch_letter_data_and_original_turn_data(
             ori_key, letter, arrow
         )
@@ -39,7 +43,7 @@ class MirroredEntryCreator:
                 arrow
             )
 
-            attr = self.data_updater.positioner.attr_key_generator.get_key(arrow)
+            attr = AttrKeyGenerator().get_key_from_arrow(arrow)
             if mirrored_turns_tuple not in other_letter_data:
                 other_letter_data[mirrored_turns_tuple] = {}
             if attr not in letter_data:

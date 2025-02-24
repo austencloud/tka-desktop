@@ -21,7 +21,6 @@ from data.constants import (
     STATIC,
     WEST,
 )
-from objects.motion import motion
 from .base_directional_tuple_generator import BaseDirectionalGenerator
 
 

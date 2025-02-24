@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
-from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 
@@ -12,8 +11,8 @@ if TYPE_CHECKING:
 class PropPlacementOverrideManager:
     def __init__(self, hotkey_adjuster: "HotkeyGraphAdjuster") -> None:
         self.pictograph = hotkey_adjuster.pictograph
-        self.special_positioner = (
-            self.pictograph.managers.arrow_placement_manager.special_positioner
+        self.data_updater = (
+            hotkey_adjuster.pictograph.managers.arrow_placement_manager.data_updater
         )
         self.turns_tuple_generator = hotkey_adjuster.turns_tuple_generator
 
@@ -47,7 +46,7 @@ class PropPlacementOverrideManager:
 
     def _get_keys(self, beta_ori):
         adjustment_key_str = self._generate_adjustment_key_str(self.letter)
-        ori_key = self.special_positioner.data_updater._generate_ori_key(
+        ori_key = self.data_updater.ori_key_generator.generate_ori_key_from_motion(
             self.pictograph.elements.blue_motion
         )
         override_key = self._generate_override_key(beta_ori)
@@ -89,9 +88,7 @@ class PropPlacementOverrideManager:
         return letter_data.get(adjustment_key_str, {})
 
     def _update_json_entry(self, letter, letter_data) -> None:
-        ori_key = self.special_positioner.data_updater._generate_ori_key(
+        ori_key = self.data_updater.ori_key_generator.generate_ori_key_from_motion(
             self.pictograph.elements.blue_motion
         )
-        self.special_positioner.data_updater.update_specific_entry_in_json(
-            letter, letter_data, ori_key
-        )
+        self.data_updater.update_specific_entry_in_json(letter, letter_data, ori_key)

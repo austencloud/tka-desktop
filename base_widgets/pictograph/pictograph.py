@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QGraphicsScene
 
+from placement_managers.arrow_placement_manager.arrow_placement_manager import ArrowPlacementManager
 from svg_manager.svg_manager import SvgManager
 from .pictograph_elements import PictographElements
 from .pictograph_managers import PictographManagers
@@ -9,9 +10,7 @@ from .pictograph_checker import PictographChecker
 from .pictograph_getter import PictographGetter
 from .pictograph_updater.pictograph_updater import PictographUpdater
 from .pictograph_initializer import PictographInitializer
-from placement_managers.arrow_placement_manager.arrow_placement_manager import (
-    ArrowPlacementManager,
-)
+
 from placement_managers.prop_placement_manager.prop_placement_manager import (
     PropPlacementManager,
 )

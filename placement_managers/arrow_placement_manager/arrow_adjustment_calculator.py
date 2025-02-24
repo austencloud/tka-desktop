@@ -1,5 +1,4 @@
 import logging
-import re
 from PyQt6.QtCore import QPointF
 from Enums.letters import Letter
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
@@ -9,7 +8,10 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING, Optional
 
-from .directional_tuple_manager.directional_tuple_manager import DirectionalTupleManager
+from placement_managers.arrow_placement_manager.directional_tuple_manager.directional_tuple_manager import (
+    DirectionalTupleManager,
+)
+
 
 if TYPE_CHECKING:
     from .arrow_placement_manager import ArrowPlacementManager
@@ -44,10 +46,8 @@ class ArrowAdjustmentCalculator:
         turns_tuple = TurnsTupleGenerator().generate_turns_tuple(
             self.placement_manager.pictograph
         )
-        ori_key = (
-            self.placement_manager.special_positioner.data_updater._generate_ori_key(
-                arrow.motion
-            )
+        ori_key = self.placement_manager.data_updater.ori_key_generator.generate_ori_key_from_motion(
+            arrow.motion
         )
 
         special_placements = self._get_special_placements(arrow, ori_key)
@@ -60,24 +60,29 @@ class ArrowAdjustmentCalculator:
         )
 
         if special_adjustment:
-
             x, y = special_adjustment
         else:
-            x, y = self.placement_manager.default_positioner.get_default_adjustment(
-                arrow
+            default_adjustment = (
+                self.placement_manager.default_strategy.get_default_adjustment(arrow)
             )
+
+            # ✅ Fix: Extract x() and y() instead of unpacking
+            x, y = default_adjustment.x(), default_adjustment.y()
 
         directional_adjustments = self._get_directional_adjustments(arrow, x, y)
         quadrant_index = (
             self.placement_manager.quadrant_index_handler.get_quadrant_index(arrow)
         )
 
-        return self._get_final_adjustment(
+        final_adjustment = self._get_final_adjustment(
             arrow, directional_adjustments, quadrant_index
         )
 
+        return final_adjustment
+
     def _get_special_placements(self, arrow: Arrow, ori_key: str) -> dict:
         """Loads and prepares special placements for the current grid mode and letter."""
+
         special_placements_all_modes = (
             self.special_placement_loader.load_or_return_special_placements()
         )
@@ -92,10 +97,12 @@ class ArrowAdjustmentCalculator:
             special_placements_for_current_grid_mode[
                 self.placement_manager.pictograph.state.letter
             ] = {}
+
         return special_placements_for_current_grid_mode
 
     def _get_directional_adjustments(self, arrow: Arrow, x: float, y: float) -> list:
         """Generates directional adjustments for the arrow."""
+
         directional_tuple_manager = DirectionalTupleManager(arrow.motion)
         directional_adjustments = directional_tuple_manager.generate_directional_tuples(
             x, y
@@ -112,6 +119,7 @@ class ArrowAdjustmentCalculator:
         self, arrow: Arrow, directional_adjustments: list, quadrant_index: int
     ) -> QPointF:
         """Returns the final QPointF adjustment based on directional adjustments and quadrant index."""
+
         if directional_adjustments is None:
             return QPointF(0, 0)
 
@@ -123,12 +131,6 @@ class ArrowAdjustmentCalculator:
 
         return QPointF(*directional_adjustments[quadrant_index])
 
-    def _find_special_rotation(self, turn_data: dict) -> Optional[dict]:
-        for key, value in turn_data.items():
-            if re.match(r"^(cw|ccw)_static$", key):
-                return value
-        return None
-
     def get_adjustment_for_letter(
         self,
         special_placements: dict[str, dict[str, dict[str, dict]]],
@@ -136,11 +138,12 @@ class ArrowAdjustmentCalculator:
         arrow: Arrow,
         turns_tuple: str,
     ) -> Optional[tuple[int, int]]:
+
         letter_adjustments: dict[str, dict[str, list]] = special_placements.get(
             letter.value, {}
         ).get(turns_tuple, {})
 
-        key = self.placement_manager.special_positioner.attr_key_generator.get_key(
+        key = self.placement_manager.special_strategy.attr_key_generator.get_key_from_arrow(
             arrow
         )
 

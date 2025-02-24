@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtCore import Qt
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view import (
@@ -32,7 +34,7 @@ class GraphEditorViewKeyEventHandler:
         elif key == Qt.Key.Key_Z:
             self.wasd_manager.entry_remover.remove_special_placement_entry(
                 self.pictograph_view.pictograph.state.letter,
-                arrow=self.pictograph_view.graph_editor.selection_manager.selected_arrow,
+                arrow=AppContext.get_selected_arrow(),
             )
         elif key == Qt.Key.Key_C:
             self.wasd_manager.prop_placement_override_manager.handle_prop_placement_override(

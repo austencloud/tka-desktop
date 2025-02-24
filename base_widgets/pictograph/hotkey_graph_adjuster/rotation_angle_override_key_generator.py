@@ -3,7 +3,6 @@ from data.constants import CLOCK, COUNTER, IN, OUT
 
 if TYPE_CHECKING:
     from objects.arrow.arrow import Arrow
-    from .arrow_rot_angle_override_manager import ArrowRotAngleOverrideManager
 
 
 class ArrowRotAngleOverrideKeyGenerator:

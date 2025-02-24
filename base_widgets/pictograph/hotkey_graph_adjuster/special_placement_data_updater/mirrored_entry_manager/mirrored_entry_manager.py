@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from main_window.settings_manager.global_settings.app_context import AppContext
-from objects.arrow.arrow import Arrow
 from .mirrored_entry_data_prep import MirroredEntryDataPrep
 
 from .mirrored_entry_rot_angle_manager import MirroredEntryRotAngleManager
@@ -23,11 +22,12 @@ class MirroredEntryManager:
         self.rot_angle_manager = MirroredEntryRotAngleManager(self)
         self.data_prep = MirroredEntryDataPrep(self)
 
-    def update_mirrored_entry_in_json(self, arrow: "Arrow") -> None:
-        if self.data_prep.is_new_entry_needed(arrow):
+    def update_mirrored_entry_in_json(self) -> None:
+        selected_arrow = AppContext.get_selected_arrow()
+        if self.data_prep.is_new_entry_needed(selected_arrow):
             self.mirrored_entry_creator.create_entry(
-                arrow.pictograph.state.letter, arrow
+                selected_arrow.pictograph.state.letter, selected_arrow
             )
         else:
-            self.mirrored_entry_updater.update_entry(arrow)
+            self.mirrored_entry_updater.update_entry(selected_arrow)
         AppContext.special_placement_loader().reload()

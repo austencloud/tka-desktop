@@ -18,7 +18,7 @@ class BaseRotAngleCalculator(ABC):
             self.arrow.pictograph.managers.wasd_manager.rotation_angle_override_manager.key_generator
         )
         self.data_updater = (
-            self.arrow.pictograph.managers.arrow_placement_manager.special_positioner.data_updater
+            self.arrow.pictograph.managers.arrow_placement_manager.data_updater
         )
         self.handpath_calculator = HandpathCalculator()
 
@@ -38,7 +38,9 @@ class BaseRotAngleCalculator(ABC):
         special_placements = (
             self.arrow.pictograph.main_widget.special_placement_loader.special_placements
         )
-        ori_key = self.data_updater._generate_ori_key(self.arrow.motion)
+        ori_key = self.data_updater.ori_key_generator.generate_ori_key_from_motion(
+            self.arrow.motion
+        )
         letter = self.arrow.pictograph.state.letter.value
 
         letter_data: dict[str, dict] = (

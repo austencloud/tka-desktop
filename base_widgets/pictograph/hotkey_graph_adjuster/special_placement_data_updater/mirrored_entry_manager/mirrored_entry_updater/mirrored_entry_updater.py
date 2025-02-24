@@ -1,4 +1,5 @@
 from Enums.letters import Letter
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .base_mirrored_entry_updater import BaseMirroredEntryUpdater
 from .mixed_orientation_updater import MixedOrientationUpdater
 from .standard_orientation_updater import StandardOrientationUpdater
@@ -27,7 +28,11 @@ class MirroredEntryUpdater:
             return StandardOrientationUpdater(self, arrow)
 
     def update_entry(self, arrow: Arrow):
-        ori_key = self.manager.data_updater._generate_ori_key(arrow.motion)
+        ori_key = (
+            self.manager.data_updater.ori_key_generator.generate_ori_key_from_motion(
+                arrow.motion
+            )
+        )
         letter = arrow.pictograph.state.letter
         letter_data, original_turn_data = (
             self.manager.data_prep._fetch_letter_data_and_original_turn_data(
@@ -71,10 +76,11 @@ class MirroredEntryUpdater:
         return self.turns_tuple_generator.generate_turns_tuple(arrow.pictograph)
 
     def _get_letter_data(self, ori_key: str, letter: Letter) -> dict:
-        return self.data_updater.positioner.placement_manager.pictograph.main_widget.special_placements.get(
-            ori_key, {}
-        ).get(
-            letter.value, {}
+        return (
+            AppContext.special_placement_loader()
+            .load_special_placements_fresh()
+            .get(ori_key, {})
+            .get(letter.value, {})
         )
 
     def _get_keys_for_mixed_start_ori(

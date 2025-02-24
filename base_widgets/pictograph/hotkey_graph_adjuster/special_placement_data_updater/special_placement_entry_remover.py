@@ -8,6 +8,9 @@ from main_window.main_widget.json_manager.special_placement_saver import (
 
 from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
+from placement_managers.attr_key_generator import (
+    AttrKeyGenerator,
+)
 
 if TYPE_CHECKING:
     from .special_placement_data_updater import SpecialPlacementDataUpdater
@@ -20,15 +23,18 @@ class SpecialPlacementEntryRemover:
         self,
         data_updater: "SpecialPlacementDataUpdater",
     ) -> None:
-        self.positioner = data_updater.positioner
         self.data_updater = data_updater
         self.turns_tuple_generator = data_updater.turns_tuple_generator
         self.special_placement_saver = SpecialPlacementSaver()
         self.special_placement_loader = AppContext.special_placement_loader()
 
     def remove_special_placement_entry(self, letter: Letter, arrow: Arrow) -> None:
-        ori_key = self.data_updater._generate_ori_key(arrow.motion)
-        file_path = self._generate_file_path(ori_key, letter)
+        ori_key = self.data_updater.ori_key_generator.generate_ori_key_from_motion(
+            arrow.motion
+        )
+        file_path = self._generate_file_path(
+            ori_key, letter, arrow.pictograph.state.grid_mode
+        )
 
         if os.path.exists(file_path):
             data = self.load_data(file_path)
@@ -40,12 +46,12 @@ class SpecialPlacementEntryRemover:
         self, letter: Letter, arrow: Arrow, ori_key: str, file_path: str, data: dict
     ):
         self.turns_tuple = self.turns_tuple_generator.generate_turns_tuple(
-            self.positioner.placement_manager.pictograph
+            self.data_updater.placement_manager.pictograph
         )
         if letter.value in data:
             letter_data = data[letter.value]
 
-            key = self.data_updater.positioner.attr_key_generator.get_key(arrow)
+            key = AttrKeyGenerator().get_key_from_arrow(arrow)
             self._remove_turn_data_entry(letter_data, self.turns_tuple, key)
 
             if arrow.pictograph.managers.check.starts_from_mixed_orientation():
@@ -125,8 +131,7 @@ class SpecialPlacementEntryRemover:
     def load_data(self, file_path):  # -> Any:
         return self.special_placement_loader.load_json_data(file_path)
 
-    def _generate_file_path(self, ori_key: str, letter: Letter) -> str:
-        grid_mode = self.positioner.placement_manager.pictograph.state.grid_mode
+    def _generate_file_path(self, ori_key: str, letter: Letter, grid_mode: str) -> str:
         file_path = os.path.join(
             "data",
             "arrow_placement",
