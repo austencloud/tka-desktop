@@ -2,11 +2,11 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt, QSize
 from typing import Callable
 
-from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
+from base_widgets.pictograph.elements.views.bordered_pictograph_view import BorderedPictographView
 
 
 if TYPE_CHECKING:
-    from .start_pos_picker import StartPosPicker
+    from .....main_window.main_widget.construct_tab.start_pos_picker.start_pos_picker import StartPosPicker
     from base_widgets.pictograph.pictograph import Pictograph
 
 

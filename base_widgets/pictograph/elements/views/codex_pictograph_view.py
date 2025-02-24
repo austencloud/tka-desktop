@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.pictograph_view import PictographView
+from base_widgets.pictograph.elements.views.base_pictograph_view import BasePictographView
 
 if TYPE_CHECKING:
-    from .codex import Codex
+    from .....main_window.main_widget.codex.codex import Codex
     from base_widgets.pictograph.pictograph import Pictograph
 
 
-class CodexPictographView(PictographView):
+class CodexPictographView(BasePictographView):
     def __init__(self, pictograph: "Pictograph", codex: "Codex") -> None:
         super().__init__(pictograph)
         self.pictograph = pictograph

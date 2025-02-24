@@ -3,9 +3,9 @@
 from PyQt6.QtCore import QPointF
 from typing import TYPE_CHECKING
 
-from base_widgets.pictograph.glyphs.tka_glyph.turns_parser import (
-    parse_turns_tuple_string,
-)
+from objects.glyphs.tka_glyph.turns_parser import parse_turns_tuple_string
+
+
 from .dot import Dot
 from data.constants import OPP, SAME
 

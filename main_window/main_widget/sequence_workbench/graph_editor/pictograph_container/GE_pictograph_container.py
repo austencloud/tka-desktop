@@ -1,12 +1,11 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
+from base_widgets.pictograph.elements.views.GE_pictograph_view import GE_PictographView
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
     GE_Pictograph,
 )
 
-
-from ..GE_pictograph_view import GE_PictographView
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat

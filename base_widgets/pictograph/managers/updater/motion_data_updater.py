@@ -7,7 +7,7 @@ from data.constants import LEADING, RED, BLUE, TRAILING
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
-    from ..pictograph import Pictograph
+    from ...pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 

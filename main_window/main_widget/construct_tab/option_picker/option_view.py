@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Callable
 from PyQt6.QtCore import Qt, QSize
-from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
+from base_widgets.pictograph.elements.views.bordered_pictograph_view import BorderedPictographView
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph

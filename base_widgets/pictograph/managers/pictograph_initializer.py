@@ -3,32 +3,33 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import QPoint, Qt
 from PyQt6.QtWidgets import QGraphicsTextItem
 from data.prop_class_mapping import prop_class_mapping
-from .glyphs.reversal_glyph import (
-    ReversalGlyph,
-)
+
 from objects.arrow.arrow import Arrow
-from .grid.grid import Grid, GridData
+from objects.glyphs.elemental_glyph.elemental_glyph import ElementalGlyph
+from objects.glyphs.reversal_glyph import ReversalGlyph
+from objects.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
+    StartToEndPosGlyph,
+)
+from objects.glyphs.tka_glyph.tka_glyph import TKA_Glyph
+from objects.glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
+from objects.prop.prop_factory import PropFactory
+from ..grid.grid import Grid, GridData
 from objects.motion.motion import Motion
 from objects.prop.prop import Prop
 from objects.prop.prop_classes import *
 from data.constants import *
 from settings_provider import SettingsProvider
 from utilities.path_helpers import get_images_and_data_path
-from .prop_factory import PropFactory
-from .glyphs.elemental_glyph.elemental_glyph import ElementalGlyph
-from .glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import StartToEndPosGlyph
-from .glyphs.tka_glyph.tka_glyph import TKA_Glyph
-from .glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
 
 if TYPE_CHECKING:
-    from .pictograph import Pictograph
+    from ..pictograph import Pictograph
 
 
 # pictograph_initializer.py
 
 import json
 from utilities.path_helpers import get_images_and_data_path
-from .grid.grid import Grid, GridData
+from ..grid.grid import Grid, GridData
 import logging
 
 logger = logging.getLogger(__name__)
@@ -62,15 +63,11 @@ class PictographInitializer:
         self.pictograph.elements.start_to_end_pos_glyph = (
             self.init_start_to_end_pos_glyph()
         )
-        self.init_reversal_symbols()
+        self.pictograph.elements.reversal_glyph = self.init_reversal_glyph()
 
         self.set_nonradial_points_visibility(
             self.settings.value("global/show_non_radial_points", False)
         )
-
-    def init_reversal_symbols(self) -> tuple[QGraphicsTextItem, QGraphicsTextItem]:
-        self.reversal_symbol_manager = ReversalGlyph(self.pictograph)
-        # self.reversal_symbol_manager.update_reversal_symbols()
 
     def set_nonradial_points_visibility(self, visible: bool) -> None:
         self.pictograph.elements.grid.toggle_non_radial_points(visible)
@@ -155,6 +152,10 @@ class PictographInitializer:
             props[BLUE],
         )
         return props
+
+    def init_reversal_glyph(self) -> tuple[QGraphicsTextItem, QGraphicsTextItem]:
+        reversal_glyph = ReversalGlyph(self.pictograph)
+        return reversal_glyph
 
     def init_tka_glyph(self) -> TKA_Glyph:
         tka_glyph = TKA_Glyph(self.pictograph)

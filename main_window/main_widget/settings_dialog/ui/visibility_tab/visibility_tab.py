@@ -1,10 +1,13 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
+from base_widgets.pictograph.elements.views.visibility_pictograph_view import (
+    VisibilityPictographView,
+)
+
 from .pictograph.visibility_pictograph import VisibilityPictograph
 from .visibility_toggler import VisibilityToggler
 from .buttons_widget.visibility_buttons_widget import VisibilityButtonsWidget
-from .pictograph.visibility_pictograph_view import VisibilityPictographView
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:

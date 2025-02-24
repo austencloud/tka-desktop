@@ -9,7 +9,7 @@ from .motion_data_updater import MotionDataUpdater
 from .placement_updater import PlacementUpdater
 
 if TYPE_CHECKING:
-    from ..pictograph import Pictograph
+    from ...pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 

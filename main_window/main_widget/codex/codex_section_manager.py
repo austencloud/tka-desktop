@@ -4,7 +4,9 @@ from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout
 from PyQt6.QtCore import Qt
 
 from Enums.letters import LetterType
-from .codex_pictograph_view import CodexPictographView
+from base_widgets.pictograph.elements.views.codex_pictograph_view import (
+    CodexPictographView,
+)
 from .codex_section_type_label import CodexSectionTypeLabel
 from base_widgets.pictograph.pictograph import Pictograph
 

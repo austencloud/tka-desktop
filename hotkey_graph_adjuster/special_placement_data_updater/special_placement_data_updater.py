@@ -20,9 +20,9 @@ from PyQt6.QtCore import QPointF
 
 if TYPE_CHECKING:
 
-    from base_widgets.pictograph.pictograph_checker import PictographChecker
-    from base_widgets.pictograph.pictograph_getter import PictographGetter
-    from base_widgets.pictograph.pictograph_state import PictographState
+    from base_widgets.pictograph.managers.pictograph_checker import PictographChecker
+    from base_widgets.pictograph.managers.getter.pictograph_getter import PictographGetter
+    from base_widgets.pictograph.state.pictograph_state import PictographState
 
     from placement_managers.arrow_placement_manager.arrow_placement_manager import (
         ArrowPlacementManager,

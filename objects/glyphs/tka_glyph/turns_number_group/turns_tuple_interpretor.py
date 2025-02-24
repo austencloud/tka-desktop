@@ -7,7 +7,7 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.glyphs.tka_glyph.tka_glyph import TKA_Glyph
+    from objects.glyphs.tka_glyph.tka_glyph import TKA_Glyph
 
 
 class TurnsTupleInterpreter:

@@ -1,16 +1,14 @@
 from typing import Union, TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.glyphs.reversal_glyph import ReversalGlyph
-from base_widgets.pictograph.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
-    StartToEndPosGlyph,
-)
+
 from Enums.Enums import Glyph
 from base_widgets.pictograph.grid.non_radial_points_group import NonRadialPointsGroup
+from objects.glyphs.reversal_glyph import ReversalGlyph
+from objects.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import StartToEndPosGlyph
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.visibility_tab.pictograph.visibility_pictograph_view import (
-        VisibilityPictographView,
-    )
+    from base_widgets.pictograph.elements.views.visibility_pictograph_view import VisibilityPictographView
+
 
 
 class VisibilityPictographInteractionManager:

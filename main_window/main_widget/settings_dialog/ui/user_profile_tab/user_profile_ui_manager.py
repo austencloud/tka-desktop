@@ -20,7 +20,6 @@ class UserProfileUIManager:
 
         for user_name, user_button in self.tab.tab_controller.user_buttons.items():
             is_current = user_name == current_user
-            print(f"[DEBUG] Updating button {user_name}: is_current={is_current}")
 
             # 🔥 Always apply style, even if `is_current` did not change
             user_button.apply_style(is_current)

@@ -18,7 +18,7 @@ from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
 
-    from base_widgets.pictograph.pictograph_getter import PictographGetter
+    from base_widgets.pictograph.managers.getter.pictograph_getter import PictographGetter
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

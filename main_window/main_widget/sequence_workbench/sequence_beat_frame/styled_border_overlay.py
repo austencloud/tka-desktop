@@ -6,14 +6,14 @@ from typing import TYPE_CHECKING
 from Enums.letters import LetterType
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph_view import (
-        PictographView,
+    from base_widgets.pictograph.elements.views.base_pictograph_view import (
+        BasePictographView,
     )
 import math
 
 
 class StyledBorderOverlay(QWidget):
-    def __init__(self, view: "PictographView") -> None:
+    def __init__(self, view: "BasePictographView") -> None:
         super().__init__(view)
         self.view = view
         self.is_set = False

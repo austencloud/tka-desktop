@@ -1,34 +1,29 @@
 from typing import TYPE_CHECKING
-
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPainter, QPen, QColor, QMouseEvent, QKeyEvent, QCursor
 from PyQt6.QtWidgets import QApplication
-
-from base_widgets.pictograph.pictograph_context_menu_handler import (
-    PictographContextMenuHandler,
+from base_widgets.pictograph.elements.views.base_pictograph_view import (
+    BasePictographView,
 )
-from base_widgets.pictograph.pictograph_view import (
-    PictographView,
+from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view_mouse_event_handler import (
+    GE_PictographViewMouseEventHandler,
 )
 from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_view_key_event_handler import (
     GraphEditorViewKeyEventHandler,
 )
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
-from .GE_pictograph_view_mouse_event_handler import GE_PictographViewMouseEventHandler
-
 from base_widgets.pictograph.pictograph import Pictograph
-
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
     GE_Pictograph,
 )
 
 if TYPE_CHECKING:
-    from .pictograph_container.GE_pictograph_container import (
+    from .....main_window.main_widget.sequence_workbench.graph_editor.pictograph_container.GE_pictograph_container import (
         GraphEditorPictographContainer,
     )
 
 
-class GE_PictographView(PictographView):
+class GE_PictographView(BasePictographView):
     reference_beat: "Beat" = None
     is_start_pos = False
 
@@ -42,9 +37,8 @@ class GE_PictographView(PictographView):
         self.pictograph = pictograph
         self.main_widget = self.graph_editor.main_widget
         self.setScene(pictograph)
-        self.setFrameShape(PictographView.Shape.Box)
+        self.setFrameShape(BasePictographView.Shape.Box)
         self.mouse_event_handler = GE_PictographViewMouseEventHandler(self)
-        self.context_menu_handler = PictographContextMenuHandler(self)
         self.key_event_handler = GraphEditorViewKeyEventHandler(self)
         self.graph_editor.selection_manager.selection_changed.connect(
             self.on_selection_changed

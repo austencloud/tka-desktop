@@ -4,7 +4,7 @@ from .location_manager.arrow_loc_manager import ArrowLocationManager
 from .arrow_mirror_handler import ArrowMirrorManager
 from .arrow_updater import ArrowUpdater
 from .rot_angle_manager.arrow_rot_angle_manager import ArrowRotAngleManager
-from ..graphical_object.graphical_object import GraphicalObject
+from ..graphical_object import GraphicalObject
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

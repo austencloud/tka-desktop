@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 import logging
 
 if TYPE_CHECKING:
-    from ..pictograph import Pictograph
+    from ...pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 

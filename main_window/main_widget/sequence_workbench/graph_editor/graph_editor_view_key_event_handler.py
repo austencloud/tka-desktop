@@ -6,7 +6,7 @@ from main_window.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view import (
+    from base_widgets.pictograph.elements.views.GE_pictograph_view import (
         GE_PictographView,
     )
 

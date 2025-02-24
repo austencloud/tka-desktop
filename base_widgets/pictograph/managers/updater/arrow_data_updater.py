@@ -5,7 +5,7 @@ from Enums.letters import LetterType
 from data.constants import RED, BLUE
 
 if TYPE_CHECKING:
-    from ..pictograph import Pictograph
+    from ...pictograph import Pictograph
 
 logger = logging.getLogger(__name__)
 

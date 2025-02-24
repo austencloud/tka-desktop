@@ -4,13 +4,13 @@ from PyQt6.QtCore import Qt, QEvent, QRectF
 from PyQt6.QtGui import QPainter, QPen, QColor, QCursor
 
 from Enums.letters import LetterType
-from base_widgets.pictograph.pictograph_view import PictographView
+from base_widgets.pictograph.elements.views.base_pictograph_view import BasePictographView
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
 
 
-class BorderedPictographView(PictographView):
+class BorderedPictographView(BasePictographView):
     def __init__(self, pictograph: "Pictograph") -> None:
         super().__init__(pictograph)
         self.primary_color = None

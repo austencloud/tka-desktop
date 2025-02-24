@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Optional
-from ..graphical_object.graphical_object import GraphicalObject
+from ..graphical_object import GraphicalObject
 from PyQt6.QtWidgets import QGraphicsPixmapItem
 from .prop_attr_manager import PropAttrManager
 from .prop_checker import PropChecker
