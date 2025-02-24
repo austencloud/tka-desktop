@@ -5,7 +5,7 @@ from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.wasd_adjustment_manager.special_placement_data_updater.special_placement_data_updater import (
+    from base_widgets.pictograph.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import (
         SpecialPlacementDataUpdater,
     )
 

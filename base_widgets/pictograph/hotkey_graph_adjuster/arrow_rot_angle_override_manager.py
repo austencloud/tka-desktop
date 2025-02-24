@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import STATIC, DASH
-from base_widgets.pictograph.wasd_adjustment_manager.rotation_angle_override_key_generator import (
+from base_widgets.pictograph.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
     ArrowRotAngleOverrideKeyGenerator,
 )
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
@@ -14,7 +14,7 @@ from main_window.settings_manager.global_settings.app_context import AppContext
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
 
-    from .wasd_adjustment_manager import WASD_AdjustmentManager
+    from .hotkey_graph_adjuster import HotkeyGraphAdjuster
 
 
 class ArrowRotAngleOverrideManager:
@@ -25,9 +25,9 @@ class ArrowRotAngleOverrideManager:
     defined in the "{letter}_placements.json" file.
     """
 
-    def __init__(self, wasd_adjustment_manager: "WASD_AdjustmentManager") -> None:
-        self.wasd_manager = wasd_adjustment_manager
-        self.pictograph = wasd_adjustment_manager.pictograph
+    def __init__(self, hotkey_graph_adjuster: "HotkeyGraphAdjuster") -> None:
+        self.wasd_manager = hotkey_graph_adjuster
+        self.pictograph = hotkey_graph_adjuster.pictograph
         self.special_positioner = (
             self.pictograph.managers.arrow_placement_manager.special_positioner
         )

@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from base_widgets.pictograph.wasd_adjustment_manager.rotation_angle_override_key_generator import (
-    ArrowRotAngleOverrideKeyGenerator,
-)
+
+from base_widgets.pictograph.hotkey_graph_adjuster.rotation_angle_override_key_generator import ArrowRotAngleOverrideKeyGenerator
 from data.constants import *
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader

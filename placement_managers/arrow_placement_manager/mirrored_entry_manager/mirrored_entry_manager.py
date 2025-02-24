@@ -9,8 +9,9 @@ from .mirrored_entry_creator import MirroredEntryCreator
 from .mirrored_entry_updater.mirrored_entry_updater import MirroredEntryUpdater
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.wasd_adjustment_manager.special_placement_data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
-
+    from base_widgets.pictograph.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import (
+        SpecialPlacementDataUpdater,
+    )
 
 
 class MirroredEntryManager:

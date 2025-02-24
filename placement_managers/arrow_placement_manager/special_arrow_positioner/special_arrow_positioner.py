@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING
 
-from base_widgets.pictograph.wasd_adjustment_manager.special_placement_data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
+from base_widgets.pictograph.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import (
+    SpecialPlacementDataUpdater,
+)
+
 
 from .attr_key_generator import AttrKeyGenerator
 

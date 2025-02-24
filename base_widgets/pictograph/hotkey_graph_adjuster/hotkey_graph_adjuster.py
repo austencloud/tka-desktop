@@ -1,14 +1,15 @@
 from typing import TYPE_CHECKING
 
-from base_widgets.pictograph.wasd_adjustment_manager.prop_placement_override_manager import (
+
+from base_widgets.pictograph.hotkey_graph_adjuster.prop_placement_override_manager import (
     PropPlacementOverrideManager,
 )
+from base_widgets.pictograph.hotkey_graph_adjuster.arrow_movement_manager import ArrowMovementManager
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
 
 
-from .arrow_movement_manager import ArrowMovementManager
 from .arrow_rot_angle_override_manager import ArrowRotAngleOverrideManager
 
 if TYPE_CHECKING:
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
     )
 
 
-class WASD_AdjustmentManager:
+class HotkeyGraphAdjuster:
     def __init__(self, pictograph: "GE_Pictograph") -> None:
         self.pictograph = pictograph
         self.view = pictograph.view

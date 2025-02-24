@@ -158,7 +158,7 @@ class SpecialPlacementDataUpdater:
         if not arrow:
             return
 
-        letter = self.state.letter
+        letter = arrow.pictograph.state.letter
 
         ori_key = self._generate_ori_key(arrow.motion)
 

@@ -6,16 +6,16 @@ from main_window.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
-    from .wasd_adjustment_manager import WASD_AdjustmentManager
+    from .hotkey_graph_adjuster import HotkeyGraphAdjuster
 
 
 class PropPlacementOverrideManager:
-    def __init__(self, wasd_manager: "WASD_AdjustmentManager") -> None:
-        self.pictograph = wasd_manager.pictograph
+    def __init__(self, hotkey_adjuster: "HotkeyGraphAdjuster") -> None:
+        self.pictograph = hotkey_adjuster.pictograph
         self.special_positioner = (
             self.pictograph.managers.arrow_placement_manager.special_positioner
         )
-        self.turns_tuple_generator = wasd_manager.turns_tuple_generator
+        self.turns_tuple_generator = hotkey_adjuster.turns_tuple_generator
 
     def handle_prop_placement_override(self, key) -> None:
         self.special_placements = (

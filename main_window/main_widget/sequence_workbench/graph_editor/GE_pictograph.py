@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
 
-from base_widgets.pictograph.wasd_adjustment_manager.wasd_adjustment_manager import (
-    WASD_AdjustmentManager,
-)
+
+from base_widgets.pictograph.hotkey_graph_adjuster.hotkey_graph_adjuster import HotkeyGraphAdjuster
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 
 if TYPE_CHECKING:
@@ -17,4 +16,4 @@ class GE_Pictograph(Beat):
             pictograph_container.graph_editor.sequence_workbench.sequence_beat_frame
         )
         self.is_blank = True
-        self.managers.wasd_manager = WASD_AdjustmentManager(self)
+        self.managers.wasd_manager = HotkeyGraphAdjuster(self)

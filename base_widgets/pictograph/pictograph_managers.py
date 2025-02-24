@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from base_widgets.pictograph.hotkey_graph_adjuster.hotkey_graph_adjuster import HotkeyGraphAdjuster
 from placement_managers.arrow_placement_manager.arrow_placement_manager import (
     ArrowPlacementManager,
 )
@@ -9,7 +10,6 @@ from svg_manager.svg_manager import SvgManager
 from .glyphs.reversal_glyph import ReversalGlyph
 from .pictograph_checker import PictographChecker
 from .pictograph_getter import PictographGetter
-from .wasd_adjustment_manager.wasd_adjustment_manager import WASD_AdjustmentManager
 from .pictograph_updater.pictograph_updater import PictographUpdater
 from .pictograph_initializer import PictographInitializer
 
@@ -26,7 +26,7 @@ class PictographManagers:
 
     arrow_placement_manager: ArrowPlacementManager = None
     prop_placement_manager: PropPlacementManager = None
-    wasd_manager: WASD_AdjustmentManager = None
+    wasd_manager: HotkeyGraphAdjuster = None
     reversal_glyph: ReversalGlyph = None
     check: PictographChecker = None
     get: PictographGetter = None
