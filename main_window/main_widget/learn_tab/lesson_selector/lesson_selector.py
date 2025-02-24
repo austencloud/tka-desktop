@@ -82,10 +82,7 @@ class LessonSelector(QWidget):
 
         # Create the button
         button = LessonSelectorButton(button_text)
-<<<<<<< HEAD:main_window/main_widget/learn_tab/lesson_selector.py
         button.setCursor(Qt.CursorShape.PointingHandCursor)
-=======
->>>>>>> ca2245d505d4775da140a124a3b957eeb12014a0:main_window/main_widget/learn_tab/lesson_selector/lesson_selector.py
         button.clicked.connect(callback)
         self.buttons[button_text] = button
 
