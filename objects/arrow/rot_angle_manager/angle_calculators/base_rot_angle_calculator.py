@@ -2,8 +2,10 @@ from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
 
 
-from base_widgets.pictograph.hotkey_graph_adjuster.rotation_angle_override_key_generator import ArrowRotAngleOverrideKeyGenerator
 from data.constants import *
+from hotkey_graph_adjuster.rotation_angle_override_key_generator import (
+    ArrowRotAngleOverrideKeyGenerator,
+)
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from main_window.settings_manager.global_settings.app_context import AppContext
@@ -20,7 +22,7 @@ class BaseRotAngleCalculator(ABC):
         self.arrow = arrow
         self.rot_angle_key_generator = ArrowRotAngleOverrideKeyGenerator()
         self.data_updater = (
-            self.arrow.pictograph.managers.arrow_placement_manager.special_positioner.data_updater
+            self.arrow.pictograph.managers.arrow_placement_manager.data_updater
         )
         self.handpath_calculator = HandpathCalculator()
 
@@ -40,7 +42,9 @@ class BaseRotAngleCalculator(ABC):
         special_placements = (
             AppContext.special_placement_loader().load_or_return_special_placements()
         )
-        ori_key = self.data_updater._generate_ori_key(self.arrow.motion)
+        ori_key = self.data_updater.ori_key_generator.generate_ori_key_from_motion(
+            self.arrow.motion
+        )
         letter = self.arrow.pictograph.state.letter.value
 
         letter_data: dict[str, dict] = (

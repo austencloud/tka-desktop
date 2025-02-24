@@ -21,7 +21,7 @@ class MotionManipulator:
             DOWN: {NORTHEAST: SOUTHEAST, NORTHWEST: SOUTHWEST},
             RIGHT: {NORTHWEST: NORTHEAST, SOUTHWEST: SOUTHEAST},
         }
-        current_location = self.motion.arrow.loc
+        current_location = self.motion.arrow.state.loc
         new_location = wasd_location_map.get(direction, {}).get(
             current_location, current_location
         )
@@ -135,7 +135,7 @@ class MotionManipulator:
         """
         Generic method to rotate arrows based on the handpath and locations.
         """
-        current_index = locations.index(self.motion.arrow.loc)
+        current_index = locations.index(self.motion.arrow.state.loc)
         new_index = (
             (current_index + 1) % len(locations)
             if handpath == CW_HANDPATH
@@ -155,7 +155,7 @@ class MotionManipulator:
         """
         Update motion attributes and reflect changes in the pictograph.
         """
-        self.motion.arrow.loc = new_location
+        self.motion.arrow.state.loc = new_location
         self.motion.state.start_loc = new_start_loc
         self.motion.state.end_loc = new_end_loc
         self.motion.prop.loc = new_end_loc

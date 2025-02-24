@@ -29,15 +29,12 @@ class StartPosPicker(BaseStartPosPicker):
         pictograph_dataset: dict,
         beat_frame: "SequenceBeatFrame",
         mw_size_provider,
-        option_click_handler,
-        advnaced_transition_handler,
+        advanced_transition_handler,
     ):
         super().__init__(pictograph_dataset, mw_size_provider=mw_size_provider)
         self.beat_frame = beat_frame  # ✅ Store the beat_frame
-        self.advanced_transition_handler = advnaced_transition_handler
-        self.pictograph_frame = StartPosPickerPictographFrame(
-            self, option_click_handler=option_click_handler
-        )
+        self.advanced_transition_handler = advanced_transition_handler
+        self.pictograph_frame = StartPosPickerPictographFrame(self)
         self.choose_your_start_pos_label = ChooseYourStartPosLabel(self)
         self.button_layout = self._setup_variations_button_layout()
         self.setup_layout()

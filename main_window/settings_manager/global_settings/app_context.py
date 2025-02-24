@@ -1,13 +1,10 @@
-from typing import TYPE_CHECKING
-
+from typing import TYPE_CHECKING, Optional
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 
-
 if TYPE_CHECKING:
+    from objects.arrow.arrow import Arrow
     from main_window.main_widget.json_manager.json_manager import JsonManager
-    from main_window.main_widget.json_manager.special_placement_saver import (
-        SpecialPlacementSaver,
-    )
+    from main_window.main_widget.json_manager.special_placement_saver import SpecialPlacementSaver
     from main_window.settings_manager.settings_manager import SettingsManager
 
 
@@ -17,6 +14,7 @@ class AppContext:
     _special_placement_handler = None
     _special_placement_loader = None
     _sequence_beat_frame = None  # 👈 Initially None
+    _selected_arrow: Optional["Arrow"] = None  # 👈 Add global selected arrow
 
     @classmethod
     def init(
@@ -32,18 +30,25 @@ class AppContext:
         cls._special_placement_loader = special_placement_loader
 
     @classmethod
-    def set_sequence_beat_frame(cls, sequence_beat_frame):
-        """Set the sequence beat frame after initialization."""
-        cls._sequence_beat_frame = sequence_beat_frame
+    def set_selected_arrow(cls, arrow: Optional["Arrow"]) -> None:
+        """Set the globally selected arrow."""
+        if cls._selected_arrow:
+            cls._selected_arrow.setSelected(False)  # Unselect previous arrow
+        cls._selected_arrow = arrow
+        if arrow:
+            arrow.setSelected(True)  # Select the new arrow
 
     @classmethod
-    def sequence_beat_frame(cls):
-        """Retrieve sequence_beat_frame only if it's set."""
-        if cls._sequence_beat_frame is None:
-            raise RuntimeError(
-                "AppContext.sequence_beat_frame() accessed before being set. Ensure it is initialized in MainWindow."
-            )
-        return cls._sequence_beat_frame
+    def clear_selected_arrow(cls) -> None:
+        """Clear the global arrow selection."""
+        if cls._selected_arrow:
+            cls._selected_arrow.setSelected(False)
+        cls._selected_arrow = None
+
+    @classmethod
+    def get_selected_arrow(cls) -> Optional["Arrow"]:
+        """Retrieve the globally selected arrow."""
+        return cls._selected_arrow
 
     @classmethod
     def settings_manager(cls) -> "SettingsManager":
@@ -58,9 +63,7 @@ class AppContext:
         return cls._json_manager
 
     @classmethod
-    def special_placement_saver(
-        cls,
-    ) -> "SpecialPlacementSaver":
+    def special_placement_saver(cls) -> "SpecialPlacementSaver":
         if cls._special_placement_handler is None:
             raise RuntimeError(
                 "AppContext.special_placement_handler() accessed before init()"
@@ -68,7 +71,23 @@ class AppContext:
         return cls._special_placement_handler
 
     @classmethod
-    def special_placement_loader(cls) -> SpecialPlacementLoader:
+    def special_placement_loader(cls) -> "SpecialPlacementLoader":
         if cls._special_placement_loader is None:
-            cls._special_placement_loader = SpecialPlacementLoader()
+            raise RuntimeError(
+                "AppContext.special_placement_loader() accessed before init()"
+            )
         return cls._special_placement_loader
+
+    @classmethod
+    def set_sequence_beat_frame(cls, sequence_beat_frame):
+        """Set the sequence beat frame after initialization."""
+        cls._sequence_beat_frame = sequence_beat_frame
+
+    @classmethod
+    def sequence_beat_frame(cls):
+        """Retrieve sequence_beat_frame only if it's set."""
+        if cls._sequence_beat_frame is None:
+            raise RuntimeError(
+                "AppContext.sequence_beat_frame() accessed before being set. Ensure it is initialized in MainWindow."
+            )
+        return cls._sequence_beat_frame

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtGui import QMouseEvent
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view import (
+    from base_widgets.pictograph.elements.views.GE_pictograph_view import (
         GE_PictographView,
     )
 

@@ -1,10 +1,12 @@
 from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import QWidget
 from copy import deepcopy
+from base_widgets.pictograph.elements.views.start_pos_picker_pictograph_view import (
+    StartPosPickerPictographView,
+)
 from data.positions import box_positions, diamond_positions
 from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import BOX, DIAMOND
-from .start_pos_picker_pictograph_view import StartPosPickerPictographView
 from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:

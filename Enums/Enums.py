@@ -6,18 +6,14 @@ from Enums.letters import Letter
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QGraphicsTextItem
 
+
 if TYPE_CHECKING:
-    from base_widgets.pictograph.glyphs.elemental_glyph.elemental_glyph import (
-        ElementalGlyph,
-    )
-    from base_widgets.pictograph.glyphs.reversal_glyph import (
-        ReversalGlyph,
-    )
-    from base_widgets.pictograph.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
-        StartToEndPosGlyph,
-    )
-    from base_widgets.pictograph.glyphs.tka_glyph.tka_glyph import TKA_Glyph
-    from base_widgets.pictograph.glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
+    from objects.glyphs.elemental_glyph.elemental_glyph import ElementalGlyph
+    from objects.glyphs.reversal_glyph import ReversalGlyph
+    from objects.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import StartToEndPosGlyph
+    from objects.glyphs.tka_glyph.tka_glyph import TKA_Glyph
+    from objects.glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
+
     from base_widgets.pictograph.pictograph import Pictograph
     from main_window.settings_manager.visibility_settings.visibility_settings import (
         VisibilitySettings,

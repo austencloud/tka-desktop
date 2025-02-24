@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 class ArrowAttrManager:
     def __init__(self, arrow: "Arrow") -> None:
         self.arrow = arrow
-        self.arrow.color = self.arrow.arrow_data[COLOR]
+        self.arrow.state.color = self.arrow.arrow_data[COLOR]
         self.arrow.turns = self.arrow.arrow_data[TURNS]
 
     def update_attributes(

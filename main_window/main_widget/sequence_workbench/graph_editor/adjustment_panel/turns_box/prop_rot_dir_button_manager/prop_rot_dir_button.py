@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from base_widgets.base_rot_dir_button import BaseRotDirButton
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.base_rot_dir_button import BaseRotDirButton
 from PyQt6.QtCore import Qt, QSize
 
 if TYPE_CHECKING:

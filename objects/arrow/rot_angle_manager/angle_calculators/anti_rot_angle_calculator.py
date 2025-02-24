@@ -77,5 +77,5 @@ class AntiRotAngleCalculator(BaseRotAngleCalculator):
                 }
 
         prop_rot_dir = self.arrow.motion.state.prop_rot_dir
-        loc = self.arrow.loc
+        loc = self.arrow.state.loc
         return direction_map.get(prop_rot_dir, {}).get(loc, 0)

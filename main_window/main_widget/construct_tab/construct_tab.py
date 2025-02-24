@@ -71,8 +71,7 @@ class ConstructTab(QFrame):
             self.pictograph_dataset,
             self.beat_frame,
             self.mw_size_provider,
-            option_click_handler=self.option_picker.option_click_handler,
-            advnaced_transition_handler=self.transition_to_advanced_start_pos_picker,
+            advanced_transition_handler=self.transition_to_advanced_start_pos_picker,
         )
         self.advanced_start_pos_picker = AdvancedStartPosPicker(
             self.pictograph_dataset, self.beat_frame, self.mw_size_provider

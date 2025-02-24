@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING, Union
 from PyQt6.QtWidgets import QGraphicsTextItem
 from base_widgets.pictograph.pictograph import Pictograph
-from base_widgets.pictograph.glyphs.reversal_glyph import (
-    ReversalGlyph,
-)
+from objects.glyphs.reversal_glyph import ReversalGlyph
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.write_tab.act_sheet.act_splitter.act_beat_scroll.act_beat_frame.act_beat_view import (

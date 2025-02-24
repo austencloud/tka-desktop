@@ -46,9 +46,9 @@ class BeatFrameUpdater:
                 reversal_info = ReversalDetector.detect_reversal(
                     sequence_so_far, beat.state.pictograph_data
                 )
-                beat.blue_reversal = reversal_info["blue_reversal"]
-                beat.red_reversal = reversal_info["red_reversal"]
-                beat.reversal_glyph.update_reversal_symbols()
+                beat.state.blue_reversal = reversal_info["blue_reversal"]
+                beat.state.red_reversal = reversal_info["red_reversal"]
+                beat.elements.reversal_glyph.update_reversal_symbols()
             else:
                 print(
                     f"Beat with number {beat_num} not found in the beat frame. Skipping."

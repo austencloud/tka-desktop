@@ -7,7 +7,9 @@ from PyQt6.QtCore import (
 )
 from Enums.Enums import Glyph
 
-from base_widgets.pictograph.grid.non_radial_points_group import NonRadialPointsGroup
+from base_widgets.pictograph.elements.grid.non_radial_points_group import (
+    NonRadialPointsGroup,
+)
 from main_window.main_widget.base_indicator_label import BaseIndicatorLabel
 from main_window.main_widget.fade_manager.fadeable_opacity_effect import (
     FadableOpacityEffect,
@@ -67,7 +69,7 @@ class WidgetFader:
             return
 
         key = self._get_animation_cache_key(filtered_widgets, fade_in, duration)
-        anim_group : QParallelAnimationGroup = self._animation_cache.get(key)
+        anim_group: QParallelAnimationGroup = self._animation_cache.get(key)
         if anim_group and anim_group.state() == QParallelAnimationGroup.State.Running:
             if callback:
                 anim_group.finished.connect(callback)
@@ -89,7 +91,6 @@ class WidgetFader:
         self._animation_cache[key] = anim_group
         anim_group.finished.connect(lambda: self._animation_cache.pop(key, None))
         anim_group.start()
-
 
     def _ensure_opacity_effect(self, widget: QWidget) -> QGraphicsOpacityEffect:
         effect = widget.graphicsEffect()

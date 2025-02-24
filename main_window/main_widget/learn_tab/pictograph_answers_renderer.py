@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QGridLayout
 from PyQt6.QtCore import Qt
 from base_widgets.pictograph.pictograph import Pictograph
 
-from main_window.main_widget.learn_tab.lesson_widget.lesson_pictograph_view import (
+from base_widgets.pictograph.elements.views.lesson_pictograph_view import (
     LessonPictographView,
 )
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator

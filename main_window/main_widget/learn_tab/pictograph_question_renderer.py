@@ -4,7 +4,7 @@ from base_widgets.pictograph.pictograph import Pictograph
 
 from PyQt6.QtCore import Qt
 
-from main_window.main_widget.learn_tab.lesson_widget.lesson_pictograph_view import LessonPictographView
+from base_widgets.pictograph.elements.views.lesson_pictograph_view import LessonPictographView
 
 if TYPE_CHECKING:
     pass

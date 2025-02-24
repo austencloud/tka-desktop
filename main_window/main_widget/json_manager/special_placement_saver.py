@@ -10,8 +10,6 @@ if TYPE_CHECKING:
 
 class SpecialPlacementSaver:
 
-
-
     def save_json_data(self, data, file_path) -> None:
         """Write JSON data to a file with specific formatting."""
         try:

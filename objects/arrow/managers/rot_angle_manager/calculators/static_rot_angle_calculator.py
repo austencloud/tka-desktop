@@ -14,7 +14,7 @@ class StaticRotAngleCalculator(BaseRotAngleCalculator):
             direction_map = self._nonradial_static_direction_map()
 
         prop_rot_dir = self.arrow.motion.state.prop_rot_dir
-        loc = self.arrow.loc
+        loc = self.arrow.state.loc
 
         angle_dict = direction_map.get(prop_rot_dir)
         if angle_dict is None:
@@ -93,12 +93,14 @@ class StaticRotAngleCalculator(BaseRotAngleCalculator):
             NORTHWEST: {CLOCKWISE: 315, COUNTER_CLOCKWISE: 45},
         }
         if self.arrow.motion.state.start_ori in [IN, OUT]:
-            loc_angle = static_from_radial_angle_override_map.get(self.arrow.loc)
+            loc_angle = static_from_radial_angle_override_map.get(self.arrow.state.loc)
             if isinstance(loc_angle, dict):
                 return loc_angle.get(self.arrow.motion.state.prop_rot_dir, 0)
             return loc_angle
         elif self.arrow.motion.state.start_ori in [CLOCK, COUNTER]:
-            loc_angle = static_from_nonradial_angle_override_map.get(self.arrow.loc)
+            loc_angle = static_from_nonradial_angle_override_map.get(
+                self.arrow.state.loc
+            )
             if isinstance(loc_angle, dict):
                 return loc_angle.get(self.arrow.motion.state.prop_rot_dir, 0)
             return loc_angle

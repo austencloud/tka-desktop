@@ -19,7 +19,7 @@ from data.constants import (
 )
 
 if TYPE_CHECKING:
-    from .arrow_placement_manager import ArrowPlacementManager
+    from placement_managers.arrow_placement_manager.arrow_placement_manager import ArrowPlacementManager
 
 
 class QuadrantIndexHandler:
@@ -30,14 +30,14 @@ class QuadrantIndexHandler:
         grid_mode = self._get_grid_mode(arrow)
         if grid_mode == DIAMOND:
             if arrow.motion.state.motion_type in [PRO, ANTI, FLOAT]:
-                return self._diamond_shift_quadrant_index(arrow.loc)
+                return self._diamond_shift_quadrant_index(arrow.state.loc)
             elif arrow.motion.state.motion_type in [STATIC, DASH]:
-                return self._diamond_static_dash_quadrant_index(arrow.loc)
+                return self._diamond_static_dash_quadrant_index(arrow.state.loc)
         elif grid_mode == BOX:
             if arrow.motion.state.motion_type in [PRO, ANTI, FLOAT]:
-                return self._box_shift_quadrant_index(arrow.loc)
+                return self._box_shift_quadrant_index(arrow.state.loc)
             elif arrow.motion.state.motion_type in [STATIC, DASH]:
-                return self._box_static_dash_quadrant_index(arrow.loc)
+                return self._box_static_dash_quadrant_index(arrow.state.loc)
 
         return 0
 

@@ -5,7 +5,7 @@ from .base_rot_angle_calculator import BaseRotAngleCalculator
 class FloatRotAngleCalculator(BaseRotAngleCalculator):
     def calculate_angle(self):
         direction_map = self._float_direction_map()
-        loc = self.arrow.loc
+        loc = self.arrow.state.loc
         handpath_direction = self.handpath_calculator.get_hand_rot_dir(
             self.arrow.motion.state.start_loc, self.arrow.motion.state.end_loc
         )

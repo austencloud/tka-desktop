@@ -1,11 +1,14 @@
 from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.pictograph import Pictograph
+
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.visibility_tab.visibility_tab import (
+    from main_window.main_widget.settings_dialog.ui.visibility_tab.visibility_tab import (
         VisibilityTab,
     )
-    from .visibility_pictograph_view import VisibilityPictographView
+    from .......base_widgets.pictograph.elements.views.visibility_pictograph_view import (
+        VisibilityPictographView,
+    )
 
 
 class VisibilityPictograph(Pictograph):

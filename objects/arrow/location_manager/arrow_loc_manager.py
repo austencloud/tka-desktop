@@ -30,4 +30,4 @@ class ArrowLocationManager:
     def update_location(self) -> None:
         self.calculator = self._select_calculator()
         calculated_location = self.calculator.calculate_location()
-        self.arrow.loc = calculated_location
+        self.arrow.state.loc = calculated_location

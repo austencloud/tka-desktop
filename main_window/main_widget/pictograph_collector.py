@@ -11,12 +11,12 @@ class PictographCollector:
 
     def collect_all_pictographs(self) -> list["Pictograph"]:
         collectors: list[Callable[[], list["Pictograph"]]] = [
+            self._collect_from_graph_editor,
             self._collect_from_advanced_start_pos_picker,
             self._collect_from_start_pos_picker,
             self._collect_from_sequence_beat_frame,
             self._collect_from_pictograph_cache,
             self._collect_from_option_picker,
-            self._collect_from_graph_editor,
             self._collect_from_codex,
             self._collect_from_settings_dialog,
         ]

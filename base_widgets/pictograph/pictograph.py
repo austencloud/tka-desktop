@@ -1,17 +1,22 @@
 from PyQt6.QtWidgets import QGraphicsScene
 
-from svg_manager.svg_manager import SvgManager
-from .pictograph_elements import PictographElements
-from .pictograph_managers import PictographManagers
-from .pictograph_state import PictographState
-from .glyphs.reversal_glyph import ReversalGlyph
-from .pictograph_checker import PictographChecker
-from .pictograph_getter import PictographGetter
-from .pictograph_updater.pictograph_updater import PictographUpdater
-from .pictograph_initializer import PictographInitializer
+from base_widgets.pictograph.elements.pictograph_elements import PictographElements
+from base_widgets.pictograph.managers.getter.pictograph_getter import PictographGetter
+from base_widgets.pictograph.managers.pictograph_checker import PictographChecker
+from base_widgets.pictograph.managers.pictograph_initializer import (
+    PictographInitializer,
+)
+from base_widgets.pictograph.managers.pictograph_managers import PictographManagers
+from base_widgets.pictograph.managers.updater.pictograph_updater import (
+    PictographUpdater,
+)
+from base_widgets.pictograph.state.pictograph_state import PictographState
 from placement_managers.arrow_placement_manager.arrow_placement_manager import (
     ArrowPlacementManager,
 )
+from svg_manager.svg_manager import SvgManager
+
+
 from placement_managers.prop_placement_manager.prop_placement_manager import (
     PropPlacementManager,
 )
@@ -32,4 +37,3 @@ class Pictograph(QGraphicsScene):
         self.managers.svg_manager = SvgManager(self)
         self.managers.arrow_placement_manager = ArrowPlacementManager(self)
         self.managers.prop_placement_manager = PropPlacementManager(self)
-        self.managers.reversal_glyph = ReversalGlyph(self)
