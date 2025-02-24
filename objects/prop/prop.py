@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from ..graphical_object.graphical_object import GraphicalObject
+from PyQt6.QtWidgets import QGraphicsPixmapItem
 from .prop_attr_manager import PropAttrManager
 from .prop_checker import PropChecker
 from .prop_rot_angle_manager import PropRotAngleManager
@@ -16,12 +17,11 @@ class Prop(GraphicalObject):
     loc: str
     ori: str
     previous_location: str
-    prop_type: "PropType"
+    prop_type: str
     arrow: "Arrow"
+    pixmap_item: Optional["QGraphicsPixmapItem"]
 
-    def __init__(
-        self, pictograph, prop_data: dict, motion: "Motion", prop_type: "PropType"
-    ):
+    def __init__(self, pictograph, prop_data: dict, motion: "Motion", prop_type: str):
         super().__init__(pictograph)
         self.motion = motion
         self.prop_data = prop_data

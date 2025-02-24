@@ -13,7 +13,9 @@ from PyQt6.QtGui import QImage, QPixmap, QFont
 from utilities.path_helpers import get_my_videos_path
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_recorder.SR_capture_frame import SR_CaptureFrame
+    from main_window.main_widget.sequence_recorder.SR_capture_frame import (
+        SR_CaptureFrame,
+    )
 
 
 class SR_VideoDisplayFrame(QFrame):
@@ -38,7 +40,7 @@ class SR_VideoDisplayFrame(QFrame):
     def init_ui(self) -> None:
         self.video_display = QLabel("Webcam Feed")
         self.video_display.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.video_display.setFont(QFont("Arial", 12))
+        self.video_display.setFont(QFont("Georgia", 12))
         layout = QVBoxLayout(self)
         layout.addWidget(self.video_display)
         layout.setContentsMargins(0, 0, 0, 0)

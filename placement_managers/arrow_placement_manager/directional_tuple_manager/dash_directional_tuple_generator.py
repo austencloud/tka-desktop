@@ -31,59 +31,59 @@ class DashDirectionalGenerator(BaseDirectionalGenerator):
 
         if grid_mode == DIAMOND:
             if (
-                self.motion.pictograph.letter_type == LetterType.Type5
-                and self.motion.turns == 0
+                self.motion.pictograph.state.letter_type == LetterType.Type5
+                and self.motion.state.turns == 0
             ):
                 return self._handle_type5_zero_turns(x, y)
 
-            elif self.motion.prop_rot_dir == NO_ROT:
+            elif self.motion.state.prop_rot_dir == NO_ROT:
                 return self._handle_type5_zero_turns(x, y)
-            elif self.motion.prop_rot_dir == CLOCKWISE:
+            elif self.motion.state.prop_rot_dir == CLOCKWISE:
                 return [(x, -y), (y, x), (-x, y), (-y, -x)]
-            elif self.motion.prop_rot_dir == COUNTER_CLOCKWISE:
+            elif self.motion.state.prop_rot_dir == COUNTER_CLOCKWISE:
                 return [(-x, -y), (y, -x), (x, y), (-y, x)]
 
         elif grid_mode == BOX:
             if (
-                self.motion.pictograph.letter_type == LetterType.Type5
-                and self.motion.turns == 0
+                self.motion.pictograph.state.letter_type == LetterType.Type5
+                and self.motion.state.turns == 0
             ):
                 return self._handle_type5_zero_turns(x, y)
-            elif self.motion.prop_rot_dir == NO_ROT:
+            elif self.motion.state.prop_rot_dir == NO_ROT:
                 return self._handle_type5_zero_turns(x, y)
 
-            elif self.motion.prop_rot_dir == CLOCKWISE:
+            elif self.motion.state.prop_rot_dir == CLOCKWISE:
                 return [(-y, x), (-x, -y), (y, -x), (x, y)]
-            elif self.motion.prop_rot_dir == COUNTER_CLOCKWISE:
+            elif self.motion.state.prop_rot_dir == COUNTER_CLOCKWISE:
                 return [(-x, y), (-y, -x), (x, -y), (y, x)]
 
     def _handle_no_rotation_dash(self, x: int, y: int) -> list[tuple[int, int]]:
-        if self.other_motion.motion_type == PRO:
+        if self.other_motion.state.motion_type == PRO:
             return (
                 [(x, y), (-y, x), (-x, -y), (y, -x)]
-                if self.other_motion.prop_rot_dir == CLOCKWISE
+                if self.other_motion.state.prop_rot_dir == CLOCKWISE
                 else [(-x, y), (-y, -x), (x, -y), (y, x)]
             )
-        elif self.other_motion.motion_type == ANTI:
+        elif self.other_motion.state.motion_type == ANTI:
             return (
                 [(-x, y), (-y, -x), (x, -y), (y, x)]
-                if self.other_motion.prop_rot_dir == CLOCKWISE
+                if self.other_motion.state.prop_rot_dir == CLOCKWISE
                 else [(x, y), (-y, x), (-x, -y), (y, -x)]
             )
-        elif self.other_motion.motion_type == FLOAT:
+        elif self.other_motion.state.motion_type == FLOAT:
             return [(x, -y), (y, x), (-x, y), (-y, -x)]
 
-        elif self.other_motion.motion_type == DASH:
-            if self.other_motion.prop_rot_dir == CLOCKWISE:
+        elif self.other_motion.state.motion_type == DASH:
+            if self.other_motion.state.prop_rot_dir == CLOCKWISE:
                 return [(x, -y), (y, x), (-x, y), (-y, -x)]
-            elif self.other_motion.prop_rot_dir == COUNTER_CLOCKWISE:
+            elif self.other_motion.state.prop_rot_dir == COUNTER_CLOCKWISE:
                 return [(-x, -y), (y, -x), (x, y), (-y, x)]
             else:
                 return [(x, -y), (y, x), (-x, y), (-y, -x)]
-        elif self.other_motion.motion_type == STATIC:
-            if self.other_motion.prop_rot_dir == CLOCKWISE:
+        elif self.other_motion.state.motion_type == STATIC:
+            if self.other_motion.state.prop_rot_dir == CLOCKWISE:
                 return [(x, -y), (y, x), (-x, y), (-y, -x)]
-            elif self.other_motion.prop_rot_dir == COUNTER_CLOCKWISE:
+            elif self.other_motion.state.prop_rot_dir == COUNTER_CLOCKWISE:
                 return [(-x, -y), (y, -x), (x, y), (-y, x)]
             else:
                 return [(x, -y), (y, x), (-x, y), (-y, -x)]
@@ -109,12 +109,20 @@ class DashDirectionalGenerator(BaseDirectionalGenerator):
             (RED, (SOUTHWEST, NORTHEAST)): [(x, y), (-y, -x), (-x, -y), (-y, -x)],
             (RED, (SOUTHEAST, NORTHWEST)): [(-x, y), (-y, -x), (-x, y), (y, x)],
         }
-        grid_mode = self.motion.pictograph.grid_mode
+        grid_mode = self.motion.pictograph.state.grid_mode
         if grid_mode == DIAMOND:
             return diamond_Type5_zero_turns_directional_tuples.get(
-                (self.motion.color, (self.motion.start_loc, self.motion.end_loc)), []
+                (
+                    self.motion.state.color,
+                    (self.motion.state.start_loc, self.motion.state.end_loc),
+                ),
+                [],
             )
         elif grid_mode == BOX:
             return box_Type5_zero_turns_directional_tuples.get(
-                (self.motion.color, (self.motion.start_loc, self.motion.end_loc)), []
+                (
+                    self.motion.state.color,
+                    (self.motion.state.start_loc, self.motion.state.end_loc),
+                ),
+                [],
             )

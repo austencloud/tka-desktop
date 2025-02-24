@@ -24,7 +24,7 @@ class TurnsBox(QFrame):
         self.color = color
         self.pictograph = pictograph
         self.graph_editor = self.adjustment_panel.graph_editor
-        self.matching_motion = self.pictograph.get.motion_by_color(self.color)
+        self.matching_motion = self.pictograph.managers.get.motion_by_color(self.color)
         self.vtg_dir_btn_state: dict[str, bool] = {SAME: False, OPP: False}
         self.prop_rot_dir_btn_state: dict[str, bool] = {
             CLOCKWISE: False,

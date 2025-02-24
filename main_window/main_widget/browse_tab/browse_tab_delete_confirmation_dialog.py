@@ -19,7 +19,7 @@ class BrowseTabDeleteConfirmationDialog(QDialog):
         label = QLabel("Are you sure you want to delete this variation?")
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         label.setWordWrap(True)
-        label_font = QFont("Arial", 11, QFont.Weight.Bold)
+        label_font = QFont("Georgia", 11, QFont.Weight.Bold)
         label.setFont(label_font)
 
         # Create and style the buttons

@@ -24,8 +24,14 @@ class LeadStateDeterminer:
 
     def _determine_motion_order(self, trailing: bool) -> Motion:
         """Determine leading or trailing motion based on positions and direction."""
-        red_start, red_end = self.red_motion.start_loc, self.red_motion.end_loc
-        blue_start, blue_end = self.blue_motion.start_loc, self.blue_motion.end_loc
+        red_start, red_end = (
+            self.red_motion.state.start_loc,
+            self.red_motion.state.end_loc,
+        )
+        blue_start, blue_end = (
+            self.blue_motion.state.start_loc,
+            self.blue_motion.state.end_loc,
+        )
         red_handpath, blue_handpath = (
             self.handpath_calculator.get_hand_rot_dir(red_start, red_end),
             self.handpath_calculator.get_hand_rot_dir(blue_start, blue_end),

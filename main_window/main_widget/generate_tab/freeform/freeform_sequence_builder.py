@@ -4,7 +4,7 @@ import random
 from copy import deepcopy
 from PyQt6.QtCore import Qt
 from data.constants import CLOCKWISE, COUNTER_CLOCKWISE
-from ..base_classes.base_sequence_builder import BaseSequenceBuilder
+from ..base_sequence_builder import BaseSequenceBuilder
 from ..turn_intensity_manager import TurnIntensityManager
 
 if TYPE_CHECKING:
@@ -24,7 +24,7 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
         prop_continuity: bool,
     ):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        self._initialize_sequence(length)
+        self.initialize_sequence(length)
 
         if prop_continuity == "continuous":
             blue_rot_dir = random.choice([CLOCKWISE, COUNTER_CLOCKWISE])
@@ -48,7 +48,7 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
                 red_rot_dir,
             )
             self.sequence.append(next_pictograph)
-            self.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+            self.sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph, override_grow_sequence=True
             )
             QApplication.processEvents()
@@ -63,7 +63,7 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
         level: int,
         turn_blue: float,
         turn_red: float,
-        is_continuous_rot_dir: bool,
+        prop_continuity: str,
         blue_rot_dir: str,
         red_rot_dir: str,
     ):
@@ -75,8 +75,8 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
 
         option_dicts = self._filter_options_by_letter_type(option_dicts)
 
-        if is_continuous_rot_dir:
-            option_dicts = self._filter_options_by_rotation(
+        if prop_continuity == "continuous":
+            option_dicts = self.filter_options_by_rotation(
                 option_dicts, blue_rot_dir, red_rot_dir
             )
 
@@ -84,16 +84,14 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
         next_beat = random.choice(option_dicts)
 
         if level == 2 or level == 3:
-            next_beat = self._set_turns(next_beat, turn_blue, turn_red)
+            next_beat = self.set_turns(next_beat, turn_blue, turn_red)
 
-        self._update_start_oris(next_beat, last_beat)
-        self._update_end_oris(next_beat)
-        self._update_dash_static_prop_rot_dirs(
-            next_beat, is_continuous_rot_dir, blue_rot_dir, red_rot_dir
+        self.update_start_orientations(next_beat, last_beat)
+        self.update_end_orientations(next_beat)
+        self.update_dash_static_prop_rot_dirs(
+            next_beat, prop_continuity, blue_rot_dir, red_rot_dir
         )
-        next_beat = self._update_beat_number_depending_on_sequence_length(
-            next_beat, self.sequence
-        )
+        next_beat = self.update_beat_number(next_beat, self.sequence)
         return next_beat
 
     def _filter_options_by_letter_type(self, options: list[dict]) -> list[dict]:

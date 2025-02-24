@@ -36,7 +36,7 @@ class AdvancedStartPosManager(QObject):
                 start_position_pictograph.pictograph_dict["red_attributes"][
                     "end_ori"
                 ] = "in"
-                start_position_pictograph.updater.update_pictograph(
+                start_position_pictograph.managers.updater.update_pictograph(
                     start_position_pictograph.pictograph_dict
                 )
 
@@ -47,7 +47,9 @@ class AdvancedStartPosManager(QObject):
             for pictograph in start_pos_pictographs_by_letter:
                 pictograph.pictograph_dict["blue_attributes"]["start_ori"] = left_ori
                 pictograph.pictograph_dict["red_attributes"]["blue_ori"] = left_ori
-                pictograph.updater.update_pictograph(pictograph.pictograph_dict)
+                pictograph.managers.updater.update_pictograph(
+                    pictograph.pictograph_dict
+                )
 
     def update_right_default_ori(self, right_ori: str):
         for (
@@ -56,4 +58,6 @@ class AdvancedStartPosManager(QObject):
             for pictograph in start_pos_pictographs_by_letter:
                 pictograph.pictograph_dict["red_attributes"]["start_ori"] = right_ori
                 pictograph.pictograph_dict["red_attributes"]["end_ori"] = right_ori
-                pictograph.updater.update_pictograph(pictograph.pictograph_dict)
+                pictograph.managers.updater.update_pictograph(
+                    pictograph.pictograph_dict
+                )

@@ -1,9 +1,5 @@
 import json
-import random
-from PyQt6.QtCore import Qt, QTimer, QThreadPool, QRunnable, pyqtSignal, QObject
-from PyQt6.QtGui import QPixmap, QPainter
-from PyQt6.QtWidgets import QOpenGLWidget
-from PyQt6.QtOpenGL import QOpenGLWindow
+from PyQt6.QtCore import pyqtSignal, QObject
 
 
 class SnowflakeConfigManager(QObject):

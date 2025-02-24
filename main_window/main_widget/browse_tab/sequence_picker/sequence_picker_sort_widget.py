@@ -116,41 +116,20 @@ class SequencePickerSortWidget(QWidget):
         self.sort_by_label.setFont(sort_by_label_font)
 
     def style_buttons(self):
+        bg_type = self.settings_manager.global_settings.get_background_type()
+        font_color = self.main_widget.font_color_updater.get_font_color(bg_type)
         for button in self.buttons.values():
             selected = button == self.selected_button
-            self._style_button(button, selected=selected)
+            self._style_button(button, selected=selected, font_color=font_color)
 
-    def style_labels(self):
-        self._style_sort_by_label()
-        self._style_currently_displaying_label()
-        self._style_number_of_sequences_label()
-
-    def _style_number_of_sequences_label(self):
-        font_color = self.main_widget.font_color_updater.get_font_color(
-            self.settings_manager.global_settings.get_background_type()
-        )
-        font_size = self.browse_tab.width() // 50
-        # self.sequence_picker.control_panel.count_label.setStyleSheet(
-        #     f"font-size: {font_size}px; color: {font_color};"
-        # )
-
-    def _style_currently_displaying_label(self):
-        font_color = self.main_widget.font_color_updater.get_font_color(
-            self.settings_manager.global_settings.get_background_type()
-        )
-        font_size = self.browse_tab.width() // 50
-        # self.sequence_picker.control_panel.currently_displaying_label.setStyleSheet(
-        #     f"font-size: {font_size}px; color: {font_color};"
-        # )
-
-    def _style_button(self, button: QPushButton, selected: bool = False):
+    def _style_button(
+        self, button: QPushButton, selected: bool = False, font_color: str = "white"
+    ) -> None:
         button_font = button.font()
         button_font.setPointSize(self.browse_tab.main_widget.width() // 130)
         button.setFont(button_font)
         button.setContentsMargins(10, 5, 10, 5)
-        font_color = self.main_widget.font_color_updater.get_font_color(
-            self.settings_manager.global_settings.get_background_type()
-        )
+    
         button_background_color = "lightgray" if font_color == "black" else "#555"
         hover_color = "lightgray" if font_color == "black" else "#555"
         if selected:
@@ -183,6 +162,6 @@ class SequencePickerSortWidget(QWidget):
             )
 
     def resizeEvent(self, event):
-        self.style_labels()
+        self._style_sort_by_label()
         self.style_buttons()
         super().resizeEvent(event)

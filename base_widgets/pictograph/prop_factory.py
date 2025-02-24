@@ -1,8 +1,10 @@
-from objects.prop.prop_classes import *
+from typing import Union
 from Enums.PropTypes import PropType
 
 
 import importlib
+
+from objects.prop.prop import Prop
 
 
 class PropFactory:
@@ -47,13 +49,13 @@ class PropFactory:
                 f"Class '{class_name}' not found in '{self.module_path}'."
             )
 
-    def create_prop_of_type(self, existing_prop, target_prop_type):
+    def create_prop_of_type(self, existing_prop: "Prop", target_prop_type: str):
         """Instantiate the correct prop class dynamically."""
         if isinstance(target_prop_type, str):
             target_prop_type = PropType[target_prop_type]
         elif not isinstance(target_prop_type, PropType):
             raise ValueError(f"Invalid prop type: {target_prop_type}")
-
+        target_prop_type: PropType
         class_name = self.prop_classes.get(target_prop_type.name.lower())
 
         if class_name:

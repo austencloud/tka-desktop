@@ -9,10 +9,10 @@ class ArrowUpdater:
     def __init__(self, arrow: "Arrow") -> None:
         self.arrow = arrow
 
-    def update_arrow(self, arrow_dict=None) -> None:
-        if arrow_dict:
-            self.arrow.attr_manager.update_attributes(arrow_dict)
-        self.arrow.pictograph.main_widget.svg_manager.arrow_manager.update_arrow_svg(
+    def update_arrow(self, arrow_data=None) -> None:
+        if arrow_data:
+            self.arrow.attr_manager.update_attributes(arrow_data)
+        self.arrow.pictograph.managers.svg_manager.arrow_manager.update_arrow_svg(
             self.arrow
         )
         self.arrow.mirror_manager.update_mirror()

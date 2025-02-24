@@ -1,21 +1,23 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import QWidget
 from copy import deepcopy
 from data.positions import box_positions, diamond_positions
 from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import BOX, DIAMOND
 from .start_pos_picker_pictograph_view import StartPosPickerPictographView
+from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.construct_tab import ConstructTab
+    pass
 
 
 class BaseStartPosPicker(QWidget):
-    def __init__(self, construct_tab: "ConstructTab"):
-        super().__init__(construct_tab)
-        self.construct_tab = construct_tab
-        self.main_widget = construct_tab.main_widget
-
+    def __init__(
+        self, pictograph_dataset: dict, mw_size_provider: Callable[[], QSize]
+    ) -> None:
+        super().__init__()
+        self.pictograph_dataset = pictograph_dataset
+        self.mw_size_provider = mw_size_provider
         self.pictograph_cache: dict[str, Pictograph] = {}
         self.box_pictographs: list[Pictograph] = []
         self.diamond_pictographs: list[Pictograph] = []
@@ -34,10 +36,12 @@ class BaseStartPosPicker(QWidget):
         if pictograph_key in self.pictograph_cache:
             return self.pictograph_cache[pictograph_key]
 
-        pictograph = Pictograph(self.main_widget)
-        pictograph.view = StartPosPickerPictographView(self, pictograph)
-        pictograph.updater.update_pictograph(local_dict)
-        pictograph.view.update_borders()
+        pictograph = Pictograph()
+        pictograph.elements.view = StartPosPickerPictographView(
+            self, pictograph, size_provider=self.mw_size_provider
+        )
+        pictograph.managers.updater.update_pictograph(local_dict)
+        pictograph.elements.view.update_borders()
         self.pictograph_cache[pictograph_key] = pictograph
 
         if target_grid_mode == BOX:
@@ -57,7 +61,7 @@ class BaseStartPosPicker(QWidget):
         if self.box_pictographs:
             return self.box_pictographs
 
-        for letter, p_dicts in self.main_widget.pictograph_dataset.items():
+        for letter, p_dicts in self.pictograph_dataset.items():
             for p_dict in p_dicts:
                 if p_dict["start_pos"] == p_dict["end_pos"]:
                     if p_dict["start_pos"] in box_positions:
@@ -69,7 +73,7 @@ class BaseStartPosPicker(QWidget):
         if self.diamond_pictographs:
             return self.diamond_pictographs
 
-        for letter, p_dicts in self.main_widget.pictograph_dataset.items():
+        for letter, p_dicts in self.pictograph_dataset.items():
             for p_dict in p_dicts:
                 if p_dict["start_pos"] == p_dict["end_pos"]:
                     if p_dict["start_pos"] in diamond_positions:

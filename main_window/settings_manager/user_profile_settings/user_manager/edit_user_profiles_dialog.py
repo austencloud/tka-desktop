@@ -113,22 +113,8 @@ class EditUserProfilesDialog(QDialog):
             selected_items[0].setBackground(Qt.GlobalColor.cyan)
 
     def apply_changes(self):
-        selected_items = self.user_list.selectedItems()
-        user_profiles_selector = (
-            self.user_manager.user_profile_settings.settings_manager.main_window.main_widget.menu_bar.user_profile_selector
-        )
-        if selected_items:
-            selected_user = selected_items[0].text()
-            self.user_manager.set_current_user(selected_user)
-            user_profiles_selector.set_current_user(selected_user)
-        elif not selected_items:
-            self.user_manager.set_current_user(None)
-            user_profiles_selector.set_current_user(None)
-
         self.user_manager.save_users()
         self.accept()
-        if user_profiles_selector.dialog:
-            user_profiles_selector.dialog.accept()
 
     def keyPressEvent(self, event):
         if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):

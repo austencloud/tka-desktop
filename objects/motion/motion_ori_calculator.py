@@ -30,25 +30,53 @@ class MotionOriCalculator:
         self.motion = motion
         self.hand_rot_dir_calculator = HandpathCalculator()
 
+class MotionOriCalculator:
+    """Calculates the end orientation of a motion."""
+
+    def __init__(self, motion: "Motion") -> None:
+        self.motion = motion
+        self.hand_rot_dir_calculator = HandpathCalculator()
+
     def get_end_ori(self) -> str:
-        if self.motion.motion_type == FLOAT:  # Handle float case
+        """Determine the end orientation of a motion based on its type, turns, and handpath."""
+
+        # Validate required attributes
+        if self.motion.state.motion_type is None:
+            raise ValueError("Motion type is not set!")
+
+        if self.motion.state.turns is None:
+            raise ValueError("Turns must be set before calculating orientation.")
+
+        if self.motion.state.start_ori is None:
+            raise ValueError("Start orientation is required!")
+
+        # Handle float case separately
+        if self.motion.state.motion_type == FLOAT:
+            if not self.motion.state.start_loc or not self.motion.state.end_loc:
+                raise ValueError("FLOAT motion requires both start_loc and end_loc.")
             handpath_direction = self.hand_rot_dir_calculator.get_hand_rot_dir(
-                self.motion.start_loc, self.motion.end_loc
+                self.motion.state.start_loc, self.motion.state.end_loc
             )
-            return self.calculate_float_orientation(
-                self.motion.start_ori, handpath_direction
+            return self.calculate_float_orientation(self.motion.state.start_ori, handpath_direction)
+
+        # Handle invalid turns
+        valid_turns = {0, 0.5, 1, 1.5, 2, 2.5, 3}
+        if self.motion.state.turns not in valid_turns:
+            raise ValueError(f"Invalid turns value: {self.motion.state.turns}. Must be one of {valid_turns}.")
+
+        # Whole turn or half turn
+        if self.motion.state.turns in {0, 1, 2, 3}:
+            return self.calculate_whole_turn_orientation(
+                self.motion.state.motion_type, self.motion.state.turns, self.motion.state.start_ori
+            )
+        elif self.motion.state.turns in {0.5, 1.5, 2.5}:
+            return self.calculate_half_turn_orientation(
+                self.motion.state.motion_type, self.motion.state.turns, self.motion.state.start_ori
             )
 
-        valid_turns = [0, 0.5, 1, 1.5, 2, 2.5, 3]
-        if self.motion.turns in valid_turns:
-            if self.motion.turns in [0, 1, 2, 3]:
-                return self.calculate_whole_turn_orientation(
-                    self.motion.motion_type, self.motion.turns, self.motion.start_ori
-                )
-            elif self.motion.turns in [0.5, 1.5, 2.5]:
-                return self.calculate_half_turn_orientation(
-                    self.motion.motion_type, self.motion.turns, self.motion.start_ori
-                )
+        # Should never reach here, but let's be explicit
+        raise ValueError(f"Unhandled case in get_end_ori for turns={self.motion.state.turns}")
+
 
     def switch_orientation(self, ori: str) -> str:
         return {IN: OUT, OUT: IN, CLOCK: COUNTER, COUNTER: CLOCK}.get(ori, ori)
@@ -87,7 +115,7 @@ class MotionOriCalculator:
                 (COUNTER, COUNTER_CLOCKWISE): (IN if turns % 2 == 0.5 else OUT),
             }
 
-        return orientation_map.get((start_ori, self.motion.prop_rot_dir))
+        return orientation_map.get((start_ori, self.motion.state.prop_rot_dir))
 
     def calculate_float_orientation(
         self, start_ori: str, handpath_direction: str

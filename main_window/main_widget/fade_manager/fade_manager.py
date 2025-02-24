@@ -4,6 +4,7 @@ from PyQt6.QtCore import QObject
 from main_window.main_widget.fade_manager.widget_and_stack_fader import (
     WidgetAndStackFader,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .graphics_effect_remover import GraphicsEffectRemover
 from .widget_fader import WidgetFader
 from .stack_fader import StackFader
@@ -24,4 +25,4 @@ class FadeManager(QObject):
         self.graphics_effect_remover = GraphicsEffectRemover(self)
 
     def fades_enabled(self) -> bool:
-        return self.main_widget.settings_manager.global_settings.get_enable_fades()
+        return AppContext.settings_manager().global_settings.get_enable_fades()

@@ -5,7 +5,7 @@ from .base_directional_tuple_generator import BaseDirectionalGenerator
 class StaticDirectionalGenerator(BaseDirectionalGenerator):
     def generate_directional_tuples(self, x: int, y: int) -> list[tuple[int, int]]:
         grid_mode = self._get_grid_mode()
-        if self.motion.prop_rot_dir == NO_ROT:
+        if self.motion.state.prop_rot_dir == NO_ROT:
             return [(x, y), (-x, -y), (-y, x), (y, -x)]
 
         if grid_mode == DIAMOND:
@@ -31,4 +31,4 @@ class StaticDirectionalGenerator(BaseDirectionalGenerator):
     def _generate_tuples(
         self, x: int, y: int, direction_map: dict
     ) -> list[tuple[int, int]]:
-        return direction_map.get(self.motion.prop_rot_dir, [])
+        return direction_map.get(self.motion.state.prop_rot_dir, [])

@@ -36,7 +36,7 @@ class DirectSetTurnsDialog(QDialog):
 
     def _setup_buttons(self):
         turns_values = ["0", "0.5", "1", "1.5", "2", "2.5", "3"]  # Remove 'fl'
-        if self.turns_box.matching_motion.motion_type in [PRO, ANTI, FLOAT]:
+        if self.turns_box.matching_motion.state.motion_type in [PRO, ANTI, FLOAT]:
             turns_values.insert(0, "fl")
         for value in turns_values:
             button = DirectSetTurnsButton(value, self)

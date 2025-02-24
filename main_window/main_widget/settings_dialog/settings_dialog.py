@@ -1,15 +1,11 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QTabWidget
-from PyQt6.QtGui import QFont, QCursor
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QDialog, QHBoxLayout
+from PyQt6.QtCore import QEvent
 
-from main_window.main_widget.settings_dialog.beat_layout_tab.beat_layout_tab import BeatLayoutTab
-from main_window.main_widget.settings_dialog.prop_type_tab.prop_type_tab import PropTypeTab
-from .settings_dialog_action_buttons import SettingsDialogActionButtons
-from .styles.settings_dialog_styler import SettingsDialogStyler
-from .user_profile_tab import UserProfileTab
-from .background_tab import BackgroundTab
-from .visibility_tab.visibility_tab import VisibilityTab
+from styles.settings_dialog_styler import SettingsDialogStyler
+
+from .ui.settings_dialog_ui import SettingsDialogUI
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
@@ -20,57 +16,65 @@ class SettingsDialog(QDialog):
         super().__init__(main_widget)
         self.main_widget = main_widget
         self.setWindowTitle("Settings")
-        # self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.FramelessWindowHint)
-        # self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)  # Delete dialog on close
-        self._setup_ui()
-        self._apply_styles()
 
-    def _setup_ui(self):
-        self.styler = SettingsDialogStyler(self)
-        self.action_btns = SettingsDialogActionButtons(self)
-        self.tab_widget = QTabWidget(self)
-        self.user_profile_tab = UserProfileTab(self)
-        self.prop_type_tab = PropTypeTab(self)
-        # self.background_tab = BackgroundTab(self)
-        self.visibility_tab = VisibilityTab(self)
-        self.beat_layout_tab = BeatLayoutTab(self)
-
-        self.tab_widget.addTab(self.user_profile_tab, "User")
-        self.tab_widget.addTab(self.prop_type_tab, "Prop Type")
-        # self.tab_widget.addTab(self.background_tab, "Background")
-        self.tab_widget.addTab(self.visibility_tab, "Visibility")
-        self.tab_widget.addTab(self.beat_layout_tab, "Beat Layout")
-        
-        main_layout = QVBoxLayout(self)
-        main_layout.addWidget(self.tab_widget)
-        main_layout.addWidget(self.action_btns)
+        self.ui = SettingsDialogUI(self)
+        self.ui.setup_ui()
+        main_layout = QHBoxLayout(self)
+        main_layout.addWidget(self.ui)
         self.setLayout(main_layout)
 
-    def _apply_styles(self):
-        self.styler.style_tab_widget(self.tab_widget)
+        self.update_size()
+        SettingsDialogStyler.apply_styles(self)
 
-        # Style action buttons
-        for button in [self.action_btns.save_button, self.action_btns.close_button]:
-            self.styler.style_button(button)
+    def showEvent(self, event: QEvent):
+        """Triggered every time the dialog is shown."""
+        super().showEvent(event)
+        print("[DEBUG] Settings dialog shown - Restoring last tab")
 
-    def get_default_font(self):
-        font = QFont()
-        font_size = self.main_widget.width() // 100
-        font.setPointSize(font_size)
-        return font
+        last_tab = (
+            AppContext.settings_manager().global_settings.get_current_settings_dialog_tab()
+        )
 
-    def resizeEvent(self, event):
-        size = self.main_widget.size()
-        font_size = self.calculate_font_size()
-        self.setFixedSize(size.width() // 2, size.width() // 2)
-        tab_bar_font = self.tab_widget.tabBar().font()
-        tab_bar_font.setPointSize(font_size)
-        self.tab_widget.tabBar().setFont(tab_bar_font)
-        self.tab_widget.tabBar().setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        # Ensure tab exists, otherwise default to first tab
+        if last_tab not in self.ui.tab_selection_manager.tabs:
+            print(f"[WARNING] Tab '{last_tab}' not found, defaulting to first tab.")
+            last_tab = next(
+                iter(self.ui.tab_selection_manager.tabs)
+            )  # First tab as fallback
 
-    def calculate_font_size(self):
-        size = self.main_widget.size()
-        font = QFont()
-        font_size = size.width() // 100
-        font.setPointSize(font_size)
-        return font_size
+        tab_index = self.ui.tab_selection_manager.get_tab_index(last_tab)
+
+        self.ui.sidebar.setCurrentRow(tab_index)
+        self.ui.content_area.setCurrentIndex(tab_index)
+
+        if last_tab == "User Profile":
+            self.ui.user_profile_tab.tab_controller.populate_user_buttons()
+            self.ui.user_profile_tab.ui_manager.update_active_user_from_settings()
+            self.ui.user_profile_tab.update()
+
+        elif last_tab == "Prop Type":
+            self.ui.prop_type_tab.update_active_prop_type_from_settings()
+
+        elif last_tab == "Visibility":
+            self.ui.visibility_tab.buttons_widget.update_visibility_buttons_from_settings()
+
+        elif last_tab == "Beat Layout":
+            self.ui.beat_layout_tab.on_sequence_length_changed(
+                self.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+            )
+            self.ui.beat_layout_tab.controls.length_selector.num_beats_spinbox.setValue(
+                self.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+            )
+
+    def update_size(self, force: bool = False):
+        """Updates the size of the settings dialog, only resizing if necessary."""
+        height = int(self.main_widget.height() * 0.8)
+        width = int(height * 1.2)
+
+        if force or (self.width() != width or self.height() != height):
+            self.setFixedSize(width, height)
+
+    def resizeEvent(self, event: QEvent):
+        """Handle window resizing more efficiently."""
+        self.update_size(force=False)  # Only resize if it has changed
+        super().resizeEvent(event)

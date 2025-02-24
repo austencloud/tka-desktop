@@ -1,14 +1,13 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QStackedLayout
 
-from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.lesson_results_widget import (
-    LessonResultsWidget,
+from main_window.main_widget.learn_tab.lesson_selector.lesson_selector import LessonSelector
+from main_window.main_widget.learn_tab.lesson_widget.lesson_results_widget import LessonResultsWidget
+from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
+    LessonWidget,
 )
-from .lesson_selector import LessonSelector
-from .lesson_1.lesson_1_widget import Lesson1Widget
-from .lesson_2.lesson_2_widget import Lesson2Widget
-from .lesson_3.lesson_3_widget import Lesson3Widget
-from .codex.codex import Codex
+
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
@@ -26,13 +25,34 @@ class LearnTab(QWidget):
         self._setup_components()
         self._setup_layout()
 
-
     def _setup_components(self):
         self.lesson_selector = LessonSelector(self)
-        self.lesson_1_widget = Lesson1Widget(self)
-        self.lesson_2_widget = Lesson2Widget(self)
-        self.lesson_3_widget = Lesson3Widget(self)
-        self.codex = Codex(self)
+        self.lesson_1_widget = LessonWidget(
+            self,
+            lesson_type="Lesson1",
+            question_format="pictograph",
+            answer_format="button",
+            quiz_description="pictograph_to_letter",
+            question_prompt="Choose the letter for:",
+        )
+        self.lesson_2_widget = LessonWidget(
+            self,
+            lesson_type="Lesson2",
+            question_format="letter",
+            answer_format="pictograph",
+            quiz_description="letter_to_pictograph",
+            question_prompt="Choose the pictograph for:",
+        )
+
+        self.lesson_3_widget = LessonWidget(
+            self,
+            lesson_type="Lesson3",
+            question_format="pictograph",
+            answer_format="pictograph",
+            quiz_description="valid_next_pictograph",
+            question_prompt="Which pictograph can follow?",
+        )
+
         self.results_widget = LessonResultsWidget(self)
 
     def _setup_layout(self) -> None:

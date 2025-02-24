@@ -11,29 +11,51 @@ if TYPE_CHECKING:
 class GammaTurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph) -> str:
         super().set_pictograph(pictograph)
-        blue_static = self.pictograph.blue_motion
-        red_static = self.pictograph.red_motion
+        blue_static = self.pictograph.elements.blue_motion
+        red_static = self.pictograph.elements.red_motion
         blue_static_map, red_static_map = self._get_direction_maps()
 
-        if blue_static.turns == 0 and red_static.turns > 0:
+        if blue_static.state.turns == 0 and red_static.state.turns > 0:
             red_static_state = red_static_map.get(
-                (blue_static.end_loc, red_static.end_loc, red_static.prop_rot_dir), ""
+                (
+                    blue_static.state.end_loc,
+                    red_static.state.end_loc,
+                    red_static.state.prop_rot_dir,
+                ),
+                "",
             )
             return f"({self._normalize_turns(blue_static)}, {self._normalize_turns(red_static)}, {red_static_state})"
-        elif red_static.turns == 0 and blue_static.turns > 0:
+        elif red_static.state.turns == 0 and blue_static.state.turns > 0:
             blue_static_state = blue_static_map.get(
-                (blue_static.end_loc, red_static.end_loc, blue_static.prop_rot_dir), ""
+                (
+                    blue_static.state.end_loc,
+                    red_static.state.end_loc,
+                    blue_static.state.prop_rot_dir,
+                ),
+                "",
             )
             return f"({self._normalize_turns(blue_static)}, {self._normalize_turns(red_static)}, {blue_static_state})"
-        elif red_static.turns > 0 and blue_static.turns > 0:
+        elif red_static.state.turns > 0 and blue_static.state.turns > 0:
             red_static_state = red_static_map.get(
-                (blue_static.end_loc, red_static.end_loc, red_static.prop_rot_dir), ""
+                (
+                    blue_static.state.end_loc,
+                    red_static.state.end_loc,
+                    red_static.state.prop_rot_dir,
+                ),
+                "",
             )
             blue_static_state = blue_static_map.get(
-                (blue_static.end_loc, red_static.end_loc, blue_static.prop_rot_dir), ""
+                (
+                    blue_static.state.end_loc,
+                    red_static.state.end_loc,
+                    blue_static.state.prop_rot_dir,
+                ),
+                "",
             )
             vtg_dir = (
-                "s" if red_static.prop_rot_dir == blue_static.prop_rot_dir else "o"
+                "s"
+                if red_static.state.prop_rot_dir == blue_static.state.prop_rot_dir
+                else "o"
             )
             return f"({vtg_dir}, {self._normalize_turns(blue_static)}, {self._normalize_turns(red_static)}, {blue_static_state}, {red_static_state})"
         else:

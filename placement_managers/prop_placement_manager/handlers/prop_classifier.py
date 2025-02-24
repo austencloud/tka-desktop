@@ -24,17 +24,17 @@ class PropClassifier:
         self.big_bi: list[Prop] = []
         self.hands: list[Prop] = []
 
-        for prop in self.pictograph.props.values():
-
-            if prop.prop_type in big_unilateral_prop_types:
+        for prop in self.pictograph.elements.props.values():
+            prop_type_enum = PropType.get_prop_type(prop.prop_type)
+            if prop_type_enum in big_unilateral_prop_types:
                 self.big_uni.append(prop)
-            elif prop.prop_type in small_unilateral_prop_types:
+            elif prop_type_enum in small_unilateral_prop_types:
                 self.small_uni.append(prop)
-            elif prop.prop_type in small_bilateral_prop_types:
+            elif prop_type_enum in small_bilateral_prop_types:
                 self.small_bi.append(prop)
-            elif prop.prop_type in big_bilateral_prop_types:
+            elif prop_type_enum in big_bilateral_prop_types:
                 self.big_bi.append(prop)
-            elif prop.prop_type == PropType.Hand:
+            elif prop_type_enum == PropType.Hand:
                 self.hands.append(prop)
 
         self.big_props = self.big_uni + self.big_bi

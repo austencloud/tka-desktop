@@ -12,13 +12,10 @@ from data.constants import (
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    pass
 
 
 class PictographKeyGenerator:
-    def __init__(self, main_widget: "MainWidget") -> None:
-        self.main_widget = main_widget
-
     def generate_pictograph_key(self, pictograph_data: dict) -> str:
         blue_attrs = pictograph_data["blue_attributes"]
         red_attrs = pictograph_data["red_attributes"]

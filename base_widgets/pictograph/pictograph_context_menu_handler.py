@@ -13,7 +13,7 @@ class PictographContextMenuHandler:
         self.pictograph = pictograph
 
     def handle_context_menu(self, event: "QGraphicsSceneMouseEvent") -> None:
-        scene_pos = self.pictograph.view.mapToScene(event.pos().toPoint())
+        scene_pos = self.pictograph.elements.view.mapToScene(event.pos().toPoint())
         items_at_pos = self.pictograph.items(scene_pos)
 
         clicked_item = None

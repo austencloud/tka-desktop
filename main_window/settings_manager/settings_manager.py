@@ -13,7 +13,7 @@ from .global_settings.global_settings import GlobalSettings
 from .visibility_settings.visibility_settings import VisibilitySettings
 
 if TYPE_CHECKING:
-    from main_window.main_window import MainWindow
+    pass
 
 
 class SettingsManager(QObject):
@@ -24,7 +24,7 @@ class SettingsManager(QObject):
         self.settings = QSettings("settings.ini", QSettings.Format.IniFormat)
 
         self.global_settings = GlobalSettings(self)
-    
+
         self.image_export = ImageExportSettings(self)
         self.users = UserProfileSettings(self)
         self.visibility = VisibilitySettings(self)
@@ -32,7 +32,7 @@ class SettingsManager(QObject):
         self.sequence_share_settings = SequenceShareSettings(self)
 
         # Tabs
-        self.construct_tab_settings = ConstructTabSettings(self)
-        self.generate_tab_settings = GenerateTabSettings(self)
+        self.construct_tab_settings = ConstructTabSettings(self.settings)
+        self.generate_tab_settings = GenerateTabSettings(self.settings)
         self.browse_settings = BrowseTabSettings(self)
         self.write_tab_settings = WriteTabSettings(self)

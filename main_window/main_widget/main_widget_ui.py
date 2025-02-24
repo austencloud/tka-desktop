@@ -1,16 +1,14 @@
 from typing import TYPE_CHECKING
 
-from PyQt6.QtWidgets import (
-    QVBoxLayout,
-    QHBoxLayout,
-    QStackedWidget,
-)
+from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QStackedWidget
 
+from main_window.main_widget.codex.codex import Codex
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_name import TabName
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .construct_tab.construct_tab import ConstructTab
 from .generate_tab.generate_tab import GenerateTab
 from .write_tab.write_tab import WriteTab
@@ -45,22 +43,41 @@ class MainWidgetUI:
 
         mw.tab_switcher.set_stacks_silently(left_index, right_index)
 
-        mw.menu_bar.navigation_widget.set_active_tab(tab_index)
+        mw.menu_bar.navigation_widget.current_index = tab_index
+        mw.menu_bar.navigation_widget.update_buttons()
         mw.tab_switcher.set_current_tab(current_tab_name)
 
     def _create_components(self):
         mw = self.mw
+        mw.fade_manager = FadeManager(mw)
+
+        settings_manager = AppContext.settings_manager()
+        json_manager = AppContext.json_manager()
 
         mw.left_stack = QStackedWidget()
         mw.right_stack = QStackedWidget()
 
-        mw.fade_manager = FadeManager(mw)
         mw.font_color_updater = FontColorUpdater(mw)
         mw.pictograph_collector = PictographCollector(mw)
 
         mw.menu_bar = MenuBarWidget(mw)
         mw.sequence_workbench = SequenceWorkbench(mw)
-        mw.construct_tab = ConstructTab(mw)
+        mw.codex = Codex(mw)
+
+        AppContext.set_sequence_beat_frame(mw.sequence_workbench.sequence_beat_frame)
+
+        mw.construct_tab = ConstructTab(
+            settings_manager=settings_manager,
+            json_manager=json_manager,
+            beat_frame=mw.sequence_workbench.sequence_beat_frame,
+            pictograph_dataset=mw.pictograph_dataset,
+            size_provider=lambda: mw.size(),
+            fade_to_stack_index=lambda index: mw.fade_manager.stack_fader.fade_stack(
+                mw.right_stack, index
+            ),
+            fade_manager=mw.fade_manager,
+        )
+
         mw.generate_tab = GenerateTab(mw)
         mw.browse_tab = BrowseTab(mw)
         mw.learn_tab = LearnTab(mw)
@@ -69,14 +86,17 @@ class MainWidgetUI:
         mw.settings_dialog = SettingsDialog(mw)
         mw.background_widget = MainBackgroundWidget(mw)
         mw.background_widget.lower()
-        mw.state_handler.load_state(mw.sequence_workbench.beat_frame)
+        mw.state_handler.load_state(mw.sequence_workbench.sequence_beat_frame)
         self.splash_screen.updater.update_progress("Finalizing")
+        mw.font_color_updater.update_main_widget_font_colors(
+            mw.settings_manager.global_settings.get_background_type()
+        )
 
     def _populate_stacks(self):
         mw = self.mw
 
         mw.left_stack.addWidget(mw.sequence_workbench)  # 0
-        mw.left_stack.addWidget(mw.learn_tab.codex)  # 1
+        mw.left_stack.addWidget(mw.codex)  # 1
         mw.left_stack.addWidget(mw.write_tab.act_sheet)  # 2
         mw.left_stack.addWidget(mw.browse_tab.sequence_picker.filter_stack)  # 3
         mw.left_stack.addWidget(mw.browse_tab.sequence_picker)  # 4

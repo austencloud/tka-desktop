@@ -1,23 +1,15 @@
-import json
 from typing import TYPE_CHECKING
-from Enums.PropTypes import PropType
 from letter_determiner.letter_determiner import LetterDeterminer
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.pictograph_data_loader import PictographDataLoader
 from main_window.settings_manager.global_settings.app_context import AppContext
-from utilities.path_helpers import get_images_and_data_path
 
-from .grid_mode_checker import GridModeChecker
 from .sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )
 from .sequence_level_evaluator import SequenceLevelEvaluator
 from .thumbnail_finder import ThumbnailFinder
 from .metadata_extractor import MetaDataExtractor
-from .json_manager.json_manager import JsonManager
-from .turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
-from .pictograph_key_generator import PictographKeyGenerator
-from .special_placement_loader import SpecialPlacementLoader
 
 if TYPE_CHECKING:
     from .main_widget import MainWidget
@@ -37,15 +29,13 @@ class MainWidgetManagers:
         """Setup all the managers and helper components."""
         mw = self.main_widget
 
-        mw.turns_tuple_generator = TurnsTupleGenerator()
-        mw.pictograph_key_generator = PictographKeyGenerator(mw)
-        mw.special_placement_loader = SpecialPlacementLoader(mw)
-        mw.metadata_extractor = MetaDataExtractor(mw)
+        mw.metadata_extractor = MetaDataExtractor()
         mw.sequence_level_evaluator = SequenceLevelEvaluator()
         mw.sequence_properties_manager = SequencePropertiesManager()
-        mw.thumbnail_finder = ThumbnailFinder(mw)
-        mw.grid_mode_checker = GridModeChecker(self)
+        mw.thumbnail_finder = ThumbnailFinder()
         mw.pictograph_collector = PictographCollector(mw)
+
+        # mw.special_placements = mw.special_placement_loader.load_special_placements()
 
     def _setup_pictograph_cache(self) -> None:
         from Enums.Enums import Letter
@@ -55,12 +45,12 @@ class MainWidgetManagers:
             self.main_widget.pictograph_cache[letter] = {}
 
     def _set_prop_type(self) -> None:
-        prop_type = AppContext().settings_manager().global_settings.get_prop_type()
+        prop_type = AppContext.settings_manager().global_settings.get_prop_type()
         self.main_widget.prop_type = prop_type
 
     def _setup_letters(self) -> None:
         self.main_widget.pictograph_data_loader = PictographDataLoader(self.main_widget)
         self.main_widget.pictograph_dataset = (
-            self.main_widget.pictograph_data_loader.load_all_pictograph_data()
+            self.main_widget.pictograph_data_loader.load_pictograph_dataset()
         )
         self.main_widget.letter_determiner = LetterDeterminer(self.main_widget)

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
+from typing import Callable
 
 from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
 
@@ -11,14 +12,16 @@ if TYPE_CHECKING:
 
 class StartPosPickerPictographView(BorderedPictographView):
     def __init__(
-        self, start_pos_picker: "StartPosPicker", pictograph: "Pictograph"
+        self,
+        start_pos_picker: "StartPosPicker",
+        pictograph: "Pictograph",
+        size_provider: Callable[[], QSize],
     ) -> None:
         super().__init__(pictograph)
         self.start_pos_picker = start_pos_picker
         self.pictograph = pictograph
-        self.start_position_adder = (
-            start_pos_picker.construct_tab.main_widget.sequence_workbench.beat_frame.start_position_adder
-        )
+        self.start_position_adder = start_pos_picker.beat_frame.start_position_adder
+        self.size_provider = size_provider
 
     ### EVENTS ###
 
@@ -28,10 +31,10 @@ class StartPosPickerPictographView(BorderedPictographView):
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
-        size = self.start_pos_picker.main_widget.width() // 10
+        size = self.size_provider().width() // 10
         border_width = max(1, int(size * 0.015))
         size -= 2 * border_width
-        self.pictograph.view.update_border_widths()
+        self.pictograph.elements.view.update_border_widths()
         self.setFixedSize(size, size)
         self.view_scale = size / self.pictograph.width()
         self.resetTransform()

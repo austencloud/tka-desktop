@@ -310,7 +310,8 @@
       "static_from_layer2": [100, -100],
       "static_from_layer1_rot_angle_override": true,
       "static_from_layer1": [-100, -100],
-      "pro_from_layer2": [-70, 30]
+      "pro_from_layer2": [-70, 30],
+      "dash": [75, -40]
     },
     "(o, 0.5, 1)": {
       "static_from_layer1_rot_angle_override": true,

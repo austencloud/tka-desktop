@@ -5,6 +5,7 @@ from PyQt6.QtSvg import QSvgRenderer
 import os
 
 from Enums.letters import Letter
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
@@ -34,10 +35,10 @@ class StartToEndPosGlyph(QGraphicsItemGroup):
 
     def set_start_to_end_pos_glyph(self):
         # if the letter is alpha, beta, or gamma then don't show the start to end pos glyph
-        if self.pictograph.letter in [Letter.α, Letter.β, Letter.Γ]:
+        if self.pictograph.state.letter in [Letter.α, Letter.β, Letter.Γ]:
             return
-        start_pos = "".join(filter(str.isalpha, self.pictograph.start_pos))
-        end_pos = "".join(filter(str.isalpha, self.pictograph.end_pos))
+        start_pos = "".join(filter(str.isalpha, self.pictograph.state.start_pos))
+        end_pos = "".join(filter(str.isalpha, self.pictograph.state.end_pos))
 
         svg_file_start = os.path.join(
             self.SVG_BASE_PATH, self.SVG_PATHS.get(start_pos, "")
@@ -58,7 +59,7 @@ class StartToEndPosGlyph(QGraphicsItemGroup):
             self.scale_and_position_glyphs()
 
             # Adjust visibility based on settings
-            visible = self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
+            visible = AppContext.settings_manager().visibility.get_glyph_visibility(
                 "Positions"
             )
             if self.scene() is None:

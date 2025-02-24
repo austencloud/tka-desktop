@@ -31,7 +31,9 @@ class OriPickerWidget(QWidget):
 
         self.json_manager = AppContext.json_manager()
         self.json_validation_engine = self.json_manager.ori_validation_engine
-        self.beat_frame = self.ori_picker_box.graph_editor.sequence_workbench.beat_frame
+        self.beat_frame = (
+            self.ori_picker_box.graph_editor.sequence_workbench.sequence_beat_frame
+        )
 
         self.orientation_text_label = OrientationTextLabel(self)
         self.clickable_ori_label = ClickableOriLabel(self)

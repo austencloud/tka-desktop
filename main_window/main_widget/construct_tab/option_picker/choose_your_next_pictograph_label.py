@@ -1,48 +1,18 @@
+# main_window/main_widget/construct_tab/option_picker/choose_your_next_pictograph_label.py
 from PyQt6.QtWidgets import QLabel
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFontMetrics
-from typing import TYPE_CHECKING, Callable
+from PyQt6.QtCore import Qt, QSize
+from typing import Callable
+from main_window.main_widget.construct_tab.option_picker.resizable_mixin import ResizableMixin
 
-if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.option_picker.option_picker import (
-        OptionPicker,
-    )
-
-
-class ChooseYourNextPictographLabel(QLabel):
-    def __init__(self, height_provider: Callable[[], int]):
-        super().__init__()
-        self.height_provider = height_provider
-        self.set_default_text()
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        # self.hide()
-
-    def set_default_text(self) -> None:
+class ChooseYourNextPictographLabel(ResizableMixin, QLabel):
+    def __init__(self, size_provider: Callable[[], QSize], parent=None):
+        # Note: The mixin is first, so its __init__ will get called with the size_provider.
+        super().__init__(size_provider, parent)
         self.setText("Choose your next pictograph:")
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-    def resizeEvent(self, event) -> None:
-        height = self.height_provider()
-        font_size = int(0.03 * height)
-
-        font = self.font()
-        font.setPointSize(font_size)
-        font.setFamily("Monotype Corsiva")
-        self.setFont(font)
-
-        font_metrics = QFontMetrics(font)
-        text_width = font_metrics.horizontalAdvance(self.text())
-        text_height = font_metrics.height()
-        margin = 20
-        width = text_width + margin
-        height = text_height + margin
-
-        self.setFixedSize(width, height)
-
-        border_radius = height // 2
-
+    def resizeEvent(self, event):
+        h = self.update_size_and_style()  # Use the mixin’s logic
         self.setStyleSheet(
-            f"QLabel {{"
-            f"  background-color: rgba(255, 255, 255, 200);"
-            f"  border-radius: {border_radius}px;"
-            f"}}"
+            f"background-color: rgba(255,255,255,200); border-radius: {h//2}px;"
         )

@@ -36,7 +36,6 @@ class ClickableOriLabel(QLabel):
     def set_orientation(self, orientation):
         self.setText(orientation)
 
-
     def _get_border_color(
         self, color
     ) -> Literal["#ED1C24"] | Literal["#2E3192"] | Literal["black"]:

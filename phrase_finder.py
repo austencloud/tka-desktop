@@ -36,8 +36,8 @@ class PhraseFinder(QWidget):
         self.setWindowTitle("Phrase Finder")
 
         # Default search directory and output file
-        self.search_dir = r"C:\the-kinetic-constructor\main_window"
-        self.output_file = r"C:\the-kinetic-constructor\found_phrase_matches.py"
+        self.search_dir = r"main_window"
+        self.output_file = r"found_phrase_matches.py"
         self.default_phrase = "paintEvent"  # or any default phrase
 
         self.init_ui()

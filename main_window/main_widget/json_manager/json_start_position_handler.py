@@ -12,10 +12,10 @@ class JsonStartPositionHandler:
         self.manager = manager
 
     def set_start_position_data(self, start_pos_pictograph: Pictograph) -> None:
-        red_start_ori = start_pos_pictograph.pictograph_data["red_attributes"][
+        red_start_ori = start_pos_pictograph.state.pictograph_data["red_attributes"][
             "start_ori"
         ]
-        blue_start_ori = start_pos_pictograph.pictograph_data["blue_attributes"][
+        blue_start_ori = start_pos_pictograph.state.pictograph_data["blue_attributes"][
             "start_ori"
         ]
 
@@ -26,27 +26,27 @@ class JsonStartPositionHandler:
             "sequence_start_position": self.get_sequence_start_position(
                 start_pos_pictograph
             ),
-            "letter": start_pos_pictograph.letter.name,
-            "end_pos": start_pos_pictograph.end_pos,
-            "timing": start_pos_pictograph.timing,
-            "direction": start_pos_pictograph.direction,
+            "letter": start_pos_pictograph.state.letter.name,
+            "end_pos": start_pos_pictograph.state.end_pos,
+            "timing": start_pos_pictograph.state.timing,
+            "direction": start_pos_pictograph.state.direction,
             "blue_attributes": {
-                "start_loc": start_pos_pictograph.blue_motion.start_loc,
-                "end_loc": start_pos_pictograph.blue_motion.end_loc,
+                "start_loc": start_pos_pictograph.elements.blue_motion.state.start_loc,
+                "end_loc": start_pos_pictograph.elements.blue_motion.state.end_loc,
                 "start_ori": blue_start_ori,
                 "end_ori": blue_start_ori,
                 "prop_rot_dir": NO_ROT,
                 "turns": 0,
-                "motion_type": start_pos_pictograph.blue_motion.motion_type,
+                "motion_type": start_pos_pictograph.elements.blue_motion.state.motion_type,
             },
             "red_attributes": {
-                "start_loc": start_pos_pictograph.red_motion.start_loc,
-                "end_loc": start_pos_pictograph.red_motion.end_loc,
+                "start_loc": start_pos_pictograph.elements.red_motion.state.start_loc,
+                "end_loc": start_pos_pictograph.elements.red_motion.state.end_loc,
                 "start_ori": red_start_ori,
                 "end_ori": red_start_ori,
                 "prop_rot_dir": NO_ROT,
                 "turns": 0,
-                "motion_type": start_pos_pictograph.red_motion.motion_type,
+                "motion_type": start_pos_pictograph.elements.red_motion.state.motion_type,
             },
         }
 
@@ -65,4 +65,4 @@ class JsonStartPositionHandler:
             self.manager.loader_saver.save_current_sequence(sequence)
 
     def get_sequence_start_position(self, start_pos_pictograph: Pictograph) -> str:
-        return start_pos_pictograph.end_pos.rstrip("0123456789")
+        return start_pos_pictograph.state.end_pos.rstrip("0123456789")

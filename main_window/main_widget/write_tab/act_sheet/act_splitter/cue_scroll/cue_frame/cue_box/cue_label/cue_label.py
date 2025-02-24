@@ -19,7 +19,10 @@ class CueLabel(EditableLabel):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        width = int(self.cue_box.cue_frame.cue_scroll.act_sheet.width() // 9)
+        width = int(
+            self.cue_box.cue_frame.cue_scroll.act_sheet.write_tab.main_widget.width()
+            // 9
+        )
         self.setFixedWidth(width)
         self.label.setFixedWidth(width)
         self.label.setWordWrap(True)
@@ -42,16 +45,16 @@ class CueLabel(EditableLabel):
         """Calculate font size based on width without expanding height."""
         font = self.label.font()
         font_size = self.cue_box.cue_frame.cue_scroll.act_sheet.write_tab.width() // 150
-        font.setPointSize(font_size)
+        font.setPointSize(max(font_size, 8))
         font_metrics = QFontMetrics(font)
         text = self.label.text()
         text_width = font_metrics.boundingRect(text).width()
         while text_width > width:
             font_size -= 1
-            font.setPointSize(font_size)
+            font.setPointSize(min(font_size, 8))
             font_metrics = QFontMetrics(font)
             text_width = font_metrics.boundingRect(text).width()
-        return font_size
+        return max(font_size, 8)
 
     def _show_edit(self, event=None) -> None:
         super()._show_edit(event)

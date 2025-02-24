@@ -15,5 +15,8 @@ class ShiftLocationCalculator(BaseLocationCalculator):
             frozenset({NORTHWEST, SOUTHWEST}): WEST,
         }
         return direction_pairs.get(
-            frozenset({self.arrow.motion.start_loc, self.arrow.motion.end_loc}), ""
+            frozenset(
+                {self.arrow.motion.state.start_loc, self.arrow.motion.state.end_loc}
+            ),
+            "",
         )

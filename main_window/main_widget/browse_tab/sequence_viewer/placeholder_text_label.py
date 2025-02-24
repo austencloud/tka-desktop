@@ -15,7 +15,7 @@ class PlaceholderTextLabel(QLabel):
 
     def resizeEvent(self, event: QEvent):
         placeholder_text_font_size = self.sequence_viewer.main_widget.width() // 85
-        font = QFont("Arial", placeholder_text_font_size, QFont.Weight.Bold)
+        font = QFont("Georgia", placeholder_text_font_size, QFont.Weight.Bold)
         self.setFont(font)
         min_height = self.sequence_viewer.main_widget.height() // 5
         self.setFixedHeight(min_height)

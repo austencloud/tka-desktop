@@ -17,7 +17,7 @@ class ActStepLabel(EditableLabel):
         )
         self.act_beat_frame = act_beat_frame
 
-    def resize_step_label(self):
+    def resizeEvent(self, event):
         """Resize the step label based on the beat frame's calculated sizes."""
         margin = int(self.act_beat_frame.beat_size // 8)
         self.apply_styles(margin)

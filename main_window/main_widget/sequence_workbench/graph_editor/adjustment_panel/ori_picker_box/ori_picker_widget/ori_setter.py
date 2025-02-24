@@ -16,7 +16,9 @@ class OrientationSetter:
         self.ori_picker_box = ori_picker_widget.ori_picker_box
         self.ori_adjusted = ori_picker_widget.ori_adjusted
         self.option_picker = ori_picker_widget.option_picker
-        self.beat_frame = self.ori_picker_box.graph_editor.sequence_workbench.beat_frame
+        self.beat_frame = (
+            self.ori_picker_box.graph_editor.sequence_workbench.sequence_beat_frame
+        )
 
     def set_orientation(self, orientation: str) -> None:
         """Apply the orientation to the related pictographs and data structures."""
@@ -35,7 +37,7 @@ class OrientationSetter:
         self._update_beats_from_current_sequence_json()
 
     def _update_graph_editor_orientation(self, orientation: str) -> None:
-        self.ori_picker_box.graph_editor.pictograph_container.GE_view.pictograph.updater.update_pictograph(
+        self.ori_picker_box.graph_editor.pictograph_container.GE_view.pictograph.managers.updater.update_pictograph(
             {
                 f"{self.color}_attributes": {
                     START_ORI: orientation,
@@ -67,7 +69,7 @@ class OrientationSetter:
         )
         if start_position_pictographs:
             for pictograph in start_position_pictographs.values():
-                pictograph.updater.update_pictograph(
+                pictograph.managers.updater.update_pictograph(
                     {
                         f"{self.color}_attributes": {
                             START_ORI: orientation,
@@ -89,7 +91,7 @@ class OrientationSetter:
         )
         start_pos_picker = construct_tab.start_pos_picker
         for pictograph in start_pos_picker.start_options.values():
-            pictograph.updater.update_pictograph(
+            pictograph.managers.updater.update_pictograph(
                 {
                     f"{self.color}_attributes": {
                         START_ORI: orientation,
@@ -111,7 +113,7 @@ class OrientationSetter:
         else:
             pictograph_list = []
         for pictograph in pictograph_list:
-            pictograph.updater.update_pictograph(
+            pictograph.managers.updater.update_pictograph(
                 {
                     f"{self.color}_attributes": {
                         START_ORI: orientation,
@@ -136,6 +138,10 @@ class OrientationSetter:
         self, start_pos_pictograph: "Pictograph", color: str
     ) -> str:
         if color == BLUE:
-            return start_pos_pictograph.pictograph_data["blue_attributes"][START_ORI]
+            return start_pos_pictograph.state.pictograph_data["blue_attributes"][
+                START_ORI
+            ]
         else:
-            return start_pos_pictograph.pictograph_data["red_attributes"][START_ORI]
+            return start_pos_pictograph.state.pictograph_data["red_attributes"][
+                START_ORI
+            ]

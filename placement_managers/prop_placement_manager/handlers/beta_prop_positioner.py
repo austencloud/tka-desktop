@@ -30,7 +30,7 @@ class BetaPropPositioner:
         self.hand_positioner = HandPositioner(self)
         self.small_prop_positioner = SmallPropPositioner(self)
         self.big_prop_positioner = BigPropPositioner(self)
-        self.dir_calculator = BetaPropDirectionCalculator(self)
+        self.dir_calculator = BetaPropDirectionCalculator()
         self.reposition_beta_by_letter_handler = RepositionBetaByLetterHandler(self)
         self.swap_beta_handler = SwapBetaHandler(self)
         self.beta_offset_calculator = BetaOffsetCalculator(self)

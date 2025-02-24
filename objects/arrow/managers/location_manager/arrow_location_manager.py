@@ -22,7 +22,7 @@ class ArrowLocationManager:
             STATIC: StaticLocationCalculator,
         }
         calculator_class = calculator_map.get(
-            self.arrow.motion.motion_type, BaseLocationCalculator
+            self.arrow.motion.state.motion_type, BaseLocationCalculator
         )
         return calculator_class(self.arrow)
 

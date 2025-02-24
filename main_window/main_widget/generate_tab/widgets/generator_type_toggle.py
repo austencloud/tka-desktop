@@ -14,6 +14,9 @@ class GeneratorTypeToggle(LabeledToggleBase):
         )
 
     def _handle_toggle_changed(self, state: bool):
-        new_mode = "circular" if state else "freeform"
-        self.generate_tab.controller.on_mode_changed(new_mode)
+        self.mode = "circular" if state else "freeform"
+        self.generate_tab.controller.on_mode_changed(self.mode)
         self.update_label_styles()
+
+    def current_mode(self) -> str:
+        return self.mode

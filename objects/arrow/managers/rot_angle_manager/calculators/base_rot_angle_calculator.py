@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
 
 from data.constants import *
+from main_window.main_widget.grid_mode_checker import GridModeChecker
 from objects.motion.managers.handpath_calculator import (
     HandpathCalculator,
 )
@@ -14,10 +15,10 @@ class BaseRotAngleCalculator(ABC):
     def __init__(self, arrow: "Arrow"):
         self.arrow = arrow
         self.rot_angle_key_generator = (
-            self.arrow.pictograph.wasd_manager.rotation_angle_override_manager.key_generator
+            self.arrow.pictograph.managers.wasd_manager.rotation_angle_override_manager.key_generator
         )
         self.data_updater = (
-            self.arrow.pictograph.arrow_placement_manager.special_positioner.data_updater
+            self.arrow.pictograph.managers.arrow_placement_manager.special_positioner.data_updater
         )
         self.handpath_calculator = HandpathCalculator()
 
@@ -31,19 +32,19 @@ class BaseRotAngleCalculator(ABC):
         pass
 
     def has_rotation_angle_override(self) -> bool:
-        if self.arrow.motion.motion_type not in [DASH, STATIC]:
+        if self.arrow.motion.state.motion_type not in [DASH, STATIC]:
             return False
 
         special_placements = (
             self.arrow.pictograph.main_widget.special_placement_loader.special_placements
         )
         ori_key = self.data_updater._generate_ori_key(self.arrow.motion)
-        letter = self.arrow.pictograph.letter.value
+        letter = self.arrow.pictograph.state.letter.value
 
         letter_data: dict[str, dict] = (
             special_placements.get(
-                self.arrow.pictograph.main_widget.grid_mode_checker.get_grid_mode(
-                    self.arrow.pictograph.pictograph_data
+                GridModeChecker.get_grid_mode(
+                    self.arrow.pictograph.state.pictograph_data
                 )
             )
             .get(ori_key, {})
@@ -57,7 +58,7 @@ class BaseRotAngleCalculator(ABC):
         )
 
         return bool(
-            letter_data.get(self.arrow.pictograph.turns_tuple, {}).get(
+            letter_data.get(self.arrow.pictograph.managers.get.turns_tuple(), {}).get(
                 rot_angle_override_key
             )
         )

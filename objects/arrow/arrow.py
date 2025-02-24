@@ -23,11 +23,17 @@ class Arrow(GraphicalObject):
         super().__init__(pictograph)
         self.arrow_data = arrow_data
         self.pictograph: Pictograph = pictograph
+        self._initialized = False
 
     def setup_components(self):
+        """Lazily initializes components when accessed from the MotionUpdater."""
+        if self._initialized:
+            return
+
         self.location_manager = ArrowLocationManager(self)
         self.rot_angle_manager = ArrowRotAngleManager(self)
         self.mirror_manager = ArrowMirrorManager(self)
         self.attr_manager = ArrowAttrManager(self)
         self.updater = ArrowUpdater(self)
-        self.initialized = True
+
+        self._initialized = True

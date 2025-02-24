@@ -16,8 +16,8 @@ if TYPE_CHECKING:
 
 
 class SequenceReflector(BaseSequenceModifier):
-    success_message = "Sequence mirrored!"
-    error_message = "No sequence to mirror."
+    success_message = "Sequence reflected!"
+    error_message = "No sequence to reflect."
 
     vertical_mirror_positions = mirrored_positions["vertical"]
 
@@ -33,7 +33,9 @@ class SequenceReflector(BaseSequenceModifier):
             QApplication.restoreOverrideCursor()
             return
         mirrored_sequence = self._reflect_sequence()
-        self.sequence_workbench.beat_frame.updater.update_beats_from(mirrored_sequence)
+        self.sequence_workbench.sequence_beat_frame.updater.update_beats_from(
+            mirrored_sequence
+        )
         self._update_ui()
         QApplication.restoreOverrideCursor()
 
@@ -43,24 +45,24 @@ class SequenceReflector(BaseSequenceModifier):
         mirrored_sequence = [metadata]
 
         start_pos_beat_dict = (
-            self.sequence_workbench.beat_frame.start_pos_view.start_pos.pictograph_data.copy()
+            self.sequence_workbench.sequence_beat_frame.start_pos_view.start_pos.state.pictograph_data.copy()
         )
         self._reflect_dict(start_pos_beat_dict)
         mirrored_sequence.append(start_pos_beat_dict)
 
-        for beat_dict in self.sequence_workbench.beat_frame.get.beat_dicts():
+        for beat_dict in self.sequence_workbench.sequence_beat_frame.get.beat_dicts():
             mirrored_dict = beat_dict.copy()
             self._reflect_dict(mirrored_dict)
             mirrored_sequence.append(mirrored_dict)
-        for beat_view in self.sequence_workbench.beat_frame.beat_views:
+        for beat_view in self.sequence_workbench.sequence_beat_frame.beat_views:
             if beat_view.is_filled:
                 beat = beat_view.beat
 
-                beat.red_motion.prop_rot_dir = self.swap_dir(
-                    beat.red_motion.prop_rot_dir
+                beat.elements.red_motion.state.prop_rot_dir = self.swap_dir(
+                    beat.elements.red_motion.state.prop_rot_dir
                 )
-                beat.blue_motion.prop_rot_dir = self.swap_dir(
-                    beat.blue_motion.prop_rot_dir
+                beat.elements.blue_motion.state.prop_rot_dir = self.swap_dir(
+                    beat.elements.blue_motion.state.prop_rot_dir
                 )
 
         return mirrored_sequence

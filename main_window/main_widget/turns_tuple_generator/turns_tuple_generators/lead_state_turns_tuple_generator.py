@@ -10,9 +10,9 @@ if TYPE_CHECKING:
 class LeadStateTurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph) -> str:
         super().set_pictograph(pictograph)
-        leading_motion = self.pictograph.get.leading_motion()
-        trailing_motion = self.pictograph.get.trailing_motion()
+        leading_motion = self.pictograph.managers.get.leading_motion()
+        trailing_motion = self.pictograph.managers.get.trailing_motion()
         if leading_motion:
-            return f"({leading_motion.turns}, {trailing_motion.turns})"
+            return f"({leading_motion.state.turns}, {trailing_motion.state.turns})"
         else:
             return f"({self._normalize_turns(self.blue_motion)}, {self._normalize_turns(self.red_motion)})"

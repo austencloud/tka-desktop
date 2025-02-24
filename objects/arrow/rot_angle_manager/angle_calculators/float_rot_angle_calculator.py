@@ -7,7 +7,7 @@ class FloatRotAngleCalculator(BaseRotAngleCalculator):
         direction_map = self._float_direction_map()
         loc = self.arrow.loc
         handpath_direction = self.handpath_calculator.get_hand_rot_dir(
-            self.arrow.motion.start_loc, self.arrow.motion.end_loc
+            self.arrow.motion.state.start_loc, self.arrow.motion.state.end_loc
         )
         return direction_map.get(handpath_direction, {}).get(loc, 0)
 

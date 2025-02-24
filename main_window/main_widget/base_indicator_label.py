@@ -4,8 +4,8 @@ from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation, pyqtSlot
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.base_classes.base_lesson_widget.base_lesson_widget import (
-        BaseLessonWidget,
+    from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
+        LessonWidget,
     )
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
         SequenceWorkbench,
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class BaseIndicatorLabel(QLabel):
     def __init__(
-        self, parent_widget: Union["BaseLessonWidget", "SequenceWorkbench"]
+        self, parent_widget: Union["LessonWidget", "SequenceWorkbench"]
     ) -> None:
         super().__init__(parent_widget)
         self.parent_widget = parent_widget
@@ -26,15 +26,16 @@ class BaseIndicatorLabel(QLabel):
         self.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
         self.clear()
         self.setContentsMargins(0, 0, 0, 0)
-
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
         self.timer.timeout.connect(self.start_fade_out)
 
     def show_message(self, text) -> None:
+        # if hidden, show it
+        self.show()
+        self.resizeEvent(None)
         self.opacity_effect = QGraphicsOpacityEffect(self)
         self.opacity_effect.setOpacity(1)
-        self.setGraphicsEffect(None)
         self.setGraphicsEffect(self.opacity_effect)
         self.animation = QPropertyAnimation(self.opacity_effect, b"opacity")
         self.animation.setDuration(2000)
@@ -55,3 +56,4 @@ class BaseIndicatorLabel(QLabel):
 
     def clear(self) -> None:
         self.setText(" ")
+        # self.hide()

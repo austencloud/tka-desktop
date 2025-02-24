@@ -2,6 +2,8 @@
 
 from typing import TYPE_CHECKING
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.write_tab.act_sheet.act_splitter.act_beat_scroll.act_beat_frame.act_beat_view import (
@@ -18,8 +20,8 @@ class ActPopulator:
         """Populate each row in the act based on row index and beat data."""
         for i, data in enumerate(beat_data):
             beat_view: "ActBeatView" = self.beat_frame.beats[row_index * 8 + i]
-            beat_view.beat.updater.update_pictograph(data["pictograph_data"])
-            beat_view.beat.pictograph_data = data
+            beat_view.beat.managers.updater.update_pictograph(data["pictograph_data"])
+            beat_view.beat.state.pictograph_data = data
             if beat_view in self.beat_frame.beat_step_map:
                 self.beat_frame.beat_step_map[beat_view].label.setText(
                     data.get("step_label", "")
@@ -33,7 +35,7 @@ class ActPopulator:
 
         act_data = {
             "title": self.beat_frame.act_sheet.act_header.get_title(),
-            "prop_type": self.beat_frame.write_tab.prop_type.name,
+            "prop_type": AppContext.settings_manager().global_settings.get_prop_type(),
             "sequences": [],
         }
 
@@ -92,8 +94,8 @@ class ActPopulator:
         if beat_index < len(self.beat_frame.beats):
             beat_view = self.beat_frame.beats[beat_index]
             step_label_text = beat_data.get("step_label", "")
-            beat_view.beat.updater.update_pictograph(beat_data)
-            beat_view.beat.pictograph_data = beat_data
+            beat_view.beat.managers.updater.update_pictograph(beat_data)
+            beat_view.beat.state.pictograph_data = beat_data
             self.add_step_label(beat_view, step_label_text)
 
     def add_step_label(self, beat_view, label_text: str):

@@ -4,9 +4,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QSizePolicy
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_workbench import (
-        SequenceWorkbench,
-    )
+    from .sequence_workbench import SequenceWorkbench
 
 
 class SequenceWorkbenchLayoutManager:
@@ -33,11 +31,10 @@ class SequenceWorkbenchLayoutManager:
 
         self.main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # self.sw.graph_editor.state.update_graph_editorvisibility()
         self.sw.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
-        self.sw.scroll_area.setWidget(self.sw.beat_frame)
+        self.sw.scroll_area.setWidget(self.sw.sequence_beat_frame)
 
         self.sw.setLayout(self.main_layout)
 
@@ -55,5 +52,7 @@ class SequenceWorkbenchLayoutManager:
         self.sw.indicator_label_layout.addStretch(1)
 
     def apply_layout_options(self, cols, rows, num_beats):
-        self.sw.beat_frame.layout_manager.rearrange_beats(num_beats, cols, rows)
+        self.sw.sequence_beat_frame.layout_manager.rearrange_beats(
+            num_beats, cols, rows
+        )
         self.sw.current_word_label.update_current_word_label_from_beats()

@@ -14,23 +14,25 @@ class RepositionBetaByLetterHandler:
         self.dir_calculator = self.beta_prop_positioner.dir_calculator
 
     def reposition_G_H(self) -> None:
-        further_direction = self.dir_calculator.get_dir(self.pictograph.red_motion)
+        further_direction = self.dir_calculator.get_dir(
+            self.pictograph.elements.red_motion
+        )
         other_direction = self.dir_calculator.get_opposite_dir(further_direction)
-        self.move_prop(self.pictograph.red_prop, further_direction)
-        self.move_prop(self.pictograph.blue_prop, other_direction)
+        self.move_prop(self.pictograph.elements.red_prop, further_direction)
+        self.move_prop(self.pictograph.elements.blue_prop, other_direction)
 
     def reposition_I(self) -> None:
         pro_prop = (
-            self.pictograph.red_prop
-            if self.pictograph.red_motion.motion_type == PRO
-            else self.pictograph.blue_prop
+            self.pictograph.elements.red_prop
+            if self.pictograph.elements.red_motion.state.motion_type == PRO
+            else self.pictograph.elements.blue_prop
         )
         anti_prop = (
-            self.pictograph.red_prop
-            if self.pictograph.red_motion.motion_type == ANTI
-            else self.pictograph.blue_prop
+            self.pictograph.elements.red_prop
+            if self.pictograph.elements.red_motion.state.motion_type == ANTI
+            else self.pictograph.elements.blue_prop
         )
-        pro_motion = self.pictograph.motions[pro_prop.color]
+        pro_motion = self.pictograph.elements.motions[pro_prop.color]
         pro_direction = self.dir_calculator.get_dir(pro_motion)
         anti_direction = self.dir_calculator.get_opposite_dir(pro_direction)
         self.move_prop(pro_prop, pro_direction)
@@ -38,24 +40,24 @@ class RepositionBetaByLetterHandler:
 
     def reposition_J_K_L(self) -> None:
 
-        red_dir = self.dir_calculator.get_dir(self.pictograph.red_motion)
-        blue_dir = self.dir_calculator.get_dir(self.pictograph.blue_motion)
+        red_dir = self.dir_calculator.get_dir(self.pictograph.elements.red_motion)
+        blue_dir = self.dir_calculator.get_dir(self.pictograph.elements.blue_motion)
 
         if red_dir and blue_dir:
-            self.move_prop(self.pictograph.red_prop, red_dir)
-            self.move_prop(self.pictograph.blue_prop, blue_dir)
+            self.move_prop(self.pictograph.elements.red_prop, red_dir)
+            self.move_prop(self.pictograph.elements.blue_prop, blue_dir)
 
     def reposition_Y_Z(self) -> None:
 
         shift = (
-            self.pictograph.red_motion
-            if self.pictograph.red_motion.check.is_shift()
-            else self.pictograph.blue_motion
+            self.pictograph.elements.red_motion
+            if self.pictograph.elements.red_motion.check.is_shift()
+            else self.pictograph.elements.blue_motion
         )
         static_motion = (
-            self.pictograph.red_motion
-            if self.pictograph.red_motion.check.is_static()
-            else self.pictograph.blue_motion
+            self.pictograph.elements.red_motion
+            if self.pictograph.elements.red_motion.check.is_static()
+            else self.pictograph.elements.blue_motion
         )
 
         direction = self.dir_calculator.get_dir(shift)
@@ -63,30 +65,30 @@ class RepositionBetaByLetterHandler:
             self.move_prop(
                 next(
                     prop
-                    for prop in self.pictograph.props.values()
-                    if prop.color == shift.color
+                    for prop in self.pictograph.elements.props.values()
+                    if prop.color == shift.state.color
                 ),
                 direction,
             )
             self.move_prop(
                 next(
                     prop
-                    for prop in self.pictograph.props.values()
-                    if prop.color == static_motion.color
+                    for prop in self.pictograph.elements.props.values()
+                    if prop.color == static_motion.state.color
                 ),
                 self.dir_calculator.get_opposite_dir(direction),
             )
 
     def reposition_Y_dash_Z_dash(self) -> None:
         shift = (
-            self.pictograph.red_motion
-            if self.pictograph.red_motion.check.is_shift()
-            else self.pictograph.blue_motion
+            self.pictograph.elements.red_motion
+            if self.pictograph.elements.red_motion.check.is_shift()
+            else self.pictograph.elements.blue_motion
         )
         dash = (
-            self.pictograph.red_motion
-            if self.pictograph.red_motion.check.is_dash()
-            else self.pictograph.blue_motion
+            self.pictograph.elements.red_motion
+            if self.pictograph.elements.red_motion.check.is_dash()
+            else self.pictograph.elements.blue_motion
         )
 
         direction = self.dir_calculator.get_dir(shift)
@@ -94,44 +96,50 @@ class RepositionBetaByLetterHandler:
             self.move_prop(
                 next(
                     prop
-                    for prop in self.pictograph.props.values()
-                    if prop.color == shift.color
+                    for prop in self.pictograph.elements.props.values()
+                    if prop.color == shift.state.color
                 ),
                 direction,
             )
             self.move_prop(
                 next(
                     prop
-                    for prop in self.pictograph.props.values()
-                    if prop.color == dash.color
+                    for prop in self.pictograph.elements.props.values()
+                    if prop.color == dash.state.color
                 ),
                 self.dir_calculator.get_opposite_dir(direction),
             )
 
-    def reposition_Ψ(self) -> None:
-        direction = self.dir_calculator.get_dir_for_non_shift(self.pictograph.red_prop)
+    def reposition_psi(self) -> None:
+        direction = self.dir_calculator.get_dir_for_non_shift(
+            self.pictograph.elements.red_prop
+        )
         if direction:
-            self.move_prop(self.pictograph.red_prop, direction)
+            self.move_prop(self.pictograph.elements.red_prop, direction)
             self.move_prop(
-                self.pictograph.blue_prop,
+                self.pictograph.elements.blue_prop,
                 self.dir_calculator.get_opposite_dir(direction),
             )
 
-    def reposition_Ψ_dash(self) -> None:
-        direction = self.dir_calculator.get_dir_for_non_shift(self.pictograph.red_prop)
+    def reposition_psi_dash(self) -> None:
+        direction = self.dir_calculator.get_dir_for_non_shift(
+            self.pictograph.elements.red_prop
+        )
         if direction:
-            self.move_prop(self.pictograph.red_prop, direction)
+            self.move_prop(self.pictograph.elements.red_prop, direction)
             self.move_prop(
-                self.pictograph.blue_prop,
+                self.pictograph.elements.blue_prop,
                 self.dir_calculator.get_opposite_dir(direction),
             )
 
-    def reposition_β(self) -> None:
-        direction = self.dir_calculator.get_dir_for_non_shift(self.pictograph.red_prop)
+    def reposition_beta(self) -> None:
+        direction = self.dir_calculator.get_dir_for_non_shift(
+            self.pictograph.elements.red_prop
+        )
         if direction:
-            self.move_prop(self.pictograph.red_prop, direction)
+            self.move_prop(self.pictograph.elements.red_prop, direction)
             self.move_prop(
-                self.pictograph.blue_prop,
+                self.pictograph.elements.blue_prop,
                 self.dir_calculator.get_opposite_dir(direction),
             )
 

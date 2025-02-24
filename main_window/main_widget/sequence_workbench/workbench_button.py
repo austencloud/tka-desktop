@@ -19,15 +19,8 @@ class WorkbenchButton(QPushButton):
 
         self._update_style()
 
-    def _update_style(self, background_color: str = None, shadow: bool = False):
+    def _update_style(self, background_color: str = None):
         background_color = background_color or self._base_background_color
-        shadow_effect = (
-            """
-            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
-        """
-            if shadow
-            else ""
-        )
 
         self.setStyleSheet(
             f"""
@@ -36,7 +29,6 @@ class WorkbenchButton(QPushButton):
                 border: 2px solid black;
                 border-radius: {self._button_size // 2}px;
                 padding: 5px;
-                {shadow_effect}
             }}
             QPushButton:hover {{
                 background: qlineargradient(
@@ -52,10 +44,10 @@ class WorkbenchButton(QPushButton):
         )
 
     def enterEvent(self, event):
-        self._update_style(shadow=True)
+        self._update_style()
 
     def leaveEvent(self, event):
-        self._update_style(shadow=False)
+        self._update_style()
 
     def mousePressEvent(self, event):
         self._update_style(background_color="#bbbbbb")

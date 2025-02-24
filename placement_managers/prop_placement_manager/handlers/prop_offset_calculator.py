@@ -12,6 +12,8 @@ from data.constants import (
 from PyQt6.QtCore import QPointF
 from typing import TYPE_CHECKING
 
+from main_window.settings_manager.global_settings.app_context import AppContext
+
 if TYPE_CHECKING:
     from placement_managers.prop_placement_manager.handlers.beta_prop_positioner import (
         BetaPropPositioner,
@@ -34,7 +36,7 @@ class BetaOffsetCalculator:
             PropType.Doublestar: 50,
             PropType.Bigdoublestar: 50,
         }
-        prop_type = self.beta_positioner.pictograph.prop_type
+        prop_type = AppContext.settings_manager().global_settings.get_prop_type()
         self.beta_offset = self.beta_positioner.pictograph.width() / prop_type_map.get(
             prop_type, 45
         )

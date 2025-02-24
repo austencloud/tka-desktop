@@ -6,7 +6,6 @@ from PyQt6.QtCore import Qt
 from main_window.palette_manager import PaletteManager
 
 
-from .settings_manager.settings_manager import SettingsManager
 from .main_widget.main_widget import MainWidget
 from main_window.main_window_geometry_manager import MainWindowGeometryManager
 
@@ -39,3 +38,4 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         super().closeEvent(event)
         QApplication.instance().installEventFilter(self)
+

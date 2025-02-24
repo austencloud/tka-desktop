@@ -1,35 +1,35 @@
 from PyQt6.QtWidgets import QApplication
-from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
-
-from main_window.main_widget.sequence_workbench.beat_frame.sequence_beat_frame import (
-    SequenceBeatFrame,
-)
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
     from base_widgets.pictograph.pictograph import Pictograph
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
 
 
 class OptionClickHandler:
-    def __init__(self, option_picker: "OptionPicker", beat_frame: "SequenceBeatFrame"):
+    def __init__(
+        self, option_picker: "OptionPicker", beat_frame: "SequenceBeatFrame"
+    ) -> None:
         self.option_picker = option_picker
-        self.construct_tab = self.option_picker.construct_tab
         self.beat_frame = beat_frame
-        self.add_to_sequence_manager = self.construct_tab.add_to_sequence_manager
+        self.add_to_sequence_manager = option_picker.add_to_sequence_manager
 
-    def handle_click(self, clicked_option: "Pictograph") -> None:
-        """Handle the logic when an option is clicked."""
+    def handle_option_click(self, clicked_option: "Pictograph") -> None:
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        new_beat = self.add_to_sequence_manager.create_new_beat(clicked_option)
-        self.beat_frame.beat_adder.add_beat_to_sequence(new_beat)
-        if new_beat.view:
-            selection_manager = self.beat_frame.selection_overlay
-            selection_manager.select_beat(new_beat.view)
-            QApplication.processEvents()
-
-            self.option_picker.updater.refresh_options()
-
-            new_beat.view.is_filled = True
-            self.option_picker.choose_next_label.set_default_text()
-        QApplication.restoreOverrideCursor()
+        try:
+            new_beat = self.add_to_sequence_manager.create_new_beat(clicked_option)
+            self.beat_frame.beat_adder.add_beat_to_sequence(new_beat)
+            if new_beat.view:
+                self.beat_frame.selection_overlay.select_beat(new_beat.view)
+                QApplication.processEvents()
+                self.option_picker.updater.refresh_options()
+                new_beat.view.is_filled = True
+                self.option_picker.choose_next_label.setText(
+                    "Choose your next pictograph:"
+                )
+        finally:
+            QApplication.restoreOverrideCursor()

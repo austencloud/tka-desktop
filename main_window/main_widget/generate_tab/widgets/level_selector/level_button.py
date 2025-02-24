@@ -27,7 +27,7 @@ class LevelButton(QWidget):
 
         # Create the number label
         self.number_label = QLabel(str(level), self)
-        self.number_label.setFont(QFont("Arial", 14, QFont.Weight.Bold))
+        self.number_label.setFont(QFont("Georgia", 14, QFont.Weight.Bold))
         self.number_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.number_label.setStyleSheet("color: white; background: transparent;")
 

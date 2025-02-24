@@ -14,6 +14,7 @@ class ArrowLocationManager:
         self.arrow = arrow
 
     def _select_calculator(self) -> "BaseLocationCalculator":
+        # self.arrow.setup_components()  # Ensure arrow is initialized
         calculator_map = {
             PRO: ShiftLocationCalculator,
             ANTI: ShiftLocationCalculator,
@@ -22,7 +23,7 @@ class ArrowLocationManager:
             STATIC: StaticLocationCalculator,
         }
         calculator_class = calculator_map.get(
-            self.arrow.motion.motion_type, BaseLocationCalculator
+            self.arrow.motion.state.motion_type, BaseLocationCalculator
         )
         return calculator_class(self.arrow)
 

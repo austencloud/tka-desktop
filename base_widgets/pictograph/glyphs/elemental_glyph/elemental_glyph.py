@@ -12,6 +12,7 @@ from data.constants import (
     TOG_OPP,
     TOG_SAME,
 )
+from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
 
 
@@ -42,9 +43,9 @@ class ElementalGlyph(QGraphicsSvgItem):
         self.pictograph = pictograph
 
     def set_elemental_glyph(self) -> None:
-        if not self.pictograph.letter_type in [LetterType.Type1]:
+        if not self.pictograph.state.letter_type in [LetterType.Type1]:
             self.setVisible(False)
-        vtg_mode = self.pictograph.vtg_mode
+        vtg_mode = self.pictograph.state.vtg_mode
         svg_path: str = SVG_PATHS.get(vtg_mode, "")
         if not svg_path:
             return
@@ -76,7 +77,5 @@ class ElementalGlyph(QGraphicsSvgItem):
         self.position_elemental_glyph()
 
         self.setVisible(
-            self.pictograph.main_widget.settings_manager.visibility.get_glyph_visibility(
-                "Elemental"
-            )
+            AppContext.settings_manager().visibility.get_glyph_visibility("Elemental")
         )

@@ -35,19 +35,17 @@ if TYPE_CHECKING:
 
 
 class BetaPropDirectionCalculator:
-    def __init__(self, placement_manager: "PropPlacementManager") -> None:
-        self.main_widget = placement_manager.pictograph.main_widget
 
     def get_dir(self, motion: Motion) -> str:
         """Determine the translation direction based on the motion type, start location, end location, and end layer."""
         if (
-            motion.pictograph.letter == Letter.I
-            and motion.pictograph.check.ends_with_radial_ori()
+            motion.pictograph.state.letter == Letter.I
+            and motion.pictograph.managers.check.ends_with_radial_ori()
         ):
             return self.get_direction_for_radial_I(motion)
         elif (
-            motion.pictograph.letter == Letter.I
-            and motion.pictograph.check.ends_with_nonradial_ori()
+            motion.pictograph.state.letter == Letter.I
+            and motion.pictograph.managers.check.ends_with_nonradial_ori()
         ):
             return self.get_direction_for_nonradial_I(motion)
         if motion.check.is_shift():
@@ -77,7 +75,7 @@ class BetaPropDirectionCalculator:
             (NORTHWEST, RED): DOWNRIGHT,
             (NORTHWEST, BLUE): UPLEFT,
         }
-        return direction_map.get((motion.end_loc, motion.prop.color))
+        return direction_map.get((motion.state.end_loc, motion.prop.color))
 
     def get_direction_for_radial_I(self, motion: Motion) -> str:
         direction_map = {
@@ -98,7 +96,7 @@ class BetaPropDirectionCalculator:
             (NORTHWEST, RED): UPRIGHT,
             (NORTHWEST, BLUE): DOWNLEFT,
         }
-        return direction_map.get((motion.end_loc, motion.prop.color))
+        return direction_map.get((motion.state.end_loc, motion.prop.color))
 
     def get_dir_for_radial(self, motion: Motion) -> str:
         direction_map = {
@@ -119,7 +117,7 @@ class BetaPropDirectionCalculator:
             (NORTHWEST, NORTHEAST): UPLEFT,
             (NORTHWEST, SOUTHWEST): UPLEFT,
         }
-        return direction_map.get((motion.start_loc, motion.end_loc))
+        return direction_map.get((motion.state.start_loc, motion.state.end_loc))
 
     def get_dir_for_nonradial(self, motion: Motion) -> str:
         direction_map = {
@@ -140,7 +138,7 @@ class BetaPropDirectionCalculator:
             (NORTHWEST, NORTHEAST): DOWNLEFT,
             (NORTHWEST, SOUTHWEST): DOWNLEFT,
         }
-        return direction_map.get((motion.start_loc, motion.end_loc))
+        return direction_map.get((motion.state.start_loc, motion.state.end_loc))
 
     def get_dir_for_non_shift(self, prop: Prop) -> str:
         diamond_layer_reposition_map = {

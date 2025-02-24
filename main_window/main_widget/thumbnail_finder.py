@@ -4,12 +4,11 @@ from typing import TYPE_CHECKING
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    pass
 
 
 class ThumbnailFinder:
-    def __init__(self, main_widget: "MainWidget") -> None:
-        self.main_widget = main_widget
+    def __init__(self) -> None:
         self.dictionary_dir = get_images_and_data_path("dictionary")
 
     def find_thumbnails(self, word_dir: str) -> list[str]:

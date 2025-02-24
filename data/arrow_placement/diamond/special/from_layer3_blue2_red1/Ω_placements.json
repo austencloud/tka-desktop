@@ -1,7 +1,7 @@
 {
   "Ω": {
-    "null": {
-      "static_from_layer2": {}
+    "(o, 0, 1)": {
+      "anti_from_layer1": {}
     }
   }
 }

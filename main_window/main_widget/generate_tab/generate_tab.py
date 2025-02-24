@@ -50,7 +50,7 @@ class GenerateTab(QWidget):
         self.customize_sequence_label = CustomizeSequenceLabel(self)
         self.auto_complete_button = GenerateSequenceButton(self, "Auto-Complete", False)
         self.generate_button = GenerateSequenceButton(self, "Generate New", True)
-        self.mode_toggle = GeneratorTypeToggle(self)
+        self.generator_type_toggle = GeneratorTypeToggle(self)
         self.level_selector = LevelSelector(self)
         self.length_adjuster = LengthAdjuster(self)
         self.turn_intensity = TurnIntensityAdjuster(self)

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Union
 
+from Enums.PropTypes import PropType
 from data.constants import *
 
 from Enums.Enums import PropAttribute
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 class PropAttrManager:
     def __init__(self, prop: "Prop") -> None:
         self.prop = prop
-        self.update_attributes(self.prop.prop_data)
+        # self.update_attributes(self.prop.prop_data)
 
     def update_attributes(
         self, prop_data: dict[str, Union[str, str, str, int]]
@@ -20,6 +21,15 @@ class PropAttrManager:
         prop_attributes = [COLOR, LOC, LAYER, ORI, MOTION, PROP_TYPE]
         for attr in prop_attributes:
             value = prop_data.get(attr)
+            if attr == PROP_TYPE:
+                if prop_data.get(PROP_TYPE) is not None:
+                    # if the value being passed in is a PropType, convert it to a string with its .name. Otherwise, if its a string, use it directly
+                    value = (
+                        value.name
+                        if isinstance(value, PropType)
+                        else value
+                    )
+                    
             if value is not None:
                 setattr(self.prop, attr, value)
         self.set_z_value_based_on_color()

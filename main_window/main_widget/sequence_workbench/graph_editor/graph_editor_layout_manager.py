@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QStackedLayout, QSizePolicy
-from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.graph_editor.graph_editor import (

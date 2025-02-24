@@ -1,4 +1,3 @@
-from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget
 
 from typing import TYPE_CHECKING
@@ -22,12 +21,11 @@ from .font_color_updater.font_color_updater import FontColorUpdater
 
 from .main_widget_managers import MainWidgetManagers
 from .main_widget_ui import MainWidgetUI
-from .main_widget_events import MainWidgetEvents
 from .main_widget_state import MainWidgetState
 
 if TYPE_CHECKING:
+    from main_window.main_widget.codex.codex import Codex
     from main_window.main_widget.pictograph_data_loader import PictographDataLoader
-    from main_window.settings_manager.settings_manager import SettingsManager
     from main_window.menu_bar.menu_bar import MenuBarWidget
     from splash_screen.splash_screen import SplashScreen
     from ..main_window import MainWindow
@@ -35,16 +33,10 @@ if TYPE_CHECKING:
     from .json_manager.json_manager import JsonManager
     from .sequence_workbench.sequence_workbench import SequenceWorkbench
 
-    from base_widgets.pictograph.svg_manager import (
-        SvgManager,
-    )
+
     from .main_background_widget.backgrounds.base_background import (
         BaseBackground,
     )
-    from .turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
-    from .pictograph_key_generator import PictographKeyGenerator
-    from .special_placement_loader import SpecialPlacementLoader
-    from .metadata_extractor import MetaDataExtractor
     from .sequence_level_evaluator import SequenceLevelEvaluator
     from .sequence_properties_manager.sequence_properties_manager import (
         SequencePropertiesManager,
@@ -73,20 +65,15 @@ class MainWidget(QWidget):
     sequence_workbench: "SequenceWorkbench"
     background_widget: "MainBackgroundWidget"
     full_screen_overlay: "FullScreenImageOverlay"
-
+    codex: "Codex"
+    
     # Handlers
     tab_switcher: "MainWidgetTabSwitcher"
     manager: "MainWidgetManagers"
     ui_handler: "MainWidgetUI"
-    event_handler: "MainWidgetEvents"
     state_handler: "MainWidgetState"
 
     # Managers and Helpers
-    svg_manager: "SvgManager"
-    turns_tuple_generator: "TurnsTupleGenerator"
-    pictograph_key_generator: "PictographKeyGenerator"
-    special_placement_loader: "SpecialPlacementLoader"
-    metadata_extractor: "MetaDataExtractor"
     sequence_level_evaluator: "SequenceLevelEvaluator"
     sequence_properties_manager: "SequencePropertiesManager"
     thumbnail_finder: "ThumbnailFinder"
@@ -145,8 +132,6 @@ class MainWidget(QWidget):
         self.manager = MainWidgetManagers(self)
         self.state_handler = MainWidgetState(self)
         self.ui_handler = MainWidgetUI(self)
-        self.event_handler = MainWidgetEvents(self)
-
 
     def ensure_user_exists(self):
         """Check if a user exists; if not, prompt for a name and show welcome info."""
@@ -162,7 +147,7 @@ class MainWidget(QWidget):
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self.background_widget.resize_background()
-        self.beat_frame = self.sequence_workbench.beat_frame
+        self.beat_frame = self.sequence_workbench.sequence_beat_frame
         if (
             self.left_stack.currentIndex() == self.left_sequence_picker_index
             and self.right_stack.currentIndex() == self.right_sequence_viewer_index

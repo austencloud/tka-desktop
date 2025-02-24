@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import Qt, QPropertyAnimation
-from PyQt6.QtGui import QColor
 
 if TYPE_CHECKING:
     from main_window.main_widget.generate_tab.generate_tab import GenerateTab
@@ -49,7 +48,6 @@ class GenerateSequenceButton(QPushButton):
                 background-color: #2196F3;
                 color: white;
                 border: none;
-                transition: background-color 0.3s;
             }}
             QPushButton:hover {{
                 background-color: #1976D2;

@@ -1,8 +1,9 @@
 # In generate_tab_settings.py
 from typing import TYPE_CHECKING
+from PyQt6.QtCore import QSettings
 
 if TYPE_CHECKING:
-    from settings_manager.settings_manager import SettingsManager
+    pass
 
 
 # In GenerateTabSettings class
@@ -10,7 +11,7 @@ class GenerateTabSettings:
     SHARED_DEFAULTS = {
         "sequence_length": 16,
         "max_turn_intensity": 1,
-        "sequence_level": 1,
+        "level": 1,
         "prop_continuity": False,
         "overwrite_sequence": False,
     }
@@ -29,34 +30,21 @@ class GenerateTabSettings:
         "circular": {"rotation_type": "quartered", "permutation_type": "rotated"},
     }
 
-    def __init__(self, settings_manager: "SettingsManager") -> None:
-        self.settings_manager = settings_manager
-        self.settings = self.settings_manager.settings
+    def __init__(self, settings: QSettings):
+        self.settings = settings
 
-    def get_setting(self, key: str, mode: str = None):
-        """Get setting with fallback to unified defaults"""
-        if mode and key in self.MODE_SPECIFIC_DEFAULTS.get(mode, {}):
-            prefix = f"builder/sequence_generator/{mode}/"
-            default = self.MODE_SPECIFIC_DEFAULTS[mode].get(key)
-        else:
-            prefix = "builder/sequence_generator/"
-            default = self.SHARED_DEFAULTS.get(key)
+    def get_setting(self, key: str):
+        """Get setting with proper fallback logic."""
+        return self.settings.value(f"generator/{key}", self.SHARED_DEFAULTS.get(key))
 
-        return self.settings.value(prefix + key, default)
-
-    def set_setting(self, key: str, value, mode: str = None):
+    def set_setting(self, key: str, value):
         """Set setting in appropriate section"""
-        if mode and key in self.MODE_SPECIFIC_DEFAULTS.get(mode, {}):
-            prefix = f"builder/sequence_generator/{mode}/"
-        else:
-            prefix = "builder/sequence_generator/"
 
+        prefix = "generator/"
         self.settings.setValue(prefix + key, value)
 
     def get_current_mode(self) -> str:
-        return self.settings.value(
-            "builder/sequence_generator/current_mode", "freeform"
-        )
+        return self.settings.value("generator/current_mode", "freeform")
 
     def set_current_mode(self, mode: str):
-        self.settings.setValue("builder/sequence_generator/current_mode", mode)
+        self.settings.setValue("generator/current_mode", mode)

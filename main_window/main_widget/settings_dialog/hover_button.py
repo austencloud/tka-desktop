@@ -15,7 +15,6 @@ class HoverButton(QPushButton):
         super().__init__(text, dialog)
         self.dialog = dialog
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-        dialog.styler.style_button(self)
 
     def enterEvent(self, event):
         self.setStyleSheet(
@@ -30,6 +29,3 @@ class HoverButton(QPushButton):
         )
         super().enterEvent(event)
 
-    def leaveEvent(self, event):
-        self.dialog.styler.style_button(self)
-        super().leaveEvent(event)

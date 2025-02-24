@@ -10,7 +10,7 @@ from .base_directional_tuple_generator import BaseDirectionalGenerator
 class DirectionalTupleManager:
     """
 
-    DirectionalTupleManager generates directional tuples for a given motion. 
+    DirectionalTupleManager generates directional tuples for a given motion.
     Directional tuples are used to adjust the arrow's
     special placement in the pictograph.
 
@@ -23,15 +23,15 @@ class DirectionalTupleManager:
         self.generator: BaseDirectionalGenerator = self._select_generator(motion)
 
     def _select_generator(self, motion: Motion) -> "BaseDirectionalGenerator":
-        if motion.motion_type in [PRO, ANTI, FLOAT]:
+        if motion.state.motion_type in [PRO, ANTI, FLOAT]:
             return ShiftDirectionalGenerator(motion)
-        elif motion.motion_type == DASH:
+        elif motion.state.motion_type == DASH:
             return DashDirectionalGenerator(motion)
-        elif motion.motion_type == STATIC:
+        elif motion.state.motion_type == STATIC:
             return StaticDirectionalGenerator(motion)
         else:
             logging.error(
-                f"Can't find a directional tuple generator for motion type: {motion.motion_type}"
+                f"Can't find a directional tuple generator for motion type: {motion.state.motion_type}"
             )
 
     def generate_directional_tuples(self, x: int, y: int) -> list[tuple[int, int]]:

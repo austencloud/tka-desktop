@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QApplication, QMessageBox
 
 if TYPE_CHECKING:
     from .generate_tab import GenerateTab
@@ -12,12 +11,12 @@ class GenerateTabController:
         self.current_mode = "freeform"
 
     def init_from_settings(self):
-        saved_mode = self.settings.get_setting("generator_mode", "global") or "freeform"
+        saved_mode = self.settings.get_setting("generator_mode") or "freeform"
         if saved_mode not in ["freeform", "circular"]:
             saved_mode = "freeform"
         self.current_mode = saved_mode
 
-        self.tab.mode_toggle.set_state(self.current_mode == "circular")
+        self.tab.generator_type_toggle.set_state(self.current_mode == "circular")
 
         self._apply_unified_settings()
 
@@ -30,12 +29,12 @@ class GenerateTabController:
 
     def on_mode_changed(self, new_mode: str):
         self.current_mode = new_mode
-        self.settings.set_setting("generator_mode", new_mode, "global")
+        self.settings.set_setting("generator_mode", new_mode)
         self._update_ui_visibility()
 
     def handle_generate_sequence(self, overwrite: bool):
         if overwrite:
-            self.tab.main_widget.sequence_workbench.beat_frame.sequence_workbench.beat_deleter.reset_widgets(
+            self.tab.main_widget.sequence_workbench.sequence_beat_frame.sequence_workbench.beat_deleter.reset_widgets(
                 False
             )
 
@@ -89,16 +88,16 @@ class GenerateTabController:
         self.tab.auto_complete_button.setEnabled(int(current_sequence_length) > 1)
 
     def _load_circular_settings(self):
-        rotation_type = self.settings.get_setting("rotation_type", "circular")
+        rotation_type = self.settings.get_setting("rotation_type")
         if rotation_type:
             self.tab.slice_size_toggle.set_state(rotation_type == "quartered")
 
-        permutation_type = self.settings.get_setting("permutation_type", "circular")
+        permutation_type = self.settings.get_setting("permutation_type")
         if permutation_type:
             self.tab.permutation_type_toggle.set_state(permutation_type == "rotated")
 
     def _load_freeform_settings(self):
-        letter_types = self.settings.get_setting("selected_letter_types", "freeform")
+        letter_types = self.settings.get_setting("selected_letter_types")
         if letter_types:
             self.tab.letter_picker.set_selected_types(letter_types)
 

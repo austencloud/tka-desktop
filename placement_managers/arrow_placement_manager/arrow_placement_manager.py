@@ -1,5 +1,7 @@
+from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING
+from main_window.settings_manager.global_settings.app_context import AppContext
 
 from .arrow_adjustment_calculator import ArrowAdjustmentCalculator
 from .arrow_initial_pos_calculator import ArrowInitialPosCalculator
@@ -12,20 +14,24 @@ if TYPE_CHECKING:
 
 
 class ArrowPlacementManager:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(
+        self,
+        pictograph: "Pictograph",
+    ):
         self.pictograph = pictograph
-
-        # Positioners
+        self.special_placement_loader = AppContext.special_placement_loader()
         self.default_positioner = DefaultArrowPositioner(self)
         self.special_positioner = SpecialArrowPositioner(self)
 
         self.initial_pos_calculator = ArrowInitialPosCalculator(self)
-        self.adjustment_calculator = ArrowAdjustmentCalculator(self)
+        self.adjustment_calculator = ArrowAdjustmentCalculator(
+            self, self.special_placement_loader
+        )
         self.quadrant_index_handler = QuadrantIndexHandler(self)
 
     def update_arrow_placements(self) -> None:
-        if self.pictograph.letter:
-            for arrow in self.pictograph.arrows.values():
+        if self.pictograph.state.letter:
+            for arrow in self.pictograph.elements.arrows.values():
                 self.update_arrow_position(arrow)
 
     def update_arrow_position(self, arrow: Arrow) -> None:

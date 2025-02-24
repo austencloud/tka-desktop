@@ -1,8 +1,6 @@
-from typing import TYPE_CHECKING
-from PyQt6.QtCore import Qt
-
+from typing import TYPE_CHECKING, Callable
+from PyQt6.QtCore import Qt, QSize
 from base_widgets.pictograph.bordered_pictograph_view import BorderedPictographView
-
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
@@ -10,19 +8,21 @@ if TYPE_CHECKING:
 
 
 class OptionView(BorderedPictographView):
-    
-    
-    def __init__(self, option_picker: "OptionPicker", pictograph: "Pictograph") -> None:
+    def __init__(
+        self,
+        op: "OptionPicker",
+        pictograph: "Pictograph",
+        mw_size_provider: Callable[[], QSize],
+    ):
         super().__init__(pictograph)
+        self.option_picker = op
         self.pictograph = pictograph
-        self.option_picker = option_picker
-        self.click_handler = option_picker.click_handler
-
-    ### EVENTS ###
+        self.click_handler = op.option_click_handler
+        self.mw_size_provider = mw_size_provider
 
     def mousePressEvent(self, event) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
-            self.click_handler.handle_click(self.pictograph)
+            self.click_handler.handle_option_click(self.pictograph)
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
@@ -30,15 +30,12 @@ class OptionView(BorderedPictographView):
 
     def resize_option_view(self):
         spacing = self.option_picker.option_scroll.spacing
-
         size = max(
-            self.option_picker.construct_tab.start_pos_picker.main_widget.right_stack.width()
-            // 8,
-            self.option_picker.width() // 8,
+            self.mw_size_provider().width() // 16, self.option_picker.width() // 8
         )
-        border_width = max(1, int(size * 0.015))
-        size -= 2 * border_width + spacing
-        self.pictograph.view.update_border_widths()
+        bw = max(1, int(size * 0.015))
+        size -= 2 * bw + spacing
+        self.pictograph.elements.view.update_border_widths()
         self.setFixedSize(size, size)
         self.view_scale = size / self.pictograph.width()
         self.resetTransform()

@@ -10,11 +10,9 @@ class SmallUnilateralPropPositioner:
         self.prop_placement_manager = beta_prop_positioner.prop_placement_manager
         self.pictograph = beta_prop_positioner.pictograph
         self.dir_calculator = self.prop_placement_manager.dir_calculator
-        self.blue_prop = self.pictograph.blue_prop
-        self.red_prop = self.pictograph.red_prop
-        self.red_motion = self.pictograph.red_motion
-        self.blue_motion = self.pictograph.blue_motion
+        self.blue_prop = self.pictograph.elements.blue_prop
+        self.red_prop = self.pictograph.elements.red_prop
+        self.red_motion = self.pictograph.elements.red_motion
+        self.blue_motion = self.pictograph.elements.blue_motion
         self.default_positioner = self.prop_placement_manager.default_positioner
         self.classifier = self.beta_prop_positioner.classifier
-
-

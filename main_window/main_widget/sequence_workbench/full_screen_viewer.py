@@ -19,7 +19,7 @@ class FullScreenViewer:
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
         self.main_widget = sequence_workbench.main_widget
-        self.beat_frame = sequence_workbench.beat_frame
+        self.beat_frame = sequence_workbench.sequence_beat_frame
         self.indicator_label = sequence_workbench.indicator_label
         self.json_loader = AppContext.json_manager().loader_saver
 
@@ -47,7 +47,7 @@ class FullScreenViewer:
 
     def create_thumbnail(self):
         self.thumbnail_generator = (
-            self.sequence_workbench.add_to_dictionary_manager.thumbnail_generator
+            self.sequence_workbench.dictionary_service.thumbnail_generator
         )
         current_sequence = self.json_loader.load_current_sequence()
         temp_path = get_images_and_data_path("temp")

@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
-from main_window.main_widget.sequence_workbench.beat_frame.beat import Beat
-from main_window.main_widget.sequence_workbench.beat_frame.beat_view import BeatView
-from main_window.main_widget.sequence_workbench.beat_frame.sequence_beat_frame import SequenceBeatFrame
+
+
 from .json_duration_updater import JsonDurationUpdater
 from .json_prop_rot_dir_updater import JsonstrUpdater
 from .json_prop_type_updater import JsonPropTypeUpdater
@@ -11,6 +10,10 @@ from .json_turns_updater import JsonTurnsUpdater
 
 
 if TYPE_CHECKING:
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
     from main_window.main_widget.json_manager.json_manager import JsonManager
 
 
@@ -24,13 +27,13 @@ class JsonSequenceUpdater:
         self.prop_rot_dir_updater = JsonstrUpdater(self)
         self.duration_updater = JsonDurationUpdater(self)
 
-    def update_current_sequence_file_with_beat(self, beat: Beat):
+    def update_current_sequence_file_with_beat(self, beat: "Beat"):
         view = beat.view
         sequence_data = self.json_manager.loader_saver.load_current_sequence()
         sequence_metadata = sequence_data[0] if "word" in sequence_data[0] else {}
         sequence_beats = sequence_data[1:]
 
-        beat_data = beat.pictograph_data.copy()
+        beat_data = beat.state.pictograph_data.copy()
         beat_data["duration"] = beat.duration
         number = self.get_next_beat_number(sequence_beats)
         view.number = number

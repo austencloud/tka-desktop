@@ -10,16 +10,17 @@ from base_widgets.pictograph.pictograph_context_menu_handler import (
 from base_widgets.pictograph.pictograph_view import (
     PictographView,
 )
-from base_widgets.pictograph.pictograph_view_key_event_handler import (
-    PictographViewKeyEventHandler,
+from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_view_key_event_handler import (
+    GraphEditorViewKeyEventHandler,
 )
-from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
-    GE_Pictograph,
-)
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from .GE_pictograph_view_mouse_event_handler import GE_PictographViewMouseEventHandler
 
 from base_widgets.pictograph.pictograph import Pictograph
-from ..beat_frame.beat_view import Beat
+
+from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
+    GE_Pictograph,
+)
 
 if TYPE_CHECKING:
     from .pictograph_container.GE_pictograph_container import (
@@ -44,18 +45,18 @@ class GE_PictographView(PictographView):
         self.setFrameShape(PictographView.Shape.Box)
         self.mouse_event_handler = GE_PictographViewMouseEventHandler(self)
         self.context_menu_handler = PictographContextMenuHandler(self)
-        self.key_event_handler = PictographViewKeyEventHandler(self)
+        self.key_event_handler = GraphEditorViewKeyEventHandler(self)
         self.graph_editor.selection_manager.selection_changed.connect(
             self.on_selection_changed
         )
 
-    def on_selection_changed(self, selected_arrow):
-        self.scene().update()  # Ensure the view reflects the updated selection
+    def on_selection_changed(self):
+        self.scene().update()
 
     def set_to_blank_grid(self) -> None:
         self.pictograph = GE_Pictograph(self)
         self.setScene(self.pictograph)
-        self.pictograph.view = self
+        self.pictograph.elements.view = self
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if not self.key_event_handler.handle_key_press(event):
@@ -79,6 +80,7 @@ class GE_PictographView(PictographView):
                 self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
 
     def paintEvent(self, event) -> None:
+        super().paintEvent(event)
         painter = QPainter(self.viewport())
         pen = QPen(Qt.GlobalColor.black, 0)
         painter.setPen(pen)
@@ -102,13 +104,11 @@ class GE_PictographView(PictographView):
         )
         painter.drawRect(overlay_rect)
         painter.end()
-        super().paintEvent(event)
 
     def get_current_pictograph(self) -> Pictograph:
         return self.pictograph
 
     def set_scene(self, beat: "Beat") -> None:
-        # self.setScene(beat)
         self.reference_beat = beat
         if beat.view.is_start_pos:
             self.is_start_pos = True

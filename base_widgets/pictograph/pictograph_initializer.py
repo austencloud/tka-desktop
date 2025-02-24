@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import QPoint, Qt
 from PyQt6.QtWidgets import QGraphicsTextItem
 from data.prop_class_mapping import prop_class_mapping
-from .glyphs.beat_reversal_group import (
-    BeatReversalGroup,
+from .glyphs.reversal_glyph import (
+    ReversalGlyph,
 )
 from objects.arrow.arrow import Arrow
 from .grid.grid import Grid, GridData
@@ -17,8 +17,8 @@ from utilities.path_helpers import get_images_and_data_path
 from .prop_factory import PropFactory
 from .glyphs.elemental_glyph.elemental_glyph import ElementalGlyph
 from .glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import StartToEndPosGlyph
-from .glyphs.tka.tka_glyph import TKA_Glyph
-from .glyphs.vtg.vtg_glyph import VTG_Glyph
+from .glyphs.tka_glyph.tka_glyph import TKA_Glyph
+from .glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
 
 if TYPE_CHECKING:
     from .pictograph import Pictograph
@@ -44,22 +44,24 @@ class PictographInitializer:
         self.pictograph.setBackgroundBrush(Qt.GlobalColor.white)
         self.prop_factory = PropFactory()
         self.grid_initialized = False
+        self.init_all_components()
 
     ### INIT ###
 
     def init_all_components(self) -> None:
-        self.pictograph.dragged_prop = None
-        self.pictograph.dragged_arrow = None
-
-        self.pictograph.grid = self.init_grid(self.default_grid_mode)
-        self.pictograph.locations = self.init_quadrant_boundaries(self.pictograph.grid)
-        self.pictograph.motions = self.init_motions()
-        self.pictograph.arrows = self.init_arrows()
-        self.pictograph.props = self.init_props()
-        self.pictograph.tka_glyph = self.init_tka_glyph()
-        self.pictograph.vtg_glyph = self.init_vtg_glyph()
-        self.pictograph.elemental_glyph = self.init_elemental_glyph()
-        self.pictograph.start_to_end_pos_glyph = self.init_start_to_end_pos_glyph()
+        self.pictograph.elements.grid = self.init_grid(self.default_grid_mode)
+        self.pictograph.elements.locations = self.init_quadrant_boundaries(
+            self.pictograph.elements.grid
+        )
+        self.pictograph.elements.motions = self.init_motions()
+        self.pictograph.elements.arrows = self.init_arrows()
+        self.pictograph.elements.props = self.init_props()
+        self.pictograph.elements.tka_glyph = self.init_tka_glyph()
+        self.pictograph.elements.vtg_glyph = self.init_vtg_glyph()
+        self.pictograph.elements.elemental_glyph = self.init_elemental_glyph()
+        self.pictograph.elements.start_to_end_pos_glyph = (
+            self.init_start_to_end_pos_glyph()
+        )
         self.init_reversal_symbols()
 
         self.set_nonradial_points_visibility(
@@ -67,11 +69,11 @@ class PictographInitializer:
         )
 
     def init_reversal_symbols(self) -> tuple[QGraphicsTextItem, QGraphicsTextItem]:
-        self.reversal_symbol_manager = BeatReversalGroup(self.pictograph)
+        self.reversal_symbol_manager = ReversalGlyph(self.pictograph)
         # self.reversal_symbol_manager.update_reversal_symbols()
 
     def set_nonradial_points_visibility(self, visible: bool) -> None:
-        self.pictograph.grid.toggle_non_radial_points(visible)
+        self.pictograph.elements.grid.toggle_non_radial_points(visible)
 
     def init_grid(self, grid_mode: str) -> Grid:
         if not self.grid_initialized:
@@ -98,26 +100,27 @@ class PictographInitializer:
                 raise
         else:
             logger.warning("Grid already initialized.")
-            return self.pictograph.grid
+            return self.pictograph.elements.grid
 
     def init_motions(self) -> dict[str, Motion]:
         motions: dict[str, Motion] = {}
         for color in [RED, BLUE]:
             motions[color] = self._create_motion(color)
-        self.pictograph.red_motion, self.pictograph.blue_motion = (
+            motions[color].state.color = color
+        self.pictograph.elements.red_motion, self.pictograph.elements.blue_motion = (
             motions[RED],
             motions[BLUE],
         )
         for motion in motions.values():
-            motion.start_ori = None
-            motion.end_ori = None
+            motion.state.start_ori = None
+            motion.state.end_ori = None
         return motions
 
     def init_arrows(self) -> dict[str, Arrow]:
         arrows = {}
         for color in [BLUE, RED]:
             arrows[color] = self._create_arrow(color)
-        self.pictograph.red_arrow, self.pictograph.blue_arrow = (
+        self.pictograph.elements.red_arrow, self.pictograph.elements.blue_arrow = (
             arrows[RED],
             arrows[BLUE],
         )
@@ -133,28 +136,24 @@ class PictographInitializer:
                 LOC: None,
                 ORI: None,
             }
-            initial_prop_class = prop_class_mapping.get(prop_type)
-            if initial_prop_class is None:
-                raise ValueError(f"Invalid prop_type: {prop_type}")
             initial_prop = Prop(
-                self.pictograph, initial_prop_attributes, None, initial_prop_class
+                self.pictograph, initial_prop_attributes, None, prop_type
             )
             props[color] = self.prop_factory.create_prop_of_type(
                 initial_prop, prop_type
             )
-            self.pictograph.motions[color].prop = props[color]
-            props[color].motion = self.pictograph.motions[color]
+            self.pictograph.elements.motions[color].prop = props[color]
+            props[color].motion = self.pictograph.elements.motions[color]
 
-            props[color].arrow = self.pictograph.motions[color].arrow
-            self.pictograph.motions[color].arrow.motion.prop = props[color]
+            props[color].arrow = self.pictograph.elements.motions[color].arrow
+            self.pictograph.elements.motions[color].arrow.motion.prop = props[color]
             self.pictograph.addItem(props[color])
             props[color].hide()
 
-        self.pictograph.red_prop, self.pictograph.blue_prop = (
+        self.pictograph.elements.red_prop, self.pictograph.elements.blue_prop = (
             props[RED],
             props[BLUE],
         )
-        self.pictograph.prop_type = prop_type
         return props
 
     def init_tka_glyph(self) -> TKA_Glyph:
@@ -218,8 +217,8 @@ class PictographInitializer:
             TURNS: 0,
         }
         arrow = Arrow(self.pictograph, arrow_attributes)
-        self.pictograph.motions[color].arrow = arrow
-        arrow.motion = self.pictograph.motions[color]
+        self.pictograph.elements.motions[color].arrow = arrow
+        arrow.motion = self.pictograph.elements.motions[color]
         self.pictograph.addItem(arrow)
         arrow.hide()
         return arrow

@@ -8,12 +8,12 @@ class StaticRotAngleCalculator(BaseRotAngleCalculator):
         rotation_override = self.has_rotation_angle_override()
         if rotation_override:
             return self._get_rot_angle_override_according_to_loc()
-        if self.arrow.motion.start_ori in [IN, OUT]:
+        if self.arrow.motion.state.start_ori in [IN, OUT]:
             direction_map = self._radial_static_direction_map()
-        elif self.arrow.motion.start_ori in [CLOCK, COUNTER]:
+        elif self.arrow.motion.state.start_ori in [CLOCK, COUNTER]:
             direction_map = self._nonradial_static_direction_map()
 
-        prop_rot_dir = self.arrow.motion.prop_rot_dir
+        prop_rot_dir = self.arrow.motion.state.prop_rot_dir
         loc = self.arrow.loc
 
         angle_dict = direction_map.get(prop_rot_dir)
@@ -92,13 +92,13 @@ class StaticRotAngleCalculator(BaseRotAngleCalculator):
             SOUTHWEST: {CLOCKWISE: 225, COUNTER_CLOCKWISE: 135},
             NORTHWEST: {CLOCKWISE: 315, COUNTER_CLOCKWISE: 45},
         }
-        if self.arrow.motion.start_ori in [IN, OUT]:
+        if self.arrow.motion.state.start_ori in [IN, OUT]:
             loc_angle = static_from_radial_angle_override_map.get(self.arrow.loc)
             if isinstance(loc_angle, dict):
-                return loc_angle.get(self.arrow.motion.prop_rot_dir, 0)
+                return loc_angle.get(self.arrow.motion.state.prop_rot_dir, 0)
             return loc_angle
-        elif self.arrow.motion.start_ori in [CLOCK, COUNTER]:
+        elif self.arrow.motion.state.start_ori in [CLOCK, COUNTER]:
             loc_angle = static_from_nonradial_angle_override_map.get(self.arrow.loc)
             if isinstance(loc_angle, dict):
-                return loc_angle.get(self.arrow.motion.prop_rot_dir, 0)
+                return loc_angle.get(self.arrow.motion.state.prop_rot_dir, 0)
             return loc_angle

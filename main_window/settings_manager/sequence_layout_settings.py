@@ -1,44 +1,96 @@
 import json
-from pathlib import Path
+import os
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from main_window.settings_manager.settings_manager import SettingsManager
 
+OVERRIDES_FILE = "data/beat_layout_overrides.json"
+
 
 class SequenceLayoutSettings:
-    LAYOUTS_FILE = Path("data/default_layouts.json")
-
-    def __init__(self, settings_manager: "SettingsManager"):
+    def __init__(self, settings_manager: "SettingsManager") -> None:
         self.settings_manager = settings_manager
+        self.settings = settings_manager.settings
 
     def get_layout_setting(self, beat_count: str) -> list[int]:
-        """Retrieve layout setting for a specific beat count."""
         layouts = self._load_layouts()
-        return layouts.get(beat_count, [1, int(beat_count)])
+        default_value = layouts.get(beat_count, [1, int(beat_count)])
+
+        overrides = self._load_overrides()
+        return overrides.get(str(beat_count), default_value)
 
     def set_layout_setting(self, beat_count: str, layout: list[int]):
-        """Update the layout setting for a specific beat count."""
-        layouts = self._load_layouts()
-        layouts[beat_count] = layout
-        self._save_layouts(layouts)
+        overrides = self._load_overrides()
+        overrides[str(beat_count)] = layout
+        self._save_overrides(overrides)
 
-    def _load_layouts(self):
-        """Load layouts from JSON."""
-        if not self.LAYOUTS_FILE.exists():
+    def _load_layouts(self) -> dict:
+        raw_val = self.settings.value("sequence_layout/default_layouts", "")
+
+        if not raw_val:
+            try:
+                with open("data/default_layouts.json", "r") as file:
+                    return json.load(file)
+            except FileNotFoundError:
+                return {}
+
+        if isinstance(raw_val, dict):
+            return raw_val
+
+        try:
+            return json.loads(raw_val)
+        except (ValueError, TypeError):
             return {}
-        with open(self.LAYOUTS_FILE, "r") as file:
-            return json.load(file)
 
-    def _save_layouts(self, layouts):
-        """Save layouts to JSON with inline lists and readable formatting."""
-        with open(self.LAYOUTS_FILE, "w") as file:
-            # Generate a JSON string with pre-formatted lists
-            formatted_json = json.dumps(layouts, indent=2)
-            # Post-process to ensure lists are inline
-            formatted_json = (
-                formatted_json.replace("[\n    ", "[")
-                .replace("\n  ]", "]")
-                .replace(",\n    ", ", ")
-            )
-            file.write(formatted_json)
+    def _load_overrides(self) -> dict:
+        if not os.path.exists(OVERRIDES_FILE):
+            return {}
+
+        try:
+            with open(OVERRIDES_FILE, "r") as file:
+                content = file.read().strip()  # Strip whitespace and newlines
+
+                if not content:
+                    return {}  # Empty file, return an empty dictionary
+
+                try:
+                    return json.loads(content)  # Parse JSON from string instead of file
+                except json.JSONDecodeError:
+                    print(
+                        f"⚠️ Warning: `beat_layout_overrides.json` contains invalid JSON. Resetting file."
+                    )
+                    return {}
+
+        except FileNotFoundError:
+            return {}
+
+    def _save_overrides(self, overrides: dict):
+        """Save overrides to `beat_layout_overrides.json` with inline lists formatting."""
+        os.makedirs(os.path.dirname(OVERRIDES_FILE), exist_ok=True)
+
+        class InlineListEncoder(json.JSONEncoder):
+            def encode(self, obj):
+                if isinstance(obj, dict):
+                    formatted_items = []
+                    for key, value in obj.items():
+                        # Force inline lists while keeping dict indentation
+                        if isinstance(value, list):
+                            formatted_value = "[" + ", ".join(map(str, value)) + "]"
+                        else:
+                            formatted_value = json.dumps(value)
+
+                        formatted_items.append(f'  "{key}": {formatted_value}')
+                    return "{\n" + ",\n".join(formatted_items) + "\n}"
+                return super().encode(obj)
+
+        formatted_json = json.dumps(overrides, cls=InlineListEncoder, indent=2)
+
+        with open(OVERRIDES_FILE, "w") as file:
+            file.write(formatted_json + "\n")  # Write manually to ensure formatting
+
+    def set_num_beats(self, new_length: int):
+        self.settings.setValue("sequence_layout/num_beats", new_length)
+
+    def get_num_beats(self):
+        return self.settings.value("sequence_layout/num_beats", 8)

@@ -1,33 +1,30 @@
 import os
 import json
-from typing import TYPE_CHECKING
 from PyQt6.QtGui import QImage
 from PIL import Image, PngImagePlugin, ImageEnhance
 import numpy as np
 from datetime import datetime
 
-if TYPE_CHECKING:
-    from .add_to_dictionary_manager import AddToDictionaryManager
 
 
 class ThumbnailGenerator:
-    def __init__(self, add_to_dictionary_manager: "AddToDictionaryManager"):
-        self.manager = add_to_dictionary_manager
-        self.sequence_workbench = add_to_dictionary_manager.sequence_workbench
+    def __init__(
+        self,
+        create_sequence_image_callback: callable,
+        get_current_word_callback: callable,
+    ):
+        self.create_sequence_image_callback = create_sequence_image_callback
+        self.get_current_word_callback = get_current_word_callback
 
     def generate_and_save_thumbnail(
         self, sequence, structural_variation_number, directory
     ):
         """Generate and save thumbnail for a sequence variation."""
-        beat_frame_image = self.sequence_workbench.beat_frame.image_export_manager.image_creator.create_sequence_image(
+        beat_frame_image = self.create_sequence_image_callback(
             sequence, include_start_pos=False
         )
         pil_image = self.qimage_to_pil(beat_frame_image)
-
-        # Resize the image to 65% of the original size
         pil_image = self._resize_image(pil_image, 0.5)
-
-        # Apply sharpening to improve clarity after resizing
         pil_image = self._sharpen_image(pil_image)
 
         metadata = {"sequence": sequence, "date_added": datetime.now().isoformat()}
@@ -64,7 +61,7 @@ class ThumbnailGenerator:
         return info
 
     def _create_image_filename(self, structural_variation_number):
-        base_word = self.manager.sequence_workbench.beat_frame.get.current_word()
+        base_word = self.get_current_word_callback()
         return f"{base_word}_ver{structural_variation_number}.png"
 
     def _save_image(

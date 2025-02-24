@@ -18,18 +18,24 @@ class Type2TurnsTupleGenerator(BaseTurnsTupleGenerator):
         static = (
             self.red_motion if self.red_motion.check.is_static() else self.blue_motion
         )
-        if shift.motion_type in [PRO, ANTI]:
-            if static.turns != 0 and static.prop_rot_dir != NO_ROT:
-                direction = "s" if static.prop_rot_dir == shift.prop_rot_dir else "o"
+        if shift.state.motion_type in [PRO, ANTI]:
+            if static.state.turns != 0 and static.state.prop_rot_dir != NO_ROT:
+                direction = (
+                    "s"
+                    if static.state.prop_rot_dir == shift.state.prop_rot_dir
+                    else "o"
+                )
                 return f"({direction}, {self._normalize_turns(shift)}, {self._normalize_turns(static)})"
             else:
                 return (
                     f"({self._normalize_turns(shift)}, {self._normalize_turns(static)})"
                 )
-        elif shift.motion_type == FLOAT:
-            if static.turns != 0 and static.prop_rot_dir != NO_ROT:
+        elif shift.state.motion_type == FLOAT:
+            if static.state.turns != 0 and static.state.prop_rot_dir != NO_ROT:
                 direction = (
-                    "s" if static.prop_rot_dir == shift.prefloat_prop_rot_dir else "o"
+                    "s"
+                    if static.state.prop_rot_dir == shift.state.prefloat_prop_rot_dir
+                    else "o"
                 )
                 return f"({direction}, {self._normalize_turns(shift)}, {self._normalize_turns(static)})"
             else:

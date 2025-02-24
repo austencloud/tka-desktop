@@ -1,9 +1,10 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QHBoxLayout
 from PyQt6.QtCore import Qt
 from .section_widget.option_picker_section_group_widget import OptionPickerSectionGroupWidget
 from .section_widget.option_picker_section_widget import OptionPickerSectionWidget
 from Enums.Enums import LetterType
+from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
     from ..option_picker import OptionPicker
@@ -15,11 +16,10 @@ class OptionScroll(QScrollArea):
     container: QWidget
     sections: dict["LetterType", "OptionPickerSectionWidget"] = {}
 
-    def __init__(self, option_picker: "OptionPicker") -> None:
+    def __init__(self, option_picker: "OptionPicker", mw_size_provider: Callable[[], QSize]):
         super().__init__(option_picker)
         self.option_picker = option_picker
-        self.construct_tab = option_picker.construct_tab
-
+        self.mw_size_provider = mw_size_provider
         self._setup_layout()
         self._initialize_sections()
 
@@ -27,7 +27,7 @@ class OptionScroll(QScrollArea):
         """Create and add sections to the layout. Handles groupable sections automatically."""
         groupable_sections = []
         for letter_type in LetterType:
-            section = OptionPickerSectionWidget(letter_type, self)
+            section = OptionPickerSectionWidget(letter_type, self, self.mw_size_provider)
             self.sections[letter_type] = section
             section.setup_components()
 

@@ -5,7 +5,7 @@ from objects.arrow.arrow import Arrow
 from data.constants import CLOCK, COUNTER, IN, OUT, FLOAT
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.svg_manager import SvgManager
+    from svg_manager.svg_manager import SvgManager
 
 
 class ArrowSvgManager:
@@ -21,10 +21,10 @@ class ArrowSvgManager:
         self._setup_arrow_svg_renderer(arrow, colored_svg_data)
 
     def _get_arrow_svg_file(self, arrow: "Arrow") -> str:
-        start_ori = arrow.motion.start_ori
-        if arrow.motion.motion_type == FLOAT:
+        start_ori = arrow.motion.state.start_ori
+        if arrow.motion.state.motion_type == FLOAT:
             return get_images_and_data_path("images/arrows/float.svg")
-        arrow_turns: Union[str, int, float] = arrow.motion.turns
+        arrow_turns: Union[str, int, float] = arrow.motion.state.turns
         if isinstance(arrow_turns, (int, float)):
             turns = float(arrow_turns)
         else:
@@ -32,13 +32,13 @@ class ArrowSvgManager:
         if not turns == "fl":
             if start_ori in [IN, OUT]:
                 return get_images_and_data_path(
-                    f"images/arrows/{arrow.motion.motion_type}/from_radial/"
-                    f"{arrow.motion.motion_type}_{turns}.svg"
+                    f"images/arrows/{arrow.motion.state.motion_type}/from_radial/"
+                    f"{arrow.motion.state.motion_type}_{turns}.svg"
                 )
             elif start_ori in [CLOCK, COUNTER]:
                 return get_images_and_data_path(
-                    f"images/arrows/{arrow.motion.motion_type}/from_nonradial/"
-                    f"{arrow.motion.motion_type}_{turns}.svg"
+                    f"images/arrows/{arrow.motion.state.motion_type}/from_nonradial/"
+                    f"{arrow.motion.state.motion_type}_{turns}.svg"
                 )
 
     def _setup_arrow_svg_renderer(self, arrow: "Arrow", svg_data: str) -> None:

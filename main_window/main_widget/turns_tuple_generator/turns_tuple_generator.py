@@ -73,7 +73,7 @@ class TurnsTupleGenerator:
         return self.mirrored_generator.generate(arrow)
 
     def _get_generator_key(self, pictograph: "Pictograph") -> Union[str, LetterType]:
-        letter = pictograph.letter
+        letter = pictograph.state.letter
         if letter.value in [
             letter.value
             for letter in letter.get_letters_by_condition(LetterConditions.TYPE1_HYBRID)

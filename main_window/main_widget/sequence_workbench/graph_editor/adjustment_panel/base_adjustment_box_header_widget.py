@@ -42,7 +42,7 @@ class BaseAdjustmentBoxHeaderWidget(QWidget):
         color = self.adjustment_box.color
         text, font_color = self._get_label_text_and_color(color)
 
-        self.header_label_font = QFont("Arial")
+        self.header_label_font = QFont("Georgia")
         self.header_label_font.setBold(True)
         header_label.setFont(self.header_label_font)
         header_label.setText(text)

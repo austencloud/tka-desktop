@@ -4,16 +4,14 @@ from PIL import Image, PngImagePlugin
 from PyQt6.QtWidgets import QMessageBox
 import json
 
+from main_window.main_widget.thumbnail_finder import ThumbnailFinder
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    pass
 
 
-class MetaDataExtractor:
-    def __init__(self, main_widget: "MainWidget"):
-        self.main_widget = main_widget
-
+class MetaDataExtractor:        
     def get_tags(self, file_path: str) -> list[str]:
         """Retrieve the list of tags from the metadata."""
         metadata = self.extract_metadata_from_file(file_path)
@@ -34,7 +32,7 @@ class MetaDataExtractor:
                 img.save(file_path, pnginfo=pnginfo)
         except Exception as e:
             QMessageBox.critical(
-                self.main_widget,
+                None,
                 "Error",
                 f"Error saving tags to thumbnail: {e}",
             )
@@ -51,13 +49,13 @@ class MetaDataExtractor:
                     return json.loads(metadata)
                 else:
                     QMessageBox.warning(
-                        self.main_widget,
+                        None,
                         "Error",
                         "No sequence metadata found in the thumbnail.",
                     )
         except Exception as e:
             QMessageBox.critical(
-                self.main_widget,
+                None,
                 "Error",
                 f"Error loading sequence from thumbnail: {e}",
             )
@@ -86,7 +84,7 @@ class MetaDataExtractor:
                 img.save(file_path, pnginfo=pnginfo)
         except Exception as e:
             QMessageBox.critical(
-                self.main_widget,
+                None,
                 "Error",
                 f"Error saving favorite status to thumbnail: {e}",
             )
@@ -123,7 +121,7 @@ class MetaDataExtractor:
         for word in os.listdir(dictionary_dir):
             word_dir = os.path.join(dictionary_dir, word)
             if os.path.isdir(word_dir) and "__pycache__" not in word:
-                thumbnails = self.main_widget.thumbnail_finder.find_thumbnails(word_dir)
+                thumbnails = ThumbnailFinder().find_thumbnails(word_dir)
                 for thumbnail in thumbnails:
                     metadata = self.extract_metadata_from_file(thumbnail)
                     if metadata:

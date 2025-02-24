@@ -15,12 +15,12 @@ TURNS_WIDGET_INDEX = 1
 class BeatAdjustmentPanel(QFrame):
     turns_boxes: list[TurnsBox]
     ori_picker_boxes: list[OriPickerBox]
-    
+
     def __init__(self, graph_editor: "GraphEditor") -> None:
         super().__init__(graph_editor)
         self.graph_editor = graph_editor
         self.GE_pictograph = graph_editor.pictograph_container.GE_pictograph
-        self.beat_frame = self.graph_editor.sequence_workbench.beat_frame
+        self.beat_frame = self.graph_editor.sequence_workbench.sequence_beat_frame
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self._initialize_ui()
 
@@ -68,25 +68,27 @@ class BeatAdjustmentPanel(QFrame):
         return box_set
 
     def update_adjustment_panel(self) -> None:
-        """Update the panel view based on the current pictograph state."""
-        view = self.graph_editor.pictograph_container.GE_view
-        is_blank = view.get_current_pictograph().is_blank
-        widget_index = (
-            ORI_WIDGET_INDEX if is_blank or view.is_start_pos else TURNS_WIDGET_INDEX
-        )
+        selected = self.beat_frame.get.currently_selected_beat_view()
+        if selected is None or selected == self.beat_frame.start_pos_view:
+            widget_index = ORI_WIDGET_INDEX
+        else:
+            widget_index = TURNS_WIDGET_INDEX
+
         self._set_current_stack_widgets(widget_index)
-        self.update_turns_displays()
-        self.update_rot_dir_buttons()
+
+        if widget_index == TURNS_WIDGET_INDEX:
+            self.update_turns_displays()
+            self.update_rot_dir_buttons()
 
     def update_rot_dir_buttons(self) -> None:
         """Update the rotation direction buttons based on the current pictograph state."""
         reference_beat = self.beat_frame.get.currently_selected_beat_view()
         if reference_beat:
-            blue_motion = reference_beat.beat.blue_motion
-            red_motion = reference_beat.beat.red_motion
+            blue_motion = reference_beat.beat.elements.blue_motion
+            red_motion = reference_beat.beat.elements.red_motion
 
-            blue_rot_dir = blue_motion.prop_rot_dir
-            red_rot_dir = red_motion.prop_rot_dir
+            blue_rot_dir = blue_motion.state.prop_rot_dir
+            red_rot_dir = red_motion.state.prop_rot_dir
 
             self.blue_turns_box.prop_rot_dir_button_manager._update_button_states(
                 blue_rot_dir
@@ -105,17 +107,19 @@ class BeatAdjustmentPanel(QFrame):
         selected_beat_view = self.beat_frame.get.currently_selected_beat_view()
         if not selected_beat_view:
             return
-        blue_motion = selected_beat_view.beat.blue_motion
-        red_motion = selected_beat_view.beat.red_motion
+        blue_motion = selected_beat_view.beat.elements.blue_motion
+        red_motion = selected_beat_view.beat.elements.red_motion
         for box, motion in zip(
             [self.blue_turns_box, self.red_turns_box], [blue_motion, red_motion]
         ):
-            box.turns_widget.display_frame.update_turns_display(motion, motion.turns)
+            box.turns_widget.display_frame.update_turns_display(
+                motion, motion.state.turns
+            )
 
     def update_turns_panel(self) -> None:
         """Update the turns panel with new motion data."""
-        blue_motion = self.GE_pictograph.blue_motion
-        red_motion = self.GE_pictograph.red_motion
+        blue_motion = self.GE_pictograph.elements.blue_motion
+        red_motion = self.GE_pictograph.elements.red_motion
         self.update_turns_displays()
         [
             (

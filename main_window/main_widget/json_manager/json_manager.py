@@ -10,10 +10,9 @@ from .json_ori_calculator import JsonOriCalculator
 from .json_ori_validation_engine import JsonOriValidationEngine
 from .json_start_position_handler import JsonStartPositionHandler
 from .sequence_data_loader_saver import SequenceDataLoaderSaver
-from .json_special_placement_handler import JsonSpecialPlacementHandler
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    pass
 
 
 class JsonManager:

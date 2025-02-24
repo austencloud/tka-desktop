@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy
+from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
@@ -30,7 +30,7 @@ class GenerateTabLayoutManager:
         content_layout.addWidget(self.generate_tab.level_selector, 1)
         content_layout.addWidget(self.generate_tab.length_adjuster, 1)
         content_layout.addWidget(self.generate_tab.turn_intensity, 1)
-        content_layout.addWidget(self.generate_tab.mode_toggle, 1)
+        content_layout.addWidget(self.generate_tab.generator_type_toggle, 1)
         content_layout.addWidget(self.generate_tab.prop_continuity_toggle, 1)
         content_layout.addWidget(self.generate_tab.letter_picker, 1)
         content_layout.addWidget(self.generate_tab.slice_size_toggle, 1)
@@ -53,4 +53,3 @@ class GenerateTabLayoutManager:
         self.generate_tab.main_layout.addLayout(btn_row, 4)
 
         self.content_layout = content_layout  # Store content_layout
-

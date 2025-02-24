@@ -6,7 +6,7 @@ from objects.prop.prop import Prop
 import logging
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.grid.grid import GridPoint
+    from base_widgets.pictograph.grid.grid_point import GridPoint
     from ..prop_placement_manager import PropPlacementManager
     from base_widgets.pictograph.pictograph import Pictograph
 
@@ -23,18 +23,24 @@ class DefaultPropPositioner:
         """
         Sets the prop to its default location based on its `loc` attribute.
         """
-        strict = self.pictograph.check.has_strictly_placed_props()
+        strict = self.pictograph.managers.check.has_strictly_placed_props()
 
         point_suffix = "_strict" if strict else ""
-        
-        point_name = f"{prop.loc}_{prop.pictograph.grid_mode}_hand_point{point_suffix}"
+
+        point_name = (
+            f"{prop.loc}_{prop.pictograph.state.grid_mode}_hand_point{point_suffix}"
+        )
 
         logger.debug(f"Attempting to place prop '{prop}' at point '{point_name}'.")
 
         grid_point = (
-            self.pictograph.grid.grid_data.all_hand_points_strict.get(point_name)
+            self.pictograph.elements.grid.grid_data.all_hand_points_strict.get(
+                point_name
+            )
             if strict
-            else self.pictograph.grid.grid_data.all_hand_points_normal.get(point_name)
+            else self.pictograph.elements.grid.grid_data.all_hand_points_normal.get(
+                point_name
+            )
         )
 
         if grid_point and grid_point.coordinates:
@@ -47,14 +53,28 @@ class DefaultPropPositioner:
                 f"Hand point '{point_name}' not found or has no coordinates."
             )
 
+    # default_prop_positioner.py
+
     def place_prop_at_hand_point(self, prop: Prop, hand_point: QPointF) -> None:
         """
-        Align the prop's center to the hand point using the 'centerPoint' defined in the SVG.
+        Align the prop's center to the hand point using either:
+        - The 'centerPoint' from the SVG (for normal SVG props), or
+        - The boundingRect's center (for Chicken's PNG).
         """
-        center_point_in_svg = self.get_svg_center_point(prop)
-        center_point_in_scene = prop.mapToScene(center_point_in_svg)
+        # 1) Decide which center method to call
+        if prop.prop_type == "Chicken":
+            center_point_in_local_coords = self.get_png_center_point(prop)
+        else:
+            center_point_in_local_coords = self.get_svg_center_point(prop)
+
+        # 2) Convert that local coordinate to scene coords
+        center_point_in_scene = prop.mapToScene(center_point_in_local_coords)
+
+        # 3) Calculate how far we need to shift to place it at 'hand_point'
         offset = hand_point - center_point_in_scene
         new_position = prop.pos() + offset
+
+        # 4) Move the prop
         prop.setPos(new_position)
 
     def _get_grid_mode_from_prop_loc(self, prop: "Prop") -> str:
@@ -63,6 +83,14 @@ class DefaultPropPositioner:
         elif prop.loc in ["n", "s", "e", "w"]:
             grid_mode = "diamond"
         return grid_mode
+
+    def get_png_center_point(self, prop: Prop) -> QPointF:
+        """
+        For PNG-based props (like Chicken), compute the center
+        by looking at the boundingRect, i.e. half the width/height.
+        """
+        bounding_rect = prop.boundingRect()
+        return bounding_rect.center()
 
     def get_svg_center_point(self, prop: Prop) -> QPointF:
         """
@@ -78,8 +106,8 @@ class DefaultPropPositioner:
         Returns hand location points, depending on whether the props should be strictly placed.
         """
         location_points = (
-            self.pictograph.grid.grid_data.all_hand_points_strict
+            self.pictograph.elements.grid.grid_data.all_hand_points_strict
             if strict
-            else self.pictograph.grid.grid_data.all_hand_points_normal
+            else self.pictograph.elements.grid.grid_data.all_hand_points_normal
         )
         return location_points

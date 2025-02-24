@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QToolButton, QLabel
-from PyQt6.QtCore import Qt, QPoint
+from PyQt6.QtCore import QPoint
 from PyQt6.QtGui import QFont
 
 

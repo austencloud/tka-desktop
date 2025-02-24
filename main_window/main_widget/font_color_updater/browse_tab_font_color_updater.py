@@ -29,8 +29,8 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
             control_panel.count_label,
         ]
         self._apply_font_colors(control_panel_labels)
-        control_panel.sort_widget.style_buttons()
-        control_panel.sort_widget.style_labels()
+        # control_panel.sort_widget.style_buttons()
+        # control_panel.sort_widget._style_sort_by_label()
 
     def _update_progress_bar(self):
         progress_bar = self.sequence_picker.progress_bar

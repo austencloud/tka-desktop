@@ -70,5 +70,5 @@ class NavButton(QPushButton):
         super().__init__(text, parent)
         self.clicked.connect(parent.handle_button_click)
         self.setStyleSheet("background-color: white;")
-        self.setFont(QFont("Arial", 16, QFont.Weight.Bold))
+        self.setFont(QFont("Georgia", 16, QFont.Weight.Bold))
         self.setCursor(Qt.CursorShape.PointingHandCursor)

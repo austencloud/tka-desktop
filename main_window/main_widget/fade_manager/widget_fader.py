@@ -4,11 +4,13 @@ from PyQt6.QtCore import (
     QParallelAnimationGroup,
     QPropertyAnimation,
     QEasingCurve,
-    QTimer,
 )
 from Enums.Enums import Glyph
-from base_widgets.pictograph.grid.non_radial_points_group import (
-    NonRadialPointsGroup,
+
+from base_widgets.pictograph.grid.non_radial_points_group import NonRadialPointsGroup
+from main_window.main_widget.base_indicator_label import BaseIndicatorLabel
+from main_window.main_widget.fade_manager.fadeable_opacity_effect import (
+    FadableOpacityEffect,
 )
 
 if TYPE_CHECKING:
@@ -18,12 +20,19 @@ if TYPE_CHECKING:
 class WidgetFader:
     def __init__(self, manager: "FadeManager"):
         self.manager = manager
+        self._animation_cache = {}
+
+    def _get_animation_cache_key(
+        self, widgets: list[QWidget], fade_in: bool, duration: int
+    ):
+        widget_ids = tuple(sorted(id(w) for w in widgets))
+        return (widget_ids, fade_in, duration)
 
     def fade_widgets(
         self,
         widgets: list[QWidget],
         fade_in: bool,
-        duration: int,
+        duration: int = 250,
         callback: Optional[callable] = None,
     ) -> None:
         if not widgets:
@@ -31,40 +40,64 @@ class WidgetFader:
                 callback()
             return
 
-        self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
+        # Ensure lesson indicator label is NOT included when fading in a new question
+        filtered_widgets = [
+            widget
+            for widget in widgets
+            if not isinstance(widget, BaseIndicatorLabel) or not fade_in
+        ]
 
-        # Skip animation if fades are disabled
-        if not self.manager.fades_enabled():
-            for widget in widgets:
-                effect = self._ensure_opacity_effect(widget)
-                effect.setOpacity(1.0 if fade_in else 0.0)
-                widget.setGraphicsEffect(effect)
-
+        if not filtered_widgets:
             if callback:
                 callback()
             return
 
-        # Otherwise, animate as normal
-        animation_group = QParallelAnimationGroup(self.manager)
-        for widget in widgets:
+        for widget in filtered_widgets:
+            widget.update()
+
+        self.manager.graphics_effect_remover.clear_graphics_effects(filtered_widgets)
+
+        if not self.manager.fades_enabled():
+            for widget in filtered_widgets:
+                effect = self._ensure_opacity_effect(widget)
+                effect.setOpacity(1.0 if fade_in else 0.0)
+                widget.setGraphicsEffect(effect)
+            if callback:
+                callback()
+            return
+
+        key = self._get_animation_cache_key(filtered_widgets, fade_in, duration)
+        anim_group : QParallelAnimationGroup = self._animation_cache.get(key)
+        if anim_group and anim_group.state() == QParallelAnimationGroup.State.Running:
+            if callback:
+                anim_group.finished.connect(callback)
+            return
+
+        anim_group = QParallelAnimationGroup(self.manager)
+        for widget in filtered_widgets:
             effect = self._ensure_opacity_effect(widget)
             animation = QPropertyAnimation(effect, b"opacity")
             animation.setDuration(duration)
             animation.setStartValue(0.0 if fade_in else 1.0)
             animation.setEndValue(1.0 if fade_in else 0.0)
             animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
-            animation_group.addAnimation(animation)
+            anim_group.addAnimation(animation)
 
         if callback:
-            animation_group.finished.connect(callback)
+            anim_group.finished.connect(callback)
 
-        animation_group.start()
+        self._animation_cache[key] = anim_group
+        anim_group.finished.connect(lambda: self._animation_cache.pop(key, None))
+        anim_group.start()
+
 
     def _ensure_opacity_effect(self, widget: QWidget) -> QGraphicsOpacityEffect:
         effect = widget.graphicsEffect()
-        if not effect or not isinstance(effect, QGraphicsOpacityEffect):
-            effect = QGraphicsOpacityEffect(widget)
-            widget.setGraphicsEffect(effect)
+        if effect and isinstance(effect, QGraphicsOpacityEffect):
+            return effect
+
+        effect = FadableOpacityEffect(widget)
+        widget.setGraphicsEffect(effect)
         return effect
 
     def fade_and_update(
@@ -74,45 +107,22 @@ class WidgetFader:
         duration: int = 250,
     ) -> None:
         fade_enabled = self.manager.fades_enabled()
+        update_callback = None
+        if callback:
+            update_callback = callback
 
         def on_fade_out_finished():
             self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
-
-            if callback:
-                if isinstance(callback, tuple):
-                    callback[0]()
-                    if fade_enabled:
-                        self.fade_widgets(
-                            widgets,
-                            True,
-                            duration,
-                            lambda: QTimer.singleShot(0, callback[1]),
-                        )
-                    else:
-                        for widget in widgets:
-                            effect = self._ensure_opacity_effect(widget)
-                            effect.setOpacity(1.0)
-                            widget.setGraphicsEffect(effect)
-                        callback[1]()
-                else:
-                    callback()
-                    if fade_enabled:
-                        self.fade_widgets(widgets, True, duration)
-                    else:
-                        for widget in widgets:
-                            effect = self._ensure_opacity_effect(widget)
-                            effect.setOpacity(1.0)
-                            widget.setGraphicsEffect(effect)
+            if update_callback:
+                update_callback()
 
         if fade_enabled:
             self.fade_widgets(widgets, False, duration, on_fade_out_finished)
         else:
-            # Immediately set opacity and execute callback
             for widget in widgets:
                 effect = self._ensure_opacity_effect(widget)
-                effect.setOpacity(1.0)
+                effect.setOpacity(0.0)
                 widget.setGraphicsEffect(effect)
-
             on_fade_out_finished()
 
     def fade_visibility_items_to_opacity(
@@ -127,28 +137,26 @@ class WidgetFader:
                 callback()
             return
         items = self._get_corresponding_items(visibility_element)
-
         self.manager.graphics_effect_remover.clear_graphics_effects(
             [visibility_element]
         )
-        animation_group = QParallelAnimationGroup(self.manager)
+        anim_group = QParallelAnimationGroup(self.manager)
         for item in items:
             self.manager.graphics_effect_remover.clear_graphics_effects([item])
             if isinstance(item, QGraphicsItem):
                 item.setOpacity(opacity)
             elif isinstance(item, QWidget):
                 effect = self._ensure_opacity_effect(item)
-                if effect:
-                    start_opacity = effect.opacity() if effect else 1.0
-                    animation = QPropertyAnimation(effect, b"opacity")
-                    animation.setDuration(duration)
-                    animation.setStartValue(start_opacity)
-                    animation.setEndValue(opacity)
-                    animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
-                    animation_group.addAnimation(animation)
+                start_opacity = effect.opacity() if effect else 1.0
+                animation = QPropertyAnimation(effect, b"opacity")
+                animation.setDuration(duration)
+                animation.setStartValue(start_opacity)
+                animation.setEndValue(opacity)
+                animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
+                anim_group.addAnimation(animation)
         if callback:
-            animation_group.finished.connect(callback)
-        animation_group.start()
+            anim_group.finished.connect(callback)
+        anim_group.start()
 
     def _get_corresponding_items(
         self, element: Union[Glyph, NonRadialPointsGroup]
@@ -175,15 +183,12 @@ class WidgetFader:
         duration: int = 300,
         callback: Optional[callable] = None,
     ) -> None:
-        """Fade widgets and a corresponding element in parallel."""
         if not widgets and not element:
             if callback:
                 callback()
             return
 
-        animation_group = QParallelAnimationGroup(self.manager)
-
-        # Add animations for widgets
+        anim_group = QParallelAnimationGroup(self.manager)
         for widget in widgets:
             effect = self._ensure_opacity_effect(widget)
             animation = QPropertyAnimation(effect, b"opacity")
@@ -191,11 +196,9 @@ class WidgetFader:
             animation.setStartValue(effect.opacity() if effect else 1.0)
             animation.setEndValue(opacity)
             animation.setEasingCurve(QEasingCurve.Type.InOutCubic)
-            animation_group.addAnimation(animation)
+            anim_group.addAnimation(animation)
 
-        # Add animations for elements
         if isinstance(element, QGraphicsItem):
-            # Directly manipulate opacity for QGraphicsItem
             element.setOpacity(opacity)
         elif element:
             items = self._get_corresponding_items(element)
@@ -204,15 +207,13 @@ class WidgetFader:
                     item.setOpacity(opacity)
                 elif isinstance(item, QWidget):
                     effect = self._ensure_opacity_effect(item)
-                    if effect:
-                        animation = QPropertyAnimation(effect, b"opacity")
-                        animation.setDuration(duration)
-                        animation.setStartValue(effect.opacity() if effect else 1.0)
-                        animation.setEndValue(opacity)
-                        animation.setEasingCurve(QEasingCurve.Type.InOutCubic)
-                        animation_group.addAnimation(animation)
+                    animation = QPropertyAnimation(effect, b"opacity")
+                    animation.setDuration(duration)
+                    animation.setStartValue(effect.opacity() if effect else 1.0)
+                    animation.setEndValue(opacity)
+                    animation.setEasingCurve(QEasingCurve.Type.InOutCubic)
+                    anim_group.addAnimation(animation)
 
-        # Execute callback after animation finishes
         if callback:
-            animation_group.finished.connect(callback)
-        animation_group.start()
+            anim_group.finished.connect(callback)
+        anim_group.start()

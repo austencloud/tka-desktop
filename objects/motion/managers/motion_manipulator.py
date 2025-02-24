@@ -26,13 +26,15 @@ class MotionManipulator:
             current_location, current_location
         )
         (new_start_loc, new_end_loc) = get_start_end_locs(
-            self.motion.arrow.motion.motion_type, self.motion.prop_rot_dir, new_location
+            self.motion.arrow.motion.state.motion_type,
+            self.motion.state.prop_rot_dir,
+            new_location,
         )
         pictograph_data = {
-            f"{self.motion.color}_start_location": new_start_loc,
-            f"{self.motion.color}_end_location": new_end_loc,
+            f"{self.motion.state.color}_start_location": new_start_loc,
+            f"{self.motion.state.color}_end_location": new_end_loc,
         }
-        self.motion.pictograph.updater.update_pictograph(pictograph_data)
+        self.motion.pictograph.managers.updater.update_pictograph(pictograph_data)
 
     ### MIRRORING ###
 
@@ -44,17 +46,17 @@ class MotionManipulator:
             CLOCKWISE: COUNTER_CLOCKWISE,
             NO_ROT: NO_ROT,
         }
-        new_rot_dir = rotation_direction_map.get(self.motion.prop_rot_dir)
+        new_rot_dir = rotation_direction_map.get(self.motion.state.prop_rot_dir)
 
-        new_start_loc = self.motion.end_loc
-        new_end_loc = self.motion.start_loc
+        new_start_loc = self.motion.state.end_loc
+        new_end_loc = self.motion.state.start_loc
 
         pictograph_data = {
-            f"{self.motion.color}_start_location": new_start_loc,
-            f"{self.motion.color}_end_location": new_end_loc,
-            f"{self.motion.color}_prop_rot_dir": new_rot_dir,
+            f"{self.motion.state.color}_start_location": new_start_loc,
+            f"{self.motion.state.color}_end_location": new_end_loc,
+            f"{self.motion.state.color}_prop_rot_dir": new_rot_dir,
         }
-        self.motion.pictograph.updater.update_pictograph(pictograph_data)
+        self.motion.pictograph.managers.updater.update_pictograph(pictograph_data)
 
     ### MOTION TYPE ###
 
@@ -71,23 +73,28 @@ class MotionManipulator:
             CLOCKWISE: COUNTER_CLOCKWISE,
             NO_ROT: NO_ROT,
         }
-        new_motion_type = swap_motion_type_map.get(self.motion.arrow.motion.motion_type)
-        new_rot_dir = rotation_direction_map.get(self.motion.prop_rot_dir)
+        new_motion_type = swap_motion_type_map.get(
+            self.motion.arrow.motion.state.motion_type
+        )
+        new_rot_dir = rotation_direction_map.get(self.motion.state.prop_rot_dir)
 
         self.motion.prop.attr_manager.swap_ori(self.motion.prop.ori)
         pictograph_data = {
-            f"{self.motion.color}_motion_type": new_motion_type,
-            f"{self.motion.color}_prop_rot_dir": new_rot_dir,
-            f"{self.motion.color}_end_ori": self.motion.prop.ori,
+            f"{self.motion.state.color}_motion_type": new_motion_type,
+            f"{self.motion.state.color}_prop_rot_dir": new_rot_dir,
+            f"{self.motion.state.color}_end_ori": self.motion.prop.ori,
         }
-        self.motion.pictograph.updater.update_pictograph(pictograph_data)
+        self.motion.pictograph.managers.updater.update_pictograph(pictograph_data)
 
     ### ROTATION ###
 
     def rotate_motion(self, rotation_direction: Handpaths) -> None:
         mode_mappings = self._get_mode_mappings()
         rotate_func, locations = mode_mappings.get(
-            (self.motion.motion_type, self.motion.arrow.pictograph.grid.grid_mode),
+            (
+                self.motion.state.motion_type,
+                self.motion.arrow.pictograph.elements.grid.grid_mode,
+            ),
             (None, None),
         )
 
@@ -137,7 +144,9 @@ class MotionManipulator:
         new_location = locations[new_index]
 
         new_start_loc, new_end_loc = get_start_end_locs(
-            self.motion.arrow.motion.motion_type, self.motion.prop_rot_dir, new_location
+            self.motion.arrow.motion.state.motion_type,
+            self.motion.state.prop_rot_dir,
+            new_location,
         )
 
         self._update_motion_attributes(new_location, new_start_loc, new_end_loc)
@@ -147,8 +156,8 @@ class MotionManipulator:
         Update motion attributes and reflect changes in the pictograph.
         """
         self.motion.arrow.loc = new_location
-        self.motion.start_loc = new_start_loc
-        self.motion.end_loc = new_end_loc
+        self.motion.state.start_loc = new_start_loc
+        self.motion.state.end_loc = new_end_loc
         self.motion.prop.loc = new_end_loc
 
         self._refresh_pictograph()
@@ -157,7 +166,7 @@ class MotionManipulator:
         """
         Refresh the arrow and prop, and update the pictograph.
         """
-        self.motion.arrow.pictograph.updater.update_pictograph()
+        self.motion.arrow.pictograph.managers.updater.update_pictograph()
 
     def set_prop_rot_dir(self, prop_rot_dir: str) -> None:
-        self.motion.prop_rot_dir = prop_rot_dir
+        self.motion.state.prop_rot_dir = prop_rot_dir

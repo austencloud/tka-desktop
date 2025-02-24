@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING
 
+from PyQt6.QtCore import QSettings
+
 if TYPE_CHECKING:
-    from main_window.settings_manager.settings_manager import SettingsManager
+    pass
 
 
 class ConstructTabSettings:
@@ -13,20 +15,22 @@ class ConstructTabSettings:
         }
     }
 
-    def __init__(self, settings_manager: "SettingsManager"):
-        self.settings_manager = settings_manager
-        self.settings = self.settings_manager.settings  # QSettings instance
+    def __init__(self, settings: QSettings) -> None:
+        self.settings = settings
 
     def get_filters(self) -> dict:
-        # Attempt to load filters setting as a dictionary
-        filters = self.settings.value("builder/construct_tab/filters", None)
+        filters = {}
+        for key, default_value in self.DEFAULT_SETTINGS["filters"].items():
+            raw_val = self.settings.value(
+                f"construct_tab/filters/{key}", str(default_value)
+            ).lower()
+            filters[key] = (
+                raw_val == "true" if raw_val in ("true", "false") else raw_val
+            )
+        return filters
 
-        # Check if filters loaded successfully; otherwise, use defaults
-        if isinstance(filters, dict):
-            return filters
-        else:
-            # Return default filters if conversion fails
-            return self.DEFAULT_SETTINGS["filters"]
-
-    def set_filters(self, filters: dict):
-        self.settings.setValue("builder/construct_tab/filters", filters)
+    def set_filters(self, filter: str):
+        if not filter:
+            return
+        for key in self.DEFAULT_SETTINGS["filters"]:
+            self.settings.setValue(f"construct_tab/filters/{key}", key == filter)

@@ -12,7 +12,7 @@ class TurnIntensityAdjuster(QWidget):
         self.generate_tab = generate_tab
 
         self.values = [0.5, 1, 1.5, 2, 2.5, 3]
-        self.intensity = self.generate_tab.settings.get_setting("turn_intensity", 1)
+        self.intensity = self.generate_tab.settings.get_setting("turn_intensity")
         self.intensity_label = QLabel("Turn Intensity:")
         self.intensity_buttons_layout = QHBoxLayout()
         self._create_turn_intensity_adjuster()

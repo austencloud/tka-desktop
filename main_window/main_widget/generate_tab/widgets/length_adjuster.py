@@ -10,7 +10,7 @@ class LengthAdjuster(QWidget):
     def __init__(self, generate_tab: "GenerateTab"):
         super().__init__()
         self.generate_tab = generate_tab
-        self.length = self.generate_tab.settings.get_setting("length", 16)
+        self.length = self.generate_tab.settings.get_setting("length")
         self.layout: QHBoxLayout = QHBoxLayout()
         self.layout.setSpacing(10)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)

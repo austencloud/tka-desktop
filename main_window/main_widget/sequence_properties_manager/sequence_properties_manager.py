@@ -16,7 +16,7 @@ from .rotated_color_swapped_permutation_checker import (
 from .strictly_rotated_permutation_checker import StrictlyRotatedPermutationChecker
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    pass
 
 
 class SequencePropertiesManager:

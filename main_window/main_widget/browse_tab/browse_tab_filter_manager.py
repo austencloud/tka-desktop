@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 class BrowseTabFilterManager:
     def __init__(self, browse_tab: "BrowseTab"):
         self.browse_tab = browse_tab
-        self.metadata_extractor = self.browse_tab.main_widget.metadata_extractor
+        self.metadata_extractor = self.browse_tab.metadata_extractor
 
     def filter_favorites(self) -> list[tuple[str, list[str], int]]:
         dictionary_dir = get_images_and_data_path("dictionary")

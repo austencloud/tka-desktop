@@ -25,7 +25,7 @@ class BorderedPictographView(PictographView):
 
     def update_borders(self):
         """Initialize or update the border colors based on the pictograph's letter type."""
-        letter_type = self.pictograph.letter_type
+        letter_type = self.pictograph.state.letter_type
         border_colors_map = {
             LetterType.Type1: ("#36c3ff", "#6F2DA8"),  # Cyan, Purple
             LetterType.Type2: ("#6F2DA8", "#6F2DA8"),  # Purple, Purple
@@ -42,7 +42,7 @@ class BorderedPictographView(PictographView):
 
     def set_gold_border(self):
         """Set the border colors to gold, typically on hover."""
-        if getattr(self.pictograph, "disable_gold_overlay", False):
+        if getattr(self.pictograph.state, "disable_gold_overlay", False):
             return
         self.primary_color = "gold"
         self.secondary_color = "gold"

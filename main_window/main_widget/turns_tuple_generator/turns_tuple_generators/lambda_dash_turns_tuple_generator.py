@@ -11,33 +11,57 @@ if TYPE_CHECKING:
 class LambdaDashTurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph) -> str:
         super().set_pictograph(pictograph)
-        blue_dash = self.pictograph.blue_motion
-        red_dash = self.pictograph.red_motion
+        blue_dash = self.pictograph.elements.blue_motion
+        red_dash = self.pictograph.elements.red_motion
         blue_dash_map, red_dash_map = self._get_direction_maps()
 
-        if blue_dash.turns == 0 and red_dash.turns > 0:
+        if blue_dash.state.turns == 0 and red_dash.state.turns > 0:
             red_dash_state = red_dash_map.get(
-                (blue_dash.end_loc, red_dash.end_loc, red_dash.prop_rot_dir), ""
+                (
+                    blue_dash.state.end_loc,
+                    red_dash.state.end_loc,
+                    red_dash.state.prop_rot_dir,
+                ),
+                "",
             )
             return f"({self._normalize_turns(blue_dash)}, {self._normalize_turns(red_dash)}, {red_dash_state})"
-        elif red_dash.turns == 0 and blue_dash.turns > 0:
+        elif red_dash.state.turns == 0 and blue_dash.state.turns > 0:
             blue_dash_state = blue_dash_map.get(
-                (blue_dash.end_loc, red_dash.end_loc, blue_dash.prop_rot_dir), ""
+                (
+                    blue_dash.state.end_loc,
+                    red_dash.state.end_loc,
+                    blue_dash.state.prop_rot_dir,
+                ),
+                "",
             )
             return f"({self._normalize_turns(blue_dash)}, {self._normalize_turns(red_dash)}, {blue_dash_state})"
-        elif red_dash.turns > 0 and blue_dash.turns > 0:
+        elif red_dash.state.turns > 0 and blue_dash.state.turns > 0:
             red_dash_state = red_dash_map.get(
-                (blue_dash.end_loc, red_dash.end_loc, red_dash.prop_rot_dir), ""
+                (
+                    blue_dash.state.end_loc,
+                    red_dash.state.end_loc,
+                    red_dash.state.prop_rot_dir,
+                ),
+                "",
             )
             blue_dash_state = blue_dash_map.get(
-                (blue_dash.end_loc, red_dash.end_loc, blue_dash.prop_rot_dir), ""
+                (
+                    blue_dash.state.end_loc,
+                    red_dash.state.end_loc,
+                    blue_dash.state.prop_rot_dir,
+                ),
+                "",
             )
-            vtg_dir = "s" if red_dash.prop_rot_dir == blue_dash.prop_rot_dir else "o"
+            vtg_dir = (
+                "s"
+                if red_dash.state.prop_rot_dir == blue_dash.state.prop_rot_dir
+                else "o"
+            )
             return f"({vtg_dir}, {self._normalize_turns(blue_dash)}, {self._normalize_turns(red_dash)}, {blue_dash_state}, {red_dash_state})"
         else:
             return f"({self._normalize_turns(blue_dash)}, {self._normalize_turns(red_dash)})"
 
-    def _get_direction_maps(self) -> tuple:
+    def _get_direction_maps(self) -> tuple[dict, dict]:
         """The tuple is (blue_dash_end_loc, red_dash_end_loc, prop_rot_dir_for_given_color)."""
 
         blue_dash_direction_map = {

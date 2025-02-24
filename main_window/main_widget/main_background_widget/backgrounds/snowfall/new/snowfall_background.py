@@ -1,5 +1,5 @@
-from typing import TYPE_CHECKING, Optional
-from PyQt6.QtCore import QThread, pyqtSignal, pyqtSlot, QRectF, QTimer
+from typing import TYPE_CHECKING
+from PyQt6.QtCore import QThread, pyqtSignal, pyqtSlot, QTimer
 from PyQt6.QtGui import QPainter, QPixmap, QColor, QLinearGradient
 from PyQt6.QtWidgets import QWidget
 
@@ -9,7 +9,6 @@ from .santa_manager import SantaManager
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
-    from PyQt6.QtGui import QPaintEvent
 
 
 class SnowfallBackground(QWidget):

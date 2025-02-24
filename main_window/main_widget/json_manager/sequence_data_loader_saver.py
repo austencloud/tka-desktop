@@ -10,7 +10,7 @@ from utilities.path_helpers import get_user_editable_resource_path
 from utilities.word_simplifier import WordSimplifier
 
 if TYPE_CHECKING:
-    from main_window.main_widget.json_manager.json_manager import JsonManager
+    pass
 
 
 class SequenceDataLoaderSaver:

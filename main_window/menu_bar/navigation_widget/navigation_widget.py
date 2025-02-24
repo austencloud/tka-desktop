@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QFrame, QVBoxLayout
 from PyQt6.QtGui import QFont
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 
 from .nav_button import NavButton
 
@@ -52,16 +52,16 @@ class NavigationWidget(QWidget):
             return  # No need to reapply the same state
 
         self.current_index = index
-        self._update_buttons()
+        self.update_buttons()
         self.tab_changed.emit(index)
 
-    def _update_buttons(self):
+    def update_buttons(self):
         """Update button styles and resize based on main widget width."""
         font_size = self.mw.width() // 130
         font = QFont("Georgia", self.mw.width() // 100)
 
-        button_width = self.mw.width() // 8  # 1/6th of main widget width
-        button_height = int(button_width * 0.2)  # 30% of main widget width
+        button_width = self.mw.width() // 8
+        button_height = int(button_width * 0.2)
 
         for idx, button in enumerate(self.tab_buttons):
             is_active = idx == self.current_index
@@ -73,4 +73,4 @@ class NavigationWidget(QWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self._update_buttons()
+        self.update_buttons()

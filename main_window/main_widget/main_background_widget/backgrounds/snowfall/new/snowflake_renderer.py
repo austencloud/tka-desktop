@@ -1,8 +1,6 @@
-import json
 import random
-from PyQt6.QtCore import Qt, QTimer, QThreadPool, QRunnable, pyqtSignal, QObject
+from PyQt6.QtCore import Qt, QTimer, QThreadPool
 from PyQt6.QtGui import QPixmap, QPainter
-from PyQt6.QtOpenGL import QOpenGLWindow
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 
 from main_window.main_widget.main_background_widget.backgrounds.snowfall.new.snowflake import Snowflake
