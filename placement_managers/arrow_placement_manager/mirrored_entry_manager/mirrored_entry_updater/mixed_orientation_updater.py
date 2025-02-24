@@ -28,7 +28,7 @@ class MixedOrientationUpdater(BaseMirroredEntryUpdater):
             attr = self.arrow.motion.state.motion_type
             key = f"{attr}_from_layer{layer}"
         else:
-            key = f"{BLUE if self.arrow.color == RED else RED}"
+            key = f"{BLUE if self.arrow.state.color == RED else RED}"
 
         self.mirrored_entry_updater._update_mirrored_entry_data(
             mirrored_turns_tuple, other_letter_data, key, original_turn_data, self.arrow

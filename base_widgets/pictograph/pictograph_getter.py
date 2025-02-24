@@ -63,7 +63,7 @@ class PictographGetter:
 
     def other_arrow(self, arrow: Arrow) -> Arrow:
         other_arrow_map = {RED: self.blue_arrow, BLUE: self.red_arrow}
-        return other_arrow_map.get(arrow.color)
+        return other_arrow_map.get(arrow.state.color)
 
     def pro(self) -> Motion:
         pro_map = {True: self.red_motion, False: self.blue_motion}

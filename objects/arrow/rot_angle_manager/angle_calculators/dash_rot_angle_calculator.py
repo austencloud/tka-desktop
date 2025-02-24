@@ -35,7 +35,7 @@ class DashRotAngleCalculator(BaseRotAngleCalculator):
             self.arrow.motion.state.start_ori, {}
         )
         rotation_map = start_ori_map.get(self.arrow.motion.state.prop_rot_dir, {})
-        return rotation_map.get(self.arrow.loc, 0)
+        return rotation_map.get(self.arrow.state.loc, 0)
 
     def _dash_orientation_rotation_map(self):
         """Maps the start orientation to the prop rotation direction to the arrow loc"""
@@ -154,13 +154,13 @@ class DashRotAngleCalculator(BaseRotAngleCalculator):
         }
 
         if self.arrow.motion.state.prop_rot_dir == CLOCKWISE:
-            loc_angle = cw_dash_angle_override_map.get(self.arrow.loc)
+            loc_angle = cw_dash_angle_override_map.get(self.arrow.state.loc)
             if isinstance(loc_angle, dict):
                 return loc_angle.get(self.arrow.motion.state.prop_rot_dir, 0)
             return loc_angle
 
         if self.arrow.motion.state.prop_rot_dir == COUNTER_CLOCKWISE:
-            loc_angle = ccw_dash_angle_override_map.get(self.arrow.loc)
+            loc_angle = ccw_dash_angle_override_map.get(self.arrow.state.loc)
             if isinstance(loc_angle, dict):
                 return loc_angle.get(self.arrow.motion.state.prop_rot_dir, 0)
             return loc_angle

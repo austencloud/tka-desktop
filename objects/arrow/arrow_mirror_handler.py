@@ -33,13 +33,13 @@ class ArrowMirrorManager:
         else:
             is_svg_mirrored = mirror_conditions["other"].get(prop_rot_dir, False)
 
-        self.arrow.is_svg_mirrored = is_svg_mirrored
+        self.arrow.state.is_svg_mirrored = is_svg_mirrored
 
     def _set_svg_mirror(self, arrow: "Arrow") -> None:
         center_x = arrow.boundingRect().center().x()
         center_y = arrow.boundingRect().center().y()
         transform = QTransform()
         transform.translate(center_x, center_y)
-        transform.scale(-1 if arrow.is_svg_mirrored else 1, 1)
+        transform.scale(-1 if arrow.state.is_svg_mirrored else 1, 1)
         transform.translate(-center_x, -center_y)
         arrow.setTransform(transform)

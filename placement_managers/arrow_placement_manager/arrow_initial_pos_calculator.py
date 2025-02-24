@@ -22,7 +22,9 @@ class ArrowInitialPosCalculator:
         """
         Retrieves the coordinates for a given layer2 point name.
         """
-        point_name = f"{arrow.loc}_{arrow.pictograph.state.grid_mode}_layer2_point"
+        point_name = (
+            f"{arrow.state.loc}_{arrow.pictograph.state.grid_mode}_layer2_point"
+        )
         coord = self.pictograph.elements.grid.grid_data.get_shift_coord(point_name)
         if coord:
             return coord
@@ -33,7 +35,7 @@ class ArrowInitialPosCalculator:
         """
         Retrieves the coordinates for a given static point name.
         """
-        point_name = f"{arrow.loc}_{arrow.pictograph.state.grid_mode}_hand_point"
+        point_name = f"{arrow.state.loc}_{arrow.pictograph.state.grid_mode}_hand_point"
         coord = self.pictograph.elements.grid.grid_data.get_static_dash_coord(
             point_name
         )

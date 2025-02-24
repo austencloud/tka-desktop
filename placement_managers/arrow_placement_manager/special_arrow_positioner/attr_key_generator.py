@@ -29,18 +29,18 @@ class AttrKeyGenerator:
                     LetterConditions.NON_HYBRID
                 )
             ):
-                return arrow.color
+                return arrow.state.color
             else:
                 return arrow.motion.state.motion_type
 
         elif arrow.pictograph.managers.check.starts_from_standard_orientation():
 
             if arrow.pictograph.state.letter.value in ["S", "T"]:
-                return f"{arrow.color}_{arrow.motion.state.lead_state}"
+                return f"{arrow.state.color}_{arrow.motion.state.lead_state}"
             elif arrow.pictograph.managers.check.has_hybrid_motions():
                 return arrow.motion.state.motion_type
             else:
-                return arrow.color
+                return arrow.state.color
 
     def _determine_layer(self, arrow: "Arrow") -> int:
         return 1 if arrow.motion.state.start_ori in [IN, OUT] else 2

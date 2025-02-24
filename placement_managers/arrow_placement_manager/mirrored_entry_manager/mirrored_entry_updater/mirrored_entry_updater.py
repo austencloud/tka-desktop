@@ -60,7 +60,7 @@ class MirroredEntryUpdater:
             elif arrow.pictograph.managers.check.has_hybrid_motions():
                 return f"{arrow.motion.state.motion_type}_from_layer{self._determine_layer(arrow)}"
             else:
-                return f"{arrow.color}"
+                return f"{arrow.state.color}"
         else:
             return key
 

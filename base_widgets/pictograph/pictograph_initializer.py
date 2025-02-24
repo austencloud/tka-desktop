@@ -212,11 +212,11 @@ class PictographInitializer:
     ### CREATE ###
 
     def _create_arrow(self, color: str) -> Arrow:
-        arrow_attributes = {
+        arrow_data = {
             COLOR: color,
             TURNS: 0,
         }
-        arrow = Arrow(self.pictograph, arrow_attributes)
+        arrow = Arrow(self.pictograph, arrow_data)
         self.pictograph.elements.motions[color].arrow = arrow
         arrow.motion = self.pictograph.elements.motions[color]
         self.pictograph.addItem(arrow)

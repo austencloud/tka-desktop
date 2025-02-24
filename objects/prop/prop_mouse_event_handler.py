@@ -119,7 +119,7 @@ class PropMouseEventHandler:
                 },
             }
 
-            current_arrow_location = self.p.motion.arrow.loc
+            current_arrow_location = self.p.motion.arrow.state.loc
             rot_dir = self.p.motion.state.prop_rot_dir
             motion_type = self.p.motion.state.motion_type
             new_arrow_location = shift_location_map.get(
@@ -131,14 +131,14 @@ class PropMouseEventHandler:
                     motion_type, rot_dir, new_arrow_location
                 )
 
-                self.p.motion.arrow.loc = new_arrow_location
+                self.p.motion.arrow.state.loc = new_arrow_location
                 self.p.motion.arrow.ghost.loc = new_arrow_location
                 self.p.motion.state.start_loc = start_loc
                 self.p.motion.state.end_loc = end_loc
                 self.p.pictograph.managers.updater.update_pictograph()
 
         elif self.p.motion.state.motion_type == STATIC:
-            self.p.motion.arrow.loc = new_arrow_location
+            self.p.motion.arrow.state.loc = new_arrow_location
             self.p.motion.state.start_loc = new_arrow_location
             self.p.motion.state.end_loc = new_arrow_location
             self.p.motion.arrow.updater.update_arrow()

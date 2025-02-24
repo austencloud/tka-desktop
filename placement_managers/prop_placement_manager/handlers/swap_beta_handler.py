@@ -149,8 +149,8 @@ class SwapBetaHandler:
     def _generate_override_key(self, prop_loc, beta_ori) -> str:
         override_key = (
             f"swap_beta_{prop_loc}_{beta_ori}_"
-            f"blue_{self.blue_prop.motion.state.motion_type}_{self.blue_prop.motion.arrow.loc}_"
-            f"red_{self.red_prop.motion.state.motion_type}_{self.red_prop.motion.arrow.loc}"
+            f"blue_{self.blue_prop.motion.state.motion_type}_{self.blue_prop.motion.arrow.state.loc}_"
+            f"red_{self.red_prop.motion.state.motion_type}_{self.red_prop.motion.arrow.state.loc}"
         )
 
         return override_key

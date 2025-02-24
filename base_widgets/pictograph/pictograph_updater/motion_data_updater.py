@@ -39,7 +39,7 @@ class MotionDataUpdater:
                 if motion_dataset[motion.state.color].get("turns", "") == "fl":
                     motion.state.turns = "fl"
                 motion.updater.update_motion(motion_dataset[motion.state.color])
-                if not motion.arrow.initialized:
+                if not motion.arrow.state.initialized:
                     motion.arrow.setup_components()
                 turns_value = motion_dataset[motion.state.color].get("turns")
                 if turns_value is not None:

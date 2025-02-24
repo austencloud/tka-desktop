@@ -46,7 +46,7 @@ class DashLocationCalculator(BaseLocationCalculator):
             }
             arrow_location = location_map.get(
                 (
-                    self.arrow.color,
+                    self.arrow.state.color,
                     (
                         self.arrow.motion.state.start_loc,
                         self.arrow.motion.state.end_loc,
@@ -137,7 +137,7 @@ class DashLocationCalculator(BaseLocationCalculator):
     def _calculate_dash_location_based_on_shift(self) -> str:
         shift_arrow = self.pictograph.managers.get.shift().arrow
 
-        shift_location = shift_arrow.loc
+        shift_location = shift_arrow.state.loc
         diamond_dash_location_map = {
             (NORTH, NORTHWEST): EAST,
             (NORTH, NORTHEAST): WEST,

@@ -48,8 +48,8 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
             if mirrored_turns_tuple not in letter_data:
                 letter_data[mirrored_turns_tuple] = {}
             letter_data[mirrored_turns_tuple][
-                BLUE if self.arrow.color == RED else RED
-            ] = letter_data[turns_tuple][self.arrow.color]
+                BLUE if self.arrow.state.color == RED else RED
+            ] = letter_data[turns_tuple][self.arrow.state.color]
             self.mirrored_entry_updater.manager.data_updater.update_specific_entry_in_json(
                 letter, letter_data, ori_key
             )
@@ -95,4 +95,4 @@ class StandardOrientationUpdater(BaseMirroredEntryUpdater):
         elif self.arrow.pictograph.managers.check.has_hybrid_motions():
             return self.arrow.motion.state.motion_type
         else:
-            return self.arrow.color
+            return self.arrow.state.color

@@ -15,7 +15,7 @@ class ArrowMouseEventHandler:
         self.arrow.setSelected(True)
 
     def handle_mouse_release(self, event) -> None:
-        self.arrow.pictograph.arrows[self.arrow.color] = self.arrow
+        self.arrow.pictograph.arrows[self.arrow.state.color] = self.arrow
 
     def set_drag_pos(self, new_pos: QPointF) -> None:
         self.arrow.setPos(new_pos)
