@@ -8,8 +8,8 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING, Optional
 
-from placement_managers.arrow_placement_manager.directional_tuple_manager.directional_tuple_manager import (
-    DirectionalTupleManager,
+from placement_managers.arrow_placement_manager.directional_tuple_generator import (
+    DirectionalTupleGenerator,
 )
 
 
@@ -103,16 +103,15 @@ class ArrowAdjustmentCalculator:
     def _get_directional_adjustments(self, arrow: Arrow, x: float, y: float) -> list:
         """Generates directional adjustments for the arrow."""
 
-        directional_tuple_manager = DirectionalTupleManager(arrow.motion)
-        directional_adjustments = directional_tuple_manager.generate_directional_tuples(
-            x, y
-        )
+        directional_tuple_manager = DirectionalTupleGenerator(arrow.motion)
+        directional_adjustments = directional_tuple_manager.get_directional_tuples(x, y)
 
         if not directional_adjustments:
             logger.error(
                 f"Directional adjustments not found for motion type: {arrow.motion.state.motion_type}"
             )
-            return None
+            return [(0, 0)] * 4
+
         return directional_adjustments
 
     def _get_final_adjustment(
@@ -127,7 +126,7 @@ class ArrowAdjustmentCalculator:
             logger.error(
                 f"Quadrant index {quadrant_index} out of range for directional_adjustments with length {len(directional_adjustments)}."
             )
-            return QPointF(0, 0)
+            return QPointF(*directional_adjustments[-1])  # Use the last available tuple
 
         return QPointF(*directional_adjustments[quadrant_index])
 

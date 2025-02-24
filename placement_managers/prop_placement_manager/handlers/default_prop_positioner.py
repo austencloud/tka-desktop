@@ -4,6 +4,7 @@ from PyQt6.QtCore import QPointF
 from typing import TYPE_CHECKING
 from objects.prop.prop import Prop
 import logging
+from functools import lru_cache
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.grid.grid_point import GridPoint
@@ -17,7 +18,6 @@ class DefaultPropPositioner:
     def __init__(self, prop_placement_manager: "PropPlacementManager") -> None:
         self.pictograph: "Pictograph" = prop_placement_manager.pictograph
         self.prop_placement_manager = prop_placement_manager
-        self.location_points_cache = {}
 
     def set_prop_to_default_loc(self, prop: Prop) -> None:
         """
@@ -31,22 +31,9 @@ class DefaultPropPositioner:
             f"{prop.loc}_{prop.pictograph.state.grid_mode}_hand_point{point_suffix}"
         )
 
-        logger.debug(f"Attempting to place prop '{prop}' at point '{point_name}'.")
-
-        grid_point = (
-            self.pictograph.elements.grid.grid_data.all_hand_points_strict.get(
-                point_name
-            )
-            if strict
-            else self.pictograph.elements.grid.grid_data.all_hand_points_normal.get(
-                point_name
-            )
-        )
+        grid_point = self.get_grid_point(point_name, strict)
 
         if grid_point and grid_point.coordinates:
-            logger.debug(
-                f"Found coordinates for '{point_name}': {grid_point.coordinates}."
-            )
             self.place_prop_at_hand_point(prop, grid_point.coordinates)
         else:
             logger.warning(
@@ -101,13 +88,14 @@ class DefaultPropPositioner:
 
         return center_point_in_svg
 
-    def get_location_points(self, strict: bool) -> dict[str, "GridPoint"]:
+    @lru_cache(maxsize=128)
+    def get_grid_point(self, point_name: str, strict: bool) -> "GridPoint | None":
         """
-        Returns hand location points, depending on whether the props should be strictly placed.
+        Returns a grid point by name, using a cache.
         """
         location_points = (
             self.pictograph.elements.grid.grid_data.all_hand_points_strict
             if strict
             else self.pictograph.elements.grid.grid_data.all_hand_points_normal
         )
-        return location_points
+        return location_points.get(point_name)

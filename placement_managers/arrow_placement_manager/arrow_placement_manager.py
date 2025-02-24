@@ -1,51 +1,21 @@
 from email.policy import default
 from typing import TYPE_CHECKING
-
+from venv import logger
 from base_widgets.pictograph.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import (
     SpecialPlacementDataUpdater,
 )
-from placement_managers.arrow_placement_manager.arrow_placement_context import (
-    ArrowPlacementContext,
-)
-
-from placement_managers.arrow_placement_manager.quadrant_index_handler import (
-    QuadrantIndexHandler,
-)
-from placement_managers.arrow_placement_manager.arrow_adjustment_calculator import (
-    ArrowAdjustmentCalculator,
-)
+from .arrow_placement_context import ArrowPlacementContext
+from .quadrant_index_handler import QuadrantIndexHandler
+from .arrow_adjustment_calculator import ArrowAdjustmentCalculator
 from main_window.settings_manager.global_settings.app_context import AppContext
-from placement_managers.arrow_placement_manager.strategies.default_placement_strategy import (
-    DefaultPlacementStrategy,
-)
-from placement_managers.arrow_placement_manager.strategies.initial_placement_strategy import (
-    InitialPlacementStrategy,
-)
-from placement_managers.arrow_placement_manager.strategies.quadrant_adjustment_strategy import (
-    QuadrantAdjustmentStrategy,
-)
-from placement_managers.arrow_placement_manager.strategies.special_placement_strategy import (
-    SpecialPlacementStrategy,
-)
+from .strategies.default_placement_strategy import DefaultPlacementStrategy
+from .strategies.initial_placement_strategy import InitialPlacementStrategy
+from .strategies.quadrant_adjustment_strategy import QuadrantAdjustmentStrategy
+from .strategies.special_placement_strategy import SpecialPlacementStrategy
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
     from objects.arrow.arrow import Arrow
-
-from typing import TYPE_CHECKING
-from PyQt6.QtCore import QPointF
-
-if TYPE_CHECKING:
-    from objects.arrow.arrow import Arrow
-
-
-def compute_default_adjustment(arrow: "Arrow") -> QPointF:
-    """Type-hinted function for default adjustment calculation."""
-    return DefaultPlacementStrategy().compute_adjustment(
-        arrow.pictograph.state.grid_mode,
-        arrow.motion.state.motion_type,
-        arrow.motion.state.turns,
-    )
 
 
 class ArrowPlacementManager:
@@ -57,11 +27,10 @@ class ArrowPlacementManager:
         self.directional_strategy = QuadrantAdjustmentStrategy(
             self.quadrant_index_handler
         )
-
         self.data_updater = SpecialPlacementDataUpdater(
             self,
             self.pictograph.state,
-            compute_default_adjustment,  # ✅ Use function with type hinting
+            lambda arrow: DefaultPlacementStrategy().get_default_adjustment(arrow),
             self.pictograph.managers.get,
             self.pictograph.managers.check,
         )
@@ -81,9 +50,8 @@ class ArrowPlacementManager:
     def update_arrow_position(self, arrow: "Arrow") -> None:
         """Updates the position of a single arrow using initial position, special adjustments, and directional strategy."""
         initial_pos = self.initial_strategy.compute_initial_position(arrow)
-        # default_adjustment = self.default_strategy.get_default_adjustment(arrow)
-        # new_pos_with_default = initial_pos + default_adjustment
-        adjustment = self.adjustment_calculator.get_adjustment(arrow)  # Returns QPointF
+
+        adjustment = self.adjustment_calculator.get_adjustment(arrow)
         dir_x, dir_y = (
             adjustment.x(),
             adjustment.y(),
@@ -91,6 +59,10 @@ class ArrowPlacementManager:
         final_x = initial_pos.x() + dir_x - arrow.boundingRect().center().x()
         final_y = initial_pos.y() + dir_y - arrow.boundingRect().center().y()
         arrow.setPos(final_x, final_y)
+        logger.debug(
+            f"Final position calculation -> Initial: ({initial_pos.x()}, {initial_pos.y()}), "
+            f"Adjustment: ({dir_x}, {dir_y}), Offset: ({arrow.boundingRect().center().x()}, {arrow.boundingRect().center().y()})"
+        )
 
     def _build_context(self, arrow: "Arrow") -> ArrowPlacementContext:
         """Builds the ArrowPlacementContext object with relevant motion data."""

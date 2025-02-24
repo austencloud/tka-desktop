@@ -21,18 +21,25 @@ class SwapBetaHandler:
         self.blue_prop = self.pictograph.elements.blue_prop
         self.red_prop = self.pictograph.elements.red_prop
         self.dir_calculator = self.beta_prop_positioner.dir_calculator
+        self.swap_handlers = {
+            LetterType.Type1: self._handle_type1_swap,
+            LetterType.Type2: self._handle_type2_swap,
+            LetterType.Type3: self._handle_type3_swap,
+            LetterType.Type4: self._handle_type4_swap,
+            LetterType.Type5: self._handle_type5_swap,
+            LetterType.Type6: self._handle_type6_swap,
+        }
 
     def _swap_props(
         self, prop_a: Prop, prop_b: Prop, direction_a: str, direction_b: str
     ) -> None:
+        """Yes, this DOES have to be called twice for each prop to swap them. It's complicated."""
         self.beta_prop_positioner.move_prop(prop_a, direction_a)
         self.beta_prop_positioner.move_prop(prop_a, direction_a)
         self.beta_prop_positioner.move_prop(prop_b, direction_b)
         self.beta_prop_positioner.move_prop(prop_b, direction_b)
 
     def swap_beta(self) -> None:
-        letter_type = LetterType.get_letter_type(self.pictograph.state.letter)
-
         if (
             (
                 self.pictograph.managers.check.ends_with_in_out_ori()
@@ -43,22 +50,13 @@ class SwapBetaHandler:
             return
         if self.pictograph.elements.red_motion.prop.prop_type == PropType.Hand:
             return
-        swap_handlers = {
-            LetterType.Type1: self._handle_type1_swap,
-            LetterType.Type2: self._handle_type2_swap,
-            LetterType.Type3: self._handle_type3_swap,
-            LetterType.Type4: self._handle_type4_swap,
-            LetterType.Type5: self._handle_type5_swap,
-            LetterType.Type6: self._handle_type6_swap,
-        }
 
-        swap_handler = swap_handlers.get(letter_type)
+        letter_type = LetterType.get_letter_type(self.pictograph.state.letter)
+        swap_handler = self.swap_handlers.get(letter_type)
         if swap_handler:
             swap_handler()
 
     def _handle_type1_swap(self) -> None:
-        # if it's a hand, ignore it
-
         if self.pictograph.state.letter in [Letter.G, Letter.H]:
             further_direction = self.dir_calculator.get_dir(
                 self.pictograph.elements.red_motion
@@ -130,7 +128,6 @@ class SwapBetaHandler:
 
         dash_direction = self.dir_calculator.get_dir(dash)
         static_direction = self.dir_calculator.get_opposite_dir(dash_direction)
-        # if the prop_type is not PropType.Hand, then we swap the props
         self._swap_props(dash.prop, static.prop, static_direction, dash_direction)
 
     def _handle_type5_swap(self) -> None:
@@ -147,13 +144,11 @@ class SwapBetaHandler:
         )
 
     def _generate_override_key(self, prop_loc, beta_ori) -> str:
-        override_key = (
+        return (
             f"swap_beta_{prop_loc}_{beta_ori}_"
             f"blue_{self.blue_prop.motion.state.motion_type}_{self.blue_prop.motion.arrow.state.loc}_"
             f"red_{self.red_prop.motion.state.motion_type}_{self.red_prop.motion.arrow.state.loc}"
         )
-
-        return override_key
 
     def swap_beta_if_needed(self) -> None:
         ori_key = self.pictograph.managers.arrow_placement_manager.data_updater.ori_key_generator.generate_ori_key_from_motion(
@@ -167,17 +162,17 @@ class SwapBetaHandler:
                 .get(self.pictograph.state.letter.value)
             )
 
-        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
-        prop_loc = self.pictograph.elements.blue_prop.loc
-        if self.pictograph.managers.check.ends_with_radial_ori():
-            beta_ori = "radial"
-        elif self.pictograph.managers.check.ends_with_nonradial_ori():
-            beta_ori = "nonradial"
-        else:
-            return
-        override_key = self._generate_override_key(prop_loc, beta_ori)
-        if letter_data:
-            turn_data: dict = letter_data.get(turns_tuple, {})
-            if beta_ori:
-                if turn_data.get(override_key):
-                    self.swap_beta()
+            turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
+            prop_loc = self.pictograph.elements.blue_prop.loc
+            if self.pictograph.managers.check.ends_with_radial_ori():
+                beta_ori = "radial"
+            elif self.pictograph.managers.check.ends_with_nonradial_ori():
+                beta_ori = "nonradial"
+            else:
+                return
+            override_key = self._generate_override_key(prop_loc, beta_ori)
+            if letter_data:
+                turn_data: dict = letter_data.get(turns_tuple, {})
+                if beta_ori:
+                    if turn_data.get(override_key):
+                        self.swap_beta()

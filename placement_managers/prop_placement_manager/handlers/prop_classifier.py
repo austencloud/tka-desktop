@@ -15,14 +15,20 @@ if TYPE_CHECKING:
 class PropClassifier:
     def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
-        self.classify_props()
-
-    def classify_props(self) -> None:
         self.big_uni: list[Prop] = []
         self.small_uni: list[Prop] = []
         self.small_bi: list[Prop] = []
         self.big_bi: list[Prop] = []
         self.hands: list[Prop] = []
+        self.big_props: list[Prop] = []
+        self.small_props: list[Prop] = []
+
+    def classify_props(self) -> None:
+        self.big_uni.clear()
+        self.small_uni.clear()
+        self.small_bi.clear()
+        self.big_bi.clear()
+        self.hands.clear()
 
         for prop in self.pictograph.elements.props.values():
             prop_type_enum = PropType.get_prop_type(prop.prop_type)

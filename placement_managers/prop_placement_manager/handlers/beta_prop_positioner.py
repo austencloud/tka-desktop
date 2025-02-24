@@ -6,7 +6,7 @@ from placement_managers.prop_placement_manager.handlers.beta_prop_direction_calc
 from placement_managers.prop_placement_manager.handlers.hand_positioner import (
     HandPositioner,
 )
-from placement_managers.prop_placement_manager.handlers.prop_offset_calculator import (
+from placement_managers.prop_placement_manager.handlers.beta_offset_calculator import (
     BetaOffsetCalculator,
 )
 from .big_prop_positioner import BigPropPositioner
@@ -37,14 +37,21 @@ class BetaPropPositioner:
 
     def reposition_beta_props(self) -> None:
         self.classifier.classify_props()
-        if len(self.classifier.big_props) == 2:
-            self.big_prop_positioner.reposition()
-        elif len(self.classifier.small_props) == 2:
-            self.small_prop_positioner.reposition()
-            self.swap_beta_handler.swap_beta_if_needed()
-        elif self.classifier.hands:
-            self.hand_positioner.reposition_beta_hands()
-            self.swap_beta_handler.swap_beta_if_needed()
+        match (
+            bool(self.classifier.big_props),
+            bool(self.classifier.small_props),
+            bool(self.classifier.hands),
+        ):
+            case (True, _, _):
+                if len(self.classifier.big_props) == 2:
+                    self.big_prop_positioner.reposition()
+            case (_, True, _):
+                if len(self.classifier.small_props) == 2:
+                    self.small_prop_positioner.reposition()
+                    self.swap_beta_handler.swap_beta_if_needed()
+            case (_, _, True):
+                self.hand_positioner.reposition_beta_hands()
+                self.swap_beta_handler.swap_beta_if_needed()
 
     def move_prop(self, prop: Prop, direction: str) -> None:
         offset_calculator = self.beta_offset_calculator
