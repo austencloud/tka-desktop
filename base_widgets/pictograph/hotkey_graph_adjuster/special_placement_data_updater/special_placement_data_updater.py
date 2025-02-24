@@ -150,24 +150,22 @@ class SpecialPlacementDataUpdater:
             ori_key,
             f"{letter.value}_placements.json",
         )
-        AppContext.special_placement_saver().save_json_data(letter_data, file_path)
+        wrapped_data = {letter.value: letter_data}
+        AppContext.special_placement_saver().save_json_data(wrapped_data, file_path)
 
     def update_arrow_adjustments_in_json(
         self, adjustment: tuple[int, int], arrow: Arrow, turns_tuple: str
     ) -> None:
         if not arrow:
             return
-
         letter = arrow.pictograph.state.letter
-
         ori_key = self._generate_ori_key(arrow.motion)
-
         letter_data = self._get_letter_data(letter, ori_key)
         self._update_or_create_turn_data(letter_data, turns_tuple, arrow, adjustment)
         self._update_placement_json_data(
             letter, letter_data, ori_key, self.state.grid_mode
         )
-        AppContext().special_placement_loader().reload()
+        # AppContext().special_placement_loader().reload()
 
     def update_specific_entry_in_json(
         self, letter: Letter, letter_data: dict, ori_key
