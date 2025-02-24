@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Union
 from PyQt6.QtWidgets import QGraphicsTextItem
 
 
+from base_widgets.pictograph.elements.grid.grid import Grid
 from base_widgets.pictograph.elements.views.bordered_pictograph_view import (
     BorderedPictographView,
 )
@@ -22,7 +23,6 @@ from objects.glyphs.reversal_glyph import ReversalGlyph
 from objects.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import StartToEndPosGlyph
 from objects.glyphs.tka_glyph.tka_glyph import TKA_Glyph
 from objects.glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
-from ..grid.grid import Grid
 from objects.motion.motion import Motion
 from objects.prop.prop import Prop
 

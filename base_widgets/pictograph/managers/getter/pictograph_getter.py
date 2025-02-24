@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional
 from Enums.Enums import LetterType, Letter, Glyph
 
 
-from base_widgets.pictograph.grid.non_radial_points_group import NonRadialPointsGroup
+from base_widgets.pictograph.elements.grid.non_radial_points_group import NonRadialPointsGroup
 from base_widgets.pictograph.managers.getter.lead_state_determiner import LeadStateDeterminer
 from data.constants import *
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (

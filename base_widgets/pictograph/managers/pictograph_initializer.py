@@ -2,6 +2,8 @@ import json
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import QPoint, Qt
 from PyQt6.QtWidgets import QGraphicsTextItem
+from base_widgets.pictograph.elements.grid.grid import Grid
+from base_widgets.pictograph.elements.grid.grid_data import GridData
 from data.prop_class_mapping import prop_class_mapping
 
 from objects.arrow.arrow import Arrow
@@ -13,7 +15,6 @@ from objects.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
 from objects.glyphs.tka_glyph.tka_glyph import TKA_Glyph
 from objects.glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
 from objects.prop.prop_factory import PropFactory
-from ..grid.grid import Grid, GridData
 from objects.motion.motion import Motion
 from objects.prop.prop import Prop
 from objects.prop.prop_classes import *
@@ -29,7 +30,6 @@ if TYPE_CHECKING:
 
 import json
 from utilities.path_helpers import get_images_and_data_path
-from ..grid.grid import Grid, GridData
 import logging
 
 logger = logging.getLogger(__name__)

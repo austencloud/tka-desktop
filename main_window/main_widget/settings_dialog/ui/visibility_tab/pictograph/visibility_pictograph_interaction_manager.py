@@ -2,7 +2,7 @@ from typing import Union, TYPE_CHECKING
 from PyQt6.QtCore import Qt
 
 from Enums.Enums import Glyph
-from base_widgets.pictograph.grid.non_radial_points_group import NonRadialPointsGroup
+from base_widgets.pictograph.elements.grid.non_radial_points_group import NonRadialPointsGroup
 from objects.glyphs.reversal_glyph import ReversalGlyph
 from objects.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import StartToEndPosGlyph
 
