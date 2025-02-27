@@ -1,4 +1,6 @@
 from typing import TYPE_CHECKING
+
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
 from .permutation_executor_base import PermutationExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map, horizontal_loc_mirror_map
@@ -81,30 +83,30 @@ class MirroredPermutationExecutor(PermutationExecutor):
             ),
             "timing": previous_matching_beat["timing"],
             "direction": previous_matching_beat["direction"],
-            "blue_attributes": self.create_new_attributes(
-                previous_entry["blue_attributes"],
-                previous_matching_beat["blue_attributes"],
+            BLUE_ATTRIBUTES: self.create_new_attributes(
+                previous_entry[BLUE_ATTRIBUTES],
+                previous_matching_beat[BLUE_ATTRIBUTES],
             ),
-            "red_attributes": self.create_new_attributes(
-                previous_entry["red_attributes"],
-                previous_matching_beat["red_attributes"],
+            RED_ATTRIBUTES: self.create_new_attributes(
+                previous_entry[RED_ATTRIBUTES],
+                previous_matching_beat[RED_ATTRIBUTES],
             ),
         }
 
-        new_entry["blue_attributes"]["end_ori"] = (
+        new_entry[BLUE_ATTRIBUTES]["end_ori"] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
                 new_entry, "blue"
             )
         )
-        new_entry["red_attributes"]["end_ori"] = (
+        new_entry[RED_ATTRIBUTES]["end_ori"] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
                 new_entry, "red"
             )
         )
         if color_swap_second_half:
-            new_entry["blue_attributes"], new_entry["red_attributes"] = (
-                new_entry["red_attributes"],
-                new_entry["blue_attributes"],
+            new_entry[BLUE_ATTRIBUTES], new_entry[RED_ATTRIBUTES] = (
+                new_entry[RED_ATTRIBUTES],
+                new_entry[BLUE_ATTRIBUTES],
             )
         return new_entry
 

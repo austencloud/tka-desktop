@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout
 from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
-from data.constants import BOX, DIAMOND, START_POS, END_POS
+from data.constants import BLUE_ATTRIBUTES, BOX, DIAMOND, RED_ATTRIBUTES, START_POS, END_POS
 from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
@@ -141,11 +141,11 @@ class StartPosPicker(BaseStartPosPicker):
         for pictograph_data in matching_letter_pictographs:
             if pictograph_data["start_pos"] == start_pos_key:
 
-                pictograph_data["blue_attributes"]["start_ori"] = start_pos_data[
-                    "blue_attributes"
+                pictograph_data[BLUE_ATTRIBUTES]["start_ori"] = start_pos_data[
+                    BLUE_ATTRIBUTES
                 ]["end_ori"]
-                pictograph_data["red_attributes"]["start_ori"] = start_pos_data[
-                    "red_attributes"
+                pictograph_data[RED_ATTRIBUTES]["start_ori"] = start_pos_data[
+                    RED_ATTRIBUTES
                 ]["end_ori"]
                 pictograph_factory = self.beat_frame.beat_factory
                 pictograph_key = PictographKeyGenerator().generate_pictograph_key(

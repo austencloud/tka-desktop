@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from data.constants import BOX, DIAMOND
+from data.constants import BLUE_ATTRIBUTES, BOX, DIAMOND, RED_ATTRIBUTES
 from data.positions_map import positions_map
 from data.locations import cw_loc_order
 
@@ -59,16 +59,16 @@ class SequenceRotater(BaseSequenceModifier):
         return rotated_sequence
 
     def _rotate_dict(self, _dict: dict):
-        for color in ["blue_attributes", "red_attributes"]:
+        for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
             if color in _dict:
                 attributes = _dict[color]
                 for loc in ["start_loc", "end_loc"]:
                     if loc in attributes:
                         attributes[loc] = self._rotate_location(attributes[loc])
 
-        if "blue_attributes" in _dict and "red_attributes" in _dict:
-            bl = _dict["blue_attributes"]
-            rl = _dict["red_attributes"]
+        if BLUE_ATTRIBUTES in _dict and RED_ATTRIBUTES in _dict:
+            bl = _dict[BLUE_ATTRIBUTES]
+            rl = _dict[RED_ATTRIBUTES]
             for loc in ["start_loc", "end_loc"]:
                 if loc in bl and loc in rl:
                     _dict[f"{loc.split('_')[0]}_pos"] = positions_map[

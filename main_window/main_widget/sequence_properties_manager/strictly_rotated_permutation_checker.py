@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+
 
 if TYPE_CHECKING:
     from .sequence_properties_manager import SequencePropertiesManager
@@ -27,12 +29,11 @@ class StrictlyRotatedPermutationChecker:
 
     def _is_strictly_rotated_permutation(self, prev, curr) -> bool:
         return (
-            prev["blue_attributes"]["motion_type"]
-            == curr["blue_attributes"]["motion_type"]
-            and prev["blue_attributes"]["prop_rot_dir"]
-            == curr["blue_attributes"]["prop_rot_dir"]
-            and prev["red_attributes"]["motion_type"]
-            == curr["red_attributes"]["motion_type"]
-            and prev["red_attributes"]["prop_rot_dir"]
-            == curr["red_attributes"]["prop_rot_dir"]
+            prev[BLUE_ATTRIBUTES]["motion_type"] == curr[BLUE_ATTRIBUTES]["motion_type"]
+            and prev[BLUE_ATTRIBUTES]["prop_rot_dir"]
+            == curr[BLUE_ATTRIBUTES]["prop_rot_dir"]
+            and prev[RED_ATTRIBUTES]["motion_type"]
+            == curr[RED_ATTRIBUTES]["motion_type"]
+            and prev[RED_ATTRIBUTES]["prop_rot_dir"]
+            == curr[RED_ATTRIBUTES]["prop_rot_dir"]
         )

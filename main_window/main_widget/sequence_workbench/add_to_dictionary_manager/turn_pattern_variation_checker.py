@@ -7,7 +7,7 @@ from utilities.path_helpers import get_images_and_data_path
 
 class TurnPatternVariationChecker:
     def __init__(self):
-        self.directory = get_images_and_data_path('dictionary')
+        self.directory = get_images_and_data_path("dictionary")
 
     def check_for_turn_pattern_variation(self, sequence):
         # Iterate recursively through all files in the directory and subdirectories
@@ -38,7 +38,7 @@ class TurnPatternVariationChecker:
 
         keys_to_compare = ["turns", "start_ori", "end_ori"]
         for beat1, beat2 in zip(seq1, seq2):
-            for attr in ["blue_attributes", "red_attributes"]:
+            for attr in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
                 if not self.compare_attributes(
                     beat1.get(attr, {}), beat2.get(attr, {}), keys_to_compare
                 ):

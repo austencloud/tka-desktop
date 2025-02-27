@@ -4,6 +4,7 @@ from typing import Optional, Union
 from Enums.Enums import Letter
 from Enums.PropTypes import PropType
 from Enums.letters import LetterType
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
 
 
 @dataclass
@@ -40,7 +41,7 @@ class PictographState:
                 )
                 self.letter_type = LetterType.get_letter_type(letter_obj)
                 self.pictograph_data["letter_type"] = self.letter_type.name
-            elif key in ("blue_attributes", "red_attributes"):
+            elif key in (BLUE_ATTRIBUTES, RED_ATTRIBUTES):
                 if key not in self.pictograph_data:
                     self.pictograph_data[key] = {}
                 if isinstance(value, dict):

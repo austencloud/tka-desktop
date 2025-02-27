@@ -110,8 +110,8 @@ class PictographChecker:
             "end_pos",
             "timing",
             "direction",
-            "blue_attributes",
-            "red_attributes",
+            BLUE_ATTRIBUTES,
+            RED_ATTRIBUTES,
         ]
         nested_blue_required_keys = [
             "motion_type",
@@ -127,11 +127,11 @@ class PictographChecker:
             return False
 
         for key in nested_blue_required_keys:
-            if key not in pictograph_data["blue_attributes"]:
+            if key not in pictograph_data[BLUE_ATTRIBUTES]:
                 return False
 
         for key in nested_red_required_keys:
-            if key not in pictograph_data["red_attributes"]:
+            if key not in pictograph_data[RED_ATTRIBUTES]:
                 return False
 
         return True

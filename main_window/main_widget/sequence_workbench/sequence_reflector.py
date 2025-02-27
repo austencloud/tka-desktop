@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
-from data.constants import CLOCKWISE, COUNTER_CLOCKWISE
+from data.constants import BLUE_ATTRIBUTES, CLOCKWISE, COUNTER_CLOCKWISE, RED_ATTRIBUTES
 from data.positions import mirrored_positions
 from data.locations import vertical_loc_mirror_map
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
@@ -74,7 +74,7 @@ class SequenceReflector(BaseSequenceModifier):
                     pictograph_data[key], pictograph_data[key]
                 )
 
-        for color in ["blue_attributes", "red_attributes"]:
+        for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
             if color in pictograph_data:
                 attributes = pictograph_data[color]
                 for loc_key in ["start_loc", "end_loc"]:

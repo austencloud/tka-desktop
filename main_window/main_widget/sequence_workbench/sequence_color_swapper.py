@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
 from data.positions_map import positions_map
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
@@ -65,15 +66,15 @@ class SequenceColorSwapper(BaseSequenceModifier):
         return swapped_sequence
 
     def _color_swap_dict(self, _dict):
-        _dict["blue_attributes"], _dict["red_attributes"] = (
-            _dict["red_attributes"],
-            _dict["blue_attributes"],
+        _dict[BLUE_ATTRIBUTES], _dict[RED_ATTRIBUTES] = (
+            _dict[RED_ATTRIBUTES],
+            _dict[BLUE_ATTRIBUTES],
         )
 
         for loc in ["start_loc", "end_loc"]:
-            if loc in _dict["blue_attributes"] and loc in _dict["red_attributes"]:
-                left_loc = _dict["blue_attributes"][loc]
-                right_loc = _dict["red_attributes"][loc]
+            if loc in _dict[BLUE_ATTRIBUTES] and loc in _dict[RED_ATTRIBUTES]:
+                left_loc = _dict[BLUE_ATTRIBUTES][loc]
+                right_loc = _dict[RED_ATTRIBUTES][loc]
                 pos_key = "start_pos" if loc == "start_loc" else "end_pos"
                 _dict[pos_key] = positions_map.get((left_loc, right_loc))
 

@@ -1,13 +1,12 @@
 import logging
 from typing import TYPE_CHECKING
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
 from data.locations import vertical_loc_mirror_map
 from data.positions import mirrored_positions
 
 logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
-    from .codex_control_widget import (
-        CodexControlWidget
-    )
+    from .codex_control_widget import CodexControlWidget
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt
 
@@ -39,7 +38,7 @@ class CodexReflector:
                 pictograph["end_pos"], pictograph["end_pos"]
             )
 
-        for color in ["blue_attributes", "red_attributes"]:
+        for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
             if color in pictograph:
                 attributes = pictograph[color]
                 if "start_loc" in attributes:

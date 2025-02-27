@@ -1,7 +1,7 @@
 # orientation_setter.py
 from typing import TYPE_CHECKING
 from base_widgets.pictograph.pictograph import Pictograph
-from data.constants import BLUE, START_ORI, END_ORI, BOX, DIAMOND
+from data.constants import BLUE, BLUE_ATTRIBUTES, RED_ATTRIBUTES, START_ORI, END_ORI, BOX, DIAMOND
 
 if TYPE_CHECKING:
     from .ori_picker_widget import OriPickerWidget
@@ -138,10 +138,8 @@ class OrientationSetter:
         self, start_pos_pictograph: "Pictograph", color: str
     ) -> str:
         if color == BLUE:
-            return start_pos_pictograph.state.pictograph_data["blue_attributes"][
+            return start_pos_pictograph.state.pictograph_data[BLUE_ATTRIBUTES][
                 START_ORI
             ]
         else:
-            return start_pos_pictograph.state.pictograph_data["red_attributes"][
-                START_ORI
-            ]
+            return start_pos_pictograph.state.pictograph_data[RED_ATTRIBUTES][START_ORI]

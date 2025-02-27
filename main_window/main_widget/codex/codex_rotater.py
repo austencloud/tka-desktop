@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
 from data.positions_map import positions_map
 from data.locations import cw_loc_order
 
@@ -34,7 +35,7 @@ class CodexRotater:
 
     def _rotate_pictograph_data(self, pictograph_data: dict) -> dict:
         """Rotate a single pictograph dictionary."""
-        for color in ["blue_attributes", "red_attributes"]:
+        for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
             if color in pictograph_data:
                 attributes = pictograph_data[color]
                 if "start_loc" in attributes:
@@ -44,9 +45,9 @@ class CodexRotater:
                 if "end_loc" in attributes:
                     attributes["end_loc"] = self._rotate_location(attributes["end_loc"])
 
-        if "blue_attributes" in pictograph_data and "red_attributes" in pictograph_data:
-            bl = pictograph_data["blue_attributes"]
-            rl = pictograph_data["red_attributes"]
+        if BLUE_ATTRIBUTES in pictograph_data and RED_ATTRIBUTES in pictograph_data:
+            bl = pictograph_data[BLUE_ATTRIBUTES]
+            rl = pictograph_data[RED_ATTRIBUTES]
             if "start_loc" in bl and "start_loc" in rl:
                 pictograph_data["start_pos"] = positions_map[
                     (bl["start_loc"], rl["start_loc"])

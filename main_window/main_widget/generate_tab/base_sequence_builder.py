@@ -7,6 +7,7 @@ from Enums.letters import Letter, LetterConditions
 from data.constants import (
     ANTI,
     BLUE,
+    BLUE_ATTRIBUTES,
     END_ORI,
     FLOAT,
     MOTION_TYPE,
@@ -16,6 +17,7 @@ from data.constants import (
     PROP_ROT_DIR,
     RED,
     DASH,
+    RED_ATTRIBUTES,
     START_ORI,
     STATIC,
     NO_ROT,
@@ -69,21 +71,22 @@ class BaseSequenceBuilder:
             raise
 
     def update_start_orientations(
-        self, next_data: dict[str, Any], last_data: dict[str, Any]
+        self, next_data: dict[str, Any], last_data: dict[str, dict[str, str]]
     ) -> None:
         """
         Updates the start orientations of the next beat based on the end orientations of the last beat.
+        Ensures no None values are assigned.
         """
-        blue_end_ori = last_data["blue_attributes"][END_ORI]
-        red_end_ori = last_data["red_attributes"][END_ORI]
+        blue_end_ori = last_data[BLUE_ATTRIBUTES].get(END_ORI)
+        red_end_ori = last_data[RED_ATTRIBUTES].get(END_ORI)
 
         if blue_end_ori is None or red_end_ori is None:
             raise ValueError(
-                "End orientations cannot be None. Please ensure the previous beat has valid orientations."
+                "End orientations cannot be None. Ensure the previous beat has valid orientations."
             )
 
-        next_data["blue_attributes"][START_ORI] = blue_end_ori
-        next_data["red_attributes"][START_ORI] = red_end_ori
+        next_data[BLUE_ATTRIBUTES][START_ORI] = blue_end_ori
+        next_data[RED_ATTRIBUTES][START_ORI] = red_end_ori
 
     def update_end_orientations(self, next_data: dict[str, Any]) -> None:
         """
@@ -97,8 +100,8 @@ class BaseSequenceBuilder:
                 "Calculated end orientations cannot be None. Please check the input data and orientation calculator."
             )
 
-        next_data["blue_attributes"][END_ORI] = blue_end_ori
-        next_data["red_attributes"][END_ORI] = red_end_ori
+        next_data[BLUE_ATTRIBUTES][END_ORI] = blue_end_ori
+        next_data[RED_ATTRIBUTES][END_ORI] = red_end_ori
 
     def update_dash_static_prop_rot_dirs(
         self,
@@ -148,12 +151,12 @@ class BaseSequenceBuilder:
         self, options: list[dict[str, Any]], blue_rot: str, red_rot: str
     ) -> list[dict[str, Any]]:
         """Filters options to match the given rotation directions."""
-        return [ 
+        return [
             opt
             for opt in options
             if (
-                opt["blue_attributes"].get(PROP_ROT_DIR) in [blue_rot, NO_ROT]
-                and opt["red_attributes"].get(PROP_ROT_DIR) in [red_rot, NO_ROT]
+                opt[BLUE_ATTRIBUTES].get(PROP_ROT_DIR) in [blue_rot, NO_ROT]
+                and opt[RED_ATTRIBUTES].get(PROP_ROT_DIR) in [red_rot, NO_ROT]
             )
         ] or options
 
@@ -181,11 +184,11 @@ class BaseSequenceBuilder:
         if turn_blue == "fl":
             self._set_float_turns(next_beat, "blue")
         else:
-            next_beat["blue_attributes"][TURNS] = turn_blue
+            next_beat[BLUE_ATTRIBUTES][TURNS] = turn_blue
 
         if turn_red == "fl":
             self._set_float_turns(next_beat, "red")
         else:
-            next_beat["red_attributes"][TURNS] = turn_red
+            next_beat[RED_ATTRIBUTES][TURNS] = turn_red
 
         return next_beat

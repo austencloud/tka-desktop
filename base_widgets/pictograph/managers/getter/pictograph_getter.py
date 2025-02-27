@@ -2,8 +2,12 @@ from typing import TYPE_CHECKING, Optional
 from Enums.Enums import LetterType, Letter, Glyph
 
 
-from base_widgets.pictograph.elements.grid.non_radial_points_group import NonRadialPointsGroup
-from base_widgets.pictograph.managers.getter.lead_state_determiner import LeadStateDeterminer
+from base_widgets.pictograph.elements.grid.non_radial_points_group import (
+    NonRadialPointsGroup,
+)
+from base_widgets.pictograph.managers.getter.lead_state_determiner import (
+    LeadStateDeterminer,
+)
 from data.constants import *
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
@@ -115,7 +119,7 @@ class PictographGetter:
             "end_pos": self.pictograph.state.end_pos,
             "timing": self.pictograph.state.timing,
             "direction": self.pictograph.state.direction,
-            "blue_attributes": {
+            BLUE_ATTRIBUTES: {
                 "motion_type": self.blue_motion.state.motion_type,
                 "start_ori": self.blue_motion.state.start_ori,
                 "prop_rot_dir": self.blue_motion.state.prop_rot_dir,
@@ -124,7 +128,7 @@ class PictographGetter:
                 "turns": self.blue_motion.state.turns,
                 "end_ori": self.blue_motion.state.end_ori,
             },
-            "red_attributes": {
+            RED_ATTRIBUTES: {
                 "motion_type": self.red_motion.state.motion_type,
                 "start_ori": self.red_motion.state.start_ori,
                 "prop_rot_dir": self.red_motion.state.prop_rot_dir,

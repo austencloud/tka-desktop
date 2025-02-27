@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING
 
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
         SequencePropertiesManager,
     )
-
 
 
 class StrictlyColorSwappedPermutationChecker:
@@ -34,6 +35,6 @@ class StrictlyColorSwappedPermutationChecker:
     def _is_color_swapped(self, first_entry, second_entry) -> bool:
         # Strictly checks if the roles are swapped without any mirroring
         return (
-            first_entry["blue_attributes"] == second_entry["red_attributes"]
-            and first_entry["red_attributes"] == second_entry["blue_attributes"]
+            first_entry[BLUE_ATTRIBUTES] == second_entry[RED_ATTRIBUTES]
+            and first_entry[RED_ATTRIBUTES] == second_entry[BLUE_ATTRIBUTES]
         )

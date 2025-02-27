@@ -2,7 +2,7 @@ import logging
 from typing import TYPE_CHECKING, Tuple
 
 from Enums.letters import LetterType
-from data.constants import RED, BLUE
+from data.constants import BLUE_ATTRIBUTES, RED, BLUE, RED_ATTRIBUTES
 
 if TYPE_CHECKING:
     from ...pictograph import Pictograph
@@ -37,12 +37,12 @@ class ArrowDataUpdater:
     def _extract_arrow_datasets(self, pictograph_data: dict) -> Tuple[dict, dict]:
         red_data = (
             self._get_arrow_data_from_pictograph_data(pictograph_data, RED)
-            if pictograph_data.get("red_attributes", {})
+            if pictograph_data.get(RED_ATTRIBUTES, {})
             else None
         )
         blue_data = (
             self._get_arrow_data_from_pictograph_data(pictograph_data, BLUE)
-            if pictograph_data.get("blue_attributes", {})
+            if pictograph_data.get(BLUE_ATTRIBUTES, {})
             else None
         )
         return red_data, blue_data

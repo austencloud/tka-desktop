@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from data.constants import NO_ROT
+from data.constants import BLUE_ATTRIBUTES, NO_ROT, RED_ATTRIBUTES
 from base_widgets.pictograph.pictograph import Pictograph
 
 
@@ -12,10 +12,10 @@ class JsonStartPositionHandler:
         self.manager = manager
 
     def set_start_position_data(self, start_pos_pictograph: Pictograph) -> None:
-        red_start_ori = start_pos_pictograph.state.pictograph_data["red_attributes"][
+        red_start_ori = start_pos_pictograph.state.pictograph_data[RED_ATTRIBUTES][
             "start_ori"
         ]
-        blue_start_ori = start_pos_pictograph.state.pictograph_data["blue_attributes"][
+        blue_start_ori = start_pos_pictograph.state.pictograph_data[BLUE_ATTRIBUTES][
             "start_ori"
         ]
 
@@ -30,7 +30,7 @@ class JsonStartPositionHandler:
             "end_pos": start_pos_pictograph.state.end_pos,
             "timing": start_pos_pictograph.state.timing,
             "direction": start_pos_pictograph.state.direction,
-            "blue_attributes": {
+            BLUE_ATTRIBUTES: {
                 "start_loc": start_pos_pictograph.elements.blue_motion.state.start_loc,
                 "end_loc": start_pos_pictograph.elements.blue_motion.state.end_loc,
                 "start_ori": blue_start_ori,
@@ -39,7 +39,7 @@ class JsonStartPositionHandler:
                 "turns": 0,
                 "motion_type": start_pos_pictograph.elements.blue_motion.state.motion_type,
             },
-            "red_attributes": {
+            RED_ATTRIBUTES: {
                 "start_loc": start_pos_pictograph.elements.red_motion.state.start_loc,
                 "end_loc": start_pos_pictograph.elements.red_motion.state.end_loc,
                 "start_ori": red_start_ori,

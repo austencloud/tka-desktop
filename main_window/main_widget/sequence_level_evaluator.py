@@ -1,3 +1,4 @@
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
 
 
 class SequenceLevelEvaluator:
@@ -25,32 +26,32 @@ class SequenceLevelEvaluator:
     def _has_turns(self, entry: dict) -> bool:
         has_turns = False
         if (
-            entry["blue_attributes"]["turns"] != "fl"
-            and entry["red_attributes"]["turns"] != "fl"
+            entry[BLUE_ATTRIBUTES]["turns"] != "fl"
+            and entry[RED_ATTRIBUTES]["turns"] != "fl"
         ):
             has_turns = (
-                entry["blue_attributes"]["turns"] > 0
-                or entry["red_attributes"]["turns"] > 0
+                entry[BLUE_ATTRIBUTES]["turns"] > 0
+                or entry[RED_ATTRIBUTES]["turns"] > 0
             )
         else:
-            if entry["blue_attributes"]["turns"] == "fl":
-                if entry["red_attributes"]["turns"] == "fl":
+            if entry[BLUE_ATTRIBUTES]["turns"] == "fl":
+                if entry[RED_ATTRIBUTES]["turns"] == "fl":
                     has_turns = False
-                if entry["red_attributes"]["turns"] != "fl":
-                    has_turns = entry["red_attributes"]["turns"] > 0
-            if entry["red_attributes"]["turns"] == "fl":
-                if entry["blue_attributes"]["turns"] == "fl":
+                if entry[RED_ATTRIBUTES]["turns"] != "fl":
+                    has_turns = entry[RED_ATTRIBUTES]["turns"] > 0
+            if entry[RED_ATTRIBUTES]["turns"] == "fl":
+                if entry[BLUE_ATTRIBUTES]["turns"] == "fl":
                     has_turns = False
-                if entry["blue_attributes"]["turns"] != "fl":
-                    has_turns = entry["blue_attributes"]["turns"] > 0
+                if entry[BLUE_ATTRIBUTES]["turns"] != "fl":
+                    has_turns = entry[BLUE_ATTRIBUTES]["turns"] > 0
         return has_turns
 
     def _has_non_radial_orientation(self, entry: dict) -> bool:
         self.RADIAL_ORIENTATIONS = {"in", "out"}
-        blue_start_ori = entry["blue_attributes"]["start_ori"]
-        blue_end_ori = entry["blue_attributes"]["end_ori"]
-        red_start_ori = entry["red_attributes"]["start_ori"]
-        red_end_ori = entry["red_attributes"]["end_ori"]
+        blue_start_ori = entry[BLUE_ATTRIBUTES]["start_ori"]
+        blue_end_ori = entry[BLUE_ATTRIBUTES]["end_ori"]
+        red_start_ori = entry[RED_ATTRIBUTES]["start_ori"]
+        red_end_ori = entry[RED_ATTRIBUTES]["end_ori"]
         return (
             blue_start_ori not in self.RADIAL_ORIENTATIONS
             or blue_end_ori not in self.RADIAL_ORIENTATIONS

@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 
 
 from base_widgets.base_beat_frame import BaseBeatFrame
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
 from main_window.main_widget.browse_tab.temp_beat_frame.temp_beat_frame_layout_manager import (
     TempBeatFrameLayoutManager,
 )
@@ -116,10 +117,10 @@ class TempBeatFrame(BaseBeatFrame):
                         # QApplication.processEvents()
 
     def update_start_pos_from_current_sequence_json(self, entry: dict) -> None:
-        entry["red_attributes"]["start_ori"] = entry["red_attributes"]["end_ori"]
-        entry["blue_attributes"]["start_ori"] = entry["blue_attributes"]["end_ori"]
+        entry[RED_ATTRIBUTES]["start_ori"] = entry[RED_ATTRIBUTES]["end_ori"]
+        entry[BLUE_ATTRIBUTES]["start_ori"] = entry[BLUE_ATTRIBUTES]["end_ori"]
         entry["start_pos"] = entry["end_pos"]
-        self.start_pos_view.start_pos.updater.update_pictograph(entry)
+        self.start_pos_view.start_pos.managers.updater.update_pictograph(entry)
 
     def populate_beat_frame_from_json(
         self, current_sequence_json: list[dict[str, str]]

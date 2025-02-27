@@ -3,6 +3,8 @@ from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt
 import logging
 
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +20,9 @@ class CodexColorSwapper:
 
         if not pictograph:
             return
-        pictograph["blue_attributes"], pictograph["red_attributes"] = (
-            pictograph["red_attributes"],
-            pictograph["blue_attributes"],
+        pictograph[BLUE_ATTRIBUTES], pictograph[RED_ATTRIBUTES] = (
+            pictograph[RED_ATTRIBUTES],
+            pictograph[BLUE_ATTRIBUTES],
         )
 
     def swap_colors_in_codex(self):

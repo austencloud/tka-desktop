@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication
 import random
 from copy import deepcopy
 from PyQt6.QtCore import Qt
-from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, DASH, STATIC
+from data.constants import BLUE_ATTRIBUTES, CLOCKWISE, COUNTER_CLOCKWISE, DASH, RED_ATTRIBUTES, STATIC
 from data.position_maps import (
     half_position_map,
     quarter_position_map_cw,
@@ -130,8 +130,8 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         if level == 2 or level == 3:
             next_beat = self.set_turns(next_beat, turn_blue, turn_red)
-        if next_beat["blue_attributes"]["motion_type"] in [DASH, STATIC] or next_beat[
-            "red_attributes"
+        if next_beat[BLUE_ATTRIBUTES]["motion_type"] in [DASH, STATIC] or next_beat[
+            RED_ATTRIBUTES
         ]["motion_type"] in [DASH, STATIC]:
             self.update_dash_static_prop_rot_dirs(
                 next_beat,

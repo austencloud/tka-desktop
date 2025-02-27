@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from data.constants import BLUE, RED
+from data.constants import BLUE, BLUE_ATTRIBUTES, RED, RED_ATTRIBUTES
 
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_manager import JsonManager
@@ -29,12 +29,12 @@ class JsonOriValidationEngine:
         Validates and updates the start and end orientations of a single pictograph.
         """
         # Update start orientation based on the previous pictograph
-        pictograph["red_attributes"]["start_ori"] = previous_pictograph[
-            "red_attributes"
-        ]["end_ori"]
-        pictograph["blue_attributes"]["start_ori"] = previous_pictograph[
-            "blue_attributes"
-        ]["end_ori"]
+        pictograph[RED_ATTRIBUTES]["start_ori"] = previous_pictograph[RED_ATTRIBUTES][
+            "end_ori"
+        ]
+        pictograph[BLUE_ATTRIBUTES]["start_ori"] = previous_pictograph[BLUE_ATTRIBUTES][
+            "end_ori"
+        ]
 
         # Recalculate the end orientation
         for color in ["red", "blue"]:
@@ -48,11 +48,11 @@ class JsonOriValidationEngine:
         """Updates the start orientation of the current pictograph based on the previous one's end orientation."""
         current_pictograph = self.sequence[index]
         previous_pictograph = self.get_previous_pictograph(index)
-        current_pictograph["red_attributes"]["start_ori"] = previous_pictograph[
-            "red_attributes"
+        current_pictograph[RED_ATTRIBUTES]["start_ori"] = previous_pictograph[
+            RED_ATTRIBUTES
         ]["end_ori"]
-        current_pictograph["blue_attributes"]["start_ori"] = previous_pictograph[
-            "blue_attributes"
+        current_pictograph[BLUE_ATTRIBUTES]["start_ori"] = previous_pictograph[
+            BLUE_ATTRIBUTES
         ]["end_ori"]
 
     def get_previous_pictograph(self, index) -> dict:

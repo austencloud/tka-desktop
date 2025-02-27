@@ -1,9 +1,9 @@
 import json
 import os
 import hashlib
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from utilities.path_helpers import get_images_and_data_path
-
 
 
 def hash_sequence(sequence):
@@ -22,14 +22,11 @@ class StructuralVariationChecker:
             for filename in files:
                 if filename.lower().endswith((".png", ".jpg", ".jpeg")):
                     file_path = os.path.join(root, filename)
-                    existing_sequence = self.metadata_extractor.extract_metadata_from_file(
-                        file_path
+                    existing_sequence = (
+                        self.metadata_extractor.extract_metadata_from_file(file_path)
                     )
-                    if (
-                        existing_sequence
-                        and self.are_structural_variations_identical(
-                            current_sequence, existing_sequence
-                        )
+                    if existing_sequence and self.are_structural_variations_identical(
+                        current_sequence, existing_sequence
                     ):
                         return True
         return False
@@ -43,9 +40,8 @@ class StructuralVariationChecker:
             return False
 
         for b1, b2 in zip(seq1, seq2):
-            for color in ["blue_attributes", "red_attributes"]:
+            for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
                 if color in b1 and color in b2:
                     if not matches(b1[color], b2[color]):
                         return False
         return True
-

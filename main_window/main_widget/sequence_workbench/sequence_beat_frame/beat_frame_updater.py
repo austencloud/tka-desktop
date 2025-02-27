@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.reversal_detector import (
@@ -57,8 +58,8 @@ class BeatFrameUpdater:
             self.bf.sequence_workbench.difficulty_label.update_difficulty_label()
 
     def update_start_pos_from_current_sequence_json(self, entry: dict) -> None:
-        entry["red_attributes"]["start_ori"] = entry["red_attributes"]["end_ori"]
-        entry["blue_attributes"]["start_ori"] = entry["blue_attributes"]["end_ori"]
+        entry[RED_ATTRIBUTES]["start_ori"] = entry[RED_ATTRIBUTES]["end_ori"]
+        entry[BLUE_ATTRIBUTES]["start_ori"] = entry[BLUE_ATTRIBUTES]["end_ori"]
         entry["start_pos"] = entry["end_pos"]
         self.bf.start_pos_view.start_pos.managers.updater.update_pictograph(entry)
 

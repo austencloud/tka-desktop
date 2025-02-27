@@ -1,5 +1,5 @@
 from typing import Any, Optional
-from data.constants import END_POS, START_POS
+from data.constants import BLUE_ATTRIBUTES, END_POS, RED_ATTRIBUTES, START_POS
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 
@@ -27,14 +27,14 @@ class OptionGetter:
         self, sequence: list[dict[str, Any]], options: list[dict[str, Any]]
     ) -> None:
         last = sequence[-1]
-        for o in options:
-            o["blue_attributes"]["start_ori"] = last["blue_attributes"]["end_ori"]
-            o["red_attributes"]["start_ori"] = last["red_attributes"]["end_ori"]
-            o["blue_attributes"]["end_ori"] = self.ori_calculator.calculate_end_ori(
-                o, "blue"
+        for option in options:
+            option[BLUE_ATTRIBUTES]["start_ori"] = last[BLUE_ATTRIBUTES]["end_ori"]
+            option[RED_ATTRIBUTES]["start_ori"] = last[RED_ATTRIBUTES]["end_ori"]
+            option[BLUE_ATTRIBUTES]["end_ori"] = self.ori_calculator.calculate_end_ori(
+                option, "blue"
             )
-            o["red_attributes"]["end_ori"] = self.ori_calculator.calculate_end_ori(
-                o, "red"
+            option[RED_ATTRIBUTES]["end_ori"] = self.ori_calculator.calculate_end_ori(
+                option, "red"
             )
 
     def _load_all_next_option_dicts(
@@ -78,8 +78,8 @@ class OptionGetter:
 
         last_blue = get_last_rot(sequence[1:], "blue")
         last_red = get_last_rot(sequence[1:], "red")
-        curr_blue = o.get("blue_attributes", {}).get("prop_rot_dir", "no_rot")
-        curr_red = o.get("red_attributes", {}).get("prop_rot_dir", "no_rot")
+        curr_blue = o.get(BLUE_ATTRIBUTES, {}).get("prop_rot_dir", "no_rot")
+        curr_red = o.get(RED_ATTRIBUTES, {}).get("prop_rot_dir", "no_rot")
         if curr_blue == "no_rot":
             curr_blue = last_blue
         if curr_red == "no_rot":

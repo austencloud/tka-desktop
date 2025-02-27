@@ -4,12 +4,14 @@ from copy import deepcopy
 import random
 from typing import TYPE_CHECKING, Dict, Any
 
-from data.constants import DIAMOND, IN, START_ORI, END_ORI
+from data.constants import BLUE_ATTRIBUTES, DIAMOND, IN, RED_ATTRIBUTES, START_ORI, END_ORI
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
+
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
+
 
 class SequenceBuilderStartPosManager:
     """
@@ -70,7 +72,7 @@ class SequenceBuilderStartPosManager:
         """
         Sets all relevant orientation attributes to 'in'.
         """
-        pictograph_data["blue_attributes"][START_ORI] = IN
-        pictograph_data["red_attributes"][START_ORI] = IN
-        pictograph_data["blue_attributes"][END_ORI] = IN
-        pictograph_data["red_attributes"][END_ORI] = IN
+        pictograph_data[BLUE_ATTRIBUTES][START_ORI] = IN
+        pictograph_data[RED_ATTRIBUTES][START_ORI] = IN
+        pictograph_data[BLUE_ATTRIBUTES][END_ORI] = IN
+        pictograph_data[RED_ATTRIBUTES][END_ORI] = IN

@@ -4,7 +4,6 @@ from PIL import Image, PngImagePlugin
 from data.constants import *
 
 
-
 positions_map: dict[tuple[str], str] = {
     (SOUTH, NORTH): ALPHA1,
     (SOUTHWEST, NORTHEAST): ALPHA2,
@@ -41,8 +40,6 @@ positions_map: dict[tuple[str], str] = {
 }
 
 
-
-
 def verify_and_correct_positions(metadata: dict) -> dict:
     """Verifies and corrects numbered positions based on blue and red attributes' start and end locations."""
     if "sequence" in metadata:
@@ -50,12 +47,12 @@ def verify_and_correct_positions(metadata: dict) -> dict:
             if isinstance(beat, dict) and "start_pos" in beat and "end_pos" in beat:
                 # Extract blue and red start and end locations
                 start_tuple = (
-                    beat["blue_attributes"]["start_loc"],
-                    beat["red_attributes"]["start_loc"],
+                    beat[BLUE_ATTRIBUTES]["start_loc"],
+                    beat[RED_ATTRIBUTES]["start_loc"],
                 )
                 end_tuple = (
-                    beat["blue_attributes"]["end_loc"],
-                    beat["red_attributes"]["end_loc"],
+                    beat[BLUE_ATTRIBUTES]["end_loc"],
+                    beat[RED_ATTRIBUTES]["end_loc"],
                 )
 
                 # Determine correct positions based on the attributes
@@ -91,7 +88,8 @@ def update_all_files_in_directory(directory: str):
                 update_file(os.path.join(root, file))
                 print(f"Updated metadata in {file}")
         print(f"Updated metadata in all files in {root}")
-        
+
+
 # Example usage
 dictionary_path = r"C:\Users\Austen\Desktop\the-kinetic-constructor\dictionary"
 update_all_files_in_directory(dictionary_path)
