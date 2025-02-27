@@ -15,6 +15,9 @@ from typing import TYPE_CHECKING
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
+    from hotkey_graph_adjuster.prop_placement_override_manager import (
+        PropPlacementOverrideManager,
+    )
     from placement_managers.prop_placement_manager.handlers.beta_prop_positioner import (
         BetaPropPositioner,
     )
@@ -25,10 +28,9 @@ _small_offset = 45
 
 
 class BetaOffsetCalculator:
-    def __init__(self, beta_positioner: "BetaPropPositioner") -> None:
+    def __init__(self, override_manager: "PropPlacementOverrideManager") -> None:
         self.position_offsets_cache: dict[PropType, dict[tuple[str, str], QPointF]] = {}
-        self.beta_positioner = beta_positioner
-        self.pictograph = beta_positioner.pictograph
+        self.beta_positioner = override_manager
 
     def calculate_new_position_with_offset(
         self, current_position: QPointF, direction: str
@@ -41,9 +43,7 @@ class BetaOffsetCalculator:
             PropType.Bigdoublestar: _medium_offset,
         }
         prop_type = AppContext.settings_manager().global_settings.get_prop_type()
-        self.beta_offset = self.beta_positioner.pictograph.width() / prop_type_map.get(
-            prop_type, _small_offset
-        )
+        self.beta_offset = 950 / prop_type_map.get(prop_type, _small_offset)
 
         diagonal_offset = self.beta_offset / (
             2**0.5

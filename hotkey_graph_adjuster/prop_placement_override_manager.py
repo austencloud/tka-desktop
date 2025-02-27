@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
 from main_window.settings_manager.global_settings.app_context import AppContext
+from objects.prop.prop import Prop
+from placement_managers.prop_placement_manager.handlers.beta_offset_calculator import BetaOffsetCalculator
 
 
 if TYPE_CHECKING:
@@ -15,15 +17,17 @@ class PropPlacementOverrideManager:
             hotkey_adjuster.view.get_current_pictograph().managers.arrow_placement_manager.data_updater
         )
         self.turns_tuple_generator = hotkey_adjuster.turns_tuple_generator
+        self.beta_offset_calculator = BetaOffsetCalculator(self)
 
     def handle_prop_placement_override(self, key) -> None:
+        self.ge_pictograph = self.view.get_current_pictograph()
         self.special_placements = (
             AppContext.special_placement_loader().load_or_return_special_placements()
         )
         if self._is_mixed_ori():
             return
         beta_ori = self._get_beta_ori()
-        self.letter = self.view.get_current_pictograph().state.letter
+        self.letter = self.ge_pictograph.state.letter
 
         if self.view.get_current_pictograph().managers.check.ends_with_beta():
             adjustment_key_str, ori_key, override_key = self._get_keys(beta_ori)
@@ -41,7 +45,12 @@ class PropPlacementOverrideManager:
             ][self.letter] = letter_data
             self._update_json_entry(self.letter, letter_data)
             self.view.get_current_pictograph().managers.updater.update_pictograph()
-
+            for (
+                pictograph
+            ) in self.ge_pictograph.main_widget.pictograph_collector.collect_all_pictographs():
+                if pictograph.state.letter == self.ge_pictograph.state.letter:
+                    pictograph.managers.updater.update_pictograph()
+                    
         AppContext.special_placement_loader().reload()
 
     def _get_keys(self, beta_ori):
@@ -94,3 +103,20 @@ class PropPlacementOverrideManager:
             self.view.get_current_pictograph().elements.blue_motion
         )
         self.data_updater.update_specific_entry_in_json(letter, letter_data, ori_key)
+
+    def move_prop(self, prop: Prop, direction: str) -> None:
+        offset_calculator = self.beta_offset_calculator
+        offset = offset_calculator.calculate_new_position_with_offset(
+            prop.pos(), direction
+        )
+        prop.setPos(offset)
+
+    def _swap_props(
+        self, prop_a: Prop, prop_b: Prop, direction_a: str, direction_b: str
+    ) -> None:
+        """Yes, this DOES have to be called twice for each prop to swap them. It's complicated."""
+        self.move_prop(prop_a, direction_a)
+        self.move_prop(prop_a, direction_a)
+        self.move_prop(prop_b, direction_b)
+        self.move_prop(prop_b, direction_b)
+    

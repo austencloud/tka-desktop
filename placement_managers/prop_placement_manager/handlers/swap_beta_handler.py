@@ -38,7 +38,7 @@ class SwapBetaHandler:
         self.beta_prop_positioner.move_prop(prop_a, direction_a)
         self.beta_prop_positioner.move_prop(prop_b, direction_b)
         self.beta_prop_positioner.move_prop(prop_b, direction_b)
-
+    
     def swap_beta(self) -> None:
         if (
             (

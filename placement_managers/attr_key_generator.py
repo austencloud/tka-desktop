@@ -1,5 +1,5 @@
 from data.constants import CLOCK, COUNTER, IN, OUT
-from Enums.letters import LetterConditions
+from Enums.letters import Letter, LetterConditions
 from placement_managers.arrow_placement_manager.arrow_placement_context import (
     ArrowPlacementContext,
 )
@@ -39,7 +39,7 @@ class AttrKeyGenerator:
     def _generate_key(
         self,
         motion_type: str,
-        letter: str,
+        letter: Letter,
         start_ori: str,
         color: str,
         lead_state: str,
@@ -58,7 +58,7 @@ class AttrKeyGenerator:
                     return f"{motion_type}_from_layer2"
                 else:
                     return color
-            elif letter == LetterConditions.NON_HYBRID.value:
+            elif letter in letter.get_letters_by_condition(LetterConditions.NON_HYBRID):
                 return color
             else:
                 return motion_type

@@ -5,8 +5,15 @@
     },
     "(0, 1, op)": {
       "dash_from_layer2_rot_angle_override": true,
-      "red_rot_angle_override": true,
-      "dash": {}
+      "dash": [
+        10.0,
+        -145.0
+      ],
+      "red": [
+        -10.0,
+        -140.0
+      ],
+      "red_rot_angle_override": true
     },
     "(o, 1, 1)": {
       "red": [-20, -145],
