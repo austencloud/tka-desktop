@@ -7,8 +7,9 @@ from placement_managers.attr_key_generator import (
 )
 
 if TYPE_CHECKING:
-    from hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
-
+    from hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import (
+        SpecialPlacementDataUpdater,
+    )
 
     from .mirrored_entry_manager import MirroredEntryManager
 
@@ -81,11 +82,10 @@ class MirroredEntryCreator:
         self, letter: Letter, ori_key
     ) -> tuple[str, dict]:
         AppContext.special_placement_loader().reload()
-        other_ori_key = self.special_placement_data_updater.get_other_layer3_ori_key(ori_key)
+        other_ori_key = self.special_placement_data_updater.get_other_layer3_ori_key(
+            ori_key
+        )
         other_letter_data = (
-            AppContext.special_placement_loader()
-            .load_or_return_special_placements()
-            .get(other_ori_key, {})
-            .get(letter.value, {})
+            AppContext.special_placement_loader().load_or_return_special_placements().get(self.special_placement_data_updater.state.grid_mode, {}).get(other_ori_key, {}).get(letter.value, {})
         )
         return other_ori_key, other_letter_data

@@ -101,17 +101,13 @@ class SpecialPlacementDataUpdater:
             f"{letter.value}_placements.json",
         )
 
-        # Load existing data, or create an empty dictionary if the file doesn't exist.
         existing_data = (
             AppContext.special_placement_loader().load_json_data(file_path) or {}
         )
 
-        # Update the specific letter's data.
         existing_data[letter.value] = letter_data
 
-        # Save the updated data back to the file.
         AppContext.special_placement_saver().save_json_data(existing_data, file_path)
-        # Mission accomplished! We didn't blow away the whole file. 
 
     def update_arrow_adjustments_in_json(
         self, adjustment: tuple[int, int] | QPointF, turns_tuple: str
