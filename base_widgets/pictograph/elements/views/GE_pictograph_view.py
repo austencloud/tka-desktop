@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication
 from base_widgets.pictograph.elements.views.base_pictograph_view import (
     BasePictographView,
 )
+from hotkey_graph_adjuster.hotkey_graph_adjuster import HotkeyGraphAdjuster
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view_mouse_event_handler import (
     GE_PictographViewMouseEventHandler,
 )
@@ -43,6 +44,7 @@ class GE_PictographView(BasePictographView):
         self.graph_editor.selection_manager.selection_changed.connect(
             self.on_selection_changed
         )
+        self.hotkey_graph_adjuster = HotkeyGraphAdjuster(self)
 
     def on_selection_changed(self):
         self.scene().update()

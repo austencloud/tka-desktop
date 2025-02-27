@@ -42,7 +42,6 @@ class WidgetAndStackFader:
                 )
 
         def on_fade_out_finished():
-            # Clear effects and switch widget
             self.manager.graphics_effect_remover.clear_graphics_effects(
                 [next_widget] + widgets
             )

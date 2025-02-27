@@ -13,7 +13,6 @@
       "static": [100, 100]
     },
     "(0, 0.5, cl)": {
-      "static": [-100, -100],
       "static_rot_angle_override": true
     },
     "(0.5, 0, )": {

@@ -13,31 +13,31 @@ if TYPE_CHECKING:
 
 class GraphEditorViewKeyEventHandler:
     def __init__(self, pictograph_view: "GE_PictographView") -> None:
-        self.pictograph_view = pictograph_view
+        self.ge_view = pictograph_view
         self.pictograph = pictograph_view.pictograph
         self.graph_editor = pictograph_view.graph_editor
-        self.wasd_manager = self.pictograph_view.pictograph.managers.wasd_manager
 
     def handle_key_press(self, event: QKeyEvent) -> bool:
+        self.hotkey_graph_adjuster = self.ge_view.hotkey_graph_adjuster
         shift_held = event.modifiers() & Qt.KeyboardModifier.ShiftModifier
         ctrl_held = event.modifiers() & Qt.KeyboardModifier.ControlModifier
         key = event.key()
 
         if key in [Qt.Key.Key_W, Qt.Key.Key_A, Qt.Key.Key_S, Qt.Key.Key_D]:
-            self.wasd_manager.movement_manager.handle_arrow_movement(
-                self.pictograph_view.pictograph, key, shift_held, ctrl_held
+            self.hotkey_graph_adjuster.movement_manager.handle_arrow_movement(
+                self.ge_view.pictograph, key, shift_held, ctrl_held
             )
         elif key == Qt.Key.Key_X:
-            self.wasd_manager.rotation_angle_override_manager.handle_arrow_rot_angle_override()
+            self.hotkey_graph_adjuster.rotation_angle_override_manager.handle_arrow_rot_angle_override()
             # update arrow placements after rotation
             self.pictograph.managers.updater.update_pictograph()
         elif key == Qt.Key.Key_Z:
-            self.wasd_manager.entry_remover.remove_special_placement_entry(
-                self.pictograph_view.pictograph.state.letter,
+            self.hotkey_graph_adjuster.entry_remover.remove_special_placement_entry(
+                self.ge_view.pictograph.state.letter,
                 arrow=AppContext.get_selected_arrow(),
             )
         elif key == Qt.Key.Key_C:
-            self.wasd_manager.prop_placement_override_manager.handle_prop_placement_override(
+            self.hotkey_graph_adjuster.prop_placement_override_manager.handle_prop_placement_override(
                 key
             )
         else:
