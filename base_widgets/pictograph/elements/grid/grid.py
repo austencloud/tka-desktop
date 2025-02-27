@@ -61,8 +61,9 @@ class Grid:
             item.setVisible(False)
 
     def update_grid_mode(self):
-        grid_mode = GridModeChecker.get_grid_mode(self.pictograph.state.pictograph_data)
+        grid_mode = self.pictograph.state.grid_mode
+        grid_data = self.pictograph.elements.grid.grid_data
         self.pictograph.elements.grid.hide()
         self.pictograph.elements.grid.__init__(
-            self.pictograph, self.pictograph.elements.grid.grid_data, grid_mode
+            self.pictograph, grid_data, grid_mode
         )

@@ -1,5 +1,13 @@
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, BOX, DIAMOND, RED_ATTRIBUTES
+from data.constants import (
+    BLUE_ATTRIBUTES,
+    BOX,
+    DIAMOND,
+    END_LOC,
+    GRID_MODE,
+    RED_ATTRIBUTES,
+    START_LOC,
+)
 from data.positions_map import positions_map
 from data.locations import cw_loc_order
 
@@ -41,7 +49,7 @@ class SequenceRotater(BaseSequenceModifier):
         metadata = (
             AppContext.json_manager().loader_saver.load_current_sequence()[0].copy()
         )
-        metadata["grid_mode"] = BOX if metadata["grid_mode"] == DIAMOND else DIAMOND
+        metadata[GRID_MODE] = BOX if metadata[GRID_MODE] == DIAMOND else DIAMOND
 
         rotated_sequence = [metadata]
 
@@ -62,20 +70,20 @@ class SequenceRotater(BaseSequenceModifier):
         for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
             if color in _dict:
                 attributes = _dict[color]
-                for loc in ["start_loc", "end_loc"]:
+                for loc in [START_LOC, END_LOC]:
                     if loc in attributes:
                         attributes[loc] = self._rotate_location(attributes[loc])
 
         if BLUE_ATTRIBUTES in _dict and RED_ATTRIBUTES in _dict:
             bl = _dict[BLUE_ATTRIBUTES]
             rl = _dict[RED_ATTRIBUTES]
-            for loc in ["start_loc", "end_loc"]:
+            for loc in [START_LOC, END_LOC]:
                 if loc in bl and loc in rl:
                     _dict[f"{loc.split('_')[0]}_pos"] = positions_map[
                         (bl[loc], rl[loc])
                     ]
 
-        _dict["grid_mode"] = GridModeChecker.get_grid_mode(_dict)
+        _dict[GRID_MODE] = GridModeChecker.get_grid_mode(_dict)
         return _dict
 
     def _rotate_location(self, location):

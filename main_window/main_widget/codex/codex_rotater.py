@@ -38,22 +38,20 @@ class CodexRotater:
         for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
             if color in pictograph_data:
                 attributes = pictograph_data[color]
-                if "start_loc" in attributes:
-                    attributes["start_loc"] = self._rotate_location(
-                        attributes["start_loc"]
-                    )
-                if "end_loc" in attributes:
-                    attributes["end_loc"] = self._rotate_location(attributes["end_loc"])
+                if START_LOC in attributes:
+                    attributes[START_LOC] = self._rotate_location(attributes[START_LOC])
+                if END_LOC in attributes:
+                    attributes[END_LOC] = self._rotate_location(attributes[END_LOC])
 
         if BLUE_ATTRIBUTES in pictograph_data and RED_ATTRIBUTES in pictograph_data:
             bl = pictograph_data[BLUE_ATTRIBUTES]
             rl = pictograph_data[RED_ATTRIBUTES]
-            if "start_loc" in bl and "start_loc" in rl:
+            if START_LOC in bl and START_LOC in rl:
                 pictograph_data[START_POS] = positions_map[
-                    (bl["start_loc"], rl["start_loc"])
+                    (bl[START_LOC], rl[START_LOC])
                 ]
-            if "end_loc" in bl and "end_loc" in rl:
-                pictograph_data[END_POS] = positions_map[(bl["end_loc"], rl["end_loc"])]
+            if END_LOC in bl and END_LOC in rl:
+                pictograph_data[END_POS] = positions_map[(bl[END_LOC], rl[END_LOC])]
         return pictograph_data
 
     def _rotate_location(self, location: str) -> str:

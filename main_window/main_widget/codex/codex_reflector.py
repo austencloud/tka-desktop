@@ -41,17 +41,17 @@ class CodexReflector:
         for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
             if color in pictograph:
                 attributes = pictograph[color]
-                if "start_loc" in attributes:
-                    attributes["start_loc"] = vertical_loc_mirror_map.get(
-                        attributes["start_loc"], attributes["start_loc"]
+                if START_LOC in attributes:
+                    attributes[START_LOC] = vertical_loc_mirror_map.get(
+                        attributes[START_LOC], attributes[START_LOC]
                     )
-                if "end_loc" in attributes:
-                    attributes["end_loc"] = vertical_loc_mirror_map.get(
-                        attributes["end_loc"], attributes["end_loc"]
+                if END_LOC in attributes:
+                    attributes[END_LOC] = vertical_loc_mirror_map.get(
+                        attributes[END_LOC], attributes[END_LOC]
                     )
-                if "prop_rot_dir" in attributes:
-                    attributes["prop_rot_dir"] = self._reverse_prop_rot_dir(
-                        attributes["prop_rot_dir"]
+                if PROP_ROT_DIR in attributes:
+                    attributes[PROP_ROT_DIR] = self._reverse_prop_rot_dir(
+                        attributes[PROP_ROT_DIR]
                     )
 
     def _reverse_prop_rot_dir(self, prop_rot_dir):

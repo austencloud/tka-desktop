@@ -30,7 +30,8 @@
       "trailing_from_layer1": [-70, 90],
       "leading_from_layer2": [-90, 80],
       "leading_from_layer1": [-120, 75],
-      "trailing_from_layer2": [-70, 30]
+      "trailing_from_layer2": [-70, 30],
+      "blue": {}
     },
     "(2.5, 0)": {
       "leading_from_layer1": [-70, 40],

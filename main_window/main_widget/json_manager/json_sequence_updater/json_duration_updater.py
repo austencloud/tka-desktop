@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from data.constants import BEAT
+
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
         BeatView,
@@ -63,7 +65,7 @@ class JsonDurationUpdater:
         current_beat_data = None
 
         for entry in sequence_beats:
-            beat_num = entry.get("beat")
+            beat_num = entry.get(BEAT)
             if beat_num < beat_view.number:
                 before.append(entry)
             elif beat_num == beat_view.number:
@@ -83,7 +85,7 @@ class JsonDurationUpdater:
         """Create placeholder beats for the extended duration."""
         placeholders = [
             {
-                "beat": parent_beat_num + offset,
+                BEAT: parent_beat_num + offset,
                 "is_placeholder": True,
                 "parent_beat": parent_beat_num,
             }
@@ -99,11 +101,11 @@ class JsonDurationUpdater:
         # Create a mapping of old beat numbers to new beat numbers
         beat_number_mapping = {}
         for beat in beats:
-            old_beat_num = beat["beat"]
-            beat["beat"] += shift
+            old_beat_num = beat[BEAT]
+            beat[BEAT] += shift
             if "parent_beat" in beat:
                 beat["parent_beat"] += shift
-            beat_number_mapping[old_beat_num] = beat["beat"]
+            beat_number_mapping[old_beat_num] = beat[BEAT]
 
         # Update BeatView numbers based on the mapping
         self._update_beat_view_numbers(beat_number_mapping)
@@ -134,7 +136,7 @@ class JsonDurationUpdater:
     ) -> None:
         """Finalize beat numbering, remove duplicates, and save the sequence."""
         sequence_beats = self._remove_duplicate_beats(sequence_beats)
-        sequence_beats.sort(key=lambda beat: beat["beat"])
+        sequence_beats.sort(key=lambda beat: beat[BEAT])
         beat_number_mapping = self._update_beat_numbers(sequence_beats)
         self._update_beat_view_numbers(beat_number_mapping)
         self._save_sequence(metadata, sequence_beats)
@@ -143,7 +145,7 @@ class JsonDurationUpdater:
         """Eliminate duplicate beats, keeping the first occurrence."""
         unique_beats = {}
         for beat in beats:
-            beat_num = beat["beat"]
+            beat_num = beat[BEAT]
             if beat_num not in unique_beats:
                 unique_beats[beat_num] = beat
         return list(unique_beats.values())
@@ -152,9 +154,9 @@ class JsonDurationUpdater:
         """Ensure beat numbers are consecutive and update parent beat references."""
         beat_mapping = {}
         for index, beat in enumerate(beats):
-            old_beat_num = beat["beat"]
+            old_beat_num = beat[BEAT]
             beat_mapping[old_beat_num] = index
-            beat["beat"] = index
+            beat[BEAT] = index
 
         for beat in beats:
             if "parent_beat" in beat:

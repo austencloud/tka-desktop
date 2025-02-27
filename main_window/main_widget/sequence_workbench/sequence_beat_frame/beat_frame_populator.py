@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from data.constants import LETTER, SEQUENCE_START_POSITION
 from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.reversal_detector import ReversalDetector
 from utilities.word_simplifier import WordSimplifier
@@ -65,18 +66,14 @@ class BeatFramePopulator:
 
     def _update_sequence_word(self):
         self.current_word = "".join(
-            [
-                beat["letter"]
-                for beat in self.current_sequence_json[2:]
-                if "letter" in beat
-            ]
+            [beat[LETTER] for beat in self.current_sequence_json[2:] if LETTER in beat]
         )
         self.current_word = WordSimplifier.simplify_repeated_word(self.current_word)
         self.sequence_workbench.current_word_label.set_current_word(self.current_word)
 
     def _populate_beats(self, select_beat=True):
         for _, pictograph_data in enumerate(self.current_sequence_json[1:]):
-            if pictograph_data.get("sequence_start_position"):
+            if pictograph_data.get(SEQUENCE_START_POSITION):
                 continue
             if pictograph_data.get("is_placeholder", False):
                 continue

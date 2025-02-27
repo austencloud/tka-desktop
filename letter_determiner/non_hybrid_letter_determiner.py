@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
-from data.constants import ANTI, COUNTER_CLOCKWISE, CLOCKWISE, FLOAT, OPP, PRO
+from data.constants import ANTI, COUNTER_CLOCKWISE, CLOCKWISE, END_LOC, FLOAT, OPP, PRO,     START_LOC, PROP_ROT_DIR, MOTION_TYPE
 
 if TYPE_CHECKING:
     from objects.motion.motion import Motion
@@ -108,15 +108,15 @@ class NonHybridShiftLetterDeterminer:
 
         does_example_match = (
             self._is_shift_motion_type_matching(float_motion, example)
-            and example[f"{float_motion.state.color}_attributes"]["start_loc"]
+            and example[f"{float_motion.state.color}_attributes"][START_LOC]
             == float_motion.state.start_loc
-            and example[f"{float_motion.state.color}_attributes"]["end_loc"]
+            and example[f"{float_motion.state.color}_attributes"][END_LOC]
             == float_motion.state.end_loc
             and self._is_shift_prop_rot_dir_matching(float_motion, example)
             and self._is_shift_motion_type_matching(non_float_motion, example)
-            and example[f"{non_float_motion.state.color}_attributes"]["start_loc"]
+            and example[f"{non_float_motion.state.color}_attributes"][START_LOC]
             == non_float_motion.state.start_loc
-            and example[f"{non_float_motion.state.color}_attributes"]["end_loc"]
+            and example[f"{non_float_motion.state.color}_attributes"][END_LOC]
             == non_float_motion.state.end_loc
             and self._is_shift_prop_rot_dir_matching(non_float_motion, example)
         )
@@ -125,7 +125,7 @@ class NonHybridShiftLetterDeterminer:
 
     def _is_shift_prop_rot_dir_matching(self, motion: "Motion", example):
         is_rot_dir_matching = example[f"{motion.state.color}_attributes"][
-            "prop_rot_dir"
+            PROP_ROT_DIR
         ] == self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
             self.main_widget.sequence_workbench.sequence_beat_frame.get.index_of_currently_selected_beat()
             + 2,
@@ -133,7 +133,7 @@ class NonHybridShiftLetterDeterminer:
         ) or example[
             f"{motion.state.color}_attributes"
         ][
-            "prop_rot_dir"
+            PROP_ROT_DIR
         ] == self.main_widget.json_manager.loader_saver.get_json_prop_rot_dir(
             self.main_widget.sequence_workbench.sequence_beat_frame.get.index_of_currently_selected_beat()
             + 2,
@@ -145,8 +145,8 @@ class NonHybridShiftLetterDeterminer:
     def _is_shift_motion_type_matching(self, motion: "Motion", example) -> bool:
         """Check if the motion type matches."""
         return (
-            example[f"{motion.state.color}_attributes"]["motion_type"]
+            example[f"{motion.state.color}_attributes"][MOTION_TYPE]
             == motion.state.motion_type
-            or example[f"{motion.state.color}_attributes"]["motion_type"]
+            or example[f"{motion.state.color}_attributes"][MOTION_TYPE]
             == motion.state.prefloat_motion_type
         )

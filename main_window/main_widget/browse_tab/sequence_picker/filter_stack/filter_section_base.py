@@ -4,14 +4,13 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 from PyQt6.QtCore import Qt
 
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from utilities.path_helpers import get_images_and_data_path
 
 from ..sequence_picker_go_back_button import SequencePickerGoBackButton
 
 if TYPE_CHECKING:
-    from main_window.main_widget.browse_tab.sequence_picker.filter_selector.sequence_picker_filter_stack import (
-        SequencePickerFilterStack,
-    )
+    from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import SequencePickerFilterStack
 
 
 class FilterSectionBase(QWidget):
@@ -22,7 +21,7 @@ class FilterSectionBase(QWidget):
         self.sequence_picker = filter_selector.sequence_picker
         self.browse_tab = filter_selector.browse_tab
         self.main_widget = filter_selector.browse_tab.main_widget
-        self.metadata_extractor = self.main_widget.metadata_extractor
+        self.metadata_extractor = MetaDataExtractor()
         self._setup_ui(label_text)
 
         self.initialized = False

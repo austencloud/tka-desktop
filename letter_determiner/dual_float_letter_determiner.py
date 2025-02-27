@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
-from data.constants import COUNTER_CLOCKWISE, CLOCKWISE
+from data.constants import COUNTER_CLOCKWISE, CLOCKWISE, END_LOC, START_LOC, PROP_ROT_DIR
 
 if TYPE_CHECKING:
     from .letter_determiner import LetterDeterminer
@@ -66,17 +66,17 @@ class DualFloatLetterDeterminer:
     def _compare_motion_attributes(self, motion: "Motion", example) -> bool:
         other_motion = motion.pictograph.managers.get.other_motion(motion)
         return (
-            example[f"{motion.state.color}_attributes"]["start_loc"]
+            example[f"{motion.state.color}_attributes"][START_LOC]
             == motion.state.start_loc
-            and example[f"{motion.state.color}_attributes"]["end_loc"]
+            and example[f"{motion.state.color}_attributes"][END_LOC]
             == motion.state.end_loc
-            and example[f"{motion.state.color}_attributes"]["prop_rot_dir"]
+            and example[f"{motion.state.color}_attributes"][PROP_ROT_DIR]
             == motion.state.prefloat_prop_rot_dir
-            and example[f"{other_motion.state.color}_attributes"]["start_loc"]
+            and example[f"{other_motion.state.color}_attributes"][START_LOC]
             == other_motion.state.start_loc
-            and example[f"{other_motion.state.color}_attributes"]["end_loc"]
+            and example[f"{other_motion.state.color}_attributes"][END_LOC]
             == other_motion.state.end_loc
-            and example[f"{other_motion.state.color}_attributes"]["prop_rot_dir"]
+            and example[f"{other_motion.state.color}_attributes"][PROP_ROT_DIR]
             == self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
                 self._get_json_index_for_current_beat(), other_motion.state.color
             )

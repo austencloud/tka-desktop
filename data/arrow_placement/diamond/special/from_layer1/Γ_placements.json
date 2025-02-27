@@ -1,7 +1,6 @@
 {
   "Γ": {
     "(0, 0.5, op)": {
-      "red_rot_angle_override": true,
       "red": [100, 100]
     },
     "(s, 0.5, 0.5, cl, op)": {

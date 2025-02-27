@@ -26,24 +26,23 @@ class SequenceLevelEvaluator:
     def _has_turns(self, entry: dict) -> bool:
         has_turns = False
         if (
-            entry[BLUE_ATTRIBUTES]["turns"] != "fl"
-            and entry[RED_ATTRIBUTES]["turns"] != "fl"
+            entry[BLUE_ATTRIBUTES][TURNS] != "fl"
+            and entry[RED_ATTRIBUTES][TURNS] != "fl"
         ):
             has_turns = (
-                entry[BLUE_ATTRIBUTES]["turns"] > 0
-                or entry[RED_ATTRIBUTES]["turns"] > 0
+                entry[BLUE_ATTRIBUTES][TURNS] > 0 or entry[RED_ATTRIBUTES][TURNS] > 0
             )
         else:
-            if entry[BLUE_ATTRIBUTES]["turns"] == "fl":
-                if entry[RED_ATTRIBUTES]["turns"] == "fl":
+            if entry[BLUE_ATTRIBUTES][TURNS] == "fl":
+                if entry[RED_ATTRIBUTES][TURNS] == "fl":
                     has_turns = False
-                if entry[RED_ATTRIBUTES]["turns"] != "fl":
-                    has_turns = entry[RED_ATTRIBUTES]["turns"] > 0
-            if entry[RED_ATTRIBUTES]["turns"] == "fl":
-                if entry[BLUE_ATTRIBUTES]["turns"] == "fl":
+                if entry[RED_ATTRIBUTES][TURNS] != "fl":
+                    has_turns = entry[RED_ATTRIBUTES][TURNS] > 0
+            if entry[RED_ATTRIBUTES][TURNS] == "fl":
+                if entry[BLUE_ATTRIBUTES][TURNS] == "fl":
                     has_turns = False
-                if entry[BLUE_ATTRIBUTES]["turns"] != "fl":
-                    has_turns = entry[BLUE_ATTRIBUTES]["turns"] > 0
+                if entry[BLUE_ATTRIBUTES][TURNS] != "fl":
+                    has_turns = entry[BLUE_ATTRIBUTES][TURNS] > 0
         return has_turns
 
     def _has_non_radial_orientation(self, entry: dict) -> bool:

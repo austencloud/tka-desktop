@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt, QTimer, QSize
 from PyQt6.QtGui import QPixmap, QImage
 import cv2
 import numpy as np
-from data.constants import BLUE_ATTRIBUTES, END_ORI, RED_ATTRIBUTES, START_ORI
+from data.constants import BLUE_ATTRIBUTES, END_ORI, END_POS, RED_ATTRIBUTES, SEQUENCE_START_POSITION, START_ORI, START_POS
 from main_window.main_widget.sequence_recorder.SR_beat_selection_manager import (
     SR_BeatSelectionManager,
 )
@@ -129,7 +129,7 @@ class SR_BeatFrame(QFrame):
         sequence_json = self.json_manager.loader_saver.load_current_sequence()
         self.clear_beat_frame()
         for pictograph_data in sequence_json:
-            if pictograph_data.get("sequence_start_position") or pictograph_data.get(
+            if pictograph_data.get(SEQUENCE_START_POSITION) or pictograph_data.get(
                 "prop_type"
             ):
                 continue

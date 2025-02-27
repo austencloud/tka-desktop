@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from data.constants import BEAT
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
@@ -35,13 +36,11 @@ class BeatDurationManager:
         """
         Update beat numbers for all beats based on the JSON data.
         """
-        sequence_data = (
-           AppContext.json_manager().loader_saver.load_current_sequence()
-        )
+        sequence_data = AppContext.json_manager().loader_saver.load_current_sequence()
         sequence_beats = sequence_data[1:]  # Skip metadata
 
         # Build a mapping from beat numbers to entries
-        beat_entries = {beat["beat"]: beat for beat in sequence_beats}
+        beat_entries = {beat[BEAT]: beat for beat in sequence_beats}
 
         # Update BeatView numbers
         for beat_view in self.beat_frame.beat_views:

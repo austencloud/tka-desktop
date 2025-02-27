@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional
 from Enums.letters import Letter
+from data.constants import LETTER
 
 if TYPE_CHECKING:
     from .codex import Codex
@@ -28,7 +29,7 @@ class CodexDataManager:
                 current_data = (
                     self.main_widget.pictograph_data_loader.find_pictograph_data(
                         {
-                            "letter": letter,
+                            LETTER: letter,
                             "start_pos": data["start_pos"],
                             "end_pos": data["end_pos"],
                             "blue_motion_type": data["blue_motion_type"],

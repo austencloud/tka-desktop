@@ -13,6 +13,10 @@
     "(o, 2, 3)": {
       "pro_from_layer2": {},
       "dash_from_layer1": {}
+    },
+    "(o, 0.5, 2.5)": {
+      "dash_from_layer1": [-60.0, -70.0],
+      "pro_from_layer2": [-50.0, 20.0]
     }
   }
 }

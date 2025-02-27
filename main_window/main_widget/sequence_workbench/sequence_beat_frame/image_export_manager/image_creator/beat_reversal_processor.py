@@ -1,3 +1,4 @@
+from data.constants import SEQUENCE_START_POSITION
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
     BeatView,
 )
@@ -17,7 +18,7 @@ class BeatReversalProcessor:
             filtered_sequence_so_far = [
                 beat
                 for beat in sequence_so_far
-                if not beat.get("sequence_start_position")
+                if not beat.get(SEQUENCE_START_POSITION)
                 and not beat.get("is_placeholder", False)
             ]
 
@@ -25,10 +26,10 @@ class BeatReversalProcessor:
                 filtered_sequence_so_far, beat_dict
             )
             pictograph = beat_view.beat
-            pictograph.blue_reversal = False
-            pictograph.red_reversal = False
-            pictograph.blue_reversal = reversal_info.get("blue_reversal", False)
-            pictograph.red_reversal = reversal_info.get("red_reversal", False)
+            pictograph.state.blue_reversal = False
+            pictograph.state.red_reversal = False
+            pictograph.state.blue_reversal = reversal_info.get("blue_reversal", False)
+            pictograph.state.red_reversal = reversal_info.get("red_reversal", False)
             pictograph.elements.reversal_glyph.update_reversal_symbols()
 
             beat_view.update()

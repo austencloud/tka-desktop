@@ -12,5 +12,5 @@ class JsonLetterUpdater:
 
     def update_letter_in_json_at_index(self, index: int, letter: str) -> None:
         sequence = self.json_manager.loader_saver.load_current_sequence()
-        sequence[index]["letter"] = letter
+        sequence[index][LETTER] = letter
         self.json_manager.loader_saver.save_current_sequence(sequence)

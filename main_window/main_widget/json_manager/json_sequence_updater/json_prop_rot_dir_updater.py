@@ -23,8 +23,8 @@ class JsonstrUpdater:
         self, index: int, color: str, prop_rot_dir: str
     ) -> None:
         sequence = self.json_manager.loader_saver.load_current_sequence()
-        sequence[index][f"{color}_attributes"]["prop_rot_dir"] = prop_rot_dir
-        if sequence[index][f"{color}_attributes"]["turns"] != "fl":
+        sequence[index][f"{color}_attributes"][PROP_ROT_DIR] = prop_rot_dir
+        if sequence[index][f"{color}_attributes"][TURNS] != "fl":
             if PREFLOAT_PROP_ROT_DIR in sequence[index][f"{color}_attributes"]:
                 del sequence[index][f"{color}_attributes"][PREFLOAT_PROP_ROT_DIR]
         self.json_manager.loader_saver.save_current_sequence(sequence)

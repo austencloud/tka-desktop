@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from data.quartered_permutations import quartered_permutations
 from data.halved_permutations import halved_permutations
 from data.constants import (
+    BEAT,
     BLUE,
     BLUE_ATTRIBUTES,
     CCW_HANDPATH,
@@ -9,20 +10,31 @@ from data.constants import (
     COUNTER_CLOCKWISE,
     CW_HANDPATH,
     DASH,
+    DIRECTION,
     EAST,
+    END_LOC,
     END_ORI,
+    END_POS,
+    LETTER,
+    MOTION_TYPE,
     NORTH,
     NORTHEAST,
     NORTHWEST,
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
+    PROP_ROT_DIR,
     RED,
     RED_ATTRIBUTES,
+    SEQUENCE_START_POSITION,
     SOUTH,
     SOUTHEAST,
     SOUTHWEST,
+    START_LOC,
     START_ORI,
+    START_POS,
     STATIC,
+    TIMING,
+    TURNS,
     WEST,
 )
 from typing import TYPE_CHECKING
@@ -43,13 +55,13 @@ class RotatedPermutationExecutor(PermutationExecutor):
 
     def create_permutations(self, sequence: list[dict]):
         start_position_entry = (
-            sequence.pop(0) if "sequence_start_position" in sequence[0] else None
+            sequence.pop(0) if SEQUENCE_START_POSITION in sequence[0] else None
         )
         sequence_length = len(sequence) - 2
         last_entry = sequence[-1]
 
         new_entries = []
-        next_beat_number = last_entry["beat"] + 1
+        next_beat_number = last_entry[BEAT] + 1
         halved_or_quartered = self.get_halved_or_quartered()
 
         sequence_workbench = (
@@ -79,7 +91,7 @@ class RotatedPermutationExecutor(PermutationExecutor):
         sequence_workbench.current_word_label.update_current_word_label_from_beats()
 
         if start_position_entry:
-            start_position_entry["beat"] = 0
+            start_position_entry[BEAT] = 0
             sequence.insert(0, start_position_entry)
 
     def determine_how_many_entries_to_add(self, sequence_length: int) -> int:
@@ -183,12 +195,12 @@ class RotatedPermutationExecutor(PermutationExecutor):
         )
 
         new_entry = {
-            "beat": beat_number,
-            "letter": previous_matching_beat["letter"],
+            BEAT: beat_number,
+            LETTER: previous_matching_beat[LETTER],
             START_POS: previous_entry[END_POS],
             END_POS: self.calculate_new_end_pos(previous_matching_beat, previous_entry),
-            "timing": previous_matching_beat["timing"],
-            "direction": previous_matching_beat["direction"],
+            TIMING: previous_matching_beat[TIMING],
+            DIRECTION: previous_matching_beat[DIRECTION],
             BLUE_ATTRIBUTES: self.create_new_attributes(
                 previous_entry[BLUE_ATTRIBUTES],
                 previous_matching_beat[BLUE_ATTRIBUTES],
@@ -233,21 +245,21 @@ class RotatedPermutationExecutor(PermutationExecutor):
         self, previous_matching_beat: dict, previous_entry: dict
     ) -> str:
         blue_hand_rot_dir = self.hand_rot_dir_calculator.get_hand_rot_dir(
-            previous_matching_beat[BLUE_ATTRIBUTES]["start_loc"],
-            previous_matching_beat[BLUE_ATTRIBUTES]["end_loc"],
+            previous_matching_beat[BLUE_ATTRIBUTES][START_LOC],
+            previous_matching_beat[BLUE_ATTRIBUTES][END_LOC],
         )
         red_hand_rot_dir = self.hand_rot_dir_calculator.get_hand_rot_dir(
-            previous_matching_beat[RED_ATTRIBUTES]["start_loc"],
-            previous_matching_beat[RED_ATTRIBUTES]["end_loc"],
+            previous_matching_beat[RED_ATTRIBUTES][START_LOC],
+            previous_matching_beat[RED_ATTRIBUTES][END_LOC],
         )
 
         new_blue_end_loc = self.calculate_rotated_permuatation_new_loc(
-            previous_entry[BLUE_ATTRIBUTES]["end_loc"],
+            previous_entry[BLUE_ATTRIBUTES][END_LOC],
             blue_hand_rot_dir,
         )
 
         new_red_end_loc = self.calculate_rotated_permuatation_new_loc(
-            previous_entry[RED_ATTRIBUTES]["end_loc"],
+            previous_entry[RED_ATTRIBUTES][END_LOC],
             red_hand_rot_dir,
         )
         new_end_pos = positions_map.get((new_blue_end_loc, new_red_end_loc))
@@ -341,16 +353,16 @@ class RotatedPermutationExecutor(PermutationExecutor):
         previous_matching_beat_attributes: dict,
     ) -> dict:
         return {
-            "motion_type": previous_matching_beat_attributes["motion_type"],
+            MOTION_TYPE: previous_matching_beat_attributes[MOTION_TYPE],
             START_ORI: previous_attributes[END_ORI],
-            "prop_rot_dir": previous_matching_beat_attributes["prop_rot_dir"],
-            "start_loc": previous_attributes["end_loc"],
-            "end_loc": self.calculate_rotated_permuatation_new_loc(
-                previous_attributes["end_loc"],
+            PROP_ROT_DIR: previous_matching_beat_attributes[PROP_ROT_DIR],
+            START_LOC: previous_attributes[END_LOC],
+            END_LOC: self.calculate_rotated_permuatation_new_loc(
+                previous_attributes[END_LOC],
                 self.hand_rot_dir_calculator.get_hand_rot_dir(
-                    previous_matching_beat_attributes["start_loc"],
-                    previous_matching_beat_attributes["end_loc"],
+                    previous_matching_beat_attributes[START_LOC],
+                    previous_matching_beat_attributes[END_LOC],
                 ),
             ),
-            "turns": previous_matching_beat_attributes["turns"],
+            TURNS: previous_matching_beat_attributes[TURNS],
         }

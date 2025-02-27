@@ -2,7 +2,7 @@ import logging
 from typing import TYPE_CHECKING, Tuple
 
 from Enums.letters import LetterType
-from data.constants import BLUE_ATTRIBUTES, RED, BLUE, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRIBUTES, PROP_ROT_DIR, RED, BLUE, RED_ATTRIBUTES, TURNS
 
 if TYPE_CHECKING:
     from ...pictograph import Pictograph
@@ -52,10 +52,10 @@ class ArrowDataUpdater:
     ) -> dict:
         attributes = pictograph_data[f"{color}_attributes"]
         arrow_data = {}
-        if "turns" in attributes or attributes.get("turns") == 0:
-            arrow_data["turns"] = attributes["turns"]
-        elif attributes.get("prop_rot_dir"):
-            arrow_data["prop_rot_dir"] = attributes["prop_rot_dir"]
+        if TURNS in attributes or attributes.get(TURNS) == 0:
+            arrow_data[TURNS] = attributes[TURNS]
+        elif attributes.get(PROP_ROT_DIR):
+            arrow_data[PROP_ROT_DIR] = attributes[PROP_ROT_DIR]
         if attributes.get("loc"):
             arrow_data["loc"] = attributes["loc"]
         return arrow_data

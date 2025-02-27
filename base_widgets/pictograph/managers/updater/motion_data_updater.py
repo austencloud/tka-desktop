@@ -5,13 +5,18 @@ from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
 from data.constants import (
+    END_LOC,
     LEADING,
+    MOTION_TYPE,
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
+    PROP_ROT_DIR,
     RED,
     BLUE,
+    START_LOC,
     START_ORI,
     TRAILING,
+    TURNS,
 )
 from objects.motion.motion import Motion
 
@@ -43,12 +48,12 @@ class MotionDataUpdater:
                 # self._override_motion_type_if_needed(pictograph_data, motion)
                 if motion_dataset.get(motion.state.color):
                     self._show_motion_graphics(motion.state.color)
-                if motion_dataset.get(motion.state.color, {}).get("turns", "") == "fl":
+                if motion_dataset.get(motion.state.color, {}).get(TURNS, "") == "fl":
                     motion.state.turns = "fl"
                 motion.updater.update_motion(motion_dataset.get(motion.state.color, {}))
                 if not motion.arrow.state.initialized:
                     motion.arrow.setup_components()
-                turns_value = motion_dataset.get(motion.state.color, {}).get("turns")
+                turns_value = motion_dataset.get(motion.state.color, {}).get(TURNS)
                 if turns_value is not None:
                     motion.state.turns = turns_value
             except Exception as e:
@@ -105,12 +110,12 @@ class MotionDataUpdater:
     def _get_motion_dataset_from_tuple(self, hashable_tuple: tuple) -> dict:
         data = self._tuple_to_dict(hashable_tuple)
         motion_attributes = [
-            "motion_type",
-            "start_loc",
-            "end_loc",
-            "turns",
+            MOTION_TYPE,
+            START_LOC,
+            END_LOC,
+            TURNS,
             START_ORI,
-            "prop_rot_dir",
+            PROP_ROT_DIR,
         ]
         motion_dataset = {}
         for color in [RED, BLUE]:
@@ -125,7 +130,7 @@ class MotionDataUpdater:
                 None
                 if prefloat_motion == "float"
                 else motion_data.get(
-                    PREFLOAT_MOTION_TYPE, dataset_for_color.get("motion_type")
+                    PREFLOAT_MOTION_TYPE, dataset_for_color.get(MOTION_TYPE)
                 )
             )
             prefloat_prop_rot = motion_data.get(PREFLOAT_PROP_ROT_DIR)
@@ -133,7 +138,7 @@ class MotionDataUpdater:
                 None
                 if prefloat_prop_rot == "no_rot"
                 else motion_data.get(
-                    PREFLOAT_PROP_ROT_DIR, dataset_for_color.get("prop_rot_dir")
+                    PREFLOAT_PROP_ROT_DIR, dataset_for_color.get(PROP_ROT_DIR)
                 )
             )
             motion_dataset[color] = dataset_for_color

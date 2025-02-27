@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from data.constants import LETTER
 from main_window.main_widget.learn_tab.pictograph_question_renderer import (
     PictographQuestionRenderer,
 )
@@ -8,8 +9,9 @@ from main_window.main_widget.learn_tab.text_question_renderer import (
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import LessonWidget
-
+    from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
+        LessonWidget,
+    )
 
 
 class QuestionWidget(QWidget):
@@ -41,7 +43,7 @@ class QuestionWidget(QWidget):
         self.question_type = question_type
         if self.question_type == "pictograph":
             return PictographQuestionRenderer(self.lesson_widget.lesson_type)
-        elif self.question_type == "letter":
+        elif self.question_type == LETTER:
             return TextQuestionRenderer()
         else:
             raise ValueError(f"Unknown question type: {self.question_type}")

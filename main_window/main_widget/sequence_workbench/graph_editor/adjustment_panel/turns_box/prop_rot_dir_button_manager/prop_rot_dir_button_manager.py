@@ -126,16 +126,16 @@ class PropRotDirButtonManager:
         pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
         beat = motion.pictograph
         new_dict = {
-            "motion_type": motion.state.motion_type,
-            "prop_rot_dir": motion.state.prop_rot_dir,
+            MOTION_TYPE: motion.state.motion_type,
+            PROP_ROT_DIR: motion.state.prop_rot_dir,
             END_ORI: motion.state.end_ori,
-            "turns": motion.state.turns,
+            TURNS: motion.state.turns,
         }
 
         beat.state.pictograph_data[motion.state.color + "_attributes"].update(new_dict)
 
         if new_letter:
-            beat.state.pictograph_data["letter"] = new_letter.value
+            beat.state.pictograph_data[LETTER] = new_letter.value
             beat.state.letter = new_letter
 
         beat.managers.updater.update_pictograph(beat.state.pictograph_data)

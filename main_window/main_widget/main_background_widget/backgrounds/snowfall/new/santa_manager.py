@@ -23,7 +23,7 @@ class SantaManager:
             "y": random.uniform(0.1, 0.3),
             "speed": random.uniform(0.003, 0.005),
             "active": False,
-            "direction": 1,  # 1 for left to right, -1 for right to left
+            DIRECTION: 1,  # 1 for left to right, -1 for right to left
             "opacity": 0.8,
         }
 
@@ -34,11 +34,11 @@ class SantaManager:
         if self.santa["active"]:
 
             # Move Santa across the screen
-            self.santa["x"] += self.santa["speed"] * self.santa["direction"]
+            self.santa["x"] += self.santa["speed"] * self.santa[DIRECTION]
 
             # Check if Santa has moved off-screen
-            if (self.santa["direction"] == 1 and self.santa["x"] > 1.2) or (
-                self.santa["direction"] == -1 and self.santa["x"] < -0.2
+            if (self.santa[DIRECTION] == 1 and self.santa["x"] > 1.2) or (
+                self.santa[DIRECTION] == -1 and self.santa["x"] < -0.2
             ):
                 self.santa["active"] = False
                 self.santa_timer = 0
@@ -47,9 +47,9 @@ class SantaManager:
             self.santa_timer += 1
             if self.santa_timer >= self.santa_interval:
                 self.santa["active"] = True
-                self.santa["direction"] = random.choice([-1, 1])
+                self.santa[DIRECTION] = random.choice([-1, 1])
 
-                self.santa["x"] = -0.2 if self.santa["direction"] == 1 else 1.2
+                self.santa["x"] = -0.2 if self.santa[DIRECTION] == 1 else 1.2
                 self.santa["y"] = random.uniform(0.1, 0.3)
                 self.santa["speed"] = random.uniform(0.003, 0.005)
                 self.santa_interval = random.randint(500, 1000)
@@ -80,7 +80,7 @@ class SantaManager:
             Qt.TransformationMode.SmoothTransformation,
         )
 
-        if self.santa["direction"] == -1:
+        if self.santa[DIRECTION] == -1:
             transform = QTransform().scale(-1, 1)
             santa_image = santa_image.transformed(
                 transform, Qt.TransformationMode.SmoothTransformation

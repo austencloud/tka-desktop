@@ -50,6 +50,7 @@ class PictographUpdater:
         self.motion_updater.update(pictograph_data)
         self.arrow_updater.update(pictograph_data)
 
+        self.pictograph.elements.grid.update_grid_mode()
         self.pictograph.elements.vtg_glyph.set_vtg_mode()
         self.pictograph.elements.elemental_glyph.set_elemental_glyph()
         self.pictograph.elements.start_to_end_pos_glyph.set_start_to_end_pos_glyph()

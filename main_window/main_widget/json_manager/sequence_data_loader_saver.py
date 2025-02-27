@@ -1,12 +1,18 @@
 import json
 from typing import TYPE_CHECKING
 from data.constants import (
+    BEAT,
     BLUE_ATTRIBUTES,
     DIAMOND,
     END_ORI,
+    GRID_MODE,
+    LETTER,
+    MOTION_TYPE,
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
+    PROP_ROT_DIR,
     RED_ATTRIBUTES,
+    SEQUENCE_START_POSITION,
 )
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
@@ -53,7 +59,7 @@ class SequenceDataLoaderSaver:
                 "prop_type": AppContext.settings_manager()
                 .global_settings.get_prop_type()
                 .name.lower(),
-                "grid_mode": DIAMOND,
+                GRID_MODE: DIAMOND,
                 "is_circular": False,
                 "is_permutable": False,
                 "is_strictly_rotated_permutation": False,
@@ -93,8 +99,8 @@ class SequenceDataLoaderSaver:
         # Add beat numbers to each beat at the beginning
         beat_number = 0
         for beat in sequence:
-            if "letter" in beat or "sequence_start_position" in beat:
-                beat_dict_with_beat_number = {"beat": beat_number}
+            if LETTER in beat or SEQUENCE_START_POSITION in beat:
+                beat_dict_with_beat_number = {BEAT: beat_number}
                 beat_dict_with_beat_number.update(beat)
                 sequence[sequence.index(beat)] = beat_dict_with_beat_number
                 beat_number += 1
@@ -108,13 +114,13 @@ class SequenceDataLoaderSaver:
     def get_json_prop_rot_dir(self, index: int, color: str) -> int:
         sequence = self.load_current_sequence()
         if sequence:
-            return sequence[index][f"{color}_attributes"].get("prop_rot_dir", 0)
+            return sequence[index][f"{color}_attributes"].get(PROP_ROT_DIR, 0)
         return 0
 
     def get_json_motion_type(self, index: int, color: str) -> int:
         sequence = self.load_current_sequence()
         if sequence:
-            return sequence[index][f"{color}_attributes"].get("motion_type", 0)
+            return sequence[index][f"{color}_attributes"].get(MOTION_TYPE, 0)
         return 0
 
     def get_json_prefloat_prop_rot_dir(self, index: int, color: str) -> int:
@@ -128,7 +134,7 @@ class SequenceDataLoaderSaver:
         if sequence:
             return sequence[index][f"{color}_attributes"].get(
                 PREFLOAT_MOTION_TYPE,
-                sequence[index][f"{color}_attributes"].get("motion_type", 0),
+                sequence[index][f"{color}_attributes"].get(MOTION_TYPE, 0),
             )
         return 0
 

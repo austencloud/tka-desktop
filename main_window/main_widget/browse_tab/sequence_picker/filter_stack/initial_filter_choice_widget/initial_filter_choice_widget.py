@@ -3,6 +3,8 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout
 from PyQt6.QtCore import Qt
 from functools import partial
 from datetime import datetime, timedelta
+
+from data.constants import GRID_MODE
 from ..choose_filter_label import ChooseFilterLabel
 from .filter_button_group.filter_button_group import FilterButtonGroup
 
@@ -42,7 +44,7 @@ class InitialFilterChoiceWidget(QWidget):
         ),
         "Grid Mode": (
             "Display sequences by grid mode (Box or Diamond).",
-            "grid_mode",
+            GRID_MODE,
         ),
         "Show All": (
             "Display every sequence in the dictionary.",

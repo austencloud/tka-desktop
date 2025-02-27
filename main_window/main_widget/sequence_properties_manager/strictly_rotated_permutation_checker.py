@@ -13,9 +13,7 @@ class StrictlyRotatedPermutationChecker:
 
     def check(self) -> bool:
         sequence = self.manager.sequence
-        letter_sequence = [
-            entry["letter"] for entry in sequence[1:] if "letter" in entry
-        ]
+        letter_sequence = [entry[LETTER] for entry in sequence[1:] if LETTER in entry]
         unique_letters = set(letter_sequence)
         for letter in unique_letters:
             occurrences = [i for i, x in enumerate(letter_sequence) if x == letter]
@@ -29,11 +27,9 @@ class StrictlyRotatedPermutationChecker:
 
     def _is_strictly_rotated_permutation(self, prev, curr) -> bool:
         return (
-            prev[BLUE_ATTRIBUTES]["motion_type"] == curr[BLUE_ATTRIBUTES]["motion_type"]
-            and prev[BLUE_ATTRIBUTES]["prop_rot_dir"]
-            == curr[BLUE_ATTRIBUTES]["prop_rot_dir"]
-            and prev[RED_ATTRIBUTES]["motion_type"]
-            == curr[RED_ATTRIBUTES]["motion_type"]
-            and prev[RED_ATTRIBUTES]["prop_rot_dir"]
-            == curr[RED_ATTRIBUTES]["prop_rot_dir"]
+            prev[BLUE_ATTRIBUTES][MOTION_TYPE] == curr[BLUE_ATTRIBUTES][MOTION_TYPE]
+            and prev[BLUE_ATTRIBUTES][PROP_ROT_DIR]
+            == curr[BLUE_ATTRIBUTES][PROP_ROT_DIR]
+            and prev[RED_ATTRIBUTES][MOTION_TYPE] == curr[RED_ATTRIBUTES][MOTION_TYPE]
+            and prev[RED_ATTRIBUTES][PROP_ROT_DIR] == curr[RED_ATTRIBUTES][PROP_ROT_DIR]
         )

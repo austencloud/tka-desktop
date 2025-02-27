@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from data.constants import DIAMOND, END_POS
+from data.constants import DIAMOND, END_POS, GRID_MODE, LETTER
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.settings_manager.global_settings.app_context import AppContext
 from .strictly_color_swapped_permutation_checker import (
@@ -73,7 +73,7 @@ class SequencePropertiesManager:
             return ""
 
         word = "".join(
-            entry.get("letter", "") for entry in sequence[2:] if "letter" in entry
+            entry.get(LETTER, "") for entry in sequence[2:] if LETTER in entry
         )
         return word
 
@@ -115,7 +115,7 @@ class SequencePropertiesManager:
             "level": SequenceLevelEvaluator.get_sequence_difficulty_level(
                 self.sequence
             ),
-            "grid_mode": self.properties["grid_mode"],
+            GRID_MODE: self.properties[GRID_MODE],
             "is_circular": self.properties["ends_at_start_pos"],
             "is_permutable": self.properties["is_permutable"],
             **{
@@ -130,7 +130,7 @@ class SequencePropertiesManager:
             "word": "",
             "author": AppContext.settings_manager().users.user_manager.get_current_user(),
             "level": 0,
-            "grid_mode": DIAMOND,
+            GRID_MODE: DIAMOND,
             "is_circular": False,
             "is_permutable": False,
             "is_strictly_rotated_permutation": False,

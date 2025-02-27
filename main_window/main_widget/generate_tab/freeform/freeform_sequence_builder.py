@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication
 import random
 from copy import deepcopy
 from PyQt6.QtCore import Qt
-from data.constants import CLOCKWISE, COUNTER_CLOCKWISE
+from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, LETTER
 from ..base_sequence_builder import BaseSequenceBuilder
 from ..turn_intensity_manager import TurnIntensityManager
 
@@ -87,10 +87,10 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
             next_beat = self.set_turns(next_beat, turn_blue, turn_red)
 
         self.update_start_orientations(next_beat, last_beat)
-        self.update_end_orientations(next_beat)
         self.update_dash_static_prop_rot_dirs(
             next_beat, prop_continuity, blue_rot_dir, red_rot_dir
         )
+        self.update_end_orientations(next_beat)
         next_beat = self.update_beat_number(next_beat, self.sequence)
         return next_beat
 
@@ -102,6 +102,6 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
             selected_letters.extend(letter_type.letters)
 
         filtered_options = [
-            option for option in options if option["letter"] in selected_letters
+            option for option in options if option[LETTER] in selected_letters
         ]
         return filtered_options

@@ -53,7 +53,7 @@ class MotionTurnsManager:
         other_motion_color = RED if self.motion.state.color == BLUE else BLUE
         other_motion = self.motion.pictograph.managers.get.other_motion(self.motion)
         arrow_data = {
-            f"{self.motion.state.color}_attributes": {"turns": turns},
-            f"{other_motion_color}_attributes": {"turns": other_motion.state.turns},
+            f"{self.motion.state.color}_attributes": {TURNS: turns},
+            f"{other_motion_color}_attributes": {TURNS: other_motion.state.turns},
         }
         self.motion.arrow.updater.update_arrow(arrow_data)

@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QStackedWidget
+
+from data.constants import GRID_MODE
 from .author_section import AuthorSection
 from .contains_letter_section import ContainsLettersSection
 from .initial_filter_choice_widget.initial_filter_choice_widget import (
@@ -42,7 +44,7 @@ class SequencePickerFilterStack(QStackedWidget):
             "level": self.level_section,
             "starting_position": self.starting_position_section,
             "author": self.author_section,
-            "grid_mode": self.grid_mode_section,
+            GRID_MODE: self.grid_mode_section,
         }
 
         self.section_indexes = {}

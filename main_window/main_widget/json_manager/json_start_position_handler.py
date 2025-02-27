@@ -1,5 +1,22 @@
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, END_ORI, END_POS, NO_ROT, RED_ATTRIBUTES, START_ORI
+from data.constants import (
+    BEAT,
+    BLUE_ATTRIBUTES,
+    DIRECTION,
+    END_LOC,
+    END_ORI,
+    END_POS,
+    LETTER,
+    MOTION_TYPE,
+    NO_ROT,
+    PROP_ROT_DIR,
+    RED_ATTRIBUTES,
+    SEQUENCE_START_POSITION,
+    START_LOC,
+    START_ORI,
+    TIMING,
+    TURNS,
+)
 from base_widgets.pictograph.pictograph import Pictograph
 
 
@@ -22,31 +39,31 @@ class JsonStartPositionHandler:
         sequence = self.manager.loader_saver.load_current_sequence()
 
         start_position_dict = {
-            "beat": 0,
-            "sequence_start_position": self.get_sequence_start_position(
+            BEAT: 0,
+            SEQUENCE_START_POSITION: self.get_sequence_start_position(
                 start_pos_pictograph
             ),
-            "letter": start_pos_pictograph.state.letter.name,
+            LETTER: start_pos_pictograph.state.letter.name,
             END_POS: start_pos_pictograph.state.end_pos,
-            "timing": start_pos_pictograph.state.timing,
-            "direction": start_pos_pictograph.state.direction,
+            TIMING: start_pos_pictograph.state.timing,
+            DIRECTION: start_pos_pictograph.state.direction,
             BLUE_ATTRIBUTES: {
-                "start_loc": start_pos_pictograph.elements.blue_motion.state.start_loc,
-                "end_loc": start_pos_pictograph.elements.blue_motion.state.end_loc,
+                START_LOC: start_pos_pictograph.elements.blue_motion.state.start_loc,
+                END_LOC: start_pos_pictograph.elements.blue_motion.state.end_loc,
                 START_ORI: blue_start_ori,
                 END_ORI: blue_start_ori,
-                "prop_rot_dir": NO_ROT,
-                "turns": 0,
-                "motion_type": start_pos_pictograph.elements.blue_motion.state.motion_type,
+                PROP_ROT_DIR: NO_ROT,
+                TURNS: 0,
+                MOTION_TYPE: start_pos_pictograph.elements.blue_motion.state.motion_type,
             },
             RED_ATTRIBUTES: {
-                "start_loc": start_pos_pictograph.elements.red_motion.state.start_loc,
-                "end_loc": start_pos_pictograph.elements.red_motion.state.end_loc,
+                START_LOC: start_pos_pictograph.elements.red_motion.state.start_loc,
+                END_LOC: start_pos_pictograph.elements.red_motion.state.end_loc,
                 START_ORI: red_start_ori,
                 END_ORI: red_start_ori,
-                "prop_rot_dir": NO_ROT,
-                "turns": 0,
-                "motion_type": start_pos_pictograph.elements.red_motion.state.motion_type,
+                PROP_ROT_DIR: NO_ROT,
+                TURNS: 0,
+                MOTION_TYPE: start_pos_pictograph.elements.red_motion.state.motion_type,
             },
         }
 

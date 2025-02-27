@@ -71,8 +71,8 @@ class JsonSequenceLoaderSaver:
     def _add_beat_numbers(self, sequence: list[dict]):
         beat_number = 0
         for beat in sequence:
-            if "letter" in beat or "sequence_start_position" in beat:
-                beat_dict_with_beat_number = {"beat": beat_number}
+            if LETTER in beat or SEQUENCE_START_POSITION in beat:
+                beat_dict_with_beat_number = {BEAT: beat_number}
                 beat_dict_with_beat_number.update(beat)
                 sequence[sequence.index(beat)] = beat_dict_with_beat_number
                 beat_number += 1
@@ -89,10 +89,10 @@ class JsonSequenceLoaderSaver:
         return default
 
     def get_prop_rot_dir_from_json(self, index: int, color: str) -> int:
-        return self._get_attribute_from_json(index, color, "prop_rot_dir", 0)
+        return self._get_attribute_from_json(index, color, PROP_ROT_DIR, 0)
 
     def get_motion_type_from_json_at_index(self, index: int, color: str) -> int:
-        return self._get_attribute_from_json(index, color, "motion_type", 0)
+        return self._get_attribute_from_json(index, color, MOTION_TYPE, 0)
 
     def get_prefloat_prop_rot_dir_from_json(self, index: int, color: str) -> int:
         return self._get_attribute_from_json(index, color, PREFLOAT_PROP_ROT_DIR, "")
@@ -104,7 +104,7 @@ class JsonSequenceLoaderSaver:
             index,
             color,
             PREFLOAT_MOTION_TYPE,
-            self._get_attribute_from_json(index, color, "motion_type", 0),
+            self._get_attribute_from_json(index, color, MOTION_TYPE, 0),
         )
 
     def _get_last_pictograph_data(self, sequence: list[dict]) -> dict:

@@ -8,12 +8,13 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 
+from data.constants import LETTER
+
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
-    from main_window.main_widget.browse_tab.sequence_picker.filter_selector.sequence_picker_filter_stack import (
-        SequencePickerFilterStack,
-    )
+    from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import SequencePickerFilterStack
+
 
 
 class ContainsLettersSection(FilterSectionBase):
@@ -84,7 +85,7 @@ class ContainsLettersSection(FilterSectionBase):
                     button = QPushButton(letter)
                     button.setCursor(Qt.CursorShape.PointingHandCursor)
                     button.setCheckable(True)
-                    button.setProperty("letter", letter)
+                    button.setProperty(LETTER, letter)
                     button.clicked.connect(self.update_letter_selection)
                     self.update_button_style(button)  # Initialize style
                     self.buttons[letter] = button
@@ -104,7 +105,7 @@ class ContainsLettersSection(FilterSectionBase):
             self.update_button_style(button)
 
         self.selected_letters = {
-            button.property("letter")
+            button.property(LETTER)
             for button in self.buttons.values()
             if button.isChecked()
         }
@@ -129,7 +130,6 @@ class ContainsLettersSection(FilterSectionBase):
         self.browse_tab.filter_controller.apply_filter(
             {"contains_letters": list(self.selected_letters)}
         )
-
 
     def organize_letters(self, letters: Iterable[str]) -> list[str]:
         """Organize letters according to the predefined order."""

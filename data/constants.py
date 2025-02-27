@@ -11,6 +11,11 @@ special_placements_parent_directory = os.path.join("")
 
 INTEGER_TURNS = [0.0, 1.0, 2.0, 3.0]
 
+BEAT = "beat"
+SEQUENCE_START_POSITION = "sequence_start_position"
+
+GRID_MODE = "grid_mode"
+
 NORTH = "n"
 EAST = "e"
 SOUTH = "s"

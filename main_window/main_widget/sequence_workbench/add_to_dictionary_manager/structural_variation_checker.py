@@ -33,7 +33,7 @@ class StructuralVariationChecker:
 
     def are_structural_variations_identical(self, seq1, seq2):
         def matches(b1, b2):
-            ignore = ["turns", END_ORI, START_ORI]
+            ignore = [TURNS, END_ORI, START_ORI]
             return all(b1[k] == b2[k] for k in b1 if k not in ignore)
 
         if len(seq1) != len(seq2):

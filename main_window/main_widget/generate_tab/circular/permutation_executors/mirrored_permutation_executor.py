@@ -3,10 +3,11 @@ from typing import TYPE_CHECKING
 from data.constants import (
     BLUE,
     BLUE_ATTRIBUTES,
+    END_LOC,
     END_ORI,
     RED,
     RED_ATTRIBUTES,
-    START_ORI,
+    START_ORI, BEAT, LETTER, START_POS, END_POS, TIMING, DIRECTION, MOTION_TYPE, PROP_ROT_DIR, START_LOC, TURNS
 )
 from .permutation_executor_base import PermutationExecutor
 from PyQt6.QtWidgets import QApplication
@@ -32,7 +33,7 @@ class MirroredPermutationExecutor(PermutationExecutor):
         sequence_length = len(sequence) - 2
         last_entry = sequence[-1]
         new_entries = []
-        next_beat_number = last_entry["beat"] + 1
+        next_beat_number = last_entry[BEAT] + 1
         entries_to_add = self.determine_how_many_entries_to_add(sequence_length)
         final_intended_sequence_length = sequence_length + entries_to_add
 
@@ -54,7 +55,6 @@ class MirroredPermutationExecutor(PermutationExecutor):
             sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph, override_grow_sequence=True, update_word=False
             )
-            self.validation_engine.validate_last_pictograph()
             QApplication.processEvents()
 
             last_entry = next_pictograph
@@ -82,14 +82,14 @@ class MirroredPermutationExecutor(PermutationExecutor):
         )
 
         new_entry = {
-            "beat": beat_number,
-            "letter": previous_matching_beat["letter"],
+            BEAT: beat_number,
+            LETTER: previous_matching_beat[LETTER],
             START_POS: previous_entry[END_POS],
             END_POS: self.get_mirrored_position(
                 previous_matching_beat, vertical_or_horizontal
             ),
-            "timing": previous_matching_beat["timing"],
-            "direction": previous_matching_beat["direction"],
+            TIMING: previous_matching_beat[TIMING],
+            DIRECTION: previous_matching_beat[DIRECTION],
             BLUE_ATTRIBUTES: self.create_new_attributes(
                 previous_entry[BLUE_ATTRIBUTES],
                 previous_matching_beat[BLUE_ATTRIBUTES],
@@ -188,16 +188,16 @@ class MirroredPermutationExecutor(PermutationExecutor):
         previous_matching_beat_attributes: dict,
     ) -> dict:
         new_entry_attributes = {
-            "motion_type": previous_matching_beat_attributes["motion_type"],
+            MOTION_TYPE: previous_matching_beat_attributes[MOTION_TYPE],
             START_ORI: previous_entry_attributes[END_ORI],
-            "prop_rot_dir": self.get_mirrored_prop_rot_dir(
-                previous_matching_beat_attributes["prop_rot_dir"]
+            PROP_ROT_DIR: self.get_mirrored_prop_rot_dir(
+                previous_matching_beat_attributes[PROP_ROT_DIR]
             ),
-            "start_loc": previous_entry_attributes["end_loc"],
-            "end_loc": self.calculate_mirrored_permuatation_new_loc(
-                previous_matching_beat_attributes["end_loc"]
+            START_LOC: previous_entry_attributes[END_LOC],
+            END_LOC: self.calculate_mirrored_permuatation_new_loc(
+                previous_matching_beat_attributes[END_LOC]
             ),
-            "turns": previous_matching_beat_attributes["turns"],
+            TURNS: previous_matching_beat_attributes[TURNS],
         }
 
         return new_entry_attributes

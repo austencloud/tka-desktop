@@ -25,7 +25,7 @@
               "turns": 0,
               "end_ori": "out"
             },
-            "RED_ATTRIBUTES": {
+            "red_attributes": {
               "motion_type": "anti",
               "start_ori": "in",
               "prop_rot_dir": "cw",
@@ -55,7 +55,7 @@
               "turns": 1,
               "end_ori": "out"
             },
-            "RED_ATTRIBUTES": {
+            "red_attributes": {
               "motion_type": "anti",
               "start_ori": "out",
               "prop_rot_dir": "cw",
@@ -85,7 +85,7 @@
               "turns": 0,
               "end_ori": "in"
             },
-            "RED_ATTRIBUTES": {
+            "red_attributes": {
               "motion_type": "anti",
               "start_ori": "in",
               "prop_rot_dir": "cw",
@@ -115,7 +115,7 @@
               "turns": 0,
               "end_ori": "out"
             },
-            "RED_ATTRIBUTES": {
+            "red_attributes": {
               "motion_type": "anti",
               "start_ori": "in",
               "prop_rot_dir": "ccw",
@@ -145,7 +145,7 @@
               "turns": 0,
               "end_ori": "in"
             },
-            "RED_ATTRIBUTES": {
+            "red_attributes": {
               "motion_type": "anti",
               "start_ori": "out",
               "prop_rot_dir": "cw",
@@ -175,7 +175,7 @@
               "turns": 1,
               "end_ori": "in"
             },
-            "RED_ATTRIBUTES": {
+            "red_attributes": {
               "motion_type": "anti",
               "start_ori": "in",
               "prop_rot_dir": "cw",
@@ -205,7 +205,7 @@
               "turns": 0,
               "end_ori": "out"
             },
-            "RED_ATTRIBUTES": {
+            "red_attributes": {
               "motion_type": "anti",
               "start_ori": "out",
               "prop_rot_dir": "cw",
@@ -235,7 +235,7 @@
               "turns": 0,
               "end_ori": "in"
             },
-            "RED_ATTRIBUTES": {
+            "red_attributes": {
               "motion_type": "anti",
               "start_ori": "out",
               "prop_rot_dir": "ccw",

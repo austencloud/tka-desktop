@@ -16,11 +16,14 @@ from PyQt6.QtSvg import QSvgRenderer
 from functools import partial
 import os
 
+from data.constants import GRID_MODE
 from utilities.path_helpers import get_images_and_data_path
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
-    from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import SequencePickerFilterStack
+    from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import (
+        SequencePickerFilterStack,
+    )
 
 
 class GridModeSection(FilterSectionBase):
@@ -109,7 +112,7 @@ class GridModeSection(FilterSectionBase):
         image_placeholder = QLabel()
         image_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
         image_placeholder.setProperty(
-            "grid_mode", grid_mode
+            GRID_MODE, grid_mode
         )  # Associate grid mode with the label
         self.grid_mode_images[grid_mode] = image_placeholder
 
@@ -157,7 +160,7 @@ class GridModeSection(FilterSectionBase):
 
     def handle_grid_mode_click(self, grid_mode: str):
         """Handle clicks on grid mode buttons."""
-        self.browse_tab.filter_controller.apply_filter({"grid_mode": grid_mode})
+        self.browse_tab.filter_controller.apply_filter({GRID_MODE: grid_mode})
 
     def handle_image_click(self, grid_mode: str, event):
         """Handle clicks on grid mode images."""
@@ -218,7 +221,7 @@ class GridModeSection(FilterSectionBase):
     def display_only_thumbnails_with_grid_mode(self, grid_mode: str):
         """Display only the thumbnails that match the selected grid mode."""
         self.filter_selector.browse_tab.settings.set_current_filter(
-            {"grid_mode": grid_mode.lower()}
+            {GRID_MODE: grid_mode.lower()}
         )
         self.browse_tab.filter_manager.prepare_ui_for_filtering(
             f"{grid_mode.capitalize()} mode sequences."
@@ -245,7 +248,7 @@ class GridModeSection(FilterSectionBase):
     def eventFilter(self, source: QObject, event: QEvent) -> bool:
         """Handle hover events to add or remove borders on images."""
         if isinstance(source, QLabel):
-            grid_mode = source.property("grid_mode")
+            grid_mode = source.property(GRID_MODE)
             if grid_mode is not None:
                 if event.type() == QEvent.Type.Enter:
                     self.apply_hover_effect(grid_mode, source)

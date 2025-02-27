@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Union
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
+from data.constants import GRID_MODE
 from main_window.main_widget.tab_indices import LeftStackIndex
 
 if TYPE_CHECKING:
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 
 class BrowseTabFilterController:
     """Handles all 'apply filter' operations for the BrowseTab.
-    
+
     Splits logic between simple (string) filters and dictionary-based (complex) filters.
     """
 
@@ -22,6 +23,7 @@ class BrowseTabFilterController:
         self.ui_updater = browse_tab.ui_updater
         self.fade_manager = browse_tab.main_widget.fade_manager
         self.metadata_extractor = browse_tab.metadata_extractor
+
     # -------------------------------------------------------------------------
     # Public Method
     # -------------------------------------------------------------------------
@@ -44,7 +46,7 @@ class BrowseTabFilterController:
     # -------------------------------------------------------------------------
     def _apply_filter_after_fade(self, filter_criteria, description: str):
         """UI + filter pipeline after fade is done."""
-        self._prepare_ui_for_filtering(description)    # sets wait cursor, etc.
+        self._prepare_ui_for_filtering(description)  # sets wait cursor, etc.
 
         # Step 1: compute the results
         if isinstance(filter_criteria, str):
@@ -52,14 +54,18 @@ class BrowseTabFilterController:
         elif isinstance(filter_criteria, dict):
             results = self._handle_dict_filter(filter_criteria)
         else:
-            raise ValueError(f"Invalid filter type: {type(filter_criteria)} (must be str or dict).")
+            raise ValueError(
+                f"Invalid filter type: {type(filter_criteria)} (must be str or dict)."
+            )
 
         # Step 2: update the main widget state
         self.browse_tab.sequence_picker.currently_displayed_sequences = results
 
         # Step 3: re-render the UI
         self.ui_updater.update_and_display_ui(len(results))
-        self.browse_tab.main_widget.left_stack.setCurrentIndex(LeftStackIndex.SEQUENCE_PICKER)
+        self.browse_tab.main_widget.left_stack.setCurrentIndex(
+            LeftStackIndex.SEQUENCE_PICKER
+        )
 
     def _prepare_ui_for_filtering(self, description: str):
         """Sets up the UI to reflect that a filter is being applied (cursor, labels, etc.)."""
@@ -73,7 +79,12 @@ class BrowseTabFilterController:
         # Show a progress bar in the grid if you want
         sp = self.browse_tab.sequence_picker
         sp.scroll_widget.grid_layout.addWidget(
-            sp.progress_bar, 0, 0, 1, sp.sorter.num_columns, Qt.AlignmentFlag.AlignCenter
+            sp.progress_bar,
+            0,
+            0,
+            1,
+            sp.sorter.num_columns,
+            Qt.AlignmentFlag.AlignCenter,
         )
         sp.progress_bar.setVisible(True)
         sp.progress_bar.resize_progress_bar()
@@ -100,21 +111,23 @@ class BrowseTabFilterController:
     def _handle_dict_filter(self, criteria: dict):
         """Dispatch to a submethod based on the single filter_key in 'criteria'."""
         if len(criteria) != 1:
-            raise ValueError("Dictionary filter must contain exactly one key-value pair.")
+            raise ValueError(
+                "Dictionary filter must contain exactly one key-value pair."
+            )
         (filter_key, filter_value) = next(iter(criteria.items()))
 
         # Instead of a big chain, let's dispatch to a dictionary of submethods
         dispatch_map = {
-            "starting_letter":    self._dict_filter_starting_letter,
-            "contains_letters":   self._dict_filter_contains_letters,
-            "length":             self._dict_filter_length,
-            "level":              self._dict_filter_level,
-            "author":             self._dict_filter_author,
-            "starting_position":  self._dict_filter_starting_pos,
-            "favorites":          self._dict_filter_favorites,
-            "most_recent":        self._dict_filter_most_recent,
-            "grid_mode":          self._dict_filter_grid_mode,
-            "show_all":           self._dict_filter_show_all,
+            "starting_letter": self._dict_filter_starting_letter,
+            "contains_letters": self._dict_filter_contains_letters,
+            "length": self._dict_filter_length,
+            "level": self._dict_filter_level,
+            "author": self._dict_filter_author,
+            "starting_position": self._dict_filter_starting_pos,
+            "favorites": self._dict_filter_favorites,
+            "most_recent": self._dict_filter_most_recent,
+            GRID_MODE: self._dict_filter_grid_mode,
+            "show_all": self._dict_filter_show_all,
         }
 
         if filter_key not in dispatch_map:
@@ -209,6 +222,7 @@ class BrowseTabFilterController:
     def _base_words(self):
         """Just a convenience function so we don't keep repeating ourselves."""
         from utilities.path_helpers import get_images_and_data_path
+
         dictionary_dir = get_images_and_data_path("dictionary")
         return self.browse_tab.get.base_words(dictionary_dir)
 
@@ -235,15 +249,15 @@ class BrowseTabFilterController:
         key, value = list(filter_criteria.items())[0]
 
         desc_map = {
-            "starting_letter":     f"sequences starting with {value}",
-            "contains_letters":    f"sequences containing {value}",
-            "length":              f"sequences with length {value}",
-            "level":               f"sequences with level {value}",
-            "author":              f"sequences by {value}",
-            "starting_position":   f"sequences starting at position {value}",
-            "favorites":           "favorite sequences",
-            "most_recent":         "most recent sequences",
-            "grid_mode":           f"sequences in {value} mode",
-            "show_all":            "all sequences",
+            "starting_letter": f"sequences starting with {value}",
+            "contains_letters": f"sequences containing {value}",
+            "length": f"sequences with length {value}",
+            "level": f"sequences with level {value}",
+            "author": f"sequences by {value}",
+            "starting_position": f"sequences starting at position {value}",
+            "favorites": "favorite sequences",
+            "most_recent": "most recent sequences",
+            GRID_MODE: f"sequences in {value} mode",
+            "show_all": "all sequences",
         }
         return desc_map.get(key, "Unknown Filter")

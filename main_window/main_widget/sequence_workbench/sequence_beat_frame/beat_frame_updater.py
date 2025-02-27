@@ -1,6 +1,15 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
-from data.constants import BLUE_ATTRIBUTES, END_ORI, END_POS, RED_ATTRIBUTES, START_ORI, START_POS
+from data.constants import (
+    BEAT,
+    BLUE_ATTRIBUTES,
+    END_ORI,
+    END_POS,
+    RED_ATTRIBUTES,
+    SEQUENCE_START_POSITION,
+    START_ORI,
+    START_POS,
+)
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.reversal_detector import (
@@ -22,7 +31,7 @@ class BeatFrameUpdater:
         current_sequence_json = self.json_manager.loader_saver.load_current_sequence()
         sequence_entries = current_sequence_json[1:]
 
-        if sequence_entries and "sequence_start_position" in sequence_entries[0]:
+        if sequence_entries and SEQUENCE_START_POSITION in sequence_entries[0]:
             self.update_start_pos_from_current_sequence_json(sequence_entries[0])
             beat_entries = sequence_entries[1:]
         else:
@@ -32,7 +41,7 @@ class BeatFrameUpdater:
             if entry.get("is_placeholder", False):
                 continue
 
-            beat_num = entry["beat"]
+            beat_num = entry[BEAT]
             beat_view = self.bf.get.beat_view_by_number(beat_num)
 
             if beat_view and beat_view.beat:

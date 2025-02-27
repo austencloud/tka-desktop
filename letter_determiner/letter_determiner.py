@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from Enums.letters import Letter, LetterType
-from data.constants import ANTI, DASH, FLOAT, PRO, STATIC
+from data.constants import ANTI, DASH, FLOAT, PRO, STATIC, END_LOC, START_LOC, PROP_ROT_DIR, MOTION_TYPE
 from .dual_float_letter_determiner import DualFloatLetterDeterminer
 from .non_hybrid_letter_determiner import NonHybridShiftLetterDeterminer
 from objects.motion.motion_ori_calculator import MotionOriCalculator
@@ -81,15 +81,15 @@ class LetterDeterminer:
     ):
         motion_attributes_match_example = (
             self.is_shift_motion_type_matching(motion, example)
-            and example[f"{motion.state.color}_attributes"]["start_loc"]
+            and example[f"{motion.state.color}_attributes"][START_LOC]
             == motion.state.start_loc
-            and example[f"{motion.state.color}_attributes"]["end_loc"]
+            and example[f"{motion.state.color}_attributes"][END_LOC]
             == motion.state.end_loc
             and self._is_shift_prop_rot_dir_matching(motion, example)
             and self.is_shift_motion_type_matching(other_motion, example)
-            and example[f"{other_motion.state.color}_attributes"]["start_loc"]
+            and example[f"{other_motion.state.color}_attributes"][START_LOC]
             == other_motion.state.start_loc
-            and example[f"{other_motion.state.color}_attributes"]["end_loc"]
+            and example[f"{other_motion.state.color}_attributes"][END_LOC]
             == other_motion.state.end_loc
             and self._is_shift_prop_rot_dir_matching(other_motion, example)
         )
@@ -98,12 +98,12 @@ class LetterDeterminer:
 
     def _is_shift_prop_rot_dir_matching(self, motion: "Motion", example):
         is_rot_dir_matching = (
-            example[f"{motion.state.color}_attributes"]["prop_rot_dir"]
+            example[f"{motion.state.color}_attributes"][PROP_ROT_DIR]
             == self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
                 self.beat_frame.get.index_of_currently_selected_beat() + 2,
                 motion.state.color,
             )
-            or example[f"{motion.state.color}_attributes"]["prop_rot_dir"]
+            or example[f"{motion.state.color}_attributes"][PROP_ROT_DIR]
             == motion.state.prop_rot_dir
         )
 
@@ -118,21 +118,21 @@ class LetterDeterminer:
         )
         motion_attributes_match_example = (
             self.is_shift_motion_type_matching(float_motion, example)
-            and example[f"{float_motion.state.color}_attributes"]["start_loc"]
+            and example[f"{float_motion.state.color}_attributes"][START_LOC]
             == float_motion.state.start_loc
-            and example[f"{float_motion.state.color}_attributes"]["end_loc"]
+            and example[f"{float_motion.state.color}_attributes"][END_LOC]
             == float_motion.state.end_loc
-            and example[f"{float_motion.state.color}_attributes"]["prop_rot_dir"]
+            and example[f"{float_motion.state.color}_attributes"][PROP_ROT_DIR]
             == self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
                 self.beat_frame.get.index_of_currently_selected_beat() + 2,
                 float_motion.state.color,
             )
             and self.is_shift_motion_type_matching(non_float_motion, example)
-            and example[f"{non_float_motion.state.color}_attributes"]["start_loc"]
+            and example[f"{non_float_motion.state.color}_attributes"][START_LOC]
             == non_float_motion.state.start_loc
-            and example[f"{non_float_motion.state.color}_attributes"]["end_loc"]
+            and example[f"{non_float_motion.state.color}_attributes"][END_LOC]
             == non_float_motion.state.end_loc
-            and example[f"{non_float_motion.state.color}_attributes"]["prop_rot_dir"]
+            and example[f"{non_float_motion.state.color}_attributes"][PROP_ROT_DIR]
             == non_float_motion.state.prop_rot_dir
         )
 
@@ -146,21 +146,21 @@ class LetterDeterminer:
         )
         motion_attributes_match_example = (
             self.is_shift_motion_type_matching(float_motion, example)
-            and example[f"{float_motion.state.color}_attributes"]["start_loc"]
+            and example[f"{float_motion.state.color}_attributes"][START_LOC]
             == float_motion.state.start_loc
-            and example[f"{float_motion.state.color}_attributes"]["end_loc"]
+            and example[f"{float_motion.state.color}_attributes"][END_LOC]
             == float_motion.state.end_loc
-            and example[f"{float_motion.state.color}_attributes"]["prop_rot_dir"]
+            and example[f"{float_motion.state.color}_attributes"][PROP_ROT_DIR]
             == self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
                 self.beat_frame.get.index_of_currently_selected_beat() + 2,
                 float_motion.state.color,
             )
             and self.is_shift_motion_type_matching(non_float_motion, example)
-            and example[f"{non_float_motion.state.color}_attributes"]["start_loc"]
+            and example[f"{non_float_motion.state.color}_attributes"][START_LOC]
             == non_float_motion.state.start_loc
-            and example[f"{non_float_motion.state.color}_attributes"]["end_loc"]
+            and example[f"{non_float_motion.state.color}_attributes"][END_LOC]
             == non_float_motion.state.end_loc
-            and example[f"{non_float_motion.state.color}_attributes"]["prop_rot_dir"]
+            and example[f"{non_float_motion.state.color}_attributes"][PROP_ROT_DIR]
             == non_float_motion.state.prop_rot_dir
         )
 
@@ -171,16 +171,16 @@ class LetterDeterminer:
         non_shift = motion.pictograph.managers.get.other_motion(shift)
         motion_attributes_match_example = (
             self.is_shift_motion_type_matching(shift, example)
-            and example[f"{shift.state.color}_attributes"]["start_loc"]
+            and example[f"{shift.state.color}_attributes"][START_LOC]
             == shift.state.start_loc
-            and example[f"{shift.state.color}_attributes"]["end_loc"]
+            and example[f"{shift.state.color}_attributes"][END_LOC]
             == shift.state.end_loc
             and self._is_shift_prop_rot_dir_matching(shift, example)
-            and example[f"{non_shift.state.color}_attributes"]["motion_type"]
+            and example[f"{non_shift.state.color}_attributes"][MOTION_TYPE]
             == non_shift.state.motion_type
-            and example[f"{non_shift.state.color}_attributes"]["start_loc"]
+            and example[f"{non_shift.state.color}_attributes"][START_LOC]
             == non_shift.state.start_loc
-            and example[f"{non_shift.state.color}_attributes"]["end_loc"]
+            and example[f"{non_shift.state.color}_attributes"][END_LOC]
             == non_shift.state.end_loc
         )
 
@@ -188,9 +188,9 @@ class LetterDeterminer:
 
     def is_shift_motion_type_matching(self, motion: "Motion", example):
         is_matching_motion_type = (
-            example[f"{motion.state.color}_attributes"]["motion_type"]
+            example[f"{motion.state.color}_attributes"][MOTION_TYPE]
             == motion.state.motion_type
-            or example[f"{motion.state.color}_attributes"]["motion_type"]
+            or example[f"{motion.state.color}_attributes"][MOTION_TYPE]
             == motion.state.prefloat_motion_type
         )
 

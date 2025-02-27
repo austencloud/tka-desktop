@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.pictograph import Pictograph
-from data.constants import END_POS, START_POS
+from data.constants import END_POS, LETTER, START_POS
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.ui.visibility_tab.visibility_tab import (
@@ -16,7 +16,7 @@ class VisibilityPictograph(Pictograph):
     """Special class for the visibility tab pictograph."""
 
     example_data = {
-        "letter": "A",
+        LETTER: "A",
         START_POS: "alpha1",
         END_POS: "alpha3",
         "blue_motion_type": "pro",

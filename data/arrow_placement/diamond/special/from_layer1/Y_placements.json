@@ -34,8 +34,7 @@
     },
     "(o, 0.5, 1)": {
       "pro": [5, 75],
-      "static": [90, -20],
-      "static_to_layer1_rot_angle_override": true
+      "static": [90, -20]
     }
   }
 }

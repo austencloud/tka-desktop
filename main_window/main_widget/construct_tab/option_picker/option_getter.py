@@ -4,6 +4,7 @@ from data.constants import (
     BLUE_ATTRIBUTES,
     END_ORI,
     END_POS,
+    PROP_ROT_DIR,
     RED,
     RED_ATTRIBUTES,
     START_ORI,
@@ -80,15 +81,15 @@ class OptionGetter:
     ) -> tuple[bool, bool]:
         def get_last_rot(seq: list[dict[str, Any]], color: str) -> Optional[str]:
             for item in reversed(seq):
-                rot = item.get(f"{color}_attributes", {}).get("prop_rot_dir")
+                rot = item.get(f"{color}_attributes", {}).get(PROP_ROT_DIR)
                 if rot and rot != "no_rot":
                     return rot
             return None
 
         last_blue = get_last_rot(sequence[1:], BLUE)
         last_red = get_last_rot(sequence[1:], RED)
-        curr_blue = o.get(BLUE_ATTRIBUTES, {}).get("prop_rot_dir", "no_rot")
-        curr_red = o.get(RED_ATTRIBUTES, {}).get("prop_rot_dir", "no_rot")
+        curr_blue = o.get(BLUE_ATTRIBUTES, {}).get(PROP_ROT_DIR, "no_rot")
+        curr_red = o.get(RED_ATTRIBUTES, {}).get(PROP_ROT_DIR, "no_rot")
         if curr_blue == "no_rot":
             curr_blue = last_blue
         if curr_red == "no_rot":

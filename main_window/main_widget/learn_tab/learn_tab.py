@@ -1,12 +1,16 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QStackedLayout
 
-from main_window.main_widget.learn_tab.lesson_selector.lesson_selector import LessonSelector
-from main_window.main_widget.learn_tab.lesson_widget.lesson_results_widget import LessonResultsWidget
+from data.constants import LETTER
+from main_window.main_widget.learn_tab.lesson_selector.lesson_selector import (
+    LessonSelector,
+)
+from main_window.main_widget.learn_tab.lesson_widget.lesson_results_widget import (
+    LessonResultsWidget,
+)
 from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
     LessonWidget,
 )
-
 
 
 if TYPE_CHECKING:
@@ -38,7 +42,7 @@ class LearnTab(QWidget):
         self.lesson_2_widget = LessonWidget(
             self,
             lesson_type="Lesson2",
-            question_format="letter",
+            question_format=LETTER,
             answer_format="pictograph",
             quiz_description="letter_to_pictograph",
             question_prompt="Choose the pictograph for:",

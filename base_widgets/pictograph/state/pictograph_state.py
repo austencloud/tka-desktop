@@ -4,7 +4,7 @@ from typing import Optional, Union
 from Enums.Enums import Letter
 from Enums.PropTypes import PropType
 from Enums.letters import LetterType
-from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRIBUTES, LETTER, RED_ATTRIBUTES
 
 
 @dataclass
@@ -30,13 +30,13 @@ class PictographState:
         self, pictograph_data: dict[str, Union[str, dict[str, str]]]
     ) -> None:
         for key, value in pictograph_data.items():
-            if key == "letter":
+            if key == LETTER:
                 try:
                     letter_obj: Letter = Letter.get_letter(value)
                 except KeyError:
                     letter_obj = value
                 self.letter = letter_obj
-                self.pictograph_data["letter"] = (
+                self.pictograph_data[LETTER] = (
                     letter_obj.value if hasattr(letter_obj, "value") else letter_obj
                 )
                 self.letter_type = LetterType.get_letter_type(letter_obj)

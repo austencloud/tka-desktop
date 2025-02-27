@@ -1,7 +1,17 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
-from data.constants import BLUE_ATTRIBUTES, CLOCKWISE, COUNTER_CLOCKWISE, END_POS, RED_ATTRIBUTES, START_POS
+from data.constants import (
+    BLUE_ATTRIBUTES,
+    CLOCKWISE,
+    COUNTER_CLOCKWISE,
+    END_LOC,
+    END_POS,
+    PROP_ROT_DIR,
+    RED_ATTRIBUTES,
+    START_LOC,
+    START_POS,
+)
 from data.positions import mirrored_positions
 from data.locations import vertical_loc_mirror_map
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
@@ -77,14 +87,14 @@ class SequenceReflector(BaseSequenceModifier):
         for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
             if color in pictograph_data:
                 attributes = pictograph_data[color]
-                for loc_key in ["start_loc", "end_loc"]:
+                for loc_key in [START_LOC, END_LOC]:
                     if loc_key in attributes:
                         attributes[loc_key] = vertical_loc_mirror_map.get(
                             attributes[loc_key], attributes[loc_key]
                         )
-                if "prop_rot_dir" in attributes:
-                    prop_rot_dir = attributes["prop_rot_dir"]
-                    attributes["prop_rot_dir"] = self.swap_dir(prop_rot_dir)
+                if PROP_ROT_DIR in attributes:
+                    prop_rot_dir = attributes[PROP_ROT_DIR]
+                    attributes[PROP_ROT_DIR] = self.swap_dir(prop_rot_dir)
 
         return pictograph_data
 

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any
 from Enums.letters import Letter, LetterConditions
 from data.constants import (
     ANTI,
+    BEAT,
     BLUE,
     BLUE_ATTRIBUTES,
     END_ORI,
@@ -144,7 +145,7 @@ class BaseSequenceBuilder:
         self, next_data: dict[str, Any], sequence: list
     ) -> dict[str, Any]:
         """Sets the beat number based on the sequence length."""
-        next_data["beat"] = len(sequence) - 1
+        next_data[BEAT] = len(sequence) - 1
         return next_data
 
     def filter_options_by_rotation(

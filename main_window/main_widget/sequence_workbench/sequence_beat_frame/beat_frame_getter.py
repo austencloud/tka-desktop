@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Union
 
+from data.constants import LETTER
 from utilities.word_simplifier import WordSimplifier
 from PyQt6.QtWidgets import QGraphicsView
 
@@ -37,7 +38,7 @@ class BeatFrameGetter:
             if beat_view.is_filled:
                 if beat_view.beat.state.pictograph_data.get("is_placeholder", False):
                     continue
-                word += beat_view.beat.state.pictograph_data.get("letter", "")
+                word += beat_view.beat.state.pictograph_data.get(LETTER, "")
         return WordSimplifier.simplify_repeated_word(word)
 
     def index_of_currently_selected_beat(self) -> int:
@@ -67,7 +68,6 @@ class BeatFrameGetter:
             if beat_view.number == beat_number:
                 return beat_view
         return None
-
 
     def beat_number(self, beat_view: QGraphicsView) -> int:
         """Get the beat number for a given beat view."""

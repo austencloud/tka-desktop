@@ -8,6 +8,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, QEvent, QObject
 from PyQt6.QtGui import QFontMetrics
+
+from data.constants import LETTER
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
@@ -66,7 +68,7 @@ class StartingLetterSection(FilterSectionBase):
         button = QPushButton(letter)
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.buttons[letter] = button
-        button.setProperty("letter", letter)
+        button.setProperty(LETTER, letter)
         button.installEventFilter(self)
         # Use partial to pass the letter to the slot
         button.clicked.connect(
@@ -94,7 +96,6 @@ class StartingLetterSection(FilterSectionBase):
         if len(word) > 1 and word[1] == "-":
             return word[:2]
         return word[0]
-
 
     def _word_starts_with_letter(self, word: str, letter: str) -> bool:
         """Check if the word starts with the given letter."""
@@ -132,7 +133,7 @@ class StartingLetterSection(FilterSectionBase):
 
     def eventFilter(self, obj: QObject, event: QEvent):
         if event.type() == QEvent.Type.Enter:
-            letter = obj.property("letter")
+            letter = obj.property(LETTER)
             count = self.sequence_tally.get(letter, 0)
             sequence_text = "sequence" if count == 1 else "sequences"
             self.sequence_tally_label.setText(f"{letter}:\n{count} {sequence_text}")

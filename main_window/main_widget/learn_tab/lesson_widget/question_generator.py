@@ -79,9 +79,7 @@ class QuestionGenerator:
 
     def _get_shuffled_pictographs(self, correct_pictograph):
         """Generate and shuffle the correct and wrong pictographs."""
-        wrong_pictographs = self.generate_wrong_pictographs(
-            correct_pictograph["letter"]
-        )
+        wrong_pictographs = self.generate_wrong_pictographs(correct_pictograph[LETTER])
         pictographs = [correct_pictograph] + wrong_pictographs
         random.shuffle(pictographs)
 

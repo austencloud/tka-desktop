@@ -2,7 +2,7 @@ from copy import deepcopy
 from PyQt6.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout
 from typing import Callable, List, TYPE_CHECKING
 from base_widgets.pictograph.pictograph import Pictograph
-from data.constants import BOX, DIAMOND, END_POS, START_POS
+from data.constants import BOX, DIAMOND, END_POS, GRID_MODE, LETTER, START_POS
 from .advanced_start_pos_picker_pictograph_view import (
     AdvancedStartPosPickerPictographView,
 )
@@ -61,7 +61,7 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
             return self.pictograph_cache[key]
 
         local_data = deepcopy(pictograph_data)
-        local_data["grid_mode"] = target_grid_mode
+        local_data[GRID_MODE] = target_grid_mode
 
         pictograph = Pictograph()
         pictograph.elements.view = AdvancedStartPosPickerPictographView(
@@ -78,7 +78,7 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         return pictograph
 
     def _generate_pictograph_key(self, data: dict, grid_mode: str) -> str:
-        letter = data.get("letter", "unknown")
+        letter = data.get(LETTER, "unknown")
         start_pos = data.get(START_POS, "no_start")
         end_pos = data.get(END_POS, "no_end")
         return f"{letter}_{start_pos}_{end_pos}_{grid_mode}"

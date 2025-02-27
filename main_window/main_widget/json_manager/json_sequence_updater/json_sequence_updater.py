@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from data.constants import BEAT
+
 
 from .json_duration_updater import JsonDurationUpdater
 from .json_prop_rot_dir_updater import JsonstrUpdater
@@ -37,19 +39,19 @@ class JsonSequenceUpdater:
         beat_data["duration"] = beat.duration
         number = self.get_next_beat_number(sequence_beats)
         view.number = number
-        beat_data["beat"] = number
+        beat_data[BEAT] = number
 
         sequence_beats.append(beat_data)
 
         for beat_num in range(view.number + 1, view.number + beat.duration):
             placeholder_entry = {
-                "beat": beat_num,
+                BEAT: beat_num,
                 "is_placeholder": True,
                 "parent_beat": view.number,
             }
             sequence_beats.append(placeholder_entry)
 
-        sequence_beats.sort(key=lambda entry: entry.get("beat", float("inf")))
+        sequence_beats.sort(key=lambda entry: entry.get(BEAT, float("inf")))
         sequence_data = [sequence_metadata] + sequence_beats
 
         self.json_manager.loader_saver.save_current_sequence(sequence_data)
@@ -57,7 +59,7 @@ class JsonSequenceUpdater:
     def get_next_beat_number(self, sequence_beats):
         if not sequence_beats:
             return 1
-        return max(beat["beat"] for beat in sequence_beats) + 1
+        return max(beat[BEAT] for beat in sequence_beats) + 1
 
     def add_placeholder_entry_to_current_sequence(
         self, beat_num: int, parent_beat: int
@@ -67,13 +69,13 @@ class JsonSequenceUpdater:
         sequence_beats = sequence_data[1:]
 
         placeholder_entry = {
-            "beat": beat_num,
+            BEAT: beat_num,
             "is_placeholder": True,
             "parent_beat": parent_beat,
         }
         sequence_beats.append(placeholder_entry)
 
-        sequence_beats.sort(key=lambda entry: entry.get("beat", float("inf")))
+        sequence_beats.sort(key=lambda entry: entry.get(BEAT, float("inf")))
         sequence_data = [sequence_metadata] + sequence_beats
 
         self.json_manager.loader_saver.save_current_sequence(sequence_data)

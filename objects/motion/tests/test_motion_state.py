@@ -9,8 +9,8 @@ def test_motion_state_updates_with_partial_data():
 
     new_data = {
         "color": RED,
-        "turns": 1.5,
-        "end_loc": "s",
+        TURNS: 1.5,
+        END_LOC: "s",
     }
 
     state.update_motion_state(new_data)

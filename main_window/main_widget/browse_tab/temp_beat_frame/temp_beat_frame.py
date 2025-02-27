@@ -4,7 +4,15 @@ from PyQt6.QtCore import Qt
 
 
 from base_widgets.base_beat_frame import BaseBeatFrame
-from data.constants import BLUE_ATTRIBUTES, END_ORI, END_POS, RED_ATTRIBUTES, START_ORI, START_POS
+from data.constants import (
+    BLUE_ATTRIBUTES,
+    END_ORI,
+    END_POS,
+    RED_ATTRIBUTES,
+    SEQUENCE_START_POSITION,
+    START_ORI,
+    START_POS,
+)
 from main_window.main_widget.browse_tab.temp_beat_frame.temp_beat_frame_layout_manager import (
     TempBeatFrameLayoutManager,
 )
@@ -139,7 +147,7 @@ class TempBeatFrame(BaseBeatFrame):
         self.json_manager.start_pos_handler.set_start_position_data(start_pos_beat)
         self.start_pos_view.set_start_pos(start_pos_beat)
         for pictograph_data in current_sequence_json[1:]:
-            if pictograph_data.get("sequence_start_position"):
+            if pictograph_data.get(SEQUENCE_START_POSITION):
                 continue
             self.populate_sequence(pictograph_data)
 

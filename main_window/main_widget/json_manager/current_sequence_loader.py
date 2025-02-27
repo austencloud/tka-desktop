@@ -1,5 +1,5 @@
 import json
-from data.constants import DIAMOND
+from data.constants import DIAMOND, GRID_MODE
 from utilities.path_helpers import get_user_editable_resource_path
 
 
@@ -31,7 +31,7 @@ class CurrentSequenceLoader:
                 "author": "",  # Placeholder, will be updated later
                 "level": 0,
                 "prop_type": "",  # Placeholder, will be updated later
-                "grid_mode": DIAMOND,
+                GRID_MODE: DIAMOND,
                 "is_circular": False,
                 "is_permutable": False,
                 "is_strictly_rotated_permutation": False,

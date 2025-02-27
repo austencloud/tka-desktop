@@ -4,6 +4,7 @@ from PIL import Image, PngImagePlugin
 from PyQt6.QtWidgets import QMessageBox
 import json
 
+from data.constants import GRID_MODE, SEQUENCE_START_POSITION
 from main_window.main_widget.thumbnail_finder import ThumbnailFinder
 from utilities.path_helpers import get_images_and_data_path
 
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
     pass
 
 
-class MetaDataExtractor:        
+class MetaDataExtractor:
     def get_tags(self, file_path: str) -> list[str]:
         """Retrieve the list of tags from the metadata."""
         metadata = self.extract_metadata_from_file(file_path)
@@ -110,7 +111,7 @@ class MetaDataExtractor:
     def get_start_pos(self, file_path):
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata:
-            return metadata["sequence"][1]["sequence_start_position"]
+            return metadata["sequence"][1][SEQUENCE_START_POSITION]
         return
 
     def get_metadata_and_thumbnail_dict(self) -> list[dict[str, str]]:
@@ -134,7 +135,7 @@ class MetaDataExtractor:
     def get_grid_mode(self, file_path):
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata:
-            return metadata["sequence"][0]["grid_mode"]
+            return metadata["sequence"][0][GRID_MODE]
         return
 
     def get_full_metadata(self, file_path: str) -> dict:

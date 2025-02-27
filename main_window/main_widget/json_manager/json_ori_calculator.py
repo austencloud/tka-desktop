@@ -53,7 +53,12 @@ class JsonOriCalculator:
             end_ori = self.calculate_turn_orientation(
                 motion_type, turns, start_ori, prop_rot_dir, start_loc, end_loc
             )
-
+        # reaise a value error if the end ori is None
+        if end_ori is None:
+            raise ValueError(
+                "Calculated end orientation cannot be None. "
+                "Please check the input data and orientation calculator."
+            )
         return end_ori
 
     def calculate_turn_orientation(

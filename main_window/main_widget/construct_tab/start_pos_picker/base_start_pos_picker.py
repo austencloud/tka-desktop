@@ -6,7 +6,7 @@ from base_widgets.pictograph.elements.views.start_pos_picker_pictograph_view imp
 )
 from data.positions import box_positions, diamond_positions
 from base_widgets.pictograph.pictograph import Pictograph
-from data.constants import BOX, DIAMOND, END_POS, START_POS
+from data.constants import BOX, DIAMOND, END_POS, GRID_MODE, LETTER, START_POS
 from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
@@ -32,7 +32,7 @@ class BaseStartPosPicker(QWidget):
         No context managers, no flipping global states.
         """
         local_dict = deepcopy(pictograph_data)
-        local_dict["grid_mode"] = target_grid_mode
+        local_dict[GRID_MODE] = target_grid_mode
 
         pictograph_key = self.generate_pictograph_key(local_dict, target_grid_mode)
         if pictograph_key in self.pictograph_cache:
@@ -54,7 +54,7 @@ class BaseStartPosPicker(QWidget):
         return pictograph
 
     def generate_pictograph_key(self, pictograph_data: dict, grid_mode: str) -> str:
-        letter = pictograph_data.get("letter", "unknown")
+        letter = pictograph_data.get(LETTER, "unknown")
         start_pos = pictograph_data.get(START_POS, "no_start")
         end_pos = pictograph_data.get(END_POS, "no_end")
         return f"{letter}_{start_pos}_{end_pos}_{grid_mode}"

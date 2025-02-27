@@ -5,13 +5,18 @@ from Enums.letters import Letter
 from data.constants import (
     BLUE,
     BLUE_ATTRIBUTES,
+    END_LOC,
     END_POS,
     IN,
     LETTER,
+    MOTION_TYPE,
+    PROP_ROT_DIR,
     RED,
     RED_ATTRIBUTES,
+    START_LOC,
     START_ORI,
     START_POS,
+    TURNS,
 )
 from utilities.path_helpers import get_images_and_data_path
 
@@ -46,8 +51,8 @@ class PictographDataLoader:
     def _convert_turns_str_to_int_or_float(self, letters):
         for letter in letters:
             for motion in letters[letter]:
-                motion[BLUE_ATTRIBUTES]["turns"] = int(motion[BLUE_ATTRIBUTES]["turns"])
-                motion[RED_ATTRIBUTES]["turns"] = int(motion[RED_ATTRIBUTES]["turns"])
+                motion[BLUE_ATTRIBUTES][TURNS] = int(motion[BLUE_ATTRIBUTES][TURNS])
+                motion[RED_ATTRIBUTES][TURNS] = int(motion[RED_ATTRIBUTES][TURNS])
 
     def add_turns_and_ori_to_pictograph_data(self, df: pd.DataFrame) -> pd.DataFrame:
         for index, row in df.iterrows():
@@ -62,12 +67,12 @@ class PictographDataLoader:
     ) -> pd.DataFrame:
         def nest_attributes(row, color_prefix):
             return {
-                "motion_type": row[f"{color_prefix}_motion_type"],
+                MOTION_TYPE: row[f"{color_prefix}_motion_type"],
                 START_ORI: row[f"{color_prefix}_start_ori"],
-                "prop_rot_dir": row[f"{color_prefix}_prop_rot_dir"],
-                "start_loc": row[f"{color_prefix}_start_loc"],
-                "end_loc": row[f"{color_prefix}_end_loc"],
-                "turns": row[f"{color_prefix}_turns"],
+                PROP_ROT_DIR: row[f"{color_prefix}_prop_rot_dir"],
+                START_LOC: row[f"{color_prefix}_start_loc"],
+                END_LOC: row[f"{color_prefix}_end_loc"],
+                TURNS: row[f"{color_prefix}_turns"],
             }
 
         df[BLUE_ATTRIBUTES] = df.apply(lambda row: nest_attributes(row, BLUE), axis=1)
@@ -102,7 +107,7 @@ class PictographDataLoader:
         from Enums.letters import Letter
 
         target_letter = next(
-            (l for l in Letter if l.value == simplified_dict["letter"]), None
+            (l for l in Letter if l.value == simplified_dict[LETTER]), None
         )
         if not target_letter:
             print(
@@ -115,9 +120,9 @@ class PictographDataLoader:
             if (
                 pdict.get(START_POS) == simplified_dict[START_POS]
                 and pdict.get(END_POS) == simplified_dict[END_POS]
-                and pdict.get(BLUE_ATTRIBUTES, {}).get("motion_type")
+                and pdict.get(BLUE_ATTRIBUTES, {}).get(MOTION_TYPE)
                 == simplified_dict["blue_motion_type"]
-                and pdict.get(RED_ATTRIBUTES, {}).get("motion_type")
+                and pdict.get(RED_ATTRIBUTES, {}).get(MOTION_TYPE)
                 == simplified_dict["red_motion_type"]
             ):
                 return deepcopy(pdict)

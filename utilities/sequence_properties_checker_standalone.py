@@ -50,7 +50,7 @@ class SequencePropertiesCheckerStandalone:
         self.rotated_color_swapped_checker = RotatedColorSwappedPermutationChecker(self)
 
     def calculate_word(self) -> str:
-        word = "".join(entry["letter"] for entry in self.sequence[1:])
+        word = "".join(entry[LETTER] for entry in self.sequence[1:])
         simplified_word = WordSimplifier.simplify_repeated_word(word)
         return simplified_word
 

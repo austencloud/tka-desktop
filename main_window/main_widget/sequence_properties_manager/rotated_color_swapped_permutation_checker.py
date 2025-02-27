@@ -117,7 +117,7 @@ class RotatedColorSwappedPermutationChecker:
         length = len(sequence)
 
         # Extract the word pattern
-        word_pattern = "".join([entry["letter"] for entry in sequence])
+        word_pattern = "".join([entry[LETTER] for entry in sequence])
         expected_word_pattern = word_pattern[
             : length // 4
         ]  # Expecting 4 repetitions of the pattern

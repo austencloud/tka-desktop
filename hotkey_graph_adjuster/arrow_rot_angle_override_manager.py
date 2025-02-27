@@ -86,9 +86,10 @@ class ArrowRotAngleOverrideManager:
         )
         turn_data = letter_data.get(turns_tuple, {})
         letter_data[turns_tuple] = turn_data
-        data[
-            self.hotkey_graph_adjuster.ge_view.get_current_pictograph().state.grid_mode
-        ][ori_key][letter_enum.value] = letter_data
+        data.get(
+            self.hotkey_graph_adjuster.ge_view.get_current_pictograph().state.grid_mode,
+            {},
+        ).get(ori_key, {})[letter_enum.value] = letter_data
         if rot_angle_key in turn_data:
             del turn_data[rot_angle_key]
             self._update_mirrored_entry_with_rotation_override_removal(rot_angle_key)

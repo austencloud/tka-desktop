@@ -6,7 +6,9 @@
     "anti": [-75, 65]
   },
   "Z": {
-    "(s, 1, 1.5)": {
+    "(s, 0, 0.5)": {
+      "static_to_layer2_rot_angle_override": true,
+      "static": [-100.0, -80.0]
     }
   }
 }

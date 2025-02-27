@@ -9,6 +9,7 @@ from data.constants import (
     COUNTER_CLOCKWISE,
     DASH,
     END_POS,
+    MOTION_TYPE,
     RED_ATTRIBUTES,
     STATIC,
 )
@@ -138,9 +139,9 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         if level == 2 or level == 3:
             next_beat = self.set_turns(next_beat, turn_blue, turn_red)
-        if next_beat[BLUE_ATTRIBUTES]["motion_type"] in [DASH, STATIC] or next_beat[
+        if next_beat[BLUE_ATTRIBUTES][MOTION_TYPE] in [DASH, STATIC] or next_beat[
             RED_ATTRIBUTES
-        ]["motion_type"] in [DASH, STATIC]:
+        ][MOTION_TYPE] in [DASH, STATIC]:
             self.update_dash_static_prop_rot_dirs(
                 next_beat,
                 prop_continuity,

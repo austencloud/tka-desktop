@@ -71,16 +71,28 @@ class DirectionalTupleGenerator:
         },
         BOX: {
             (BLUE, (NORTHEAST, SOUTHWEST)): lambda x, y: [
-                (x, y), (y, x), (-x, -y), (y, x)
+                (x, y),
+                (y, x),
+                (-x, -y),
+                (y, x),
             ],
             (BLUE, (NORTHWEST, SOUTHEAST)): lambda x, y: [
-                (x, -y), (-y, -x), (x, -y), (y, x)
+                (x, -y),
+                (-y, -x),
+                (x, -y),
+                (y, x),
             ],
             (RED, (NORTHEAST, SOUTHWEST)): lambda x, y: [
-                (x, y), (y, x), (-x, -y), (y, x)
+                (x, y),
+                (y, x),
+                (-x, -y),
+                (y, x),
             ],
             (RED, (SOUTHEAST, NORTHWEST)): lambda x, y: [
-                (-x, y), (-y, -x), (-x, y), (y, x)
+                (-x, y),
+                (-y, -x),
+                (-x, y),
+                (y, x),
             ],
         },
     }
@@ -92,7 +104,7 @@ class DirectionalTupleGenerator:
     }
 
     # Mappings for PRO and ANTI motions
-    _shift_mapping = {
+    _shift_mapping_diamond = {
         PRO: {
             CLOCKWISE: lambda x, y: [(x, y), (-y, x), (-x, -y), (y, -x)],
             COUNTER_CLOCKWISE: lambda x, y: [(-y, -x), (x, -y), (y, x), (-x, y)],
@@ -101,6 +113,17 @@ class DirectionalTupleGenerator:
             CLOCKWISE: lambda x, y: [(-y, -x), (x, -y), (y, x), (-x, y)],
             COUNTER_CLOCKWISE: lambda x, y: [(x, y), (-y, x), (-x, -y), (y, -x)],
         },
+    }
+    _shift_mapping_box = {
+        PRO: {
+            CLOCKWISE: lambda x, y: [(-x, y), (-y, -x), (x, -y), (y, x)],
+            COUNTER_CLOCKWISE: lambda x, y: [(x, y), (-y, x), (-x, -y), (y, -x)],
+        },
+        ANTI: {
+            CLOCKWISE: lambda x, y: [(-x, y), (-y, -x), (x, -y), (y, x)],
+            COUNTER_CLOCKWISE: lambda x, y: [(x, y), (-y, x), (-x, -y), (y, -x)],
+        },
+        # Optionally, add a mapping for FLOAT if needed.
     }
 
     _dash_mapping = {
@@ -174,12 +197,21 @@ class DirectionalTupleGenerator:
                 CW_HANDPATH: lambda x, y: [(x, y), (-y, x), (-x, -y), (y, -x)],
                 CCW_HANDPATH: lambda x, y: [(-y, -x), (x, -y), (y, x), (-x, y)],
             }
-            return float_mapping.get(handpath_direction, lambda x, y: [(x, y)] * 4)(x, y)
+            return float_mapping.get(handpath_direction, lambda x, y: [(x, y)] * 4)(
+                x, y
+            )
 
-        return self._shift_mapping.get(self.motion.state.motion_type, {}).get(
-            self.motion.state.prop_rot_dir, lambda x, y: [(x, y)] * 4
-        )(x, y)
+        # Choose the correct mapping based on grid mode.
+        if self.grid_mode == DIAMOND:
+            mapping = self._shift_mapping_diamond.get(self.motion.state.motion_type, {})
+        elif self.grid_mode == BOX:
+            mapping = self._shift_mapping_box.get(self.motion.state.motion_type, {})
+        else:
+            mapping = {}
 
+        return mapping.get(self.motion.state.prop_rot_dir, lambda x, y: [(x, y)] * 4)(
+            x, y
+        )
 
     def _handle_dash_tuples(self, x: int, y: int) -> List[Tuple[int, int]]:
         """Handles DASH motion types."""
