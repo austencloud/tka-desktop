@@ -12,6 +12,9 @@ from main_window.main_widget.learn_tab.lesson_selector.lesson_selector_button im
 from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
     LessonWidget,
 )
+from main_window.main_widget.learn_tab.lesson_selector_button import (
+    LessonSelectorButton,
+)
 
 from .lesson_mode_toggle_widget import LessonModeToggleWidget
 
@@ -79,6 +82,7 @@ class LessonSelector(QWidget):
 
         # Create the button
         button = LessonSelectorButton(button_text)
+        button.setCursor(Qt.CursorShape.PointingHandCursor)
         button.clicked.connect(callback)
         self.buttons[button_text] = button
 
@@ -99,6 +103,7 @@ class LessonSelector(QWidget):
         """Resize title, buttons, and descriptions based on window size."""
         self._resize_title_label()
         self._resize_lesson_layouts()
+        self._resize_buttons()
         super().resizeEvent(event)
 
     def _resize_title_label(self):
