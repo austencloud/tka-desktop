@@ -23,10 +23,7 @@ class WidgetAndStackFader:
         respecting the fade settings."""
         current_widget = stack.currentWidget()
         next_widget = stack.widget(new_index)
-        if not current_widget or not next_widget or stack.currentIndex() == new_index:
-            return
 
-        # Respect fade settings: if fades are disabled, immediately switch and call callback.
         if not self.manager.fades_enabled():
             stack.setCurrentIndex(new_index)
             if callback:

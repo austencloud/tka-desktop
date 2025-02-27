@@ -2,10 +2,12 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_deleter.beat_deleter import BeatDeleter
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_deleter.beat_deleter import (
+        BeatDeleter,
+    )
 
 
-class StartPositionDeleter:
+class AllBeatsDeleter:
     def __init__(self, deleter: "BeatDeleter"):
         self.deleter = deleter
         self.main_widget = deleter.main_widget

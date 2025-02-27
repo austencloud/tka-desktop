@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from main_window.settings_manager.global_settings.app_context import AppContext
 from .first_beat_deleter import FirstBeatDeleter
 from .non_first_beat_deleter import NonFirstBeatDeleter
-from .start_pos_deleter import StartPositionDeleter
+from .all_beats_deleter import AllBeatsDeleter
 from .widget_collector import WidgetCollector
 from ..beat_view import BeatView
 from ..start_pos_beat_view import StartPositionBeatView
@@ -24,7 +24,7 @@ class BeatDeleter:
 
         # Instantiate helpers
         self.widget_collector = WidgetCollector(self)
-        self.start_position_deleter = StartPositionDeleter(self)
+        self.start_position_deleter = AllBeatsDeleter(self)
         self.first_beat_deleter = FirstBeatDeleter(self)
         self.other_beat_deleter = NonFirstBeatDeleter(self)
 
@@ -86,4 +86,3 @@ class BeatDeleter:
             callback=lambda: self.reset_widgets(show_indicator),
             duration=300,
         )
-
