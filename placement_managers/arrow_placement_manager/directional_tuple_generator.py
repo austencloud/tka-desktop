@@ -1,5 +1,6 @@
 import logging
 from typing import List, Tuple, Dict
+from Enums.letters import LetterType
 from data.constants import (
     PRO,
     ANTI,
@@ -95,7 +96,7 @@ class DirectionalTupleGenerator:
 
         # Handle special Type5 cases
         if (
-            self.motion.pictograph.state.letter_type == "Type5"
+            self.motion.pictograph.state.letter_type == LetterType.Type5
             and self.motion.state.turns == 0
         ):
             return self._handle_type5_zero_turns(x, y)

@@ -7,6 +7,7 @@ from .user_profile_tab.user_profile_tab import UserProfileTab
 from .visibility_tab.visibility_tab import VisibilityTab
 from .settings_dialog_sidebar import SettingsDialogSidebar
 from .settings_dialog_tab_manager import SettingsDialogTabManager
+
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 
@@ -50,11 +51,11 @@ class SettingsDialogUI(QWidget):
 
         horizontal_main_layout.addWidget(self.sidebar)
         horizontal_main_layout.addWidget(self.content_area, stretch=1)
-        
+
         self.main_vertical_layout.addLayout(horizontal_main_layout)
         self.main_vertical_layout.addWidget(self.action_buttons)
-        self.setLayout(self.main_vertical_layout)
-        
+        # self.setLayout(self.main_vertical_layout)
+
         self.sidebar.tab_selected.connect(self.tab_selection_manager.on_tab_selected)
 
     def _on_tab_selected(self, index: int):

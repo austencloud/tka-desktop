@@ -32,9 +32,9 @@ class ArrowAdjustmentCalculator:
         """Calculates the adjustment for an arrow based on special placements, motion type, and grid mode."""
 
         if not arrow.motion.pictograph.state.letter:
-            logger.warning(
-                f"Arrow '{arrow}' has no assigned letter. Defaulting to (0, 0)."
-            )
+            # logger.warning(
+            #     f"Arrow '{arrow}' has no assigned letter. Defaulting to (0, 0)."
+            # )
             return QPointF(0, 0)
 
         adjustment = self._calculate_adjustment(arrow)

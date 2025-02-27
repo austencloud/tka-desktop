@@ -26,7 +26,7 @@ class FontColorUpdater:
             GenerateTabFontColorUpdater,
             BrowseTabFontColorUpdater,
             LearnTabFontColorUpdater,
-            WriteTabFontColorUpdater,
+            # WriteTabFontColorUpdater,
         ]
 
     def update_main_widget_font_colors(self, bg_type: str):

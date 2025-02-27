@@ -42,7 +42,6 @@ class WidgetFader:
                 callback()
             return
 
-        # Ensure lesson indicator label is NOT included when fading in a new question
         filtered_widgets = [
             widget
             for widget in widgets

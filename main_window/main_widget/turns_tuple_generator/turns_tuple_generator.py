@@ -49,7 +49,7 @@ class TurnsTupleGenerator:
     def __init__(self):
         self.generators: list[BaseTurnsTupleGenerator] = {
             "Type1Hybrid": Type1HybridTurnsTupleGenerator(),
-            "Type1NonHybrid": ColorTurnsTupleGenerator(),
+            "Color": ColorTurnsTupleGenerator(),
             LetterType.Type2: Type2TurnsTupleGenerator(),
             LetterType.Type3: Type3TurnsTupleGenerator(),
             LetterType.Type4: Type4TurnsTupleGenerator(),
@@ -85,7 +85,7 @@ class TurnsTupleGenerator:
                 LetterConditions.TYPE1_NON_HYBRID
             )
         ]:
-            return "Type1NonHybrid"
+            return "Color"
         special_cases = {
             "S": "LeadState",
             "T": "LeadState",

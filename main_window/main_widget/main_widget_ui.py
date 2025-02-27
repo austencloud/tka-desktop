@@ -81,7 +81,7 @@ class MainWidgetUI:
         mw.generate_tab = GenerateTab(mw)
         mw.browse_tab = BrowseTab(mw)
         mw.learn_tab = LearnTab(mw)
-        mw.write_tab = WriteTab(mw)
+        # mw.write_tab = WriteTab(mw)
 
         mw.settings_dialog = SettingsDialog(mw)
         mw.background_widget = MainBackgroundWidget(mw)
@@ -97,17 +97,15 @@ class MainWidgetUI:
 
         mw.left_stack.addWidget(mw.sequence_workbench)  # 0
         mw.left_stack.addWidget(mw.codex)  # 1
-        mw.left_stack.addWidget(mw.write_tab.act_sheet)  # 2
-        mw.left_stack.addWidget(mw.browse_tab.sequence_picker.filter_stack)  # 3
-        mw.left_stack.addWidget(mw.browse_tab.sequence_picker)  # 4
+        mw.left_stack.addWidget(mw.browse_tab.sequence_picker.filter_stack)  # 2
+        mw.left_stack.addWidget(mw.browse_tab.sequence_picker)  # 3
 
         mw.right_stack.addWidget(mw.construct_tab.start_pos_picker)  # 0
         mw.right_stack.addWidget(mw.construct_tab.advanced_start_pos_picker)  # 1
         mw.right_stack.addWidget(mw.construct_tab.option_picker)  # 2
         mw.right_stack.addWidget(mw.generate_tab)  # 3
         mw.right_stack.addWidget(mw.learn_tab)  # 4
-        mw.right_stack.addWidget(mw.write_tab)  # 5
-        mw.right_stack.addWidget(mw.browse_tab.sequence_viewer)  # 6
+        mw.right_stack.addWidget(mw.browse_tab.sequence_viewer)  # 5
 
     def _initialize_layout(self):
         mw = self.mw

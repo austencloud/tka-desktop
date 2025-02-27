@@ -31,13 +31,15 @@ class PictographState:
         for key, value in pictograph_data.items():
             if key == "letter":
                 try:
-                    letter_obj = Letter.get_letter(value)
+                    letter_obj: Letter = Letter.get_letter(value)
                 except KeyError:
                     letter_obj = value
                 self.letter = letter_obj
                 self.pictograph_data["letter"] = (
                     letter_obj.value if hasattr(letter_obj, "value") else letter_obj
                 )
+                self.letter_type = LetterType.get_letter_type(letter_obj)
+                self.pictograph_data["letter_type"] = self.letter_type.name
             elif key in ("blue_attributes", "red_attributes"):
                 if key not in self.pictograph_data:
                     self.pictograph_data[key] = {}

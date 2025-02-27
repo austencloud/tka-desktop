@@ -2,15 +2,16 @@ from typing import TYPE_CHECKING
 
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.settings_manager.global_settings.app_context import AppContext
+from utilities.path_helpers import get_images_and_data_path
 
 from .grid_data import GridData
 from .grid_item import GridItem
 from .non_radial_points_group import NonRadialPointsGroup
 
 if TYPE_CHECKING:
-    from ..pictograph import Pictograph
-
-GRID_DIR = "images/grid/"
+    from base_widgets.pictograph.pictograph import Pictograph
+    
+GRID_DIR = get_images_and_data_path("images/grid/")
 
 
 class Grid:

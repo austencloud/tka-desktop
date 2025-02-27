@@ -18,7 +18,7 @@ class ActLoader:
         """Load an act from a JSON file in the acts directory."""
         file_path = get_user_editable_resource_path(filename)
         if not os.path.isfile(file_path):
-            print(f"No saved act found at {file_path}")
+            # print(f"No saved act found at {file_path}")
             self.populate_act_from_data(self.default_act)
             return None
 

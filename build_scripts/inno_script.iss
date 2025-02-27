@@ -40,8 +40,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "F:\CODE\the_kinetic_constructor\dist\main\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "F:\CODE\the_kinetic_constructor\dist\main\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "F:\CODE\the_kinetic_constructor-desktop\dist\main\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "F:\CODE\the_kinetic_constructor-desktop\dist\main\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]

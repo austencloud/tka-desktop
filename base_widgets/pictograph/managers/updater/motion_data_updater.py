@@ -89,12 +89,12 @@ class MotionDataUpdater:
             logger.warning(f"Could not show graphics for {color} motion: {e}")
 
     def _extract_motion_dataset(self, data: dict) -> dict:
-        hashable_dict = self._dict_to_tuple(data)
-        return self._get_motion_dataset_from_tuple(hashable_dict)
+        hashable_tuple = self._dict_to_tuple(data)
+        return self._get_motion_dataset_from_tuple(hashable_tuple)
 
     @lru_cache(maxsize=None)
-    def _get_motion_dataset_from_tuple(self, hashable_dict: tuple) -> dict:
-        data = self._tuple_to_dict(hashable_dict)
+    def _get_motion_dataset_from_tuple(self, hashable_tuple: tuple) -> dict:
+        data = self._tuple_to_dict(hashable_tuple)
         motion_attributes = [
             "motion_type",
             "start_loc",
@@ -131,11 +131,19 @@ class MotionDataUpdater:
         return motion_dataset
 
     def _dict_to_tuple(self, d: dict) -> tuple:
+        def make_hashable(value):
+            if isinstance(value, dict):
+                return self._dict_to_tuple(value)
+            elif isinstance(value, list):  
+                return tuple(make_hashable(v) for v in value)  # Convert lists to tuples
+            return value
+
         return tuple(
-            (k, self._dict_to_tuple(v) if isinstance(v, dict) else v)
+            (k, make_hashable(v))
             for k, v in sorted(d.items())
             if k != self.pictograph.state.letter.value
         )
+
 
     def _tuple_to_dict(self, t: tuple) -> dict:
         return {

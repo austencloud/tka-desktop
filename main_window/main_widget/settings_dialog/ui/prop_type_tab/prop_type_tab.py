@@ -4,6 +4,7 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 from Enums.PropTypes import PropType
 from main_window.main_widget.settings_dialog.card_frame import CardFrame
+from utilities.path_helpers import get_images_and_data_path
 from ...ui.prop_type_tab.prop_button import (
     PropButton,
 )
@@ -50,7 +51,7 @@ class PropTypeTab(QWidget):
         row, col = 0, 0
         for prop, icon_path in props.items():
             # Create the icon‐only button
-            button = PropButton(prop, icon_path, self, self._set_current_prop_type)
+            button = PropButton(prop, get_images_and_data_path(icon_path), self, self._set_current_prop_type)
             self.buttons[prop] = button
 
             # Create a label for the prop name

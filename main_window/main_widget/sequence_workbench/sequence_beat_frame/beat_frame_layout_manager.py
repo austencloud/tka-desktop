@@ -34,10 +34,12 @@ class BeatFrameLayoutManager:
 
     def calculate_layout(self, beat_count: int) -> tuple[int, int]:
         """Get the default layout for a given beat count from settings."""
-        return AppContext.settings_manager().sequence_layout.get_layout_setting(
+        layout = AppContext.settings_manager().sequence_layout.get_layout_setting(
             str(beat_count)
         )
-
+        # print the layout
+        return layout
+        
     def get_cols(self):
         layout = self.beat_frame.layout
         cols = 0

@@ -3,13 +3,15 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal
 
+from utilities.path_helpers import get_app_data_path, get_images_and_data_path
+
 from .layout_dropdown import LayoutDropdown
 from .select_layout_label import SelectLayoutLabel
 
 if TYPE_CHECKING:
     from ..layout_controls import LayoutControls
 
-BEAT_FRAME_LAYOUT_OPTIONS_PATH = "data/beat_frame_layout_options.json"
+BEAT_FRAME_LAYOUT_OPTIONS_PATH = get_images_and_data_path("data/beat_frame_layout_options.json")
 
 
 class LayoutSelector(QFrame):
@@ -36,6 +38,10 @@ class LayoutSelector(QFrame):
     def load_beat_frame_layout_options(
         self, file_path: str
     ) -> dict[int, list[list[int]]]:
+        # print hte file url and if it is successful
+        print(file_path)
+        
+        
         try:
             with open(file_path, "r") as f:
                 return {int(key): value for key, value in json.load(f).items()}
