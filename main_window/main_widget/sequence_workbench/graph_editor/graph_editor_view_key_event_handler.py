@@ -36,12 +36,8 @@ class GraphEditorViewKeyEventHandler:
                 arrow=AppContext.get_selected_arrow(),
             )
         elif key == Qt.Key.Key_C:
-            self.hotkey_graph_adjuster.prop_placement_override_manager.handle_prop_placement_override(
-                key
-            )
+            self.hotkey_graph_adjuster.prop_placement_override_manager.handle_prop_placement_override()
         else:
             return False
-
-
 
         return True

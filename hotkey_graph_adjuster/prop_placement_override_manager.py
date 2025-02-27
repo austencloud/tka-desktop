@@ -19,7 +19,7 @@ class PropPlacementOverrideManager:
         self.turns_tuple_generator = hotkey_adjuster.turns_tuple_generator
         self.beta_offset_calculator = BetaOffsetCalculator(self)
 
-    def handle_prop_placement_override(self, key) -> None:
+    def handle_prop_placement_override(self) -> None:
         self.ge_pictograph = self.view.get_current_pictograph()
         self.special_placements = (
             AppContext.special_placement_loader().load_or_return_special_placements()
