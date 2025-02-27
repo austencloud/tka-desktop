@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
+from data.constants import PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR, PRO, ANTI, FLOAT
 from objects.motion.prefloat_state_updater import PrefloatStateUpdater
 
 
@@ -22,11 +23,11 @@ class MotionState:
         self.prefloat_handler = PrefloatStateUpdater(self)
 
     def update_motion_state(self, motion_data: dict) -> None:
-        SHIFT_MOTIONS = ["pro", "anti", "float"]
+        SHIFT_MOTIONS = [PRO, ANTI, FLOAT]
 
         for key, value in motion_data.items():
             if value is not None:
-                if key in ["prefloat_motion_type", "prefloat_prop_rot_dir"]:
+                if key in [PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR]:
                     if self.motion_type in SHIFT_MOTIONS:
                         setattr(self, key, value)
                 else:

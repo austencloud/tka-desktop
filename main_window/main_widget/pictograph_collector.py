@@ -73,7 +73,7 @@ class PictographCollector:
     def _collect_from_graph_editor(self) -> list["Pictograph"]:
         sequence_workbench = self.main_widget.sequence_workbench
         graph_editor = sequence_workbench.graph_editor
-        return [graph_editor.pictograph_container.GE_view.pictograph]
+        return [graph_editor.pictograph_container.GE_view.get_current_pictograph()]
 
     def _collect_from_codex(self) -> list["Pictograph"]:
         codex = self.main_widget.codex

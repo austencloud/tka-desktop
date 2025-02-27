@@ -1,6 +1,7 @@
 {
   "Ψ": {
-    "(s, 1, 0.5)": {
+    "(o, 1, 1.5)": {
+      "static_from_layer2_rot_angle_override": true,
       "static_from_layer2": {}
     }
   }

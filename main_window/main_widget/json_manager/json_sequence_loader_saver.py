@@ -1,6 +1,9 @@
 import json
 from typing import TYPE_CHECKING
-from main_window.main_widget.json_manager.current_sequence_loader import CurrentSequenceLoader
+from data.constants import PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR
+from main_window.main_widget.json_manager.current_sequence_loader import (
+    CurrentSequenceLoader,
+)
 from utilities.word_simplifier import WordSimplifier
 
 if TYPE_CHECKING:
@@ -71,7 +74,9 @@ class JsonSequenceLoaderSaver:
     def clear_current_sequence_file(self):
         self.save_current_sequence([])
 
-    def _get_attribute_from_json(self, index: int, color: str, attribute: str, default=None):
+    def _get_attribute_from_json(
+        self, index: int, color: str, attribute: str, default=None
+    ):
         sequence = self.load_current_sequence_json()
         if sequence and index < len(sequence):
             return sequence[index][f"{color}_attributes"].get(attribute, default)
@@ -84,12 +89,17 @@ class JsonSequenceLoaderSaver:
         return self._get_attribute_from_json(index, color, "motion_type", 0)
 
     def get_prefloat_prop_rot_dir_from_json(self, index: int, color: str) -> int:
-        return self._get_attribute_from_json(index, color, "prefloat_prop_rot_dir", "")
+        return self._get_attribute_from_json(index, color, PREFLOAT_PROP_ROT_DIR, "")
 
     def get_prefloat_motion_type_from_json_at_index(
         self, index: int, color: str
     ) -> int:
-        return self._get_attribute_from_json(index, color, "prefloat_motion_type", self._get_attribute_from_json(index, color, "motion_type", 0))
+        return self._get_attribute_from_json(
+            index,
+            color,
+            PREFLOAT_MOTION_TYPE,
+            self._get_attribute_from_json(index, color, "motion_type", 0),
+        )
 
     def _get_last_pictograph_data(self, sequence: list[dict]) -> dict:
         return next(
@@ -103,11 +113,19 @@ class JsonSequenceLoaderSaver:
 
     def get_red_end_ori(self, sequence: list[dict]) -> int:
         last_pictograph_data = self._get_last_pictograph_data(sequence)
-        return last_pictograph_data.get("red_attributes", {}).get("end_ori", 0) if sequence else 0
+        return (
+            last_pictograph_data.get("red_attributes", {}).get("end_ori", 0)
+            if sequence
+            else 0
+        )
 
     def get_blue_end_ori(self, sequence: list[dict]) -> int:
         last_pictograph_data = self._get_last_pictograph_data(sequence)
-        return last_pictograph_data.get("blue_attributes", {}).get("end_ori", 0) if sequence else 0
+        return (
+            last_pictograph_data.get("blue_attributes", {}).get("end_ori", 0)
+            if sequence
+            else 0
+        )
 
     def load_last_beat_dict(self) -> dict:
         sequence = self.load_current_sequence_json()

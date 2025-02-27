@@ -3,7 +3,9 @@ from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from main_window.settings_manager.global_settings.app_context import AppContext
 from objects.prop.prop import Prop
-from placement_managers.prop_placement_manager.handlers.beta_offset_calculator import BetaOffsetCalculator
+from placement_managers.prop_placement_manager.handlers.beta_offset_calculator import (
+    BetaOffsetCalculator,
+)
 
 
 if TYPE_CHECKING:
@@ -12,9 +14,9 @@ if TYPE_CHECKING:
 
 class PropPlacementOverrideManager:
     def __init__(self, hotkey_adjuster: "HotkeyGraphAdjuster") -> None:
-        self.view = hotkey_adjuster.view
+        self.view = hotkey_adjuster.ge_view
         self.data_updater = (
-            hotkey_adjuster.view.get_current_pictograph().managers.arrow_placement_manager.data_updater
+            hotkey_adjuster.ge_view.get_current_pictograph().managers.arrow_placement_manager.data_updater
         )
         self.turns_tuple_generator = hotkey_adjuster.turns_tuple_generator
         self.beta_offset_calculator = BetaOffsetCalculator(self)
@@ -47,10 +49,12 @@ class PropPlacementOverrideManager:
             self.view.get_current_pictograph().managers.updater.update_pictograph()
             for (
                 pictograph
-            ) in self.ge_pictograph.main_widget.pictograph_collector.collect_all_pictographs():
+            ) in (
+                self.ge_pictograph.main_widget.pictograph_collector.collect_all_pictographs()
+            ):
                 if pictograph.state.letter == self.ge_pictograph.state.letter:
                     pictograph.managers.updater.update_pictograph()
-                    
+
         AppContext.special_placement_loader().reload()
 
     def _get_keys(self, beta_ori):
@@ -119,4 +123,3 @@ class PropPlacementOverrideManager:
         self.move_prop(prop_a, direction_a)
         self.move_prop(prop_b, direction_b)
         self.move_prop(prop_b, direction_b)
-    

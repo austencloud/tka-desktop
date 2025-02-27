@@ -1,6 +1,8 @@
+from multiprocessing import managers
 import os
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
+from base_widgets.pictograph import pictograph
 from data.constants import BLUE, RED
 from main_window.main_widget.json_manager.special_placement_saver import (
     SpecialPlacementSaver,
@@ -13,6 +15,7 @@ from placement_managers.attr_key_generator import (
 )
 
 if TYPE_CHECKING:
+    from hotkey_graph_adjuster.hotkey_graph_adjuster import HotkeyGraphAdjuster
     from .special_placement_data_updater import SpecialPlacementDataUpdater
 
 
@@ -21,12 +24,15 @@ class SpecialPlacementEntryRemover:
 
     def __init__(
         self,
-        data_updater: "SpecialPlacementDataUpdater",
+        hotkey_graph_adjuster: "HotkeyGraphAdjuster",
     ) -> None:
-        self.data_updater = data_updater
-        self.turns_tuple_generator = data_updater.turns_tuple_generator
+        self.turns_tuple_generator = hotkey_graph_adjuster.turns_tuple_generator
         self.special_placement_saver = SpecialPlacementSaver()
         self.special_placement_loader = AppContext.special_placement_loader()
+        self.ge_view = hotkey_graph_adjuster.ge_view
+        self.data_updater: "SpecialPlacementDataUpdater" = (
+            self.ge_view.pictograph.managers.arrow_placement_manager.data_updater
+        )
 
     def remove_special_placement_entry(self, letter: Letter, arrow: Arrow) -> None:
         ori_key = self.data_updater.ori_key_generator.generate_ori_key_from_motion(
@@ -41,6 +47,12 @@ class SpecialPlacementEntryRemover:
             self._process_removal(letter, arrow, ori_key, file_path, data)
             AppContext.special_placement_loader().reload()
         arrow.pictograph.managers.updater.placement_updater.update()
+        for (
+            pictograph
+        ) in self.ge_view.main_widget.pictograph_collector.collect_all_pictographs():
+            if pictograph.state.letter == letter:
+                pictograph.managers.updater.update_pictograph()
+                pictograph.managers.arrow_placement_manager.update_arrow_placements()
 
     def _process_removal(
         self, letter: Letter, arrow: Arrow, ori_key: str, file_path: str, data: dict
@@ -60,13 +72,13 @@ class SpecialPlacementEntryRemover:
                 )
             elif arrow.pictograph.managers.check.starts_from_standard_orientation():
                 self._handle_standard_start_ori_mirrored_entry_removal(
-                    letter, arrow, ori_key, letter_data, key
+                    letter, arrow, letter_data, key
                 )
             data[letter.value] = letter_data
             AppContext.special_placement_saver().save_json_data(data, file_path)
 
     def _handle_standard_start_ori_mirrored_entry_removal(
-        self, letter, arrow: Arrow, ori_key, letter_data, key
+        self, letter, arrow: Arrow, letter_data: dict, key
     ):
         if (
             arrow.motion.state.turns

@@ -2,6 +2,15 @@
   "Ω": {
     "(o, 0, 1)": {
       "anti_from_layer1": {}
+    },
+    "(o, 2.5, 3)": {
+      "anti_from_layer2": [-70.0, 70.0],
+      "static_from_layer1": [-15.0, 20.0],
+      "static_from_layer1_rot_angle_override": true
+    },
+    "(o, 2.5, 1)": {
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [-80.0, 0.0]
     }
   }
 }

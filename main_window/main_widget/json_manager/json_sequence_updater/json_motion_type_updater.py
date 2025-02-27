@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from data.constants import PREFLOAT_MOTION_TYPE
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_sequence_updater.json_sequence_updater import (
@@ -16,8 +18,8 @@ class JsonMotionTypeUpdater:
         sequence = self.json_manager.loader_saver.load_current_sequence()
         sequence[index][f"{color}_attributes"]["motion_type"] = motion_type
         if sequence[index][f"{color}_attributes"]["turns"] != "fl":
-            if "prefloat_motion_type" in sequence[index][f"{color}_attributes"]:
-                del sequence[index][f"{color}_attributes"]["prefloat_motion_type"]
+            if PREFLOAT_MOTION_TYPE in sequence[index][f"{color}_attributes"]:
+                del sequence[index][f"{color}_attributes"][PREFLOAT_MOTION_TYPE]
         self.json_manager.loader_saver.save_current_sequence(sequence)
 
     def update_json_prefloat_motion_type(
@@ -27,5 +29,5 @@ class JsonMotionTypeUpdater:
         if motion_type == "float":
             raise ValueError("prefloat_motion_type cannot be 'float'")
         else:
-            sequence[index][f"{color}_attributes"]["prefloat_motion_type"] = motion_type
+            sequence[index][f"{color}_attributes"][PREFLOAT_MOTION_TYPE] = motion_type
             self.json_manager.loader_saver.save_current_sequence(sequence)

@@ -54,7 +54,6 @@ class SpecialPlacementDataUpdater:
         self.grid_mode = self.getter.grid_mode()
         self.ori_key_generator = OriKeyGenerator(getter)
         self.turns_tuple_generator = TurnsTupleGenerator()
-        self.entry_remover = SpecialPlacementEntryRemover(self)
         self.mirrored_entry_manager = MirroredEntryManager(self)
 
     def _get_letter_data(self, letter: Letter, ori_key: str) -> dict:

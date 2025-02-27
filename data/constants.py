@@ -142,6 +142,9 @@ MOTION = "motion"
 PRO_TURNS = "pro_turns"
 ANTI_TURNS = "anti_turns"
 
+PREFLOAT_MOTION_TYPE = "prefloat_motion_type"
+PREFLOAT_PROP_ROT_DIR = "prefloat_prop_rot_dir"
+
 STATIC_HANDPATH = "static_handpath"
 DASH_HANDPATH = "dash_handpath"
 

@@ -9,7 +9,9 @@ from data.constants import (
     CW_HANDPATH,
     DASH,
     END_LOC,
+    FLOAT,
     IN,
+    MOTION_TYPE,
     OUT,
     PRO,
     PROP_ROT_DIR,
@@ -29,19 +31,19 @@ class JsonOriCalculator:
         self.handpath_calculator = HandpathCalculator()
 
     def calculate_end_ori(self, pictograph_data, color: str):
-        motion_type = pictograph_data[f"{color}_attributes"]["motion_type"]
-        
+        motion_type = pictograph_data[f"{color}_attributes"][MOTION_TYPE]
+
         if (pictograph_data[f"{color}_attributes"][TURNS]) != "fl":
             turns = float(pictograph_data[f"{color}_attributes"][TURNS])
         else:
             turns = pictograph_data[f"{color}_attributes"][TURNS]
-            
+
         start_ori = pictograph_data[f"{color}_attributes"][START_ORI]
         prop_rot_dir = pictograph_data[f"{color}_attributes"][PROP_ROT_DIR]
         start_loc = pictograph_data[f"{color}_attributes"][START_LOC]
         end_loc = pictograph_data[f"{color}_attributes"][END_LOC]
-        
-        if motion_type == "float":
+
+        if motion_type == FLOAT:
             handpath_direction = self.handpath_calculator.get_hand_rot_dir(
                 pictograph_data[f"{color}_attributes"][START_LOC],
                 pictograph_data[f"{color}_attributes"][END_LOC],
@@ -74,12 +76,12 @@ class JsonOriCalculator:
     def calculate_whole_turn_orientation(
         self, motion_type, turns, start_ori, prop_rot_dir
     ):
-        if motion_type in ["pro", "static"]:
+        if motion_type in [PRO, STATIC]:
             if turns % 2 == 0:
                 return start_ori
             else:
                 return self.switch_orientation(start_ori)
-        elif motion_type in ["anti", "dash"]:
+        elif motion_type in [ANTI, DASH]:
             if turns % 2 == 0:
                 return self.switch_orientation(start_ori)
             else:

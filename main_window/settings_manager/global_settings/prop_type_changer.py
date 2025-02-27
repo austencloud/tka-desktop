@@ -53,7 +53,7 @@ class PropTypeChanger:
         self, new_prop_type: PropType, pictographs: list["Pictograph"]
     ) -> None:
         for pictograph in pictographs:
-            if pictograph:
+            if pictograph.state.letter:
                 self.replace_props(new_prop_type, pictograph)
                 pictograph.state.prop_type = new_prop_type
                 pictograph.managers.updater.update_pictograph()

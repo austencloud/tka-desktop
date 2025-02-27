@@ -16,7 +16,7 @@ from .permutation_executors.mirrored_permutation_executor import (
     MirroredPermutationExecutor,
 )
 from .permutation_executors.rotated_permutation_executor import (
-    RotatedPermutationExecuter,
+    RotatedPermutationExecutor,
 )
 from ..turn_intensity_manager import TurnIntensityManager
 
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 class CircularSequenceBuilder(BaseSequenceBuilder):
     def __init__(self, generate_tab: "GenerateTab"):
         super().__init__(generate_tab)
-        self.rotated_executor = RotatedPermutationExecuter(self)
+        self.rotated_executor = RotatedPermutationExecutor(self)
         self.mirrored_executor = MirroredPermutationExecutor(self, False)
 
     def build_sequence(

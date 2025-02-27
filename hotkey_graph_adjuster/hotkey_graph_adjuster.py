@@ -4,6 +4,9 @@ from hotkey_graph_adjuster.arrow_movement_manager import ArrowMovementManager
 from hotkey_graph_adjuster.prop_placement_override_manager import (
     PropPlacementOverrideManager,
 )
+from hotkey_graph_adjuster.special_placement_data_updater.special_placement_entry_remover import (
+    SpecialPlacementEntryRemover,
+)
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
@@ -22,12 +25,11 @@ if TYPE_CHECKING:
 
 class HotkeyGraphAdjuster:
     def __init__(self, view: "GE_PictographView") -> None:
-        self.view = view
-        self.entry_remover = (
-            self.view.get_current_pictograph().managers.arrow_placement_manager.data_updater.entry_remover
-        )
+        self.ge_view = view
+
         self.movement_manager = ArrowMovementManager(view)
         self.turns_tuple_generator = TurnsTupleGenerator()
 
         self.rotation_angle_override_manager = ArrowRotAngleOverrideManager(self)
         self.prop_placement_override_manager = PropPlacementOverrideManager(self)
+        self.entry_remover = SpecialPlacementEntryRemover(self)

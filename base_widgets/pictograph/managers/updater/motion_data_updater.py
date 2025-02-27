@@ -4,7 +4,7 @@ from math import pi
 from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
-from data.constants import LEADING, RED, BLUE, TRAILING
+from data.constants import LEADING, PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR, RED, BLUE, TRAILING
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
@@ -112,20 +112,20 @@ class MotionDataUpdater:
                 for attr in motion_attributes
                 if attr in motion_data
             }
-            prefloat_motion = motion_data.get("prefloat_motion_type")
-            dataset_for_color["prefloat_motion_type"] = (
+            prefloat_motion = motion_data.get(PREFLOAT_MOTION_TYPE)
+            dataset_for_color[PREFLOAT_MOTION_TYPE] = (
                 None
                 if prefloat_motion == "float"
                 else motion_data.get(
-                    "prefloat_motion_type", dataset_for_color.get("motion_type")
+                    PREFLOAT_MOTION_TYPE, dataset_for_color.get("motion_type")
                 )
             )
-            prefloat_prop_rot = motion_data.get("prefloat_prop_rot_dir")
-            dataset_for_color["prefloat_prop_rot_dir"] = (
+            prefloat_prop_rot = motion_data.get(PREFLOAT_PROP_ROT_DIR)
+            dataset_for_color[PREFLOAT_PROP_ROT_DIR] = (
                 None
                 if prefloat_prop_rot == "no_rot"
                 else motion_data.get(
-                    "prefloat_prop_rot_dir", dataset_for_color.get("prop_rot_dir")
+                    PREFLOAT_PROP_ROT_DIR, dataset_for_color.get("prop_rot_dir")
                 )
             )
             motion_dataset[color] = dataset_for_color

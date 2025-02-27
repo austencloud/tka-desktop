@@ -1,5 +1,11 @@
 {
   "(o, 1, 1)": {
     "static_from_layer1": [75, 0]
+  },
+  "Ω": {
+    "(o, 2.5, 1)": {
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": {}
+    }
   }
 }

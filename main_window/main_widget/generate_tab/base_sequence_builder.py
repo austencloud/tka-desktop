@@ -10,6 +10,8 @@ from data.constants import (
     END_ORI,
     FLOAT,
     MOTION_TYPE,
+    PREFLOAT_MOTION_TYPE,
+    PREFLOAT_PROP_ROT_DIR,
     PRO,
     PROP_ROT_DIR,
     RED,
@@ -22,16 +24,14 @@ from data.constants import (
     TURNS,
 )
 
-from main_window.main_widget.generate_tab.sequence_builder_start_position_manager import (
-    SequenceBuilderStartPosManager,
-)
+from .sequence_builder_start_position_manager import SequenceBuilderStartPosManager
 from main_window.main_widget.sequence_workbench.sequence_workbench import (
     SequenceWorkbench,
 )
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
-    from main_window.main_widget.generate_tab.generate_tab import GenerateTab
+    from .generate_tab import GenerateTab
 
 
 class BaseSequenceBuilder:
@@ -85,14 +85,10 @@ class BaseSequenceBuilder:
         next_data["blue_attributes"][START_ORI] = blue_end_ori
         next_data["red_attributes"][START_ORI] = red_end_ori
 
-
     def update_end_orientations(self, next_data: dict[str, Any]) -> None:
         """
         Updates the end orientations of the next beat using the orientation calculator.
         """
-        next_data["blue_attributes"][END_ORI] = self.ori_calculator.calculate_end_ori(
-            next_data, BLUE
-        )
         blue_end_ori = self.ori_calculator.calculate_end_ori(next_data, BLUE)
         red_end_ori = self.ori_calculator.calculate_end_ori(next_data, RED)
 
@@ -152,13 +148,28 @@ class BaseSequenceBuilder:
         self, options: list[dict[str, Any]], blue_rot: str, red_rot: str
     ) -> list[dict[str, Any]]:
         """Filters options to match the given rotation directions."""
-        filtered = [
+        return [ 
             opt
             for opt in options
-            if opt["blue_attributes"].get(PROP_ROT_DIR) in [blue_rot, NO_ROT]
-            and opt["red_attributes"].get(PROP_ROT_DIR) in [red_rot, NO_ROT]
-        ]
-        return filtered if filtered else options
+            if (
+                opt["blue_attributes"].get(PROP_ROT_DIR) in [blue_rot, NO_ROT]
+                and opt["red_attributes"].get(PROP_ROT_DIR) in [red_rot, NO_ROT]
+            )
+        ] or options
+
+    def _set_float_turns(self, next_beat: dict[str, Any], color: str) -> None:
+        """
+        Handles cases where turns are 'fl', adjusting motion type and rotation properties.
+        """
+        attr = next_beat[f"{color}_attributes"]
+        if attr.get(MOTION_TYPE) in [PRO, ANTI]:
+            attr[TURNS] = "fl"
+            attr[PREFLOAT_MOTION_TYPE] = attr[MOTION_TYPE]
+            attr[PREFLOAT_PROP_ROT_DIR] = attr[PROP_ROT_DIR]
+            attr[MOTION_TYPE] = FLOAT
+            attr[PROP_ROT_DIR] = NO_ROT
+        else:
+            attr[TURNS] = 0
 
     def set_turns(
         self, next_beat: dict[str, Any], turn_blue: float, turn_red: float
@@ -167,42 +178,13 @@ class BaseSequenceBuilder:
         Sets the number of turns for both blue and red attributes.
         Adjusts motion types if special flag 'fl' is present.
         """
-        # Blue turns
-        if turn_blue == "fl" or turn_red == "fl":
-            if Letter.get_letter(
-                next_beat["letter"]
-            ) in Letter.get_letters_by_condition(LetterConditions.TYPE1_HYBRID):
-                return next_beat
         if turn_blue == "fl":
-            if next_beat["blue_attributes"].get(MOTION_TYPE) in [PRO, ANTI]:
-                next_beat["blue_attributes"][TURNS] = "fl"
-                next_beat["blue_attributes"]["prefloat_motion_type"] = next_beat[
-                    "blue_attributes"
-                ][MOTION_TYPE]
-                next_beat["blue_attributes"]["prefloat_prop_rot_dir"] = next_beat[
-                    "blue_attributes"
-                ][PROP_ROT_DIR]
-                next_beat["blue_attributes"][MOTION_TYPE] = FLOAT
-                next_beat["blue_attributes"][PROP_ROT_DIR] = NO_ROT
-            elif next_beat["blue_attributes"].get(MOTION_TYPE) not in [PRO, ANTI]:
-                next_beat["blue_attributes"][TURNS] = 0
+            self._set_float_turns(next_beat, "blue")
         else:
             next_beat["blue_attributes"][TURNS] = turn_blue
 
-        # Red turns
         if turn_red == "fl":
-            if next_beat["red_attributes"].get(MOTION_TYPE) in [PRO, ANTI]:
-                next_beat["red_attributes"][TURNS] = "fl"
-                next_beat["red_attributes"]["prefloat_motion_type"] = next_beat[
-                    "red_attributes"
-                ][MOTION_TYPE]
-                next_beat["red_attributes"]["prefloat_prop_rot_dir"] = next_beat[
-                    "red_attributes"
-                ][PROP_ROT_DIR]
-                next_beat["red_attributes"][MOTION_TYPE] = FLOAT
-                next_beat["red_attributes"][PROP_ROT_DIR] = NO_ROT
-            elif next_beat["red_attributes"].get(MOTION_TYPE) not in [PRO, ANTI]:
-                next_beat["red_attributes"][TURNS] = 0
+            self._set_float_turns(next_beat, "red")
         else:
             next_beat["red_attributes"][TURNS] = turn_red
 

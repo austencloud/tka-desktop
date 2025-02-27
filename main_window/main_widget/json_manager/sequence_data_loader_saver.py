@@ -1,6 +1,6 @@
 import json
 from typing import TYPE_CHECKING
-from data.constants import DIAMOND
+from data.constants import DIAMOND, PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
@@ -113,16 +113,14 @@ class SequenceDataLoaderSaver:
     def get_json_prefloat_prop_rot_dir(self, index: int, color: str) -> int:
         sequence = self.load_current_sequence()
         if sequence:
-            return sequence[index][f"{color}_attributes"].get(
-                "prefloat_prop_rot_dir", ""
-            )
+            return sequence[index][f"{color}_attributes"].get(PREFLOAT_PROP_ROT_DIR, "")
         return 0
 
     def get_json_prefloat_motion_type(self, index: int, color: str) -> int:
         sequence = self.load_current_sequence()
         if sequence:
             return sequence[index][f"{color}_attributes"].get(
-                "prefloat_motion_type",
+                PREFLOAT_MOTION_TYPE,
                 sequence[index][f"{color}_attributes"].get("motion_type", 0),
             )
         return 0

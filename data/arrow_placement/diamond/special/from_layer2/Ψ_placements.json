@@ -5,6 +5,9 @@
     },
     "(1, fl)": {
       "pro": [-60, 80]
+    },
+    "(o, 1, 1.5)": {
+      "static_from_layer2_rot_angle_override": true
     }
   }
 }

@@ -11,6 +11,8 @@ from data.constants import (
     NORTH,
     NORTHEAST,
     NORTHWEST,
+    PREFLOAT_MOTION_TYPE,
+    PREFLOAT_PROP_ROT_DIR,
     SOUTH,
     SOUTHEAST,
     SOUTHWEST,
@@ -28,7 +30,7 @@ if TYPE_CHECKING:
     from ..circular_sequence_builder import CircularSequenceBuilder
 
 
-class RotatedPermutationExecuter(PermutationExecutor):
+class RotatedPermutationExecutor(PermutationExecutor):
     def __init__(self, circular_sequence_generator: "CircularSequenceBuilder"):
         self.circular_sequence_generator = circular_sequence_generator
         self.hand_rot_dir_calculator = HandpathCalculator()
@@ -193,22 +195,22 @@ class RotatedPermutationExecuter(PermutationExecutor):
             ),
         }
 
-        if previous_matching_beat["blue_attributes"].get("prefloat_motion_type", ""):
-            new_entry["blue_attributes"]["prefloat_motion_type"] = (
-                previous_matching_beat["blue_attributes"]["prefloat_motion_type"]
+        if previous_matching_beat["blue_attributes"].get(PREFLOAT_MOTION_TYPE, ""):
+            new_entry["blue_attributes"][PREFLOAT_MOTION_TYPE] = previous_matching_beat[
+                "blue_attributes"
+            ][PREFLOAT_MOTION_TYPE]
+        if previous_matching_beat["blue_attributes"].get(PREFLOAT_PROP_ROT_DIR, ""):
+            new_entry["blue_attributes"][PREFLOAT_PROP_ROT_DIR] = (
+                previous_matching_beat["blue_attributes"][PREFLOAT_PROP_ROT_DIR]
             )
-        if previous_matching_beat["blue_attributes"].get("prefloat_prop_rot_dir", ""):
-            new_entry["blue_attributes"]["prefloat_prop_rot_dir"] = (
-                previous_matching_beat["blue_attributes"]["prefloat_prop_rot_dir"]
-            )
-        if previous_matching_beat["red_attributes"].get("prefloat_motion_type", ""):
-            new_entry["red_attributes"]["prefloat_motion_type"] = (
-                previous_matching_beat["red_attributes"]["prefloat_motion_type"]
-            )
-        if previous_matching_beat["red_attributes"].get("prefloat_prop_rot_dir", ""):
-            new_entry["red_attributes"]["prefloat_prop_rot_dir"] = (
-                previous_matching_beat["red_attributes"]["prefloat_prop_rot_dir"]
-            )
+        if previous_matching_beat["red_attributes"].get(PREFLOAT_MOTION_TYPE, ""):
+            new_entry["red_attributes"][PREFLOAT_MOTION_TYPE] = previous_matching_beat[
+                "red_attributes"
+            ][PREFLOAT_MOTION_TYPE]
+        if previous_matching_beat["red_attributes"].get(PREFLOAT_PROP_ROT_DIR, ""):
+            new_entry["red_attributes"][PREFLOAT_PROP_ROT_DIR] = previous_matching_beat[
+                "red_attributes"
+            ][PREFLOAT_PROP_ROT_DIR]
 
         new_entry["blue_attributes"]["end_ori"] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
@@ -303,7 +305,10 @@ class RotatedPermutationExecuter(PermutationExecutor):
             return {
                 i: i - (length // 2) + 1 for i in range((length // 2) + 1, length + 1)
             }
-        return {}
+        else:
+            raise ValueError(
+                "Invalid permutation type. Expected 'quartered' or 'halved'."
+            )
 
     def get_previous_matching_beat_mirrored(
         self,
