@@ -19,7 +19,9 @@ from data.constants import (
 )
 
 if TYPE_CHECKING:
-    from placement_managers.arrow_placement_manager.arrow_placement_manager import ArrowPlacementManager
+    from placement_managers.arrow_placement_manager.arrow_placement_manager import (
+        ArrowPlacementManager,
+    )
 
 
 class QuadrantIndexHandler:
@@ -41,7 +43,7 @@ class QuadrantIndexHandler:
 
         return 0
 
-    def _get_grid_mode(self, arrow: "Arrow") -> Literal["box"] | Literal["diamond"]:
+    def _get_grid_mode(self, arrow: "Arrow") -> Literal[BOX] | Literal[DIAMOND]:
         if arrow.motion.prop.loc in ["ne", "nw", "se", "sw"]:
             grid_mode = BOX
         elif arrow.motion.prop.loc in ["n", "s", "e", "w"]:

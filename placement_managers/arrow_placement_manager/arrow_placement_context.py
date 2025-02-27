@@ -6,8 +6,8 @@ from Enums.letters import Letter
 
 @dataclass
 class ArrowPlacementContext:
-    grid_mode: str  # e.g. "diamond" or "box"
-    motion_type: str  # e.g. "pro", "anti", "float", "dash", or "static"
+    grid_mode: str  # e.g. DIAMOND or BOX
+    motion_type: str  # e.g. PRO, ANTI, FLOAT, DASH, or STATIC
     letter: Letter  # the letter associated with the pictograph
     arrow_color: str  # color of the arrow (from state)
     turns: float  # number of turns in the motion

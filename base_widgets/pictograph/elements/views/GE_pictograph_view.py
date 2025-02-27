@@ -101,17 +101,6 @@ class GE_PictographView(BasePictographView):
         painter.drawRect(overlay_rect)
         painter.end()
 
-    def get_current_pictograph(self) -> GE_Pictograph:
-        return self.pictograph
-
-    def set_scene(self, beat: "Beat") -> None:
-        self.reference_beat = beat
-        if beat.view.is_start_pos:
-            self.is_start_pos = True
-        else:
-            self.is_start_pos = False
-        self.repaint()
-
     def resizeEvent(self, event) -> None:
         self.setFixedSize(self.graph_editor.height(), self.graph_editor.height())
 

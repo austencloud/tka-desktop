@@ -6,8 +6,10 @@ from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import (
     END_LOC,
+    FLOAT,
     LEADING,
     MOTION_TYPE,
+    NO_ROT,
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
     PROP_ROT_DIR,
@@ -50,7 +52,9 @@ class MotionDataUpdater:
                     self._show_motion_graphics(motion.state.color)
                 if motion_dataset.get(motion.state.color, {}).get(TURNS, "") == "fl":
                     motion.state.turns = "fl"
-                motion.updater.update_motion(motion_dataset.get(motion.state.color, {}))
+                    
+                if motion_dataset:
+                    motion.updater.update_motion(motion_dataset.get(motion.state.color, {}))
                 if not motion.arrow.state.initialized:
                     motion.arrow.setup_components()
                 turns_value = motion_dataset.get(motion.state.color, {}).get(TURNS)
@@ -128,7 +132,7 @@ class MotionDataUpdater:
             prefloat_motion = motion_data.get(PREFLOAT_MOTION_TYPE)
             dataset_for_color[PREFLOAT_MOTION_TYPE] = (
                 None
-                if prefloat_motion == "float"
+                if prefloat_motion == FLOAT
                 else motion_data.get(
                     PREFLOAT_MOTION_TYPE, dataset_for_color.get(MOTION_TYPE)
                 )
@@ -136,7 +140,7 @@ class MotionDataUpdater:
             prefloat_prop_rot = motion_data.get(PREFLOAT_PROP_ROT_DIR)
             dataset_for_color[PREFLOAT_PROP_ROT_DIR] = (
                 None
-                if prefloat_prop_rot == "no_rot"
+                if prefloat_prop_rot == NO_ROT
                 else motion_data.get(
                     PREFLOAT_PROP_ROT_DIR, dataset_for_color.get(PROP_ROT_DIR)
                 )

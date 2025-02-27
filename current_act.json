@@ -12,8 +12,8 @@
           "pictograph_data": {
             "beat": 1,
             "letter": "E",
-            "start_pos": "beta5",
-            "end_pos": "alpha3",
+            "start_pos": BETA5,
+            "end_pos": ALPHA3,
             "timing": "tog",
             "direction": "opp",
             "blue_attributes": {
@@ -42,8 +42,8 @@
           "pictograph_data": {
             "beat": 2,
             "letter": "B",
-            "start_pos": "alpha3",
-            "end_pos": "alpha1",
+            "start_pos": ALPHA3,
+            "end_pos": ALPHA1,
             "timing": "split",
             "direction": "same",
             "blue_attributes": {
@@ -72,8 +72,8 @@
           "pictograph_data": {
             "beat": 3,
             "letter": "B",
-            "start_pos": "alpha1",
-            "end_pos": "alpha7",
+            "start_pos": ALPHA1,
+            "end_pos": ALPHA7,
             "timing": "split",
             "direction": "same",
             "blue_attributes": {
@@ -102,8 +102,8 @@
           "pictograph_data": {
             "beat": 4,
             "letter": "K",
-            "start_pos": "alpha7",
-            "end_pos": "beta1",
+            "start_pos": ALPHA7,
+            "end_pos": BETA1,
             "timing": "tog",
             "direction": "opp",
             "blue_attributes": {
@@ -132,8 +132,8 @@
           "pictograph_data": {
             "beat": 5,
             "letter": "E",
-            "start_pos": "beta1",
-            "end_pos": "alpha7",
+            "start_pos": BETA1,
+            "end_pos": ALPHA7,
             "timing": "tog",
             "direction": "opp",
             "blue_attributes": {
@@ -162,8 +162,8 @@
           "pictograph_data": {
             "beat": 6,
             "letter": "B",
-            "start_pos": "alpha7",
-            "end_pos": "alpha5",
+            "start_pos": ALPHA7,
+            "end_pos": ALPHA5,
             "timing": "split",
             "direction": "same",
             "blue_attributes": {
@@ -192,8 +192,8 @@
           "pictograph_data": {
             "beat": 7,
             "letter": "B",
-            "start_pos": "alpha5",
-            "end_pos": "alpha3",
+            "start_pos": ALPHA5,
+            "end_pos": ALPHA3,
             "timing": "split",
             "direction": "same",
             "blue_attributes": {
@@ -222,8 +222,8 @@
           "pictograph_data": {
             "beat": 8,
             "letter": "K",
-            "start_pos": "alpha3",
-            "end_pos": "beta5",
+            "start_pos": ALPHA3,
+            "end_pos": BETA5,
             "timing": "tog",
             "direction": "opp",
             "blue_attributes": {

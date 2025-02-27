@@ -14,35 +14,35 @@
       "BEAT": 0,
       "SEQUENCE_START_POSITION": "alpha",
       "LETTER": "\u03b1",
-      "END_POS": "alpha1",
+      "END_POS": ALPHA1,
       "blue_attributes": {
         "START_LOC": "s",
         "END_LOC": "s",
         "START_ORI": "in",
         "END_ORI": "in",
-        "PROP_ROT_DIR": "no_rot",
+        "PROP_ROT_DIR": NO_ROT,
         "TURNS": 0,
-        "MOTION_TYPE": "static"
+        "MOTION_TYPE": STATIC
       },
       "red_attributes": {
         "START_LOC": "n",
         "END_LOC": "n",
         "START_ORI": "in",
         "END_ORI": "in",
-        "PROP_ROT_DIR": "no_rot",
+        "PROP_ROT_DIR": NO_ROT,
         "TURNS": 0,
-        "MOTION_TYPE": "static"
+        "MOTION_TYPE": STATIC
       }
     },
     {
       "BEAT": 1,
       "LETTER": "A",
-      "START_POS": "alpha1",
-      "END_POS": "alpha3",
+      "START_POS": ALPHA1,
+      "END_POS": ALPHA3,
       "TIMING": "split",
       "DIRECTION": "same",
       "blue_attributes": {
-        "MOTION_TYPE": "pro",
+        "MOTION_TYPE": PRO,
         "START_ORI": "in",
         "PROP_ROT_DIR": "cw",
         "START_LOC": "s",
@@ -51,7 +51,7 @@
         "END_ORI": "in"
       },
       "red_attributes": {
-        "MOTION_TYPE": "pro",
+        "MOTION_TYPE": PRO,
         "START_ORI": "in",
         "PROP_ROT_DIR": "cw",
         "START_LOC": "n",
@@ -63,12 +63,12 @@
     {
       "BEAT": 2,
       "LETTER": "A",
-      "START_POS": "alpha3",
-      "END_POS": "alpha5",
+      "START_POS": ALPHA3,
+      "END_POS": ALPHA5,
       "TIMING": "split",
       "DIRECTION": "same",
       "blue_attributes": {
-        "MOTION_TYPE": "pro",
+        "MOTION_TYPE": PRO,
         "START_ORI": "in",
         "PROP_ROT_DIR": "cw",
         "START_LOC": "w",
@@ -77,7 +77,7 @@
         "END_ORI": "in"
       },
       "red_attributes": {
-        "MOTION_TYPE": "pro",
+        "MOTION_TYPE": PRO,
         "START_ORI": "in",
         "PROP_ROT_DIR": "cw",
         "START_LOC": "e",
@@ -89,12 +89,12 @@
     {
       "BEAT": 3,
       "LETTER": "A",
-      "START_POS": "alpha5",
-      "END_POS": "alpha7",
+      "START_POS": ALPHA5,
+      "END_POS": ALPHA7,
       "TIMING": "split",
       "DIRECTION": "same",
       "blue_attributes": {
-        "MOTION_TYPE": "pro",
+        "MOTION_TYPE": PRO,
         "START_ORI": "in",
         "PROP_ROT_DIR": "cw",
         "START_LOC": "n",
@@ -103,7 +103,7 @@
         "END_ORI": "in"
       },
       "red_attributes": {
-        "MOTION_TYPE": "pro",
+        "MOTION_TYPE": PRO,
         "START_ORI": "in",
         "PROP_ROT_DIR": "cw",
         "START_LOC": "s",
@@ -115,12 +115,12 @@
     {
       "BEAT": 4,
       "LETTER": "A",
-      "START_POS": "alpha7",
-      "END_POS": "alpha1",
+      "START_POS": ALPHA7,
+      "END_POS": ALPHA1,
       "TIMING": "split",
       "DIRECTION": "same",
       "blue_attributes": {
-        "MOTION_TYPE": "pro",
+        "MOTION_TYPE": PRO,
         "START_ORI": "in",
         "PROP_ROT_DIR": "cw",
         "START_LOC": "e",
@@ -129,7 +129,7 @@
         "END_ORI": "in"
       },
       "red_attributes": {
-        "MOTION_TYPE": "pro",
+        "MOTION_TYPE": PRO,
         "START_ORI": "in",
         "PROP_ROT_DIR": "cw",
         "START_LOC": "w",

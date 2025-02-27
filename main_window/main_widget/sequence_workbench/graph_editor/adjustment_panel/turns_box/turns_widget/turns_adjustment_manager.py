@@ -97,7 +97,7 @@ class TurnsAdjustmentManager(QObject):
         """Repaint the pictograph and GE pictograph views to reflect the change."""
         self.reference_beat.view.repaint()
         GE_pictograph = (
-            self.turns_widget.turns_box.adjustment_panel.graph_editor.pictograph_container.GE_view.get_current_pictograph()
+            self.turns_widget.turns_box.adjustment_panel.graph_editor.pictograph_container.GE_view.scene()
         )
         GE_pictograph.elements.view.repaint()
         # GE_pictograph.managers.updater.update_pictograph()

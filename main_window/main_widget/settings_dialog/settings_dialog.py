@@ -27,7 +27,6 @@ class SettingsDialog(QDialog):
         SettingsDialogStyler.apply_styles(self)
 
     def showEvent(self, event: QEvent):
-        """Triggered every time the dialog is shown."""
         super().showEvent(event)
         print("[DEBUG] Settings dialog shown - Restoring last tab")
 
@@ -35,22 +34,17 @@ class SettingsDialog(QDialog):
             AppContext.settings_manager().global_settings.get_current_settings_dialog_tab()
         )
 
-        # Ensure tab exists, otherwise default to first tab
         if last_tab not in self.ui.tab_selection_manager.tabs:
             print(f"[WARNING] Tab '{last_tab}' not found, defaulting to first tab.")
-            last_tab = next(
-                iter(self.ui.tab_selection_manager.tabs)
-            )  # First tab as fallback
+            last_tab = next(iter(self.ui.tab_selection_manager.tabs))
 
         tab_index = self.ui.tab_selection_manager.get_tab_index(last_tab)
-
         self.ui.sidebar.setCurrentRow(tab_index)
         self.ui.content_area.setCurrentIndex(tab_index)
 
         if last_tab == "User Profile":
             self.ui.user_profile_tab.tab_controller.populate_user_buttons()
             self.ui.user_profile_tab.ui_manager.update_active_user_from_settings()
-            self.ui.user_profile_tab.update()
 
         elif last_tab == "Prop Type":
             self.ui.prop_type_tab.update_active_prop_type_from_settings()
@@ -65,6 +59,8 @@ class SettingsDialog(QDialog):
             self.ui.beat_layout_tab.controls.length_selector.num_beats_spinbox.setValue(
                 self.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
             )
+
+        self.update_size(force=True)
 
     def update_size(self, force: bool = False):
         """Updates the size of the settings dialog, only resizing if necessary."""

@@ -18,6 +18,8 @@ class ArrowDataUpdater:
         """
         Extracts arrow dataset information from the data and updates arrow objects.
         """
+        if not pictograph_data:
+            return
         red_arrow_data, blue_arrow_data = (
             self._extract_arrow_datasets(pictograph_data)
             if pictograph_data

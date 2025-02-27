@@ -3,7 +3,21 @@ import codecs
 from typing import Union
 from PyQt6.QtCore import QPointF
 from Enums.letters import LetterConditions
-from data.constants import BOX, CLOCK, COUNTER, DIAMOND, IN, NONRADIAL, OUT, RADIAL
+from data.constants import (
+    ANTI,
+    BOX,
+    CLOCK,
+    COUNTER,
+    DASH,
+    DIAMOND,
+    FLOAT,
+    IN,
+    NONRADIAL,
+    OUT,
+    PRO,
+    RADIAL,
+    STATIC,
+)
 from placement_managers.arrow_placement_manager.arrow_placement_context import (
     ArrowPlacementContext,
 )
@@ -17,23 +31,23 @@ from utilities.path_helpers import get_images_and_data_path
 class DefaultPlacementStrategy:
     def __init__(self):
         self.all_defaults = {
-            "diamond": {},
-            "box": {},
+            DIAMOND: {},
+            BOX: {},
         }
         self.placements_files = {
-            "diamond": {
-                "pro": "default_diamond_pro_placements.json",
-                "anti": "default_diamond_anti_placements.json",
-                "float": "default_diamond_float_placements.json",
-                "dash": "default_diamond_dash_placements.json",
-                "static": "default_diamond_static_placements.json",
+            DIAMOND: {
+                PRO: "default_diamond_pro_placements.json",
+                ANTI: "default_diamond_anti_placements.json",
+                FLOAT: "default_diamond_float_placements.json",
+                DASH: "default_diamond_dash_placements.json",
+                STATIC: "default_diamond_static_placements.json",
             },
-            "box": {
-                "pro": "default_box_pro_placements.json",
-                "anti": "default_box_anti_placements.json",
-                "float": "default_box_float_placements.json",
-                "dash": "default_box_dash_placements.json",
-                "static": "default_box_static_placements.json",
+            BOX: {
+                PRO: "default_box_pro_placements.json",
+                ANTI: "default_box_anti_placements.json",
+                FLOAT: "default_box_float_placements.json",
+                DASH: "default_box_dash_placements.json",
+                STATIC: "default_box_static_placements.json",
             },
         }
         self._load_all_default_placements()
@@ -55,7 +69,6 @@ class DefaultPlacementStrategy:
             print(f"Error loading default placements from {path}: {e}")
             return {}
 
-
     def get_default_adjustment(self, arrow: Arrow) -> QPointF:
         grid_mode = arrow.pictograph.state.grid_mode
         if grid_mode not in [DIAMOND, BOX]:
@@ -65,6 +78,8 @@ class DefaultPlacementStrategy:
             arrow.motion.state.motion_type, {}
         )
         adjustment_key = self.key_generator.generate_key(arrow, default_placements)
-        return QPointF(*default_placements.get(adjustment_key, {}).get(
-            str(arrow.motion.state.turns), (0, 0)
-        ))
+        return QPointF(
+            *default_placements.get(adjustment_key, {}).get(
+                str(arrow.motion.state.turns), (0, 0)
+            )
+        )

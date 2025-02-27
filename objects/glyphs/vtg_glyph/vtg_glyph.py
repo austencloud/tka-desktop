@@ -92,6 +92,8 @@ class VTG_Glyph(QGraphicsSvgItem):
                 )
 
     def determine_vtg_mode(self) -> Literal["SS", "SO", "TS", "TO", "QS", "QO"]:
+        if not self.pictograph.state.letter:
+            return
         letter_str = self.pictograph.state.letter.value
         start_pos = self.pictograph.state.start_pos
         grid_mode = GridModeChecker.get_grid_mode(self.pictograph.state.pictograph_data)

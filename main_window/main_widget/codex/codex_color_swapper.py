@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 class CodexColorSwapper:
     def __init__(self, control_widget: "CodexControlWidget"):
         self.codex = control_widget.codex
+        self.control_widget = control_widget
 
     def _swap_colors(self, pictograph):
 
@@ -29,15 +30,5 @@ class CodexColorSwapper:
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         for pictograph in self.codex.data_manager.pictograph_data.values():
             self._swap_colors(pictograph)
-        try:
-            for letter_str, view in self.codex.section_manager.codex_views.items():
-                scene = view.pictograph
-                if scene.state.pictograph_data:
-                    # Implement actual color swap logic here
-                    scene.managers.updater.update_pictograph(
-                        scene.state.pictograph_data
-                    )
-                    logger.debug(f"Swapped colors for pictograph '{letter_str}'.")
-        except Exception as e:
-            logger.exception(f"Error during color_swap_all: {e}")
+        self.control_widget.refresh_pictograph_views()
         QApplication.restoreOverrideCursor()

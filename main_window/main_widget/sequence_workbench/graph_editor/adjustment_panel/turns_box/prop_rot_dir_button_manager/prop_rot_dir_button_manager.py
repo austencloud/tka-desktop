@@ -8,11 +8,12 @@ from data.constants import (
     CLOCKWISE,
     COUNTER_CLOCKWISE,
     DASH,
+    END_ORI,
     FLOAT,
     ICON_DIR,
     NO_ROT,
     PRO,
-    STATIC,
+    STATIC, MOTION_TYPE, PROP_ROT_DIR, TURNS, LETTER
 )
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from utilities.reversal_detector import (

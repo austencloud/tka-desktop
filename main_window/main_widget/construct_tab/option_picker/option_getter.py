@@ -82,17 +82,17 @@ class OptionGetter:
         def get_last_rot(seq: list[dict[str, Any]], color: str) -> Optional[str]:
             for item in reversed(seq):
                 rot = item.get(f"{color}_attributes", {}).get(PROP_ROT_DIR)
-                if rot and rot != "no_rot":
+                if rot and rot != NO_ROT:
                     return rot
             return None
 
         last_blue = get_last_rot(sequence[1:], BLUE)
         last_red = get_last_rot(sequence[1:], RED)
-        curr_blue = o.get(BLUE_ATTRIBUTES, {}).get(PROP_ROT_DIR, "no_rot")
-        curr_red = o.get(RED_ATTRIBUTES, {}).get(PROP_ROT_DIR, "no_rot")
-        if curr_blue == "no_rot":
+        curr_blue = o.get(BLUE_ATTRIBUTES, {}).get(PROP_ROT_DIR, NO_ROT)
+        curr_red = o.get(RED_ATTRIBUTES, {}).get(PROP_ROT_DIR, NO_ROT)
+        if curr_blue == NO_ROT:
             curr_blue = last_blue
-        if curr_red == "no_rot":
+        if curr_red == NO_ROT:
             curr_red = last_red
         blue_cont = last_blue is None or curr_blue is None or curr_blue == last_blue
         red_cont = last_red is None or curr_red is None or curr_red == last_red

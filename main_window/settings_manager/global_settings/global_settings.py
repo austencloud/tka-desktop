@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from Enums.PropTypes import PropType
 from base_widgets.pictograph.pictograph import Pictograph
+from data.constants import DIAMOND
 from .prop_type_changer import PropTypeChanger
 
 if TYPE_CHECKING:
@@ -49,7 +50,7 @@ class GlobalSettings:
         return self.settings.value("global/current_tab", "construct", type=str)
 
     def get_grid_mode(self) -> str:
-        return self.settings.value("global/grid_mode", "diamond")
+        return self.settings.value("global/grid_mode", DIAMOND)
 
     def get_show_welcome_screen(self) -> bool:
         return self.settings.value("global/show_welcome_screen", True, type=bool)
@@ -69,6 +70,7 @@ class GlobalSettings:
         self, prop_type: PropType, pictographs: list["Pictograph"]
     ) -> None:
         self.settings.setValue("global/prop_type", prop_type.name)
+
         self.prop_type_changer.apply_prop_type(pictographs)
 
     def set_background_type(self, background_type: str) -> None:

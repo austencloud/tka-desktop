@@ -21,9 +21,9 @@ class CodexControlWidget(QWidget):
         self.codex = codex
 
         # Managers
-        self.mirror_manager = CodexReflector(self)
-        self.color_swap_manager = CodexColorSwapper(self)
-        self.rotation_manager = CodexRotater(self)
+        self.reflector = CodexReflector(self)
+        self.color_swapper = CodexColorSwapper(self)
+        self.rotater = CodexRotater(self)
 
         # Components
         self.ori_selector = CodexOriSelector(self)
@@ -68,9 +68,9 @@ class CodexControlWidget(QWidget):
 
         codex_buttons: list[CodexControlButton] = []
         buttons_data = [
-            ("rotate.png", self.rotation_manager.rotate_codex),
-            ("mirror.png", self.mirror_manager.mirror_codex),
-            ("yinyang1.png", self.color_swap_manager.swap_colors_in_codex),
+            ("rotate.png", self.rotater.rotate_codex),
+            ("mirror.png", self.reflector.mirror_codex),
+            ("yinyang1.png", self.color_swapper.swap_colors_in_codex),
         ]
 
         for icon_name, callback in buttons_data:
@@ -81,3 +81,10 @@ class CodexControlWidget(QWidget):
             self.button_layout.addWidget(button)
 
         return codex_buttons
+
+    def refresh_pictograph_views(self):
+        """Refresh all views to reflect the updated pictograph data."""
+        for letter, view in self.codex.section_manager.codex_views.items():
+            if letter in self.codex.data_manager.pictograph_data:
+                pictograph_data = self.codex.data_manager.pictograph_data[letter]
+                view.pictograph.managers.updater.update_pictograph(pictograph_data)

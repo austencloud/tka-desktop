@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Union
 
-from data.constants import DASH, END_ORI, NO_ROT, STATIC
+from data.constants import DASH, END_ORI, NO_ROT, STATIC, TURNS, MOTION_TYPE, PROP_ROT_DIR
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )

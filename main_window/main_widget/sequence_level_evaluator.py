@@ -1,4 +1,4 @@
-from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES, START_ORI, END_ORI, TURNS
 
 
 class SequenceLevelEvaluator:

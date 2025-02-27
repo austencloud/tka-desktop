@@ -33,7 +33,7 @@ class MirroredColorSwappedPermutationChecker:
 
     def _is_mirrored_and_color_swapped(self, first_entry, second_entry) -> bool:
         mirrored_vertical = self._get_mirrored_and_colorswapped_position(
-            first_entry[END_POS], "vertical"
+            first_entry[END_POS], VERTICAL
         )
         mirrored_horizontal = self._get_mirrored_and_colorswapped_position(
             first_entry[END_POS], "horizontal"

@@ -4,7 +4,6 @@ from PyQt6.QtCore import Qt
 from functools import partial
 
 
-
 if TYPE_CHECKING:
     from .learn_tab import LearnTab
 
@@ -27,13 +26,6 @@ class LessonSelectorButton(QPushButton):
 
     def _update_style(self, background_color: str = None, shadow: bool = False):
         background_color = background_color or self._base_background_color
-        shadow_effect = (
-            """
-            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
-        """
-            if shadow
-            else ""
-        )
 
         self.setStyleSheet(
             f"""
@@ -43,7 +35,6 @@ class LessonSelectorButton(QPushButton):
                 color: black;
                 padding: 5px;
                 border-radius: {self._radius}px;
-                {shadow_effect}
             }}
             QPushButton:hover {{
                 background: qlineargradient(
@@ -75,6 +66,3 @@ class LessonSelectorButton(QPushButton):
     def mouseReleaseEvent(self, event):
         self._update_style()
         super().mouseReleaseEvent(event)
-
-
-

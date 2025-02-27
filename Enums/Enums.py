@@ -234,48 +234,6 @@ class StartEndLocationTuple(Enum):
     LOCATIONS = "Locations"
 
 
-class OptimalLocationDicts(Enum):
-    DICT = "dict"
-
-
-class Positions(Enum):
-    ALPHA = "alpha"
-    BETA = "beta"
-    GAMMA = "gamma"
-
-
-class SpecificPosition(Enum):
-    ALPHA1 = "alpha1"
-    ALPHA2 = "alpha3"
-    ALPHA3 = "alpha5"
-    ALPHA7 = "alpha7"
-    BETA1 = "beta1"
-    BETA3 = "beta3"
-    BETA5 = "beta5"
-    BETA7 = "beta7"
-    GAMMA1 = "gamma1"
-    GAMMA3 = "gamma3"
-    GAMMA5 = "gamma5"
-    GAMMA7 = "gamma7"
-    GAMMA9 = "gamma9"
-    GAMMA11 = "gamma11"
-    GAMMA13 = "gamma13"
-    GAMMA15 = "gamma15"
-
-
-class ShiftHandpaths(Enum):
-    CW_HANDPATH = "cw_handpath"
-    CCW_HANDPATH = "ccw_handpath"
-
-
-class HexColors(Enum):
-    COLOR_1 = "#ED1C24"
-    COLOR_2 = "#2E3192"
-
-
-class GridModes(Enum):
-    DIAMOND = "diamond"
-    BOX = "box"
 
 
 class RadialOrientations(Enum):

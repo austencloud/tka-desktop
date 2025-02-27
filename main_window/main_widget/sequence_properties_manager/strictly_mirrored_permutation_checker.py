@@ -34,9 +34,7 @@ class StrictlyMirroredPermutationChecker:
         return True
 
     def _is_mirrored(self, first_entry, second_entry) -> bool:
-        mirrored_vertical = self._get_mirrored_position(
-            first_entry[END_POS], "vertical"
-        )
+        mirrored_vertical = self._get_mirrored_position(first_entry[END_POS], VERTICAL)
         mirrored_horizontal = self._get_mirrored_position(
             first_entry[END_POS], "horizontal"
         )

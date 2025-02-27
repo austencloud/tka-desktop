@@ -56,9 +56,6 @@ class GraphEditorPictographContainer(QWidget):
             pictograph.start_text_item.add_start_text()
 
     def resizeEvent(self, event):
-        # size = self.graph_editor.height()
-        # self.setFixedWidth(size)
-        # self.setFixedHeight(size)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
         self.setLayout(self.layout)

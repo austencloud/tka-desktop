@@ -2,7 +2,7 @@ import random
 from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
-from data.constants import END_POS, START_POS
+from data.constants import END_POS, LETTER, START_POS
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 
 

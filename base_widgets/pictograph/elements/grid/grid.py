@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from data.constants import BOX, DIAMOND
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.settings_manager.global_settings.app_context import AppContext
 from utilities.path_helpers import get_images_and_data_path
@@ -10,7 +11,7 @@ from .non_radial_points_group import NonRadialPointsGroup
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
-    
+
 GRID_DIR = get_images_and_data_path("images/grid/")
 
 
@@ -27,8 +28,8 @@ class Grid:
 
     def _create_grid_items(self):
         paths = {
-            "diamond": f"{GRID_DIR}diamond_grid.svg",
-            "box": f"{GRID_DIR}box_grid.svg",
+            DIAMOND: f"{GRID_DIR}{DIAMOND}_grid.svg",
+            BOX: f"{GRID_DIR}{BOX}_grid.svg",
         }
 
         for mode, path in paths.items():
@@ -38,8 +39,8 @@ class Grid:
             self.items[mode] = grid_item
 
         non_radial_paths = {
-            "diamond": f"{GRID_DIR}diamond_nonradial_points.svg",
-            "box": f"{GRID_DIR}box_nonradial_points.svg",
+            DIAMOND: f"{GRID_DIR}{DIAMOND}_nonradial_points.svg",
+            BOX: f"{GRID_DIR}{BOX}_nonradial_points.svg",
         }
 
         non_radial_path = non_radial_paths.get(self.grid_mode)
@@ -64,6 +65,4 @@ class Grid:
         grid_mode = self.pictograph.state.grid_mode
         grid_data = self.pictograph.elements.grid.grid_data
         self.pictograph.elements.grid.hide()
-        self.pictograph.elements.grid.__init__(
-            self.pictograph, grid_data, grid_mode
-        )
+        self.pictograph.elements.grid.__init__(self.pictograph, grid_data, grid_mode)

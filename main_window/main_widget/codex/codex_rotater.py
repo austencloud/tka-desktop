@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, END_POS, RED_ATTRIBUTES, START_POS
+from data.constants import BLUE_ATTRIBUTES, END_LOC, END_POS, RED_ATTRIBUTES, START_LOC, START_POS
 from data.positions_map import positions_map
 from data.locations import cw_loc_order
 
@@ -17,6 +17,7 @@ class CodexRotater:
 
     def __init__(self, control_widget: "CodexControlWidget"):
         self.codex = control_widget.codex
+        self.control_widget = control_widget
 
     def rotate_codex(self):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -29,7 +30,7 @@ class CodexRotater:
         for view in self.codex.section_manager.codex_views.values():
             view.pictograph.elements.grid.update_grid_mode()
 
-        self._refresh_pictograph_views()
+        self.control_widget.refresh_pictograph_views()
 
         QApplication.restoreOverrideCursor()
 
@@ -72,13 +73,3 @@ class CodexRotater:
             view.pictograph.elements.grid.__init__(
                 view.pictograph, view.pictograph.elements.grid.grid_data, grid_mode
             )
-
-    def _refresh_pictograph_views(self):
-        """Refresh all views to reflect the updated pictograph data."""
-        for letter, view in self.codex.section_manager.codex_views.items():
-            if letter in self.codex.data_manager.pictograph_data:
-                pictograph_data = self.codex.data_manager.pictograph_data[letter]
-                view.pictograph.managers.arrow_placement_manager.default_positioner.__init__(
-                    view.pictograph.managers.arrow_placement_manager
-                )
-                view.pictograph.managers.updater.update_pictograph(pictograph_data)

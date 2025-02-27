@@ -66,9 +66,9 @@ class DefaultPropPositioner:
 
     def _get_grid_mode_from_prop_loc(self, prop: "Prop") -> str:
         if prop.loc in ["ne", "nw", "se", "sw"]:
-            grid_mode = "box"
+            grid_mode = BOX
         elif prop.loc in ["n", "s", "e", "w"]:
-            grid_mode = "diamond"
+            grid_mode = DIAMOND
         return grid_mode
 
     def get_png_center_point(self, prop: Prop) -> QPointF:

@@ -1,4 +1,5 @@
 from PyQt6.QtCore import QPointF
+from data.constants import ANTI, DASH, FLOAT, PRO, STATIC
 from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING
 
@@ -14,9 +15,9 @@ class InitialPlacementStrategy:
         """Determines the initial position of an arrow based on motion type and pictograph data."""
         motion_type = arrow.motion.state.motion_type
 
-        if motion_type in ["pro", "anti", "float"]:
+        if motion_type in [PRO, ANTI, FLOAT]:
             return self._get_shift_coords(arrow)
-        elif motion_type in ["static", "dash"]:
+        elif motion_type in [STATIC, DASH]:
             return self._get_static_dash_coords(arrow)
         return QPointF(0, 0)
 

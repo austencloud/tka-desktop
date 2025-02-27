@@ -51,7 +51,12 @@ class PropTypeTab(QWidget):
         row, col = 0, 0
         for prop, icon_path in props.items():
             # Create the icon‐only button
-            button = PropButton(prop, get_images_and_data_path(icon_path), self, self._set_current_prop_type)
+            button = PropButton(
+                prop,
+                get_images_and_data_path(icon_path),
+                self,
+                self._set_current_prop_type,
+            )
             self.buttons[prop] = button
 
             # Create a label for the prop name
@@ -111,3 +116,4 @@ class PropTypeTab(QWidget):
         font.setPointSize(font_size)
         font.setBold(True)
         self.header.setFont(font)
+        super().resizeEvent(event)

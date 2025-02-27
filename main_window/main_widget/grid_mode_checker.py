@@ -12,7 +12,7 @@ class GridModeChecker:
     @staticmethod
     def get_grid_mode(
         pictograph_data: dict,
-    ) -> None | Literal["box"] | Literal["diamond"] | Literal["skewed"]:
+    ) -> None | Literal[BOX] | Literal[DIAMOND] | Literal["skewed"]:
         start_pos = pictograph_data.get(START_POS) or pictograph_data.get(
             END_POS
         )  # Handles the start position

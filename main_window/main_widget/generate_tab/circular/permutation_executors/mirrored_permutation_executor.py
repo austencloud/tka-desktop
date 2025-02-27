@@ -1,14 +1,6 @@
 from typing import TYPE_CHECKING
 
-from data.constants import (
-    BLUE,
-    BLUE_ATTRIBUTES,
-    END_LOC,
-    END_ORI,
-    RED,
-    RED_ATTRIBUTES,
-    START_ORI, BEAT, LETTER, START_POS, END_POS, TIMING, DIRECTION, MOTION_TYPE, PROP_ROT_DIR, START_LOC, TURNS
-)
+from data.constants import *
 from .permutation_executor_base import PermutationExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map, horizontal_loc_mirror_map
@@ -133,41 +125,41 @@ class MirroredPermutationExecutor(PermutationExecutor):
         self, previous_matching_beat, vertical_or_horizontal
     ) -> str:
         mirrored_positions = {
-            "vertical": {
-                "alpha1": "alpha1",
-                "alpha3": "alpha7",
-                "alpha5": "alpha5",
-                "alpha7": "alpha3",
-                "beta1": "beta1",
-                "beta3": "beta7",
-                "beta5": "beta5",
-                "beta7": "beta3",
-                "gamma1": "gamma9",
-                "gamma3": "gamma15",
-                "gamma5": "gamma13",
-                "gamma7": "gamma11",
-                "gamma9": "gamma1",
-                "gamma11": "gamma7",
-                "gamma13": "gamma5",
-                "gamma15": "gamma3",
+            VERTICAL: {
+                ALPHA1: ALPHA1,
+                ALPHA3: ALPHA7,
+                ALPHA5: ALPHA5,
+                ALPHA7: ALPHA3,
+                BETA1: BETA1,
+                BETA3: BETA7,
+                BETA5: BETA5,
+                BETA7: BETA3,
+                GAMMA1: GAMMA9,
+                GAMMA3: GAMMA15,
+                GAMMA5: GAMMA13,
+                GAMMA7: GAMMA11,
+                GAMMA9: GAMMA1,
+                GAMMA11: GAMMA7,
+                GAMMA13: GAMMA5,
+                GAMMA15: GAMMA3,
             },
             "horizontal": {
-                "alpha1": "alpha5",
-                "alpha3": "alpha3",
-                "alpha5": "alpha1",
-                "alpha7": "alpha7",
-                "beta1": "beta5",
-                "beta3": "beta3",
-                "beta5": "beta1",
-                "beta7": "beta7",
-                "gamma1": "gamma13",
-                "gamma3": "gamma11",
-                "gamma5": "gamma9",
-                "gamma7": "gamma15",
-                "gamma9": "gamma5",
-                "gamma11": "gamma3",
-                "gamma13": "gamma1",
-                "gamma15": "gamma7",
+                ALPHA1: ALPHA5,
+                ALPHA3: ALPHA3,
+                ALPHA5: ALPHA1,
+                ALPHA7: ALPHA7,
+                BETA1: BETA5,
+                BETA3: BETA3,
+                BETA5: BETA1,
+                BETA7: BETA7,
+                GAMMA1: GAMMA13,
+                GAMMA3: GAMMA11,
+                GAMMA5: GAMMA9,
+                GAMMA7: GAMMA15,
+                GAMMA9: GAMMA5,
+                GAMMA11: GAMMA3,
+                GAMMA13: GAMMA1,
+                GAMMA15: GAMMA7,
             },
         }
         return mirrored_positions[vertical_or_horizontal][
@@ -179,8 +171,8 @@ class MirroredPermutationExecutor(PermutationExecutor):
             return "ccw"
         elif prop_rot_dir == "ccw":
             return "cw"
-        elif prop_rot_dir == "no_rot":
-            return "no_rot"
+        elif prop_rot_dir == NO_ROT:
+            return NO_ROT
 
     def create_new_attributes(
         self,
@@ -205,7 +197,7 @@ class MirroredPermutationExecutor(PermutationExecutor):
     def calculate_mirrored_permuatation_new_loc(
         self, previous_matching_beat_end_loc: str
     ) -> str:
-        if self.vertical_or_horizontal == "vertical":
+        if self.vertical_or_horizontal == VERTICAL:
             return self.get_vertical_mirrored_location(previous_matching_beat_end_loc)
         elif self.vertical_or_horizontal == "horizontal":
             return self.get_horizontal_mirrored_location(previous_matching_beat_end_loc)

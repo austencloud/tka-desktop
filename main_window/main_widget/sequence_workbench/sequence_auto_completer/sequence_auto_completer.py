@@ -55,7 +55,7 @@ class SequenceAutoCompleter:
                 executor.create_permutations(sequence)
             elif option == "vertical_mirror":
                 executor = MirroredPermutationExecutor(self, False)
-                executor.create_permutations(sequence, "vertical")
+                executor.create_permutations(sequence, VERTICAL)
             elif option == "horizontal_mirror":
                 executor = MirroredPermutationExecutor(self, False)
                 executor.create_permutations(sequence, "horizontal")

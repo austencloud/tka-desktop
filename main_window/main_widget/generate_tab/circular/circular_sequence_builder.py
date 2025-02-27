@@ -12,6 +12,7 @@ from data.constants import (
     MOTION_TYPE,
     RED_ATTRIBUTES,
     STATIC,
+    VERTICAL,
 )
 from data.position_maps import (
     half_position_map,
@@ -190,7 +191,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 self.rotated_executor.create_permutations(sequence)
         elif permutation_type == "mirrored":
             if self.mirrored_executor.can_perform_mirrored_permutation(sequence):
-                self.mirrored_executor.create_permutations(sequence, "vertical")
+                self.mirrored_executor.create_permutations(sequence, VERTICAL)
 
     def can_perform_rotationed_permutation(
         self, sequence: list[dict], rotation_type: str

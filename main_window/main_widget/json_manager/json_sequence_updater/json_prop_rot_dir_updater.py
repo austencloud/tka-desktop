@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from data.constants import PREFLOAT_PROP_ROT_DIR
+from data.constants import PREFLOAT_PROP_ROT_DIR, PROP_ROT_DIR, TURNS
 
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_sequence_updater.json_sequence_updater import (

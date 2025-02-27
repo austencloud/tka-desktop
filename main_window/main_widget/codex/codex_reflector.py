@@ -1,6 +1,15 @@
 import logging
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, END_POS, RED_ATTRIBUTES, START_POS
+from data.constants import (
+    BLUE_ATTRIBUTES,
+    END_LOC,
+    END_POS,
+    PROP_ROT_DIR,
+    RED_ATTRIBUTES,
+    START_LOC,
+    START_POS,
+    VERTICAL,
+)
 from data.locations import vertical_loc_mirror_map
 from data.positions import mirrored_positions
 
@@ -16,7 +25,8 @@ class CodexReflector:
 
     def __init__(self, control_widget: "CodexControlWidget"):
         self.codex = control_widget.codex
-        self.vertical_mirror_positions = mirrored_positions["vertical"]
+        self.vertical_mirror_positions = mirrored_positions[VERTICAL]
+        self.control_widget = control_widget
 
     def mirror_codex(self):
         """Apply mirroring logic to all pictographs in the Codex."""
@@ -24,7 +34,7 @@ class CodexReflector:
         for letter, pictograph in self.codex.data_manager.pictograph_data.items():
             if pictograph:
                 self._mirror_pictograph(pictograph)
-        self._refresh_pictograph_views()
+        self.control_widget.refresh_pictograph_views()
         QApplication.restoreOverrideCursor()
 
     def _mirror_pictograph(self, pictograph):
@@ -38,9 +48,9 @@ class CodexReflector:
                 pictograph[END_POS], pictograph[END_POS]
             )
 
-        for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
-            if color in pictograph:
-                attributes = pictograph[color]
+        for color_attrs in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
+            if color_attrs in pictograph:
+                attributes = pictograph[color_attrs]
                 if START_LOC in attributes:
                     attributes[START_LOC] = vertical_loc_mirror_map.get(
                         attributes[START_LOC], attributes[START_LOC]
@@ -57,11 +67,3 @@ class CodexReflector:
     def _reverse_prop_rot_dir(self, prop_rot_dir):
         """Reverse the rotation direction."""
         return {"cw": "ccw", "ccw": "cw"}.get(prop_rot_dir)
-
-    def _refresh_pictograph_views(self):
-        """Refresh all views to reflect the updated pictograph data."""
-        for letter, view in self.codex.section_manager.codex_views.items():
-            if letter in self.codex.data_manager.pictograph_data:
-                pictograph_data = self.codex.data_manager.pictograph_data[letter]
-                view.pictograph.managers.updater.update_pictograph(pictograph_data)
-                view.scene().update()

@@ -8,6 +8,7 @@ from styles.dark_theme_styler import DarkThemeStyler
 if TYPE_CHECKING:
     from .prop_type_tab import PropTypeTab
 
+
 class PropButton(QPushButton):
     """A button representing a prop type, styled with dark mode and hover animations."""
 
@@ -22,6 +23,7 @@ class PropButton(QPushButton):
         self.clicked.connect(lambda: callback(PropType.get_prop_type(prop)))
 
         self._is_active = False
+
     def set_active(self, is_active: bool):
         """Updates the button's active state and applies styling accordingly."""
         self._is_active = is_active
@@ -75,3 +77,4 @@ class PropButton(QPushButton):
         icon_size = int(size * 0.75)
         self.setFixedSize(QSize(size, size))
         self.setIconSize(QSize(icon_size, icon_size))
+        super().resizeEvent(event)

@@ -11,6 +11,7 @@ from data.constants import (
     RED_ATTRIBUTES,
     START_LOC,
     START_POS,
+    VERTICAL,
 )
 from data.positions import mirrored_positions
 from data.locations import vertical_loc_mirror_map
@@ -29,7 +30,7 @@ class SequenceReflector(BaseSequenceModifier):
     success_message = "Sequence reflected!"
     error_message = "No sequence to reflect."
 
-    vertical_mirror_positions = mirrored_positions["vertical"]
+    vertical_mirror_positions = mirrored_positions[VERTICAL]
 
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench

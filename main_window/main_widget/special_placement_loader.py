@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from typing import TYPE_CHECKING, Any
+from data.constants import BOX, DIAMOND
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
@@ -17,11 +18,11 @@ class SpecialPlacementLoader:
         "from_layer3_blue2_red1",
         "from_layer3_blue1_red2",
     ]
-    SUPPORTED_MODES = ["diamond", "box"]
+    SUPPORTED_MODES = [DIAMOND, BOX]
 
     def __init__(self) -> None:
         self.special_placements: dict[str, dict[str, dict]] = {}
-        
+
     def load_json_data(self, file_path) -> dict[str, dict[dict[str, Any]]]:
         try:
             if os.path.exists(file_path):
@@ -31,7 +32,7 @@ class SpecialPlacementLoader:
         except Exception as e:
             logging.error(f"Error loading JSON data from {file_path}: {e}")
             return {}
-        
+
     def load_or_return_special_placements(self) -> dict[str, dict[str, dict]]:
         if self.special_placements:
             return self.special_placements

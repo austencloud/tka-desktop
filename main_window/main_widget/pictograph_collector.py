@@ -35,16 +35,14 @@ class PictographCollector:
         pictographs = []
         for list in advanced_start_pos_picker.start_pos_cache.values():
             for pictograph in list:
-                if pictograph.elements.view and pictograph.elements.view.isVisible():
-                    pictographs.append(pictograph)
+                pictographs.append(pictograph)
         return pictographs
 
     def _collect_from_start_pos_picker(self) -> list["Pictograph"]:
         start_pos_picker = self.main_widget.construct_tab.start_pos_picker
         pictographs = []
         for pictograph in start_pos_picker.pictograph_frame.start_positions.values():
-            if pictograph.elements.view and pictograph.elements.view.isVisible():
-                pictographs.append(pictograph)
+            pictographs.append(pictograph)
         return pictographs
 
     def _collect_from_sequence_beat_frame(self) -> list["Pictograph"]:
@@ -73,7 +71,8 @@ class PictographCollector:
     def _collect_from_graph_editor(self) -> list["Pictograph"]:
         sequence_workbench = self.main_widget.sequence_workbench
         graph_editor = sequence_workbench.graph_editor
-        return [graph_editor.pictograph_container.GE_view.get_current_pictograph()]
+        ge_view = graph_editor.pictograph_container.GE_view
+        return [ge_view.pictograph]
 
     def _collect_from_codex(self) -> list["Pictograph"]:
         codex = self.main_widget.codex
