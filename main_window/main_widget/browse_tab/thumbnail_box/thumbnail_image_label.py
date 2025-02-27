@@ -3,6 +3,8 @@ from PyQt6.QtGui import QPixmap, QCursor, QMouseEvent, QPainter, QColor, QPen
 from PyQt6.QtWidgets import QLabel
 from typing import TYPE_CHECKING
 
+from data.constants import BLUE
+
 if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox
 
@@ -84,7 +86,7 @@ class ThumbnailImageLabel(QLabel):
 
     def leaveEvent(self, event: QEvent):
         if self.is_selected:
-            self._border_color = "blue"  # Set border color if selected
+            self._border_color = BLUE  # Set border color if selected
         else:
             self._border_color = None  # Remove border
         self.update()  # Trigger repaint
@@ -93,7 +95,7 @@ class ThumbnailImageLabel(QLabel):
     def set_selected(self, selected: bool):
         self.is_selected = selected
         if selected:
-            self._border_color = "blue"  # Set border color if selected
+            self._border_color = BLUE  # Set border color if selected
         else:
             self._border_color = None  # Remove border
         self.update()  # Trigger repaint

@@ -6,7 +6,6 @@ if TYPE_CHECKING:
     from svg_manager.svg_manager import SvgManager
 
 
-
 class SvgColorHandler:
     def __init__(self, manager: "SvgManager"):
         self.manager = manager
@@ -14,7 +13,7 @@ class SvgColorHandler:
     @staticmethod
     def apply_color_transformations(svg_data: str, new_color: str) -> str:
         """
-        If new_color is "red" or "blue", then use COLOR_MAP.
+        If new_color is RED or BLUE, then use COLOR_MAP.
         If new_color is already a hex string (#ED1C24 / #2E3192), use it directly.
         """
         COLOR_MAP = {RED: HEX_RED, BLUE: HEX_BLUE}

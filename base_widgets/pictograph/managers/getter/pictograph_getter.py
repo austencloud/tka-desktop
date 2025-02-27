@@ -115,27 +115,27 @@ class PictographGetter:
     def pictograph_data(self) -> dict:
         return {
             "letter": self.pictograph.state.letter.value,
-            "start_pos": self.pictograph.state.start_pos,
-            "end_pos": self.pictograph.state.end_pos,
+            START_POS: self.pictograph.state.start_pos,
+            END_POS: self.pictograph.state.end_pos,
             "timing": self.pictograph.state.timing,
             "direction": self.pictograph.state.direction,
             BLUE_ATTRIBUTES: {
                 "motion_type": self.blue_motion.state.motion_type,
-                "start_ori": self.blue_motion.state.start_ori,
+                START_ORI: self.blue_motion.state.start_ori,
                 "prop_rot_dir": self.blue_motion.state.prop_rot_dir,
                 "start_loc": self.blue_motion.state.start_loc,
                 "end_loc": self.blue_motion.state.end_loc,
                 "turns": self.blue_motion.state.turns,
-                "end_ori": self.blue_motion.state.end_ori,
+                END_ORI: self.blue_motion.state.end_ori,
             },
             RED_ATTRIBUTES: {
                 "motion_type": self.red_motion.state.motion_type,
-                "start_ori": self.red_motion.state.start_ori,
+                START_ORI: self.red_motion.state.start_ori,
                 "prop_rot_dir": self.red_motion.state.prop_rot_dir,
                 "start_loc": self.red_motion.state.start_loc,
                 "end_loc": self.red_motion.state.end_loc,
                 "turns": self.red_motion.state.turns,
-                "end_ori": self.red_motion.state.end_ori,
+                END_ORI: self.red_motion.state.end_ori,
             },
         }
 

@@ -6,7 +6,7 @@ from base_widgets.pictograph.elements.views.start_pos_picker_pictograph_view imp
 )
 from data.positions import box_positions, diamond_positions
 from base_widgets.pictograph.pictograph import Pictograph
-from data.constants import BOX, DIAMOND
+from data.constants import BOX, DIAMOND, END_POS, START_POS
 from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
@@ -55,8 +55,8 @@ class BaseStartPosPicker(QWidget):
 
     def generate_pictograph_key(self, pictograph_data: dict, grid_mode: str) -> str:
         letter = pictograph_data.get("letter", "unknown")
-        start_pos = pictograph_data.get("start_pos", "no_start")
-        end_pos = pictograph_data.get("end_pos", "no_end")
+        start_pos = pictograph_data.get(START_POS, "no_start")
+        end_pos = pictograph_data.get(END_POS, "no_end")
         return f"{letter}_{start_pos}_{end_pos}_{grid_mode}"
 
     def get_box_pictographs(self, advanced: bool = False) -> list[Pictograph]:
@@ -65,8 +65,8 @@ class BaseStartPosPicker(QWidget):
 
         for letter, p_dicts in self.pictograph_dataset.items():
             for p_dict in p_dicts:
-                if p_dict["start_pos"] == p_dict["end_pos"]:
-                    if p_dict["start_pos"] in box_positions:
+                if p_dict[START_POS] == p_dict[END_POS]:
+                    if p_dict[START_POS] in box_positions:
                         self.create_pictograph_from_dict(p_dict, BOX)
 
         return self.box_pictographs
@@ -77,8 +77,8 @@ class BaseStartPosPicker(QWidget):
 
         for letter, p_dicts in self.pictograph_dataset.items():
             for p_dict in p_dicts:
-                if p_dict["start_pos"] == p_dict["end_pos"]:
-                    if p_dict["start_pos"] in diamond_positions:
+                if p_dict[START_POS] == p_dict[END_POS]:
+                    if p_dict[START_POS] in diamond_positions:
                         self.create_pictograph_from_dict(p_dict, DIAMOND)
 
         return self.diamond_pictographs

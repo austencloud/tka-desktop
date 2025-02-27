@@ -6,6 +6,7 @@ from base_widgets.pictograph.pictograph import Pictograph
 from base_widgets.pictograph.elements.views.lesson_pictograph_view import (
     LessonPictographView,
 )
+from data.constants import RED
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
 
 if TYPE_CHECKING:
@@ -86,7 +87,7 @@ class PictographAnswersRenderer:
         if answer_key in self.pictograph_views:
             view: LessonPictographView = self.pictograph_views[answer_key]
             view.setEnabled(False)
-            view.set_overlay_color("red")
+            view.set_overlay_color(RED)
 
     def _clear_layout(self):
         while self.layout.count():

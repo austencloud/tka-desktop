@@ -1,6 +1,6 @@
 import logging
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRIBUTES, END_POS, RED_ATTRIBUTES, START_POS
 from data.locations import vertical_loc_mirror_map
 from data.positions import mirrored_positions
 
@@ -29,13 +29,13 @@ class CodexReflector:
 
     def _mirror_pictograph(self, pictograph):
         """Mirror an individual pictograph dictionary."""
-        if "start_pos" in pictograph:
-            pictograph["start_pos"] = self.vertical_mirror_positions.get(
-                pictograph["start_pos"], pictograph["start_pos"]
+        if START_POS in pictograph:
+            pictograph[START_POS] = self.vertical_mirror_positions.get(
+                pictograph[START_POS], pictograph[START_POS]
             )
-        if "end_pos" in pictograph:
-            pictograph["end_pos"] = self.vertical_mirror_positions.get(
-                pictograph["end_pos"], pictograph["end_pos"]
+        if END_POS in pictograph:
+            pictograph[END_POS] = self.vertical_mirror_positions.get(
+                pictograph[END_POS], pictograph[END_POS]
             )
 
         for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:

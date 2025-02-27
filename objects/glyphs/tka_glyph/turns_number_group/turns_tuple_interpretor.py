@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from Enums.letters import LetterType
-from data.constants import HEX_BLUE, HEX_RED
+from data.constants import BLUE, HEX_BLUE, HEX_RED
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
@@ -22,7 +22,7 @@ class TurnsTupleInterpreter:
         bot_color = HEX_RED
 
         def color_for_motion(motion: Motion) -> str:
-            return HEX_BLUE if motion.state.color == "blue" else HEX_RED
+            return HEX_BLUE if motion.state.color == BLUE else HEX_RED
 
         if generator_key == LetterType.Type2:
             shift_motion = pictograph.managers.get.shift()

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Union
 
-from data.constants import DASH, NO_ROT, STATIC
+from data.constants import DASH, END_ORI, NO_ROT, STATIC
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )
@@ -32,7 +32,7 @@ class JsonTurnsUpdater:
         end_ori = self.json_manager.ori_calculator.calculate_end_ori(
             sequence[index], color
         )
-        sequence[index][f"{color}_attributes"]["end_ori"] = end_ori
+        sequence[index][f"{color}_attributes"][END_ORI] = end_ori
         if sequence[index][f"{color}_attributes"]["turns"] != "fl":
             if sequence[index][f"{color}_attributes"]["turns"] > 0:
                 pictograph = beat_frame.beat_views[index - 2].beat

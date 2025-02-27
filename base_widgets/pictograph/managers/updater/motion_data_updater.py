@@ -4,7 +4,15 @@ from math import pi
 from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
-from data.constants import LEADING, PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR, RED, BLUE, TRAILING
+from data.constants import (
+    LEADING,
+    PREFLOAT_MOTION_TYPE,
+    PREFLOAT_PROP_ROT_DIR,
+    RED,
+    BLUE,
+    START_ORI,
+    TRAILING,
+)
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
@@ -101,7 +109,7 @@ class MotionDataUpdater:
             "start_loc",
             "end_loc",
             "turns",
-            "start_ori",
+            START_ORI,
             "prop_rot_dir",
         ]
         motion_dataset = {}

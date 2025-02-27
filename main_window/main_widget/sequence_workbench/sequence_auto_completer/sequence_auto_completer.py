@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from data.constants import END_POS
 from main_window.main_widget.generate_tab.circular.permutation_executors.mirrored_permutation_executor import (
     MirroredPermutationExecutor,
 )
@@ -60,8 +61,8 @@ class SequenceAutoCompleter:
                 executor.create_permutations(sequence, "horizontal")
 
     def get_valid_permutations(self, sequence: list[dict]) -> dict[str, bool]:
-        start_pos = sequence[1]["end_pos"]
-        end_pos = sequence[-1]["end_pos"]
+        start_pos = sequence[1][END_POS]
+        end_pos = sequence[-1][END_POS]
         valid_permutations = {
             "rotation": (start_pos, end_pos) in quartered_permutations
             or (start_pos, end_pos) in halved_permutations,

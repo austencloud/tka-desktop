@@ -36,7 +36,7 @@ class TurnPatternVariationChecker:
         if len(seq1) != len(seq2):
             return False
 
-        keys_to_compare = ["turns", "start_ori", "end_ori"]
+        keys_to_compare = ["turns", START_ORI, END_ORI]
         for beat1, beat2 in zip(seq1, seq2):
             for attr in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
                 if not self.compare_attributes(

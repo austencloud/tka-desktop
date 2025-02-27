@@ -14,12 +14,12 @@
       "beat": 0,
       "sequence_start_position": "alpha",
       "letter": "\u03b1",
-      "end_pos": "alpha1",
+      "END_POS": "alpha1",
       "blue_attributes": {
         "start_loc": "s",
         "end_loc": "s",
-        "start_ori": "in",
-        "end_ori": "in",
+        "START_ORI": "in",
+        "END_ORI": "in",
         "prop_rot_dir": "no_rot",
         "turns": 0,
         "motion_type": "static"
@@ -27,8 +27,8 @@
       "red_attributes": {
         "start_loc": "n",
         "end_loc": "n",
-        "start_ori": "in",
-        "end_ori": "in",
+        "START_ORI": "in",
+        "END_ORI": "in",
         "prop_rot_dir": "no_rot",
         "turns": 0,
         "motion_type": "static"
@@ -37,105 +37,105 @@
     {
       "beat": 1,
       "letter": "A",
-      "start_pos": "alpha1",
-      "end_pos": "alpha3",
+      "START_POS": "alpha1",
+      "END_POS": "alpha3",
       "timing": "split",
       "direction": "same",
       "blue_attributes": {
         "motion_type": "pro",
-        "start_ori": "in",
+        "START_ORI": "in",
         "prop_rot_dir": "cw",
         "start_loc": "s",
         "end_loc": "w",
         "turns": 0,
-        "end_ori": "in"
+        "END_ORI": "in"
       },
       "red_attributes": {
         "motion_type": "pro",
-        "start_ori": "in",
+        "START_ORI": "in",
         "prop_rot_dir": "cw",
         "start_loc": "n",
         "end_loc": "e",
         "turns": 0,
-        "end_ori": "in"
+        "END_ORI": "in"
       }
     },
     {
       "beat": 2,
       "letter": "A",
-      "start_pos": "alpha3",
-      "end_pos": "alpha5",
+      "START_POS": "alpha3",
+      "END_POS": "alpha5",
       "timing": "split",
       "direction": "same",
       "blue_attributes": {
         "motion_type": "pro",
-        "start_ori": "in",
+        "START_ORI": "in",
         "prop_rot_dir": "cw",
         "start_loc": "w",
         "end_loc": "n",
         "turns": 0,
-        "end_ori": "in"
+        "END_ORI": "in"
       },
       "red_attributes": {
         "motion_type": "pro",
-        "start_ori": "in",
+        "START_ORI": "in",
         "prop_rot_dir": "cw",
         "start_loc": "e",
         "end_loc": "s",
         "turns": 0,
-        "end_ori": "in"
+        "END_ORI": "in"
       }
     },
     {
       "beat": 3,
       "letter": "A",
-      "start_pos": "alpha5",
-      "end_pos": "alpha7",
+      "START_POS": "alpha5",
+      "END_POS": "alpha7",
       "timing": "split",
       "direction": "same",
       "blue_attributes": {
         "motion_type": "pro",
-        "start_ori": "in",
+        "START_ORI": "in",
         "prop_rot_dir": "cw",
         "start_loc": "n",
         "end_loc": "e",
         "turns": 0,
-        "end_ori": "in"
+        "END_ORI": "in"
       },
       "red_attributes": {
         "motion_type": "pro",
-        "start_ori": "in",
+        "START_ORI": "in",
         "prop_rot_dir": "cw",
         "start_loc": "s",
         "end_loc": "w",
         "turns": 0,
-        "end_ori": "in"
+        "END_ORI": "in"
       }
     },
     {
       "beat": 4,
       "letter": "A",
-      "start_pos": "alpha7",
-      "end_pos": "alpha1",
+      "START_POS": "alpha7",
+      "END_POS": "alpha1",
       "timing": "split",
       "direction": "same",
       "blue_attributes": {
         "motion_type": "pro",
-        "start_ori": "in",
+        "START_ORI": "in",
         "prop_rot_dir": "cw",
         "start_loc": "e",
         "end_loc": "s",
         "turns": 0,
-        "end_ori": "in"
+        "END_ORI": "in"
       },
       "red_attributes": {
         "motion_type": "pro",
-        "start_ori": "in",
+        "START_ORI": "in",
         "prop_rot_dir": "cw",
         "start_loc": "w",
         "end_loc": "n",
         "turns": 0,
-        "end_ori": "in"
+        "END_ORI": "in"
       }
     }
   ],

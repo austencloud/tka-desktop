@@ -4,18 +4,18 @@ from objects.motion.motion_state import MotionState
 
 def test_motion_state_updates_with_partial_data():
     state = MotionState(
-        color="blue", motion_type="pro", turns=0, start_loc="n", end_loc=None
+        color=BLUE, motion_type="pro", turns=0, start_loc="n", end_loc=None
     )
 
     new_data = {
-        "color": "red",
+        "color": RED,
         "turns": 1.5,
         "end_loc": "s",
     }
 
     state.update_motion_state(new_data)
 
-    assert state.color == "red"
+    assert state.color == RED
     assert state.turns == 1.5
     assert state.end_loc == "s"
     assert state.motion_type == "pro"

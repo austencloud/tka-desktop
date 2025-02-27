@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from data.constants import RED
+
 if TYPE_CHECKING:
     from .lesson_widget import LessonWidget
 
@@ -42,6 +44,6 @@ class LessonAnswerChecker:
             elif self.lesson.mode == "countdown":
                 self.lesson.question_generator.fade_to_new_question()
         else:
-            self._update_indicator_style("red", "Wrong! Try again.")
+            self._update_indicator_style(RED, "Wrong! Try again.")
             self.lesson.answers_widget.disable_answer(selected_answer)
             self.lesson.incorrect_guesses += 1

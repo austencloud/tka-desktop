@@ -57,9 +57,9 @@ class CodexOriSelector(QWidget):
                 if scene.state.pictograph_data:
                     new_dict = scene.state.pictograph_data.copy()
                     if BLUE_ATTRIBUTES in new_dict:
-                        new_dict[BLUE_ATTRIBUTES]["start_ori"] = orientation
+                        new_dict[BLUE_ATTRIBUTES][START_ORI] = orientation
                     if RED_ATTRIBUTES in new_dict:
-                        new_dict[RED_ATTRIBUTES]["start_ori"] = orientation
+                        new_dict[RED_ATTRIBUTES][START_ORI] = orientation
                     scene.managers.updater.update_pictograph(new_dict)
                     logger.debug(
                         f"Updated orientation for pictograph '{letter_str}' to '{orientation}'."

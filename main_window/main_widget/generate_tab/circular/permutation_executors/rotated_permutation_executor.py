@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from data.quartered_permutations import quartered_permutations
 from data.halved_permutations import halved_permutations
 from data.constants import (
+    BLUE,
     BLUE_ATTRIBUTES,
     CCW_HANDPATH,
     CLOCKWISE,
@@ -9,15 +10,18 @@ from data.constants import (
     CW_HANDPATH,
     DASH,
     EAST,
+    END_ORI,
     NORTH,
     NORTHEAST,
     NORTHWEST,
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
+    RED,
     RED_ATTRIBUTES,
     SOUTH,
     SOUTHEAST,
     SOUTHWEST,
+    START_ORI,
     STATIC,
     WEST,
 )
@@ -89,16 +93,16 @@ class RotatedPermutationExecutor(PermutationExecutor):
         sequence = (
             self.circular_sequence_generator.json_manager.loader_saver.load_current_sequence()
         )
-        start_pos = sequence[1]["end_pos"]
-        end_pos = sequence[-1]["end_pos"]
+        start_pos = sequence[1][END_POS]
+        end_pos = sequence[-1][END_POS]
         return (start_pos, end_pos) in quartered_permutations
 
     def is_halved_permutation(self) -> bool:
         sequence = (
             self.circular_sequence_generator.json_manager.loader_saver.load_current_sequence()
         )
-        start_pos = sequence[1]["end_pos"]
-        end_pos = sequence[-1]["end_pos"]
+        start_pos = sequence[1][END_POS]
+        end_pos = sequence[-1][END_POS]
         return (start_pos, end_pos) in halved_permutations
 
     def get_halved_or_quartered(self) -> str:
@@ -181,10 +185,8 @@ class RotatedPermutationExecutor(PermutationExecutor):
         new_entry = {
             "beat": beat_number,
             "letter": previous_matching_beat["letter"],
-            "start_pos": previous_entry["end_pos"],
-            "end_pos": self.calculate_new_end_pos(
-                previous_matching_beat, previous_entry
-            ),
+            START_POS: previous_entry[END_POS],
+            END_POS: self.calculate_new_end_pos(previous_matching_beat, previous_entry),
             "timing": previous_matching_beat["timing"],
             "direction": previous_matching_beat["direction"],
             BLUE_ATTRIBUTES: self.create_new_attributes(
@@ -214,14 +216,14 @@ class RotatedPermutationExecutor(PermutationExecutor):
                 RED_ATTRIBUTES
             ][PREFLOAT_PROP_ROT_DIR]
 
-        new_entry[BLUE_ATTRIBUTES]["end_ori"] = (
+        new_entry[BLUE_ATTRIBUTES][END_ORI] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
-                new_entry, "blue"
+                new_entry, BLUE
             )
         )
-        new_entry[RED_ATTRIBUTES]["end_ori"] = (
+        new_entry[RED_ATTRIBUTES][END_ORI] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
-                new_entry, "red"
+                new_entry, RED
             )
         )
 
@@ -340,7 +342,7 @@ class RotatedPermutationExecutor(PermutationExecutor):
     ) -> dict:
         return {
             "motion_type": previous_matching_beat_attributes["motion_type"],
-            "start_ori": previous_attributes["end_ori"],
+            START_ORI: previous_attributes[END_ORI],
             "prop_rot_dir": previous_matching_beat_attributes["prop_rot_dir"],
             "start_loc": previous_attributes["end_loc"],
             "end_loc": self.calculate_rotated_permuatation_new_loc(

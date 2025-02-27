@@ -48,10 +48,10 @@ class SequenceLevelEvaluator:
 
     def _has_non_radial_orientation(self, entry: dict) -> bool:
         self.RADIAL_ORIENTATIONS = {"in", "out"}
-        blue_start_ori = entry[BLUE_ATTRIBUTES]["start_ori"]
-        blue_end_ori = entry[BLUE_ATTRIBUTES]["end_ori"]
-        red_start_ori = entry[RED_ATTRIBUTES]["start_ori"]
-        red_end_ori = entry[RED_ATTRIBUTES]["end_ori"]
+        blue_start_ori = entry[BLUE_ATTRIBUTES][START_ORI]
+        blue_end_ori = entry[BLUE_ATTRIBUTES][END_ORI]
+        red_start_ori = entry[RED_ATTRIBUTES][START_ORI]
+        red_end_ori = entry[RED_ATTRIBUTES][END_ORI]
         return (
             blue_start_ori not in self.RADIAL_ORIENTATIONS
             or blue_end_ori not in self.RADIAL_ORIENTATIONS

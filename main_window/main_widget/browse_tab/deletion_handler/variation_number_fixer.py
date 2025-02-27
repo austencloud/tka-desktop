@@ -36,7 +36,7 @@ class VariationNumberFixer:
         if metadata and "sequence" in metadata:
             for item in metadata["sequence"]:
                 if "sequence_start_position" in item:
-                    start_ori = item[BLUE_ATTRIBUTES]["start_ori"]
+                    start_ori = item[BLUE_ATTRIBUTES][START_ORI]
                     return start_ori
         return None
 

@@ -3,7 +3,15 @@ from PyQt6.QtWidgets import QApplication
 import random
 from copy import deepcopy
 from PyQt6.QtCore import Qt
-from data.constants import BLUE_ATTRIBUTES, CLOCKWISE, COUNTER_CLOCKWISE, DASH, RED_ATTRIBUTES, STATIC
+from data.constants import (
+    BLUE_ATTRIBUTES,
+    CLOCKWISE,
+    COUNTER_CLOCKWISE,
+    DASH,
+    END_POS,
+    RED_ATTRIBUTES,
+    STATIC,
+)
 from data.position_maps import (
     half_position_map,
     quarter_position_map_cw,
@@ -121,7 +129,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 next_beat = random.choice(options)
         elif permutation_type == "mirrored":
             if is_last_in_word:
-                expected_end_pos = self.sequence[1]["end_pos"]
+                expected_end_pos = self.sequence[1][END_POS]
                 next_beat = self._select_pictograph_with_end_pos(
                     options, expected_end_pos
                 )
@@ -147,7 +155,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
     def _determine_rotated_end_pos(self, slice_size: str) -> str:
         """Determine the expected end position based on rotation type and current sequence."""
-        start_pos = self.sequence[1]["end_pos"]
+        start_pos = self.sequence[1][END_POS]
 
         if slice_size == "quartered":
             if random.choice([True, False]):
@@ -165,7 +173,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
     ) -> dict:
         """Select a pictograph from options that has the desired end position."""
         valid_options = [
-            option for option in options if option["end_pos"] == expected_end_pos
+            option for option in options if option[END_POS] == expected_end_pos
         ]
         if not valid_options:
             raise ValueError(
@@ -186,8 +194,8 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
     def can_perform_rotationed_permutation(
         self, sequence: list[dict], rotation_type: str
     ) -> bool:
-        start_pos = sequence[1]["end_pos"]
-        end_pos = sequence[-1]["end_pos"]
+        start_pos = sequence[1][END_POS]
+        end_pos = sequence[-1][END_POS]
         if rotation_type == "quartered":
             return (start_pos, end_pos) in quartered_permutations
         elif rotation_type == "halved":

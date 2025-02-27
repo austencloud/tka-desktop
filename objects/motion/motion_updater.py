@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from data.constants import COLOR, LOC, ORI
+from data.constants import COLOR, END_ORI, LOC, ORI
 
 if TYPE_CHECKING:
     from objects.motion.motion import Motion
@@ -25,4 +25,4 @@ class MotionUpdater:
         self.motion.state.end_ori = self.motion.ori_calculator.get_end_ori()
         self.motion.pictograph.state.pictograph_data[
             f"{self.motion.state.color}_attributes"
-        ]["end_ori"] = self.motion.state.end_ori
+        ][END_ORI] = self.motion.state.end_ori

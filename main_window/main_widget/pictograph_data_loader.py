@@ -2,7 +2,17 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Optional
 import pandas as pd
 from Enums.letters import Letter
-from data.constants import BLUE_ATTRIBUTES, END_POS, IN, LETTER, RED_ATTRIBUTES, START_POS
+from data.constants import (
+    BLUE,
+    BLUE_ATTRIBUTES,
+    END_POS,
+    IN,
+    LETTER,
+    RED,
+    RED_ATTRIBUTES,
+    START_ORI,
+    START_POS,
+)
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
@@ -53,15 +63,15 @@ class PictographDataLoader:
         def nest_attributes(row, color_prefix):
             return {
                 "motion_type": row[f"{color_prefix}_motion_type"],
-                "start_ori": row[f"{color_prefix}_start_ori"],
+                START_ORI: row[f"{color_prefix}_start_ori"],
                 "prop_rot_dir": row[f"{color_prefix}_prop_rot_dir"],
                 "start_loc": row[f"{color_prefix}_start_loc"],
                 "end_loc": row[f"{color_prefix}_end_loc"],
                 "turns": row[f"{color_prefix}_turns"],
             }
 
-        df[BLUE_ATTRIBUTES] = df.apply(lambda row: nest_attributes(row, "blue"), axis=1)
-        df[RED_ATTRIBUTES] = df.apply(lambda row: nest_attributes(row, "red"), axis=1)
+        df[BLUE_ATTRIBUTES] = df.apply(lambda row: nest_attributes(row, BLUE), axis=1)
+        df[RED_ATTRIBUTES] = df.apply(lambda row: nest_attributes(row, RED), axis=1)
         blue_columns = [
             "blue_motion_type",
             "blue_prop_rot_dir",
@@ -103,8 +113,8 @@ class PictographDataLoader:
         letter_dicts = self.main_widget.pictograph_dataset.get(target_letter, [])
         for pdict in letter_dicts:
             if (
-                pdict.get("start_pos") == simplified_dict["start_pos"]
-                and pdict.get("end_pos") == simplified_dict["end_pos"]
+                pdict.get(START_POS) == simplified_dict[START_POS]
+                and pdict.get(END_POS) == simplified_dict[END_POS]
                 and pdict.get(BLUE_ATTRIBUTES, {}).get("motion_type")
                 == simplified_dict["blue_motion_type"]
                 and pdict.get(RED_ATTRIBUTES, {}).get("motion_type")

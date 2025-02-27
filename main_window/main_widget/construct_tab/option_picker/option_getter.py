@@ -1,5 +1,14 @@
 from typing import Any, Optional
-from data.constants import BLUE_ATTRIBUTES, END_POS, RED_ATTRIBUTES, START_POS
+from data.constants import (
+    BLUE,
+    BLUE_ATTRIBUTES,
+    END_ORI,
+    END_POS,
+    RED,
+    RED_ATTRIBUTES,
+    START_ORI,
+    START_POS,
+)
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 
@@ -28,13 +37,13 @@ class OptionGetter:
     ) -> None:
         last = sequence[-1]
         for option in options:
-            option[BLUE_ATTRIBUTES]["start_ori"] = last[BLUE_ATTRIBUTES]["end_ori"]
-            option[RED_ATTRIBUTES]["start_ori"] = last[RED_ATTRIBUTES]["end_ori"]
-            option[BLUE_ATTRIBUTES]["end_ori"] = self.ori_calculator.calculate_end_ori(
-                option, "blue"
+            option[BLUE_ATTRIBUTES][START_ORI] = last[BLUE_ATTRIBUTES][END_ORI]
+            option[RED_ATTRIBUTES][START_ORI] = last[RED_ATTRIBUTES][END_ORI]
+            option[BLUE_ATTRIBUTES][END_ORI] = self.ori_calculator.calculate_end_ori(
+                option, BLUE
             )
-            option[RED_ATTRIBUTES]["end_ori"] = self.ori_calculator.calculate_end_ori(
-                option, "red"
+            option[RED_ATTRIBUTES][END_ORI] = self.ori_calculator.calculate_end_ori(
+                option, RED
             )
 
     def _load_all_next_option_dicts(
@@ -49,9 +58,9 @@ class OptionGetter:
                     if item.get(START_POS) == start:
                         next_opts.append(item)
         for o in next_opts:
-            for color in ("blue", "red"):
-                o[f"{color}_attributes"]["start_ori"] = last[f"{color}_attributes"][
-                    "end_ori"
+            for color in (BLUE, RED):
+                o[f"{color}_attributes"][START_ORI] = last[f"{color}_attributes"][
+                    END_ORI
                 ]
             self.ori_validation_engine.validate_single_pictograph(o, last)
         return next_opts
@@ -76,8 +85,8 @@ class OptionGetter:
                     return rot
             return None
 
-        last_blue = get_last_rot(sequence[1:], "blue")
-        last_red = get_last_rot(sequence[1:], "red")
+        last_blue = get_last_rot(sequence[1:], BLUE)
+        last_red = get_last_rot(sequence[1:], RED)
         curr_blue = o.get(BLUE_ATTRIBUTES, {}).get("prop_rot_dir", "no_rot")
         curr_red = o.get(RED_ATTRIBUTES, {}).get("prop_rot_dir", "no_rot")
         if curr_blue == "no_rot":

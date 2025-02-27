@@ -2,6 +2,7 @@ import random
 from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
+from data.constants import END_POS, START_POS
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 
 
@@ -157,7 +158,7 @@ class QuestionGenerator:
         wrong_pictographs = []
         while len(wrong_pictographs) < 3:
             random_pictograph = self._generate_random_pictograph()
-            if random_pictograph["start_pos"] != correct_pictograph["start_pos"]:
+            if random_pictograph[START_POS] != correct_pictograph[START_POS]:
                 wrong_pictographs.append(random_pictograph)
         return wrong_pictographs
 
@@ -170,20 +171,20 @@ class QuestionGenerator:
             letter
             for letter in available_letters
             for pictograph in pictograph_datas[letter]
-            if pictograph["start_pos"] == pictograph["end_pos"]
+            if pictograph[START_POS] == pictograph[END_POS]
         ]
         letter = random.choice(available_letters)
         return random.choice(pictograph_datas[letter])
 
     def _generate_correct_next_pictograph(self, initial_pictograph: dict) -> dict:
         """Finds a valid pictograph that can follow the initial pictograph."""
-        end_pos = initial_pictograph["end_pos"]
+        end_pos = initial_pictograph[END_POS]
         pictograph_datas = self.filter_pictograph_dataset_by_grid_mode()
         valid_pictographs = [
             pictograph
             for letter_pictographs in pictograph_datas.values()
             for pictograph in letter_pictographs
-            if pictograph["start_pos"] == end_pos
+            if pictograph[START_POS] == end_pos
         ]
 
         correct_answer = random.choice(valid_pictographs)
@@ -195,7 +196,7 @@ class QuestionGenerator:
         while True:
             letter = random.choice(list(self.main_widget.pictograph_dataset.keys()))
             random_pictograph = random.choice(pictograph_datas[letter])
-            if random_pictograph["start_pos"] != random_pictograph["end_pos"]:
+            if random_pictograph[START_POS] != random_pictograph[END_POS]:
                 return random_pictograph
 
     def _get_random_pictograph(

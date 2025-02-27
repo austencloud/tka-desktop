@@ -128,7 +128,7 @@ class PropRotDirButtonManager:
         new_dict = {
             "motion_type": motion.state.motion_type,
             "prop_rot_dir": motion.state.prop_rot_dir,
-            "end_ori": motion.state.end_ori,
+            END_ORI: motion.state.end_ori,
             "turns": motion.state.turns,
         }
 

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QDialog, QHBoxLayout
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
-from data.constants import HEX_BLUE, HEX_RED
+from data.constants import BLUE, HEX_BLUE, HEX_RED
 from .ori_button import OriButton  # Import the new OriButton class
 
 if TYPE_CHECKING:
@@ -22,7 +22,7 @@ class OriSelectionDialog(QDialog):
         self._setup_layout()
 
     def _set_dialog_style(self):
-        border_color = HEX_BLUE if self.ori_picker_widget.color == "blue" else HEX_RED
+        border_color = HEX_BLUE if self.ori_picker_widget.color == BLUE else HEX_RED
         self.setStyleSheet(
             f"""
             QDialog {{

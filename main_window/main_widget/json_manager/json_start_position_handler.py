@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, NO_ROT, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRIBUTES, END_ORI, END_POS, NO_ROT, RED_ATTRIBUTES, START_ORI
 from base_widgets.pictograph.pictograph import Pictograph
 
 
@@ -13,10 +13,10 @@ class JsonStartPositionHandler:
 
     def set_start_position_data(self, start_pos_pictograph: Pictograph) -> None:
         red_start_ori = start_pos_pictograph.state.pictograph_data[RED_ATTRIBUTES][
-            "start_ori"
+            START_ORI
         ]
         blue_start_ori = start_pos_pictograph.state.pictograph_data[BLUE_ATTRIBUTES][
-            "start_ori"
+            START_ORI
         ]
 
         sequence = self.manager.loader_saver.load_current_sequence()
@@ -27,14 +27,14 @@ class JsonStartPositionHandler:
                 start_pos_pictograph
             ),
             "letter": start_pos_pictograph.state.letter.name,
-            "end_pos": start_pos_pictograph.state.end_pos,
+            END_POS: start_pos_pictograph.state.end_pos,
             "timing": start_pos_pictograph.state.timing,
             "direction": start_pos_pictograph.state.direction,
             BLUE_ATTRIBUTES: {
                 "start_loc": start_pos_pictograph.elements.blue_motion.state.start_loc,
                 "end_loc": start_pos_pictograph.elements.blue_motion.state.end_loc,
-                "start_ori": blue_start_ori,
-                "end_ori": blue_start_ori,
+                START_ORI: blue_start_ori,
+                END_ORI: blue_start_ori,
                 "prop_rot_dir": NO_ROT,
                 "turns": 0,
                 "motion_type": start_pos_pictograph.elements.blue_motion.state.motion_type,
@@ -42,8 +42,8 @@ class JsonStartPositionHandler:
             RED_ATTRIBUTES: {
                 "start_loc": start_pos_pictograph.elements.red_motion.state.start_loc,
                 "end_loc": start_pos_pictograph.elements.red_motion.state.end_loc,
-                "start_ori": red_start_ori,
-                "end_ori": red_start_ori,
+                START_ORI: red_start_ori,
+                END_ORI: red_start_ori,
                 "prop_rot_dir": NO_ROT,
                 "turns": 0,
                 "motion_type": start_pos_pictograph.elements.red_motion.state.motion_type,
@@ -60,8 +60,8 @@ class JsonStartPositionHandler:
     def update_start_pos_ori(self, color: str, ori: int) -> None:
         sequence = self.manager.loader_saver.load_current_sequence()
         if sequence:
-            sequence[1][f"{color}_attributes"]["end_ori"] = ori
-            sequence[1][f"{color}_attributes"]["start_ori"] = ori
+            sequence[1][f"{color}_attributes"][END_ORI] = ori
+            sequence[1][f"{color}_attributes"][START_ORI] = ori
             self.manager.loader_saver.save_current_sequence(sequence)
 
     def get_sequence_start_position(self, start_pos_pictograph: Pictograph) -> str:

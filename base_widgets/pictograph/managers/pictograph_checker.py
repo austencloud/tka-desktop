@@ -106,8 +106,8 @@ class PictographChecker:
     def is_pictograph_data_complete(self, pictograph_data: dict) -> bool:
         required_keys = [
             "letter",
-            "start_pos",
-            "end_pos",
+            START_POS,
+            END_POS,
             "timing",
             "direction",
             BLUE_ATTRIBUTES,
@@ -118,7 +118,7 @@ class PictographChecker:
             "prop_rot_dir",
             "start_loc",
             "end_loc",
-            "start_ori",
+            START_ORI,
             "turns",
         ]
         nested_red_required_keys = nested_blue_required_keys.copy()

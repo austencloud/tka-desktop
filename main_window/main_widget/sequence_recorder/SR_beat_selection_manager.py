@@ -119,10 +119,10 @@ class SR_BeatSelectionManager(QWidget):
     #             red_start_pos_ori_picker = graph_editor.adjustment_panel.red_ori_picker
 
     #             blue_start_pos_ori_picker.ori_picker_widget.ori_display_frame.set_initial_orientation(
-    #                 start_pos_pictograph, "blue"
+    #                 start_pos_pictograph, BLUE
     #             )
     #             red_start_pos_ori_picker.ori_picker_widget.ori_display_frame.set_initial_orientation(
-    #                 start_pos_pictograph, "red"
+    #                 start_pos_pictograph, RED
     #             )
 
     #         self.update()

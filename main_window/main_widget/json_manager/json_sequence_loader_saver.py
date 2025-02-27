@@ -1,6 +1,12 @@
 import json
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR, RED_ATTRIBUTES
+from data.constants import (
+    BLUE_ATTRIBUTES,
+    END_ORI,
+    PREFLOAT_MOTION_TYPE,
+    PREFLOAT_PROP_ROT_DIR,
+    RED_ATTRIBUTES,
+)
 from main_window.main_widget.json_manager.current_sequence_loader import (
     CurrentSequenceLoader,
 )
@@ -114,7 +120,7 @@ class JsonSequenceLoaderSaver:
     def get_red_end_ori(self, sequence: list[dict]) -> int:
         last_pictograph_data = self._get_last_pictograph_data(sequence)
         return (
-            last_pictograph_data.get(RED_ATTRIBUTES, {}).get("end_ori", 0)
+            last_pictograph_data.get(RED_ATTRIBUTES, {}).get(END_ORI, 0)
             if sequence
             else 0
         )
@@ -122,7 +128,7 @@ class JsonSequenceLoaderSaver:
     def get_blue_end_ori(self, sequence: list[dict]) -> int:
         last_pictograph_data = self._get_last_pictograph_data(sequence)
         return (
-            last_pictograph_data.get(BLUE_ATTRIBUTES, {}).get("end_ori", 0)
+            last_pictograph_data.get(BLUE_ATTRIBUTES, {}).get(END_ORI, 0)
             if sequence
             else 0
         )

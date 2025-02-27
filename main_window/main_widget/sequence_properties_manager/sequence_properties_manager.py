@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from data.constants import DIAMOND
+from data.constants import DIAMOND, END_POS
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.settings_manager.global_settings.app_context import AppContext
 from .strictly_color_swapped_permutation_checker import (
@@ -142,16 +142,16 @@ class SequencePropertiesManager:
 
     def _check_ends_at_start_pos(self) -> bool:
         if self.sequence[-1].get("is_placeholder", False):
-            return self.sequence[-2]["end_pos"] == self.sequence[0]["end_pos"]
+            return self.sequence[-2][END_POS] == self.sequence[0][END_POS]
         else:
-            return self.sequence[-1]["end_pos"] == self.sequence[0]["end_pos"]
+            return self.sequence[-1][END_POS] == self.sequence[0][END_POS]
 
     def _check_is_permutable(self) -> bool:
         if self.sequence[-1].get("is_placeholder", False):
-            return self.sequence[-2]["end_pos"].rstrip("0123456789") == self.sequence[
-                0
-            ]["end_pos"].rstrip("0123456789")
+            return self.sequence[-2][END_POS].rstrip("0123456789") == self.sequence[0][
+                END_POS
+            ].rstrip("0123456789")
         else:
-            return self.sequence[-1]["end_pos"].rstrip("0123456789") == self.sequence[
-                0
-            ]["end_pos"].rstrip("0123456789")
+            return self.sequence[-1][END_POS].rstrip("0123456789") == self.sequence[0][
+                END_POS
+            ].rstrip("0123456789")

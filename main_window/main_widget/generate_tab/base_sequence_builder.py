@@ -182,12 +182,12 @@ class BaseSequenceBuilder:
         Adjusts motion types if special flag 'fl' is present.
         """
         if turn_blue == "fl":
-            self._set_float_turns(next_beat, "blue")
+            self._set_float_turns(next_beat, BLUE)
         else:
             next_beat[BLUE_ATTRIBUTES][TURNS] = turn_blue
 
         if turn_red == "fl":
-            self._set_float_turns(next_beat, "red")
+            self._set_float_turns(next_beat, RED)
         else:
             next_beat[RED_ATTRIBUTES][TURNS] = turn_red
 

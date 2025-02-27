@@ -1,4 +1,6 @@
-from typing import  TYPE_CHECKING
+from typing import TYPE_CHECKING
+
+from data.constants import END_POS
 
 
 if TYPE_CHECKING:
@@ -192,10 +194,10 @@ class RotatedColorSwappedPermutationChecker:
     def _is_rotated_and_color_swapped(
         self, first_entry: dict, second_entry: dict, rotation_map: dict[str, str]
     ) -> bool:
-        first_entry_rotated_pos = rotation_map.get(first_entry["end_pos"])
+        first_entry_rotated_pos = rotation_map.get(first_entry[END_POS])
 
         # Check if positions match after rotation and color swap
-        if first_entry_rotated_pos != second_entry["end_pos"]:
+        if first_entry_rotated_pos != second_entry[END_POS]:
             return False
 
         return True

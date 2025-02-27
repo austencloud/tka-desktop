@@ -4,7 +4,16 @@ from copy import deepcopy
 import random
 from typing import TYPE_CHECKING, Dict, Any
 
-from data.constants import BLUE_ATTRIBUTES, DIAMOND, IN, RED_ATTRIBUTES, START_ORI, END_ORI
+from data.constants import (
+    BLUE_ATTRIBUTES,
+    DIAMOND,
+    END_POS,
+    IN,
+    RED_ATTRIBUTES,
+    START_ORI,
+    END_ORI,
+    START_POS,
+)
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
@@ -49,8 +58,8 @@ class SequenceBuilderStartPosManager:
         for pictograph_list in dataset.values():
             for pictograph_data in pictograph_list:
                 if (
-                    pictograph_data.get("start_pos") == start_pos
-                    and pictograph_data.get("end_pos") == end_pos
+                    pictograph_data.get(START_POS) == start_pos
+                    and pictograph_data.get(END_POS) == end_pos
                 ):
                     self._set_orientation_in(pictograph_data)
                     start_pos_beat = StartPositionBeat(

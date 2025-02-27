@@ -1,6 +1,13 @@
 from typing import TYPE_CHECKING
 
-from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+from data.constants import (
+    BLUE,
+    BLUE_ATTRIBUTES,
+    END_ORI,
+    RED,
+    RED_ATTRIBUTES,
+    START_ORI,
+)
 from .permutation_executor_base import PermutationExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map, horizontal_loc_mirror_map
@@ -56,7 +63,7 @@ class MirroredPermutationExecutor(PermutationExecutor):
         return sequence_length
 
     def can_perform_mirrored_permutation(self, sequence: list[dict]) -> bool:
-        return sequence[1]["end_pos"] == sequence[-1]["end_pos"]
+        return sequence[1][END_POS] == sequence[-1][END_POS]
 
     def create_new_mirrored_permutation_entry(
         self,
@@ -77,8 +84,8 @@ class MirroredPermutationExecutor(PermutationExecutor):
         new_entry = {
             "beat": beat_number,
             "letter": previous_matching_beat["letter"],
-            "start_pos": previous_entry["end_pos"],
-            "end_pos": self.get_mirrored_position(
+            START_POS: previous_entry[END_POS],
+            END_POS: self.get_mirrored_position(
                 previous_matching_beat, vertical_or_horizontal
             ),
             "timing": previous_matching_beat["timing"],
@@ -93,14 +100,14 @@ class MirroredPermutationExecutor(PermutationExecutor):
             ),
         }
 
-        new_entry[BLUE_ATTRIBUTES]["end_ori"] = (
+        new_entry[BLUE_ATTRIBUTES][END_ORI] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
-                new_entry, "blue"
+                new_entry, BLUE
             )
         )
-        new_entry[RED_ATTRIBUTES]["end_ori"] = (
+        new_entry[RED_ATTRIBUTES][END_ORI] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
-                new_entry, "red"
+                new_entry, RED
             )
         )
         if color_swap_second_half:
@@ -164,7 +171,7 @@ class MirroredPermutationExecutor(PermutationExecutor):
             },
         }
         return mirrored_positions[vertical_or_horizontal][
-            previous_matching_beat["end_pos"]
+            previous_matching_beat[END_POS]
         ]
 
     def get_mirrored_prop_rot_dir(self, prop_rot_dir: str) -> str:
@@ -182,7 +189,7 @@ class MirroredPermutationExecutor(PermutationExecutor):
     ) -> dict:
         new_entry_attributes = {
             "motion_type": previous_matching_beat_attributes["motion_type"],
-            "start_ori": previous_entry_attributes["end_ori"],
+            START_ORI: previous_entry_attributes[END_ORI],
             "prop_rot_dir": self.get_mirrored_prop_rot_dir(
                 previous_matching_beat_attributes["prop_rot_dir"]
             ),

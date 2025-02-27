@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRIBUTES, END_POS, RED_ATTRIBUTES, START_POS
 from data.positions_map import positions_map
 from data.locations import cw_loc_order
 
@@ -49,13 +49,11 @@ class CodexRotater:
             bl = pictograph_data[BLUE_ATTRIBUTES]
             rl = pictograph_data[RED_ATTRIBUTES]
             if "start_loc" in bl and "start_loc" in rl:
-                pictograph_data["start_pos"] = positions_map[
+                pictograph_data[START_POS] = positions_map[
                     (bl["start_loc"], rl["start_loc"])
                 ]
             if "end_loc" in bl and "end_loc" in rl:
-                pictograph_data["end_pos"] = positions_map[
-                    (bl["end_loc"], rl["end_loc"])
-                ]
+                pictograph_data[END_POS] = positions_map[(bl["end_loc"], rl["end_loc"])]
         return pictograph_data
 
     def _rotate_location(self, location: str) -> str:

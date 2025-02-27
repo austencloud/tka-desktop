@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QFont, QFontMetrics
-from data.constants import HEX_BLUE, HEX_RED
+from data.constants import BLUE, HEX_BLUE, HEX_RED
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.ori_picker_box.ori_picker_widget.ori_selection_dialog import (
@@ -37,7 +37,7 @@ class OriButton(QPushButton):
         self.setStyleSheet(
             f"""
             QPushButton {{
-                border: {border_width}px solid {HEX_BLUE if self.ori_picker_widget.color == "blue" else HEX_RED};
+                border: {border_width}px solid {HEX_BLUE if self.ori_picker_widget.color == BLUE else HEX_RED};
                 border-radius: {button_height // 2}px;
                 background-color: #ffffff;
             }}

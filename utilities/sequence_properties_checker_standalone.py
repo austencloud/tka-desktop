@@ -2,6 +2,7 @@ import os
 import json
 from PIL import Image, PngImagePlugin
 
+from data.constants import END_POS
 from main_window.main_widget.sequence_properties_manager.mirrored_color_swapped_permutation_checker import (
     MirroredColorSwappedPermutationChecker,
 )
@@ -130,13 +131,13 @@ class SequencePropertiesCheckerStandalone:
         }
 
     def _check_ends_at_start_pos(self) -> bool:
-        start_position = self.sequence[0]["end_pos"]
-        current_position = self.sequence[-1]["end_pos"]
+        start_position = self.sequence[0][END_POS]
+        current_position = self.sequence[-1][END_POS]
         return current_position == start_position
 
     def _check_is_permutable(self) -> bool:
-        start_position = self.sequence[0]["end_pos"].rstrip("0123456789")
-        current_position = self.sequence[-1]["end_pos"].rstrip("0123456789")
+        start_position = self.sequence[0][END_POS].rstrip("0123456789")
+        current_position = self.sequence[-1][END_POS].rstrip("0123456789")
         return current_position == start_position
 
 
@@ -237,6 +238,7 @@ class MetadataUpdater:
                 img.save(file_path, "PNG", pnginfo=meta)
         except Exception as e:
             raise Exception(f"Error saving metadata to image: {e}")
+
 
 # To execute the metadata update process
 if __name__ == "__main__":

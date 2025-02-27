@@ -44,7 +44,7 @@ def verify_and_correct_positions(metadata: dict) -> dict:
     """Verifies and corrects numbered positions based on blue and red attributes' start and end locations."""
     if "sequence" in metadata:
         for beat in metadata["sequence"]:
-            if isinstance(beat, dict) and "start_pos" in beat and "end_pos" in beat:
+            if isinstance(beat, dict) and START_POS in beat and END_POS in beat:
                 # Extract blue and red start and end locations
                 start_tuple = (
                     beat[BLUE_ATTRIBUTES]["start_loc"],
@@ -60,10 +60,10 @@ def verify_and_correct_positions(metadata: dict) -> dict:
                 correct_end_pos = positions_map.get(end_tuple)
 
                 # Update start_pos and end_pos only if they are incorrect
-                if correct_start_pos and beat["start_pos"] != correct_start_pos:
-                    beat["start_pos"] = correct_start_pos
-                if correct_end_pos and beat["end_pos"] != correct_end_pos:
-                    beat["end_pos"] = correct_end_pos
+                if correct_start_pos and beat[START_POS] != correct_start_pos:
+                    beat[START_POS] = correct_start_pos
+                if correct_end_pos and beat[END_POS] != correct_end_pos:
+                    beat[END_POS] = correct_end_pos
 
     return metadata
 
