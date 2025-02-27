@@ -25,7 +25,7 @@ class GraphEditorViewKeyEventHandler:
 
         if key in [Qt.Key.Key_W, Qt.Key.Key_A, Qt.Key.Key_S, Qt.Key.Key_D]:
             self.hotkey_graph_adjuster.movement_manager.handle_arrow_movement(
-                self.ge_view.pictograph, key, shift_held, ctrl_held
+                key, shift_held, ctrl_held
             )
         elif key == Qt.Key.Key_X:
             self.hotkey_graph_adjuster.rotation_angle_override_manager.handle_arrow_rot_angle_override()

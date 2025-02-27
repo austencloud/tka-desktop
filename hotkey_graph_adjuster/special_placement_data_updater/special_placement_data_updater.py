@@ -21,7 +21,9 @@ from PyQt6.QtCore import QPointF
 if TYPE_CHECKING:
 
     from base_widgets.pictograph.managers.pictograph_checker import PictographChecker
-    from base_widgets.pictograph.managers.getter.pictograph_getter import PictographGetter
+    from base_widgets.pictograph.managers.getter.pictograph_getter import (
+        PictographGetter,
+    )
     from base_widgets.pictograph.state.pictograph_state import PictographState
 
     from placement_managers.arrow_placement_manager.arrow_placement_manager import (
@@ -49,7 +51,7 @@ class SpecialPlacementDataUpdater:
         self.get_default_adjustment_callback = get_default_adjustment_callback
         self.getter = getter
         self.checker = checker
-        self.get_grid_mode = getter.grid_mode()
+        self.grid_mode = self.getter.grid_mode()
         self.ori_key_generator = OriKeyGenerator(getter)
         self.turns_tuple_generator = TurnsTupleGenerator()
         self.entry_remover = SpecialPlacementEntryRemover(self)

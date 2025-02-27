@@ -26,7 +26,7 @@ class HotkeyGraphAdjuster:
         self.entry_remover = (
             self.view.get_current_pictograph().managers.arrow_placement_manager.data_updater.entry_remover
         )
-        self.movement_manager = ArrowMovementManager(view.get_current_pictograph())
+        self.movement_manager = ArrowMovementManager(view)
         self.turns_tuple_generator = TurnsTupleGenerator()
 
         self.rotation_angle_override_manager = ArrowRotAngleOverrideManager(self)

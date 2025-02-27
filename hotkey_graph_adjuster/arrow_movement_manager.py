@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
@@ -8,6 +8,9 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 
 
 if TYPE_CHECKING:
+    from base_widgets.pictograph.elements.views.GE_pictograph_view import (
+        GE_PictographView,
+    )
     from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
         GE_Pictograph,
     )
@@ -17,17 +20,17 @@ from PyQt6.QtCore import Qt
 
 
 class ArrowMovementManager:
-    def __init__(self, pictograph: "GE_Pictograph") -> None:
-        self.pictograph = pictograph
-        self.data_updater = (
-            self.pictograph.managers.arrow_placement_manager.data_updater
-        )
+    def __init__(self, ge_view: "GE_PictographView") -> None:
+        self.ge_view = ge_view
 
-    def handle_arrow_movement(
-        self, GE_pictograph: "GE_Pictograph", key, shift_held, ctrl_held
-    ) -> None:
-        self.pictograph = GE_pictograph
-        self.graph_editor = GE_pictograph.main_widget.sequence_workbench.graph_editor
+    def handle_arrow_movement(self, key, shift_held, ctrl_held) -> None:
+        self.ge_pictograph = self.ge_view.pictograph
+        self.data_updater = (
+            self.ge_pictograph.managers.arrow_placement_manager.data_updater
+        )
+        self.graph_editor = (
+            self.ge_pictograph.main_widget.sequence_workbench.graph_editor
+        )
 
         adjustment_increment = 5
         if shift_held:
@@ -36,9 +39,17 @@ class ArrowMovementManager:
             adjustment_increment = 200
 
         adjustment = self.get_adjustment(key, adjustment_increment)
-        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
+        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.ge_pictograph)
         self.data_updater.update_arrow_adjustments_in_json(adjustment, turns_tuple)
         self.data_updater.mirrored_entry_manager.update_mirrored_entry_in_json()
+        for (
+            pictograph
+        ) in (
+            self.ge_pictograph.main_widget.pictograph_collector.collect_all_pictographs()
+        ):
+            if pictograph.state.letter == self.ge_pictograph.state.letter:
+                pictograph.managers.updater.placement_updater.update()
+
         QApplication.processEvents()
 
     def get_adjustment(self, key, increment) -> tuple[int, int]:

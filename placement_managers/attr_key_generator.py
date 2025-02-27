@@ -12,7 +12,7 @@ class AttrKeyGenerator:
 
     def get_key_from_arrow(self, arrow: "Arrow") -> str:
         """Original method for getting key from Arrow (kept for compatibility)."""
-        return self._generate_key(
+        return self.generate_key(
             motion_type=arrow.motion.state.motion_type,
             letter=arrow.pictograph.state.letter,
             start_ori=arrow.motion.state.start_ori,
@@ -25,7 +25,7 @@ class AttrKeyGenerator:
 
     def get_key_from_context(self, context: ArrowPlacementContext) -> str:
         """New method to get key from ArrowPlacementContext instead of Arrow object."""
-        return self._generate_key(
+        return self.generate_key(
             motion_type=context.motion_type,
             letter=context.letter,
             start_ori=None,  # No equivalent in ArrowPlacementContext, assume None
@@ -36,7 +36,7 @@ class AttrKeyGenerator:
             starts_from_standard_orientation=True,  # Assume standard unless explicitly hybrid
         )
 
-    def _generate_key(
+    def generate_key(
         self,
         motion_type: str,
         letter: Letter,

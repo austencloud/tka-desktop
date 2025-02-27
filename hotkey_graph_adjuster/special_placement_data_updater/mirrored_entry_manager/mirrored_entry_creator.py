@@ -39,18 +39,23 @@ class MirroredEntryCreator:
             other_ori_key, other_letter_data = self._get_keys_for_mixed_start_ori(
                 letter, ori_key
             )
+            turns_tuple = self.turns_tuple_generator.generate_turns_tuple(
+                arrow.pictograph
+            )
             mirrored_turns_tuple = self.turns_tuple_generator.generate_mirrored_tuple(
                 arrow
             )
 
-            attr = AttrKeyGenerator().get_key_from_arrow(arrow)
+            attr_key = AttrKeyGenerator().get_key_from_arrow(arrow)
+
             if mirrored_turns_tuple not in other_letter_data:
                 other_letter_data[mirrored_turns_tuple] = {}
-            if attr not in letter_data:
-                letter_data[attr] = {}
-            other_letter_data[mirrored_turns_tuple][attr] = letter_data[attr]
+            if attr_key not in letter_data:
+                letter_data[attr_key] = {}
 
-            self._initialize_dicts(mirrored_turns_tuple, other_letter_data, attr)
+            other_letter_data[mirrored_turns_tuple][attr_key] = letter_data[attr_key]
+
+            self._initialize_dicts(mirrored_turns_tuple, other_letter_data, attr_key)
             self.special_placement_data_updater.update_specific_entry_in_json(
                 letter, other_letter_data, other_ori_key
             )
@@ -64,15 +69,13 @@ class MirroredEntryCreator:
     def _fetch_letter_data_and_original_turn_data(
         self, ori_key, letter: Letter, arrow: Arrow
     ) -> tuple[dict, dict]:
-        letter_data = (
+        letter_data: dict = (
             AppContext.special_placement_loader()
-            .load_or_return_special_placements()
-            .get(arrow.pictograph.state.grid_mode, {})
+            .load_special_placements_fresh()
+            .get(self.special_placement_data_updater.getter.grid_mode(), {})
             .get(ori_key, {})
             .get(letter.value, {})
         )
-
-        letter_data: dict = letter_data
         original_turns_tuple = self.turns_tuple_generator.generate_turns_tuple(
             arrow.pictograph
         )
@@ -86,6 +89,10 @@ class MirroredEntryCreator:
             ori_key
         )
         other_letter_data = (
-            AppContext.special_placement_loader().load_or_return_special_placements().get(self.special_placement_data_updater.state.grid_mode, {}).get(other_ori_key, {}).get(letter.value, {})
+            AppContext.special_placement_loader()
+            .load_or_return_special_placements()
+            .get(self.special_placement_data_updater.getter.grid_mode(), {})
+            .get(other_ori_key, {})
+            .get(letter.value, {})
         )
         return other_ori_key, other_letter_data
