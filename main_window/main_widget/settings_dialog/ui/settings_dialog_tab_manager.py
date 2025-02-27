@@ -41,10 +41,8 @@ class SettingsDialogTabManager:
                 break
 
         if not selected_tab_name:
-            print("[ERROR] No tab name found for index:", index)
             return
 
-        print(f"[DEBUG] Switched to tab: {selected_tab_name}")
 
         AppContext.settings_manager().global_settings.set_current_settings_dialog_tab(
             selected_tab_name

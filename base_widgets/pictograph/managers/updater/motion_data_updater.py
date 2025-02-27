@@ -1,5 +1,6 @@
 import logging
 from functools import lru_cache
+from math import pi
 from typing import TYPE_CHECKING
 
 from Enums.letters import Letter
@@ -14,34 +15,32 @@ logger = logging.getLogger(__name__)
 
 class MotionDataUpdater:
     def __init__(self, pictograph: "Pictograph") -> None:
-        """
-        The 'getter' dependency is injected for accessing related motion data
-        (instead of referencing self.pictograph.managers.get directly).
-        """
         self.pictograph = pictograph
         self.getter = pictograph.managers.get
 
-    def update(self, data: dict) -> None:
+    def update(self, pictograph_data: dict) -> None:
         """
-        Updates motion objects based on the provided data.
+        Updates motion objects based on the provided pictograph data.
         """
-        try:
-            motion_dataset = self._extract_motion_dataset(data)
-        except Exception as e:
-            logger.error(f"Failed to extract motion dataset: {e}", exc_info=True)
-            return
-
+        if pictograph_data:
+            try:
+                motion_dataset = self._extract_motion_dataset(pictograph_data)
+            except Exception as e:
+                logger.error(f"Failed to extract motion dataset: {e}", exc_info=True)
+                return
+        else:
+            motion_dataset = {}
         for motion in self.pictograph.elements.motions.values():
             try:
-                self._override_motion_type_if_needed(data, motion)
+                # self._override_motion_type_if_needed(pictograph_data, motion)
                 if motion_dataset.get(motion.state.color):
                     self._show_motion_graphics(motion.state.color)
-                if motion_dataset[motion.state.color].get("turns", "") == "fl":
+                if motion_dataset.get(motion.state.color, {}).get("turns", "") == "fl":
                     motion.state.turns = "fl"
-                motion.updater.update_motion(motion_dataset[motion.state.color])
+                motion.updater.update_motion(motion_dataset.get(motion.state.color, {}))
                 if not motion.arrow.state.initialized:
                     motion.arrow.setup_components()
-                turns_value = motion_dataset[motion.state.color].get("turns")
+                turns_value = motion_dataset.get(motion.state.color, {}).get("turns")
                 if turns_value is not None:
                     motion.state.turns = turns_value
             except Exception as e:
@@ -72,11 +71,13 @@ class MotionDataUpdater:
             leading_motion.state.lead_state = LEADING
             trailing_motion.state.lead_state = TRAILING
 
-    def _override_motion_type_if_needed(self, data: dict, motion: Motion) -> None:
+    def _override_motion_type_if_needed(
+        self, pictograph_data: dict, motion: Motion
+    ) -> None:
         motion_type = motion.state.motion_type
         turns_key = f"{motion_type}_turns"
-        if turns_key in data:
-            motion.state.turns = data[turns_key]
+        if turns_key in pictograph_data:
+            motion.state.turns = pictograph_data[turns_key]
             logger.debug(
                 f"Overriding motion type for {motion.state.color} using key {turns_key}."
             )
@@ -134,7 +135,7 @@ class MotionDataUpdater:
         def make_hashable(value):
             if isinstance(value, dict):
                 return self._dict_to_tuple(value)
-            elif isinstance(value, list):  
+            elif isinstance(value, list):
                 return tuple(make_hashable(v) for v in value)  # Convert lists to tuples
             return value
 
@@ -143,7 +144,6 @@ class MotionDataUpdater:
             for k, v in sorted(d.items())
             if k != self.pictograph.state.letter.value
         )
-
 
     def _tuple_to_dict(self, t: tuple) -> dict:
         return {

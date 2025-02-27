@@ -14,12 +14,16 @@ class ArrowDataUpdater:
     def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 
-    def update(self, data: dict) -> None:
+    def update(self, pictograph_data: dict) -> None:
         """
         Extracts arrow dataset information from the data and updates arrow objects.
         """
-        red_arrow_data, blue_arrow_data = self._extract_arrow_datasets(data)
-        if self.pictograph.state.letter.get_letter_type() == LetterType.Type3:
+        red_arrow_data, blue_arrow_data = (
+            self._extract_arrow_datasets(pictograph_data)
+            if pictograph_data
+            else (None, None)
+        )
+        if self.pictograph.state.letter_type == LetterType.Type3:
             self.pictograph.managers.get.shift().arrow.updater.update_arrow()
             self.pictograph.managers.get.dash().arrow.updater.update_arrow()
         else:
@@ -30,17 +34,23 @@ class ArrowDataUpdater:
                 blue_arrow_data
             )
 
-    def _extract_arrow_datasets(self, data: dict) -> Tuple[dict, dict]:
+    def _extract_arrow_datasets(self, pictograph_data: dict) -> Tuple[dict, dict]:
         red_data = (
-            self._get_arrow_data(data, RED) if data.get("red_attributes") else None
+            self._get_arrow_data_from_pictograph_data(pictograph_data, RED)
+            if pictograph_data.get("red_attributes", {})
+            else None
         )
         blue_data = (
-            self._get_arrow_data(data, BLUE) if data.get("blue_attributes") else None
+            self._get_arrow_data_from_pictograph_data(pictograph_data, BLUE)
+            if pictograph_data.get("blue_attributes", {})
+            else None
         )
         return red_data, blue_data
 
-    def _get_arrow_data(self, data: dict, color: str) -> dict:
-        attributes = data[f"{color}_attributes"]
+    def _get_arrow_data_from_pictograph_data(
+        self, pictograph_data: dict, color: str
+    ) -> dict:
+        attributes = pictograph_data[f"{color}_attributes"]
         arrow_data = {}
         if "turns" in attributes or attributes.get("turns") == 0:
             arrow_data["turns"] = attributes["turns"]

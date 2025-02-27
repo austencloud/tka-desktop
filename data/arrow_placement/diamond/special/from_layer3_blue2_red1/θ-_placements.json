@@ -1,7 +1,7 @@
 {
   "θ-": {
-    "(1, 0)": {
-      "dash_from_layer2": {}
+    "(s, 1, 1)": {
+      "dash_from_layer2_rot_angle_override": true
     }
   }
 }

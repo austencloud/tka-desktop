@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 class MirroredEntryCreator:
     def __init__(self, mirrored_entry_manager: "MirroredEntryManager"):
-        self.data_updater: "SpecialPlacementDataUpdater" = (
+        self.special_placement_data_updater: "SpecialPlacementDataUpdater" = (
             mirrored_entry_manager.data_updater
         )
         self.turns_tuple_generator: TurnsTupleGenerator = (
@@ -27,7 +27,7 @@ class MirroredEntryCreator:
         )
 
     def create_entry(self, letter: Letter, arrow: Arrow):
-        ori_key = self.data_updater.ori_key_generator.generate_ori_key_from_motion(
+        ori_key = self.special_placement_data_updater.ori_key_generator.generate_ori_key_from_motion(
             arrow.motion
         )
         letter_data, _ = self._fetch_letter_data_and_original_turn_data(
@@ -50,7 +50,7 @@ class MirroredEntryCreator:
             other_letter_data[mirrored_turns_tuple][attr] = letter_data[attr]
 
             self._initialize_dicts(mirrored_turns_tuple, other_letter_data, attr)
-            self.data_updater.update_specific_entry_in_json(
+            self.special_placement_data_updater.update_specific_entry_in_json(
                 letter, other_letter_data, other_ori_key
             )
 
@@ -81,7 +81,7 @@ class MirroredEntryCreator:
         self, letter: Letter, ori_key
     ) -> tuple[str, dict]:
         AppContext.special_placement_loader().reload()
-        other_ori_key = self.data_updater.get_other_layer3_ori_key(ori_key)
+        other_ori_key = self.special_placement_data_updater.get_other_layer3_ori_key(ori_key)
         other_letter_data = (
             AppContext.special_placement_loader()
             .load_or_return_special_placements()

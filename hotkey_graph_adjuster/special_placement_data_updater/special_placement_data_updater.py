@@ -133,3 +133,9 @@ class SpecialPlacementDataUpdater:
             )
         except Exception as e:
             logging.error(f"Error in update_specific_entry_in_json: {e}")
+
+    def get_other_layer3_ori_key(self, ori_key: str) -> str:
+        if ori_key == "from_layer3_blue1_red2":
+            return "from_layer3_blue2_red1"
+        elif ori_key == "from_layer3_blue2_red1":
+            return "from_layer3_blue1_red2"

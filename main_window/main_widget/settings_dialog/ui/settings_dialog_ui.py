@@ -25,7 +25,6 @@ class SettingsDialogUI(QWidget):
         """Initializes UI components and layout."""
         self.main_vertical_layout = QVBoxLayout(self)
         horizontal_main_layout = QHBoxLayout()
-        self.setLayout(horizontal_main_layout)
 
         self.tab_selection_manager.tabs = {
             "User Profile": UserProfileTab(self.dialog),

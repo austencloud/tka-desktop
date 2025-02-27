@@ -11,7 +11,6 @@ class PropUpdater:
         self.prop.setFlag(self.prop.GraphicsItemFlag.ItemIsSelectable, False)
 
     def update_prop(self, prop_data: dict[str, Union[str, str, str]] = None) -> None:
-
         if prop_data:
             self.prop.attr_manager.update_attributes(prop_data)
         self.prop.pictograph.managers.svg_manager.prop_manager.update_prop_image(

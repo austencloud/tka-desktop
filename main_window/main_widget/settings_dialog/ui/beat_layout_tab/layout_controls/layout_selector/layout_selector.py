@@ -37,10 +37,7 @@ class LayoutSelector(QFrame):
 
     def load_beat_frame_layout_options(
         self, file_path: str
-    ) -> dict[int, list[list[int]]]:
-        # print hte file url and if it is successful
-        print(file_path)
-        
+    ) -> dict[int, list[list[int]]]:        
         
         try:
             with open(file_path, "r") as f:

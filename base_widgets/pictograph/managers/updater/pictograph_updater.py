@@ -30,27 +30,25 @@ class PictographUpdater:
             logger.error(f"Error during initialization: {e}", exc_info=True)
             return
 
-        if pictograph_data:
-            if pictograph_data.get("is_placeholder"):
-                return
-
-            try:
-                self._apply_data_update(pictograph_data)
-            except Exception as e:
-                logger.error(f"Error applying data updates: {e}", exc_info=True)
+        try:
+            self._apply_data_update(pictograph_data)
+        except Exception as e:
+            logger.error(f"Error applying data updates: {e}", exc_info=True)
 
         try:
+
             self.glyph_updater.update()
             self.placement_updater.update()
         except Exception as e:
             logger.error(f"Error updating glyphs or placements: {e}", exc_info=True)
 
-    def _apply_data_update(self, data: dict) -> None:
-        self.pictograph.state.update_pictograph_state(data)
-        self.update_grid_mode_if_changed()
+    def _apply_data_update(self, pictograph_data: dict) -> None:
+        if pictograph_data:
+            self.pictograph.state.update_pictograph_state(pictograph_data)
 
-        self.motion_updater.update(data)
-        self.arrow_updater.update(data)
+        self.update_grid_mode_if_changed()
+        self.motion_updater.update(pictograph_data)
+        self.arrow_updater.update(pictograph_data)
 
         self.pictograph.elements.vtg_glyph.set_vtg_mode()
         self.pictograph.elements.elemental_glyph.set_elemental_glyph()

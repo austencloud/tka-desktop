@@ -92,11 +92,13 @@ class SpecialPlacementEntryRemover:
                 del letter_data[mirrored_tuple]
 
     def _handle_mixed_start_ori_mirrored_entry_removal(
-        self, letter: Letter, arrow, ori_key, letter_data, key
+        self, letter: Letter, arrow: "Arrow", ori_key, letter_data, key
     ):
 
         other_ori_key = self.data_updater.get_other_layer3_ori_key(ori_key)
-        other_file_path = self._generate_file_path(other_ori_key, letter)
+        other_file_path = self._generate_file_path(
+            other_ori_key, letter, arrow.pictograph.state.grid_mode
+        )
         other_data = self.special_placement_loader.load_json_data(other_file_path)
         other_letter_data = other_data.get(letter, {})
         mirrored_tuple = self.turns_tuple_generator.generate_mirrored_tuple(arrow)

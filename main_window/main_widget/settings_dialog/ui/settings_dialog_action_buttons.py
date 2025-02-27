@@ -20,7 +20,7 @@ class SettingsDialogActionButtons(QWidget):
     def _hide(self):
         self.dialog.hide()
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event): 
         button_font = self.close_button.font()
-        button_font.setPointSize(self.width() // 50)
+        button_font.setPointSize(self.dialog.width() // 50)
         self.close_button.setFont(button_font)
