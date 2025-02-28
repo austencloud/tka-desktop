@@ -25,7 +25,16 @@ class BeatFramePopulator:
         current_sequence_json: list[dict[str, str]],
         initial_state_load: bool = False,
     ) -> None:
+        """
+        Populates the beat frame with data from a JSON representation of a sequence.
 
+        This method orchestrates the process of loading a sequence from JSON, updating
+        various UI elements, and preparing the beat frame for editing.
+
+        Args:
+            current_sequence_json (list[dict[str, str]]): The JSON representation of the sequence.
+            initial_state_load (bool, optional): Indicates whether this is an initial load. Defaults to False.
+        """
         self.current_sequence_json = current_sequence_json  # Store the sequence JSON
         indicator_label = self.sequence_workbench.indicator_label
         indicator_label.show_message(self.loading_text)
@@ -33,7 +42,7 @@ class BeatFramePopulator:
         self.construct_tab = self.main_widget.construct_tab
 
         if not self.current_sequence_json:
-            return
+            return  # Nothing to do, eh?
 
         self.beat_frame.updater.reset_beat_frame()
         self._set_start_position()
@@ -48,6 +57,7 @@ class BeatFramePopulator:
         )
 
     def _set_start_position(self):
+        """Sets the start position in the UI based on the loaded sequence data."""
         start_pos_picker = self.construct_tab.start_pos_picker
         start_pos_beat = start_pos_picker.convert_current_sequence_json_entry_to_start_pos_pictograph(
             self.current_sequence_json
@@ -58,16 +68,19 @@ class BeatFramePopulator:
         self.start_pos_view.set_start_pos(start_pos_beat)
 
     def _update_sequence_layout(self):
+        """Updates the sequence layout based on the number of beats."""
         length = len(self.current_sequence_json) - 2
         self.modify_layout_for_chosen_number_of_beats(length)
 
     def _update_difficulty_level(self):
+        """Updates the difficulty level label in the UI."""
         if len(self.current_sequence_json) > 2:
             self.sequence_workbench.difficulty_label.update_difficulty_label()
         else:
             self.sequence_workbench.difficulty_label.set_difficulty_level("")
 
     def _update_sequence_word(self):
+        """Updates the sequence word label in the UI."""
         self.current_word = "".join(
             [beat[LETTER] for beat in self.current_sequence_json[2:] if LETTER in beat]
         )
@@ -75,53 +88,49 @@ class BeatFramePopulator:
         self.sequence_workbench.current_word_label.set_current_word(self.current_word)
 
     def _populate_beats(self, select_beat=True):
+        """Populates the beat frame with beats from the sequence data."""
         for _, pictograph_data in enumerate(self.current_sequence_json[1:]):
-            if pictograph_data.get(SEQUENCE_START_POSITION):
-                continue
-            if pictograph_data.get("is_placeholder", False):
-                continue
-            else:
-                reversal_info = ReversalDetector.detect_reversal(
-                    self.current_sequence_json, pictograph_data
-                )
-                self.sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
-                    pictograph_data,
-                    override_grow_sequence=True,
-                    update_word=False,
-                    update_level=False,
-                    reversal_info=reversal_info,
-                    select_beat=select_beat,
-                )
+            if pictograph_data.get(SEQUENCE_START_POSITION) or pictograph_data.get(
+                "is_placeholder", False
+            ):
+                continue  # Skip start positions and placeholders.  We don't need those.
+
+            reversal_info = ReversalDetector.detect_reversal(
+                self.current_sequence_json, pictograph_data
+            )
+            self.sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+                pictograph_data,
+                override_grow_sequence=True,
+                update_word=False,
+                update_level=False,
+                reversal_info=reversal_info,
+                select_beat=select_beat,
+            )
 
     def _finalize_sequence(self, initial_state_load):
+        """Finalizes the sequence loading process, selecting the last beat and updating options."""
         last_beat = (
             self.sequence_workbench.sequence_beat_frame.get.last_filled_beat().beat
         )
         self.construct_tab.last_beat = last_beat
         self.construct_tab.option_picker.updater.update_options()
-        # select the last beat
-        # check if the current left stack is set to the sequence workbench. If so, we can trigger the graph editor. If no, let
 
+        # Use a single shot timer to select the last beat after the UI has updated.
+        # This avoids potential issues with immediate updates.
         if initial_state_load:
-            if (
-                AppContext.settings_manager().global_settings.get_current_tab()
-                == "construct"
-            ):
-                QTimer.singleShot(
-                    0,
-                    lambda: self.selection_overlay.select_beat_view(
-                        last_beat.view, True
-                    ),
-                )
-            else:
-                QTimer.singleShot(
-                    0,
-                    lambda: self.selection_overlay.select_beat_view(
-                        last_beat.view, False
-                    ),
-                )
+            target_tab = AppContext.settings_manager().global_settings.get_current_tab()
+            toggle_animation = (
+                target_tab == "construct"
+            )  # Only select if on the construct tab.
+            QTimer.singleShot(
+                0,
+                lambda: self.selection_overlay.select_beat_view(
+                    last_beat.view, toggle_animation
+                ),
+            )
 
     def modify_layout_for_chosen_number_of_beats(self, beat_count):
+        """Configures the beat frame layout for the specified number of beats."""
         self.beat_frame.layout_manager.configure_beat_frame(
             beat_count, override_grow_sequence=True
         )
