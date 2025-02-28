@@ -112,9 +112,9 @@ class WidgetFader:
             update_callback = callback
 
         def on_fade_out_finished():
-            self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
             if update_callback:
                 update_callback()
+            self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
 
         if fade_enabled:
             self.fade_widgets(widgets, False, duration, on_fade_out_finished)

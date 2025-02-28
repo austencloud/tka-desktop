@@ -3,7 +3,12 @@ from PyQt6.QtWidgets import QGridLayout
 from PyQt6.QtGui import QKeyEvent
 
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_frame_layout_manager import BeatFrameLayoutManager
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_frame_layout_manager import (
+    BeatFrameLayoutManager,
+)
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_export_manager import (
+    ImageExportManager,
+)
 
 from .start_pos_beat import StartPositionBeat
 from .start_pos_beat_view import StartPositionBeatView
@@ -16,7 +21,6 @@ from .beat_frame_populator import BeatFramePopulator
 from .beat_frame_resizer import BeatFrameResizer
 from .beat_frame_updater import BeatFrameUpdater
 
-from .image_export_manager.image_export_manager import ImageExportManager
 from .beat_selection_overlay import BeatSelectionOverlay
 from .beat_view import BeatView
 from base_widgets.base_beat_frame import BaseBeatFrame

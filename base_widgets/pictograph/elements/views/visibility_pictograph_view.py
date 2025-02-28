@@ -3,15 +3,15 @@ from typing import TYPE_CHECKING
 from base_widgets.pictograph.elements.views.base_pictograph_view import (
     BasePictographView,
 )
-from main_window.main_widget.settings_dialog.ui.visibility_tab.pictograph.visibility_pictograph_interaction_manager import (
+from main_window.main_widget.settings_dialog.ui.visibility.pictograph.visibility_pictograph_interaction_manager import (
     VisibilityPictographInteractionManager,
 )
 
 if TYPE_CHECKING:
-    from .....main_window.main_widget.settings_dialog.ui.visibility_tab.pictograph.visibility_pictograph import (
+    from main_window.main_widget.settings_dialog.ui.visibility.pictograph.visibility_pictograph import (
         VisibilityPictograph,
     )
-    from .....main_window.main_widget.settings_dialog.ui.visibility_tab.visibility_tab import (
+    from main_window.main_widget.settings_dialog.ui.visibility.visibility_tab import (
         VisibilityTab,
     )
 

@@ -2,23 +2,13 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal
 
-from main_window.main_widget.settings_dialog.ui.beat_layout_tab.layout_controls.layout_selector.layout_selector import (
-    LayoutSelector,
-)
-from main_window.main_widget.settings_dialog.ui.beat_layout_tab.layout_controls.update_default_layout_button import (
-    UpdateDefaultLayoutButton,
-)
-from main_window.main_widget.settings_dialog.ui.beat_layout_tab.length_selector.length_selector import (
-    LengthSelector,
-)
-
-
+from ..length_selector.length_selector import LengthSelector
+from .layout_selector.layout_selector import LayoutSelector
+from .update_default_layout_button import UpdateDefaultLayoutButton
 from .default_layout_label import DefaultLayoutLabel
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.ui.beat_layout_tab.beat_layout_tab import (
-        BeatLayoutTab,
-    )
+    from ..beat_layout_tab import BeatLayoutTab
 
 
 class LayoutControls(QWidget):

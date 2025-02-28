@@ -4,10 +4,9 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 from Enums.PropTypes import PropType
 from main_window.main_widget.settings_dialog.card_frame import CardFrame
+from main_window.main_widget.settings_dialog.ui.prop_type.prop_button import PropButton
 from utilities.path_helpers import get_images_and_data_path
-from ...ui.prop_type_tab.prop_button import (
-    PropButton,
-)
+
 
 if TYPE_CHECKING:
     from ...settings_dialog import SettingsDialog

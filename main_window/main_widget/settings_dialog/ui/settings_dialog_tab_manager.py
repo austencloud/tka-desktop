@@ -1,25 +1,13 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import (
-    QWidget,
-)
-
-
-from main_window.main_widget.settings_dialog.ui.beat_layout_tab.beat_layout_tab import (
-    BeatLayoutTab,
-)
-from main_window.main_widget.settings_dialog.ui.prop_type_tab.prop_type_tab import (
-    PropTypeTab,
-)
-from main_window.main_widget.settings_dialog.ui.user_profile_tab.user_profile_tab import (
-    UserProfileTab,
-)
-from main_window.main_widget.settings_dialog.ui.visibility_tab.visibility_tab import (
-    VisibilityTab,
-)
+from PyQt6.QtWidgets import QWidget
+from .beat_layout.beat_layout_tab import BeatLayoutTab
+from .prop_type.prop_type_tab import PropTypeTab
+from .user_profile.user_profile_tab import UserProfileTab
+from .visibility.visibility_tab import VisibilityTab
 from main_window.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+    from ..settings_dialog import SettingsDialog
 
 
 class SettingsDialogTabManager:
@@ -42,7 +30,6 @@ class SettingsDialogTabManager:
 
         if not selected_tab_name:
             return
-
 
         AppContext.settings_manager().global_settings.set_current_settings_dialog_tab(
             selected_tab_name

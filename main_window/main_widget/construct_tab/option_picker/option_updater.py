@@ -3,6 +3,7 @@ import os
 from Enums.letters import LetterType
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.settings_manager.global_settings.app_context import AppContext
+from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
@@ -29,9 +30,7 @@ class OptionUpdater:
         sections = self.scroll_area.sections
         frames = [section.pictograph_frame for section in sections.values()]
 
-        # Delay clearing effects slightly to avoid race conditions
         self.fade_manager.widget_fader.fade_and_update(frames, self.update_options, 200)
-
 
     def update_options(self) -> None:
         sequence = self.json_loader.load_current_sequence()

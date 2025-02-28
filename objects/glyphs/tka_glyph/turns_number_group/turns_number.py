@@ -5,9 +5,8 @@ from typing import TYPE_CHECKING, Union
 from utilities.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
-    from objects.glyphs.tka_glyphturns_number_group.turns_number_group import (
-        TurnsNumberGroup,
-    )
+    from objects.glyphs.tka_glyph.turns_number_group.turns_number_group import TurnsNumberGroup
+
 
 
 class TurnsNumber(QGraphicsSvgItem):

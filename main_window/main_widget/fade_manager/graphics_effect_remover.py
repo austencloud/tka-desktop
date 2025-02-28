@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QApplication
+from PyQt6.QtWidgets import QWidget
 
 from main_window.main_widget.base_indicator_label import BaseIndicatorLabel
 
@@ -13,11 +13,13 @@ class GraphicsEffectRemover:
 
     def clear_graphics_effects(self, widgets: list[QWidget] = []) -> None:
         """Remove all graphics effects from widgets and their children."""
+        print(
+            f"[DEBUG] Clearing graphics effects on: {[widget.__class__.__name__ for widget in widgets]}"
+        )
+
         default_widgets = [
-            self.manager.parallel_stack_fader.right_old_widget,
-            self.manager.parallel_stack_fader.left_old_widget,
-            self.manager.parallel_stack_fader.right_new_widget,
-            self.manager.parallel_stack_fader.left_new_widget,
+            self.manager.main_widget.right_stack,
+            self.manager.main_widget.left_stack,
             self.manager.main_widget.right_stack.currentWidget(),
             self.manager.main_widget.left_stack.currentWidget(),
         ]
@@ -25,7 +27,6 @@ class GraphicsEffectRemover:
         for widget in widgets:
             if widget:
                 self._remove_all_graphics_effects(widget)
-                # QApplication.processEvents()
 
     def _remove_all_graphics_effects(self, widget: QWidget):
         """Remove graphics effects recursively and reset widget visibility."""

@@ -1,10 +1,12 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QStackedWidget, QWidget, QVBoxLayout
-from .beat_layout_tab.beat_layout_tab import BeatLayoutTab
-from .prop_type_tab.prop_type_tab import PropTypeTab
+
+from .beat_layout.beat_layout_tab import BeatLayoutTab
+from .image_export.image_export_tab import ImageExportTab
+from .prop_type.prop_type_tab import PropTypeTab
+from .user_profile.user_profile_tab import UserProfileTab
+from .visibility.visibility_tab import VisibilityTab
 from .settings_dialog_action_buttons import SettingsDialogActionButtons
-from .user_profile_tab.user_profile_tab import UserProfileTab
-from .visibility_tab.visibility_tab import VisibilityTab
 from .settings_dialog_sidebar import SettingsDialogSidebar
 from .settings_dialog_tab_manager import SettingsDialogTabManager
 
@@ -26,14 +28,15 @@ class SettingsDialogUI(QWidget):
         self.main_vertical_layout = QVBoxLayout(self)
         horizontal_main_layout = QHBoxLayout()
 
+
         self.tab_selection_manager.tabs = {
             "User Profile": UserProfileTab(self.dialog),
             "Prop Type": PropTypeTab(self.dialog),
             "Visibility": VisibilityTab(self.dialog),
             "Beat Layout": BeatLayoutTab(self.dialog),
+            "Image Export": ImageExportTab(self.dialog),  # New tab
         }
 
-        # Store individual tab references for easier access
         self.user_profile_tab: UserProfileTab = self.tab_selection_manager.tabs[
             "User Profile"
         ]
@@ -53,7 +56,6 @@ class SettingsDialogUI(QWidget):
 
         self.main_vertical_layout.addLayout(horizontal_main_layout)
         self.main_vertical_layout.addWidget(self.action_buttons)
-        # self.setLayout(self.main_vertical_layout)
 
         self.sidebar.tab_selected.connect(self.tab_selection_manager.on_tab_selected)
 
