@@ -13,9 +13,6 @@ class GraphicsEffectRemover:
 
     def clear_graphics_effects(self, widgets: list[QWidget] = []) -> None:
         """Remove all graphics effects from widgets and their children."""
-        print(
-            f"[DEBUG] Clearing graphics effects on: {[widget.__class__.__name__ for widget in widgets]}"
-        )
 
         default_widgets = [
             self.manager.main_widget.right_stack,

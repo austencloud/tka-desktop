@@ -17,15 +17,24 @@ class Prop(GraphicalObject):
     loc: str
     ori: str
     previous_location: str
-    prop_type: str
+    prop_type_str: str
     arrow: "Arrow"
     pixmap_item: Optional["QGraphicsPixmapItem"]
+    color: str
+    motion: "Motion"
+    prop_data: dict
+    attr_manager: PropAttrManager
+    rot_angle_manager: PropRotAngleManager
+    check: PropChecker
+    updater: PropUpdater
 
-    def __init__(self, pictograph, prop_data: dict, motion: "Motion", prop_type: str):
+    def __init__(
+        self, pictograph, prop_data: dict, motion: "Motion", prop_type_str: str
+    ):
         super().__init__(pictograph)
         self.motion = motion
         self.prop_data = prop_data
-        self.prop_type = prop_type  # Store the prop type for reference
+        self.prop_type_str = prop_type_str  # Store the prop type for reference
 
         self.pictograph: Pictograph = pictograph
         self.attr_manager = PropAttrManager(self)

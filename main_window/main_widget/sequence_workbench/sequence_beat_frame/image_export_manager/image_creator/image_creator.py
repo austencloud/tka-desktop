@@ -130,7 +130,6 @@ class ImageCreator:
                 image, difficulty_level, options["additional_height_top"]
             )
 
-        # Set beat numbers visibility
         for beat_view in filled_beats:
             beat_view.beat.beat_number_item.setVisible(options["add_beat_numbers"])
 

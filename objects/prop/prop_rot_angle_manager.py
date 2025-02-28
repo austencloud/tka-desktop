@@ -35,7 +35,7 @@ class PropRotAngleManager:
 
         key = self.prop.ori
         rotation_angle = angle_map.get(key, {}).get(self.prop.loc, 0)
-        return rotation_angle if self.prop.prop_type != PropType.Hand else 0
+        return rotation_angle if self.prop.prop_type_str != PropType.Hand else 0
 
     def get_box_rotation_angle(self) -> int:
         angle_map = {
@@ -46,7 +46,7 @@ class PropRotAngleManager:
         }
         key = self.prop.ori
         rotation_angle = angle_map.get(key, {}).get(self.prop.loc, 0)
-        return rotation_angle if self.prop.prop_type != PropType.Hand else 0
+        return rotation_angle if self.prop.prop_type_str != PropType.Hand else 0
 
     def update_prop_rot_angle(self) -> None:
         if self.prop.loc in ["n", "e", "s", "w"]:

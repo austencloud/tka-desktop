@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
+from Enums.PropTypes import PropType
 from base_widgets.pictograph.elements.views.GE_pictograph_view import GE_PictographView
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
@@ -45,10 +46,21 @@ class GraphEditorPictographContainer(QWidget):
         view.is_start_pos = reference_beat.view.is_start_pos
         pictograph.state.blue_reversal = reference_beat.state.blue_reversal
         pictograph.state.red_reversal = reference_beat.state.red_reversal
+
+
         pictograph.managers.updater.update_pictograph(
             reference_beat.state.pictograph_data
         )
-
+        prop_type = (
+            self.graph_editor.main_widget.settings_manager.global_settings.get_prop_type()
+        )
+        if prop_type:
+            self.graph_editor.main_widget.settings_manager.global_settings.prop_type_changer.replace_props(
+                prop_type, pictograph
+            )
+            
+        
+        
         beat_number_text = reference_beat.beat_number_item.beat_number_int
         if beat_number_text:
             pictograph.beat_number_item.update_beat_number(beat_number_text)

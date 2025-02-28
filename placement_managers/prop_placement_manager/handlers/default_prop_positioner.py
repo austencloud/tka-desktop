@@ -49,7 +49,7 @@ class DefaultPropPositioner:
         - The boundingRect's center (for Chicken's PNG).
         """
         # 1) Decide which center method to call
-        if prop.prop_type == "Chicken":
+        if prop.prop_type_str == "Chicken":
             center_point_in_local_coords = self.get_png_center_point(prop)
         else:
             center_point_in_local_coords = self.get_svg_center_point(prop)

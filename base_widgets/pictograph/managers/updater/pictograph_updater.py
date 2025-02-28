@@ -1,8 +1,9 @@
 import logging
 from typing import TYPE_CHECKING
 
-from data.constants import LEADING, TRAILING
+from data.constants import BLUE, LEADING, RED, TRAILING
 from main_window.main_widget.grid_mode_checker import GridModeChecker
+from main_window.settings_manager.global_settings.app_context import AppContext
 from .arrow_data_updater import ArrowDataUpdater
 from .glyph_updater import GlyphUpdater
 from .motion_data_updater import MotionDataUpdater
@@ -49,7 +50,6 @@ class PictographUpdater:
         self.update_grid_mode_if_changed()
         self.motion_updater.update(pictograph_data)
         self.arrow_updater.update(pictograph_data)
-
         self.pictograph.elements.grid.update_grid_mode()
         self.pictograph.elements.vtg_glyph.set_vtg_mode()
         self.pictograph.elements.elemental_glyph.set_elemental_glyph()
@@ -59,8 +59,25 @@ class PictographUpdater:
 
         self.pictograph.elements.tka_glyph.update_tka_glyph()
         self.pictograph.elements.reversal_glyph.update_reversal_symbols()
+        if pictograph_data:
+            self.pictograph.elements.props[RED].updater.update_prop(
+                self.get_prop_data(pictograph_data, RED)
+            )
+            self.pictograph.elements.props[BLUE].updater.update_prop(
+                self.get_prop_data(pictograph_data, BLUE)
+            )
 
         logger.debug("Data update (partial or complete) applied successfully.")
+
+    def get_prop_data(self, pictograph_data: dict, color: str) -> dict:
+        # creates a dict of color, loc, ori, motion, prop_type
+        return {
+            "color": color,
+            "loc": self.pictograph.managers.get.motion_by_color(color).state.end_loc,
+            "ori": self.pictograph.managers.get.motion_by_color(color).state.end_ori,
+            "motion": self.pictograph.managers.get.motion_by_color(color),
+            "prop_type": AppContext.settings_manager().global_settings.get_prop_type().name,
+        }
 
     def update_grid_mode_if_changed(self):
         new_grid_mode = GridModeChecker.get_grid_mode(
@@ -75,7 +92,9 @@ class PictographUpdater:
             letter_obj = self.pictograph.state.letter
             if letter_obj and letter_obj.value in ["S", "T", "U", "V"]:
                 self.pictograph.managers.get.leading_motion().state.lead_state = LEADING
-                self.pictograph.managers.get.trailing_motion().state.lead_state = TRAILING
+                self.pictograph.managers.get.trailing_motion().state.lead_state = (
+                    TRAILING
+                )
                 logger.debug("Lead states set for letters S, T, U, V.")
             else:
                 for motion in self.pictograph.elements.motions.values():

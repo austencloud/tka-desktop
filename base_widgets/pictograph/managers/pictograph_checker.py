@@ -197,7 +197,7 @@ class PictographChecker:
 
     def has_all_props_of_type(self, prop_type: PropType) -> bool:
         return all(
-            prop.prop_type == prop_type
+            prop.prop_type_str == prop_type
             for prop in self.pictograph.elements.props.values()
         )
 

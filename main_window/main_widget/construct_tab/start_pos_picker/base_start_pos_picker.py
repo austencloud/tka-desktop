@@ -20,9 +20,9 @@ class BaseStartPosPicker(QWidget):
         super().__init__()
         self.pictograph_dataset = pictograph_dataset
         self.mw_size_provider = mw_size_provider
-        self.pictograph_cache: dict[str, Pictograph] = {}
         self.box_pictographs: list[Pictograph] = []
         self.diamond_pictographs: list[Pictograph] = []
+        self.start_options: dict[str, Pictograph] = {}
 
     def create_pictograph_from_dict(
         self, pictograph_data: dict, target_grid_mode: str, advanced: bool = False
@@ -35,8 +35,8 @@ class BaseStartPosPicker(QWidget):
         local_dict[GRID_MODE] = target_grid_mode
 
         pictograph_key = self.generate_pictograph_key(local_dict, target_grid_mode)
-        if pictograph_key in self.pictograph_cache:
-            return self.pictograph_cache[pictograph_key]
+        if pictograph_key in self.start_options:
+            return self.start_options[pictograph_key]
 
         pictograph = Pictograph()
         pictograph.elements.view = StartPosPickerPictographView(
@@ -44,13 +44,12 @@ class BaseStartPosPicker(QWidget):
         )
         pictograph.managers.updater.update_pictograph(local_dict)
         pictograph.elements.view.update_borders()
-        self.pictograph_cache[pictograph_key] = pictograph
+        self.start_options[pictograph_key] = pictograph
 
         if target_grid_mode == BOX:
             self.box_pictographs.append(pictograph)
         elif target_grid_mode == DIAMOND:
             self.diamond_pictographs.append(pictograph)
-
         return pictograph
 
     def generate_pictograph_key(self, pictograph_data: dict, grid_mode: str) -> str:

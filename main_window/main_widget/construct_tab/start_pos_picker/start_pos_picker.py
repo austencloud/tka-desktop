@@ -49,7 +49,6 @@ class StartPosPicker(BaseStartPosPicker):
         self.setup_layout()
         self.setStyleSheet("background-color: white;")
         self.initialized = False
-        self.start_options: dict[str, Pictograph] = {}
         self.pictograph_dataset = pictograph_dataset
         self.display_variations()
 
@@ -116,7 +115,6 @@ class StartPosPicker(BaseStartPosPicker):
                     pictograph = self.create_pictograph_from_dict(
                         pictograph_data, grid_mode
                     )
-                    self.start_options[letter] = pictograph
                     pictograph.state.letter = letter
                     pictograph.state.start_pos = start_pos
                     pictograph.state.end_pos = end_pos

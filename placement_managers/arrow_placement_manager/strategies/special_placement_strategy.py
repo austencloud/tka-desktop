@@ -9,9 +9,7 @@ from placement_managers.attr_key_generator import (
 )
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.hotkey_graph_adjuster.special_placement_data_updater.ori_key_generator import (
-        OriKeyGenerator,
-    )
+    from hotkey_graph_adjuster.special_placement_data_updater.ori_key_generator import OriKeyGenerator
 
 
 class SpecialPlacementStrategy:

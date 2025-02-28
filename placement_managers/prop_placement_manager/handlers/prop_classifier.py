@@ -31,7 +31,7 @@ class PropClassifier:
         self.hands.clear()
 
         for prop in self.pictograph.elements.props.values():
-            prop_type_enum = PropType.get_prop_type(prop.prop_type)
+            prop_type_enum = PropType.get_prop_type(prop.prop_type_str)
             if prop_type_enum in big_unilateral_prop_types:
                 self.big_uni.append(prop)
             elif prop_type_enum in small_unilateral_prop_types:

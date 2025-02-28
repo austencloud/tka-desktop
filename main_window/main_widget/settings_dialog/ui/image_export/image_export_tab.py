@@ -1,6 +1,8 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
-from PyQt6.QtGui import QResizeEvent, QShowEvent
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QApplication
+from PyQt6.QtGui import QResizeEvent, QShowEvent, QPixmap, QPainter, QColor
+from PyQt6.QtCore import Qt, QPoint
 from main_window.main_widget.settings_dialog.ui.image_export.image_export_preview_panel import (
     ImageExportPreviewPanel,
 )
@@ -8,19 +10,17 @@ from main_window.main_widget.settings_dialog.card_frame import CardFrame
 from main_window.main_widget.settings_dialog.ui.image_export.image_export_control_panel import (
     ImageExportControlPanel,
 )
-from main_window.main_widget.settings_dialog.ui.image_export.image_export_preview_panel import (
-    ImageExportPreviewPanel,
+from main_window.main_widget.settings_dialog.ui.image_export.loading_spinner import (
+    WaitingSpinner,
 )
-from PyQt6.QtWidgets import (
-    QVBoxLayout,
-    QHBoxLayout,
-)
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 
 
 class ImageExportTab(QWidget):
+
     def __init__(self, settings_dialog: "SettingsDialog"):
         super().__init__(settings_dialog)
         self.settings_dialog = settings_dialog
@@ -29,13 +29,15 @@ class ImageExportTab(QWidget):
 
         self.control_panel = ImageExportControlPanel(self.settings_manager, self)
         self.preview_panel = ImageExportPreviewPanel(self)
+        self.spinner = WaitingSpinner(self.preview_panel)
+
         self.control_panel.settingChanged.connect(self.update_preview)
 
         self._setup_layout()
         self._connect_signals()
 
     def _setup_layout(self):
-        card = CardFrame(self)
+        card = QWidget(self)
         layout = QVBoxLayout(card)
         layout.addWidget(self.control_panel, 1)
         layout.addWidget(self.preview_panel, 3)
@@ -44,53 +46,47 @@ class ImageExportTab(QWidget):
         control_layout.addWidget(card)
         self.setLayout(control_layout)
 
-    def _connect_signals(self):
-        self.control_panel.settingChanged.connect(self._update_preview)
+        self.center_spinner()
+        self.spinner.hide()
 
-    def _update_preview(self):
+    def _connect_signals(self):
+        self.control_panel.settingChanged.connect(self.update_preview)
+
+    def update_preview(self):
+        options = self.settings_manager.image_export.get_all_settings()
+
+        options["user_name"] = self.control_panel.user_combo_box.currentText()
+        options["notes"] = self.control_panel.notes_combo_box.currentText()
+        options["export_date"] = datetime.now().strftime("%m-%d-%Y")
+
         sequence = self._get_current_sequence()
-        if sequence:
-            options = self.settings_manager.image_export.get_all_settings()
-            self.preview_panel.update_preview(
-                include_start_pos=options.get("include_start_position", True),
-                add_info=options.get("add_user_info", False),
-                sequence=sequence,
-                add_word=options.get("add_word", False),
-                include_difficulty_level=options.get("add_difficulty_level", False),
-                add_beat_numbers=options.get("add_beat_numbers", True),
-                add_reversal_symbols=options.get("add_reversal_symbols", True),
-            )
+
+        pixmap = self.preview_panel.generate_preview_image(sequence, options)
+
+        self.preview_panel.preview_label.setPixmap(pixmap)
+
+    def center_spinner(self):
+        vertical_offset = 10
+        self.spinner.move(
+            (self.preview_panel.width() - self.spinner.width()) // 2,
+            (self.preview_panel.height() - self.spinner.height()) // 2 - vertical_offset,
+        )
 
     def _get_current_sequence(self):
         return (
             self.main_widget.sequence_workbench.sequence_beat_frame.json_manager.loader_saver.load_current_sequence()
         )
 
-    def resizeEvent(self, a0: QResizeEvent | None) -> None:
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
         self.update_preview()
 
-    def update_preview(self):
-        options = self.settings_manager.image_export.get_all_settings()
-
-        self.preview_panel.update_preview(
-            include_start_pos=options.get("include_start_position", False),
-            add_info=options.get("add_user_info", False),
-            sequence=self._get_current_sequence(),
-            add_word=options.get("add_word", False),
-            include_difficulty_level=options.get("add_difficulty_level", False),
-            add_beat_numbers=options.get("add_beat_numbers", False),
-            add_reversal_symbols=options.get("add_reversal_symbols", False),
-        )
-
     def update_image_export_buttons_from_settings(self):
-        for (
-            button_text,
-            _,
-        ) in self.control_panel.button_settings_keys.items():
+        for button_text, _ in self.control_panel.button_settings_keys.items():
             button = self.control_panel.buttons[button_text]
             button.update_is_toggled()
 
     def showEvent(self, event: "QShowEvent"):
         self.update_image_export_buttons_from_settings()
-        self._update_preview()
+        self.update_preview()
         super().showEvent(event)

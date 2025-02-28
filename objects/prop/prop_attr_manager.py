@@ -17,7 +17,7 @@ class PropAttrManager:
     def update_attributes(
         self, prop_data: dict[str, Union[str, str, str, int]]
     ) -> None:
-        prop_attributes = [COLOR, LOC, LAYER, ORI, MOTION, PROP_TYPE]
+        prop_attributes = [COLOR, LOC, ORI, MOTION, PROP_TYPE]
         for attr in prop_attributes:
             value = prop_data.get(attr)
             if attr == PROP_TYPE:

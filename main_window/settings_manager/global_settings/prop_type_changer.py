@@ -18,6 +18,7 @@ class PropTypeChanger:
                 prop, new_prop_type.name
             )
             self._update_pictograph_prop(pictograph, color, new_prop)
+        pictograph.state.prop_type_enum = new_prop_type
         self._finalize_pictograph_update(pictograph)
 
     def _update_pictograph_prop(
@@ -29,7 +30,7 @@ class PropTypeChanger:
             old_prop.hide()
             old_prop.prop_data = {
                 "color": color,
-                "prop_type": new_prop.prop_type,
+                "prop_type": new_prop.prop_type_str,
                 "loc": old_prop.loc,
                 "ori": old_prop.ori,
             }
@@ -43,6 +44,7 @@ class PropTypeChanger:
     def _finalize_pictograph_update(self, pictograph: "Pictograph"):
         pictograph.elements.red_prop = pictograph.elements.props[RED]
         pictograph.elements.blue_prop = pictograph.elements.props[BLUE]
+        pictograph.managers.updater.update_pictograph()
 
     def apply_prop_type(self, pictographs: list["Pictograph"]) -> None:
         prop_type = self.settings_manager.global_settings.get_prop_type()
@@ -53,5 +55,5 @@ class PropTypeChanger:
     ) -> None:
         for pictograph in pictographs:
             self.replace_props(new_prop_type, pictograph)
-            pictograph.state.prop_type = new_prop_type
+            pictograph.state.prop_type_enum = new_prop_type
             pictograph.managers.updater.update_pictograph()

@@ -31,7 +31,6 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         super().__init__(pictograph_dataset, mw_size_provider=size_provider)
         self.beat_frame = beat_frame
         self.choose_start_pos_label = ChooseYourStartPosLabel(self)
-        self.start_pos_cache: dict[str, List[Pictograph]] = {}
         self.start_position_adder = beat_frame.start_position_adder
         self._init_layout()
         self.generate_pictographs()
@@ -57,8 +56,8 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         self, pictograph_data: dict, target_grid_mode: str
     ) -> Pictograph:
         key = self._generate_pictograph_key(pictograph_data, target_grid_mode)
-        if key in self.pictograph_cache:
-            return self.pictograph_cache[key]
+        if key in self.start_options:
+            return self.start_options[key]
 
         local_data = deepcopy(pictograph_data)
         local_data[GRID_MODE] = target_grid_mode
@@ -70,7 +69,7 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         pictograph.managers.updater.update_pictograph(local_data)
         pictograph.elements.view.update_borders()
 
-        self.pictograph_cache[key] = pictograph
+        self.start_options[key] = pictograph
         if target_grid_mode == BOX:
             self.box_pictographs.append(pictograph)
         elif target_grid_mode == DIAMOND:

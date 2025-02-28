@@ -45,9 +45,8 @@ class PictographCollector:
             self.main_widget.construct_tab.advanced_start_pos_picker
         )
         pictographs = []
-        for list in advanced_start_pos_picker.start_pos_cache.values():
-            for pictograph in list:
-                pictographs.append(pictograph)
+        for pictograph in advanced_start_pos_picker.start_options.values():
+            pictographs.append(pictograph)
         return pictographs
 
     def _collect_from_start_pos_picker(self) -> list["Pictograph"]:

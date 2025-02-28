@@ -9,7 +9,6 @@ class ImageExportSettings:
     DEFAULT_IMAGE_EXPORT_SETTINGS = {
         "include_start_position": False,
         "add_user_info": True,
-        "open_directory_on_export": True,
         "add_word": True,
         "add_difficulty_level": True,
         "add_beat_numbers": True,
@@ -19,6 +18,7 @@ class ImageExportSettings:
     def __init__(self, settings_manager: "SettingsManager") -> None:
         self.settings_manager = settings_manager
         self.settings = self.settings_manager.settings  # QSettings instance
+
 
     def get_image_export_setting(self, key: str):
         """Get a specific image export setting"""

@@ -16,7 +16,7 @@ class PictographState:
     red_reversal: bool = False
     letter: Optional[Letter] = None
     letter_type: Optional[LetterType] = None
-    prop_type: Optional[PropType] = None
+    prop_type_enum: Optional[PropType] = None
     open_close_state: str = ""
     vtg_mode: str = ""
     direction: str = ""

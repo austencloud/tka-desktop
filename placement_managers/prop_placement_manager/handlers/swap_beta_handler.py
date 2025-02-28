@@ -38,7 +38,7 @@ class SwapBetaHandler:
         self.beta_prop_positioner.move_prop(prop_a, direction_a)
         self.beta_prop_positioner.move_prop(prop_b, direction_b)
         self.beta_prop_positioner.move_prop(prop_b, direction_b)
-    
+
     def swap_beta(self) -> None:
         if (
             (
@@ -48,7 +48,7 @@ class SwapBetaHandler:
             and len(self.beta_prop_positioner.classifier.small_uni) == 2
         ) or self.pictograph.managers.check.ends_with_layer3():
             return
-        if self.pictograph.elements.red_motion.prop.prop_type == PropType.Hand:
+        if self.pictograph.elements.red_motion.prop.prop_type_str == PropType.Hand:
             return
 
         letter_type = LetterType.get_letter_type(self.pictograph.state.letter)
@@ -91,7 +91,7 @@ class SwapBetaHandler:
         blue_direction = self.dir_calculator.get_dir(
             self.pictograph.elements.blue_motion
         )
-        if self.pictograph.elements.red_motion.prop.prop_type != PropType.Hand:
+        if self.pictograph.elements.red_motion.prop.prop_type_str != PropType.Hand:
             self._swap_props(
                 self.pictograph.elements.red_prop,
                 self.pictograph.elements.blue_prop,
