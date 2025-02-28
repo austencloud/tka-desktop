@@ -29,8 +29,9 @@ class FullScreenViewer:
         """Display the current image in full screen mode."""
         mw = self.main_widget
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        last_beat = self.beat_frame.get.last_filled_beat()
-        if last_beat.__class__.__name__ == "StartPositionBeatView":
+        sequence_length = len(self.json_loader.load_current_sequence())
+
+        if sequence_length <= 2:
             self.indicator_label.show_message("Please build a sequence first.")
             QApplication.restoreOverrideCursor()
             return

@@ -84,11 +84,10 @@ class ImageCreator:
         """Parse options and set default values."""
         default_options = {
             "add_beat_numbers": True,
-            "add_reversal_symbols": False,
+            "add_reversal_symbols": True,
             "add_info": False,
             "add_word": False,
             "add_difficulty_level": False,
-            "add_reversal_symbols": False,
         }
         if options:
             default_options.update(options)
