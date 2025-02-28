@@ -54,13 +54,13 @@ class BaseSequenceBuilder:
         self.ori_calculator = self.main_widget.json_manager.ori_calculator
         self.start_pos_manager = SequenceBuilderStartPosManager(self.main_widget)
 
-    def initialize_sequence(self, length: int) -> None:
+    def initialize_sequence(self, length: int, permutation_type: str = "") -> None:
         if not self.sequence_workbench:
             self.sequence_workbench = self.main_widget.sequence_workbench
         self.sequence = self.json_manager.loader_saver.load_current_sequence()
 
         if len(self.sequence) == 1:
-            self.start_pos_manager.add_start_position()
+            self.start_pos_manager.add_start_position(permutation_type)
             self.sequence = self.json_manager.loader_saver.load_current_sequence()
 
         try:

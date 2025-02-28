@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from data.constants import LETTER
+
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_sequence_updater.json_sequence_updater import (
         JsonSequenceUpdater,

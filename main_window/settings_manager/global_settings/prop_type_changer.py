@@ -43,7 +43,6 @@ class PropTypeChanger:
     def _finalize_pictograph_update(self, pictograph: "Pictograph"):
         pictograph.elements.red_prop = pictograph.elements.props[RED]
         pictograph.elements.blue_prop = pictograph.elements.props[BLUE]
-        pictograph.managers.updater.update_pictograph()
 
     def apply_prop_type(self, pictographs: list["Pictograph"]) -> None:
         prop_type = self.settings_manager.global_settings.get_prop_type()

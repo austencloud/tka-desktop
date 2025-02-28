@@ -27,32 +27,28 @@ class SequenceBuilderStartPosManager:
     Manages the logic for adding a starting position pictograph to the sequence.
     """
 
+    DIAMOND_KEYS = ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"]
+    OTHER_KEYS = ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
+    ALPHABETA_KEYS = ["alpha1_alpha1", "beta5_beta5"]
+
     def __init__(self, main_widget: "MainWidget") -> None:
         self.main_widget = main_widget
         # This could be parameterized; for now, we assume DIAMOND mode.
         self.grid_mode = DIAMOND
 
-    def add_start_position(self) -> None:
+    def add_start_position(self, permutation_type: str = "") -> None:
         """
         Chooses a random valid start position and adds it to the sequence.
         """
-        start_keys = (
-            ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"]
-            if self.grid_mode == DIAMOND
-            else ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
-        )
+        if permutation_type == "mirrored":
+            start_keys = self.ALPHABETA_KEYS
+        else:
+            start_keys = self.DIAMOND_KEYS if self.grid_mode == DIAMOND else self.OTHER_KEYS
         chosen_key = random.choice(start_keys)
-        self._add_start_position(chosen_key)
-
-    def _add_start_position(self, position_key: str) -> None:
-        """
-        Finds the pictograph matching the given key and adds it as the start position.
-        Raises LookupError if no match is found.
-        """
         try:
-            start_pos, end_pos = position_key.split("_")
+            start_pos, end_pos = chosen_key.split("_")
         except ValueError:
-            raise ValueError(f"Invalid position key format: {position_key}")
+            raise ValueError(f"Invalid position key format: {chosen_key}")
 
         dataset = deepcopy(self.main_widget.pictograph_dataset)
         for pictograph_list in dataset.values():
@@ -75,7 +71,7 @@ class SequenceBuilderStartPosManager:
                         start_pos_beat
                     )
                     return
-        raise LookupError(f"No matching start position found for key: {position_key}")
+        raise LookupError(f"No matching start position found for key: {chosen_key}")
 
     def _set_orientation_in(self, pictograph_data: Dict[str, Any]) -> None:
         """

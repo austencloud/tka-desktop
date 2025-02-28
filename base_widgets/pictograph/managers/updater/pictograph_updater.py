@@ -74,8 +74,8 @@ class PictographUpdater:
         try:
             letter_obj = self.pictograph.state.letter
             if letter_obj and letter_obj.value in ["S", "T", "U", "V"]:
-                self.pictograph.managers.get.leading_motion().lead_state = LEADING
-                self.pictograph.managers.get.trailing_motion().lead_state = TRAILING
+                self.pictograph.managers.get.leading_motion().state.lead_state = LEADING
+                self.pictograph.managers.get.trailing_motion().state.lead_state = TRAILING
                 logger.debug("Lead states set for letters S, T, U, V.")
             else:
                 for motion in self.pictograph.elements.motions.values():

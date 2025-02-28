@@ -1,40 +1,53 @@
 from typing import TYPE_CHECKING
 from Enums.letters import Letter, LetterType
-from data.constants import ANTI, DASH, FLOAT, PRO, STATIC, END_LOC, START_LOC, PROP_ROT_DIR, MOTION_TYPE
+from data.constants import ANTI, DASH, FLOAT, PRO, STATIC, MOTION_TYPE
 from .dual_float_letter_determiner import DualFloatLetterDeterminer
 from .non_hybrid_letter_determiner import NonHybridShiftLetterDeterminer
+from .motion_comparator import MotionComparator
 from objects.motion.motion_ori_calculator import MotionOriCalculator
-from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
+    from objects.motion.motion import Motion
 
 
 class LetterDeterminer:
+    """Determines the correct letter based on motion attributes."""
+
     def __init__(self, main_widget: "MainWidget") -> None:
         self.main_widget = main_widget
         self.letters = self.main_widget.pictograph_dataset
         self.non_hybrid_shift_letter_determiner = NonHybridShiftLetterDeterminer(self)
         self.dual_float_letter_determiner = DualFloatLetterDeterminer(self)
+        self.comparator = MotionComparator(self.main_widget)
         self.beat_frame = None
 
     def determine_letter(
         self, motion: "Motion", swap_prop_rot_dir: bool = False
     ) -> Letter:
-        """Update the motion attributes based on the change in prop_rot_dir."""
+        """Determine the letter based on motion attributes."""
         if not self.beat_frame:
             self.beat_frame = self.main_widget.sequence_workbench.sequence_beat_frame
         other_motion = motion.pictograph.managers.get.other_motion(motion)
-        motion_type = motion.state.motion_type
 
-        if motion_type == FLOAT and other_motion.state.motion_type == FLOAT:
+        if (
+            motion.state.motion_type == FLOAT
+            and other_motion.state.motion_type == FLOAT
+        ):
             return self.dual_float_letter_determiner.determine_letter(motion)
-        elif motion_type in [PRO, ANTI] and other_motion.state.motion_type == FLOAT:
+
+        elif (
+            motion.state.motion_type in [PRO, ANTI]
+            and other_motion.state.motion_type == FLOAT
+        ):
             return self.non_hybrid_shift_letter_determiner.determine_letter(
                 motion, motion.state.motion_type, swap_prop_rot_dir
             )
-        elif motion_type in [DASH, STATIC]:
-            new_motion_type = motion_type
+
+        elif motion.state.motion_type in [DASH, STATIC]:
+            return None  # No letter for dash/static motions
+
+        # Handle swaps in motion types
         if (
             swap_prop_rot_dir
             and other_motion.state.motion_type == FLOAT
@@ -42,8 +55,10 @@ class LetterDeterminer:
             == LetterType.Type1
         ):
             return self.non_hybrid_shift_letter_determiner.determine_letter(
-                motion, new_motion_type, swap_prop_rot_dir
+                motion, motion.state.motion_type, swap_prop_rot_dir
             )
+
+        # Handle non-hybrid letters
         if motion.state.motion_type == FLOAT and other_motion.state.motion_type in [
             PRO,
             ANTI,
@@ -51,147 +66,59 @@ class LetterDeterminer:
             return self.non_hybrid_shift_letter_determiner.determine_letter(
                 motion, other_motion.state.motion_type, swap_prop_rot_dir
             )
+
         motion.state.end_ori = MotionOriCalculator(motion).get_end_ori()
+        return self.find_letter_based_on_attributes(motion)
 
-        new_letter = self.find_letter_based_on_attributes(motion)
-        return new_letter
-
-    def find_letter_based_on_attributes(self, motion: "Motion") -> str:
+    def find_letter_based_on_attributes(self, motion: "Motion") -> Letter:
+        """Find the correct letter based on attributes."""
         other_motion = motion.pictograph.managers.get.other_motion(motion)
         letter_type = motion.pictograph.state.letter.get_letter_type()
         original_letter = motion.pictograph.state.letter
-        for letter, examples in self.letters.items():
 
-            if letter_type == LetterType.Type1:
-                for example in examples:
-                    if self.compare_motion_attributes_for_type1(
-                        motion, other_motion, example
-                    ):
-                        return letter
-            elif letter_type in [LetterType.Type2, LetterType.Type3]:
-                for example in examples:
-                    if self.compare_motion_attributes_for_type2_3(motion, example):
-                        return letter
-            else:
-                return original_letter
+        if letter_type == LetterType.Type1:
+            return self._find_letter_for_type1(motion, other_motion) or original_letter
+
+        elif letter_type in [LetterType.Type2, LetterType.Type3]:
+            return self._find_letter_for_type2_3(motion) or original_letter
+
+        return original_letter
+
+    def _find_letter_for_type1(
+        self, motion: "Motion", other_motion: "Motion"
+    ) -> Letter:
+        """Find a matching letter for Type 1 motion attributes."""
+        for letter, examples in self.letters.items():
+            for example in examples:
+                if self.comparator.compare_dual_motion_to_example(
+                    motion, other_motion, example
+                ):
+                    return letter
         return None
 
-    def compare_motion_attributes_for_type1(
-        self, motion: "Motion", other_motion: "Motion", example
-    ):
-        motion_attributes_match_example = (
-            self.is_shift_motion_type_matching(motion, example)
-            and example[f"{motion.state.color}_attributes"][START_LOC]
-            == motion.state.start_loc
-            and example[f"{motion.state.color}_attributes"][END_LOC]
-            == motion.state.end_loc
-            and self._is_shift_prop_rot_dir_matching(motion, example)
-            and self.is_shift_motion_type_matching(other_motion, example)
-            and example[f"{other_motion.state.color}_attributes"][START_LOC]
-            == other_motion.state.start_loc
-            and example[f"{other_motion.state.color}_attributes"][END_LOC]
-            == other_motion.state.end_loc
-            and self._is_shift_prop_rot_dir_matching(other_motion, example)
-        )
-
-        return motion_attributes_match_example
-
-    def _is_shift_prop_rot_dir_matching(self, motion: "Motion", example):
-        is_rot_dir_matching = (
-            example[f"{motion.state.color}_attributes"][PROP_ROT_DIR]
-            == self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
-                self.beat_frame.get.index_of_currently_selected_beat() + 2,
-                motion.state.color,
-            )
-            or example[f"{motion.state.color}_attributes"][PROP_ROT_DIR]
-            == motion.state.prop_rot_dir
-        )
-
-        return is_rot_dir_matching
-
-    def compare_motion_attributes_for_type1_hybrids_with_one_float(
-        self, motion: "Motion", example
-    ):
-        float_motion = motion.pictograph.managers.get.float_motion()
-        non_float_motion = float_motion.pictograph.managers.get.other_motion(
-            float_motion
-        )
-        motion_attributes_match_example = (
-            self.is_shift_motion_type_matching(float_motion, example)
-            and example[f"{float_motion.state.color}_attributes"][START_LOC]
-            == float_motion.state.start_loc
-            and example[f"{float_motion.state.color}_attributes"][END_LOC]
-            == float_motion.state.end_loc
-            and example[f"{float_motion.state.color}_attributes"][PROP_ROT_DIR]
-            == self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
-                self.beat_frame.get.index_of_currently_selected_beat() + 2,
-                float_motion.state.color,
-            )
-            and self.is_shift_motion_type_matching(non_float_motion, example)
-            and example[f"{non_float_motion.state.color}_attributes"][START_LOC]
-            == non_float_motion.state.start_loc
-            and example[f"{non_float_motion.state.color}_attributes"][END_LOC]
-            == non_float_motion.state.end_loc
-            and example[f"{non_float_motion.state.color}_attributes"][PROP_ROT_DIR]
-            == non_float_motion.state.prop_rot_dir
-        )
-
-        return motion_attributes_match_example
-
-    def compare_motion_attributes_for_type1_nonhybrids_with_one_float(
-        self, float_motion: "Motion", example
-    ):
-        non_float_motion = float_motion.pictograph.managers.get.other_motion(
-            float_motion
-        )
-        motion_attributes_match_example = (
-            self.is_shift_motion_type_matching(float_motion, example)
-            and example[f"{float_motion.state.color}_attributes"][START_LOC]
-            == float_motion.state.start_loc
-            and example[f"{float_motion.state.color}_attributes"][END_LOC]
-            == float_motion.state.end_loc
-            and example[f"{float_motion.state.color}_attributes"][PROP_ROT_DIR]
-            == self.main_widget.json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
-                self.beat_frame.get.index_of_currently_selected_beat() + 2,
-                float_motion.state.color,
-            )
-            and self.is_shift_motion_type_matching(non_float_motion, example)
-            and example[f"{non_float_motion.state.color}_attributes"][START_LOC]
-            == non_float_motion.state.start_loc
-            and example[f"{non_float_motion.state.color}_attributes"][END_LOC]
-            == non_float_motion.state.end_loc
-            and example[f"{non_float_motion.state.color}_attributes"][PROP_ROT_DIR]
-            == non_float_motion.state.prop_rot_dir
-        )
-
-        return motion_attributes_match_example
-
-    def compare_motion_attributes_for_type2_3(self, motion: "Motion", example):
+    def _find_letter_for_type2_3(self, motion: "Motion") -> Letter:
+        """Find a matching letter for Type 2 & 3 motion attributes."""
         shift = motion.pictograph.managers.get.shift()
         non_shift = motion.pictograph.managers.get.other_motion(shift)
-        motion_attributes_match_example = (
-            self.is_shift_motion_type_matching(shift, example)
-            and example[f"{shift.state.color}_attributes"][START_LOC]
-            == shift.state.start_loc
-            and example[f"{shift.state.color}_attributes"][END_LOC]
-            == shift.state.end_loc
-            and self._is_shift_prop_rot_dir_matching(shift, example)
+
+        for letter, examples in self.letters.items():
+            for example in examples:
+                if self._compare_motion_attributes_for_type2_3(
+                    shift, non_shift, example
+                ):
+                    return letter
+        return None
+
+    def _compare_motion_attributes_for_type2_3(
+        self, shift: "Motion", non_shift: "Motion", example: dict
+    ) -> bool:
+        """Compare motion attributes for Type 2 and Type 3 letters."""
+        return (
+            self.comparator.compare_motion_to_example(shift, example)
             and example[f"{non_shift.state.color}_attributes"][MOTION_TYPE]
             == non_shift.state.motion_type
-            and example[f"{non_shift.state.color}_attributes"][START_LOC]
+            and example[f"{non_shift.state.color}_attributes"]["start_loc"]
             == non_shift.state.start_loc
-            and example[f"{non_shift.state.color}_attributes"][END_LOC]
+            and example[f"{non_shift.state.color}_attributes"]["end_loc"]
             == non_shift.state.end_loc
         )
-
-        return motion_attributes_match_example
-
-    def is_shift_motion_type_matching(self, motion: "Motion", example):
-        is_matching_motion_type = (
-            example[f"{motion.state.color}_attributes"][MOTION_TYPE]
-            == motion.state.motion_type
-            or example[f"{motion.state.color}_attributes"][MOTION_TYPE]
-            == motion.state.prefloat_motion_type
-        )
-
-        return is_matching_motion_type

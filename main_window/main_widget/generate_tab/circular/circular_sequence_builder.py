@@ -46,12 +46,12 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         length: int,
         turn_intensity: int,
         level: int,
-        rotation_type: str,
+        slice_size: str,
         permutation_type: str,
         prop_continuity: bool,
     ):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        self.initialize_sequence(length)
+        self.initialize_sequence(length, permutation_type=permutation_type)
 
         if prop_continuity == "continuous":
             blue_rot_dir = random.choice([CLOCKWISE, COUNTER_CLOCKWISE])
@@ -63,9 +63,9 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         length_of_sequence_upon_start = len(self.sequence) - 2
 
         if permutation_type == "rotated":
-            if rotation_type == "quartered":
+            if slice_size == "quartered":
                 word_length = length // 4
-            elif rotation_type == "halved":
+            elif slice_size == "halved":
                 word_length = length // 2
             available_range = word_length - length_of_sequence_upon_start
         elif permutation_type == "mirrored":
@@ -82,7 +82,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 turns_blue[i],
                 turns_red[i],
                 is_last_in_word,
-                rotation_type,
+                slice_size,
                 permutation_type,
                 prop_continuity,
                 blue_rot_dir,
@@ -94,7 +94,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             )
             QApplication.processEvents()
 
-        self._apply_permutations(self.sequence, permutation_type, rotation_type)
+        self._apply_permutations(self.sequence, permutation_type, slice_size)
 
         construct_tab = self.main_widget.construct_tab
         construct_tab.option_picker.updater.update_options()

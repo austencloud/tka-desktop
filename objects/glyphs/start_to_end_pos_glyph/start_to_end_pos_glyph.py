@@ -35,6 +35,8 @@ class StartToEndPosGlyph(QGraphicsItemGroup):
 
     def set_start_to_end_pos_glyph(self):
         # if the letter is alpha, beta, or gamma then don't show the start to end pos glyph
+        if not self.pictograph.state.letter:
+            return
         if self.pictograph.state.letter in [Letter.α, Letter.β, Letter.Γ]:
             return
         start_pos = "".join(filter(str.isalpha, self.pictograph.state.start_pos))

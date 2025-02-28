@@ -139,6 +139,8 @@ class PictographInitializer:
             props[color] = self.prop_factory.create_prop_of_type(
                 initial_prop, prop_type
             )
+            props[color].prop_data['prop_type'] = prop_type
+            props[color].prop_type = prop_type
             self.pictograph.elements.motions[color].prop = props[color]
             props[color].motion = self.pictograph.elements.motions[color]
 

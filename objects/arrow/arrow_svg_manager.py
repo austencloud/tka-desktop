@@ -21,25 +21,34 @@ class ArrowSvgManager:
         self._setup_arrow_svg_renderer(arrow, colored_svg_data)
 
     def _get_arrow_svg_file(self, arrow: "Arrow") -> str:
-        start_ori = arrow.motion.state.start_ori
         if arrow.motion.state.motion_type == FLOAT:
-            return get_images_and_data_path("images/arrows/float.svg")
-        arrow_turns: Union[str, int, float] = arrow.motion.state.turns
+            return self._get_float_svg_file()
+
+        turns = self._get_turns(arrow.motion.state.turns)
+        start_ori = arrow.motion.state.start_ori
+
+        if start_ori in [IN, OUT]:
+            return self._get_radial_svg_file(arrow.motion.state.motion_type, turns)
+        elif start_ori in [CLOCK, COUNTER]:
+            return self._get_nonradial_svg_file(arrow.motion.state.motion_type, turns)
+
+    def _get_float_svg_file(self) -> str:
+        return get_images_and_data_path("images/arrows/float.svg")
+
+    def _get_turns(self, arrow_turns: Union[str, int, float]) -> float:
         if isinstance(arrow_turns, (int, float)):
-            turns = float(arrow_turns)
-        else:
-            turns = arrow_turns
-        if not turns == "fl":
-            if start_ori in [IN, OUT]:
-                return get_images_and_data_path(
-                    f"images/arrows/{arrow.motion.state.motion_type}/from_radial/"
-                    f"{arrow.motion.state.motion_type}_{turns}.svg"
-                )
-            elif start_ori in [CLOCK, COUNTER]:
-                return get_images_and_data_path(
-                    f"images/arrows/{arrow.motion.state.motion_type}/from_nonradial/"
-                    f"{arrow.motion.state.motion_type}_{turns}.svg"
-                )
+            return float(arrow_turns)
+        return arrow_turns
+
+    def _get_radial_svg_file(self, motion_type: str, turns: float) -> str:
+        return get_images_and_data_path(
+            f"images/arrows/{motion_type}/from_radial/{motion_type}_{turns}.svg"
+        )
+
+    def _get_nonradial_svg_file(self, motion_type: str, turns: float) -> str:
+        return get_images_and_data_path(
+            f"images/arrows/{motion_type}/from_nonradial/{motion_type}_{turns}.svg"
+        )
 
     def _setup_arrow_svg_renderer(self, arrow: "Arrow", svg_data: str) -> None:
         renderer = QSvgRenderer()

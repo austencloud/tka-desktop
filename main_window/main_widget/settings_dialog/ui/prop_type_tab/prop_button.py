@@ -73,8 +73,11 @@ class PropButton(QPushButton):
 
     def resizeEvent(self, event):
         """Resize the button and its icon dynamically."""
+        self.update_size()
+        super().resizeEvent(event)
+
+    def update_size(self):
         size = self.prop_type_tab.width() // 4
         icon_size = int(size * 0.75)
         self.setFixedSize(QSize(size, size))
         self.setIconSize(QSize(icon_size, icon_size))
-        super().resizeEvent(event)

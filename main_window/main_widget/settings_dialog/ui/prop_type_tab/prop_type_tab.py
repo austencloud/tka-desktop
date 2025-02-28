@@ -111,9 +111,14 @@ class PropTypeTab(QWidget):
         self._update_active_button(current_prop)
 
     def resizeEvent(self, event):
+        self.update_size()
+        super().resizeEvent(event)
+
+    def update_size(self):
         font = QFont()
         font_size = self.settings_dialog.width() // 30
         font.setPointSize(font_size)
         font.setBold(True)
         self.header.setFont(font)
-        super().resizeEvent(event)
+        for prop, button in self.buttons.items():
+            button.update_size()
