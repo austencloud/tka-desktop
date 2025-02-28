@@ -6,6 +6,7 @@ from utilities.word_simplifier import WordSimplifier
 
 if TYPE_CHECKING:
     from .sequence_beat_frame import SequenceBeatFrame
+from PyQt6.QtCore import QTimer
 
 
 class BeatFramePopulator:
@@ -96,6 +97,10 @@ class BeatFramePopulator:
         )
         self.construct_tab.last_beat = last_beat
         self.construct_tab.option_picker.updater.update_options()
+        # select the last beat
+        QTimer.singleShot(
+            0, lambda: self.selection_overlay.select_beat_view(last_beat.view)
+        )  
 
     def modify_layout_for_chosen_number_of_beats(self, beat_count):
         self.beat_frame.layout_manager.configure_beat_frame(

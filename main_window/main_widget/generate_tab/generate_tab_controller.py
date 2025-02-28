@@ -104,8 +104,14 @@ class GenerateTabController:
     def _update_ui_visibility(self):
         is_freeform = self.current_mode == "freeform"
         self.tab.letter_picker.setVisible(is_freeform)
-        self.tab.slice_size_toggle.setVisible(not is_freeform)
-        self.tab.permutation_type_toggle.setVisible(not is_freeform)
+
+        is_circular = not is_freeform
+        self.tab.slice_size_toggle.setVisible(is_circular)
+        self.tab.permutation_type_toggle.setVisible(is_circular)
+
+        permutation_type = self.settings.get_setting("permutation_type")
+        if permutation_type == "mirrored":
+            self.tab.slice_size_toggle.setVisible(False)  # Hide slice size toggle
 
     def _as_bool(self, val) -> bool:
         if isinstance(val, bool):

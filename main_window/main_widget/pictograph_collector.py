@@ -1,4 +1,15 @@
+from math import pi
 from typing import TYPE_CHECKING, Callable, Iterator
+
+from base_widgets.pictograph import pictograph
+from base_widgets.pictograph.elements.views.base_pictograph_view import (
+    BasePictographView,
+)
+from base_widgets.pictograph.elements.views.lesson_pictograph_view import (
+    LessonPictographView,
+)
+from main_window.main_widget.learn_tab import learn_tab
+from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import LessonWidget
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
@@ -19,6 +30,7 @@ class PictographCollector:
             self._collect_from_option_picker,
             self._collect_from_codex,
             self._collect_from_settings_dialog,
+            self._collect_from_lessons,
         ]
         return list(self._collect_pictographs(collectors))
 
@@ -86,3 +98,30 @@ class PictographCollector:
         if visibility_pictograph:
             return [visibility_pictograph]
         return []
+
+    def _collect_from_lessons(self) -> list["Pictograph"]:
+        lesson_widgets_dict = self.main_widget.learn_tab.lessons
+        pictographs = []
+        views: list["LessonPictographView"] = []
+        lesson1 = lesson_widgets_dict.get("Lesson1")
+        lesson2 = lesson_widgets_dict.get("Lesson2")
+        lesson3 = lesson_widgets_dict.get("Lesson3")
+
+        pictographs.extend([lesson1.question_widget.renderer.view.pictograph])
+        views.extend(
+            [
+                answer_pictograph
+                for answer_pictograph in lesson2.answers_widget.renderer.pictograph_views.values()
+            ]
+        )
+        pictographs.extend([lesson3.question_widget.renderer.view.pictograph])
+        views.extend(
+            [
+                answer_pictograph
+                for answer_pictograph in lesson3.answers_widget.renderer.pictograph_views.values()
+            ]
+        )
+        for view in views:
+            pictographs.append(view.pictograph)
+        pictographs = [pictograph for pictograph in pictographs if pictograph]
+        return pictographs

@@ -24,7 +24,7 @@ class OptionClickHandler:
             new_beat = self.add_to_sequence_manager.create_new_beat(clicked_option)
             self.beat_frame.beat_adder.add_beat_to_sequence(new_beat)
             if new_beat.view:
-                self.beat_frame.selection_overlay.select_beat(new_beat.view)
+                self.beat_frame.selection_overlay.select_beat_view(new_beat.view)
                 QApplication.processEvents()
                 self.option_picker.updater.refresh_options()
                 new_beat.view.is_filled = True

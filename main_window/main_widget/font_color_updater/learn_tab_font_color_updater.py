@@ -22,9 +22,7 @@ class LearnTabFontColorUpdater(BaseFontColorUpdater):
         learn_tab.lesson_selector.mode_toggle_widget.update_mode_label_styles()
 
         lesson_widgets: list[LessonWidget] = [
-            learn_tab.lesson_1_widget,
-            learn_tab.lesson_2_widget,
-            learn_tab.lesson_3_widget,
+            learn_tab.lessons[lesson_type] for lesson_type in learn_tab.lessons
         ]
         for lesson_widget in lesson_widgets:
             self._apply_font_color(lesson_widget.question_widget)

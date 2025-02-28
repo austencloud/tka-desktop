@@ -52,6 +52,6 @@ class FirstBeatDeleter:
 
         self.option_picker = self.main_widget.construct_tab.option_picker
         self.option_picker.updater.update_options()
-        self.deleter.beat_frame.selection_overlay.select_beat(
+        self.deleter.beat_frame.selection_overlay.select_beat_view(
             self.deleter.beat_frame.start_pos_view, toggle_animation=False
         )

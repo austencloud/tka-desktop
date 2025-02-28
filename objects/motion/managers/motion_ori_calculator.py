@@ -59,7 +59,7 @@ class MotionOriCalculator:
         return {IN: OUT, OUT: IN, CLOCK: COUNTER, COUNTER: CLOCK}.get(ori, ori)
 
     def calculate_whole_turn_orientation(
-        self, motion_type: str, turns: Turns, start_ori: str
+        self, motion_type: str, turns: int | float | str, start_ori: str
     ) -> str:
         if motion_type in [PRO, STATIC]:
             return start_ori if turns % 2 == 0 else self.switch_orientation(start_ori)

@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.elements.views.base_pictograph_view import BasePictographView
+from base_widgets.pictograph.elements.views.base_pictograph_view import (
+    BasePictographView,
+)
 from .beat import Beat
 
 if TYPE_CHECKING:
@@ -39,7 +41,7 @@ class BeatView(BasePictographView):
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton and self.is_filled:
-            self.beat_frame.selection_overlay.select_beat(self)
+            self.beat_frame.selection_overlay.select_beat_view(self)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

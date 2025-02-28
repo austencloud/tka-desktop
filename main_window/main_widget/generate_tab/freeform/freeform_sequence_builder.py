@@ -21,7 +21,7 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
         length: int,
         turn_intensity: int,
         level: int,
-        prop_continuity: bool,
+        prop_continuity: str = "continuous",
     ):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         self.initialize_sequence(length)

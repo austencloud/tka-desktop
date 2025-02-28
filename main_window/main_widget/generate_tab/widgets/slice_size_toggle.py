@@ -14,12 +14,9 @@ class SliceSizeToggle(LabeledToggleBase):
         )
 
     def _handle_toggle_changed(self, state: bool):
-        permutation_type = self.generate_tab.settings.get_setting("permutation_type")
-
-        # Prevent quartered if permutation is mirrored
-        if permutation_type == "mirrored":
-            self.set_state(False)  # Force 'halved'
-            return  # Prevent any further updates
+        # Prevent changing the state if it's hidden (when mirrored is selected)
+        if not self.isVisible():
+            return
 
         rot_type = "quartered" if state else "halved"
         self.generate_tab.settings.set_setting("rotation_type", rot_type)

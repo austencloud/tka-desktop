@@ -152,9 +152,7 @@ class LessonSelector(QWidget):
 
     def start_lesson(self, lesson_number: int) -> None:
         lesson_widgets: list[LessonWidget] = [
-            self.learn_tab.lesson_1_widget,
-            self.learn_tab.lesson_2_widget,
-            self.learn_tab.lesson_3_widget,
+            self.learn_tab.lessons[lesson_type] for lesson_type in self.learn_tab.lessons
         ]
         lesson_widget = lesson_widgets[lesson_number - 1]
         lesson_widget_index = self.learn_tab.stack.indexOf(lesson_widget)

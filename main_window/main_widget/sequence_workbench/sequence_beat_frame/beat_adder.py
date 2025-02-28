@@ -60,7 +60,7 @@ class BeatAdder:
 
             new_beat.managers.updater.update_pictograph()
             if select_beat:
-                self.beat_frame.selection_overlay.select_beat(
+                self.beat_frame.selection_overlay.select_beat_view(
                     self.beats[next_beat_index], toggle_animation=False
                 )
             AppContext.json_manager().updater.update_current_sequence_file_with_beat(

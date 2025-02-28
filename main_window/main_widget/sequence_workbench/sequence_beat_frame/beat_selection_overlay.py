@@ -24,7 +24,7 @@ class BeatSelectionOverlay(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.hide()
 
-    def select_beat(self, beat_view: BeatView, toggle_animation=True):
+    def select_beat_view(self, beat_view: BeatView, toggle_animation=True):
         if not beat_view:
             return
         if self.selected_beat == beat_view:

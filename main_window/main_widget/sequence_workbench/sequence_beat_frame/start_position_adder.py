@@ -38,7 +38,7 @@ class StartPositionAdder:
                 start_pos_beat
             )
             self.beat_frame.start_pos_view.set_start_pos(start_pos_beat)
-            self.beat_frame.selection_overlay.select_beat(start_pos_view, False)
+            self.beat_frame.selection_overlay.select_beat_view(start_pos_view, False)
             self.construct_tab.transition_to_option_picker()
             self.construct_tab.option_picker.updater.update_options()
         finally:
