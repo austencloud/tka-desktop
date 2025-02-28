@@ -28,8 +28,10 @@ class OptionUpdater:
             return
         sections = self.scroll_area.sections
         frames = [section.pictograph_frame for section in sections.values()]
-        self.update_options()
+
         # Delay clearing effects slightly to avoid race conditions
+        self.fade_manager.widget_fader.fade_and_update(frames, self.update_options, 200)
+
 
     def update_options(self) -> None:
         sequence = self.json_loader.load_current_sequence()

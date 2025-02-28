@@ -43,10 +43,10 @@ class ParallelStackFader:
         def switch_and_resize():
             total_width = self.manager.main_widget.width()
             left_width = int(total_width * width_ratio[0])
-            right_stack.setCurrentIndex(right_new_index)
-            left_stack.setCurrentIndex(left_new_index)
             left_stack.setFixedWidth(left_width)
             right_stack.setFixedWidth(total_width - left_width)
+            right_stack.setCurrentIndex(right_new_index)
+            left_stack.setCurrentIndex(left_new_index)
 
         def finalize():
             if callback:
