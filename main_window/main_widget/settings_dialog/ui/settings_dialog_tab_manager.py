@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget
+
+from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import ImageExportTab
 from .beat_layout.beat_layout_tab import BeatLayoutTab
 from .prop_type.prop_type_tab import PropTypeTab
 from .user_profile.user_profile_tab import UserProfileTab
@@ -48,6 +50,8 @@ class SettingsDialogTabManager:
             selected_tab.controls.length_selector.num_beats_spinbox.setValue(
                 self.dialog.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
             )
+        elif isinstance(selected_tab, ImageExportTab):
+            selected_tab.update_image_export_buttons_from_settings()
         self.dialog.ui.content_area.setCurrentIndex(index)
 
     def get_tab_index(self, tab_name: str) -> int:

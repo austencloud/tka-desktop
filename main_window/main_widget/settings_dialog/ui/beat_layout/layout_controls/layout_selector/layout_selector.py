@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal
 
-from utilities.path_helpers import get_app_data_path, get_images_and_data_path
+from utilities.path_helpers import get_images_and_data_path
 
 from .layout_dropdown import LayoutDropdown
 from .select_layout_label import SelectLayoutLabel

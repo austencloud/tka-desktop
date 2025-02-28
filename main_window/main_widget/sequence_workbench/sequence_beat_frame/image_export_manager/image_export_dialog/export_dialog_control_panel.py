@@ -8,7 +8,9 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import pyqtSignal, Qt
 
-from main_window.settings_manager.user_profile_settings.notes_manager.notes_manager import NotesManager
+from main_window.settings_manager.user_profile_settings.notes_manager.notes_manager import (
+    NotesManager,
+)
 
 if TYPE_CHECKING:
     from .image_export_dialog import ImageExportDialog
@@ -43,7 +45,7 @@ class ExportDialogControlPanel(QWidget):
             "include_start_position": self._create_checkbox(
                 "Add Start Position", "include_start_position"
             ),
-            "add_info": self._create_checkbox("Add Info", "add_info"),
+            "add_user_info": self._create_checkbox("Add Info", "add_user_info"),
             "add_word": self._create_checkbox("Add Word to Image", "add_word"),
             "add_difficulty_level": self._create_checkbox(
                 "Include Difficulty Level", "add_difficulty_level"
@@ -59,13 +61,13 @@ class ExportDialogControlPanel(QWidget):
             ),
         }
         self.include_start_pos_check = self.checkboxes["include_start_position"]
-        self.add_info_check = self.checkboxes["add_info"]
+        self.add_info_check = self.checkboxes["add_user_info"]
         self.add_word_check = self.checkboxes["add_word"]
         self.include_difficulty_level_check = self.checkboxes["add_difficulty_level"]
         self.add_beat_numbers_check = self.checkboxes["add_beat_numbers"]
         self.add_reversal_symbols_check = self.checkboxes["add_reversal_symbols"]
         self.open_directory_check = self.checkboxes["open_directory_on_export"]
-        
+
         # Set up the layout
         self.layout: QVBoxLayout = QVBoxLayout(self)
         self._add_combo_boxes_to_layout()
@@ -113,7 +115,7 @@ class ExportDialogControlPanel(QWidget):
         )
         self.export_dialog.preview_panel.update_preview(
             self.checkboxes["include_start_position"].isChecked(),
-            self.checkboxes["add_info"].isChecked(),
+            self.checkboxes["add_user_info"].isChecked(),
             self.export_dialog.sequence,
             self.checkboxes["add_word"].isChecked(),
             self.checkboxes["add_difficulty_level"].isChecked(),
@@ -148,7 +150,9 @@ class ExportDialogControlPanel(QWidget):
             self.previous_note = selected_note
             self._update_preview()
 
-    def _open_edit_dialog(self, manager: "NotesManager", previous_value, combo_box: QComboBox):
+    def _open_edit_dialog(
+        self, manager: "NotesManager", previous_value, combo_box: QComboBox
+    ):
         """Open the edit dialog for users or notes."""
         manager.open_edit_notes_dialog()
         index = combo_box.findText(previous_value)
@@ -159,7 +163,7 @@ class ExportDialogControlPanel(QWidget):
         """Update the preview panel with the current settings."""
         self.export_dialog.preview_panel.update_preview(
             self.checkboxes["include_start_position"].isChecked(),
-            self.checkboxes["add_info"].isChecked(),
+            self.checkboxes["add_user_info"].isChecked(),
             self.export_dialog.sequence,
             self.checkboxes["add_word"].isChecked(),
             self.checkboxes["add_difficulty_level"].isChecked(),

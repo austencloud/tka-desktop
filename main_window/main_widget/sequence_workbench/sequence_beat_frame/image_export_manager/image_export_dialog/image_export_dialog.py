@@ -136,7 +136,7 @@ class ImageExportDialog(QDialog):
         current_date = "-".join([str(int(part)) for part in current_date.split("-")])
         return {
             "include_start_position": self.control_panel.include_start_pos_check.isChecked(),
-            "add_info": self.control_panel.add_info_check.isChecked(),
+            "add_user_info": self.control_panel.add_info_check.isChecked(),
             "add_word": self.control_panel.add_word_check.isChecked(),
             "user_name": self.control_panel.user_combo_box.currentText(),
             "export_date": current_date,

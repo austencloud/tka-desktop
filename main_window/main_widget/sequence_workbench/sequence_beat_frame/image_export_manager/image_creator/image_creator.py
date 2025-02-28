@@ -85,7 +85,7 @@ class ImageCreator:
         default_options = {
             "add_beat_numbers": True,
             "add_reversal_symbols": True,
-            "add_info": False,
+            "add_user_info": False,
             "add_word": False,
             "add_difficulty_level": False,
         }
@@ -113,7 +113,7 @@ class ImageCreator:
         num_filled_beats: int,
     ):
         """Draw additional information like user info, word, and difficulty level."""
-        if options["add_info"]:
+        if options["add_user_info"]:
             self.user_info_drawer.draw_user_info(image, options, num_filled_beats)
 
         if options["add_word"]:

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.pictograph import Pictograph
-from data.constants import ALPHA1, BLUE, END_POS, LETTER, MOTION_TYPE, RED, START_POS, PRO, ANTI, ALPHA3
+from data.constants import ALPHA1, BLUE, END_POS, LETTER, MOTION_TYPE, RED, START_POS, PRO, ALPHA3
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.ui.visibility_tab.visibility_tab import (

@@ -1,72 +1,122 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QVBoxLayout, QCheckBox, QWidget, QComboBox, QLabel
-from PyQt6.QtCore import pyqtSignal, Qt
+
+from PyQt6.QtWidgets import (
+    QHBoxLayout,
+    QVBoxLayout,
+    QWidget,
+    QGridLayout,
+    QLabel,
+    QComboBox,
+)
+from PyQt6.QtCore import pyqtSignal
+
+from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab_button import (
+    ImageExportTabButton,
+)
 
 if TYPE_CHECKING:
-    from .image_export_tab import ImageExportTab
+    from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (
+        ImageExportTab,
+    )
+    from main_window.settings_manager.settings_manager import SettingsManager
 
 
 class ImageExportControlPanel(QWidget):
+    """
+    A control panel for configuring image export settings.
+    Lays out the UI elements for user settings, notes, and export options.
+    """
+
     settingChanged = pyqtSignal()
 
-    def __init__(self, tab: "ImageExportTab"):
-        super().__init__(tab)
-        self.tab = tab
-        self.settings_manager = tab.settings_manager
-        self._setup_ui()
-        self._connect_signals()
+    def __init__(
+        self, settings_manager: "SettingsManager", image_export_tab: "ImageExportTab"
+    ):
+        """
+        Initializes the control panel with the given settings manager.
 
-    def _setup_ui(self):
-        layout = QVBoxLayout(self)
+        Args:
+            settings_manager: The settings manager instance.
+            parent: The parent widget.
+        """
+        super().__init__(image_export_tab)
+        self.image_export_tab = image_export_tab
+        self.settings_manager = settings_manager
         self.user_combo_box = QComboBox()
         self.notes_combo_box = QComboBox()
-        self._populate_combos()
-
-        user_label = QLabel("User:")
-        notes_label = QLabel("Notes:")
-
-        self.checkboxes = {
-            "include_start_position": QCheckBox("Include Start Position"),
-            "add_info": QCheckBox("Add User Info"),
-            "add_word": QCheckBox("Add Word"),
-            "add_difficulty_level": QCheckBox("Add Difficulty Level"),
-            "add_beat_numbers": QCheckBox("Add Beat Numbers"),
-            "add_reversal_symbols": QCheckBox("Add Reversal Symbols"),
+        self.buttons: dict[str, ImageExportTabButton] = {}
+        self.button_settings_keys = {
+            "Start Position": "include_start_position",
+            "User Info": "add_user_info",
+            "Word": "add_word",
+            "Difficulty Level": "add_difficulty_level",
+            "Beat Numbers": "add_beat_numbers",
+            "Reversal Symbols": "add_reversal_symbols",
         }
+        self._setup_ui()
 
-        for key in self.checkboxes:
-            self.checkboxes[key].setChecked(
-                self.settings_manager.image_export.get_image_export_setting(key)
+        self._load_user_profiles()  # Load users from settings on init
+        self._load_saved_notes()  # Load custom notes from settings on init
+
+    def _load_user_profiles(self):
+        """Loads user profiles into the user combo box on startup."""
+        self.user_combo_box.clear()
+        user_profiles = self.settings_manager.users.get_user_profiles()
+        if user_profiles:
+            self.user_combo_box.addItems(user_profiles.keys())
+
+        current_user = self.settings_manager.users.get_current_user()
+        if current_user and current_user in user_profiles:
+            self.user_combo_box.setCurrentText(current_user)
+
+    def _load_saved_notes(self):
+        """Loads custom notes into the notes combo box on startup."""
+        self.notes_combo_box.clear()
+        custom_notes = self.settings_manager.users.get_saved_notes()
+        if custom_notes:
+            self.notes_combo_box.addItems(custom_notes)
+
+        current_note = self.settings_manager.users.get_current_note()
+        if current_note and current_note in custom_notes:
+            self.notes_combo_box.setCurrentText(current_note)
+
+    def _setup_ui(self):
+        """Sets up the user interface layout."""
+        main_layout = QVBoxLayout(self)
+
+        top_layout = self._create_user_notes_layout()
+        grid_layout = self._create_buttons_grid_layout()
+
+        main_layout.addLayout(top_layout)
+        main_layout.addLayout(grid_layout)
+        self.setLayout(main_layout)
+
+    def _create_user_notes_layout(self) -> QHBoxLayout:
+        """Creates the horizontal layout for user and notes combo boxes."""
+        top_layout = QHBoxLayout()
+
+        top_layout.addWidget(QLabel("User:"))
+        top_layout.addWidget(self.user_combo_box)
+        top_layout.addWidget(QLabel("Notes:"))
+        top_layout.addWidget(self.notes_combo_box)
+
+        return top_layout
+
+    def _create_buttons_grid_layout(self) -> QGridLayout:
+        """Creates the grid layout for the export option buttons."""
+        grid_layout = QGridLayout()
+
+        for i, (label, setting_key) in enumerate(self.button_settings_keys.items()):
+            button = ImageExportTabButton(
+                label, setting_key, self.settings_manager, self.image_export_tab
             )
+            button.clicked.connect(self.emit_setting_changed)
+            self.buttons[label] = button
+            row, col = divmod(i, 3)
+            grid_layout.addWidget(button, row, col)
 
-        layout.addWidget(user_label)
-        layout.addWidget(self.user_combo_box)
-        layout.addWidget(notes_label)
-        layout.addWidget(self.notes_combo_box)
+        return grid_layout
 
-        for cb in self.checkboxes.values():
-            layout.addWidget(cb)
-
-    def _populate_combos(self):
-        self.settings_manager.users.user_manager.populate_user_profiles_combo_box(
-            self.user_combo_box
-        )
-        self.settings_manager.users.notes_manager.populate_notes(self.notes_combo_box)
-
-    def _connect_signals(self):
-        for key, cb in self.checkboxes.items():
-            cb.toggled.connect(lambda checked, k=key: self._update_setting(k, checked))
-        self.user_combo_box.currentTextChanged.connect(self._update_user)
-        self.notes_combo_box.currentTextChanged.connect(self._update_note)
-
-    def _update_setting(self, key: str, value: bool):
-        self.settings_manager.image_export.set_image_export_setting(key, value)
-        self.settingChanged.emit()
-
-    def _update_user(self, user: str):
-        self.settings_manager.users.user_manager.set_current_user(user)
-        self.settingChanged.emit()
-
-    def _update_note(self, note: str):
-        self.settings_manager.users.notes_manager.set_current_note(note)
+    def emit_setting_changed(self):
+        """Emits a signal when a setting is changed."""
         self.settingChanged.emit()

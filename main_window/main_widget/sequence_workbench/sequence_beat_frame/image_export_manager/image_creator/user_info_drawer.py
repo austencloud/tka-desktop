@@ -42,7 +42,7 @@ class UserInfoDrawer:
         export_date = self._format_export_date(
             options.get("export_date", datetime.now().strftime("%m-%d-%Y"))
         )
-        add_info = options.get("add_info", False)
+        add_info = options.get("add_user_info", False)
         notes = options.get("notes", "Created using The Kinetic Alphabet")
 
         # Calculate text widths

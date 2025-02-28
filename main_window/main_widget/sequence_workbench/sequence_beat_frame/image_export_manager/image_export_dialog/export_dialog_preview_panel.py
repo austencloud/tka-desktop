@@ -40,7 +40,7 @@ class ExportDialogPreviewPanel(QFrame):
         current_date = "-".join([str(int(part)) for part in current_date.split("-")])
         options = {
             "include_start_pos": include_start_pos,
-            "add_info": add_info,
+            "add_user_info": add_info,
             "user_name": self.export_dialog.control_panel.user_combo_box.currentText(),
             "export_date": current_date,
             "add_word": add_word,

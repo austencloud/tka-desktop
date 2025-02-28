@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 class ImageExportSettings:
     DEFAULT_IMAGE_EXPORT_SETTINGS = {
         "include_start_position": False,
-        "add_info": True,
+        "add_user_info": True,
         "open_directory_on_export": True,
         "add_word": True,
         "add_difficulty_level": True,
@@ -23,7 +23,7 @@ class ImageExportSettings:
     def get_image_export_setting(self, key: str):
         """Get a specific image export setting"""
         value = self.settings.value(f"image_export/{key}")
-        
+
         # Convert string values from QSettings to proper types
         if value == "true":
             return True

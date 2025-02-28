@@ -51,7 +51,7 @@ class SequenceCardImageExporter:
                 sequence = metadata["sequence"]
                 options = {
                     "add_word": True,
-                    "add_info": True,
+                    "add_user_info": True,
                     "add_difficulty_level": True,
                 }
                 self.temp_beat_frame.populate_beat_frame_from_json(sequence)

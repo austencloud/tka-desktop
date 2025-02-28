@@ -47,7 +47,9 @@ class SettingsDialogUI(QWidget):
         self.beat_layout_tab: BeatLayoutTab = self.tab_selection_manager.tabs[
             "Beat Layout"
         ]
-
+        self.image_export_tab: ImageExportTab = self.tab_selection_manager.tabs[
+            "Image Export"
+        ]
         for name, widget in self.tab_selection_manager.tabs.items():
             self.tab_selection_manager.add_tab(name, widget)
 
