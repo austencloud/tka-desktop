@@ -50,6 +50,8 @@ class MainWidgetUI:
         mw = self.mw
         mw.fade_manager = FadeManager(mw)
 
+        mw.sequence_workbench = SequenceWorkbench(mw)
+        mw.settings_dialog = SettingsDialog(mw)
         settings_manager = AppContext.settings_manager()
         json_manager = AppContext.json_manager()
 
@@ -60,7 +62,6 @@ class MainWidgetUI:
         mw.pictograph_collector = PictographCollector(mw)
 
         mw.menu_bar = MenuBarWidget(mw)
-        mw.sequence_workbench = SequenceWorkbench(mw)
         mw.codex = Codex(mw)
 
         AppContext.set_sequence_beat_frame(mw.sequence_workbench.sequence_beat_frame)
@@ -82,7 +83,6 @@ class MainWidgetUI:
         mw.learn_tab = LearnTab(mw)
         # mw.write_tab = WriteTab(mw)
 
-        mw.settings_dialog = SettingsDialog(mw)
         mw.background_widget = MainBackgroundWidget(mw)
         mw.background_widget.lower()
         mw.state_handler.load_state(mw.sequence_workbench.sequence_beat_frame)

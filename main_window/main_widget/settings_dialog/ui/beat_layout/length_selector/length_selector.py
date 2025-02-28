@@ -23,11 +23,13 @@ class LengthSelector(QFrame):
         self.minus_button = LayoutLengthButton("-", self, self._decrease_length)
         self.plus_button = LayoutLengthButton("+", self, self._increase_length)
         self.num_beats_spinbox = NumBeatsSpinbox(self)
-
         self.num_beats_spinbox.valueChanged.connect(self.value_changed.emit)
+        self._setup_layout()
+
+    def showEvent(self, event):
         beat_count = AppContext.settings_manager().sequence_layout.get_num_beats()
         self.num_beats_spinbox.setValue(int(beat_count))
-        self._setup_layout()
+        super().showEvent(event)
 
     def _setup_layout(self):
         spinbox_layout = QHBoxLayout(self)

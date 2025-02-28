@@ -1,7 +1,8 @@
 {
   "H": {
     "(fl, 1)": {
-      "float_from_layer1": {}
+      "float_from_layer1": {},
+      "anti_from_layer2": [85.0, -110.0]
     }
   }
 }

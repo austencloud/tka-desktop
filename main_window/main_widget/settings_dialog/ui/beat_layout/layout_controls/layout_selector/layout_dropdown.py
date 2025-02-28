@@ -13,7 +13,6 @@ class LayoutDropdown(QComboBox):
         super().__init__(layout_selector)
         self.layout_selector = layout_selector
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._populate_dropdown()
 
 
     def _populate_dropdown(self):

@@ -1,3 +1,4 @@
+from datetime import datetime
 from PyQt6.QtGui import QImage
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
@@ -19,9 +20,10 @@ if TYPE_CHECKING:
     from ..image_export_manager import ImageExportManager
 
 
-class ImageCreator:
-    """Class responsible for creating sequence images."""
+# image_export_manager/image_creator.py
 
+
+class ImageCreator:
     BASE_MARGIN = 50
 
     def __init__(self, export_manager: "ImageExportManager"):
@@ -35,30 +37,40 @@ class ImageCreator:
         self.reversal_processor = BeatReversalProcessor()
 
     def _setup_drawers(self):
-        """Set up drawer instances."""
         self.beat_drawer = BeatDrawer(self)
         self.word_drawer = WordDrawer(self)
         self.user_info_drawer = UserInfoDrawer(self)
-        self.difficulty_level_drawer = DifficultyLevelDrawer(self)
+        self.difficulty_level_drawer = DifficultyLevelDrawer()
 
     def create_sequence_image(
-        self, sequence: list[dict],  options: dict = None
+        self,
+        sequence: list[dict],
+        options: dict = None,
+        dictionary: bool = False,
+        fullscreen_preview: bool = False,
     ) -> QImage:
-        """Create an image of the sequence."""
+        if options is None:
+            options = (
+                self.export_manager.settings_manager.image_export.get_all_image_export_options()
+            )
 
-        options = self._parse_options(options)
         filled_beats = self._process_sequence(sequence)
         num_filled_beats = len(filled_beats)
-        column_count, row_count = self.layout_manager.calculate_layout(
-            num_filled_beats, options["include_start_position"]
-        )
 
-        options["additional_height_top"], options["additional_height_bottom"] = (
-            self._determine_additional_heights(options, num_filled_beats)
-        )
+        if not fullscreen_preview:
+            options.update(self._update_options(options, num_filled_beats))
 
         if options["add_reversal_symbols"]:
             self.reversal_processor.process_reversals(sequence, filled_beats)
+        options["additional_height_top"], options["additional_height_bottom"] = (
+            self._determine_additional_heights(options, num_filled_beats)
+        )
+        if dictionary or fullscreen_preview:
+            options = self._parse_options_for_dictionary_or_fullscreen_preview(options)
+        column_count, row_count = self.layout_manager.calculate_layout(
+            num_filled_beats,
+            options["include_start_position"],
+        )
 
         image = self._create_image(
             column_count,
@@ -75,32 +87,43 @@ class ImageCreator:
             options["additional_height_top"],
             options["add_beat_numbers"],
         )
-
-        self._draw_additional_info(image, filled_beats, options, num_filled_beats)
+        if not fullscreen_preview and not dictionary:
+            self._draw_additional_info(image, filled_beats, options, num_filled_beats)
 
         return image
 
-    def _parse_options(self, options: dict = None) -> dict:
-        """Parse options and set default values."""
-        default_options = {
+    def _update_options(self, options: dict, num_filled_beats: int) -> dict:
+        options["additional_height_top"], options["additional_height_bottom"] = (
+            self._determine_additional_heights(options, num_filled_beats)
+        )
+        options["user_name"] = (
+            self.export_manager.settings_manager.users.get_current_user()
+        )
+        options["export_date"] = datetime.now().strftime("%m-%d-%Y")
+        return options
+
+    def _parse_options_for_dictionary_or_fullscreen_preview(
+        self, options: dict
+    ) -> dict:
+        dictionary_options = {
             "add_beat_numbers": True,
             "add_reversal_symbols": True,
             "add_user_info": False,
             "add_word": False,
             "add_difficulty_level": False,
+            "include_start_position": False,
+            "additional_height_top": 0,
+            "additional_height_bottom": 0,
         }
-        if options:
-            default_options.update(options)
-        return default_options
+        options.update(dictionary_options)
+        return options
 
     def _process_sequence(self, sequence: list[dict]) -> list[BeatView]:
-        """Process the sequence into beat views."""
         return self.beat_factory.process_sequence_to_beats(sequence)
 
     def _determine_additional_heights(
         self, options: dict, num_filled_beats: int
     ) -> tuple:
-        """Determine additional heights needed for the image."""
         return HeightDeterminer.determine_additional_heights(
             options, num_filled_beats, self.beat_scale
         )
@@ -112,7 +135,6 @@ class ImageCreator:
         options: dict,
         num_filled_beats: int,
     ):
-        """Draw additional information like user info, word, and difficulty level."""
         if options["add_user_info"]:
             self.user_info_drawer.draw_user_info(image, options, num_filled_beats)
 
@@ -134,7 +156,6 @@ class ImageCreator:
             beat_view.beat.beat_number_item.setVisible(options["add_beat_numbers"])
 
     def _create_image(self, column_count, row_count, additional_height=0) -> QImage:
-        """Create a new QImage with the given dimensions."""
         image_width = int((column_count * self.beat_size * self.beat_scale))
         image_height = int(
             (row_count * self.beat_size * self.beat_scale) + additional_height

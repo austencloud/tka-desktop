@@ -4,9 +4,9 @@ from PyQt6.QtGui import QFont
 class FontMarginHelper:
     @staticmethod
     def adjust_font_and_margin(
-        base_font: QFont, num_filled_beats: int, base_margin: int, beat_scale
+        base_font: QFont, num_filled_beats: int, base_margin: int, beat_scale: float
     ):
-        if num_filled_beats == 1:
+        if num_filled_beats <= 1:
             font_size = base_font.pointSize() // 2.3
             margin = base_margin // 3
         elif num_filled_beats == 2:

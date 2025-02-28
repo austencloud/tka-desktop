@@ -13,7 +13,7 @@ class Type3TurnsTupleGenerator(BaseTurnsTupleGenerator):
         super().set_pictograph(pictograph)
         shift = self.pictograph.managers.get.shift()
         dash = self.pictograph.managers.get.dash()
-        if shift.state.motion_type in [PRO, ANTI]:
+        if shift.state.motion_type in [PRO, ANTI, FLOAT]:
             direction = (
                 "s" if dash.state.prop_rot_dir == shift.state.prop_rot_dir else "o"
             )

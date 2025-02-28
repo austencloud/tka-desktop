@@ -17,9 +17,6 @@ class ImageExportPreviewPanel(QFrame):
     def __init__(self, tab: "ImageExportTab"):
         super().__init__(tab)
         self.tab = tab
-        self.image_export_manager: "ImageExportManager" = (
-            tab.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager
-        )
         self._setup_ui()
 
     def _setup_ui(self):
@@ -35,6 +32,9 @@ class ImageExportPreviewPanel(QFrame):
     ) -> QPixmap:
         """Generate and properly scale the preview image while maintaining aspect ratio."""
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+        self.image_export_manager: "ImageExportManager" = (
+            self.tab.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager
+        )
 
         # Generate the image directly
         image = self.image_export_manager.image_creator.create_sequence_image(

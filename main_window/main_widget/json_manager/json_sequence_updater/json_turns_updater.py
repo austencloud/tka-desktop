@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Union
 
-from data.constants import DASH, END_ORI, NO_ROT, STATIC, TURNS, MOTION_TYPE, PROP_ROT_DIR
+from data.constants import CLOCKWISE, DASH, END_ORI, NO_ROT, STATIC, TURNS, MOTION_TYPE, PROP_ROT_DIR
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )
@@ -28,28 +28,37 @@ class JsonTurnsUpdater:
         beat_frame: "SequenceBeatFrame",
     ) -> None:
         sequence = self.json_manager.loader_saver.load_current_sequence()
-        sequence[index][f"{color}_attributes"][TURNS] = turns
+        pictograph_data = sequence[index]
+        motion_data = pictograph_data[f"{color}_attributes"]
+        motion_data[TURNS] = turns
+        
+        if motion_data[PROP_ROT_DIR] == NO_ROT and motion_data[MOTION_TYPE] in [DASH, STATIC]:
+            motion_data[PROP_ROT_DIR] = CLOCKWISE
+            
         end_ori = self.json_manager.ori_calculator.calculate_end_ori(
-            sequence[index], color
+            pictograph_data, color
         )
-        sequence[index][f"{color}_attributes"][END_ORI] = end_ori
-        if sequence[index][f"{color}_attributes"][TURNS] != "fl":
-            if sequence[index][f"{color}_attributes"][TURNS] > 0:
+        motion_data[END_ORI] = end_ori
+        if motion_data[TURNS] != "fl":
+            if motion_data[TURNS] > 0:
                 pictograph = beat_frame.beat_views[index - 2].beat
                 if pictograph:
                     motion = pictograph.managers.get.motion_by_color(color)
                     prop_rot_dir = motion.state.prop_rot_dir
-                    sequence[index][f"{color}_attributes"][PROP_ROT_DIR] = prop_rot_dir
+                    motion_data[PROP_ROT_DIR] = prop_rot_dir
 
-        elif sequence[index][f"{color}_attributes"][TURNS] == "fl":
+        elif motion_data[TURNS] == "fl":
             pictograph = beat_frame.beat_views[index - 2].beat
             if pictograph:
                 motion = pictograph.managers.get.motion_by_color(color)
 
-        if sequence[index][f"{color}_attributes"][MOTION_TYPE] in [DASH, STATIC]:
-            if sequence[index][f"{color}_attributes"][TURNS] == 0:
+        if motion_data[MOTION_TYPE] in [DASH, STATIC]:
+            if motion_data[TURNS] == 0:
                 prop_rot_dir = NO_ROT
-                sequence[index][f"{color}_attributes"][PROP_ROT_DIR] = prop_rot_dir
+                motion_data[PROP_ROT_DIR] = prop_rot_dir
+
+        self.json_manager.loader_saver.save_current_sequence(sequence)
+        SequencePropertiesManager().update_sequence_properties()
 
         self.json_manager.loader_saver.save_current_sequence(sequence)
         SequencePropertiesManager().update_sequence_properties()

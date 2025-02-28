@@ -1,22 +1,25 @@
 import os
 import re
-from typing import List, Dict, Union
+from typing import TYPE_CHECKING, List, Dict, Union
+
 
 from .structural_variation_checker import StructuralVariationChecker
 from .thumbnail_generator import ThumbnailGenerator
 from utilities.path_helpers import get_images_and_data_path
 
-
+if TYPE_CHECKING:
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.image_creator import ImageCreator
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
 class DictionaryService:
     def __init__(
         self,
-        create_sequence_image_callback: callable = None,
-        get_current_word_callback: callable = None,
+        image_creator: "ImageCreator",
+        beat_frame : "SequenceBeatFrame",
     ):
         self.dictionary_dir = get_images_and_data_path("dictionary")
         self.structural_checker = StructuralVariationChecker()
         self.thumbnail_generator = ThumbnailGenerator(
-            create_sequence_image_callback, get_current_word_callback
+            image_creator, beat_frame
         )
 
     def add_variation(

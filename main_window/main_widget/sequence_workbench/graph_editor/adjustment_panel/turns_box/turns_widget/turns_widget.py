@@ -70,3 +70,10 @@ class TurnsWidget(QWidget):
         self.turns_text.resizeEvent(event)
         self.motion_type_label.resizeEvent(event)
         self.direct_set_dialog.resizeEvent(event)
+
+    def showEvent(self, event):
+        self.adjustment_manager.turns_adjusted.connect(
+            lambda: self.turns_box.adjustment_panel.graph_editor.main_widget.settings_dialog.ui.image_export_tab.update_preview()
+        )
+
+        super().showEvent(event)

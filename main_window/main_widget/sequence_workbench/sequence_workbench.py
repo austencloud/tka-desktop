@@ -8,7 +8,9 @@ from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.add_to
 from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.dictionary_service import (
     DictionaryService,
 )
-from main_window.main_widget.sequence_workbench.beat_deleter.beat_deleter import BeatDeleter
+from main_window.main_widget.sequence_workbench.beat_deleter.beat_deleter import (
+    BeatDeleter,
+)
 from main_window.main_widget.sequence_workbench.labels.sequence_workbench_indicator_label import (
     SequenceWorkbenchIndicatorLabel,
 )
@@ -42,17 +44,15 @@ class SequenceWorkbench(QWidget):
         self.main_widget.splash.updater.update_progress("SequenceWorkbench")
         self.setObjectName("SequenceWorkbench")
         # Managers
-        self.dictionary_service = DictionaryService(
-            create_sequence_image_callback=lambda sequence, include_start_pos: self.sequence_beat_frame.image_export_manager.image_creator.create_sequence_image(
-                sequence, include_start_pos
-            ),
-            get_current_word_callback=lambda: self.sequence_beat_frame.get.current_word(),
-        )
-
-        # Create the “UI” class that uses it:
-        self.add_to_dictionary_ui = AddToDictionaryUI(self, self.dictionary_service)
 
         self.autocompleter = SequenceAutoCompleter(self)
+        self.scroll_area = SequenceWorkbenchScrollArea(self)
+        self.sequence_beat_frame = SequenceBeatFrame(self)
+        self.dictionary_service = DictionaryService(
+            self.sequence_beat_frame.image_export_manager.image_creator,
+            self.sequence_beat_frame,
+        )
+        self.add_to_dictionary_ui = AddToDictionaryUI(self, self.dictionary_service)
 
         # Modification Managers
         self.mirror_manager = SequenceReflector(self)
@@ -65,8 +65,6 @@ class SequenceWorkbench(QWidget):
         self.difficulty_label = DifficultyLabel(self)
 
         # Sections
-        self.scroll_area = SequenceWorkbenchScrollArea(self)
-        self.sequence_beat_frame = SequenceBeatFrame(self)
         self.button_panel = SequenceWorkbenchButtonPanel(self)
         self.graph_editor = GraphEditor(self)
 
@@ -77,7 +75,7 @@ class SequenceWorkbench(QWidget):
         self.layout_manager = SequenceWorkbenchLayoutManager(self)
         self.beat_deleter = BeatDeleter(self)
 
-
+        # Create the “UI” class that uses it:
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

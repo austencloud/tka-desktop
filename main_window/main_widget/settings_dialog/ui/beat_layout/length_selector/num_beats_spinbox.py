@@ -12,7 +12,6 @@ class NumBeatsSpinbox(QSpinBox):
         self.length_selector = length_selector
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setRange(2, 64)
-        self.setValue(self.length_selector.layout_tab.num_beats)
         self.valueChanged.connect(
             lambda: self.length_selector.value_changed.emit(self.value())
         )

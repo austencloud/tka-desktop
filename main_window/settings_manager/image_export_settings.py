@@ -1,8 +1,8 @@
-# settings_manager/image_export_settings.py
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from settings_manager.settings_manager import SettingsManager
+
 
 
 class ImageExportSettings:
@@ -20,25 +20,19 @@ class ImageExportSettings:
         self.settings = self.settings_manager.settings  # QSettings instance
 
     def get_image_export_setting(self, key: str):
-        """Get a specific image export setting"""
+        """Get a specific image export setting."""
         value = self.settings.value(f"image_export/{key}")
-
-        # Convert string values from QSettings to proper types
-        if value == "true":
-            return True
-        elif value == "false":
-            return False
-        elif value is None:
+        if value is None:
             return self.DEFAULT_IMAGE_EXPORT_SETTINGS.get(key, False)
-        return value
+        return value.lower() == "true"
 
     def set_image_export_setting(self, key: str, value: bool):
-        """Set a specific image export setting"""
-        self.settings.setValue(f"image_export/{key}", value)
-        self.settings.sync()  # Ensure changes are saved immediately
+        """Set a specific image export setting."""
+        self.settings.setValue(f"image_export/{key}", str(value).lower())
+        self.settings.sync()
 
     def get_all_image_export_options(self) -> dict:
-        """Get all image export settings"""
+        """Get all image export settings as a dictionary."""
         return {
             key: self.get_image_export_setting(key)
             for key in self.DEFAULT_IMAGE_EXPORT_SETTINGS.keys()

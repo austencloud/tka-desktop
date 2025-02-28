@@ -11,5 +11,4 @@ if TYPE_CHECKING:
 class StartPositionBeat(Beat):
     def __init__(self, beat_frame: "SequenceBeatFrame") -> None:
         super().__init__(beat_frame)
-        self.main_widget = beat_frame.main_widget
         self.beat_frame = beat_frame

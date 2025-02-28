@@ -1,12 +1,20 @@
 from typing import TYPE_CHECKING
 
 from base_widgets.pictograph.pictograph import Pictograph
-from data.constants import ALPHA1, BLUE, END_POS, LETTER, MOTION_TYPE, RED, START_POS, PRO, ALPHA3
+from data.constants import (
+    ALPHA1,
+    BLUE,
+    END_POS,
+    LETTER,
+    MOTION_TYPE,
+    RED,
+    START_POS,
+    PRO,
+    ALPHA3,
+)
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.ui.visibility_tab.visibility_tab import (
-        VisibilityTab,
-    )
+    from ..visibility_tab import VisibilityTab
     from .......base_widgets.pictograph.elements.views.visibility_pictograph_view import (
         VisibilityPictographView,
     )
@@ -39,14 +47,6 @@ class VisibilityPictograph(Pictograph):
         for glyph in self.glyphs:
             glyph.setVisible(True)
         self.elements.grid.toggle_non_radial_points(True)
-
-        for glyph in self.glyphs:
-            self.update_opacity(
-                glyph.name, self.settings.get_glyph_visibility(glyph.name)
-            )
-        self.update_opacity(
-            "non_radial_points", self.settings.get_non_radial_visibility()
-        )
 
     def update_opacity(self, glyph_name: str, state: bool):
         """Animate the opacity of the corresponding glyph."""

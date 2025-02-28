@@ -176,7 +176,8 @@
       "red": [95, -95]
     },
     "(1, fl)": {
-      "float_from_layer1": [110, -90]
+      "float_from_layer1": [110, -90],
+      "anti_from_layer2": {}
     }
   }
 }

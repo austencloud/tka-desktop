@@ -27,7 +27,6 @@ class Beat(Pictograph):
         self, beat_frame: "SequenceBeatFrame", duration: Union[int, float] = 1
     ):
         super().__init__()
-        self.main_widget = beat_frame.main_widget
         self.beat_number_item = BeatNumberItem(self)
         self.grabber = BeatGrabber(self)
         self.duration = duration

@@ -53,6 +53,6 @@ class FullScreenViewer:
         current_sequence = self.json_loader.load_current_sequence()
         temp_path = get_images_and_data_path("temp")
         image_path = self.thumbnail_generator.generate_and_save_thumbnail(
-            current_sequence, 0, temp_path
+            current_sequence, 0, temp_path, fullscreen_preview = True
         )
         return image_path

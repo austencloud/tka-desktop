@@ -18,3 +18,4 @@ class GE_Pictograph(Beat):
             pictograph_container.graph_editor.sequence_workbench.sequence_beat_frame
         )
         self.is_blank = True
+        self.main_widget = pictograph_container.graph_editor.main_widget

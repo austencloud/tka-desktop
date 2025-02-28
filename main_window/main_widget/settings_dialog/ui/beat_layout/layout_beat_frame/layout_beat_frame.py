@@ -29,12 +29,10 @@ class LayoutBeatFrame(QFrame):
     start_pos_view: StartPositionBeatView = None
     current_layout: tuple[int, int] = (4, 4)
 
-    def __init__(self, tab: "BeatLayoutTab"):
-        super().__init__(tab)
-        self.tab = tab
-        self.sequence_workbench = tab.sequence_workbench
-        self.main_widget = self.sequence_workbench.main_widget
-        self.widget_fader = self.main_widget.fade_manager.widget_fader
+    def __init__(self, beat_layout_tab: "BeatLayoutTab"):
+        super().__init__(beat_layout_tab)
+        self.beat_layout_tab = beat_layout_tab
+
         self._setup_layout()
         self._init_beats()
         # self.update_preview()
@@ -58,7 +56,7 @@ class LayoutBeatFrame(QFrame):
     def update_preview(self):
         """Update the preview based on the current layout."""
         self.rows, self.cols = self.current_layout  # Fixed order
-        num_beats = self.tab.controls.length_selector.num_beats_spinbox.value()
+        num_beats = self.beat_layout_tab.controls.length_selector.num_beats_spinbox.value()
         self._perform_relayout(num_beats)
 
     def _perform_relayout(self, num_beats: int):

@@ -1,27 +1,45 @@
 import os
 import json
+from typing import TYPE_CHECKING
 from PyQt6.QtGui import QImage
 from PIL import Image, PngImagePlugin, ImageEnhance
 import numpy as np
 from datetime import datetime
 
+from pandas import options
+
+if TYPE_CHECKING:
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.image_creator import (
+        ImageCreator,
+    )
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
 
 
 class ThumbnailGenerator:
     def __init__(
         self,
-        create_sequence_image_callback: callable,
-        get_current_word_callback: callable,
+        image_creator: "ImageCreator",
+        beat_frame: "SequenceBeatFrame",
     ):
-        self.create_sequence_image_callback = create_sequence_image_callback
-        self.get_current_word_callback = get_current_word_callback
+        self.image_creator = image_creator
+        self.beat_frame = beat_frame
 
     def generate_and_save_thumbnail(
-        self, sequence, structural_variation_number, directory
+        self,
+        sequence,
+        structural_variation_number,
+        directory,
+        dictionary=False,
+        fullscreen_preview=False,
     ):
         """Generate and save thumbnail for a sequence variation."""
-        beat_frame_image = self.create_sequence_image_callback(
-            sequence, include_start_pos=False
+        beat_frame_image = self.image_creator.create_sequence_image(
+            sequence,
+            options=self.image_creator.export_manager.settings_manager.image_export.get_all_image_export_options(),
+            dictionary=dictionary,
+            fullscreen_preview=fullscreen_preview,
         )
         pil_image = self.qimage_to_pil(beat_frame_image)
         pil_image = self._resize_image(pil_image, 0.5)
@@ -61,7 +79,7 @@ class ThumbnailGenerator:
         return info
 
     def _create_image_filename(self, structural_variation_number):
-        base_word = self.get_current_word_callback()
+        base_word = self.beat_frame.get.current_word()
         return f"{base_word}_ver{structural_variation_number}.png"
 
     def _save_image(

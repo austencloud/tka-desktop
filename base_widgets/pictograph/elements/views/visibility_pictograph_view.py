@@ -33,3 +33,13 @@ class VisibilityPictographView(BasePictographView):
         size = int(available_height * 0.65)
         self.setFixedSize(size, size)
         super().resizeEvent(event)
+
+    def showEvent(self, event):
+        for glyph in self.pictograph.glyphs:
+            self.pictograph.update_opacity(
+                glyph.name, self.pictograph.settings.get_glyph_visibility(glyph.name)
+            )
+        self.pictograph.update_opacity(
+            "non_radial_points", self.pictograph.settings.get_non_radial_visibility()
+        )
+        return super().showEvent(event)

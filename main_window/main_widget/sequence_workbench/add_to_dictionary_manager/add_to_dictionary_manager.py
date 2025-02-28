@@ -67,7 +67,7 @@ class AddToDictionaryManager:
         base_path = os.path.join(self.dictionary_dir, base_word)
 
         self.thumbnail_generator.generate_and_save_thumbnail(
-            sequence, variation_number, base_path
+            sequence, variation_number, base_path, dictionary= True
         )
 
         self.display_message(

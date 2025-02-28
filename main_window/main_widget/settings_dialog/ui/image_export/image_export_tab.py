@@ -44,6 +44,12 @@ class ImageExportTab(QWidget):
         if not self.isVisible():
             return
 
+        # check the length of the current sequence. if It's less than 3, we want to show a placeholder in place of the preview.
+        sequence_length = len(self._get_current_sequence())
+        if sequence_length < 2:
+            self.preview_panel.preview_label.clear()
+            return
+
         options = self.settings_manager.image_export.get_all_image_export_options()
         options["user_name"] = self.control_panel.user_combo_box.currentText()
         options["notes"] = self.control_panel.notes_combo_box.currentText()

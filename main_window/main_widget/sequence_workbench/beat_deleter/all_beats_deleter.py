@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_deleter.beat_deleter import (
-        BeatDeleter,
-    )
+    from .beat_deleter import BeatDeleter
+
 
 
 class AllBeatsDeleter:
@@ -57,3 +56,4 @@ class AllBeatsDeleter:
             self._fade_and_reset(widgets, show_indicator)
         else:
             self._fade_widgets_and_stack(widgets, show_indicator)
+        self.main_widget.settings_dialog.ui.image_export_tab.update_preview()

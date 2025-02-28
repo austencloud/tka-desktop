@@ -215,19 +215,16 @@ class SequenceWorkbenchButtonPanel(QFrame):
         # Retrieve the export settings
         settings_manager = self.sequence_workbench.main_widget.settings_manager
         options = settings_manager.image_export.get_all_image_export_options()
-        
+
         options["user_name"] = settings_manager.users.get_current_user()
         options["notes"] = settings_manager.users.get_current_note()
         options["export_date"] = datetime.now().strftime("%m-%d-%Y")
-        
+
         # Generate the image
         image_creator = self.export_manager.image_creator
         sequence_image = image_creator.create_sequence_image(
-            sequence,
-            options,
+            sequence, options, dictionary=False, fullscreen_preview=False
         )
-
-
 
         # Save the image
         self.export_manager.image_saver.save_image(sequence_image)
@@ -236,4 +233,3 @@ class SequenceWorkbenchButtonPanel(QFrame):
         self.sequence_workbench.indicator_label.show_message(
             "Image saved successfully!"
         )
-
