@@ -8,12 +8,11 @@ from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.add_to
 from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.dictionary_service import (
     DictionaryService,
 )
+from main_window.main_widget.sequence_workbench.beat_deleter.beat_deleter import BeatDeleter
 from main_window.main_widget.sequence_workbench.labels.sequence_workbench_indicator_label import (
     SequenceWorkbenchIndicatorLabel,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_deleter.beat_deleter import (
-    BeatDeleter,
-)
+
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
     SequenceBeatFrame,
 )

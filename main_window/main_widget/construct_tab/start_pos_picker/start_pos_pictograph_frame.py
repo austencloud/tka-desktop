@@ -4,9 +4,6 @@ from base_widgets.pictograph.pictograph import Pictograph
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.option_picker.option_click_handler import (
-        OptionClickHandler,
-    )
     from .start_pos_picker import StartPosPicker
 
 

@@ -26,7 +26,7 @@ class ImageExportManager:
         self.beat_frame = beat_frame
         self.main_widget = beat_frame.main_widget
         self.settings_manager = AppContext.settings_manager()
-        
+
         if beat_frame_class.__name__ == "SequenceWorkbenchBeatFrame":
             self.sequence_workbench = beat_frame.sequence_workbench
         elif beat_frame_class.__name__ == "TempBeatFrame":
@@ -41,4 +41,3 @@ class ImageExportManager:
         self.image_creator = ImageCreator(self)
         self.image_saver = ImageSaver(self)
         self.dialog_executor = ImageExportDialogExecutor(self)
-

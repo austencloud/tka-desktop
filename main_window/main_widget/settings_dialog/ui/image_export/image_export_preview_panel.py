@@ -33,7 +33,7 @@ class ImageExportPreviewPanel(QFrame):
     def generate_preview_image(
         self, sequence: list[dict], options: dict[str, any]
     ) -> QPixmap:
-        """Generate the preview image synchronously."""
+        """Generate and properly scale the preview image while maintaining aspect ratio."""
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         # Generate the image directly
@@ -44,10 +44,16 @@ class ImageExportPreviewPanel(QFrame):
         )
         pixmap = QPixmap.fromImage(image)
 
-        # Scale the image to fit the preview area
-        max_image_height = int(self.height() * 0.95)
-        scaled_pixmap = pixmap.scaledToHeight(
-            max_image_height, Qt.TransformationMode.SmoothTransformation
+        # Get the maximum allocated width and height for the preview panel
+        max_width = self.width() * 0.98
+        max_height = self.height() * 0.98
+
+        # Determine the best size while keeping the aspect ratio
+        scaled_pixmap = pixmap.scaled(
+            int(max_width),
+            int(max_height),
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
         )
 
         QApplication.restoreOverrideCursor()

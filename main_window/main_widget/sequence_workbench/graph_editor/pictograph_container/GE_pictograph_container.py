@@ -1,9 +1,7 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
-from Enums.PropTypes import PropType
 from base_widgets.pictograph.elements.views.GE_pictograph_view import GE_PictographView
-from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
     GE_Pictograph,
 )

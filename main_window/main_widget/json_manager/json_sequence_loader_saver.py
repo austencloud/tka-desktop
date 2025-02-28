@@ -1,21 +1,17 @@
 import json
 from typing import TYPE_CHECKING
 from data.constants import (
-    BEAT,
     BLUE_ATTRIBUTES,
     END_ORI,
-    LETTER,
     MOTION_TYPE,
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
     PROP_ROT_DIR,
     RED_ATTRIBUTES,
-    SEQUENCE_START_POSITION,
 )
 from main_window.main_widget.json_manager.current_sequence_loader import (
     CurrentSequenceLoader,
 )
-from utilities.word_simplifier import WordSimplifier
 
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_manager import JsonManager

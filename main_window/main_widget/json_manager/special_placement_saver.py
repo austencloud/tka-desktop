@@ -1,8 +1,7 @@
 import json
 import logging
-import os
 import re
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     pass

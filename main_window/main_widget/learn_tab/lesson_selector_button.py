@@ -1,11 +1,10 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
+from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import Qt
-from functools import partial
 
 
 if TYPE_CHECKING:
-    from .learn_tab import LearnTab
+    pass
 
 
 class LessonSelectorButton(QPushButton):

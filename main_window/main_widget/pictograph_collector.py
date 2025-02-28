@@ -1,15 +1,8 @@
-from math import pi
 from typing import TYPE_CHECKING, Callable, Iterator
 
-from base_widgets.pictograph import pictograph
-from base_widgets.pictograph.elements.views.base_pictograph_view import (
-    BasePictographView,
-)
 from base_widgets.pictograph.elements.views.lesson_pictograph_view import (
     LessonPictographView,
 )
-from main_window.main_widget.learn_tab import learn_tab
-from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import LessonWidget
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget

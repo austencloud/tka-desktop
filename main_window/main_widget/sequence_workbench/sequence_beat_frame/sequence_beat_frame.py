@@ -24,6 +24,7 @@ from .beat_frame_updater import BeatFrameUpdater
 from .beat_selection_overlay import BeatSelectionOverlay
 from .beat_view import BeatView
 from base_widgets.base_beat_frame import BaseBeatFrame
+from PyQt6.QtCore import pyqtSignal
 
 if TYPE_CHECKING:
     from ..sequence_workbench import SequenceWorkbench
@@ -33,8 +34,7 @@ class SequenceBeatFrame(BaseBeatFrame):
     beat_views: list[BeatView] = []
     start_pos_view: StartPositionBeatView = None
     layout: "QGridLayout" = None
-    initialized = True
-    sequence_changed = False
+    sequenceUpdated = pyqtSignal()  # Signal to notify when sequence changes
 
     def __init__(self, sequence_workbench: "SequenceWorkbench") -> None:
         super().__init__(sequence_workbench.main_widget)
@@ -70,3 +70,7 @@ class SequenceBeatFrame(BaseBeatFrame):
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self.resizer.resize_beat_frame()
+
+    def emit_sequence_updated(self):
+        """Emit the sequenceUpdated signal to notify other components."""
+        self.sequenceUpdated.emit()

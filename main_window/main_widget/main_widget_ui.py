@@ -11,7 +11,6 @@ from main_window.main_widget.tab_name import TabName
 from main_window.settings_manager.global_settings.app_context import AppContext
 from .construct_tab.construct_tab import ConstructTab
 from .generate_tab.generate_tab import GenerateTab
-from .write_tab.write_tab import WriteTab
 from .browse_tab.browse_tab import BrowseTab
 from .learn_tab.learn_tab import LearnTab
 from .main_background_widget.main_background_widget import MainBackgroundWidget

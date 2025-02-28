@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Dict
 from PyQt6.QtWidgets import QWidget, QStackedLayout
-from data.constants import LETTER
 from main_window.main_widget.learn_tab.lesson_configs import LESSON_CONFIGS
 from .lesson_selector.lesson_selector import LessonSelector
 from .lesson_widget.lesson_results_widget import LessonResultsWidget

@@ -17,8 +17,6 @@ class GraphicsEffectRemover:
         default_widgets = [
             self.manager.main_widget.right_stack,
             self.manager.main_widget.left_stack,
-            self.manager.main_widget.right_stack.currentWidget(),
-            self.manager.main_widget.left_stack.currentWidget(),
         ]
         widgets = default_widgets + widgets
         for widget in widgets:

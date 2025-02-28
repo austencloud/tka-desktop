@@ -69,6 +69,9 @@ class BeatAdder:
             if update_word:
                 self.sequence_workbench.current_word_label.update_current_word_label_from_beats()
 
+            # ADD THIS TO EMIT SIGNAL
+            self.beat_frame.emit_sequence_updated()
+
     def _adjust_layout_and_update_sequence_builder(self, index: int) -> None:
         self.beat_frame.layout_manager.adjust_layout_to_sequence_length()
         self._update_sequence_builder(index)

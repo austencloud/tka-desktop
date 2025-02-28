@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 
-from hotkey_graph_adjuster.hotkey_graph_adjuster import HotkeyGraphAdjuster
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 
 if TYPE_CHECKING:

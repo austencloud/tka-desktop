@@ -44,6 +44,5 @@ class AddToSequenceManager:
         new_beat.managers.updater.update_pictograph(pictograph_data)
         self.last_beat = new_beat
         SW_beat_frame = self.beat_frame
-        if not SW_beat_frame.sequence_changed:
-            SW_beat_frame.sequence_changed = True
+
         return new_beat

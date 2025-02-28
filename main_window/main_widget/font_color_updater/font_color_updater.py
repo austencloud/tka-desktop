@@ -8,7 +8,6 @@ from .construct_tab_font_color_updater import ConstructTabFontColorUpdater
 from .generate_tab_font_color_updater import GenerateTabFontColorUpdater
 from .browse_tab_font_color_updater import BrowseTabFontColorUpdater
 from .learn_tab_font_color_updater import LearnTabFontColorUpdater
-from .act_tab_font_color_updater import WriteTabFontColorUpdater
 
 
 if TYPE_CHECKING:

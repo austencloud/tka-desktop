@@ -3,7 +3,6 @@ import os
 from Enums.letters import LetterType
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.settings_manager.global_settings.app_context import AppContext
-from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
     from .option_picker import OptionPicker
