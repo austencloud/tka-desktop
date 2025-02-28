@@ -80,6 +80,6 @@ class BeatFactory:
                 new_beat.elements.tka_glyph.update_tka_glyph()
         self.main_widget.sequence_properties_manager.update_sequence_properties()
         # update the graph editor
-        self.beat_frame.sequence_workbench.graph_editor.pictograph_container.update_pictograph(
-            pictograph_data
-        )
+        # self.beat_frame.sequence_workbench.graph_editor.pictograph_container.update_pictograph(
+        #     new_beat
+        # )

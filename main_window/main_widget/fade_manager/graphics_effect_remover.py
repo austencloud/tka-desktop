@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QApplication
 
 from main_window.main_widget.base_indicator_label import BaseIndicatorLabel
 
@@ -16,11 +16,14 @@ class GraphicsEffectRemover:
         default_widgets = [
             self.manager.main_widget.right_stack,
             self.manager.main_widget.left_stack,
+            self.manager.main_widget.right_stack.currentWidget(),
+            self.manager.main_widget.left_stack.currentWidget(),
         ]
         widgets = default_widgets + widgets
         for widget in widgets:
             if widget:
                 self._remove_all_graphics_effects(widget)
+                # QApplication.processEvents()
 
     def _remove_all_graphics_effects(self, widget: QWidget):
         """Remove graphics effects recursively and reset widget visibility."""
