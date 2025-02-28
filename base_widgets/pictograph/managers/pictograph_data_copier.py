@@ -13,7 +13,7 @@ class PictographDataCopier:
 
     def copy_pictograph_data(self) -> None:
         if (
-            hasattr(self.pictograph, "pictograph_data")
+            hasattr(self.pictograph.state, "pictograph_data")
             and self.pictograph.state.pictograph_data
         ):
             try:
@@ -23,10 +23,7 @@ class PictographDataCopier:
 
                 clipboard: QClipboard = QApplication.clipboard()
                 clipboard.setText(pictograph_json)
-                indicator_label = (
-                    self.pictograph.main_widget.sequence_workbench.indicator_label
-                )
-                indicator_label.show_message("Dictionary copied to clipboard!")
+
                 QToolTip.showText(
                     QCursor.pos(), "Pictograph dictionary copied to clipboard.", None
                 )

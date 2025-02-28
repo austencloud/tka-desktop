@@ -68,3 +68,5 @@ class NotesManager(QObject):
 
     def get_previous_note(self):
         return self.user_profile_settings.get_current_note()
+    
+    

@@ -74,3 +74,30 @@ class SequenceBeatFrame(BaseBeatFrame):
     def emit_sequence_updated(self):
         """Emit the sequenceUpdated signal to notify other components."""
         self.sequenceUpdated.emit()
+
+        {
+            "letter": "Δ-",
+            "letter_type": "Type3",
+            "start_pos": "beta1",
+            "end_pos": "gamma11",
+            "timing": "none",
+            "direction": "none",
+            "blue_attributes": {
+                "motion_type": "dash",
+                "start_ori": "out",
+                "prop_rot_dir": "no_rot",
+                "start_loc": "n",
+                "end_loc": "s",
+                "turns": 0,
+                "end_ori": "in",
+            },
+            "red_attributes": {
+                "motion_type": "anti",
+                "start_ori": "out",
+                "prop_rot_dir": "ccw",
+                "start_loc": "n",
+                "end_loc": "e",
+                "turns": 0,
+                "end_ori": "in",
+            },
+        }

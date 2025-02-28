@@ -41,13 +41,8 @@ class ImageExportTab(QWidget):
 
     def update_preview(self):
         """Automatically update the preview when beats are modified."""
-        # Only update if the tab is visible.  Saves CPU cycles when it's not!
         if not self.isVisible():
             return
-
-        self.preview_panel.preview_label.clear()
-        self.spinner.show()
-        # QApplication.processEvents()  # Ensure UI updates
 
         options = self.settings_manager.image_export.get_all_settings()
         options["user_name"] = self.control_panel.user_combo_box.currentText()
@@ -59,7 +54,6 @@ class ImageExportTab(QWidget):
         pixmap = self.preview_panel.generate_preview_image(sequence, options)
 
         self.preview_panel.preview_label.setPixmap(pixmap)
-        self.spinner.hide()
 
     def _setup_layout(self):
         card = QWidget(self)
@@ -94,13 +88,14 @@ class ImageExportTab(QWidget):
         super().resizeEvent(event)
         self.update_preview()
 
-    def update_image_export_buttons_from_settings(self):
+    def update_image_export_tab_from_settings(self):
         for button_text, _ in self.control_panel.button_settings_keys.items():
             button = self.control_panel.buttons[button_text]
             button.update_is_toggled()
+        self.control_panel._load_user_profiles()
+        self.control_panel._load_saved_notes()
 
     def showEvent(self, event: "QShowEvent"):
-        self.update_image_export_buttons_from_settings()
+        self.update_image_export_tab_from_settings()
         self.update_preview()
         super().showEvent(event)
-

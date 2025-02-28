@@ -45,8 +45,8 @@ class ImageExportPreviewPanel(QFrame):
         pixmap = QPixmap.fromImage(image)
 
         # Get the maximum allocated width and height for the preview panel
-        max_width = self.width() * 0.98
-        max_height = self.height() * 0.98
+        max_width = self.width() * 0.95
+        max_height = self.height() * 0.95
 
         # Determine the best size while keeping the aspect ratio
         scaled_pixmap = pixmap.scaled(

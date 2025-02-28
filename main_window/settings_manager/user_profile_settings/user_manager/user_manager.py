@@ -74,3 +74,32 @@ class UserManager(QObject):
 
     def set_current_user(self, user_name):
         self.user_profile_settings.set_current_user(user_name)
+
+    ### --- User-Specific Notes Management --- ###
+
+    def get_user_notes(self, user_name):
+        """Get all notes for a specific user."""
+        user_profiles = self.user_profile_settings.get_user_profiles()
+        return user_profiles.get(user_name, {}).get("notes", [])
+
+    def add_user_note(self, user_name, note):
+        """Add a note to a specific user's profile."""
+        user_profiles = self.user_profile_settings.get_user_profiles()
+        if user_name in user_profiles:
+            if note in user_profiles[user_name].get("notes", []):
+                return False  # Prevent duplicate notes
+            user_profiles[user_name]["notes"].append(note)
+            self.user_profile_settings.set_user_profiles(user_profiles)
+            return True
+        return False
+
+    def remove_user_note(self, user_name, note):
+        """Remove a note from a specific user's profile."""
+        user_profiles = self.user_profile_settings.get_user_profiles()
+        if user_name in user_profiles and note in user_profiles[user_name].get(
+            "notes", []
+        ):
+            user_profiles[user_name]["notes"].remove(note)
+            self.user_profile_settings.set_user_profiles(user_profiles)
+            return True
+        return False

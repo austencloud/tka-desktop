@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QGraphicsScene
 from base_widgets.pictograph.elements.pictograph_elements import PictographElements
 from base_widgets.pictograph.managers.getter.pictograph_getter import PictographGetter
 from base_widgets.pictograph.managers.pictograph_checker import PictographChecker
+from base_widgets.pictograph.managers.pictograph_data_copier import PictographDataCopier
 from base_widgets.pictograph.managers.pictograph_initializer import (
     PictographInitializer,
 )
@@ -37,3 +38,4 @@ class Pictograph(QGraphicsScene):
         self.managers.svg_manager = SvgManager(self)
         self.managers.arrow_placement_manager = ArrowPlacementManager(self)
         self.managers.prop_placement_manager = PropPlacementManager(self)
+        self.managers.data_copier = PictographDataCopier(self)

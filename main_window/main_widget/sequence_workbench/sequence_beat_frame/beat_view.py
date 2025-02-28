@@ -27,12 +27,14 @@ class BeatView(BasePictographView):
     def _setup_blank_beat(self):
         self.blank_beat = Beat(self.beat_frame)
         self.beat = self.blank_beat
-        self.setScene(self.blank_beat)
+        self.pictograph = self.beat  # Pictograph is now synonymous with beat. Aren't I clever?
+        self.setScene(self.beat)
         self.blank_beat.elements.grid.hide()
         self.blank_beat.beat_number_item.update_beat_number()
 
     def set_beat(self, beat: "Beat", number: int) -> None:
         self.beat = beat
+        self.pictograph = self.beat  # Ensuring pictograph is always the same as beat.
         self.beat.view = self
         self.is_filled = True
         self.beat.beat_number = number

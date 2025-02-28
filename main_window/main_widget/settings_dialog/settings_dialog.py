@@ -60,7 +60,7 @@ class SettingsDialog(QDialog):
                 self.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
             )
         elif last_tab == "Image Export":
-            self.ui.image_export_tab.update_image_export_buttons_from_settings()
+            self.ui.image_export_tab.update_image_export_tab_from_settings()
         self.update_size(force=True)
 
     def update_size(self, force: bool = False):

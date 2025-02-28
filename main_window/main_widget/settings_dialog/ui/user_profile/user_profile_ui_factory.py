@@ -10,8 +10,7 @@ from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-
-    from main_window.main_widget.settings_dialog.ui.user_profile_tab.user_profile_tab import (
+    from main_window.main_widget.settings_dialog.ui.user_profile.user_profile_tab import (
         UserProfileTab,
     )
 
