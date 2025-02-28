@@ -512,6 +512,14 @@ class LetterType(Enum):
                 return letter_type
         return None
 
+    # I want a function that lets me pass in a string like "Type1" and get the corresponding enum member
+    @classmethod
+    def from_string(cls, type_str: str) -> "LetterType":
+        for letter_type in cls:
+            if letter_type.name == type_str:
+                return letter_type
+        raise ValueError(f"No matching enum member for string: {type_str}")
+
     @classmethod
     def sort_key(cls, letter_str: str) -> tuple[int, int]:
         """

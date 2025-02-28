@@ -58,6 +58,7 @@ class BeatFactory:
         update_level=True,
         reversal_info: dict = None,
         select_beat: bool = True,
+        update_image_export_preview: bool = True,
     ) -> None:
         new_beat = Beat(self.beat_frame, duration=pictograph_data.get("duration", 1))
         new_beat.managers.updater.update_pictograph(pictograph_data)
@@ -72,6 +73,7 @@ class BeatFactory:
             update_word=update_word,
             update_level=update_level,
             select_beat=select_beat,
+            update_image_export_preview=update_image_export_preview,
         )
         for motion in new_beat.elements.motions.values():
             if motion.state.motion_type == FLOAT:
@@ -79,7 +81,6 @@ class BeatFactory:
                 new_beat.state.letter = letter
                 new_beat.elements.tka_glyph.update_tka_glyph()
         self.main_widget.sequence_properties_manager.update_sequence_properties()
-        # update the graph editor
-        # self.beat_frame.sequence_workbench.graph_editor.pictograph_container.update_pictograph(
-        #     new_beat
-        # )
+        self.beat_frame.sequence_workbench.graph_editor.pictograph_container.update_pictograph(
+            new_beat
+        )

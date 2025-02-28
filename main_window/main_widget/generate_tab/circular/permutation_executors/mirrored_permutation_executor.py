@@ -45,7 +45,10 @@ class MirroredPermutationExecutor(PermutationExecutor):
 
             sequence_workbench = self.circular_sequence_generator.sequence_workbench
             sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
-                next_pictograph, override_grow_sequence=True, update_word=False
+                next_pictograph,
+                override_grow_sequence=True,
+                update_word=False,
+                update_image_export_preview=False,
             )
             QApplication.processEvents()
 

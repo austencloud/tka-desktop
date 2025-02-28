@@ -66,8 +66,14 @@ class TurnsTupleGenerator:
         generator_key = self._get_generator_key(pictograph)
         if generator_key and generator_key in self.generators:
             generator = self.generators[generator_key]
-            return generator.generate_turns_tuple(pictograph)
+            turns_tuple = generator.generate_turns_tuple(pictograph)
+            if turns_tuple is None:
+                raise ValueError(
+                    f"Turns tuple is None for letter {pictograph.state.letter.value}."
+                ) 
+            return turns_tuple
         return ""
+
 
     def generate_mirrored_tuple(self, arrow: Arrow) -> Union[str, None]:
         return self.mirrored_generator.generate(arrow)

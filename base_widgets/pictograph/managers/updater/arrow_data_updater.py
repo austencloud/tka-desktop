@@ -2,7 +2,14 @@ import logging
 from typing import TYPE_CHECKING, Tuple
 
 from Enums.letters import LetterType
-from data.constants import BLUE_ATTRIBUTES, PROP_ROT_DIR, RED, BLUE, RED_ATTRIBUTES, TURNS
+from data.constants import (
+    BLUE_ATTRIBUTES,
+    PROP_ROT_DIR,
+    RED,
+    BLUE,
+    RED_ATTRIBUTES,
+    TURNS,
+)
 
 if TYPE_CHECKING:
     from ...pictograph import Pictograph
@@ -14,7 +21,7 @@ class ArrowDataUpdater:
     def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 
-    def update(self, pictograph_data: dict) -> None:
+    def update_arrows(self, pictograph_data: dict) -> None:
         """
         Extracts arrow dataset information from the data and updates arrow objects.
         """

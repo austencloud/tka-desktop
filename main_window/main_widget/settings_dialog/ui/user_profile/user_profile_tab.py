@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
 )
 from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QEvent
 
 from main_window.main_widget.settings_dialog.card_frame import CardFrame
 
@@ -90,5 +91,23 @@ class UserProfileTab(QWidget):
         self.tab_controller.populate_user_buttons()
         self.tab_controller.populate_notes()
 
+        # 🔥 Install event filter to prevent dialog closure on Enter
+        self.new_user_field.installEventFilter(self)
+        self.note_input.installEventFilter(self)
+
     def resizeEvent(self, event):
         self.ui_manager.handle_resize_event()
+
+    def eventFilter(self, obj, event: "QEvent") -> bool:
+        """Prevent Enter key from closing the settings dialog."""
+        if event.type() == QEvent.Type.KeyPress and event.key() in (
+            Qt.Key.Key_Return,
+            Qt.Key.Key_Enter,
+        ):
+            if obj == self.new_user_field:
+                self.tab_controller.add_user()
+                return True  # Mark event as handled, preventing dialog closure
+            elif obj == self.note_input:
+                self.tab_controller.add_note()
+                return True  # Mark event as handled
+        return super().eventFilter(obj, event)

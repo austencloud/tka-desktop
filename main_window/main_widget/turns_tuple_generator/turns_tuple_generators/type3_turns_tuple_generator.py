@@ -36,7 +36,7 @@ class Type3TurnsTupleGenerator(BaseTurnsTupleGenerator):
                 return (
                     f"({self._normalize_turns(shift)}, {self._normalize_turns(dash)})"
                 )
-        elif shift.state.motion_type == FLOAT:
+        elif shift.state.motion_type == DASH:
             direction = (
                 "s"
                 if dash.state.prop_rot_dir == shift.state.prefloat_prop_rot_dir

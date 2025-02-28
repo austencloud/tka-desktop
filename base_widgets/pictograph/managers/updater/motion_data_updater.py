@@ -33,7 +33,7 @@ class MotionDataUpdater:
         self.pictograph = pictograph
         self.getter = pictograph.managers.get
 
-    def update(self, pictograph_data: dict) -> None:
+    def update_motions(self, pictograph_data: dict) -> None:
         """
         Updates motion objects based on the provided pictograph data.
         """
@@ -47,14 +47,15 @@ class MotionDataUpdater:
             motion_dataset = {}
         for motion in self.pictograph.elements.motions.values():
             try:
-                # self._override_motion_type_if_needed(pictograph_data, motion)
                 if motion_dataset.get(motion.state.color):
                     self._show_motion_graphics(motion.state.color)
                 if motion_dataset.get(motion.state.color, {}).get(TURNS, "") == "fl":
                     motion.state.turns = "fl"
-                    
+
                 if motion_dataset:
-                    motion.updater.update_motion(motion_dataset.get(motion.state.color, {}))
+                    motion.updater.update_motion(
+                        motion_dataset.get(motion.state.color, {})
+                    )
                 if not motion.arrow.state.initialized:
                     motion.arrow.setup_components()
                 turns_value = motion_dataset.get(motion.state.color, {}).get(TURNS)

@@ -34,7 +34,7 @@ class SequenceBeatFrame(BaseBeatFrame):
     beat_views: list[BeatView] = []
     start_pos_view: StartPositionBeatView = None
     layout: "QGridLayout" = None
-    sequenceUpdated = pyqtSignal()  # Signal to notify when sequence changes
+    updateImageExportPreview = pyqtSignal()  # Signal to notify when sequence changes
 
     def __init__(self, sequence_workbench: "SequenceWorkbench") -> None:
         super().__init__(sequence_workbench.main_widget)
@@ -71,33 +71,6 @@ class SequenceBeatFrame(BaseBeatFrame):
         super().resizeEvent(event)
         self.resizer.resize_beat_frame()
 
-    def emit_sequence_updated(self):
+    def emit_update_image_export_preview(self):
         """Emit the sequenceUpdated signal to notify other components."""
-        self.sequenceUpdated.emit()
-
-        {
-            "letter": "Δ-",
-            "letter_type": "Type3",
-            "start_pos": "beta1",
-            "end_pos": "gamma11",
-            "timing": "none",
-            "direction": "none",
-            "blue_attributes": {
-                "motion_type": "dash",
-                "start_ori": "out",
-                "prop_rot_dir": "no_rot",
-                "start_loc": "n",
-                "end_loc": "s",
-                "turns": 0,
-                "end_ori": "in",
-            },
-            "red_attributes": {
-                "motion_type": "anti",
-                "start_ori": "out",
-                "prop_rot_dir": "ccw",
-                "start_loc": "n",
-                "end_loc": "e",
-                "turns": 0,
-                "end_ori": "in",
-            },
-        }
+        self.updateImageExportPreview.emit()

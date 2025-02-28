@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING, Optional
+
+from objects.prop.prop_updater import PropUpdater
 from ..graphical_object import GraphicalObject
 from PyQt6.QtWidgets import QGraphicsPixmapItem
 from .prop_attr_manager import PropAttrManager
 from .prop_checker import PropChecker
 from .prop_rot_angle_manager import PropRotAngleManager
-from .prop_updater import PropUpdater
 
 if TYPE_CHECKING:
     from Enums.PropTypes import PropType

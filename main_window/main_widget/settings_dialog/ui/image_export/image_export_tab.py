@@ -32,7 +32,7 @@ class ImageExportTab(QWidget):
         self.control_panel.settingChanged.connect(self.update_preview)
 
         # CONNECT THE SEQUENCE UPDATE SIGNAL TO update_preview
-        self.main_widget.sequence_workbench.sequence_beat_frame.sequenceUpdated.connect(
+        self.main_widget.sequence_workbench.sequence_beat_frame.updateImageExportPreview.connect(
             self.update_preview
         )
 

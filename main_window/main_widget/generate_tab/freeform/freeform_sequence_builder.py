@@ -49,7 +49,7 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
             )
             self.sequence.append(next_pictograph)
             self.sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
-                next_pictograph, override_grow_sequence=True
+                next_pictograph, override_grow_sequence=True, update_image_export_preview=False
             )
             QApplication.processEvents()
 

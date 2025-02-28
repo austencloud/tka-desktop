@@ -90,8 +90,9 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             )
             self.sequence.append(next_pictograph)
             self.sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
-                next_pictograph, override_grow_sequence=True
+                next_pictograph, override_grow_sequence=True, update_image_export_preview=False
             )
+            
             QApplication.processEvents()
 
         self._apply_permutations(self.sequence, permutation_type, slice_size)
@@ -100,7 +101,8 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         construct_tab.option_picker.updater.update_options()
 
         QApplication.restoreOverrideCursor()
-
+        self.sequence_workbench.sequence_beat_frame.emit_update_image_export_preview()
+        
     def _generate_next_pictograph(
         self,
         level: int,

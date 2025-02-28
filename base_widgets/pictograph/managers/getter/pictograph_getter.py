@@ -110,7 +110,10 @@ class PictographGetter:
         return opposite_locations.get(loc)
 
     def turns_tuple(self) -> tuple[int, int, int]:
-        return TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
+        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
+        if turns_tuple is None:
+            raise ValueError("Turns tuple cannot be None")
+        return turns_tuple
 
     def pictograph_data(self) -> dict:
         return {

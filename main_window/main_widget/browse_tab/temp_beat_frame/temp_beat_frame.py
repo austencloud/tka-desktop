@@ -122,7 +122,6 @@ class TempBeatFrame(BaseBeatFrame):
                 if beat:
                     if beat.state.pictograph_data != entry:
                         beat.managers.updater.update_pictograph(entry)
-                        # QApplication.processEvents()
 
     def update_start_pos_from_current_sequence_json(self, entry: dict) -> None:
         entry[RED_ATTRIBUTES][START_ORI] = entry[RED_ATTRIBUTES][END_ORI]
@@ -176,7 +175,6 @@ class TempBeatFrame(BaseBeatFrame):
         self.construct_tab.last_beat = self.start_pos
         self.json_manager.loader_saver.clear_current_sequence_file()
 
-        # Reset the layout to the smallest possible amount
         if self.settings_manager.global_settings.get_grow_sequence():
             self.layout_manager.configure_beat_frame(0)
 

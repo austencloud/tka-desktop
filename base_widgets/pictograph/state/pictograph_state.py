@@ -49,10 +49,12 @@ class PictographState:
                     deep_merge_dict(self.pictograph_data[key], value)
                 else:
                     self.pictograph_data[key] = value
+            elif key == "letter_type":
+                self.letter_type = LetterType.from_string(value)
+                self.pictograph_data[key] = self.letter_type.name
             else:
                 setattr(self, key, value)
                 self.pictograph_data[key] = value
-
 
 def deep_merge_dict(dest: dict, src: dict) -> dict:
     for key, value in src.items():

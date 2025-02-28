@@ -1,7 +1,11 @@
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import BeatView
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import StartPositionBeatView
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+    BeatView,
+)
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import (
+    StartPositionBeatView,
+)
 from main_window.settings_manager.global_settings.app_context import AppContext
 from .first_beat_deleter import FirstBeatDeleter
 from .non_first_beat_deleter import NonFirstBeatDeleter
@@ -10,7 +14,9 @@ from .widget_collector import WidgetCollector
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_workbench import SequenceWorkbench
+    from main_window.main_widget.sequence_workbench.sequence_workbench import (
+        SequenceWorkbench,
+    )
 
 
 class BeatDeleter:
@@ -53,7 +59,7 @@ class BeatDeleter:
         self.beat_frame.layout_manager.configure_beat_frame_for_filled_beats()
         self.beat_frame.sequence_workbench.current_word_label.update_current_word_label_from_beats()
         self.beat_frame.sequence_workbench.difficulty_label.update_difficulty_label()
-        self.beat_frame.emit_sequence_updated()
+        self.beat_frame.emit_update_image_export_preview()
 
     def _delete_beat_and_following(self, beat: BeatView) -> None:
         beats = self.beat_frame.beat_views

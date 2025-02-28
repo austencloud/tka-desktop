@@ -37,7 +37,6 @@ class PictographUpdater:
             logger.error(f"Error applying data updates: {e}", exc_info=True)
 
         try:
-
             self.glyph_updater.update()
             self.placement_updater.update()
         except Exception as e:
@@ -48,8 +47,10 @@ class PictographUpdater:
             self.pictograph.state.update_pictograph_state(pictograph_data)
 
         self.update_grid_mode_if_changed()
-        self.motion_updater.update(pictograph_data)
-        self.arrow_updater.update(pictograph_data)
+        
+        self.motion_updater.update_motions(pictograph_data)
+        self.arrow_updater.update_arrows(pictograph_data)
+        
         self.pictograph.elements.grid.update_grid_mode()
         self.pictograph.elements.vtg_glyph.set_vtg_mode()
         self.pictograph.elements.elemental_glyph.set_elemental_glyph()
@@ -60,23 +61,23 @@ class PictographUpdater:
         self.pictograph.elements.tka_glyph.update_tka_glyph()
         self.pictograph.elements.reversal_glyph.update_reversal_symbols()
         if pictograph_data:
-            self.pictograph.elements.props[RED].updater.update_prop(
-                self.get_prop_data(pictograph_data, RED)
-            )
-            self.pictograph.elements.props[BLUE].updater.update_prop(
-                self.get_prop_data(pictograph_data, BLUE)
-            )
+            for color in [RED, BLUE]:
+                self.pictograph.elements.props[color].updater.update_prop(
+                    self.get_prop_data(pictograph_data, color)
+                )
 
         logger.debug("Data update (partial or complete) applied successfully.")
 
     def get_prop_data(self, pictograph_data: dict, color: str) -> dict:
-        # creates a dict of color, loc, ori, motion, prop_type
+        motion = self.pictograph.managers.get.motion_by_color(color)
         return {
             "color": color,
-            "loc": self.pictograph.managers.get.motion_by_color(color).state.end_loc,
-            "ori": self.pictograph.managers.get.motion_by_color(color).state.end_ori,
-            "motion": self.pictograph.managers.get.motion_by_color(color),
-            "prop_type": AppContext.settings_manager().global_settings.get_prop_type().name,
+            "loc": motion.state.end_loc,
+            "ori": motion.state.end_ori,
+            "motion": motion,
+            "prop_type": AppContext.settings_manager()
+            .global_settings.get_prop_type()
+            .name,
         }
 
     def update_grid_mode_if_changed(self):

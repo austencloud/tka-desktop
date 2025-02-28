@@ -26,6 +26,7 @@ class BeatAdder:
         update_word=True,
         update_level=True,
         select_beat=True,
+        update_image_export_preview=True,
     ) -> None:
         next_beat_number = self.calculate_next_beat_number()
         grow_sequence = (
@@ -68,9 +69,8 @@ class BeatAdder:
             )
             if update_word:
                 self.sequence_workbench.current_word_label.update_current_word_label_from_beats()
-
-            # ADD THIS TO EMIT SIGNAL
-            self.beat_frame.emit_sequence_updated()
+        if update_image_export_preview:
+            self.beat_frame.emit_update_image_export_preview()
 
     def _adjust_layout_and_update_sequence_builder(self, index: int) -> None:
         self.beat_frame.layout_manager.adjust_layout_to_sequence_length()
