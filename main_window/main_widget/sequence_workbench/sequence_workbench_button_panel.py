@@ -1,5 +1,7 @@
+from datetime import datetime
+import os
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QStandardPaths, QFileInfo
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QPushButton,
@@ -8,6 +10,7 @@ from PyQt6.QtWidgets import (
     QApplication,
     QSpacerItem,
     QSizePolicy,
+    QFileDialog,
 )
 
 from main_window.main_widget.sequence_workbench.workbench_button import WorkbenchButton
@@ -50,9 +53,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
             },
             "save_image": {
                 "icon": "save_image.svg",
-                "callback": lambda: self.export_manager.dialog_executor.exec_dialog(
-                    self.sequence_workbench.main_widget.json_manager.loader_saver.load_current_sequence()
-                ),
+                "callback": self.export_image_directly,
                 "tooltip": "Save Image",
             },
             "view_full_screen": {
@@ -198,3 +199,41 @@ class SequenceWorkbenchButtonPanel(QFrame):
                 QSizePolicy.Policy.Expanding,
             )
         self.layout.update()
+
+    def export_image_directly(self):
+        """Immediately exports the image using current settings and opens the save dialog."""
+        sequence = (
+            self.sequence_workbench.main_widget.json_manager.loader_saver.load_current_sequence()
+        )
+
+        if len(sequence) < 3:
+            self.sequence_workbench.indicator_label.show_message(
+                "The sequence is empty."
+            )
+            return
+
+        # Retrieve the export settings
+        settings_manager = self.sequence_workbench.main_widget.settings_manager
+        options = settings_manager.image_export.get_all_image_export_options()
+        
+        options["user_name"] = settings_manager.users.get_current_user()
+        options["notes"] = settings_manager.users.get_current_note()
+        options["export_date"] = datetime.now().strftime("%m-%d-%Y")
+        
+        # Generate the image
+        image_creator = self.export_manager.image_creator
+        sequence_image = image_creator.create_sequence_image(
+            sequence,
+            options,
+        )
+
+
+
+        # Save the image
+        self.export_manager.image_saver.save_image(sequence_image)
+        # open the folder containing the image
+
+        self.sequence_workbench.indicator_label.show_message(
+            "Image saved successfully!"
+        )
+

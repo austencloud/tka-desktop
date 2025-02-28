@@ -44,7 +44,7 @@ class ImageExportTab(QWidget):
         if not self.isVisible():
             return
 
-        options = self.settings_manager.image_export.get_all_settings()
+        options = self.settings_manager.image_export.get_all_image_export_options()
         options["user_name"] = self.control_panel.user_combo_box.currentText()
         options["notes"] = self.control_panel.notes_combo_box.currentText()
         options["export_date"] = datetime.now().strftime("%m-%d-%Y")

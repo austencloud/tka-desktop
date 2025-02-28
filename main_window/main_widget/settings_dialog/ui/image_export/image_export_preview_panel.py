@@ -38,9 +38,7 @@ class ImageExportPreviewPanel(QFrame):
 
         # Generate the image directly
         image = self.image_export_manager.image_creator.create_sequence_image(
-            sequence,
-            options.get("include_start_position", False),
-            options,
+            sequence, options
         )
         pixmap = QPixmap.fromImage(image)
 

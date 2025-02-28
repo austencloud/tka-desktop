@@ -19,7 +19,6 @@ class ImageExportSettings:
         self.settings_manager = settings_manager
         self.settings = self.settings_manager.settings  # QSettings instance
 
-
     def get_image_export_setting(self, key: str):
         """Get a specific image export setting"""
         value = self.settings.value(f"image_export/{key}")
@@ -38,7 +37,7 @@ class ImageExportSettings:
         self.settings.setValue(f"image_export/{key}", value)
         self.settings.sync()  # Ensure changes are saved immediately
 
-    def get_all_settings(self) -> dict:
+    def get_all_image_export_options(self) -> dict:
         """Get all image export settings"""
         return {
             key: self.get_image_export_setting(key)

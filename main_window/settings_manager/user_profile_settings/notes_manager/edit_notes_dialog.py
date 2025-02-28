@@ -12,7 +12,9 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from settings_manager.user_profile_settings.notes_manager.notes_manager import NotesManager
+    from settings_manager.user_profile_settings.notes_manager.notes_manager import (
+        NotesManager,
+    )
 
 
 class EditNotesDialog(QDialog):
@@ -58,7 +60,7 @@ class EditNotesDialog(QDialog):
         self.set_initial_selection()
 
     def set_initial_selection(self):
-        previous_note = self.notes_manager.get_previous_note()
+        previous_note = self.notes_manager.get_current_note()
         items = self.notes_list.findItems(previous_note, Qt.MatchFlag.MatchExactly)
         if items:
             item = items[0]

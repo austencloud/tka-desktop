@@ -42,7 +42,7 @@ class ImageCreator:
         self.difficulty_level_drawer = DifficultyLevelDrawer(self)
 
     def create_sequence_image(
-        self, sequence: list[dict], include_start_pos=True, options: dict = None
+        self, sequence: list[dict],  options: dict = None
     ) -> QImage:
         """Create an image of the sequence."""
 
@@ -50,7 +50,7 @@ class ImageCreator:
         filled_beats = self._process_sequence(sequence)
         num_filled_beats = len(filled_beats)
         column_count, row_count = self.layout_manager.calculate_layout(
-            num_filled_beats, include_start_pos
+            num_filled_beats, options["include_start_position"]
         )
 
         options["additional_height_top"], options["additional_height_bottom"] = (
@@ -71,7 +71,7 @@ class ImageCreator:
             filled_beats,
             column_count,
             row_count,
-            include_start_pos,
+            options["include_start_position"],
             options["additional_height_top"],
             options["add_beat_numbers"],
         )

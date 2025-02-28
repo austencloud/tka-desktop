@@ -51,7 +51,6 @@ class ImageSaver:
             self.indicator_label.show_message(
                 f"Image saved as {os.path.basename(file_name)}"
             )
-            return file_name
+            os.startfile(file_name)
         else:
             self.indicator_label.show_message("Failed to save image.")
-            return None
