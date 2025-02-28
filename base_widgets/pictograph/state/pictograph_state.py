@@ -14,6 +14,7 @@ class PictographState:
     disable_gold_overlay: bool = False
     blue_reversal: bool = False
     red_reversal: bool = False
+    hide_tka_glyph: bool = False
     letter: Optional[Letter] = None
     letter_type: Optional[LetterType] = None
     prop_type_enum: Optional[PropType] = None

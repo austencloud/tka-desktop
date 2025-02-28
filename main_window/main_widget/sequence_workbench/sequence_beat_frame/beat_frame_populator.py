@@ -21,7 +21,9 @@ class BeatFramePopulator:
         self.current_sequence_json = []  # Initialize the instance variable
 
     def populate_beat_frame_from_json(
-        self, current_sequence_json: list[dict[str, str]]
+        self,
+        current_sequence_json: list[dict[str, str]],
+        initial_state_load: bool = False,
     ) -> None:
 
         self.current_sequence_json = current_sequence_json  # Store the sequence JSON
@@ -39,7 +41,7 @@ class BeatFramePopulator:
         self._update_sequence_word()
         self._update_difficulty_level()
         self._populate_beats(select_beat=False)
-        self._finalize_sequence()
+        self._finalize_sequence(initial_state_load)
 
         indicator_label.show_message(
             f"{self.current_word} loaded successfully! Ready to edit."
@@ -91,16 +93,33 @@ class BeatFramePopulator:
                     select_beat=select_beat,
                 )
 
-    def _finalize_sequence(self):
+    def _finalize_sequence(self, initial_state_load):
         last_beat = (
             self.sequence_workbench.sequence_beat_frame.get.last_filled_beat().beat
         )
         self.construct_tab.last_beat = last_beat
         self.construct_tab.option_picker.updater.update_options()
         # select the last beat
-        QTimer.singleShot(
-            0, lambda: self.selection_overlay.select_beat_view(last_beat.view)
-        )  
+        # check if the current left stack is set to the sequence workbench. If so, we can trigger the graph editor. If no, let
+
+        if initial_state_load:
+            if (
+                AppContext.settings_manager().global_settings.get_current_tab()
+                == "construct"
+            ):
+                QTimer.singleShot(
+                    0,
+                    lambda: self.selection_overlay.select_beat_view(
+                        last_beat.view, True
+                    ),
+                )
+            else:
+                QTimer.singleShot(
+                    0,
+                    lambda: self.selection_overlay.select_beat_view(
+                        last_beat.view, False
+                    ),
+                )
 
     def modify_layout_for_chosen_number_of_beats(self, beat_count):
         self.beat_frame.layout_manager.configure_beat_frame(

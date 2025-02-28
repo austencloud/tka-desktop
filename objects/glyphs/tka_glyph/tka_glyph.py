@@ -42,7 +42,8 @@ class TKA_Glyph(QGraphicsItemGroup):
 
     def update_tka_glyph(self, visibility=True) -> None:
         self.letter = self.pictograph.state.letter
-        if not self.letter:
+        if not self.letter or self.pictograph.state.hide_tka_glyph:
+            self.setVisible(False)
             return
 
         self.letter_item.set_letter()

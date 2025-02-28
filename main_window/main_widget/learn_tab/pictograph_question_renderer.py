@@ -4,7 +4,9 @@ from base_widgets.pictograph.pictograph import Pictograph
 
 from PyQt6.QtCore import Qt
 
-from base_widgets.pictograph.elements.views.lesson_pictograph_view import LessonPictographView
+from base_widgets.pictograph.elements.views.lesson_pictograph_view import (
+    LessonPictographView,
+)
 
 if TYPE_CHECKING:
     pass
@@ -38,5 +40,5 @@ class PictographQuestionRenderer:
         """
         self.pictograph.managers.updater.update_pictograph(pictograph_data)
         if self.lesson_type == "Lesson1":
-            self.pictograph.elements.tka_glyph.setVisible(False)
+            self.pictograph.state.hide_tka_glyph = True
         self.pictograph.elements.view.update_borders()

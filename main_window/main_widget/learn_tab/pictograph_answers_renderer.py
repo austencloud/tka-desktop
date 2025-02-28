@@ -16,12 +16,13 @@ if TYPE_CHECKING:
 
 
 class PictographAnswersRenderer:
-    def __init__(self, columns: int = 2, spacing: int = 30):
+    def __init__(self, lesson_type: str, columns: int = 2, spacing: int = 30):
         self.layout = QGridLayout()
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.layout.setSpacing(spacing)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.columns = columns
+        self.lesson_type = lesson_type
         self.key_generator = PictographKeyGenerator()
         self.pictograph_views: dict[str, LessonPictographView] = {}
 
@@ -67,12 +68,13 @@ class PictographAnswersRenderer:
         for i, answer in enumerate(answers):
             item = self.layout.itemAt(i)
             view: LessonPictographView = item.widget()
-            scene = view.pictograph
-
-            scene.managers.updater.update_pictograph(answer)
-            scene.elements.view.update_borders()
-            scene.elements.tka_glyph.setVisible(False)
-            scene.elements.view.set_overlay_color(None)
+            pictograph = view.pictograph
+            if self.lesson_type == "Lesson2":
+                pictograph.state.hide_tka_glyph = True
+            pictograph.managers.updater.update_pictograph(answer)
+            pictograph.elements.view.update_borders()
+            # pictograph.elements.tka_glyph.setVisible(False)
+            pictograph.elements.view.set_overlay_color(None)
             view.setEnabled(True)
 
             view.mousePressEvent = lambda event, a=answer: check_callback(

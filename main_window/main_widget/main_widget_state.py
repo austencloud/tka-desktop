@@ -17,4 +17,4 @@ class MainWidgetState:
             self.main_widget.json_manager.loader_saver.load_current_sequence()
         )
         if len(current_sequence) > 1:
-            beat_frame.populator.populate_beat_frame_from_json(current_sequence)
+            beat_frame.populator.populate_beat_frame_from_json(current_sequence, initial_state_load=True)
