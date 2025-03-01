@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from data.constants import (
     BEAT,
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     DIRECTION,
     END_LOC,
     END_ORI,
@@ -10,7 +10,7 @@ from data.constants import (
     MOTION_TYPE,
     NO_ROT,
     PROP_ROT_DIR,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     SEQUENCE_START_POSITION,
     START_LOC,
     START_ORI,
@@ -29,10 +29,8 @@ class JsonStartPositionHandler:
         self.manager = manager
 
     def set_start_position_data(self, start_pos_pictograph: Pictograph) -> None:
-        red_start_ori = start_pos_pictograph.state.pictograph_data[RED_ATTRIBUTES][
-            START_ORI
-        ]
-        blue_start_ori = start_pos_pictograph.state.pictograph_data[BLUE_ATTRIBUTES][
+        red_start_ori = start_pos_pictograph.state.pictograph_data[RED_ATTRS][START_ORI]
+        blue_start_ori = start_pos_pictograph.state.pictograph_data[BLUE_ATTRS][
             START_ORI
         ]
 
@@ -47,7 +45,7 @@ class JsonStartPositionHandler:
             END_POS: start_pos_pictograph.state.end_pos,
             TIMING: start_pos_pictograph.state.timing,
             DIRECTION: start_pos_pictograph.state.direction,
-            BLUE_ATTRIBUTES: {
+            BLUE_ATTRS: {
                 START_LOC: start_pos_pictograph.elements.blue_motion.state.start_loc,
                 END_LOC: start_pos_pictograph.elements.blue_motion.state.end_loc,
                 START_ORI: blue_start_ori,
@@ -56,7 +54,7 @@ class JsonStartPositionHandler:
                 TURNS: 0,
                 MOTION_TYPE: start_pos_pictograph.elements.blue_motion.state.motion_type,
             },
-            RED_ATTRIBUTES: {
+            RED_ATTRS: {
                 START_LOC: start_pos_pictograph.elements.red_motion.state.start_loc,
                 END_LOC: start_pos_pictograph.elements.red_motion.state.end_loc,
                 START_ORI: red_start_ori,

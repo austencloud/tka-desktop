@@ -45,7 +45,7 @@ class MotionDataUpdater:
                 return
         else:
             motion_dataset = {}
-        for motion in self.pictograph.elements.motions.values():
+        for motion in self.pictograph.elements.motion_set.values():
             try:
                 if motion_dataset.get(motion.state.color):
                     self._show_motion_graphics(motion.state.color)
@@ -67,7 +67,7 @@ class MotionDataUpdater:
                     exc_info=True,
                 )
 
-        for motion in self.pictograph.elements.motions.values():
+        for motion in self.pictograph.elements.motion_set.values():
             try:
                 if motion.pictograph.state.letter in [
                     Letter.S,

@@ -1,7 +1,7 @@
 import json
 import os
 import hashlib
-from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRS, RED_ATTRS
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from utilities.path_helpers import get_images_and_data_path
 
@@ -40,7 +40,7 @@ class StructuralVariationChecker:
             return False
 
         for b1, b2 in zip(seq1, seq2):
-            for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
+            for color in [BLUE_ATTRS, RED_ATTRS]:
                 if color in b1 and color in b2:
                     if not matches(b1[color], b2[color]):
                         return False

@@ -3,11 +3,11 @@ from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 from Enums.letters import Letter
 from data.constants import (
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     BOX,
     DIAMOND,
     END_ORI,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     START_ORI,
     START_POS,
     END_POS,
@@ -148,12 +148,12 @@ class StartPosPicker(BaseStartPosPicker):
         for pictograph_data in matching_letter_pictographs:
             if pictograph_data[START_POS] == start_pos_key:
 
-                pictograph_data[BLUE_ATTRIBUTES][START_ORI] = start_pos_data[
-                    BLUE_ATTRIBUTES
-                ][END_ORI]
-                pictograph_data[RED_ATTRIBUTES][START_ORI] = start_pos_data[
-                    RED_ATTRIBUTES
-                ][END_ORI]
+                pictograph_data[BLUE_ATTRS][START_ORI] = start_pos_data[BLUE_ATTRS][
+                    END_ORI
+                ]
+                pictograph_data[RED_ATTRS][START_ORI] = start_pos_data[RED_ATTRS][
+                    END_ORI
+                ]
                 pictograph_factory = self.beat_frame.beat_factory
                 pictograph_key = PictographKeyGenerator().generate_pictograph_key(
                     pictograph_data

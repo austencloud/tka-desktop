@@ -99,7 +99,9 @@
     },
     "(o, 3, 3)": {
       "red": [-30, 0],
-      "blue": [-30, 0]
+      "blue": [-30, 0],
+      "blue_rot_angle_override": true,
+      "red_rot_angle_override": true
     },
     "(o, 3, 2.5)": {
       "red": [-40, 5],

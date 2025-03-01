@@ -5,7 +5,15 @@ from PyQt6.QtCore import Qt, QTimer, QSize
 from PyQt6.QtGui import QPixmap, QImage
 import cv2
 import numpy as np
-from data.constants import BLUE_ATTRIBUTES, END_ORI, END_POS, RED_ATTRIBUTES, SEQUENCE_START_POSITION, START_ORI, START_POS
+from data.constants import (
+    BLUE_ATTRS,
+    END_ORI,
+    END_POS,
+    RED_ATTRS,
+    SEQUENCE_START_POSITION,
+    START_ORI,
+    START_POS,
+)
 from main_window.main_widget.sequence_recorder.SR_beat_selection_manager import (
     SR_BeatSelectionManager,
 )
@@ -110,8 +118,8 @@ class SR_BeatFrame(QFrame):
                         QApplication.processEvents()
 
     def update_start_pos_from_current_sequence_json(self, entry: dict) -> None:
-        entry[RED_ATTRIBUTES][START_ORI] = entry[RED_ATTRIBUTES][END_ORI]
-        entry[BLUE_ATTRIBUTES][START_ORI] = entry[BLUE_ATTRIBUTES][END_ORI]
+        entry[RED_ATTRS][START_ORI] = entry[RED_ATTRS][END_ORI]
+        entry[BLUE_ATTRS][START_ORI] = entry[BLUE_ATTRS][END_ORI]
         entry[START_POS] = entry[END_POS]
 
     def get_index_of_currently_selected_beat(self) -> int:

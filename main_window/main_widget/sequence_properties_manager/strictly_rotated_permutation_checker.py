@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRS, RED_ATTRS
 
 
 if TYPE_CHECKING:
@@ -27,9 +27,8 @@ class StrictlyRotatedPermutationChecker:
 
     def _is_strictly_rotated_permutation(self, prev, curr) -> bool:
         return (
-            prev[BLUE_ATTRIBUTES][MOTION_TYPE] == curr[BLUE_ATTRIBUTES][MOTION_TYPE]
-            and prev[BLUE_ATTRIBUTES][PROP_ROT_DIR]
-            == curr[BLUE_ATTRIBUTES][PROP_ROT_DIR]
-            and prev[RED_ATTRIBUTES][MOTION_TYPE] == curr[RED_ATTRIBUTES][MOTION_TYPE]
-            and prev[RED_ATTRIBUTES][PROP_ROT_DIR] == curr[RED_ATTRIBUTES][PROP_ROT_DIR]
+            prev[BLUE_ATTRS][MOTION_TYPE] == curr[BLUE_ATTRS][MOTION_TYPE]
+            and prev[BLUE_ATTRS][PROP_ROT_DIR] == curr[BLUE_ATTRS][PROP_ROT_DIR]
+            and prev[RED_ATTRS][MOTION_TYPE] == curr[RED_ATTRS][MOTION_TYPE]
+            and prev[RED_ATTRS][PROP_ROT_DIR] == curr[RED_ATTRS][PROP_ROT_DIR]
         )

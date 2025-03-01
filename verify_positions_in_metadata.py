@@ -47,12 +47,12 @@ def verify_and_correct_positions(metadata: dict) -> dict:
             if isinstance(beat, dict) and START_POS in beat and END_POS in beat:
                 # Extract blue and red start and end locations
                 start_tuple = (
-                    beat[BLUE_ATTRIBUTES][START_LOC],
-                    beat[RED_ATTRIBUTES][START_LOC],
+                    beat[BLUE_ATTRS][START_LOC],
+                    beat[RED_ATTRS][START_LOC],
                 )
                 end_tuple = (
-                    beat[BLUE_ATTRIBUTES][END_LOC],
-                    beat[RED_ATTRIBUTES][END_LOC],
+                    beat[BLUE_ATTRS][END_LOC],
+                    beat[RED_ATTRS][END_LOC],
                 )
 
                 # Determine correct positions based on the attributes

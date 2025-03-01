@@ -75,7 +75,7 @@ class BeatFactory:
             select_beat=select_beat,
             update_image_export_preview=update_image_export_preview,
         )
-        for motion in new_beat.elements.motions.values():
+        for motion in new_beat.elements.motion_set.values():
             if motion.state.motion_type == FLOAT:
                 letter = self.main_widget.letter_determiner.determine_letter(motion)
                 new_beat.state.letter = letter

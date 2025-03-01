@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 from data.constants import (
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     DIRECTION,
     END_LOC,
     END_POS,
     LETTER,
     MOTION_TYPE,
     PROP_ROT_DIR,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     START_LOC,
     START_POS,
     TIMING,
@@ -19,8 +19,8 @@ if TYPE_CHECKING:
 
 class PictographKeyGenerator:
     def generate_pictograph_key(self, pictograph_data: dict) -> str:
-        blue_attrs = pictograph_data[BLUE_ATTRIBUTES]
-        red_attrs = pictograph_data[RED_ATTRIBUTES]
+        blue_attrs = pictograph_data[BLUE_ATTRS]
+        red_attrs = pictograph_data[RED_ATTRS]
 
         return (
             f"{pictograph_data[LETTER]}_"

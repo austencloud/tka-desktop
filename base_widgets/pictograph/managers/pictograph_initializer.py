@@ -54,7 +54,7 @@ class PictographInitializer:
         self.pictograph.elements.locations = self.init_quadrant_boundaries(
             self.pictograph.elements.grid
         )
-        self.pictograph.elements.motions = self.init_motions()
+        self.pictograph.elements.motion_set = self.init_motions()
         self.pictograph.elements.arrows = self.init_arrows()
         self.pictograph.elements.props = self.init_props()
         self.pictograph.elements.tka_glyph = self.init_tka_glyph()
@@ -141,11 +141,11 @@ class PictographInitializer:
             )
             props[color].prop_data["prop_type"] = prop_type
             props[color].prop_type_str = prop_type
-            self.pictograph.elements.motions[color].prop = props[color]
-            props[color].motion = self.pictograph.elements.motions[color]
+            self.pictograph.elements.motion_set[color].prop = props[color]
+            props[color].motion = self.pictograph.elements.motion_set[color]
 
-            props[color].arrow = self.pictograph.elements.motions[color].arrow
-            self.pictograph.elements.motions[color].arrow.motion.prop = props[color]
+            props[color].arrow = self.pictograph.elements.motion_set[color].arrow
+            self.pictograph.elements.motion_set[color].arrow.motion.prop = props[color]
             self.pictograph.addItem(props[color])
             props[color].hide()
 
@@ -220,8 +220,8 @@ class PictographInitializer:
             TURNS: 0,
         }
         arrow = Arrow(self.pictograph, arrow_data)
-        self.pictograph.elements.motions[color].arrow = arrow
-        arrow.motion = self.pictograph.elements.motions[color]
+        self.pictograph.elements.motion_set[color].arrow = arrow
+        arrow.motion = self.pictograph.elements.motion_set[color]
         self.pictograph.addItem(arrow)
         arrow.hide()
         return arrow

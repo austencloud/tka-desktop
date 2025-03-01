@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRS, RED_ATTRS
 
 
 if TYPE_CHECKING:
@@ -35,6 +35,6 @@ class StrictlyColorSwappedPermutationChecker:
     def _is_color_swapped(self, first_entry, second_entry) -> bool:
         # Strictly checks if the roles are swapped without any mirroring
         return (
-            first_entry[BLUE_ATTRIBUTES] == second_entry[RED_ATTRIBUTES]
-            and first_entry[RED_ATTRIBUTES] == second_entry[BLUE_ATTRIBUTES]
+            first_entry[BLUE_ATTRS] == second_entry[RED_ATTRS]
+            and first_entry[RED_ATTRS] == second_entry[BLUE_ATTRS]
         )

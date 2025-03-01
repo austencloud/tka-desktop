@@ -4,7 +4,7 @@ from typing import Optional, Union
 from Enums.Enums import Letter
 from Enums.PropTypes import PropType
 from Enums.letters import LetterType
-from data.constants import BLUE_ATTRIBUTES, LETTER, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRS, LETTER, RED_ATTRS
 
 
 @dataclass
@@ -42,7 +42,7 @@ class PictographState:
                 )
                 self.letter_type = LetterType.get_letter_type(letter_obj)
                 self.pictograph_data["letter_type"] = self.letter_type.name
-            elif key in (BLUE_ATTRIBUTES, RED_ATTRIBUTES):
+            elif key in (BLUE_ATTRS, RED_ATTRS):
                 if key not in self.pictograph_data:
                     self.pictograph_data[key] = {}
                 if isinstance(value, dict):
@@ -55,6 +55,7 @@ class PictographState:
             else:
                 setattr(self, key, value)
                 self.pictograph_data[key] = value
+
 
 def deep_merge_dict(dest: dict, src: dict) -> dict:
     for key, value in src.items():

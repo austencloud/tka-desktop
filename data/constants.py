@@ -151,8 +151,8 @@ ANTI_TURNS = "anti_turns"
 PREFLOAT_MOTION_TYPE = "prefloat_motion_type"
 PREFLOAT_PROP_ROT_DIR = "prefloat_prop_rot_dir"
 
-BLUE_ATTRIBUTES = "blue_attributes"
-RED_ATTRIBUTES = "red_attributes"
+BLUE_ATTRS = "blue_attributes"
+RED_ATTRS = "red_attributes"
 
 STATIC_HANDPATH = "static_handpath"
 DASH_HANDPATH = "dash_handpath"

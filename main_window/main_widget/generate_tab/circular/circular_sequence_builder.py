@@ -4,13 +4,13 @@ import random
 from copy import deepcopy
 from PyQt6.QtCore import Qt
 from data.constants import (
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     CLOCKWISE,
     COUNTER_CLOCKWISE,
     DASH,
     END_POS,
     MOTION_TYPE,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     STATIC,
     VERTICAL,
 )
@@ -90,9 +90,11 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             )
             self.sequence.append(next_pictograph)
             self.sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
-                next_pictograph, override_grow_sequence=True, update_image_export_preview=False
+                next_pictograph,
+                override_grow_sequence=True,
+                update_image_export_preview=False,
             )
-            
+
             QApplication.processEvents()
 
         self._apply_permutations(self.sequence, permutation_type, slice_size)
@@ -102,7 +104,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         QApplication.restoreOverrideCursor()
         self.sequence_workbench.sequence_beat_frame.emit_update_image_export_preview()
-        
+
     def _generate_next_pictograph(
         self,
         level: int,
@@ -142,9 +144,9 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         if level == 2 or level == 3:
             next_beat = self.set_turns(next_beat, turn_blue, turn_red)
-        if next_beat[BLUE_ATTRIBUTES][MOTION_TYPE] in [DASH, STATIC] or next_beat[
-            RED_ATTRIBUTES
-        ][MOTION_TYPE] in [DASH, STATIC]:
+        if next_beat[BLUE_ATTRS][MOTION_TYPE] in [DASH, STATIC] or next_beat[RED_ATTRS][
+            MOTION_TYPE
+        ] in [DASH, STATIC]:
             self.update_dash_static_prop_rot_dirs(
                 next_beat,
                 prop_continuity,

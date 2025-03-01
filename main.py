@@ -14,9 +14,10 @@ from paint_event_supressor import PaintEventSuppressor
 from splash_screen.splash_screen import SplashScreen
 from main_window.main_window import MainWindow
 from profiler import Profiler
+from utilities.path_helpers import get_images_and_data_path
 
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
-LOG_FILE_PATH = "trace_log.txt"
+LOG_FILE_PATH = get_images_and_data_path("trace_log.txt")
 log_file = open(LOG_FILE_PATH, "w")
 
 
@@ -52,5 +53,5 @@ def main() -> None:
 if __name__ == "__main__":
     PaintEventSuppressor.install_message_handler()
     tracer = CallTracer(PROJECT_DIR, log_file)
-    # sys.settrace(tracer.trace_calls)
+    sys.settrace(tracer.trace_calls)
     main()

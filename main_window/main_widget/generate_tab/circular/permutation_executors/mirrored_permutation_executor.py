@@ -85,30 +85,30 @@ class MirroredPermutationExecutor(PermutationExecutor):
             ),
             TIMING: previous_matching_beat[TIMING],
             DIRECTION: previous_matching_beat[DIRECTION],
-            BLUE_ATTRIBUTES: self.create_new_attributes(
-                previous_entry[BLUE_ATTRIBUTES],
-                previous_matching_beat[BLUE_ATTRIBUTES],
+            BLUE_ATTRS: self.create_new_attributes(
+                previous_entry[BLUE_ATTRS],
+                previous_matching_beat[BLUE_ATTRS],
             ),
-            RED_ATTRIBUTES: self.create_new_attributes(
-                previous_entry[RED_ATTRIBUTES],
-                previous_matching_beat[RED_ATTRIBUTES],
+            RED_ATTRS: self.create_new_attributes(
+                previous_entry[RED_ATTRS],
+                previous_matching_beat[RED_ATTRS],
             ),
         }
 
-        new_entry[BLUE_ATTRIBUTES][END_ORI] = (
+        new_entry[BLUE_ATTRS][END_ORI] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
                 new_entry, BLUE
             )
         )
-        new_entry[RED_ATTRIBUTES][END_ORI] = (
+        new_entry[RED_ATTRS][END_ORI] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
                 new_entry, RED
             )
         )
         if color_swap_second_half:
-            new_entry[BLUE_ATTRIBUTES], new_entry[RED_ATTRIBUTES] = (
-                new_entry[RED_ATTRIBUTES],
-                new_entry[BLUE_ATTRIBUTES],
+            new_entry[BLUE_ATTRS], new_entry[RED_ATTRS] = (
+                new_entry[RED_ATTRS],
+                new_entry[BLUE_ATTRS],
             )
         return new_entry
 

@@ -6,7 +6,7 @@ import logging
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout, QComboBox, QVBoxLayout
 from PyQt6.QtCore import Qt
 
-from data.constants import BLUE_ATTRIBUTES, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRS, RED_ATTRS
 
 if TYPE_CHECKING:
     from .codex_control_widget import CodexControlWidget
@@ -56,10 +56,10 @@ class CodexOriSelector(QWidget):
                 scene = view.pictograph
                 if scene.state.pictograph_data:
                     new_dict = scene.state.pictograph_data.copy()
-                    if BLUE_ATTRIBUTES in new_dict:
-                        new_dict[BLUE_ATTRIBUTES][START_ORI] = orientation
-                    if RED_ATTRIBUTES in new_dict:
-                        new_dict[RED_ATTRIBUTES][START_ORI] = orientation
+                    if BLUE_ATTRS in new_dict:
+                        new_dict[BLUE_ATTRS][START_ORI] = orientation
+                    if RED_ATTRS in new_dict:
+                        new_dict[RED_ATTRS][START_ORI] = orientation
                     scene.managers.updater.update_pictograph(new_dict)
                     logger.debug(
                         f"Updated orientation for pictograph '{letter_str}' to '{orientation}'."

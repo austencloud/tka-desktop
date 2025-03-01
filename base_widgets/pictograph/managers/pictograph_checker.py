@@ -92,13 +92,13 @@ class PictographChecker:
         )
 
     def has_a_dash(self) -> bool:
-        for motion in self.pictograph.elements.motions.values():
+        for motion in self.pictograph.elements.motion_set.values():
             if motion.state.motion_type == DASH:
                 return True
         return False
 
     def has_a_static_motion(self) -> bool:
-        for motion in self.pictograph.elements.motions.values():
+        for motion in self.pictograph.elements.motion_set.values():
             if motion.state.motion_type == STATIC:
                 return True
         return False
@@ -110,8 +110,8 @@ class PictographChecker:
             END_POS,
             TIMING,
             DIRECTION,
-            BLUE_ATTRIBUTES,
-            RED_ATTRIBUTES,
+            BLUE_ATTRS,
+            RED_ATTRS,
         ]
         nested_blue_required_keys = [
             MOTION_TYPE,
@@ -127,11 +127,11 @@ class PictographChecker:
             return False
 
         for key in nested_blue_required_keys:
-            if key not in pictograph_data[BLUE_ATTRIBUTES]:
+            if key not in pictograph_data[BLUE_ATTRS]:
                 return False
 
         for key in nested_red_required_keys:
-            if key not in pictograph_data[RED_ATTRIBUTES]:
+            if key not in pictograph_data[RED_ATTRS]:
                 return False
 
         return True
@@ -212,11 +212,11 @@ class PictographChecker:
     def has_one_float(self) -> bool:
         return any(
             motion.state.motion_type == FLOAT
-            for motion in self.pictograph.elements.motions.values()
+            for motion in self.pictograph.elements.motion_set.values()
         )
 
     def has_two_floats(self) -> bool:
         return all(
             motion.state.motion_type == FLOAT
-            for motion in self.pictograph.elements.motions.values()
+            for motion in self.pictograph.elements.motion_set.values()
         )

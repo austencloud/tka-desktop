@@ -47,10 +47,10 @@ class PictographUpdater:
             self.pictograph.state.update_pictograph_state(pictograph_data)
 
         self.update_grid_mode_if_changed()
-        
+
         self.motion_updater.update_motions(pictograph_data)
         self.arrow_updater.update_arrows(pictograph_data)
-        
+
         self.pictograph.elements.grid.update_grid_mode()
         self.pictograph.elements.vtg_glyph.set_vtg_mode()
         self.pictograph.elements.elemental_glyph.set_elemental_glyph()
@@ -60,11 +60,11 @@ class PictographUpdater:
 
         self.pictograph.elements.tka_glyph.update_tka_glyph()
         self.pictograph.elements.reversal_glyph.update_reversal_symbols()
-        if pictograph_data:
-            for color in [RED, BLUE]:
-                self.pictograph.elements.props[color].updater.update_prop(
-                    self.get_prop_data(pictograph_data, color)
-                )
+        # if pictograph_data:
+        #     for color in [RED, BLUE]:
+        #         self.pictograph.elements.props[color].updater.update_prop(
+        #             self.get_prop_data(pictograph_data, color)
+        #         )
 
         logger.debug("Data update (partial or complete) applied successfully.")
 
@@ -97,7 +97,7 @@ class PictographUpdater:
                 )
                 logger.debug("Lead states set for letters S, T, U, V.")
             else:
-                for motion in self.pictograph.elements.motions.values():
+                for motion in self.pictograph.elements.motion_set.values():
                     motion.state.lead_state = None
         except Exception as e:
             logger.error(f"Error updating lead states: {e}", exc_info=True)

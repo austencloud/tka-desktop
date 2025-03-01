@@ -1,12 +1,12 @@
 from typing import Any, Optional
 from data.constants import (
     BLUE,
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     END_ORI,
     END_POS,
     PROP_ROT_DIR,
     RED,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     START_ORI,
     START_POS,
 )
@@ -38,12 +38,12 @@ class OptionGetter:
     ) -> None:
         last = sequence[-1]
         for option in options:
-            option[BLUE_ATTRIBUTES][START_ORI] = last[BLUE_ATTRIBUTES][END_ORI]
-            option[RED_ATTRIBUTES][START_ORI] = last[RED_ATTRIBUTES][END_ORI]
-            option[BLUE_ATTRIBUTES][END_ORI] = self.ori_calculator.calculate_end_ori(
+            option[BLUE_ATTRS][START_ORI] = last[BLUE_ATTRS][END_ORI]
+            option[RED_ATTRS][START_ORI] = last[RED_ATTRS][END_ORI]
+            option[BLUE_ATTRS][END_ORI] = self.ori_calculator.calculate_end_ori(
                 option, BLUE
             )
-            option[RED_ATTRIBUTES][END_ORI] = self.ori_calculator.calculate_end_ori(
+            option[RED_ATTRS][END_ORI] = self.ori_calculator.calculate_end_ori(
                 option, RED
             )
 
@@ -88,8 +88,8 @@ class OptionGetter:
 
         last_blue = get_last_rot(sequence[1:], BLUE)
         last_red = get_last_rot(sequence[1:], RED)
-        curr_blue = o.get(BLUE_ATTRIBUTES, {}).get(PROP_ROT_DIR, NO_ROT)
-        curr_red = o.get(RED_ATTRIBUTES, {}).get(PROP_ROT_DIR, NO_ROT)
+        curr_blue = o.get(BLUE_ATTRS, {}).get(PROP_ROT_DIR, NO_ROT)
+        curr_red = o.get(RED_ATTRS, {}).get(PROP_ROT_DIR, NO_ROT)
         if curr_blue == NO_ROT:
             curr_blue = last_blue
         if curr_red == NO_ROT:

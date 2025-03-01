@@ -5,11 +5,11 @@ import random
 from typing import TYPE_CHECKING, Dict, Any
 
 from data.constants import (
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     DIAMOND,
     END_POS,
     IN,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     START_ORI,
     END_ORI,
     START_POS,
@@ -43,7 +43,9 @@ class SequenceBuilderStartPosManager:
         if permutation_type == "mirrored":
             start_keys = self.ALPHABETA_KEYS
         else:
-            start_keys = self.DIAMOND_KEYS if self.grid_mode == DIAMOND else self.OTHER_KEYS
+            start_keys = (
+                self.DIAMOND_KEYS if self.grid_mode == DIAMOND else self.OTHER_KEYS
+            )
         chosen_key = random.choice(start_keys)
         try:
             start_pos, end_pos = chosen_key.split("_")
@@ -77,7 +79,7 @@ class SequenceBuilderStartPosManager:
         """
         Sets all relevant orientation attributes to 'in'.
         """
-        pictograph_data[BLUE_ATTRIBUTES][START_ORI] = IN
-        pictograph_data[RED_ATTRIBUTES][START_ORI] = IN
-        pictograph_data[BLUE_ATTRIBUTES][END_ORI] = IN
-        pictograph_data[RED_ATTRIBUTES][END_ORI] = IN
+        pictograph_data[BLUE_ATTRS][START_ORI] = IN
+        pictograph_data[RED_ATTRS][START_ORI] = IN
+        pictograph_data[BLUE_ATTRS][END_ORI] = IN
+        pictograph_data[RED_ATTRS][END_ORI] = IN

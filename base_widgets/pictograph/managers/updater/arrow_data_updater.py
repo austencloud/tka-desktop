@@ -3,11 +3,11 @@ from typing import TYPE_CHECKING, Tuple
 
 from Enums.letters import LetterType
 from data.constants import (
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     PROP_ROT_DIR,
     RED,
     BLUE,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     TURNS,
 )
 
@@ -46,12 +46,12 @@ class ArrowDataUpdater:
     def _extract_arrow_datasets(self, pictograph_data: dict) -> Tuple[dict, dict]:
         red_data = (
             self._get_arrow_data_from_pictograph_data(pictograph_data, RED)
-            if pictograph_data.get(RED_ATTRIBUTES, {})
+            if pictograph_data.get(RED_ATTRS, {})
             else None
         )
         blue_data = (
             self._get_arrow_data_from_pictograph_data(pictograph_data, BLUE)
-            if pictograph_data.get(BLUE_ATTRIBUTES, {})
+            if pictograph_data.get(BLUE_ATTRS, {})
             else None
         )
         return red_data, blue_data

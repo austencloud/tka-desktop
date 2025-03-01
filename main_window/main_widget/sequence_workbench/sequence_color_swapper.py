@@ -1,5 +1,13 @@
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, END_LOC, END_POS, RED_ATTRIBUTES, START_LOC, START_POS
+from data.constants import (
+    BEAT,
+    BLUE_ATTRS,
+    END_LOC,
+    END_POS,
+    RED_ATTRS,
+    START_LOC,
+    START_POS,
+)
 from data.positions_map import positions_map
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
@@ -36,28 +44,29 @@ class SequenceColorSwapper(BaseSequenceModifier):
         QApplication.restoreOverrideCursor()
 
     def _color_swap_sequence(self) -> list[dict]:
-
         self.sequence_workbench.button_panel.toggle_swap_colors_icon()
         metadata = (
             AppContext.json_manager().loader_saver.load_current_sequence()[0].copy()
         )
-        swapped_sequence = []
-        swapped_sequence.append(metadata)
+        swapped_sequence = [metadata]
 
-        start_pos_beat_dict: dict = (
+        start_pos_beat_data: dict = (
             self.sequence_workbench.sequence_beat_frame.start_pos_view.start_pos.state.pictograph_data.copy()
         )
-        self._color_swap_dict(start_pos_beat_dict)
-        swapped_sequence.append(start_pos_beat_dict)
+
+        self._color_swap_pictograph_data(start_pos_beat_data)
+        swapped_sequence.append(start_pos_beat_data)
 
         beat_dicts = self.sequence_workbench.sequence_beat_frame.get.beat_dicts()
-        for beat_dict in beat_dicts:
-            swapped_beat = beat_dict.copy()
-            self._color_swap_dict(swapped_beat)
-            swapped_sequence.append(swapped_beat)
+
+        for beat_data in beat_dicts:
+            swapped_beat_data = beat_data.copy()
+            self._color_swap_pictograph_data(swapped_beat_data)
+
+            swapped_sequence.append(swapped_beat_data)
+
         for beat_view in self.sequence_workbench.sequence_beat_frame.beat_views:
             beat = beat_view.beat
-
             red_reversal = beat.state.red_reversal
             blue_reversal = beat.state.blue_reversal
             beat.state.red_reversal = blue_reversal
@@ -65,17 +74,28 @@ class SequenceColorSwapper(BaseSequenceModifier):
 
         return swapped_sequence
 
-    def _color_swap_dict(self, _dict):
-        _dict[BLUE_ATTRIBUTES], _dict[RED_ATTRIBUTES] = (
-            _dict[RED_ATTRIBUTES],
-            _dict[BLUE_ATTRIBUTES],
+    def _color_swap_pictograph_data(self, beat_data):
+        print("Before swap:", beat_data[BLUE_ATTRS], beat_data[RED_ATTRS])
+
+        # Perform swap
+        beat_data[BLUE_ATTRS], beat_data[RED_ATTRS] = (
+            beat_data[RED_ATTRS],
+            beat_data[BLUE_ATTRS],
         )
 
-        for loc in [START_LOC, END_LOC]:
-            if loc in _dict[BLUE_ATTRIBUTES] and loc in _dict[RED_ATTRIBUTES]:
-                left_loc = _dict[BLUE_ATTRIBUTES][loc]
-                right_loc = _dict[RED_ATTRIBUTES][loc]
-                pos_key = START_POS if loc == START_LOC else END_POS
-                _dict[pos_key] = positions_map.get((left_loc, right_loc))
+        print("After swap:", beat_data[BLUE_ATTRS], beat_data[RED_ATTRS])
 
-        return _dict
+        for loc in [START_LOC, END_LOC]:
+            if loc in beat_data[BLUE_ATTRS] and loc in beat_data[RED_ATTRS]:
+                left_loc = beat_data[BLUE_ATTRS][loc]
+                right_loc = beat_data[RED_ATTRS][loc]
+                pos_key = START_POS if loc == START_LOC else END_POS
+                mapped_pos = positions_map.get((left_loc, right_loc))
+
+                if mapped_pos is None:
+                    print(f"⚠️ WARNING: positions_map.get(({left_loc}, {right_loc})) returned None!")
+
+                beat_data[pos_key] = mapped_pos
+
+
+        return beat_data

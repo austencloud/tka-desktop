@@ -13,7 +13,11 @@ from data.constants import (
     ICON_DIR,
     NO_ROT,
     PRO,
-    STATIC, MOTION_TYPE, PROP_ROT_DIR, TURNS, LETTER
+    STATIC,
+    MOTION_TYPE,
+    PROP_ROT_DIR,
+    TURNS,
+    LETTER,
 )
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 from utilities.reversal_detector import (
@@ -79,7 +83,7 @@ class PropRotDirButtonManager:
         ]
 
         for pictograph in both_pictographs:
-            for motion in pictograph.elements.motions.values():
+            for motion in pictograph.elements.motion_set.values():
                 if motion.state.color == self.turns_box.color:
                     motion.state.prop_rot_dir = prop_rot_dir
                     motion.state.motion_type = self._get_new_motion_type(motion)

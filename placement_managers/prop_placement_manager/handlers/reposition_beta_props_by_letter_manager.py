@@ -32,7 +32,7 @@ class RepositionBetaByLetterHandler:
             if self.pictograph.elements.red_motion.state.motion_type == ANTI
             else self.pictograph.elements.blue_prop
         )
-        pro_motion = self.pictograph.elements.motions[pro_prop.color]
+        pro_motion = self.pictograph.elements.motion_set[pro_prop.color]
         pro_direction = self.dir_calculator.get_dir(pro_motion)
         anti_direction = self.dir_calculator.get_opposite_dir(pro_direction)
         self.move_prop(pro_prop, pro_direction)

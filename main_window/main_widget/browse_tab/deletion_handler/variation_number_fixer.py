@@ -2,7 +2,7 @@ import os
 import re
 import json
 from PIL import Image
-from data.constants import BLUE_ATTRIBUTES, SEQUENCE_START_POSITION, START_ORI
+from data.constants import BLUE_ATTRS, SEQUENCE_START_POSITION, START_ORI
 from utilities.path_helpers import get_images_and_data_path
 
 
@@ -37,7 +37,7 @@ class VariationNumberFixer:
         if metadata and "sequence" in metadata:
             for item in metadata["sequence"]:
                 if SEQUENCE_START_POSITION in item:
-                    start_ori = item[BLUE_ATTRIBUTES][START_ORI]
+                    start_ori = item[BLUE_ATTRS][START_ORI]
                     return start_ori
         return None
 

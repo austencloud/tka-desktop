@@ -35,7 +35,7 @@ class PictographGetter:
         )
 
     def motion_by_color(self, color: str) -> Motion:
-        return self.pictograph.elements.motions.get(color)
+        return self.pictograph.elements.motion_set.get(color)
 
     def letter_type(self, letter: Letter) -> Optional[str]:
         letter_type_map = {
@@ -48,7 +48,7 @@ class PictographGetter:
     def motions_by_type(self, motion_type: str) -> list[Motion]:
         return [
             motion
-            for motion in self.pictograph.elements.motions.values()
+            for motion in self.pictograph.elements.motion_set.values()
             if motion.state.motion_type == motion_type
         ]
 
@@ -122,7 +122,7 @@ class PictographGetter:
             END_POS: self.pictograph.state.end_pos,
             TIMING: self.pictograph.state.timing,
             DIRECTION: self.pictograph.state.direction,
-            BLUE_ATTRIBUTES: {
+            BLUE_ATTRS: {
                 MOTION_TYPE: self.blue_motion.state.motion_type,
                 START_ORI: self.blue_motion.state.start_ori,
                 PROP_ROT_DIR: self.blue_motion.state.prop_rot_dir,
@@ -131,7 +131,7 @@ class PictographGetter:
                 TURNS: self.blue_motion.state.turns,
                 END_ORI: self.blue_motion.state.end_ori,
             },
-            RED_ATTRIBUTES: {
+            RED_ATTRS: {
                 MOTION_TYPE: self.red_motion.state.motion_type,
                 START_ORI: self.red_motion.state.start_ori,
                 PROP_ROT_DIR: self.red_motion.state.prop_rot_dir,

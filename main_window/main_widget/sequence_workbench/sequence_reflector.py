@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 from data.constants import (
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     CLOCKWISE,
     COUNTER_CLOCKWISE,
     END_LOC,
     END_POS,
     PROP_ROT_DIR,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     START_LOC,
     START_POS,
     VERTICAL,
@@ -85,7 +85,7 @@ class SequenceReflector(BaseSequenceModifier):
                     pictograph_data[key], pictograph_data[key]
                 )
 
-        for color in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
+        for color in [BLUE_ATTRS, RED_ATTRS]:
             if color in pictograph_data:
                 attributes = pictograph_data[color]
                 for loc_key in [START_LOC, END_LOC]:

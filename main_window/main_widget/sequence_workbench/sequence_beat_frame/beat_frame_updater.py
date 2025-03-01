@@ -2,10 +2,12 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
 from data.constants import (
     BEAT,
-    BLUE_ATTRIBUTES,
+    BLUE,
+    BLUE_ATTRS,
     END_ORI,
     END_POS,
-    RED_ATTRIBUTES,
+    RED,
+    RED_ATTRS,
     SEQUENCE_START_POSITION,
     START_ORI,
     START_POS,
@@ -67,37 +69,38 @@ class BeatFrameUpdater:
             self.bf.sequence_workbench.difficulty_label.update_difficulty_label()
 
     def update_start_pos_from_current_sequence_json(self, entry: dict) -> None:
-        entry[RED_ATTRIBUTES][START_ORI] = entry[RED_ATTRIBUTES][END_ORI]
-        entry[BLUE_ATTRIBUTES][START_ORI] = entry[BLUE_ATTRIBUTES][END_ORI]
+        entry[RED_ATTRS][START_ORI] = entry[RED_ATTRS][END_ORI]
+        entry[BLUE_ATTRS][START_ORI] = entry[BLUE_ATTRS][END_ORI]
         entry[START_POS] = entry[END_POS]
         self.bf.start_pos_view.start_pos.managers.updater.update_pictograph(entry)
 
     def update_beats_from(self, modified_sequence_json: list[dict]):
-        self.json_manager = self.json_manager
-        json_updater = self.json_manager.updater
         self.json_manager.loader_saver.clear_current_sequence_file()
 
         def update_beat(beat: "Beat", beat_dict: dict, start_pos: bool = False):
             beat.managers.updater.update_pictograph(beat_dict)
-            grid_mode = GridModeChecker.get_grid_mode(beat_dict)
-            beat.elements.grid.hide()
-            beat.elements.grid.__init__(beat, beat.elements.grid.grid_data, grid_mode)
-            if not start_pos:
-                json_updater.update_current_sequence_file_with_beat(beat)
 
+
+            if not start_pos:
+                self.json_manager.updater.update_current_sequence_file_with_beat(beat)
+
+        # Start position update
         if len(modified_sequence_json) > 1:
             start_pos_dict = modified_sequence_json[1]
             start_pos = self.bf.start_pos_view.start_pos
             update_beat(start_pos, start_pos_dict, start_pos=True)
             self.json_manager.start_pos_handler.set_start_position_data(start_pos)
 
+        # Update beats
         for i, beat_dict in enumerate(modified_sequence_json[2:], start=0):
             if i < len(self.bf.beat_views) and self.bf.beat_views[i].is_filled:
                 update_beat(self.bf.beat_views[i].beat, beat_dict)
             else:
                 break
 
+
         self.bf.main_widget.sequence_workbench.graph_editor.update_graph_editor()
+
 
     def reset_beat_frame(self) -> None:
         for beat_view in self.bf.beat_views:

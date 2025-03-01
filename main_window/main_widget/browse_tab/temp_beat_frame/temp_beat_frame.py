@@ -5,10 +5,10 @@ from PyQt6.QtCore import Qt
 
 from base_widgets.base_beat_frame import BaseBeatFrame
 from data.constants import (
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     END_ORI,
     END_POS,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     SEQUENCE_START_POSITION,
     START_ORI,
     START_POS,
@@ -124,8 +124,8 @@ class TempBeatFrame(BaseBeatFrame):
                         beat.managers.updater.update_pictograph(entry)
 
     def update_start_pos_from_current_sequence_json(self, entry: dict) -> None:
-        entry[RED_ATTRIBUTES][START_ORI] = entry[RED_ATTRIBUTES][END_ORI]
-        entry[BLUE_ATTRIBUTES][START_ORI] = entry[BLUE_ATTRIBUTES][END_ORI]
+        entry[RED_ATTRS][START_ORI] = entry[RED_ATTRS][END_ORI]
+        entry[BLUE_ATTRS][START_ORI] = entry[BLUE_ATTRS][END_ORI]
         entry[START_POS] = entry[END_POS]
         self.start_pos_view.start_pos.managers.updater.update_pictograph(entry)
 

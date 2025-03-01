@@ -36,8 +36,8 @@ class TurnsAdjustmentManager(QObject):
         self.reference_beat = GE_view.reference_beat
 
         current_turns = self.get_current_turns_value()
-        GE_motion = self.GE_pictograph.elements.motions[self.color]
-        matching_motion = self.reference_beat.elements.motions[self.color]
+        GE_motion = self.GE_pictograph.elements.motion_set[self.color]
+        matching_motion = self.reference_beat.elements.motion_set[self.color]
 
         if current_turns == "fl" and adjustment > 0:
             new_turns = 0
@@ -114,10 +114,10 @@ class TurnsAdjustmentManager(QObject):
         self.json_manager.updater.turns_updater.update_turns_in_json_at_index(
             pictograph_index + 2, self.color, new_turns, self.beat_frame
         )
-        self.reference_beat.elements.motions[self.color].turns = new_turns
+        self.reference_beat.elements.motion_set[self.color].turns = new_turns
         # self.reference_beat.view.repaint()
         self.turns_widget.update_turns_display(
-            self.reference_beat.elements.motions[self.color], new_turns
+            self.reference_beat.elements.motion_set[self.color], new_turns
         )
 
         for pictograph in [self.reference_beat, self.GE_pictograph]:
@@ -125,8 +125,8 @@ class TurnsAdjustmentManager(QObject):
                 pictograph, new_turns
             )
 
-        matching_motion = self.reference_beat.elements.motions[self.color]
-        GE_motion = self.GE_pictograph.elements.motions[self.color]
+        matching_motion = self.reference_beat.elements.motion_set[self.color]
+        GE_motion = self.GE_pictograph.elements.motion_set[self.color]
 
         for motion in [matching_motion, GE_motion]:
             motion.state.turns = new_turns
@@ -169,7 +169,7 @@ class TurnsAdjustmentManager(QObject):
 
     def _update_motion_properties(self, new_turns) -> None:
         for motion in [
-            self.reference_beat.elements.motions[self.color],
-            self.GE_pictograph.elements.motions[self.color],
+            self.reference_beat.elements.motion_set[self.color],
+            self.GE_pictograph.elements.motion_set[self.color],
         ]:
             self.turns_widget.turns_updater.set_motion_turns(motion, new_turns)

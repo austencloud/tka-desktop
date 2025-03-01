@@ -30,7 +30,7 @@ class StartPositionBeatView(BeatView):
         self.blank_beat.elements.grid.hide()
 
     def set_start_pos(self, start_pos: "StartPositionBeat") -> None:
-        self.start_pos = self.beat = start_pos
+        self.start_pos = self.beat = self.pictograph = start_pos
         self.is_filled = True
         self.start_pos.view = self
         self.setScene(self.start_pos)

@@ -7,7 +7,7 @@ from data.constants import (
     ANTI,
     BEAT,
     BLUE,
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     END_ORI,
     FLOAT,
     MOTION_TYPE,
@@ -17,7 +17,7 @@ from data.constants import (
     PROP_ROT_DIR,
     RED,
     DASH,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     START_ORI,
     STATIC,
     NO_ROT,
@@ -77,16 +77,16 @@ class BaseSequenceBuilder:
         Updates the start orientations of the next beat based on the end orientations of the last beat.
         Ensures no None values are assigned.
         """
-        blue_end_ori = last_data[BLUE_ATTRIBUTES].get(END_ORI)
-        red_end_ori = last_data[RED_ATTRIBUTES].get(END_ORI)
+        blue_end_ori = last_data[BLUE_ATTRS].get(END_ORI)
+        red_end_ori = last_data[RED_ATTRS].get(END_ORI)
 
         if blue_end_ori is None or red_end_ori is None:
             raise ValueError(
                 "End orientations cannot be None. Ensure the previous beat has valid orientations."
             )
 
-        next_data[BLUE_ATTRIBUTES][START_ORI] = blue_end_ori
-        next_data[RED_ATTRIBUTES][START_ORI] = red_end_ori
+        next_data[BLUE_ATTRS][START_ORI] = blue_end_ori
+        next_data[RED_ATTRS][START_ORI] = red_end_ori
 
     def update_end_orientations(self, next_data: dict[str, Any]) -> None:
         """
@@ -100,8 +100,8 @@ class BaseSequenceBuilder:
                 "Calculated end orientations cannot be None. Please check the input data and orientation calculator."
             )
 
-        next_data[BLUE_ATTRIBUTES][END_ORI] = blue_end_ori
-        next_data[RED_ATTRIBUTES][END_ORI] = red_end_ori
+        next_data[BLUE_ATTRS][END_ORI] = blue_end_ori
+        next_data[RED_ATTRS][END_ORI] = red_end_ori
 
     def update_dash_static_prop_rot_dirs(
         self,
@@ -155,8 +155,8 @@ class BaseSequenceBuilder:
             opt
             for opt in options
             if (
-                opt[BLUE_ATTRIBUTES].get(PROP_ROT_DIR) in [blue_rot, NO_ROT]
-                and opt[RED_ATTRIBUTES].get(PROP_ROT_DIR) in [red_rot, NO_ROT]
+                opt[BLUE_ATTRS].get(PROP_ROT_DIR) in [blue_rot, NO_ROT]
+                and opt[RED_ATTRS].get(PROP_ROT_DIR) in [red_rot, NO_ROT]
             )
         ] or options
 
@@ -184,11 +184,11 @@ class BaseSequenceBuilder:
         if turn_blue == "fl":
             self._set_float_turns(next_beat, BLUE)
         else:
-            next_beat[BLUE_ATTRIBUTES][TURNS] = turn_blue
+            next_beat[BLUE_ATTRS][TURNS] = turn_blue
 
         if turn_red == "fl":
             self._set_float_turns(next_beat, RED)
         else:
-            next_beat[RED_ATTRIBUTES][TURNS] = turn_red
+            next_beat[RED_ATTRS][TURNS] = turn_red
 
         return next_beat

@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRIBUTES, END_POS, RED_ATTRIBUTES
+from data.constants import BLUE_ATTRS, END_POS, RED_ATTRS
 from data.positions import mirrored_positions
 
 if TYPE_CHECKING:
@@ -46,8 +46,8 @@ class MirroredColorSwappedPermutationChecker:
 
     def _is_color_swapped(self, first_entry, second_entry) -> bool:
         return (
-            first_entry[BLUE_ATTRIBUTES] == second_entry[RED_ATTRIBUTES]
-            and first_entry[RED_ATTRIBUTES] == second_entry[BLUE_ATTRIBUTES]
+            first_entry[BLUE_ATTRS] == second_entry[RED_ATTRS]
+            and first_entry[RED_ATTRS] == second_entry[BLUE_ATTRS]
         )
 
     def _get_mirrored_and_colorswapped_position(self, position, direction):

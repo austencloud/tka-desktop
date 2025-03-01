@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
 from data.constants import (
     BLUE,
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     END_ORI,
     RED,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     START_ORI,
 )
 
@@ -36,12 +36,8 @@ class JsonOriValidationEngine:
         Validates and updates the start and end orientations of a single pictograph.
         """
         # Update start orientation based on the previous pictograph
-        pictograph[RED_ATTRIBUTES][START_ORI] = previous_pictograph[RED_ATTRIBUTES][
-            END_ORI
-        ]
-        pictograph[BLUE_ATTRIBUTES][START_ORI] = previous_pictograph[BLUE_ATTRIBUTES][
-            END_ORI
-        ]
+        pictograph[RED_ATTRS][START_ORI] = previous_pictograph[RED_ATTRS][END_ORI]
+        pictograph[BLUE_ATTRS][START_ORI] = previous_pictograph[BLUE_ATTRS][END_ORI]
 
         # Recalculate the end orientation
         for color in [RED, BLUE]:
@@ -55,12 +51,12 @@ class JsonOriValidationEngine:
         """Updates the start orientation of the current pictograph based on the previous one's end orientation."""
         current_pictograph = self.sequence[index]
         previous_pictograph = self.get_previous_pictograph(index)
-        current_pictograph[RED_ATTRIBUTES][START_ORI] = previous_pictograph[
-            RED_ATTRIBUTES
-        ][END_ORI]
-        current_pictograph[BLUE_ATTRIBUTES][START_ORI] = previous_pictograph[
-            BLUE_ATTRIBUTES
-        ][END_ORI]
+        current_pictograph[RED_ATTRS][START_ORI] = previous_pictograph[RED_ATTRS][
+            END_ORI
+        ]
+        current_pictograph[BLUE_ATTRS][START_ORI] = previous_pictograph[BLUE_ATTRS][
+            END_ORI
+        ]
 
     def get_previous_pictograph(self, index) -> dict:
         """Returns the previous pictograph in the sequence."""

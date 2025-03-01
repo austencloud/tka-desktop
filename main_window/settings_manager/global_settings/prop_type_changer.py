@@ -37,7 +37,7 @@ class PropTypeChanger:
             old_prop_data = old_prop.prop_data
             pictograph.elements.props[color] = new_prop
             pictograph.addItem(new_prop)
-            pictograph.elements.motions[color].prop = new_prop
+            pictograph.elements.motion_set[color].prop = new_prop
 
             new_prop.updater.update_prop(old_prop_data)
 

@@ -1,11 +1,11 @@
 import logging
 from typing import TYPE_CHECKING
 from data.constants import (
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     END_LOC,
     END_POS,
     PROP_ROT_DIR,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     START_LOC,
     START_POS,
     VERTICAL,
@@ -48,7 +48,7 @@ class CodexReflector:
                 pictograph[END_POS], pictograph[END_POS]
             )
 
-        for color_attrs in [BLUE_ATTRIBUTES, RED_ATTRIBUTES]:
+        for color_attrs in [BLUE_ATTRS, RED_ATTRS]:
             if color_attrs in pictograph:
                 attributes = pictograph[color_attrs]
                 if START_LOC in attributes:

@@ -21,7 +21,7 @@ class OriUpdater:
         self, pictograph: "Pictograph", adjustment: int
     ) -> None:
         """Adjust turns for each relevant motion in the pictograph."""
-        for motion in pictograph.elements.motions.values():
+        for motion in pictograph.elements.motion_set.values():
             if motion.state.color == self.ori_picker_box.color:
                 new_turns = self._calculate_new_turns(motion.state.turns, adjustment)
                 self.set_motion_turns(motion, new_turns)

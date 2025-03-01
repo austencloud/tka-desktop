@@ -2,7 +2,7 @@ import json
 from typing import TYPE_CHECKING
 from data.constants import (
     BEAT,
-    BLUE_ATTRIBUTES,
+    BLUE_ATTRS,
     DIAMOND,
     END_ORI,
     GRID_MODE,
@@ -11,7 +11,7 @@ from data.constants import (
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
     PROP_ROT_DIR,
-    RED_ATTRIBUTES,
+    RED_ATTRS,
     SEQUENCE_START_POSITION,
 )
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
@@ -146,7 +146,7 @@ class SequenceDataLoaderSaver:
         )
 
         if sequence:
-            return last_pictograph_data[RED_ATTRIBUTES][END_ORI]
+            return last_pictograph_data[RED_ATTRS][END_ORI]
         return 0
 
     def get_blue_end_ori(self, sequence):
@@ -157,7 +157,7 @@ class SequenceDataLoaderSaver:
         )
 
         if sequence:
-            return last_pictograph_data[BLUE_ATTRIBUTES][END_ORI]
+            return last_pictograph_data[BLUE_ATTRS][END_ORI]
         return 0
 
     def load_last_beat_dict(self) -> dict:
