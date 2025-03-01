@@ -45,7 +45,7 @@ class GenerateTabController:
             else int(self.settings.get_setting("turn_intensity") or 1)
         )
         level = int(self.settings.get_setting("level") or 1)
-        prop_continuity = self.settings.get_setting("prop_continuity")
+        prop_continuity = self.settings.get_setting("prop_continuity") or "continuous"
 
         if self.current_mode == "freeform":
             self.tab.freeform_builder.build_sequence(

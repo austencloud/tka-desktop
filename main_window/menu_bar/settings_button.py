@@ -3,6 +3,8 @@ from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QIcon, QCursor
 from PyQt6.QtCore import QSize, Qt
 
+from utilities.path_helpers import get_images_and_data_path
+
 
 if TYPE_CHECKING:
     from main_window.menu_bar.menu_bar import MenuBarWidget
@@ -11,7 +13,13 @@ if TYPE_CHECKING:
 class SettingsButton(QPushButton):
     def __init__(self, menu_bar: "MenuBarWidget") -> None:
         super().__init__(
-            QIcon("images\\icons\\sequence_workbench_icons\\settings.png"), None, menu_bar
+            QIcon(
+                get_images_and_data_path(
+                    "images\\icons\\sequence_workbench_icons\\settings.png"
+                )
+            ),
+            None,
+            menu_bar,
         )
         self.main_widget = menu_bar.main_widget
         self.clicked.connect(self.show_settings_dialog)

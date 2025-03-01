@@ -22,7 +22,9 @@ class OptionScroll(QScrollArea):
         self.mw_size_provider = mw_size_provider
         self._setup_layout()
         self._initialize_sections()
-
+        # disable scroll bars
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
     def _initialize_sections(self) -> None:
         """Create and add sections to the layout. Handles groupable sections automatically."""
         groupable_sections = []

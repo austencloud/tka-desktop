@@ -3,9 +3,8 @@ from Enums.Enums import Glyph
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
-    from main_window.main_widget.settings_dialog.visibility_tab.visibility_tab import (
-        VisibilityTab,
-    )
+    from main_window.main_widget.settings_dialog.ui.visibility.visibility_tab import VisibilityTab
+
 
 
 class VisibilityToggler:
@@ -63,3 +62,5 @@ class VisibilityToggler:
 
         for pictograph in pictographs:
             pictograph.elements.grid.toggle_non_radial_points(state)
+
+        self.settings.set_non_radial_visibility(state)

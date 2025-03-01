@@ -44,7 +44,7 @@ class MainWidgetUI:
 
         mw.menu_bar.navigation_widget.current_index = tab_index
         mw.menu_bar.navigation_widget.update_buttons()
-        mw.tab_switcher.set_current_tab(current_tab_name)
+        AppContext.settings_manager().global_settings.set_current_tab(current_tab_name.value)
 
     def _create_components(self):
         mw = self.mw

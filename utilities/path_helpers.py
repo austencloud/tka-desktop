@@ -12,6 +12,21 @@ def get_images_and_data_path(filename) -> str:
     return os.path.join(base_dir, filename)
 
 
+
+def get_settings_path():
+    """
+    Returns the correct settings.ini path.
+    
+    - In development mode, it reads from the root directory.
+    - In a packaged PyInstaller executable, it reads from AppData.
+    """
+    if getattr(sys, "frozen", False):  # Running as a packaged EXE
+        return get_app_data_path("settings.ini")
+    else:  # Development mode
+        return os.path.join(os.getcwd(), "settings.ini")
+
+
+
 def get_app_data_path(filename) -> str:
     """
     For use in a Windows environment, this will return the path to the appdata directory.

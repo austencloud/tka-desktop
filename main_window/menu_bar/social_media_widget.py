@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QPushButton
 from PyQt6.QtGui import QIcon, QDesktopServices
 from PyQt6.QtCore import Qt, QSize, QUrl
-
+from utilities.path_helpers import get_images_and_data_path
 if TYPE_CHECKING:
     from main_window.menu_bar.menu_bar import MenuBarWidget
 
@@ -21,32 +21,32 @@ class SocialMediaWidget(QWidget):
 
         # Create buttons
         self.paypal_button = self._create_icon_button(
-            icon_path="images/icons/paypal.png",
+            icon_path=get_images_and_data_path("images/icons/paypal.png"),
             tooltip="Support via PayPal",
             click_handler=self._open_paypal_link,
         )
         self.venmo_button = self._create_icon_button(
-            icon_path="images/icons/venmo.png",
+            icon_path=get_images_and_data_path("images/icons/venmo.png"),
             tooltip="Support via Venmo",
             click_handler=self._open_venmo_link,
         )
         self.github_button = self._create_icon_button(
-            icon_path="images/icons/github.png",
+            icon_path=get_images_and_data_path("images/icons/github.png"),
             tooltip="View project on GitHub",
             click_handler=self._open_github_link,
         )
         self.facebook_button = self._create_icon_button(
-            icon_path="images/icons/facebook.png",
+            icon_path=get_images_and_data_path("images/icons/facebook.png"),
             tooltip="Visit on Facebook",
             click_handler=self._open_facebook_link,
         )
         self.instagram_button = self._create_icon_button(
-            icon_path="images/icons/instagram.png",
+            icon_path=get_images_and_data_path("images/icons/instagram.png"),
             tooltip="Follow on Instagram",
             click_handler=self._open_instagram_link,
         )
         self.youtube_button = self._create_icon_button(
-            icon_path="images/icons/youtube.png",
+            icon_path=get_images_and_data_path("images/icons/youtube.png"),
             tooltip="Follow on YouTube",
             click_handler=self._open_youtube_link,
         )

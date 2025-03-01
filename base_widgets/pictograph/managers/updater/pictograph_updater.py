@@ -72,8 +72,8 @@ class PictographUpdater:
         motion = self.pictograph.managers.get.motion_by_color(color)
         return {
             "color": color,
-            "loc": motion.state.end_loc,
-            "ori": motion.state.end_ori,
+            "loc": pictograph_data[f"{color}_attributes"]["end_loc"],
+            "ori": pictograph_data[f"{color}_attributes"]["end_ori"],
             "motion": motion,
             "prop_type": AppContext.settings_manager()
             .global_settings.get_prop_type()
