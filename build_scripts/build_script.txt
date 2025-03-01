@@ -2,3 +2,5 @@ pyinstaller --noconsole --add-data "settings.ini;." --add-data "data;data" --add
 
 pyinstaller --add-data "default_settings.ini;." --add-data "settings.ini;." --add-data "data;data" --add-data "images;images" --add-data "dictionary;dictionary" --add-data "temp;temp" main.py
 
+
+
