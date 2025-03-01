@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('default_settings.ini', '.'), ('settings.ini', '.'), ('data', 'data'), ('images', 'images'), ('dictionary', 'dictionary'), ('temp', 'temp')],
+    datas=[('settings.ini', '.'), ('data', 'data'), ('images', 'images'), ('dictionary', 'dictionary'), ('temp', 'temp')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
