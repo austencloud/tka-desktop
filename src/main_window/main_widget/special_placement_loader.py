@@ -3,7 +3,7 @@ import logging
 import os
 from typing import TYPE_CHECKING, Any
 from data.constants import BOX, DIAMOND
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     pass
@@ -52,8 +52,8 @@ class SpecialPlacementLoader:
         mode_data: dict[str, dict] = {}
         for subfolder in self.SUBFOLDERS:
             mode_data[subfolder] = {}
-            directory = get_images_and_data_path(
-                f"src\\data\\arrow_placement/{mode}/special/{subfolder}"
+            directory = get_data_path(
+                f"arrow_placement/{mode}/special/{subfolder}"
             )
             if not os.path.isdir(directory):
                 continue

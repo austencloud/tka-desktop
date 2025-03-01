@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Union
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 from PyQt6.QtSvg import QSvgRenderer
 from objects.arrow.arrow import Arrow
 from data.constants import CLOCK, COUNTER, IN, OUT, FLOAT
@@ -33,7 +33,7 @@ class ArrowSvgManager:
             return self._get_nonradial_svg_file(arrow.motion.state.motion_type, turns)
 
     def _get_float_svg_file(self) -> str:
-        return get_images_and_data_path("images/arrows/float.svg")
+        return get_image_path("arrows/float.svg")
 
     def _get_turns(self, arrow_turns: Union[str, int, float]) -> float:
         if isinstance(arrow_turns, (int, float)):
@@ -41,13 +41,13 @@ class ArrowSvgManager:
         return arrow_turns
 
     def _get_radial_svg_file(self, motion_type: str, turns: float) -> str:
-        return get_images_and_data_path(
-            f"images/arrows/{motion_type}/from_radial/{motion_type}_{turns}.svg"
+        return get_image_path(
+            f"arrows/{motion_type}/from_radial/{motion_type}_{turns}.svg"
         )
 
     def _get_nonradial_svg_file(self, motion_type: str, turns: float) -> str:
-        return get_images_and_data_path(
-            f"images/arrows/{motion_type}/from_nonradial/{motion_type}_{turns}.svg"
+        return get_image_path(
+            f"arrows/{motion_type}/from_nonradial/{motion_type}_{turns}.svg"
         )
 
     def _setup_arrow_svg_renderer(self, arrow: "Arrow", svg_data: str) -> None:

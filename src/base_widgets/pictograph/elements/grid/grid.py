@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from data.constants import BOX, DIAMOND
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from settings_manager.global_settings.app_context import AppContext
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 from .grid_data import GridData
 from .grid_item import GridItem
@@ -12,7 +12,7 @@ from .non_radial_points_group import NonRadialPointsGroup
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
 
-GRID_DIR = get_images_and_data_path("images/grid/")
+GRID_DIR = "grid/"
 
 
 class Grid:
@@ -33,7 +33,7 @@ class Grid:
         }
 
         for mode, path in paths.items():
-            grid_item = GridItem(path)
+            grid_item = GridItem(get_image_path(path))
             self.pictograph.addItem(grid_item)
             grid_item.setVisible(mode == self.grid_mode)
             self.items[mode] = grid_item

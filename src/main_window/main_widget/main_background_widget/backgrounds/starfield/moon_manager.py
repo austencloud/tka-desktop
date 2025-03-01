@@ -1,13 +1,13 @@
 from PyQt6.QtGui import QPainter
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import Qt
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 from PyQt6.QtGui import QPixmap
 
 
 class MoonManager:
     def __init__(self):
-        moon_image_path = get_images_and_data_path("images/backgrounds/moon.png")
+        moon_image_path = get_image_path("backgrounds/moon.png")
         self.moon_image = QPixmap(moon_image_path)
 
     def draw_moon(self, painter: QPainter, widget: QWidget):

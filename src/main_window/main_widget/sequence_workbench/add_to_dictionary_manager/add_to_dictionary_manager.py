@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from settings_manager.global_settings.app_context import AppContext
 from .structural_variation_checker import StructuralVariationChecker
 from .thumbnail_generator import ThumbnailGenerator
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
@@ -17,9 +17,7 @@ if TYPE_CHECKING:
 class AddToDictionaryManager:
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
-        self.dictionary_dir = get_images_and_data_path(
-            "src\data\generated_data\dictionary"
-        )
+        self.dictionary_dir = get_data_path("generated_data\dictionary")
         self.structural_checker = StructuralVariationChecker(self)
         self.thumbnail_generator = ThumbnailGenerator(self)
 

@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 from PyQt6.QtWidgets import QGraphicsItemGroup
 
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 from .non_radial_point import NonRadialGridPoint
 
 
@@ -19,7 +19,7 @@ class NonRadialPointsGroup(QGraphicsItemGroup):
 
     def _parse_svg(self, path: str):
         """Parse the SVG file and create child points."""
-        tree = ET.parse(get_images_and_data_path(path))
+        tree = ET.parse(get_image_path(path))
         root = tree.getroot()
         namespace = {"": "http://www.w3.org/2000/svg"}
 

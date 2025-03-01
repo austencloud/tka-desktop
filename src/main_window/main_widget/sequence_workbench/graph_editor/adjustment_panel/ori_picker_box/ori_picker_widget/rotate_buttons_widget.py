@@ -1,7 +1,7 @@
 # rotate_buttons_widget.py
 from PyQt6.QtWidgets import QWidget, QHBoxLayout
 from typing import TYPE_CHECKING
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 from .rotate_button import RotateButton
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ class RotateButtonsWidget(QWidget):
     ):
         super().__init__(ori_picker_widget)
         self.ori_picker_widget = ori_picker_widget
-        path = get_images_and_data_path("images/icons")
+        path = get_image_path("icons")
         self.ccw_button = RotateButton(self, f"{path}/rotate_ccw.png", self.rotate_ccw)
         self.cw_button = RotateButton(self, f"{path}/rotate_cw.png", self.rotate_cw)
 

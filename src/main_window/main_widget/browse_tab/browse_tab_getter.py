@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 import os
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
@@ -13,7 +13,7 @@ class BrowseTabGetter:
 
     def all_sequences(self) -> list[tuple[str, list[str], int]]:
         """Retrieve all sequences with their respective lengths."""
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         sequences = [
             (
                 word,

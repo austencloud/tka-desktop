@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt
 from enums.prop_type import PropType
 from main_window.main_widget.settings_dialog.card_frame import CardFrame
 from main_window.main_widget.settings_dialog.ui.prop_type.prop_button import PropButton
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 
 if TYPE_CHECKING:
@@ -36,15 +36,15 @@ class PropTypeTab(QWidget):
 
         # Define props and corresponding SVG icons
         props = {
-            "Staff": "images/props/staff.svg",
-            "Club": "images/props/club.svg",
-            "Fan": "images/props/fan.svg",
-            "Triad": "images/props/triad.svg",
-            "Minihoop": "images/props/minihoop.svg",
-            "Buugeng": "images/props/buugeng.svg",
-            "Triquetra": "images/props/triquetra.svg",
-            "Sword": "images/props/sword.svg",
-            "Chicken": "images/props/chicken.png",
+            "Staff": "props/staff.svg",
+            "Club": "props/club.svg",
+            "Fan": "props/fan.svg",
+            "Triad": "props/triad.svg",
+            "Minihoop": "props/minihoop.svg",
+            "Buugeng": "props/buugeng.svg",
+            "Triquetra": "props/triquetra.svg",
+            "Sword": "props/sword.svg",
+            "Chicken": "props/chicken.png",
         }
 
         row, col = 0, 0
@@ -52,7 +52,7 @@ class PropTypeTab(QWidget):
             # Create the icon‐only button
             button = PropButton(
                 prop,
-                get_images_and_data_path(icon_path),
+                get_image_path(icon_path),
                 self,
                 self._set_current_prop_type,
             )

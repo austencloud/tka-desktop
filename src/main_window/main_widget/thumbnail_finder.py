@@ -1,7 +1,7 @@
 import os
 from typing import TYPE_CHECKING
 
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     pass
@@ -9,9 +9,7 @@ if TYPE_CHECKING:
 
 class ThumbnailFinder:
     def __init__(self) -> None:
-        self.dictionary_dir = get_images_and_data_path(
-            "src\data\generated_data\dictionary"
-        )
+        self.dictionary_dir = get_data_path("generated_data\dictionary")
 
     def find_thumbnails(self, word_dir: str) -> list[str]:
         thumbnails = []

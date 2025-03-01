@@ -7,7 +7,7 @@ from main_window.main_widget.full_screen_image_overlay import (
     FullScreenImageOverlay,
 )
 from settings_manager.global_settings.app_context import AppContext
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
@@ -51,7 +51,7 @@ class FullScreenViewer:
             self.sequence_workbench.dictionary_service.thumbnail_generator
         )
         current_sequence = self.json_loader.load_current_sequence()
-        temp_path = get_images_and_data_path("temp")
+        temp_path = get_data_path("temp")
         image_path = self.thumbnail_generator.generate_and_save_thumbnail(
             current_sequence, 0, temp_path, fullscreen_preview=True
         )

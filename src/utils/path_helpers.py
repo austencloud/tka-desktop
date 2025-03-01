@@ -3,20 +3,30 @@ import os
 import winreg
 
 
-def get_images_and_data_path(filename) -> str:
-    """This is used for resources like data and images."""
-    if hasattr(sys, "_MEIPASS"):
-        base_dir = sys._MEIPASS
+def get_data_path(filename) -> str:
+    """Dynamically resolve the correct data path."""
+    if hasattr(sys, "_MEIPASS"):  # PyInstaller uses _MEIPASS for the temp folder
+        base_dir = os.path.join(sys._MEIPASS, "src", "data")
     else:
-        base_dir = os.path.abspath(".")
+        base_dir = os.path.abspath(os.path.join(os.getcwd(), "src", "data"))
+
     return os.path.join(base_dir, filename)
 
+
+def get_image_path(filename) -> str:
+    """Dynamically resolve the correct images path."""
+    if hasattr(sys, "_MEIPASS"):  # PyInstaller uses _MEIPASS for the temp folder
+        base_dir = os.path.join(sys._MEIPASS, "src", "images")
+    else:
+        base_dir = os.path.abspath(os.path.join(os.getcwd(), "src", "images"))
+
+    return os.path.join(base_dir, filename)
 
 
 def get_settings_path():
     """
     Returns the correct settings.ini path.
-    
+
     - In development mode, it reads from the root directory.
     - In a packaged PyInstaller executable, it reads from AppData.
     """
@@ -24,7 +34,6 @@ def get_settings_path():
         return get_app_data_path("settings.ini")
     else:  # Development mode
         return os.path.join(os.getcwd(), "settings.ini")
-
 
 
 def get_app_data_path(filename) -> str:

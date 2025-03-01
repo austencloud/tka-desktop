@@ -221,9 +221,9 @@ class BrowseTabFilterController:
     # -------------------------------------------------------------------------
     def _base_words(self):
         """Just a convenience function so we don't keep repeating ourselves."""
-        from utils.path_helpers import get_images_and_data_path
+        from utils.path_helpers import get_data_path
 
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         return self.browse_tab.get.base_words(dictionary_dir)
 
     # -------------------------------------------------------------------------

@@ -5,7 +5,7 @@ from enums.letter.letter_type import LetterType
 
 from typing import TYPE_CHECKING
 
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ SVG_PATHS = {
     LetterType.Type6: "Type6/{letter}.svg",
 }
 
-SVG_BASE_PATH = get_images_and_data_path("images/letters_trimmed")
+SVG_BASE_PATH = get_image_path("letters_trimmed")
 SVG_PATHS = {
     letter_type: f"{SVG_BASE_PATH}/{path}" for letter_type, path in SVG_PATHS.items()
 }

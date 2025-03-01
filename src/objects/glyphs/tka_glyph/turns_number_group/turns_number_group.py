@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QGraphicsItemGroup
 from typing import TYPE_CHECKING
 from .turns_tuple_interpretor import TurnsTupleInterpreter
 from .turns_number import TurnsNumber
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 from ..turns_parser import parse_turns_tuple_string
 
 if TYPE_CHECKING:
@@ -13,8 +13,8 @@ class TurnsNumberGroup(QGraphicsItemGroup):
     def __init__(self, glyph: "TKA_Glyph") -> None:
         super().__init__()
         self.glyph = glyph
-        self.svg_path_prefix = get_images_and_data_path("images/numbers/")
-        self.blank_svg_path = get_images_and_data_path("images/blank.svg")
+        self.svg_path_prefix = get_image_path("numbers/")
+        self.blank_svg_path = get_image_path("blank.svg")
 
         self.glyph.top_number = TurnsNumber(self)
         self.glyph.bottom_number = TurnsNumber(self)

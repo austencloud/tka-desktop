@@ -1,43 +1,53 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
+import os
+from PyInstaller.utils.hooks import collect_data_files
 
+# Project Name
+project_name = "The Kinetic Constructor"
+
+# Ensure all data and assets are included
+data_files = collect_data_files("src/data", includes=["*.csv", "*.json"])
+image_files = collect_data_files("src/images")
+dictionary_files = collect_data_files("src/generated_data/dictionary")
+temp_files = collect_data_files("src/temp")
+
+# PyInstaller Analysis
 a = Analysis(
-    ['main.py'],
-    pathex=[],
+    ["src/main.py"],  # Entry point
+    pathex=["."],
     binaries=[],
-    datas=[('settings.ini', '.'), ('data', 'data'), ('images', 'images'), ('dictionary', 'dictionary'), ('temp', 'temp')],
-    hiddenimports=[],
+    datas=[
+        ("settings.ini", "."),
+        *data_files,
+        *image_files,
+        *dictionary_files,
+        *temp_files
+    ],
+    hiddenimports=[
+        "src.main_window.main_widget.json_manager.json_manager",
+        "src.settings_manager.global_settings.app_context"
+    ],
     hookspath=[],
-    hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    noarchive=False,
+    noarchive=False
 )
-pyz = PYZ(a.pure)
+
+# PyInstaller Build
+pyz = PYZ(a.pure, a.zipped_data, cipher=None)
 
 exe = EXE(
     pyz,
     a.scripts,
-    [],
-    exclude_binaries=True,
-    name='main',
-    debug=False,
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=True,
-    console=True,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
-)
-coll = COLLECT(
-    exe,
     a.binaries,
+    a.zipfiles,
     a.datas,
+    name=project_name,
+    debug=False,
     strip=False,
     upx=True,
-    upx_exclude=[],
-    name='main',
+    console=False,  # Set to True if you need console output
+    icon=None
 )

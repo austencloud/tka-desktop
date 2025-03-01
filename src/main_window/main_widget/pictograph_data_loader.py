@@ -19,7 +19,7 @@ from data.constants import (
     START_POS,
     TURNS,
 )
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
@@ -30,10 +30,8 @@ class PictographDataLoader:
         self.main_widget = main_widget
 
     def load_pictograph_dataset(self) -> dict[Letter, list[dict]]:
-        diamond_csv_path = get_images_and_data_path(
-            "src\\data\\DiamondPictographDataframe.csv"
-        )
-        box_csv_path = get_images_and_data_path("src\\data\\BoxPictographDataframe.csv")
+        diamond_csv_path = get_data_path("DiamondPictographDataframe.csv")
+        box_csv_path = get_data_path("BoxPictographDataframe.csv")
         diamond_df = pd.read_csv(diamond_csv_path)
         box_df = pd.read_csv(box_csv_path)
         combined_df = pd.concat([diamond_df, box_df], ignore_index=True)

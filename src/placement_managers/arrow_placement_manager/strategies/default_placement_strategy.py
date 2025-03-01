@@ -26,7 +26,7 @@ from objects.arrow.arrow import Arrow
 from placement_managers.arrow_placement_manager.strategies.placement_key_generator import (
     PlacementKeyGenerator,
 )
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 
 class DefaultPlacementStrategy:
@@ -57,8 +57,8 @@ class DefaultPlacementStrategy:
     def _load_all_default_placements(self) -> None:
         for grid_mode, motion_files in self.placements_files.items():
             for motion_type, filename in motion_files.items():
-                filepath = get_images_and_data_path(
-                    f"src\\data\\arrow_placement/{grid_mode}/default/{filename}"
+                filepath = get_data_path(
+                    f"arrow_placement/{grid_mode}/default/{filename}"
                 )
                 self.all_defaults[grid_mode][motion_type] = self._load_json(filepath)
 

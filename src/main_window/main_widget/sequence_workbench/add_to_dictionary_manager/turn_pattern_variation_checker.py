@@ -3,12 +3,12 @@ import os
 from PIL import Image
 
 from data.constants import BLUE_ATTRS, RED_ATTRS, TURNS, START_ORI, END_ORI
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 
 class TurnPatternVariationChecker:
     def __init__(self):
-        self.directory = get_images_and_data_path("src\data\generated_data\dictionary")
+        self.directory = get_data_path("generated_data\dictionary")
 
     def check_for_turn_pattern_variation(self, sequence):
         # Iterate recursively through all files in the directory and subdirectories

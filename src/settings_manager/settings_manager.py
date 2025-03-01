@@ -54,7 +54,7 @@ class SettingsManager(QObject):
         settings_path = get_settings_path()
         default_settings_path = os.path.abspath(
             os.path.join(
-                os.path.dirname(__file__), "..", "..", "src\\data\\default_settings.ini"
+                os.path.dirname(__file__), "..", "..", "default_settings.ini"
             )
         )
 

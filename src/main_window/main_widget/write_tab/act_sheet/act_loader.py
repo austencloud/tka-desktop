@@ -14,7 +14,7 @@ class ActLoader:
         self.act_sheet = act_sheet
         self.load_act()
 
-    def load_act(self, filename="src\\data\\json/current_act.json") -> None:
+    def load_act(self, filename="json/current_act.json") -> None:
         """Load an act from a JSON file in the acts directory."""
         file_path = get_user_editable_resource_path(filename)
         if not os.path.isfile(file_path):

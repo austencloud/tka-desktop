@@ -13,7 +13,7 @@ import os
 from functools import partial
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 
 class AuthorSection(FilterSectionBase):
-    IMAGE_DIR = get_images_and_data_path("images/author_images")
+    IMAGE_DIR = get_image_path("author_images")
     MAX_COLUMNS = 3
 
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
@@ -104,7 +104,7 @@ class AuthorSection(FilterSectionBase):
         if hasattr(self, "_all_sequences_with_authors"):
             return self._all_sequences_with_authors
 
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         base_words = [
             (
                 word,

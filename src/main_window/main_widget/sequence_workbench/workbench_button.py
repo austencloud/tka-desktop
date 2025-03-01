@@ -2,6 +2,8 @@ from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QSize
 
+from utils.path_helpers import get_image_path
+
 
 class WorkbenchButton(QPushButton):
     def __init__(self, icon_path: str, tooltip: str, callback, button_size: int):

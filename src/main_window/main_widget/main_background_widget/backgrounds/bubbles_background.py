@@ -14,7 +14,7 @@ from PyQt6.QtCore import Qt, QPointF
 from main_window.main_widget.main_background_widget.backgrounds.base_background import (
     BaseBackground,
 )
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 
 class BubblesBackground(BaseBackground):
@@ -27,7 +27,7 @@ class BubblesBackground(BaseBackground):
         # Check if the fish images are already cached
         if BubblesBackground._cached_fish_images is None:
             # Define the backgrounds folder path
-            backgrounds_folder = get_images_and_data_path("images/backgrounds/")
+            backgrounds_folder = get_image_path("backgrounds/")
 
             # Load the fish images and store them in the class variable
             BubblesBackground._cached_fish_images = [

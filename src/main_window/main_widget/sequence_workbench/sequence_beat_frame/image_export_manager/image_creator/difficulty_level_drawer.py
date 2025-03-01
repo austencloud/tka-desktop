@@ -5,19 +5,15 @@ from PyQt6.QtGui import (
     QPen,
     QFont,
     QFontMetrics,
-    QColor,
     QImage,
     QPolygon,
-    QLinearGradient,
 )
 from PyQt6.QtCore import QRect, Qt, QPoint
-from numpy import diff
-from PyQt6.QtCore import QPointF
 
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.difficult_level_gradients import DifficultyLevelGradients
 
 if TYPE_CHECKING:
-    from ..image_creator.image_creator import ImageCreator
+    pass
 
 
 

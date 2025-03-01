@@ -37,7 +37,7 @@ class DirectoryTreeViewer(QWidget):
             "cached",
             "generated",
             "test_results",
-            "src\\data\\arrow_placement",
+            "arrow_placement",
         }
         self.default_exclude_files = {
             ".gitattributes",

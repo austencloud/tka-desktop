@@ -2,13 +2,13 @@ import random
 from PyQt6.QtGui import QPainter, QPixmap, QCursor
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import Qt, QPoint
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 
 class UFOManager:
     def __init__(self):
         # Load the UFO image
-        ufo_image_path = get_images_and_data_path("images/backgrounds/ufo.png")
+        ufo_image_path = get_image_path("backgrounds/ufo.png")
         self.ufo_image = QPixmap(ufo_image_path)
 
         # UFO parameters

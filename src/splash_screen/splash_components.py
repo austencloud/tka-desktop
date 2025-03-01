@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt
 from main_window.main_widget.rainbow_progress_bar import (
     RainbowProgressBar,
 )
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 if TYPE_CHECKING:
     from .splash_screen import SplashScreen
@@ -51,7 +51,7 @@ class SplashComponents:
         return progress_bar
 
     def _setup_logo(self) -> QLabel:
-        splash_pix = QPixmap(get_images_and_data_path("images/splash_screen.png"))
+        splash_pix = QPixmap(get_image_path("splash_screen.png"))
         available_width = self.splash_screen.width() // 2
         available_height = self.splash_screen.height()
         scaled_splash_pix = splash_pix.scaled(

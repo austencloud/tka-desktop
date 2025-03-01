@@ -2,12 +2,12 @@ import json
 import os
 from typing import TYPE_CHECKING
 
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
-    from main_window.settings_manager.settings_manager import SettingsManager
+    from settings_manager.settings_manager import SettingsManager
 
-OVERRIDES_FILE = get_images_and_data_path("src\\data\\beat_layout_overrides.json")
+OVERRIDES_FILE = get_data_path("beat_layout_overrides.json")
 
 
 class SequenceLayoutSettings:
@@ -32,9 +32,7 @@ class SequenceLayoutSettings:
 
         if not raw_val:
             try:
-                with open(
-                    (get_images_and_data_path("src\\data\\default_layouts.json")), "r"
-                ) as file:
+                with open((get_data_path("default_layouts.json")), "r") as file:
                     return json.load(file)
             except FileNotFoundError:
                 return {}

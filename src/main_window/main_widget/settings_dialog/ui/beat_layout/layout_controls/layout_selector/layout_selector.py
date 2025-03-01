@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal
 
 from settings_manager.global_settings.app_context import AppContext
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 from .layout_dropdown import LayoutDropdown
 from .select_layout_label import SelectLayoutLabel
@@ -12,8 +12,8 @@ from .select_layout_label import SelectLayoutLabel
 if TYPE_CHECKING:
     from ..layout_controls import LayoutControls
 
-BEAT_FRAME_LAYOUT_OPTIONS_PATH = get_images_and_data_path(
-    "src\\data\\beat_frame_layout_options.json"
+BEAT_FRAME_LAYOUT_OPTIONS_PATH = get_data_path(
+    "beat_frame_layout_options.json"
 )
 
 

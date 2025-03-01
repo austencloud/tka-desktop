@@ -20,7 +20,7 @@ from objects.prop.prop import Prop
 from objects.prop.prop_classes import *
 from data.constants import *
 from main_window.main_widget.settings_dialog.settings_provider import SettingsProvider
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from ..pictograph import Pictograph
@@ -29,7 +29,7 @@ if TYPE_CHECKING:
 # pictograph_initializer.py
 
 import json
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 import logging
 
 logger = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ class PictographInitializer:
     def init_grid(self, grid_mode: str) -> Grid:
         if not self.grid_initialized:
             try:
-                json_path = get_images_and_data_path("src\\data\\circle_coords.json")
+                json_path = get_data_path("circle_coords.json")
                 with open(json_path, "r") as file:
                     data = json.load(file)
 

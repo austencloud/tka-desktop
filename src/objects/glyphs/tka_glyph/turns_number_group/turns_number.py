@@ -2,7 +2,7 @@ from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtGui import QPainter, QPen, QColor
 from typing import TYPE_CHECKING, Union
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 if TYPE_CHECKING:
     from objects.glyphs.tka_glyph.turns_number_group.turns_number_group import (
@@ -37,7 +37,7 @@ class TurnsNumber(QGraphicsSvgItem):
         self.last_number = number
 
         if number == "fl":
-            svg_path = get_images_and_data_path("images/numbers/float.svg")
+            svg_path = get_image_path("numbers/float.svg")
         else:
             try:
                 float_value = float(number)

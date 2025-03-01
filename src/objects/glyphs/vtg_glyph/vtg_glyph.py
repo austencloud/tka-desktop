@@ -23,7 +23,7 @@ from data.constants import (
 )
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 from settings_manager.global_settings.app_context import AppContext
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 
 if TYPE_CHECKING:
@@ -39,7 +39,7 @@ SVG_PATHS = {
     QUARTER_OPP: "QO.svg",
 }
 
-SVG_BASE_PATH = get_images_and_data_path("images/vtg_glyphs")
+SVG_BASE_PATH = get_image_path("vtg_glyphs")
 SVG_PATHS = {
     vtg_mode: f"{SVG_BASE_PATH}/{path}" for vtg_mode, path in SVG_PATHS.items()
 }
@@ -63,12 +63,12 @@ class VTG_Glyph(QGraphicsSvgItem):
             QUARTER_SAME,
             QUARTER_OPP,
         )
-        from utils.path_helpers import get_images_and_data_path
+        from utils.path_helpers import get_data_path
 
         if not self.pictograph.state.letter_type in [LetterType.Type1]:
             self.setVisible(False)
 
-        SVG_BASE_PATH = get_images_and_data_path("images/vtg_glyphs")
+        SVG_BASE_PATH = get_image_path("vtg_glyphs")
         SVG_PATHS = {
             SPLIT_SAME: f"{SVG_BASE_PATH}/SS.svg",
             SPLIT_OPP: f"{SVG_BASE_PATH}/SO.svg",

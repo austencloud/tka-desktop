@@ -13,7 +13,7 @@ from PyQt6.QtGui import (
 from PyQt6.QtCore import Qt, QSize
 from typing import TYPE_CHECKING
 
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.generate_tab.generate_tab import GenerateTab
@@ -35,9 +35,7 @@ class LevelSelector(QWidget):
 
     def _load_pixmaps(self):
         for level in [1, 2, 3]:
-            pixmap = QPixmap(
-                get_images_and_data_path(f"images/icons/level_{level}.png")
-            )
+            pixmap = QPixmap(get_image_path(f"icons/level_{level}.png"))
             if pixmap.isNull():
                 pixmap = QPixmap(64, 64)
                 pixmap.fill(Qt.GlobalColor.transparent)

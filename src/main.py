@@ -6,7 +6,7 @@ from main_window.main_widget.json_manager.json_manager import JsonManager
 from main_window.main_widget.json_manager.special_placement_saver import (
     SpecialPlacementSaver,
 )
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 from settings_manager.settings_manager import SettingsManager
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 from splash_screen.splash_screen import SplashScreen
@@ -18,7 +18,7 @@ from utils.paint_event_supressor import PaintEventSuppressor
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
-LOG_FILE_PATH = get_images_and_data_path("trace_log.txt")
+LOG_FILE_PATH = get_data_path("trace_log.txt")
 log_file = open(LOG_FILE_PATH, "w")
 
 

@@ -6,7 +6,7 @@ from objects.motion.motion import Motion
 
 from .adjust_turns_button import AdjustTurnsButton
 from .GE_turns_label import GE_TurnsLabel
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 if TYPE_CHECKING:
     from ..turns_widget import TurnsWidget
@@ -25,8 +25,8 @@ class TurnsDisplayFrame(QFrame):
         self._setup_layout()
 
     def _setup_components(self) -> None:
-        plus_path = get_images_and_data_path("images/icons/plus.svg")
-        minus_path = get_images_and_data_path("images/icons/minus.svg")
+        plus_path = get_image_path("icons/plus.svg")
+        minus_path = get_image_path("icons/minus.svg")
         self.increment_button = AdjustTurnsButton(plus_path, self)
         self.decrement_button = AdjustTurnsButton(minus_path, self)
         self.turns_label = GE_TurnsLabel(self)

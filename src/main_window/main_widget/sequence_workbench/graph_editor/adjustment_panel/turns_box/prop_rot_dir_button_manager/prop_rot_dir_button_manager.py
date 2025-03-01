@@ -24,7 +24,7 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import 
 from utils.reversal_detector import (
     ReversalDetector,
 )
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 from .prop_rot_dir_button import PropRotDirButton
 
 if TYPE_CHECKING:
@@ -44,8 +44,8 @@ class PropRotDirButtonManager:
         self.json_manager = self.graph_editor.main_widget.json_manager
 
     def _setup_prop_rot_dir_buttons(self) -> list[PropRotDirButton]:
-        cw_path = get_images_and_data_path(f"{ICON_DIR}clock/clockwise.png")
-        ccw_path = get_images_and_data_path(f"{ICON_DIR}clock/counter_clockwise.png")
+        cw_path = get_image_path(f"{ICON_DIR}clock/clockwise.png")
+        ccw_path = get_image_path(f"{ICON_DIR}clock/counter_clockwise.png")
         self.cw_button: PropRotDirButton = self.create_prop_rot_dir_button(
             cw_path,
             lambda: self._set_prop_rot_dir(CLOCKWISE),

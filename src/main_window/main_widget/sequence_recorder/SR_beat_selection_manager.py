@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Optional
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
     BeatView,
 )
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 from PyQt6.QtMultimedia import QAudioOutput, QSoundEffect
 
 
@@ -26,7 +26,7 @@ class SR_BeatSelectionManager(QWidget):
         self.audio_output.setVolume(1.0)  # Set volume to 100%
         self.border_color = QColor("gold")
         self.border_width = 6
-        path = get_images_and_data_path("audio/metronomes/")
+        path = get_data_path("audio/metronomes/")
         self.metronome_sounds = {
             "quartz": QSoundEffect(),
             "block": QSoundEffect(),

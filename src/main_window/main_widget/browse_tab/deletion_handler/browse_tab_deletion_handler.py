@@ -3,7 +3,7 @@ import shutil
 from typing import TYPE_CHECKING
 from .variation_number_fixer import VariationNumberFixer
 from ..browse_tab_delete_confirmation_dialog import BrowseTabDeleteConfirmationDialog
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import QDialog
@@ -38,9 +38,7 @@ class BrowseTabDeletionHandler:
                     thumbnail_box.word
                 )
             else:
-                self.delete_empty_folders(
-                    get_images_and_data_path("src\data\generated_data\dictionary")
-                )
+                self.delete_empty_folders(get_data_path("generated_data\dictionary"))
                 thumbnail_box.state.current_index = 0
                 # self.sequence_picker.thumbnail_box_sorter.reload_currently_displayed_filtered_sequences()
                 thumbnail_box.image_label.update_thumbnail(
@@ -63,9 +61,7 @@ class BrowseTabDeletionHandler:
         QApplication.restoreOverrideCursor()
 
     def delete_word(self, base_word):
-        base_path = os.path.join(
-            get_images_and_data_path("src\data\generated_data\dictionary"), base_word
-        )
+        base_path = os.path.join(get_data_path("generated_data\dictionary"), base_word)
         for root, dirs, files in os.walk(base_path):
             for name in files:
                 file_path = os.path.join(root, name)
@@ -75,9 +71,7 @@ class BrowseTabDeletionHandler:
                 os.chmod(dir_path, 0o777)
         os.chmod(base_path, 0o777)
         shutil.rmtree(base_path)
-        self.delete_empty_folders(
-            get_images_and_data_path("src\data\generated_data\dictionary")
-        )
+        self.delete_empty_folders(get_data_path("generated_data\dictionary"))
         self.variation_number_fixer.ensure_sequential_versions()
         self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.pop(base_word)
         self.browse_tab.sequence_viewer.update_thumbnails(

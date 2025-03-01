@@ -3,6 +3,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from enums.letter.letter import Letter
+from utils.path_helpers import get_data_path
 
 from .mirrored_entry_manager.mirrored_entry_manager import MirroredEntryManager
 from .ori_key_generator import OriKeyGenerator
@@ -94,13 +95,14 @@ class SpecialPlacementDataUpdater:
         self, letter: Letter, letter_data: dict, ori_key: str, grid_mode: str
     ) -> None:
         # Time to get surgical with our JSON updates! 🔪
-        file_path = os.path.join(
-            "data",
-            "arrow_placement",
-            grid_mode,
-            "special",
-            ori_key,
-            f"{letter.value}_placements.json",
+        file_path = get_data_path(
+            os.path.join(
+                "arrow_placement",
+                grid_mode,
+                "special",
+                ori_key,
+                f"{letter.value}_placements.json",
+            )
         )
 
         existing_data = (

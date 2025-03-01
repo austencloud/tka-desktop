@@ -7,7 +7,7 @@ import os
 from enums.letter.letter import Letter
 
 from settings_manager.global_settings.app_context import AppContext
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
@@ -30,8 +30,8 @@ class StartToEndPosGlyph(QGraphicsItemGroup):
         self.renderer_end = QSvgRenderer()
 
         # Set paths
-        self.SVG_BASE_PATH = get_images_and_data_path("images/letters_trimmed/Type6")
-        self.SVG_ARROW_PATH = get_images_and_data_path("images/arrow.svg")
+        self.SVG_BASE_PATH = get_image_path("letters_trimmed/Type6")
+        self.SVG_ARROW_PATH = get_image_path("arrow.svg")
         self.SVG_PATHS = {"alpha": "α.svg", "beta": "β.svg", "gamma": "Γ.svg"}
 
     def set_start_to_end_pos_glyph(self):

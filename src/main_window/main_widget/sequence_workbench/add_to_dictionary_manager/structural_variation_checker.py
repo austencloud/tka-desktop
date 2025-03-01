@@ -1,10 +1,14 @@
 import json
 import os
 import hashlib
-from base_widgets.pictograph.managers.pictograph_checker import END_ORI, START_ORI, TURNS
+from base_widgets.pictograph.managers.pictograph_checker import (
+    END_ORI,
+    START_ORI,
+    TURNS,
+)
 from data.constants import BLUE_ATTRS, RED_ATTRS
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 
 def hash_sequence(sequence):
@@ -14,9 +18,7 @@ def hash_sequence(sequence):
 
 class StructuralVariationChecker:
     def __init__(self):
-        self.dictionary_dir = get_images_and_data_path(
-            "src\data\generated_data\dictionary"
-        )
+        self.dictionary_dir = get_data_path("generated_data\dictionary")
         self.metadata_extractor = MetaDataExtractor()
 
     def check_for_structural_variation(self, current_sequence, base_word):

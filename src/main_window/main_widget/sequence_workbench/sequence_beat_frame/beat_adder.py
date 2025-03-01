@@ -33,8 +33,6 @@ class BeatAdder:
             AppContext.settings_manager().global_settings.get_grow_sequence()
         )
 
-        if next_beat_number and update_level == 1:
-            self.sequence_workbench.difficulty_label.set_difficulty_level(1)
 
         next_beat_index = self.beat_frame.get.next_available_beat()
         if next_beat_number == 65:
@@ -71,6 +69,8 @@ class BeatAdder:
                 self.sequence_workbench.current_word_label.update_current_word_label_from_beats()
         if update_image_export_preview:
             self.beat_frame.emit_update_image_export_preview()
+        if next_beat_number and update_level == True:
+            self.sequence_workbench.difficulty_label.update_difficulty_label()
 
     def _adjust_layout_and_update_sequence_builder(self, index: int) -> None:
         self.beat_frame.layout_manager.adjust_layout_to_sequence_length()

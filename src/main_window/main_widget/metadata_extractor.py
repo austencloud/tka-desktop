@@ -6,7 +6,7 @@ import json
 
 from data.constants import GRID_MODE, SEQUENCE_START_POSITION
 from main_window.main_widget.thumbnail_finder import ThumbnailFinder
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     pass
@@ -116,7 +116,7 @@ class MetaDataExtractor:
 
     def get_metadata_and_thumbnail_dict(self) -> list[dict[str, str]]:
         """Collect all sequences and their metadata along with the associated thumbnail paths."""
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         metadata_and_thumbnail_dict = []
 
         for word in os.listdir(dictionary_dir):

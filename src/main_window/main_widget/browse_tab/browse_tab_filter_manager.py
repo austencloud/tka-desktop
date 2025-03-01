@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
@@ -13,7 +13,7 @@ class BrowseTabFilterManager:
         self.metadata_extractor = self.browse_tab.metadata_extractor
 
     def filter_favorites(self) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         return [
             (word, thumbnails, self._get_sequence_length(thumbnails[0]))
             for word, thumbnails in self.browse_tab.get.base_words(dictionary_dir)
@@ -21,14 +21,14 @@ class BrowseTabFilterManager:
         ]
 
     def filter_all_sequences(self) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         return [
             (word, thumbnails, self._get_sequence_length(thumbnails[0]))
             for word, thumbnails in self.browse_tab.get.base_words(dictionary_dir)
         ]
 
     def filter_most_recent(self) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         filtered_sequences = []
 
         # Set the date range to the past two weeks
@@ -63,7 +63,7 @@ class BrowseTabFilterManager:
         return filtered_sequences
 
     def filter_by_tag(self, tag: str) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         return [
             (word, thumbnails, self._get_sequence_length(thumbnails[0]))
             for word, thumbnails in self.browse_tab.get.base_words(dictionary_dir)

@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLab
 from PyQt6.QtCore import Qt
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 from ..sequence_picker_go_back_button import SequencePickerGoBackButton
 
@@ -56,7 +56,7 @@ class FilterSectionBase(QWidget):
         self.header_label.hide()
 
     def get_sorted_base_words(self, sort_order) -> list[tuple[str, list[str], None]]:
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         base_words = [
             (
                 d,

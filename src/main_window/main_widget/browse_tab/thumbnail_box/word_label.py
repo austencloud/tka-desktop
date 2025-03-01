@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Literal
 import os
 
 from settings_manager.global_settings.app_context import AppContext
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox
@@ -31,7 +31,7 @@ class WordLabel(QWidget):
         self.favorite_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.favorite_button.setFlat(True)  # Remove button border
 
-        icons_path = get_images_and_data_path("images/icons")
+        icons_path = get_image_path("icons")
 
         self.star_icon_filled = QIcon(os.path.join(icons_path, "star_filled.png"))
         self.favorite_button.clicked.connect(
@@ -86,9 +86,7 @@ class WordLabel(QWidget):
     def update_favorite_icon(self, is_favorite: bool):
         self.star_icon_empty_path = self.get_star_outline_icon()
         self.star_icon_empty = QIcon(
-            os.path.join(
-                get_images_and_data_path("images/icons"), self.star_icon_empty_path
-            )
+            os.path.join(get_image_path("icons"), self.star_icon_empty_path)
         )
         if is_favorite:
             self.favorite_button.setIcon(self.star_icon_filled)

@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtWidgets import QWidget
 from typing import TYPE_CHECKING
 
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 
 if TYPE_CHECKING:
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class UFODrawManager:
     def __init__(self, ufo_manager: "UFOManager"):
         self.ufo_manager = ufo_manager  # Access the UFOManager instance
-        ufo_image_path = get_images_and_data_path("images/backgrounds/ufo.png")
+        ufo_image_path = get_image_path("backgrounds/ufo.png")
 
         self.ufo_image = QPixmap(ufo_image_path)
 

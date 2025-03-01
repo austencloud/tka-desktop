@@ -3,14 +3,12 @@ import re
 import json
 from PIL import Image
 from data.constants import BLUE_ATTRS, SEQUENCE_START_POSITION, START_ORI
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 
 class VariationNumberFixer:
     def __init__(self) -> None:
-        self.base_folder = get_images_and_data_path(
-            "src\data\generated_data\dictionary"
-        )
+        self.base_folder = get_data_path("generated_data\dictionary")
 
     def get_version_number(self, name):
         match = re.search(r"_ver(\d+)", name)

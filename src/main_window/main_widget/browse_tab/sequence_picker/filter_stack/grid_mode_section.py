@@ -18,7 +18,7 @@ import os
 
 from data.constants import GRID_MODE
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ if TYPE_CHECKING:
 
 class GridModeSection(FilterSectionBase):
     GRID_MODES = ["Box", "Diamond"]
-    IMAGE_DIR = get_images_and_data_path("images/grid")
+    IMAGE_DIR = get_image_path("grid")
 
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
         super().__init__(initial_selection_widget, "Select by Grid Mode:")
@@ -172,7 +172,7 @@ class GridModeSection(FilterSectionBase):
         if hasattr(self, "_all_sequences_with_grid_modes"):
             return self._all_sequences_with_grid_modes
 
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         base_words = [
             (
                 word,

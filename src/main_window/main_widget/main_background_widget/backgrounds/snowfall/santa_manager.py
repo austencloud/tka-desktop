@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import Qt
 
 from data.constants import DIRECTION
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 
 class SantaManager:
@@ -13,7 +13,7 @@ class SantaManager:
     def __init__(self):
         # Load the Santa image if not already cached
         if SantaManager._cached_santa_image is None:
-            santa_image_path = get_images_and_data_path("images/backgrounds/santa.png")
+            santa_image_path = get_image_path("backgrounds/santa.png")
             SantaManager._cached_santa_image = QPixmap(santa_image_path)
 
         self.santa_image: QPixmap = SantaManager._cached_santa_image

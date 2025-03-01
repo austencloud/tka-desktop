@@ -12,7 +12,7 @@ from PyQt6.QtGui import QPixmap, QPainter, QPen
 import os
 from functools import partial
 
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
@@ -26,7 +26,7 @@ class LevelSection(FilterSectionBase):
         3: "Non-radial orientations.",
     }
     AVAILABLE_LEVELS = [1, 2, 3]
-    IMAGE_DIR = get_images_and_data_path("images/level_images")
+    IMAGE_DIR = get_image_path("level_images")
 
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
         super().__init__(initial_selection_widget, "Select by Difficulty Level:")
@@ -139,7 +139,7 @@ class LevelSection(FilterSectionBase):
         if hasattr(self, "_all_sequences_with_levels"):
             return self._all_sequences_with_levels
 
-        dictionary_dir = get_images_and_data_path("src\data\generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\dictionary")
         base_words = [
             (
                 word,

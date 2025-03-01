@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
 
 from main_window.main_widget.sequence_workbench.workbench_button import WorkbenchButton
 from .button_panel_placeholder import ButtonPanelPlaceholder
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 if TYPE_CHECKING:
     from .sequence_workbench import SequenceWorkbench
@@ -89,8 +89,8 @@ class SequenceWorkbenchButtonPanel(QFrame):
         }
 
         for button_name, button_data in button_dict.items():
-            icon_path = get_images_and_data_path(
-                f"images/icons/sequence_workbench_icons/{button_data['icon']}"
+            icon_path = get_image_path(
+                f"icons/sequence_workbench_icons/{button_data['icon']}"
             )
             button = self._create_button(
                 icon_path, button_data["callback"], button_data["tooltip"]
@@ -121,7 +121,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
 
     def toggle_swap_colors_icon(self):
         icon_name = "yinyang1.svg" if self.colors_swapped else "yinyang2.svg"
-        new_icon_path = get_images_and_data_path(
+        new_icon_path = get_data_path(
             f"images/icons/sequence_workbench_icons/{icon_name}"
         )
         self.colors_swapped = not self.colors_swapped

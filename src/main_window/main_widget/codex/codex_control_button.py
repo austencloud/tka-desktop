@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QIcon, QFont
 from PyQt6.QtCore import Qt, QSize
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path, get_image_path
 
 if TYPE_CHECKING:
     from .codex_control_widget import CodexControlWidget
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class CodexControlButton(QPushButton):
     """A reusable button class for the Codex control panel."""
 
-    ICON_BASE_PATH = "images/icons/sequence_workbench_icons"
+    ICON_BASE_PATH = "icons/sequence_workbench_icons"
 
     def __init__(
         self, control_widget: "CodexControlWidget", icon_name: str, callback: Callable
@@ -33,7 +33,7 @@ class CodexControlButton(QPushButton):
 
     def _setup_appearance(self) -> None:
         """Sets the button icon and basic appearance."""
-        icon_path = get_images_and_data_path(f"{self.ICON_BASE_PATH}/{self.icon_name}")
+        icon_path = get_image_path(f"{self.ICON_BASE_PATH}/{self.icon_name}")
         self.setIcon(QIcon(icon_path))
         font = QFont()
         font.setBold(True)

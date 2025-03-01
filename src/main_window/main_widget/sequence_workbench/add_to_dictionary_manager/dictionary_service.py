@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List, Dict, Union
 
 from .structural_variation_checker import StructuralVariationChecker
 from .thumbnail_generator import ThumbnailGenerator
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.image_creator import (
@@ -22,9 +22,7 @@ class DictionaryService:
         image_creator: "ImageCreator",
         beat_frame: "SequenceBeatFrame",
     ):
-        self.dictionary_dir = get_images_and_data_path(
-            "src\data\generated_data\dictionary"
-        )
+        self.dictionary_dir = get_data_path("generated_data\dictionary")
         self.structural_checker = StructuralVariationChecker()
         self.thumbnail_generator = ThumbnailGenerator(image_creator, beat_frame)
 

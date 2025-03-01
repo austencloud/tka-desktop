@@ -156,9 +156,8 @@ STATIC_HANDPATH = "static_handpath"
 DASH_HANDPATH = "dash_handpath"
 
 
-PROP_DIR = "images/props/"
-LETTER_BTN_ICON_DIR = "images/letter_button_icons"
-ICON_DIR = "images/icons/"
+PROP_DIR = "props/"
+ICON_DIR = "icons/"
 
 
 STAFF = "staff"

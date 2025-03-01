@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from data.constants import BLUE, PROP_DIR
 from enums.prop_type import PropType
 from objects.prop.prop import Prop
-from utils.path_helpers import get_images_and_data_path
+from utils.path_helpers import get_data_path
 from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtGui import QPixmap
 
@@ -44,7 +44,7 @@ class PropSvgManager:
 
     def _get_hand_svg_file(self, prop: "Prop") -> str:
         hand_color = "left" if prop.color == BLUE else "right"
-        return get_images_and_data_path(f"images/hands/{hand_color}_hand.svg")
+        return get_data_path(f"images/hands/{hand_color}_hand.svg")
 
     def _setup_prop_svg_renderer(self, prop: "Prop", svg_data: str) -> None:
         # same as your original
@@ -58,7 +58,7 @@ class PropSvgManager:
         Because 'prop' is presumably a QGraphicsItem (or QGraphicsSvgItem),
         we'll create a child QGraphicsPixmapItem to actually display the PNG.
         """
-        full_path = get_images_and_data_path(png_path)
+        full_path = get_data_path(png_path)
         pixmap = QPixmap(full_path)
 
         # Step A: Possibly hide or remove the old SVG renderer if it exists
