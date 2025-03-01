@@ -119,8 +119,8 @@ class SequenceWorkbenchButtonPanel(QFrame):
 
     def toggle_swap_colors_icon(self):
         icon_name = "yinyang1.svg" if self.colors_swapped else "yinyang2.svg"
-        new_icon_path = get_data_path(
-            f"images/icons/sequence_workbench_icons/{icon_name}"
+        new_icon_path = get_image_path(
+            f"icons/sequence_workbench_icons/{icon_name}"
         )
         self.colors_swapped = not self.colors_swapped
         new_icon = QIcon(new_icon_path)

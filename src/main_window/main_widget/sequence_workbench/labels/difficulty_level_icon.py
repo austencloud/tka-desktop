@@ -11,14 +11,22 @@ if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
         SequenceWorkbench,
     )
+
+
 class DifficultyLevelIcon:
     @staticmethod
     def get_pixmap(difficulty_level: int, size: int) -> QPixmap:
         """Returns a QPixmap of the difficulty level icon for display."""
-        image = QImage(size, size, QImage.Format.Format_ARGB32)
-        image.fill(Qt.GlobalColor.transparent)
+        image = DifficultyLevelIcon._create_base_image(size)
         DifficultyLevelIcon._draw_difficulty_level(image, difficulty_level, size)
         return QPixmap.fromImage(image)
+
+    @staticmethod
+    def _create_base_image(size: int) -> QImage:
+        """Creates a base transparent image."""
+        image = QImage(size, size, QImage.Format.Format_ARGB32)
+        image.fill(Qt.GlobalColor.transparent)
+        return image
 
     @staticmethod
     def _draw_difficulty_level(image: QImage, difficulty_level: int, size: int):
@@ -26,37 +34,68 @@ class DifficultyLevelIcon:
         painter = QPainter(image)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        rect = QRect(size // 8, size // 8, int(size * 0.75), int(size * 0.75))
+        rect = DifficultyLevelIcon._calculate_rect(size)
+        DifficultyLevelIcon._draw_ellipse(painter, rect, difficulty_level)
+        DifficultyLevelIcon._draw_text(painter, rect, difficulty_level)
 
+        painter.end()
+
+    @staticmethod
+    def _calculate_rect(size: int) -> QRect:
+        """Calculates the rectangle for drawing the ellipse."""
+        return QRect(size // 8, size // 8, int(size * 0.75), int(size * 0.75))
+
+    @staticmethod
+    def _draw_ellipse(painter: QPainter, rect: QRect, difficulty_level: int):
+        """Draws the ellipse with gradient based on difficulty level."""
         painter.setPen(Qt.GlobalColor.black)
         painter.setBrush(
             DifficultyLevelGradients().get_gradient(rect, difficulty_level)
         )
         painter.drawEllipse(rect)
 
-        DifficultyLevelIcon._draw_text(painter, rect, difficulty_level)
-        painter.end()
-
     @staticmethod
     def _draw_text(painter: QPainter, rect: QRect, difficulty_level: int):
-        font_size = int(rect.height() // 1.75)
-        font = QFont("Georgia", font_size, QFont.Weight.Bold)
+        """Draws the difficulty level text inside the ellipse."""
+        font = DifficultyLevelIcon._create_font(rect)
         painter.setFont(font)
         metrics = QFontMetrics(font)
 
         text = str(difficulty_level)
-        bounding_rect = metrics.boundingRect(text)
+        bounding_rect = DifficultyLevelIcon._calculate_bounding_rect(metrics, text)
 
-        # Expand bounding rect slightly for better centering
-        bounding_rect.setWidth(bounding_rect.width() + 8)
-        bounding_rect.setHeight(bounding_rect.height() + 5)
-
-        text_x = rect.center().x() - bounding_rect.width() // 2
-        text_y = rect.center().y() - bounding_rect.height() // 2
-
-        # Subtle position tweaks per level
-        text_y -= 5 if difficulty_level != 3 else 10
+        text_x, text_y = DifficultyLevelIcon._calculate_text_position(
+            rect, bounding_rect, difficulty_level
+        )
         bounding_rect.moveTopLeft(QPoint(text_x, text_y))
 
         painter.setPen(Qt.GlobalColor.black)
         painter.drawText(bounding_rect, Qt.AlignmentFlag.AlignCenter, text)
+
+    @staticmethod
+    def _create_font(rect: QRect) -> QFont:
+        """Creates the font for the difficulty level text."""
+        font_size = int(rect.height() // 1.75)
+        return QFont("Georgia", font_size, QFont.Weight.Bold)
+
+    @staticmethod
+    def _calculate_bounding_rect(metrics: QFontMetrics, text: str) -> QRect:
+        """Calculates the bounding rectangle for the text."""
+        bounding_rect = metrics.boundingRect(text)
+        bounding_rect.setWidth(bounding_rect.width() + 8)
+        bounding_rect.setHeight(bounding_rect.height() + 5)
+        return bounding_rect
+
+    @staticmethod
+    def _calculate_text_position(
+        rect: QRect, bounding_rect: QRect, difficulty_level: int
+    ) -> tuple[int, int]:
+        """Calculates the position for the text."""
+        text_x = rect.center().x() - bounding_rect.width() // 2
+        text_y = rect.center().y() - bounding_rect.height() // 2
+
+        # Subtle position tweaks per level
+        text_y -= 4 if difficulty_level != 3 else 6
+        if difficulty_level == 3:
+            text_x += 2
+        return text_x, text_y

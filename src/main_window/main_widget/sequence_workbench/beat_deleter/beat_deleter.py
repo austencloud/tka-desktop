@@ -60,6 +60,7 @@ class BeatDeleter:
         self.beat_frame.sequence_workbench.current_word_label.update_current_word_label_from_beats()
         self.beat_frame.sequence_workbench.difficulty_label.update_difficulty_label()
         self.beat_frame.emit_update_image_export_preview()
+        self.sequence_workbench.difficulty_label.update_difficulty_label()
 
     def _delete_beat_and_following(self, beat: BeatView) -> None:
         beats = self.beat_frame.beat_views
@@ -85,8 +86,8 @@ class BeatDeleter:
         self.sequence_workbench.main_widget.construct_tab.last_beat = (
             self.sequence_workbench.sequence_beat_frame.start_pos
         )
-        self.sequence_workbench.difficulty_label.set_difficulty_level("")
         self.sequence_workbench.graph_editor.update_graph_editor()
+        self.sequence_workbench.difficulty_label.update_difficulty_label()
 
     def fade_and_reset_widgets(self, widgets, show_indicator):
         self.main_widget.fade_manager.widget_fader.fade_and_update(

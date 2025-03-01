@@ -40,7 +40,9 @@ if TYPE_CHECKING:
 class SequenceWorkbench(QWidget):
     beat_frame_layout: QHBoxLayout
     indicator_label_layout: QHBoxLayout
-
+    difficulty_label: DifficultyLabel
+    current_word_label: CurrentWordLabel
+    
     def __init__(self, main_widget: "MainWidget") -> None:
         super().__init__()
         self.main_widget = main_widget

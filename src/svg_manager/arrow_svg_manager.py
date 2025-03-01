@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Union
-from utils.path_helpers import get_data_path
+from utils.path_helpers import get_data_path, get_image_path
 from PyQt6.QtSvg import QSvgRenderer
 from objects.arrow.arrow import Arrow
 from data.constants import CLOCK, COUNTER, IN, NO_ROT, OUT, FLOAT  # Add FLOAT here
@@ -33,13 +33,13 @@ class ArrowSvgManager:
             turns = arrow_turns
         if not turns == "fl":
             if start_ori in [IN, OUT]:
-                return get_data_path(
-                    f"images/arrows/{arrow.motion.state.motion_type}/from_radial/"
+                return get_image_path(
+                    f"arrows/{arrow.motion.state.motion_type}/from_radial/"
                     f"{arrow.motion.state.motion_type}_{turns}.svg"
                 )
             elif start_ori in [CLOCK, COUNTER]:
-                return get_data_path(
-                    f"images/arrows/{arrow.motion.state.motion_type}/from_nonradial/"
+                return get_image_path(
+                    f"arrows/{arrow.motion.state.motion_type}/from_nonradial/"
                     f"{arrow.motion.state.motion_type}_{turns}.svg"
                 )
 

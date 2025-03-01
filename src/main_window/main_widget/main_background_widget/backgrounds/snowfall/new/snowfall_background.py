@@ -3,6 +3,8 @@ from PyQt6.QtCore import QThread, pyqtSignal, pyqtSlot, QTimer
 from PyQt6.QtGui import QPainter, QPixmap, QColor, QLinearGradient
 from PyQt6.QtWidgets import QWidget
 
+from utils.path_helpers import get_image_path
+
 from .snowflake_worker import SnowflakeWorker
 from .shooting_star_manager import ShootingStarManager
 from .santa_manager import SantaManager
@@ -27,7 +29,7 @@ class SnowfallBackground(QWidget):
 
         # Snowflake properties
         self.snowflake_images = [
-            QPixmap(f"images/snowflakes/snowflake{i}.png") for i in range(1, 21)
+            QPixmap(get_image_path(f"snowflakes/snowflake{i}.png")) for i in range(1, 21)
         ]
         self.snowflakes = []
 

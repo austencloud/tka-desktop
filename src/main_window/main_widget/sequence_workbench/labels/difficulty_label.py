@@ -2,7 +2,9 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QToolButton
 from PyQt6.QtGui import QPixmap, QImage, QPainter, QFont, QPen, QFontMetrics, QIcon
 from PyQt6.QtCore import Qt, QRect, QPoint, QSize
-from main_window.main_widget.sequence_workbench.labels.difficulty_level_icon import DifficultyLevelIcon
+from main_window.main_widget.sequence_workbench.labels.difficulty_level_icon import (
+    DifficultyLevelIcon,
+)
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.difficult_level_gradients import (
     DifficultyLevelGradients,
 )
@@ -26,14 +28,14 @@ class DifficultyLabel(QToolButton):
         self.setStyleSheet("border: none; background: transparent;")  # Clean look
 
         self.difficulty_level = 1  # Default level
-        self.update_icon_size()
+        self.update_icon()
 
     def set_difficulty_level(self, level: int):
         """Sets the difficulty level and updates the display."""
         self.difficulty_level = level
-        self.update_icon_size()
+        self.update_icon()
 
-    def update_icon_size(self):
+    def update_icon(self):
         """Updates the size of the icon dynamically based on workbench size."""
         size = max(32, self.sequence_workbench.width() // 18)  # Ensure min size
         self.setIcon(QIcon(DifficultyLevelIcon.get_pixmap(self.difficulty_level, size)))
@@ -48,9 +50,17 @@ class DifficultyLabel(QToolButton):
                 sequence
             )
         )
-        self.set_difficulty_level(difficulty_level)
+        if difficulty_level in ("", None):
+            self.hide()
+        else:
+            self.show()
+            self.set_difficulty_level(difficulty_level)
 
     def resizeEvent(self, event):
-        """Resizes the difficulty label on parent resize."""
+        """Resizes the difficulty label and updates the dummy widget size."""
         super().resizeEvent(event)
-        self.update_icon_size()
+        self.update_icon()
+
+        # Ensure the dummy widget in SequenceWorkbenchLayoutManager stays in sync
+        if hasattr(self.sequence_workbench.layout_manager, "update_dummy_size"):
+            self.sequence_workbench.layout_manager.update_dummy_size()

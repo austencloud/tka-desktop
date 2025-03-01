@@ -79,9 +79,9 @@ class LevelSelector(QWidget):
                 border-radius: 10px;
             }
             QToolButton:checked {
-                background: rgba(255, 255, 255, 20);
-                border-bottom: 3px solid rgba(255, 255, 255, 80);
-                border-radius: 10px 10px 0 0;
+                background: rgba(255, 255, 255, 60);  /* Make checked buttons more visible */
+                border: 2px solid rgba(255, 255, 255, 150);
+                border-radius: 10px;
             }
             """
         )
