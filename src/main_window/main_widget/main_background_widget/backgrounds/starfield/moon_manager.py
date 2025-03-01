@@ -1,7 +1,6 @@
 from PyQt6.QtGui import QPainter
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import Qt
-from utils.path_helpers import get_data_path
 from PyQt6.QtGui import QPixmap
 
 

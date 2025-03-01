@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QIcon, QFont
 from PyQt6.QtCore import Qt, QSize
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
     from .codex_control_widget import CodexControlWidget

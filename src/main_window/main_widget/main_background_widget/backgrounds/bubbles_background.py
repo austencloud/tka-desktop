@@ -14,7 +14,6 @@ from PyQt6.QtCore import Qt, QPointF
 from main_window.main_widget.main_background_widget.backgrounds.base_background import (
     BaseBackground,
 )
-from utils.path_helpers import get_data_path
 
 
 class BubblesBackground(BaseBackground):

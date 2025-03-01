@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
@@ -10,9 +10,6 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 if TYPE_CHECKING:
     from base_widgets.pictograph.elements.views.GE_pictograph_view import (
         GE_PictographView,
-    )
-    from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
-        GE_Pictograph,
     )
 
 

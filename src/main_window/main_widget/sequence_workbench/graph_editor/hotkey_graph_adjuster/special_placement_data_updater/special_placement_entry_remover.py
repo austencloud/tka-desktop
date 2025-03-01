@@ -1,9 +1,7 @@
-from multiprocessing import managers
 import os
 from typing import TYPE_CHECKING
 from enums.letter.letter import Letter
 
-from base_widgets.pictograph import pictograph
 from data.constants import BLUE, RED
 from main_window.main_widget.json_manager.special_placement_saver import (
     SpecialPlacementSaver,

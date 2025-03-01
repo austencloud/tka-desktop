@@ -3,7 +3,6 @@ from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtWidgets import QWidget
 from typing import TYPE_CHECKING
 
-from utils.path_helpers import get_data_path
 
 
 if TYPE_CHECKING:

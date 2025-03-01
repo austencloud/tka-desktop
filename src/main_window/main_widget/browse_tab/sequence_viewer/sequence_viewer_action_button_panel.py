@@ -4,7 +4,7 @@ from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QIcon, QPixmap, QResizeEvent
 from ...full_screen_image_overlay import FullScreenImageOverlay
 from ..temp_beat_frame.temp_beat_frame import TempBeatFrame
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
     from .sequence_viewer import SequenceViewer

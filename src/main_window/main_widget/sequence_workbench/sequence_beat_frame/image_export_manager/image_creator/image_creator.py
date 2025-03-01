@@ -14,7 +14,7 @@ from .height_determiner import HeightDeterminer
 from .beat_drawer import BeatDrawer
 from .user_info_drawer import UserInfoDrawer
 from .word_drawer import WordDrawer
-from .difficulty_level_drawer import DifficultyLevelDrawer
+from .image_export_difficulty_level_drawer import ImageExportDifficultyLevelDrawer
 
 if TYPE_CHECKING:
     from ..image_export_manager import ImageExportManager
@@ -40,7 +40,7 @@ class ImageCreator:
         self.beat_drawer = BeatDrawer(self)
         self.word_drawer = WordDrawer(self)
         self.user_info_drawer = UserInfoDrawer(self)
-        self.difficulty_level_drawer = DifficultyLevelDrawer()
+        self.difficulty_level_drawer = ImageExportDifficultyLevelDrawer()
 
     def create_sequence_image(
         self,

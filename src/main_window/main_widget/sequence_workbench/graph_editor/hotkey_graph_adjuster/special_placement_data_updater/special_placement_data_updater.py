@@ -16,7 +16,6 @@ from placement_managers.attr_key_generator import (
 )
 
 
-from .special_placement_entry_remover import SpecialPlacementEntryRemover
 from objects.arrow.arrow import Arrow
 from PyQt6.QtCore import QPointF
 

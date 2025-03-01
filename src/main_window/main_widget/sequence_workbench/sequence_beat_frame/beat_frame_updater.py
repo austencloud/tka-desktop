@@ -2,17 +2,14 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
 from data.constants import (
     BEAT,
-    BLUE,
     BLUE_ATTRS,
     END_ORI,
     END_POS,
-    RED,
     RED_ATTRS,
     SEQUENCE_START_POSITION,
     START_ORI,
     START_POS,
 )
-from main_window.main_widget.grid_mode_checker import GridModeChecker
 from settings_manager.global_settings.app_context import AppContext
 from utils.reversal_detector import (
     ReversalDetector,

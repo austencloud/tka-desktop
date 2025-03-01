@@ -6,7 +6,6 @@ from PIL import Image, PngImagePlugin, ImageEnhance
 import numpy as np
 from datetime import datetime
 
-from pandas import options
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.image_creator import (

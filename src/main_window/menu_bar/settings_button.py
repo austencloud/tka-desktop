@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QIcon, QCursor
 from PyQt6.QtCore import QSize, Qt
 
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 
 if TYPE_CHECKING:

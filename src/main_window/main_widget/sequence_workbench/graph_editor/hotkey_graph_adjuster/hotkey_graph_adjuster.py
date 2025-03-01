@@ -20,9 +20,6 @@ if TYPE_CHECKING:
     from base_widgets.pictograph.elements.views.GE_pictograph_view import (
         GE_PictographView,
     )
-    from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
-        GE_Pictograph,
-    )
 
 
 class HotkeyGraphAdjuster:

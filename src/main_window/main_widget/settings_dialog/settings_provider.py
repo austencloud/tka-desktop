@@ -1,6 +1,6 @@
 from PyQt6.QtCore import QSettings
 
-from utils.path_helpers import get_settings_path, get_user_editable_resource_path
+from utils.path_helpers import get_settings_path
 
 
 class SettingsProvider:

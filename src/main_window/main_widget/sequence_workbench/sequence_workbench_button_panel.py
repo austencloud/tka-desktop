@@ -1,7 +1,6 @@
 from datetime import datetime
-import os
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import Qt, QStandardPaths, QFileInfo
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QPushButton,
@@ -10,7 +9,6 @@ from PyQt6.QtWidgets import (
     QApplication,
     QSpacerItem,
     QSizePolicy,
-    QFileDialog,
 )
 
 from main_window.main_widget.sequence_workbench.workbench_button import WorkbenchButton

@@ -6,7 +6,7 @@ from objects.motion.motion import Motion
 
 from .adjust_turns_button import AdjustTurnsButton
 from .GE_turns_label import GE_TurnsLabel
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
     from ..turns_widget import TurnsWidget

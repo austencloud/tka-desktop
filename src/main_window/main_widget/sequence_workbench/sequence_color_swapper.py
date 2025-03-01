@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 from data.constants import (
-    BEAT,
     BLUE_ATTRS,
     END_LOC,
     END_POS,

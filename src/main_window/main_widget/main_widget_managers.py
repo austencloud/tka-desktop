@@ -9,7 +9,6 @@ from .sequence_properties_manager.sequence_properties_manager import (
 )
 from .sequence_level_evaluator import SequenceLevelEvaluator
 from .thumbnail_finder import ThumbnailFinder
-from .metadata_extractor import MetaDataExtractor
 
 if TYPE_CHECKING:
     from .main_widget import MainWidget

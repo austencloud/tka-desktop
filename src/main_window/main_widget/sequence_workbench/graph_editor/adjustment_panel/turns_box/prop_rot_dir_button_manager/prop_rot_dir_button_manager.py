@@ -24,7 +24,7 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import 
 from utils.reversal_detector import (
     ReversalDetector,
 )
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 from .prop_rot_dir_button import PropRotDirButton
 
 if TYPE_CHECKING:

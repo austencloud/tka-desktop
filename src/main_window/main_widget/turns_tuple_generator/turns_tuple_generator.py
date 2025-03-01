@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Union
 from enums.letter.letter_type import LetterType
 
-from enums.letter.letter import Letter, LetterCondition
+from enums.letter.letter import LetterCondition
 
 from .turns_tuple_generators.base_turns_tuple_generator import BaseTurnsTupleGenerator
 from .turns_tuple_generators.color_turns_tuple_generator import ColorTurnsTupleGenerator

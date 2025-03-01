@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Literal
 import os
 
 from settings_manager.global_settings.app_context import AppContext
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox
