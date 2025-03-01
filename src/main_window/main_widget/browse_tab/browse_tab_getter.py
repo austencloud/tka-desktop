@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import os
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from utils.path_helpers import get_images_and_data_path
 
 if TYPE_CHECKING:
@@ -17,9 +18,7 @@ class BrowseTabGetter:
             (
                 word,
                 thumbnails,
-                self.browse_tab.main_widget.metadata_extractor.get_length(
-                    thumbnails[0]
-                ),
+                MetaDataExtractor().get_length(thumbnails[0]),
             )
             for word, thumbnails in self.base_words(dictionary_dir)
             for thumbnail in thumbnails

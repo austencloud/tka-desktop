@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QScrollArea, QGridLayout, QSizePolicy
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from main_window.main_widget.write_tab.act_browser.act_thumbnail_box import (
     ActThumbnailBox,
 )
@@ -15,7 +16,7 @@ class ActBrowser(QScrollArea):
         self.act_tab = act_tab
         self.main_widget = act_tab.main_widget
         self.thumbnail_boxes: list[ActThumbnailBox] = []
-        self.metadata_extractor = self.act_tab.main_widget.metadata_extractor
+        self.metadata_extractor = MetaDataExtractor()
 
         self.scroll_content = QWidget()
         self.grid_layout = QGridLayout(self.scroll_content)

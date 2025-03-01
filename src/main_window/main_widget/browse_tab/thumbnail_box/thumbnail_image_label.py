@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QLabel
 from typing import TYPE_CHECKING
 
 from data.constants import BLUE
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox
@@ -19,7 +20,7 @@ class ThumbnailImageLabel(QLabel):
     def __init__(self, thumbnail_box: "ThumbnailBox"):
         super().__init__()
         self.thumbnail_box = thumbnail_box
-        self.metadata_extractor = thumbnail_box.main_widget.metadata_extractor
+        self.metadata_extractor = MetaDataExtractor()
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         self._border_color = None  # Initialize border color
