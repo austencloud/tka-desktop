@@ -19,3 +19,4 @@ class GE_Pictograph(Beat):
         )
         self.is_blank = True
         self.main_widget = pictograph_container.graph_editor.main_widget
+        self.graph_editor = pictograph_container.graph_editor

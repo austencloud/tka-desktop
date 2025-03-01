@@ -22,14 +22,12 @@ from PyQt6.QtCore import Qt
 class ArrowMovementManager:
     def __init__(self, ge_view: "GE_PictographView") -> None:
         self.ge_view = ge_view
+        self.graph_editor = ge_view.graph_editor
 
     def handle_arrow_movement(self, key, shift_held, ctrl_held) -> None:
         self.ge_pictograph = self.ge_view.pictograph
         self.data_updater = (
             self.ge_pictograph.managers.arrow_placement_manager.data_updater
-        )
-        self.graph_editor = (
-            self.ge_pictograph.main_widget.sequence_workbench.graph_editor
         )
 
         adjustment_increment = 5

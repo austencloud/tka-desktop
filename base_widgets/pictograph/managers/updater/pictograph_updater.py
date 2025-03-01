@@ -73,7 +73,6 @@ class PictographUpdater:
         return {
             "color": color,
             "loc": pictograph_data[f"{color}_attributes"]["end_loc"],
-            "ori": pictograph_data[f"{color}_attributes"]["end_ori"],
             "motion": motion,
             "prop_type": AppContext.settings_manager()
             .global_settings.get_prop_type()
