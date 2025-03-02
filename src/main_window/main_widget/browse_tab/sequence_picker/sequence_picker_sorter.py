@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox
+from main_window.main_window import QApplication
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.sequence_picker.sequence_picker import (
@@ -34,32 +35,17 @@ class SequencePickerSorter:
         self.update_ui(sorted_sections, sort_method)
 
     def get_sort_key(self, sort_method: str) -> callable:
-        if sort_method == "sequence_length":
-
-            def sort_key(sequence_item) -> int:
-                return (
-                    sequence_item[2] if sequence_item[2] is not None else float("inf")
-                )
-
-        elif sort_method == "date_added":
-
-            def sort_key(sequence_item) -> datetime:
-                return (
-                    self.section_manager.get_date_added(sequence_item[1])
-                    or datetime.min
-                )
-
-        elif sort_method == "difficulty":  # ✅ Added Difficulty Sorting
-
-            def sort_key(sequence_item):
-                return sequence_item[2]
-
-        else:
-
-            def sort_key(sequence_item):
-                return sequence_item[0]
-
-        return sort_key
+        sort_key_mapping = {
+            "sequence_length": lambda seq_item: (
+                seq_item[2] if seq_item[2] is not None else float("inf")
+            ),
+            "date_added": lambda seq_item: self.section_manager.get_date_added(
+                seq_item[1]
+            )
+            or datetime.min,
+            "level": lambda seq_item: seq_item[2],
+        }
+        return sort_key_mapping.get(sort_method, lambda seq_item: seq_item[0])
 
     def sort_sequences(self, sort_key, sort_method: str):
         self.browse_tab.sequence_picker.currently_displayed_sequences.sort(
@@ -67,6 +53,7 @@ class SequencePickerSorter:
         )
 
     def group_sequences_by_section(self, sort_method: str):
+        # Existing grouping logic
         for (
             word,
             thumbnails,
@@ -78,6 +65,12 @@ class SequencePickerSorter:
             self.browse_tab.sequence_picker.sections.setdefault(section, []).append(
                 (word, thumbnails)
             )
+
+        # Ensure all difficulty levels are present
+        if sort_method == "level":
+            for level in ["1", "2", "3"]:
+                if level not in self.browse_tab.sequence_picker.sections:
+                    self.browse_tab.sequence_picker.sections[level] = []
 
     def _sort_only(self, sort_method: str):
         """
@@ -119,7 +112,7 @@ class SequencePickerSorter:
         self.sequence_picker.control_panel.sort_widget.highlight_appropriate_button(
             sort_method
         )
-
+        QApplication.processEvents()
         current_section = None
         row_index = 0
 
@@ -170,6 +163,11 @@ class SequencePickerSorter:
             row_index += 1
             self.section_manager.add_header(row_index, self.num_columns, formatted_day)
             row_index += 1
+        elif sort_method == "level":
+            row_index += 1  # Increment before adding header
+            header_title = f"Level {section}"
+            self.section_manager.add_header(row_index, self.num_columns, header_title)
+            row_index += 1  # Increment after adding header
         else:
             row_index += 1
             self.section_manager.add_header(row_index, self.num_columns, section)

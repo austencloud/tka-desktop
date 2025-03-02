@@ -30,7 +30,7 @@ class BrowseTabUIUpdater:
 
     def _create_and_show_thumbnails(self, skip_scaling: bool = True):
         self.browse_tab.sequence_picker.sorter._display_sorted_sections(
-            skip_scaling=skip_scaling
+            skip_scaling=True
         )
         self._apply_thumbnail_styling()
 
@@ -41,7 +41,6 @@ class BrowseTabUIUpdater:
         )
         for tb in thumbnail_box_list:
             tb.image_label.update_thumbnail(tb.state.current_index)
-
 
     def _apply_thumbnail_styling(self):
         font_color = self.font_color_updater.get_font_color(

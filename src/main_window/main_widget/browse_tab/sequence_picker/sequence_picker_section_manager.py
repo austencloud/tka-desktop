@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from typing import TYPE_CHECKING
 from enums.letter.letter_type import LetterType
+from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from ..browse_tab_section_header import BrowseTabSectionHeader
 from PIL import Image
 
@@ -32,9 +33,18 @@ class SequencePickerSectionManager:
                 key=lambda x: datetime.strptime(x, "%m-%d-%Y"),
                 reverse=True,
             )
-
             if "Unknown" in sections:
                 sorted_sections.append("Unknown")
+        elif sort_method == "level":
+            # Sort numerically and filter valid levels
+            valid_levels = {"1", "2", "3"}
+            sorted_sections = sorted(
+                [s for s in sections if s in valid_levels], key=lambda x: int(x)
+            )
+            # Add missing levels
+            for level in ["1", "2", "3"]:
+                if level not in sorted_sections:
+                    sorted_sections.append(level)
         else:
             sorted_sections = sorted(sections, key=self.custom_sort_key)
         return sorted_sections
@@ -52,10 +62,17 @@ class SequencePickerSectionManager:
                 date_added = self.get_date_added(thumbnails)
                 return date_added.strftime("%m-%d-%Y") if date_added else "Unknown"
             return "Unknown"
+        elif sort_order == "level":
+            # Extract level from thumbnails' metadata
+            for thumbnail in thumbnails:
+                level = MetaDataExtractor().get_level(thumbnail)
+                if level is not None:
+                    return str(level)
+            return "Unknown"
         else:
             section: str = word[:2] if len(word) > 1 and word[1] == "-" else word[0]
             if not section.isdigit():
-                if section[0] in set(["α", "β", "θ"]):
+                if section[0] in {"α", "β", "θ"}:
                     section = section.lower()
                 else:
                     section = section.upper()

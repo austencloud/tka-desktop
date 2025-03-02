@@ -17,13 +17,14 @@ class SequencePickerNavSidebar(QWidget):
     length_spacer_line: QLabel = None
     letter_spacer_line: QLabel = None
     selected_button: QPushButton = None
+    difficulty_spacer: QLabel = None
 
     def __init__(self, sequence_picker: "SequencePicker"):
         super().__init__(sequence_picker)
         self.sequence_picker = sequence_picker
         self.length_label = QLabel("Length")
         self.letter_label = QLabel("Letter")
-
+        self.level_header = QLabel("Level")
         self._setup_scroll_area()
 
         self.settings_manager = AppContext.settings_manager()
@@ -138,7 +139,28 @@ class SequencePickerNavSidebar(QWidget):
                 date_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
                 self.layout.addWidget(date_button)
                 self.buttons.append(date_button)
+        elif sort_order == "level":
+            self.layout.setAlignment(
+                Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignVCenter
+            )
 
+            # Add header
+            self.level_header = QLabel("Level")
+            self.style_header_label(self.level_header)
+            self.layout.addWidget(self.level_header)
+
+            # Add spacer
+            self.difficulty_spacer = QLabel()
+            self.difficulty_spacer.setStyleSheet("border: 1px solid black;")
+            self.layout.addWidget(self.difficulty_spacer)
+
+            # Add level buttons
+            for level in ["1", "2", "3"]:
+                btn = QPushButton(f"{level}")
+                btn.clicked.connect(lambda _, l=level: self.scroll_to_section(l, btn))
+                btn.setCursor(Qt.CursorShape.PointingHandCursor)
+                self.layout.addWidget(btn)
+                self.buttons.append(btn)
         else:
             self.layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
@@ -166,11 +188,15 @@ class SequencePickerNavSidebar(QWidget):
             widgets.append(self.letter_label)
         if self.letter_spacer_line:
             widgets.append(self.letter_spacer_line)
+        if self.level_header:
+            widgets.append(self.level_header)
+        if self.difficulty_spacer:
+            widgets.append(self.difficulty_spacer)
 
         for widget in widgets:
-            self.layout.removeWidget(widget)
-            widget.hide()
-            widget.deleteLater()
+            if widget is not None:
+                self.layout.removeWidget(widget)
+                widget.hide()
 
         self.buttons.clear()
         self.year_labels.clear()
@@ -241,12 +267,13 @@ class SequencePickerNavSidebar(QWidget):
         self.style_button(button, selected=True)
         self.selected_button = button
 
-        if "-" in section:
-            section = (
-                section.split("-")[0].lstrip("0")
-                + "-"
-                + section.split("-")[1].lstrip("0")
-            )
+        # Get the current sort method
+        sort_method = self.settings_manager.browse_settings.get_sort_method()
+
+        # Adjust the section name if sorting by difficulty
+        if sort_method == "level":
+            section = f"Level {section}"
+
         header = self.sequence_picker.scroll_widget.section_headers.get(section)
         if header:
             scroll_area = self.sequence_picker.scroll_widget.scroll_area
@@ -277,10 +304,14 @@ class SequencePickerNavSidebar(QWidget):
             self.letter_spacer_line.setFixedHeight(1)
         if self.length_spacer_line:
             self.length_spacer_line.setFixedHeight(1)
+        if self.difficulty_spacer:
+            self.difficulty_spacer.setFixedHeight(1)
         if self.length_label:
             self.resize_label(self.length_label)
         if self.letter_label:
             self.resize_label(self.letter_label)
+        if self.level_header:
+            self.resize_label(self.level_header, smaller=True)
         if self.year_labels:
             for year_label in self.year_labels.values():
                 self.resize_label(year_label)
@@ -299,8 +330,10 @@ class SequencePickerNavSidebar(QWidget):
         extra_padding = self.sequence_picker.width() // 25
         self.setFixedWidth(self.sequence_picker.main_widget.width() // 16)
 
-    def resize_label(self, label: QLabel):
+    def resize_label(self, label: QLabel, smaller: bool = False):
         font_size = self.sequence_picker.height() // 40
+        if smaller:
+            font_size = max(font_size - 2, 8)  # Make it a bit smaller
         label_font = label.font()
         label_font.setPointSize(max(font_size, 8))
         label.setFont(label_font)
