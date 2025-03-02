@@ -11,7 +11,7 @@ from .generate_tab_controller import GenerateTabController
 
 from .widgets.generator_type_toggle import GeneratorTypeToggle
 from .widgets.level_selector.level_selector import LevelSelector
-from .widgets.length_adjuster import LengthAdjuster
+from .widgets.generate_tab_length_adjuster import GenerateTabLengthAdjuster
 from .widgets.turn_intensity_adjuster import TurnIntensityAdjuster
 from .widgets.prop_continuity_toggle import PropContinuityToggle
 from .widgets.slice_size_toggle import SliceSizeToggle
@@ -52,7 +52,7 @@ class GenerateTab(QWidget):
         self.generate_button = GenerateSequenceButton(self, "Generate New", True)
         self.generator_type_toggle = GeneratorTypeToggle(self)
         self.level_selector = LevelSelector(self)
-        self.length_adjuster = LengthAdjuster(self)
+        self.length_adjuster = GenerateTabLengthAdjuster(self)
         self.turn_intensity = TurnIntensityAdjuster(self)
         self.prop_continuity_toggle = PropContinuityToggle(self)
         self.letter_picker = LetterTypePickerWidget(self)

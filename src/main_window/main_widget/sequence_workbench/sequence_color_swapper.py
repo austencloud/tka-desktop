@@ -74,15 +74,12 @@ class SequenceColorSwapper(BaseSequenceModifier):
         return swapped_sequence
 
     def _color_swap_pictograph_data(self, beat_data):
-        print("Before swap:", beat_data[BLUE_ATTRS], beat_data[RED_ATTRS])
 
-        # Perform swap
         beat_data[BLUE_ATTRS], beat_data[RED_ATTRS] = (
             beat_data[RED_ATTRS],
             beat_data[BLUE_ATTRS],
         )
 
-        print("After swap:", beat_data[BLUE_ATTRS], beat_data[RED_ATTRS])
 
         for loc in [START_LOC, END_LOC]:
             if loc in beat_data[BLUE_ATTRS] and loc in beat_data[RED_ATTRS]:

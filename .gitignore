@@ -6,6 +6,5 @@ profiling_output.txt
 build/
 *.log
 dist/
-settings.json
 settings.ini
 trace_log.txt
