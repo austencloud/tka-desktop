@@ -2,6 +2,8 @@ from PyQt6.QtWidgets import QPushButton, QLabel
 from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt
 
+from main_window.main_widget.browse_tab.sequence_picker.nav_sidebar.sidebar_button import SidebarButton
+
 
 from .base_sidebar_section import BaseSidebarSection
 
@@ -16,13 +18,15 @@ class SidebarLevelSection(BaseSidebarSection):
         self.manager.layout.addWidget(level_label)
         self._widgets_created.append(level_label)
 
-        line_label = QLabel()
-        line_label.setStyleSheet("border: 1px solid black;")
-        self.manager.layout.addWidget(line_label)
-        self._widgets_created.append(line_label)
+        # Create a horizontal line or spacer
+        spacer_line = QLabel()
+        spacer_line.setFixedHeight(1)  # Ensure it's exactly 1 pixel tall
+        spacer_line.setStyleSheet("background-color: white; border: none; margin: 0;")
+        self.manager.layout.addWidget(spacer_line)
+        self._widgets_created.append(spacer_line)
 
         for lvl in ["1", "2", "3"]:
-            btn = QPushButton(lvl)
+            btn = SidebarButton(lvl)
             btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             btn.clicked.connect(
                 lambda _, lv=lvl, b=btn: self.manager.scroll_to_section(lv, b)

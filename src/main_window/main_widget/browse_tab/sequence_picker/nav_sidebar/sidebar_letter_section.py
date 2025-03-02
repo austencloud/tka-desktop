@@ -2,6 +2,8 @@ from PyQt6.QtWidgets import QPushButton, QLabel
 from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt
 
+from main_window.main_widget.browse_tab.sequence_picker.nav_sidebar.sidebar_button import SidebarButton
+
 from .base_sidebar_section import BaseSidebarSection
 
 
@@ -12,15 +14,15 @@ class SidebarLetterSection(BaseSidebarSection):
         self.manager.layout.addWidget(letter_label)
         self._widgets_created.append(letter_label)
 
+        # Create a horizontal line or spacer
         spacer_line = QLabel()
-        spacer_line.setStyleSheet(
-            "border: 1px solid black; margin: 0; background: black;"
-        )
+        spacer_line.setFixedHeight(1)  # Ensure it's exactly 1 pixel tall
+        spacer_line.setStyleSheet("background-color: white; border: none; margin: 0;")
         self.manager.layout.addWidget(spacer_line)
         self._widgets_created.append(spacer_line)
 
         for section in sections_data:
-            button = QPushButton(str(section))
+            button = SidebarButton(str(section))
             button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             button.clicked.connect(
                 lambda _, sec=section, btn=button: self.manager.scroll_to_section(

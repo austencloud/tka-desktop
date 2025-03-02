@@ -2,14 +2,13 @@ from PyQt6.QtWidgets import QPushButton, QLabel
 from PyQt6.QtCore import Qt, QPoint
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.browse_tab.sequence_picker.nav_sidebar.level_section import (
-    SidebarLevelSection,
-)
+from .sidebar_length_section import SidebarLengthSection
+from .sidebar_level_section import SidebarLevelSection
+from .sidebar_button import SidebarButton
 from .base_sidebar_section import BaseSidebarSection
-from .date_added_section import SidebarDateAddedSection
-from .generic_section import SidebarGenericSection
-from .length_section import SidebarLengthSection
-from .letter_section import SidebarLetterSection
+from .sidebar_date_added_section import SidebarDateAddedSection
+from .sidebar_generic_section import SidebarGenericSection
+from .sidebar_letter_section import SidebarLetterSection
 from settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
@@ -50,40 +49,9 @@ class NavSidebarManager:
         self.buttons.clear()
         self.selected_button = None
 
-    def style_button(self, button: QPushButton, selected: bool = False):
-        font_color = self.sequence_picker.main_widget.font_color_updater.get_font_color(
-            self.settings_manager.global_settings.get_background_type()
-        )
-        button_background_color = "lightgray" if font_color == "black" else "#555"
-        hover_color = "lightgray" if font_color == "black" else "#555"
-        if selected:
-            button.setStyleSheet(
-                f"""
-                QPushButton {{
-                    background-color: {button_background_color};
-                    color: {font_color};
-                    border-radius: 5px;
-                    padding: 5px;
-                    font-weight: bold;
-                }}
-                """
-            )
-        else:
-            button.setStyleSheet(
-                f"""
-                QPushButton {{
-                    background: transparent;
-                    border: none;
-                    color: {font_color};
-                    padding: 5px;
-                    text-align: center;
-                    font-weight: bold;
-                }}
-                QPushButton:hover {{
-                    background: {hover_color};
-                }}
-            """
-            )
+    def style_button(self, button: SidebarButton, selected: bool = False):
+        """Update button selection and reapply styles."""
+        button.set_selected(selected)
 
     def set_button_styles(self):
         for button in self.buttons:
@@ -123,16 +91,3 @@ class NavSidebarManager:
             content_widget_pos = scroll_area.widget().mapFromGlobal(header_global_pos)
             vertical_pos = content_widget_pos.y()
             scroll_area.verticalScrollBar().setValue(vertical_pos)
-
-    def apply_font_color(self):
-        # Re-check the current font color from settings
-
-        # Re-style all widgets in the current section
-        if self.current_section_obj:
-            for w in self.current_section_obj._widgets_created:
-                if isinstance(w, QLabel):
-                    self.style_header_label(w)
-                elif isinstance(w, QPushButton):
-                    # Keep “selected” logic for the selected button
-                    selected = w == self.selected_button
-                    self.style_button(w, selected)

@@ -28,13 +28,31 @@ class SequencePickerSectionManager:
                 sections, key=lambda x: int(x) if x.isdigit() else x
             )
         elif sort_method == "date_added":
-            sorted_sections = sorted(
-                [s for s in sections if s != "Unknown"],
-                key=lambda x: datetime.strptime(x, "%m-%d-%Y"),
-                reverse=True,
-            )
+            try:
+                # Extract unique years first
+                all_years = sorted(
+                    set(s.split("-")[-1] for s in sections if s != "Unknown"),
+                    reverse=True,
+                )
+
+                # Ensure sections are fully sorted by date within each year
+                sorted_sections = []
+                for year in all_years:
+                    year_sections = [s for s in sections if s.endswith(year)]
+                    sorted_year_sections = sorted(
+                        year_sections,
+                        key=lambda x: datetime.strptime(x, "%m-%d-%Y"),
+                        reverse=True,
+                    )
+                    sorted_sections.extend(sorted_year_sections)
+
+            except ValueError as e:
+                print(f"[ERROR] Date parsing issue in sections: {sections} -> {e}")
+                sorted_sections = list(sections)  # Fallback to whatever exists
+
             if "Unknown" in sections:
                 sorted_sections.append("Unknown")
+
         elif sort_method == "level":
             # Sort numerically and filter valid levels
             valid_levels = {"1", "2", "3"}
@@ -60,10 +78,14 @@ class SequencePickerSectionManager:
         elif sort_order == "date_added":
             if thumbnails:
                 date_added = self.get_date_added(thumbnails)
-                return date_added.strftime("%m-%d-%Y") if date_added else "Unknown"
+                if date_added:
+                    return date_added.strftime("%m-%d-%Y")
+                else:
+                    print(f"[WARNING] No date found for: {word}, defaulting to Unknown")
+                    return "Unknown"
+
             return "Unknown"
         elif sort_order == "level":
-            # Extract level from thumbnails' metadata
             for thumbnail in thumbnails:
                 level = MetaDataExtractor().get_level(thumbnail)
                 if level is not None:
