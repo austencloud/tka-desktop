@@ -78,6 +78,3 @@ class BrowseTab(QWidget):
                     box.image_label, metadata
                 )
 
-    def resize_thumbnail_boxes(self):
-        for tb in self.sequence_picker.scroll_widget.thumbnail_boxes.values():
-            tb.resize_thumbnail_box()

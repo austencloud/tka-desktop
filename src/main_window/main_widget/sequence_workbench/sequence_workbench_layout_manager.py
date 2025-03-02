@@ -28,8 +28,6 @@ class SequenceWorkbenchLayoutManager:
         word_layout.setContentsMargins(0, 0, 0, 0)
         word_layout.setSpacing(10)
 
-
-
         self.dummy_widget = QWidget(self.sw)
         self.dummy_widget.setFixedSize(self.sw.difficulty_label.size())
 
@@ -43,10 +41,11 @@ class SequenceWorkbenchLayoutManager:
 
         self.sw.scroll_area.setWidget(self.sw.sequence_beat_frame)
 
+        self.main_layout.addStretch(2)
+        self.main_layout.addLayout(word_layout, 4)
         self.main_layout.addStretch(1)
-        self.main_layout.addLayout(word_layout, 1)
-        self.main_layout.addLayout(self.sw.beat_frame_layout, 5)
-        self.main_layout.addWidget(self.sw.indicator_label, 1)
+        self.main_layout.addLayout(self.sw.beat_frame_layout, 20)
+        self.main_layout.addWidget(self.sw.indicator_label, 4)
         self.main_layout.addWidget(self.sw.graph_editor.placeholder)
 
         self.main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)

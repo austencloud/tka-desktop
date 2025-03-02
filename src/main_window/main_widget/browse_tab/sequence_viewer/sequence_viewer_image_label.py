@@ -21,16 +21,16 @@ class SequenceViewerImageLabel(QLabel):
 
     def set_pixmap_with_scaling(self, pixmap: QPixmap):
         self._original_pixmap = pixmap
-        self._scale_pixmap_to_fit()
+        self._set_pixmap_to_fit()
 
     def _calculate_available_space(self) -> tuple[int, int]:
         sequence_viewer = self.sequence_viewer
-        available_height = int(sequence_viewer.height() * 0.65)
-        available_width = sequence_viewer.width()
+        available_height = int(sequence_viewer.main_widget.height() * 0.65)
+        available_width = int(sequence_viewer.main_widget.width() * 1 / 3 * 0.95)
 
         return available_width, available_height
 
-    def _scale_pixmap_to_fit(self):
+    def _set_pixmap_to_fit(self):
         if not self._original_pixmap:
             return
 

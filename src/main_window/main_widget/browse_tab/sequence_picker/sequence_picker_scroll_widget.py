@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QGridLayout
 
 from ..thumbnail_box.thumbnail_box import ThumbnailBox
@@ -44,3 +44,11 @@ class SequencePickerScrollWidget(QWidget):
             if item.widget():
                 item.widget().setParent(None)
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        # Set the scrollbar width to 10% of the main widget's width
+        scrollbar_width = self.calculate_scrollbar_width()
+        self.scroll_area.verticalScrollBar().setFixedWidth(int(scrollbar_width))
+
+    def calculate_scrollbar_width(self):
+        return self.sequence_picker.main_widget.width() * 0.01
