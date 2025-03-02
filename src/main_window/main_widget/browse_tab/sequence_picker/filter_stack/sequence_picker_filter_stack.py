@@ -8,7 +8,7 @@ from .initial_filter_choice_widget.initial_filter_choice_widget import (
     InitialFilterChoiceWidget,
 )
 from .grid_mode_section import GridModeSection
-from .level_section import LevelSection
+from .level_section import FilterByLevelSection
 from .sequence_length_section import SequenceLengthSection
 from .starting_letter_section import StartingLetterSection
 from .starting_position_section import StartingPositionSection
@@ -31,7 +31,7 @@ class SequencePickerFilterStack(QStackedWidget):
         self.starting_letter_section = StartingLetterSection(self)
         self.contains_letter_section = ContainsLettersSection(self)
         self.length_section = SequenceLengthSection(self)
-        self.level_section = LevelSection(self)
+        self.level_section = FilterByLevelSection(self)
         self.starting_position_section = StartingPositionSection(self)
         self.author_section = AuthorSection(self)
         self.grid_mode_section = GridModeSection(self)

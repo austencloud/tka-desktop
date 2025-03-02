@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from .sequence_picker_filter_stack import SequencePickerFilterStack
 
 
-class LevelSection(FilterSectionBase):
+class FilterByLevelSection(FilterSectionBase):
     LEVEL_DESCRIPTIONS = {
         1: "Base letters with no turns.",
         2: "Turns added with only radial orientations.",

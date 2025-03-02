@@ -21,21 +21,21 @@ class SequencePickerGoBackButton(BaseGoBackButton):
     def switch_to_initial_filter_selection(self):
         """Switch to the initial selection page in the stacked layout."""
         sequence_viewer = self.browse_tab.sequence_viewer
-        widgets = [
-            sequence_viewer.image_label,
-            sequence_viewer.placeholder_label,
-            sequence_viewer.word_label,
-            sequence_viewer.variation_number_label,
-            sequence_viewer.nav_buttons_widget,
-            sequence_viewer.action_button_panel,
-        ]
+        # widgets = [
+        #     sequence_viewer.image_label,
+        #     sequence_viewer.placeholder_label,
+        #     sequence_viewer.word_label,
+        #     sequence_viewer.variation_number_label,
+        #     sequence_viewer.nav_buttons_widget,
+        #     sequence_viewer.action_button_panel,
+        # ]
 
         self.main_widget.fade_manager.widget_and_stack_fader.fade_widgets_and_stack(
-            widgets,
+            [],
             self.main_widget.left_stack,
             LeftStackIndex.FILTER_SELECTOR,
             300,
-            self.browse_tab.sequence_viewer.clear,
+            # self.browse_tab.sequence_viewer.clear,
         )
         self.browse_tab.browse_settings.set_browse_left_stack_index(
             LeftStackIndex.FILTER_SELECTOR.value

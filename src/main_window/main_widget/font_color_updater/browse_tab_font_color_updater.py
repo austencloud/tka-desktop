@@ -18,7 +18,7 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
         self.sequence_picker = self.main_widget.browse_tab.sequence_picker
         self._update_filter_selector()
         self._update_control_panel()
-        self._update_nav_sidebar()
+        # self._update_nav_sidebar()
         self._update_thumbnail_boxes()
 
     def _update_control_panel(self):
@@ -41,13 +41,10 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
         self._apply_font_colors(progress_bar_labels)
 
     def _update_nav_sidebar(self):
-        nav_bar = self.sequence_picker.nav_sidebar
-        nav_bar_labels = [
-            nav_bar.length_label,
-            nav_bar.letter_label,
-        ] + [year_label for year_label in nav_bar.year_labels.values()]
+        # Instead of explicitly referencing labels, 
+        # just tell the manager to re-apply font color:
+        self.main_widget.browse_tab.sequence_picker.nav_sidebar.manager.apply_font_color()
 
-        self._apply_font_colors(nav_bar_labels)
 
     def _update_thumbnail_boxes(self):
         for (

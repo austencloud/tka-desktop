@@ -47,10 +47,10 @@ class MainWidgetTabSwitcher:
             width_ratio,
         )
         QApplication.processEvents()
-        if tab_name == TabName.BROWSE:
-            QTimer.singleShot(
-                2000, self.mw.browse_tab.ui_updater.resize_thumbnails_top_to_bottom
-            )
+        # if tab_name == TabName.BROWSE:
+        #     QTimer.singleShot(
+        #         2000, self.mw.browse_tab.ui_updater.resize_thumbnails_top_to_bottom
+        #     )
 
     def set_stacks_silently(
         self, left_index: LeftStackIndex, right_index: RightStackIndex
