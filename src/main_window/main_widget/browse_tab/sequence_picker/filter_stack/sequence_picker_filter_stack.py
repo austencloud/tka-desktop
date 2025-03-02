@@ -37,7 +37,7 @@ class SequencePickerFilterStack(QStackedWidget):
         self.grid_mode_section = GridModeSection(self)
 
         self.section_map: dict[str, QWidget] = {
-            "filter_choice": self.initial_filter_choice_widget,
+            "filter_selector": self.initial_filter_choice_widget,
             "starting_letter": self.starting_letter_section,
             "contains_letters": self.contains_letter_section,
             "sequence_length": self.length_section,
@@ -51,7 +51,7 @@ class SequencePickerFilterStack(QStackedWidget):
         for name, widget in self.section_map.items():
             index = self.addWidget(widget)
             self.section_indexes[name] = index
-        self.current_filter_section: str = "filter_choice"
+        self.current_filter_section: str = "filter_selector"
 
     def show_section(self, section_name: str):
         index = self.section_indexes.get(section_name)
@@ -65,4 +65,4 @@ class SequencePickerFilterStack(QStackedWidget):
             print(f"Section '{section_name}' not found.")
 
     def show_filter_choice_widget(self):
-        self.show_section("filter_choice")
+        self.show_section("filter_selector")

@@ -80,6 +80,11 @@ class BrowseTabSelectionManager:
         self.sequence_viewer.variation_number_label.update_index(
             image_label.thumbnail_box.state.current_index
         )
+        word = image_label.thumbnail_box.word
+        var_index = image_label.thumbnail_box.state.current_index
+        self.browse_tab.settings_manager.set_selected_sequence(
+            {"word": word, "variation_index": var_index}
+        )
 
     def select_viewer_thumbnail(self, thumbnail_box, index, word):
         sequence_viewer = self.sequence_viewer

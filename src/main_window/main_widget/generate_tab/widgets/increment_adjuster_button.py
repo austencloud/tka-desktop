@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QFont
 
 
-class LengthAdjusterButton(QPushButton):
+class IncrementAdjusterButton(QPushButton):
     """A custom perfectly round button with hover effects and dynamic styling."""
 
     def __init__(self, symbol: str, parent=None):

@@ -69,7 +69,7 @@ class GenerateTabController:
     def _apply_unified_settings(self):
         seq_level = self.settings.get_setting("sequence_level") or 1
         seq_length = self.settings.get_setting("length") or 16
-        turn_intensity = self.settings.get_setting("max_turn_intensity") or 1
+        turn_intensity = self.settings.get_setting("turn_intensity") or 1
         cont_rot = self.settings.get_setting("prop_continuity") or "continuous"
         self.tab.level_selector.set_level(int(seq_level))
         self.tab.length_adjuster.set_length(int(seq_length))

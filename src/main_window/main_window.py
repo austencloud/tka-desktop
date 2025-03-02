@@ -10,7 +10,7 @@ from .main_widget.main_widget import MainWidget
 from main_window.main_window_geometry_manager import MainWindowGeometryManager
 
 if TYPE_CHECKING:
-    from profiler import Profiler
+    from profiler import Profiler 
     from splash_screen.splash_screen import SplashScreen
 
 

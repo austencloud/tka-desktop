@@ -30,6 +30,7 @@ class BrowseTabFilterController:
     def apply_filter(self, filter_criteria: Union[str, dict]):
         """Fade out certain widgets, run the filtering logic, then update UI."""
         description = self._get_filter_description(filter_criteria)
+        self.browse_tab.settings_manager.set_current_filter(filter_criteria)
 
         widgets_to_fade = [
             self.browse_tab.sequence_picker.filter_stack,
@@ -64,7 +65,10 @@ class BrowseTabFilterController:
         # Step 3: re-render the UI
         self.ui_updater.update_and_display_ui(len(results))
         self.browse_tab.main_widget.left_stack.setCurrentIndex(
-            LeftStackIndex.SEQUENCE_PICKER
+            LeftStackIndex.SEQUENCE_PICKER.value
+        )
+        self.browse_tab.settings_manager.set_browse_left_stack_index(
+            LeftStackIndex.SEQUENCE_PICKER.value
         )
 
     def _prepare_ui_for_filtering(self, description: str):

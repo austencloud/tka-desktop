@@ -3,8 +3,8 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QFont, QIcon
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.generate_tab.widgets.length_adjuster_button import (
-    LengthAdjusterButton,
+from main_window.main_widget.generate_tab.widgets.increment_adjuster_button import (
+    IncrementAdjusterButton,
 )
 
 if TYPE_CHECKING:
@@ -35,7 +35,7 @@ class GenerateTabLengthAdjuster(QWidget):
 
     def _create_length_adjuster(self):
         """Creates the plus/minus buttons and label for the length adjuster."""
-        self.minus_button = LengthAdjusterButton("-")
+        self.minus_button = IncrementAdjusterButton("-")
         self.minus_button.clicked.connect(self._decrement_length)
 
         self.length_value_label = QLabel(str(self.length))
@@ -43,7 +43,7 @@ class GenerateTabLengthAdjuster(QWidget):
         self.length_value_label.setFixedWidth(50)
         self.length_value_label.setFont(QFont("Georgia", 14, QFont.Weight.Bold))
 
-        self.plus_button = LengthAdjusterButton("+")
+        self.plus_button = IncrementAdjusterButton("+")
         self.plus_button.clicked.connect(self._increment_length)
 
         self.length_buttons_layout.addWidget(self.minus_button)
@@ -84,7 +84,7 @@ class GenerateTabLengthAdjuster(QWidget):
     def resizeEvent(self, event):
         """Dynamically resizes UI elements based on the window size."""
         self.layout.setSpacing(self.generate_tab.width() // 50)
-        
+
         font_size = self.generate_tab.main_widget.width() // 65
         font = self.length_label.font()
         font.setPointSize(font_size)
