@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 from settings_manager.global_settings.app_context import AppContext
 from .image_export_layout_handler import ImageExportLayoutHandler
@@ -39,3 +40,35 @@ class ImageExportManager:
         self.beat_factory = ImageExportBeatFactory(self, beat_frame_class)
         self.image_creator = ImageCreator(self)
         self.image_saver = ImageSaver(self)
+
+    def export_image_directly(self, sequence = None):
+        """Immediately exports the image using current settings and opens the save dialog."""
+        sequence = sequence or self.main_widget.json_manager.loader_saver.load_current_sequence()
+
+        if len(sequence) < 3:
+            self.main_widget.sequence_workbench.indicator_label.show_message(
+                "The sequence is empty."
+            )
+            return
+
+        # Retrieve the export settings
+        settings_manager = self.main_widget.settings_manager
+        options = settings_manager.image_export.get_all_image_export_options()
+
+        options["user_name"] = settings_manager.users.get_current_user()
+        options["notes"] = settings_manager.users.get_current_note()
+        options["export_date"] = datetime.now().strftime("%m-%d-%Y")
+
+        # Generate the image
+        image_creator = self.image_creator
+        sequence_image = image_creator.create_sequence_image(
+            sequence, options, dictionary=False, fullscreen_preview=False
+        )
+
+        # Save the image
+        self.image_saver.save_image(sequence_image)
+        # open the folder containing the image
+
+        self.main_widget.sequence_workbench.indicator_label.show_message(
+            "Image saved successfully!"
+        )

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
@@ -30,7 +31,7 @@ class PictographState:
     def update_pictograph_state(
         self, pictograph_data: dict[str, Union[str, dict[str, str]]]
     ) -> None:
-        for key, value in pictograph_data.items():
+        for key, value in deepcopy(list(pictograph_data.items())):
             if key == LETTER:
                 try:
                     letter_obj: Letter = Letter.get_letter(value)

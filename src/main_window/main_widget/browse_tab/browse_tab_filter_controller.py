@@ -74,10 +74,10 @@ class BrowseTabFilterController:
 
         # Step 3: re-render the UI
         self.ui_updater.update_and_display_ui(len(results))
-
-        self.browse_tab.main_widget.left_stack.setCurrentWidget(
-            self.browse_tab.sequence_picker
-        )
+        if self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab() == "browse":
+            self.browse_tab.main_widget.left_stack.setCurrentWidget(
+                self.browse_tab.sequence_picker
+            )
         self.browse_tab.browse_settings.set_browse_left_stack_index(
             LeftStackIndex.SEQUENCE_PICKER.value
         )

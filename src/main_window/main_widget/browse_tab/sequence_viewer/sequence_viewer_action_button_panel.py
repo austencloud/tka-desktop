@@ -136,7 +136,7 @@ class SequenceViewerActionButtonPanel(QWidget):
 
         self.temp_beat_frame.populate_beat_frame_from_json(sequence_json["sequence"])
         self.export_manager = self.temp_beat_frame.export_manager
-        self.export_manager.dialog_executor.exec_dialog(sequence_json["sequence"])
+        self.export_manager.export_image_directly(sequence_json["sequence"])
 
     def hide_buttons(self):
         self.save_image_button.hide()
