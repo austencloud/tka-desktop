@@ -175,7 +175,7 @@ class SequencePickerNavSidebar(QWidget):
                 self.layout.addWidget(button)
                 self.buttons.append(button)
 
-        self.set_styles()
+        self.set_button_styles()
         self.resize_sidebar()
 
     def clear_sidebar(self):
@@ -264,8 +264,8 @@ class SequencePickerNavSidebar(QWidget):
     def scroll_to_section(self, section: str, button: QPushButton):
         if self.selected_button:
             self.style_button(self.selected_button, selected=False)
-        self.style_button(button, selected=True)
         self.selected_button = button
+        self.style_button(button, selected=True)
 
         # Get the current sort method
         sort_method = self.settings_manager.browse_settings.get_sort_method()
@@ -273,7 +273,12 @@ class SequencePickerNavSidebar(QWidget):
         # Adjust the section name if sorting by difficulty
         if sort_method == "level":
             section = f"Level {section}"
-
+        if sort_method == "date_added":
+            section = (
+                section.split("-")[0].lstrip("0")
+                + "-"
+                + section.split("-")[1].lstrip("0")
+            )
         header = self.sequence_picker.scroll_widget.section_headers.get(section)
         if header:
             scroll_area = self.sequence_picker.scroll_widget.scroll_area
@@ -282,16 +287,10 @@ class SequencePickerNavSidebar(QWidget):
             vertical_pos = content_widget_pos.y()
             scroll_area.verticalScrollBar().setValue(vertical_pos)
 
-    def set_styles(self):
+    def set_button_styles(self):
         for button in self.buttons:
             selected = button == self.selected_button
             self.style_button(button, selected=selected)
-        for year_label in self.year_labels.values():
-            self.style_header_label(year_label)
-        if self.length_label:
-            self.style_header_label(self.length_label)
-        if self.letter_label:
-            self.style_header_label(self.letter_label)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

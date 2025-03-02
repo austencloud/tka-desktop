@@ -31,20 +31,21 @@ class ThumbnailImageLabel(QLabel):
         ):
             pixmap = QPixmap(self.thumbnail_box.state.thumbnails[index])
             self._set_pixmap_to_fit(pixmap)
-            QApplication.processEvents()
 
     def _set_pixmap_to_fit(self, pixmap: QPixmap):
         nav_bar = self.thumbnail_box.sequence_picker.nav_sidebar
         if nav_bar.width() < 20:
             nav_bar.resize_sidebar()
         aspect_ratio = pixmap.width() / pixmap.height()
-        scrollbar_width = self.thumbnail_box.sequence_picker.scroll_widget.calculate_scrollbar_width()
+        scrollbar_width = (
+            self.thumbnail_box.sequence_picker.scroll_widget.calculate_scrollbar_width()
+        )
         scroll_widget_width = (
             self.thumbnail_box.main_widget.width() * 2 / 3
             - scrollbar_width
             - self.thumbnail_box.sequence_picker.nav_sidebar.width()
         )
-        width = (scroll_widget_width // 3)
+        width = scroll_widget_width // 3
         max_width = int(width - (self.thumbnail_box.margin * 2))
         max_height = int(max_width / aspect_ratio)
 
@@ -63,7 +64,7 @@ class ThumbnailImageLabel(QLabel):
 
         self.pixmap = scaled_pm  # Store scaled pixmap
         self.setPixmap(scaled_pm)
-        self.update()  # Trigger repaint to draw border
+        QApplication.processEvents()
 
     def _get_target_width(self, sequence_length):
         if sequence_length == 1:
