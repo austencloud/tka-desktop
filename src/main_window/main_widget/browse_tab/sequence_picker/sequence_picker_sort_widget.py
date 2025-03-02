@@ -38,9 +38,9 @@ class SequencePickerSortWidget(QWidget):
                 "text": "Date Added",
                 "clicked": self.on_sort_by_date_added,
             },
-            "sort_by_difficulty_button": {  # ✅ Added Difficulty Sorting
-                "text": "Difficulty",
-                "clicked": self.on_sort_by_difficulty,
+            "sort_by_level_button": { 
+                "text": "Level",
+                "clicked": self.on_sort_by_level,
             },
         }
 
@@ -50,25 +50,27 @@ class SequencePickerSortWidget(QWidget):
             button.setCursor(Qt.CursorShape.PointingHandCursor)
             self.buttons[button_name] = button
 
-    def on_sort_by_difficulty(self):
-        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        self.update_selected_button(self.buttons["sort_by_difficulty_button"])
-        self.settings_manager.browse_settings.set_sort_method("difficulty")
+    def on_sort_by_level(self):
+        # QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+        self.update_selected_button(self.buttons["sort_by_level_button"])
+        self.settings_manager.browse_settings.set_sort_method("level")
         self.sequence_picker.sorter.sort_and_display_currently_filtered_sequences_by_method(
-            "difficulty"
+            "level"
         )
         self.browse_tab.sequence_picker.scroll_widget.scroll_area.verticalScrollBar().setValue(
             0
         )
-        QApplication.restoreOverrideCursor()
+        # QApplication.restoreOverrideCursor()
 
     def highlight_appropriate_button(self, sort_method):
-        if sort_method == "sequence_length":
-            self.update_selected_button(self.buttons["sort_by_length_button"])
-        elif sort_method == "date_added":
-            self.update_selected_button(self.buttons["sort_date_added_button"])
-        else:
-            self.update_selected_button(self.buttons["sort_alphabetically_button"])
+        button_map = {
+            "sequence_length": "sort_by_length_button",
+            "date_added": "sort_date_added_button",
+            "level": "sort_by_level_button",  # ✅ Added Level Sorting
+            "alphabetical": "sort_alphabetically_button"
+        }
+        button_name = button_map.get(sort_method, "sort_alphabetically_button")
+        self.update_selected_button(self.buttons[button_name])
 
     def _setup_layout(self):
         self.layout: QHBoxLayout = QHBoxLayout(self)
@@ -85,7 +87,6 @@ class SequencePickerSortWidget(QWidget):
         self.layout.addStretch(2)
 
     def on_sort_by_length(self):
-        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         self.update_selected_button(self.buttons["sort_by_length_button"])
         self.settings_manager.browse_settings.set_sort_method("sequence_length")
         self.sequence_picker.sorter.sort_and_display_currently_filtered_sequences_by_method(
@@ -94,10 +95,8 @@ class SequencePickerSortWidget(QWidget):
         self.browse_tab.sequence_picker.scroll_widget.scroll_area.verticalScrollBar().setValue(
             0
         )
-        QApplication.restoreOverrideCursor()
 
     def on_sort_alphabetically(self):
-        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         self.update_selected_button(self.buttons["sort_alphabetically_button"])
         self.settings_manager.browse_settings.set_sort_method("alphabetical")
         self.sequence_picker.sorter.sort_and_display_currently_filtered_sequences_by_method(
@@ -106,10 +105,8 @@ class SequencePickerSortWidget(QWidget):
         self.browse_tab.sequence_picker.scroll_widget.scroll_area.verticalScrollBar().setValue(
             0
         )
-        QApplication.restoreOverrideCursor()
 
     def on_sort_by_date_added(self):
-        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         self.update_selected_button(self.buttons["sort_date_added_button"])
         self.settings_manager.browse_settings.set_sort_method("date_added")
         self.sequence_picker.sorter.sort_and_display_currently_filtered_sequences_by_method(
@@ -118,7 +115,6 @@ class SequencePickerSortWidget(QWidget):
         self.browse_tab.sequence_picker.scroll_widget.scroll_area.verticalScrollBar().setValue(
             0
         )
-        QApplication.restoreOverrideCursor()
 
     def update_selected_button(self, button: QPushButton):
         if self.selected_button:

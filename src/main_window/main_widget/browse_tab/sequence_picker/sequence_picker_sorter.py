@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox
+from main_window.main_window import QApplication
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.sequence_picker.sequence_picker import (
@@ -34,32 +35,17 @@ class SequencePickerSorter:
         self.update_ui(sorted_sections, sort_method)
 
     def get_sort_key(self, sort_method: str) -> callable:
-        if sort_method == "sequence_length":
-
-            def sort_key(sequence_item) -> int:
-                return (
-                    sequence_item[2] if sequence_item[2] is not None else float("inf")
-                )
-
-        elif sort_method == "date_added":
-
-            def sort_key(sequence_item) -> datetime:
-                return (
-                    self.section_manager.get_date_added(sequence_item[1])
-                    or datetime.min
-                )
-
-        elif sort_method == "difficulty":  # ✅ Added Difficulty Sorting
-
-            def sort_key(sequence_item):
-                return sequence_item[2]
-
-        else:
-
-            def sort_key(sequence_item):
-                return sequence_item[0]
-
-        return sort_key
+        sort_key_mapping = {
+            "sequence_length": lambda seq_item: (
+                seq_item[2] if seq_item[2] is not None else float("inf")
+            ),
+            "date_added": lambda seq_item: self.section_manager.get_date_added(
+                seq_item[1]
+            )
+            or datetime.min,
+            "level": lambda seq_item: seq_item[2],
+        }
+        return sort_key_mapping.get(sort_method, lambda seq_item: seq_item[0])
 
     def sort_sequences(self, sort_key, sort_method: str):
         self.browse_tab.sequence_picker.currently_displayed_sequences.sort(
@@ -79,15 +65,14 @@ class SequencePickerSorter:
                 (word, thumbnails)
             )
 
+        if sort_method == "level":
+            for level in ["1", "2", "3"]:
+                if level not in self.browse_tab.sequence_picker.sections:
+                    self.browse_tab.sequence_picker.sections[level] = []
+
     def _sort_only(self, sort_method: str):
-        """
-        Sorts the 'currently_displayed_sequences' in-place
-        WITHOUT actually creating/placing the thumbnail widgets yet.
-        """
         self.section_manager = self.sequence_picker.section_manager
-        # Clear the layout so we start fresh
         self.scroll_widget.clear_layout()
-        # Reset the sections dict so we can group them again
         self.browse_tab.sequence_picker.sections = {}
 
         sort_key = self.get_sort_key(sort_method)
@@ -95,11 +80,6 @@ class SequencePickerSorter:
         self.group_sequences_by_section(sort_method)
 
     def _display_sorted_sections(self, skip_scaling: bool = False):
-        """
-        Takes the sections that are already sorted/grouped from _sort_only(...)
-        and actually creates the thumbnail widgets in the final order.
-        Optionally skip the expensive scaling step in each 'add_thumbnail_box'.
-        """
         sort_method = (
             self.sequence_picker.control_panel.sort_widget.settings_manager.browse_settings.get_sort_method()
         )
@@ -111,15 +91,11 @@ class SequencePickerSorter:
     def update_ui(
         self, sorted_sections: list[str], sort_method: str, skip_scaling: bool = False
     ):
-        """
-        Exactly like your existing update_ui, but we pass a new 'skip_scaling' flag
-        so 'add_thumbnail_box' knows whether or not to call update_thumbnail(...).
-        """
         self.sequence_picker.nav_sidebar.update_sidebar(sorted_sections, sort_method)
         self.sequence_picker.control_panel.sort_widget.highlight_appropriate_button(
             sort_method
         )
-
+        QApplication.processEvents()
         current_section = None
         row_index = 0
 
@@ -131,11 +107,10 @@ class SequencePickerSorter:
                 row_index, section, sort_method, current_section
             )
             if sort_method == "date_added":
-                current_section = section  # track the year if needed
+                current_section = section
 
             column_index = 0
             for word, thumbnails in self.browse_tab.sequence_picker.sections[section]:
-                # The only difference here: pass 'skip_scaling' as skip_image
                 self.add_thumbnail_box(
                     row_index,
                     column_index,
@@ -148,11 +123,9 @@ class SequencePickerSorter:
                 if column_index == 0:
                     row_index += 1
 
-        # e.g. show the count of displayed sequences
         self.sequence_picker.control_panel.count_label.setText(
             f"Number of words: {len(self.browse_tab.sequence_picker.currently_displayed_sequences)}"
         )
-        # No need to re-override or restore cursor if we’re not using a loading cursor
 
     def add_section_headers(
         self, row_index: int, section: str, sort_method: str, current_section: str
@@ -170,6 +143,11 @@ class SequencePickerSorter:
             row_index += 1
             self.section_manager.add_header(row_index, self.num_columns, formatted_day)
             row_index += 1
+        elif sort_method == "level":
+            row_index += 1
+            header_title = f"Level {section}"
+            self.section_manager.add_header(row_index, self.num_columns, header_title)
+            row_index += 1
         else:
             row_index += 1
             self.section_manager.add_header(row_index, self.num_columns, section)
@@ -183,7 +161,7 @@ class SequencePickerSorter:
         word: str,
         thumbnails: list[str],
         hidden: bool,
-        skip_image: bool = False,  # <-- NEW
+        skip_image: bool = False,
     ):
         if word not in self.scroll_widget.thumbnail_boxes:
             thumbnail_box = ThumbnailBox(self.browse_tab, word, thumbnails)

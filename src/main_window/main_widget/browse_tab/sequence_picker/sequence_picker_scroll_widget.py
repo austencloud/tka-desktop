@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QGridLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QGridLayout, QSizePolicy
 
 from ..thumbnail_box.thumbnail_box import ThumbnailBox
 
@@ -17,6 +17,7 @@ class SequencePickerScrollWidget(QWidget):
         self.section_headers: dict[int, "BrowseTabSectionHeader"] = {}
 
         self.setStyleSheet("background: transparent;")
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._setup_scroll_area()
         self._setup_layout()
 

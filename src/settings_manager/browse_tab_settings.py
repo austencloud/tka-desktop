@@ -23,6 +23,15 @@ class BrowseTabSettings:
             "browse/sort_method", self.DEFAULT_BROWSE_SETTINGS["sort_method"]
         )
 
+    def get_date_sub_sort_method(self) -> str:
+        """Returns 'year', 'month', 'day', or 'full'."""
+        return self.settings.value("browse/date_sub_sort_method", "full")
+
+    def set_date_sub_sort_method(self, sub_method: str) -> None:
+        """Stores the user's sub-sorting choice for date-based sorts."""
+        # sub_method should be one of: 'year', 'month', 'day', 'full'
+        self.settings.setValue("browse/date_sub_sort_method", sub_method)
+
     def set_sort_method(self, sort_method: str) -> None:
         self.settings.setValue("browse/sort_method", sort_method)
 
@@ -97,7 +106,7 @@ class BrowseTabSettings:
         return data
 
     def set_selected_sequence(self, data: dict) -> None:
-        json_string = json.dumps(data, ensure_ascii=False).encode('utf8').decode()
+        json_string = json.dumps(data, ensure_ascii=False).encode("utf8").decode()
         self.settings.setValue("browse/selected_sequence", json_string)
 
     def get_browse_ratio(self) -> float:

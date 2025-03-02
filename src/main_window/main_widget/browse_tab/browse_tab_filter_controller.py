@@ -132,7 +132,7 @@ class BrowseTabFilterController:
             "starting_position": self._dict_filter_starting_pos,
             "favorites": self._dict_filter_favorites,
             "most_recent": self._dict_filter_most_recent,
-            "difficulty": self._dict_filter_difficulty,  # ✅ Added new filter
+            "level": self._dict_filter_difficulty,  # ✅ Added new filter
             "grid_mode": self._dict_filter_grid_mode,
             "show_all": self._dict_filter_show_all,
         }
