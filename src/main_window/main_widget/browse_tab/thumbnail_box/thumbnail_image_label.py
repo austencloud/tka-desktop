@@ -33,7 +33,9 @@ class ThumbnailImageLabel(QLabel):
             self.set_pixmap_to_fit(pixmap)
 
     def set_pixmap_to_fit(self, pixmap: QPixmap):
-
+        nav_bar = self.thumbnail_box.sequence_picker.nav_sidebar
+        if nav_bar.width() < 20:
+            nav_bar.resize_sidebar()
         aspect_ratio = pixmap.width() / pixmap.height()
         scrollbar_width = self.thumbnail_box.scroll_Area.verticalScrollBar().width()
         scroll_widget_width = (

@@ -37,8 +37,7 @@ class MainWidgetTabSwitcher:
         tab_name = self.index_to_tab_name.get(index, TabName.CONSTRUCT)
         AppContext.settings_manager().global_settings.set_current_tab(tab_name.value)
 
-        is_browse_tab = tab_name == TabName.BROWSE
-        width_ratio = (2 / 3, 1 / 3) if is_browse_tab else (1 / 2, 1 / 2)
+        width_ratio = (2 / 3, 1 / 3) if tab_name == TabName.BROWSE else (1 / 2, 1 / 2)
 
         self.mw.fade_manager.parallel_stack_fader.fade_both_stacks(
             self.mw.right_stack,
@@ -49,10 +48,8 @@ class MainWidgetTabSwitcher:
         )
         QApplication.processEvents()
         if tab_name == TabName.BROWSE:
-            # wait 2 seconds
-            # QTimer.singleShot(2000, self.mw.browse_tab.resize_thumbnail_boxes)
             QTimer.singleShot(
-                1000, self.mw.browse_tab.ui_updater.resize_thumbnails_top_to_bottom
+                2000, self.mw.browse_tab.ui_updater.resize_thumbnails_top_to_bottom
             )
 
     def set_stacks_silently(
@@ -62,18 +59,17 @@ class MainWidgetTabSwitcher:
         Set the current indices of left and right stacks without animation,
         and also apply the same 2/3 ratio used by on_tab_changed if it's the browse tab.
         """
-        self.mw.left_stack.setCurrentIndex(left_index.value)
-        self.mw.right_stack.setCurrentIndex(right_index.value)
-        tab_name = AppContext.settings_manager().global_settings.get_current_tab()
-        tab_index = TAB_INDEX[TabName.from_string(tab_name)]
-        is_browse_tab = tab_index == self.mw.main_browse_tab_index
-        width_ratio = (2 / 3, 1 / 3) if is_browse_tab else (1 / 2, 1 / 2)
+
+        tab_name_str = AppContext.settings_manager().global_settings.get_current_tab()
+        width_ratio = (2 / 3, 1 / 3) if tab_name_str == "browse" else (1 / 2, 1 / 2)
         total_width = self.mw.width()
         left_width = int(total_width * width_ratio[0])
         right_width = total_width - left_width  # ensures total == self.mw.width()
 
         self.mw.left_stack.setFixedWidth(left_width)
         self.mw.right_stack.setFixedWidth(right_width)
+        self.mw.left_stack.setCurrentIndex(left_index.value)
+        self.mw.right_stack.setCurrentIndex(right_index.value)
 
     def get_stack_indices_for_tab(
         self, tab_name: TabName

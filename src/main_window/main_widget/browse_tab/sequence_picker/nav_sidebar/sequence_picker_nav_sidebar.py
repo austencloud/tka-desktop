@@ -297,7 +297,7 @@ class SequencePickerNavSidebar(QWidget):
                 max_width, button.fontMetrics().boundingRect("12-33").width()
             )
         extra_padding = self.sequence_picker.width() // 25
-        self.setFixedWidth(max_width + extra_padding)
+        self.setFixedWidth(self.sequence_picker.main_widget.width() // 16)
 
     def resize_label(self, label: QLabel):
         font_size = self.sequence_picker.height() // 40

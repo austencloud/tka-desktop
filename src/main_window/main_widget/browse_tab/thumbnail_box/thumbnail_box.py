@@ -60,6 +60,9 @@ class ThumbnailBox(QWidget):
         self.resize_thumbnail_box()
 
     def resize_thumbnail_box(self):
+        nav_bar = self.sequence_picker.nav_sidebar
+        if nav_bar.width() < 20:
+            nav_bar.resize_sidebar()
         scrollbar_width = self.scroll_Area.verticalScrollBar().width()
         scroll_widget_width = (
             self.main_widget.left_stack.width()
