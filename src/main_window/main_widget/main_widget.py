@@ -90,25 +90,6 @@ class MainWidget(QWidget):
     left_stack: QStackedWidget
     right_stack: QStackedWidget
 
-    # Indices for tabs
-    main_construct_tab_index: int = 0
-    main_generate_tab_index: int = 1
-    main_browse_tab_index: int = 2
-    main_learn_tab_index: int = 3
-    main_write_tab_index: int = 4
-
-    # Left Indices
-    left_sequence_picker_index: int = 4
-
-    # Right Indices
-    right_start_pos_picker_index: int = 0
-    right_advanced_start_pos_picker_index: int = 1
-    right_option_picker_index: int = 2
-    right_generate_tab_index: int = 3
-    right_learn_tab_index: int = 4
-    right_write_tab_index: int = 5
-    right_sequence_viewer_index: int = 6
-
     # Current state
     current_tab: str
     background: "BaseBackground"

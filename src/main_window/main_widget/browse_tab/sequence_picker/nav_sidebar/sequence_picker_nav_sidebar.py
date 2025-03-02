@@ -286,7 +286,7 @@ class SequencePickerNavSidebar(QWidget):
                 self.resize_label(year_label)
 
         for button in self.buttons:
-            font_size = self.sequence_picker.height() // 40
+            font_size = self.sequence_picker.main_widget.width() // 80
             button_font = button.font()
             button_font.setPointSize(font_size)
             button.setFont(button_font)

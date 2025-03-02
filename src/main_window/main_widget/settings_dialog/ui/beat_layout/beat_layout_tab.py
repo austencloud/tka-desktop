@@ -76,3 +76,10 @@ class BeatLayoutTab(QWidget):
 
         self.controls.beat_frame.update_preview()
         self.controls.default_layout_label.setText(f"Default: {layout_text}")
+
+    def update_beat_layout_tab(self):
+        beat_count = (
+            self.settings_dialog.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+        )
+        self.controls.layout_selector._update_valid_layouts(beat_count)
+        self.controls.length_selector.num_beats_spinbox.setValue(beat_count)

@@ -15,15 +15,15 @@ class MainWidgetTabSwitcher:
         self.mw = main_widget
 
         self.tab_to_right_stack = {
-            self.mw.main_browse_tab_index: RightStackIndex.SEQUENCE_VIEWER,
-            self.mw.main_generate_tab_index: RightStackIndex.GENERATE_TAB,
-            self.mw.main_learn_tab_index: RightStackIndex.LEARN_TAB,
+            TAB_INDEX[TabName.BROWSE]: RightStackIndex.SEQUENCE_VIEWER,
+            TAB_INDEX[TabName.GENERATE]: RightStackIndex.GENERATE_TAB,
+            TAB_INDEX[TabName.LEARN]: RightStackIndex.LEARN_TAB,
         }
 
         self.tab_to_left_stack = {
-            self.mw.main_learn_tab_index: LeftStackIndex.LEARN_CODEX,
-            self.mw.main_browse_tab_index: LeftStackIndex.SEQUENCE_PICKER,
-            self.mw.main_generate_tab_index: LeftStackIndex.WORKBENCH,
+            TAB_INDEX[TabName.LEARN]: LeftStackIndex.LEARN_CODEX,
+            TAB_INDEX[TabName.BROWSE]: LeftStackIndex.SEQUENCE_PICKER,
+            TAB_INDEX[TabName.GENERATE]: LeftStackIndex.WORKBENCH,
             TAB_INDEX[TabName.CONSTRUCT]: LeftStackIndex.WORKBENCH,
         }
 

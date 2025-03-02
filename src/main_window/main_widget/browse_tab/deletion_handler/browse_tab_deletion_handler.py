@@ -33,10 +33,10 @@ class BrowseTabDeletionHandler:
             os.remove(file_path)
             if len(thumbnail_box.state.thumbnails) == 0:
                 self.delete_word(thumbnail_box.word)
-                self.browse_tab.sequence_viewer.update_thumbnails()
-                self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.pop(
-                    thumbnail_box.word
+                self.browse_tab.sequence_viewer.update_thumbnails(
+                    self.browse_tab.sequence_viewer.state.thumbnails
                 )
+
             else:
                 self.delete_empty_folders(get_data_path("generated_data\dictionary"))
                 thumbnail_box.state.current_index = 0

@@ -51,8 +51,6 @@ class BrowseTabFilterController:
             )
         else:
             self._apply_filter_after_fade(filter_criteria, description)
-        QApplication.processEvents()
-        QTimer.singleShot(1000, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom)
 
     # -------------------------------------------------------------------------
     # Internals
@@ -76,12 +74,14 @@ class BrowseTabFilterController:
 
         # Step 3: re-render the UI
         self.ui_updater.update_and_display_ui(len(results))
-        self.browse_tab.main_widget.left_stack.setCurrentIndex(
-            LeftStackIndex.SEQUENCE_PICKER.value
+
+        self.browse_tab.main_widget.left_stack.setCurrentWidget(
+            self.browse_tab.sequence_picker
         )
         self.browse_tab.browse_settings.set_browse_left_stack_index(
             LeftStackIndex.SEQUENCE_PICKER.value
         )
+        QTimer.singleShot(0, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom)
 
     def _prepare_ui_for_filtering(self, description: str):
         """Sets up the UI to reflect that a filter is being applied (cursor, labels, etc.)."""
@@ -91,19 +91,6 @@ class BrowseTabFilterController:
         control_panel.currently_displaying_label.setText(f"Displaying {description}")
         control_panel.count_label.setText("")
         self.browse_tab.sequence_picker.scroll_widget.clear_layout()
-
-        # Show a progress bar in the grid if you want
-        sp = self.browse_tab.sequence_picker
-        sp.scroll_widget.grid_layout.addWidget(
-            sp.progress_bar,
-            0,
-            0,
-            1,
-            sp.sorter.num_columns,
-            Qt.AlignmentFlag.AlignCenter,
-        )
-        sp.progress_bar.setVisible(True)
-        sp.progress_bar.resize_progress_bar()
 
     # -------------------------------------------------------------------------
     # Filter Logic

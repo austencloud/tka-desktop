@@ -44,9 +44,6 @@ class BrowseTab(QWidget):
         QTimer.singleShot(0, self._apply_saved_browse_state)
 
     def _apply_saved_browse_state(self):
-        left_index = self.browse_settings.get_browse_left_stack_index()
-        self.main_widget.left_stack.setCurrentIndex(left_index)
-
         section_name = self.browse_settings.get_current_section()
         if not section_name or section_name == "":
             self.sequence_picker.filter_stack.show_filter_choice_widget()

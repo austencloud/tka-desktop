@@ -54,11 +54,8 @@ class BrowseTabFilterManager:
 
             # Check if date_added is within the past two weeks
             if two_weeks_ago <= date_added <= now:
-                print("date_added is within the past two weeks: ", date_added)
                 sequence_length = self._get_sequence_length(thumbnails[0])
                 filtered_sequences.append((word, thumbnails, sequence_length))
-            else:
-                print("date_added is outside the past two weeks: ", date_added)
 
         return filtered_sequences
 

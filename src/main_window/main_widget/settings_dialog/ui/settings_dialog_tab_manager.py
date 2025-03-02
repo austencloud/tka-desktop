@@ -22,15 +22,11 @@ class SettingsDialogTabManager:
     def add_tab(self, name: str, widget: QWidget):
         self.dialog.ui.sidebar.add_item(name)
         self.dialog.ui.content_area.addWidget(widget)
+        self.tabs[name] = widget
 
     def on_tab_selected(self, index: int):
         selected_tab = self.dialog.ui.content_area.widget(index)
-
-        selected_tab_name = None
-        for name, widget in self.tabs.items():
-            if widget is selected_tab:
-                selected_tab_name = name
-                break
+        selected_tab_name = self._get_tab_name(selected_tab)
 
         if not selected_tab_name:
             return
@@ -39,6 +35,16 @@ class SettingsDialogTabManager:
             selected_tab_name
         )
 
+        self._update_tab(selected_tab)
+        self.dialog.ui.content_area.setCurrentIndex(index)
+
+    def _get_tab_name(self, selected_tab: QWidget) -> str:
+        for name, widget in self.tabs.items():
+            if widget is selected_tab:
+                return name
+        return None
+
+    def _update_tab(self, selected_tab: QWidget):
         if isinstance(selected_tab, PropTypeTab):
             selected_tab.update_active_prop_type_from_settings()
         elif isinstance(selected_tab, UserProfileTab):
@@ -46,15 +52,9 @@ class SettingsDialogTabManager:
         elif isinstance(selected_tab, VisibilityTab):
             selected_tab.buttons_widget.update_visibility_buttons_from_settings()
         elif isinstance(selected_tab, BeatLayoutTab):
-            selected_tab.controls.layout_selector._update_valid_layouts(
-                self.dialog.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
-            )
-            selected_tab.controls.length_selector.num_beats_spinbox.setValue(
-                self.dialog.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
-            )
+            selected_tab.update_beat_layout_tab(selected_tab)
         elif isinstance(selected_tab, ImageExportTab):
             selected_tab.update_image_export_tab_from_settings()
-        self.dialog.ui.content_area.setCurrentIndex(index)
 
     def get_tab_index(self, tab_name: str) -> int:
         return list(self.tabs.keys()).index(tab_name) if tab_name in self.tabs else 0

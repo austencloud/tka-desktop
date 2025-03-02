@@ -35,10 +35,14 @@ class SequencePickerSorter:
 
     def get_sort_key(self, sort_method: str):
         return {
-            "sequence_length": lambda x: x[2] if x[2] is not None else float("inf"),
-            "date_added": lambda x: self.section_manager.get_date_added(x[1])
+            "sequence_length": lambda sequence_item: (
+                sequence_item[2] if sequence_item[2] is not None else float("inf")
+            ),
+            "date_added": lambda sequence_item: self.section_manager.get_date_added(
+                sequence_item[1]
+            )
             or datetime.min,
-        }.get(sort_method, lambda x: x[0])
+        }.get(sort_method, lambda sequence_item: sequence_item[0])
 
     def sort_sequences(self, sort_key, sort_method: str):
         self.browse_tab.sequence_picker.currently_displayed_sequences.sort(

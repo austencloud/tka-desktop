@@ -59,7 +59,7 @@ class DictionaryService:
     ) -> None:
         base_path = os.path.join(self.dictionary_dir, base_word)
         self.thumbnail_generator.generate_and_save_thumbnail(
-            sequence, variation_number, base_path
+            sequence, variation_number, base_path, dictionary=True
         )
 
     def collect_thumbnails(self, base_word: str) -> List[str]:
