@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from main_window.main_widget.tab_indices import RightStackIndex
+
 if TYPE_CHECKING:
     from .beat_deleter import BeatDeleter
 
@@ -29,7 +31,7 @@ class AllBeatsDeleter:
         self.main_widget.fade_manager.widget_and_stack_fader.fade_widgets_and_stack(
             widgets,
             self.main_widget.right_stack,
-            self.main_widget.right_start_pos_picker_index,
+            RightStackIndex.START_POS_PICKER,
             300,
             lambda: self.deleter.reset_widgets(show_indicator),
         )

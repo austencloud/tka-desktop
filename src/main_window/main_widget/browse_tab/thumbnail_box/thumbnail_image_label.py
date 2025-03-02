@@ -1,6 +1,6 @@
 from PyQt6.QtCore import Qt, QEvent, QRect
 from PyQt6.QtGui import QPixmap, QCursor, QMouseEvent, QPainter, QColor, QPen
-from PyQt6.QtWidgets import QLabel
+from PyQt6.QtWidgets import QLabel, QApplication
 from typing import TYPE_CHECKING
 
 from data.constants import BLUE
@@ -31,6 +31,7 @@ class ThumbnailImageLabel(QLabel):
         ):
             pixmap = QPixmap(self.thumbnail_box.state.thumbnails[index])
             self._set_pixmap_to_fit(pixmap)
+            QApplication.processEvents()
 
     def _set_pixmap_to_fit(self, pixmap: QPixmap):
         nav_bar = self.thumbnail_box.sequence_picker.nav_sidebar

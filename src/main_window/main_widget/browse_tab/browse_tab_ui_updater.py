@@ -41,7 +41,6 @@ class BrowseTabUIUpdater:
         )
         for tb in thumbnail_box_list:
             tb.image_label.update_thumbnail(tb.state.current_index)
-            QApplication.processEvents()
 
 
     def _apply_thumbnail_styling(self):
