@@ -200,6 +200,7 @@ class SequencePickerSorter:
                 thumbnail_box.image_label.update_thumbnail(
                     thumbnail_box.state.current_index
                 )
+                # QApplication.processEvents()
 
     def reload_currently_displayed_filtered_sequences(self):
         sort_method = (
