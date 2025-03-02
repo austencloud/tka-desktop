@@ -54,6 +54,7 @@ class SequencePickerSortWidget(QWidget):
         # QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         self.update_selected_button(self.buttons["sort_by_level_button"])
         self.settings_manager.browse_settings.set_sort_method("level")
+        self.browse_tab.ui_updater.cancel_resize_job()
         self.sequence_picker.sorter.sort_and_display_currently_filtered_sequences_by_method(
             "level"
         )
@@ -89,6 +90,7 @@ class SequencePickerSortWidget(QWidget):
     def on_sort_by_length(self):
         self.update_selected_button(self.buttons["sort_by_length_button"])
         self.settings_manager.browse_settings.set_sort_method("sequence_length")
+        self.browse_tab.ui_updater.cancel_resize_job()
         self.sequence_picker.sorter.sort_and_display_currently_filtered_sequences_by_method(
             "sequence_length"
         )
@@ -99,6 +101,7 @@ class SequencePickerSortWidget(QWidget):
     def on_sort_alphabetically(self):
         self.update_selected_button(self.buttons["sort_alphabetically_button"])
         self.settings_manager.browse_settings.set_sort_method("alphabetical")
+        self.browse_tab.ui_updater.cancel_resize_job()
         self.sequence_picker.sorter.sort_and_display_currently_filtered_sequences_by_method(
             "alphabetical"
         )
@@ -109,6 +112,8 @@ class SequencePickerSortWidget(QWidget):
     def on_sort_by_date_added(self):
         self.update_selected_button(self.buttons["sort_date_added_button"])
         self.settings_manager.browse_settings.set_sort_method("date_added")
+        self.browse_tab.ui_updater.cancel_resize_job()
+
         self.sequence_picker.sorter.sort_and_display_currently_filtered_sequences_by_method(
             "date_added"
         )

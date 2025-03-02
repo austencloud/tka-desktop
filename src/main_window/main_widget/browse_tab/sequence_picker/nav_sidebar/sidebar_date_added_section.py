@@ -6,38 +6,28 @@ from .sidebar_button import SidebarButton
 
 
 class SidebarDateAddedSection(BaseSidebarSection):
-    def create_widgets(self, sections_data:  list[str]) -> None:
-        """
-        sections_data is a list of date-strings like ["01-12-2025", "15-08-2024", ...]
-        The goal is to:
-        - Sort the years in **descending** order.
-        - Group sequences under their corresponding year headers.
-        - Add a **spacer line between year sections** for clarity.
-        - Include a **spacer before the first year section** for extra clarity.
-        """
-        # Convert the list of date strings into tuples (day, month, year)
+    def create_widgets(self, sections_data: list[str]) -> None:
         parsed_dates = []
         for section in sections_data:
             if section == "Unknown":
                 continue
-            day, month, year = section.split("-")
-            parsed_dates.append((int(year), int(month), int(day), section))  # Ensure numeric sorting
+            month, day, year = section.split("-")  # order your code reads them
+            parsed_dates.append((int(year), int(month), int(day), section))
 
-        # Sort by year DESC, then month DESC, then day DESC
         parsed_dates.sort(reverse=True, key=lambda x: (x[0], x[1], x[2]))
 
         current_year = None
 
-        # Insert an **extra spacer** before the first year section
         if parsed_dates:
             first_spacer = QLabel()
             first_spacer.setFixedHeight(1)
-            first_spacer.setStyleSheet("background-color: white; border: none; margin: 0;")
+            first_spacer.setStyleSheet(
+                "background-color: white; border: none; margin: 0;"
+            )
             self.manager.layout.addWidget(first_spacer)
             self._widgets_created.append(first_spacer)
 
         for year, month, day, section in parsed_dates:
-            # If the year changes, create a new header
             if year != current_year:
                 year_label = QLabel(str(year))
                 year_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -45,23 +35,23 @@ class SidebarDateAddedSection(BaseSidebarSection):
                 self.manager.layout.addWidget(year_label)
                 self._widgets_created.append(year_label)
 
-                # **Insert a spacer line right below the year header**
                 year_spacer = QLabel()
                 year_spacer.setFixedHeight(1)
-                year_spacer.setStyleSheet("background-color: white; border: none; margin: 0;")
+                year_spacer.setStyleSheet(
+                    "background-color: white; border: none; margin: 0;"
+                )
                 self.manager.layout.addWidget(year_spacer)
                 self._widgets_created.append(year_spacer)
 
-                current_year = year  # Update current year tracker
+                current_year = year
 
-            # Create the date button
-            font_color = self.manager.sequence_picker.main_widget.font_color_updater.get_font_color(
-                self.manager.settings_manager.global_settings.get_background_type()
-            )
-            date_button = SidebarButton(self.get_formatted_day(section), font_color)
+            date_button = SidebarButton(self.get_formatted_day(section))
             date_button.clicked_signal.connect(
-                lambda section=section, btn=date_button: self.manager.scroll_to_section(section, btn)
+                lambda section=section, btn=date_button: self.manager.scroll_to_section(
+                    section, btn
+                )
             )
             self.manager.layout.addWidget(date_button)
             self._widgets_created.append(date_button)
             self.manager.buttons.append(date_button)
+        self.manager.layout.addStretch(1)

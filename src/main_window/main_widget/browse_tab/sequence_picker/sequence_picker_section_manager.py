@@ -27,6 +27,7 @@ class SequencePickerSectionManager:
             sorted_sections = sorted(
                 sections, key=lambda x: int(x) if x.isdigit() else x
             )
+
         elif sort_method == "date_added":
             try:
                 # Extract unique years first
@@ -63,8 +64,11 @@ class SequencePickerSectionManager:
             for level in ["1", "2", "3"]:
                 if level not in sorted_sections:
                     sorted_sections.append(level)
-        else:
+        elif sort_method == "alphabetical":
             sorted_sections = sorted(sections, key=self.custom_sort_key)
+        else:
+            # return a value error
+            raise ValueError(f"Invalid sort method: {sort_method}")
         return sorted_sections
 
     def custom_sort_key(self, section_str: str) -> tuple[int, int]:

@@ -61,7 +61,7 @@ class BrowseTab(QWidget):
 
             from PyQt6.QtCore import QTimer
 
-            QTimer.singleShot(1000, lambda: self._reopen_sequence(word, var_index))
+            QTimer.singleShot(200, lambda: self._reopen_sequence(word, var_index))
 
     def _reopen_sequence(self, word: str, var_index: int):
         if word in self.sequence_picker.scroll_widget.thumbnail_boxes:
@@ -74,4 +74,3 @@ class BrowseTab(QWidget):
                 self.selection_handler.on_box_thumbnail_clicked(
                     box.image_label, metadata
                 )
-

@@ -21,7 +21,7 @@ class NavSidebarManager:
         self.layout = sidebar.layout
         self.sequence_picker = sidebar.sequence_picker
         self.settings_manager = AppContext.settings_manager()
-        self.buttons: list[QPushButton] = []
+        self.buttons: list[SidebarButton] = []
         self.current_section_obj: BaseSidebarSection | None = None
         self.selected_button: QPushButton | None = None
 
@@ -46,12 +46,18 @@ class NavSidebarManager:
         if self.current_section_obj:
             self.current_section_obj.clear()
             self.current_section_obj = None
+        # find and remove all stretches in the layout
+        for i in reversed(range(self.layout.count())):
+            item = self.layout.itemAt(i)
+            if item and item.widget() is None:
+                self.layout.removeItem(item)
         self.buttons.clear()
         self.selected_button = None
 
-    def style_button(self, button: SidebarButton, selected: bool = False):
+    def style_button(self, button: SidebarButton, selected: bool = False, enabled=True):
         """Update button selection and reapply styles."""
         button.set_selected(selected)
+        button.set_button_enabled(enabled)
 
     def set_button_styles(self):
         for button in self.buttons:
@@ -72,6 +78,18 @@ class NavSidebarManager:
             }}
         """
         )
+
+        # Start with a reasonable font size
+        font_size = self.sidebar.sequence_picker.main_widget.width() // 80
+        label_font = label.font()
+        label_font.setPointSize(font_size)
+        label.setFont(label_font)
+
+        # Adjust font size to fit within the sidebar width
+        while label.sizeHint().width() > self.sidebar.width() and font_size > 1:
+            font_size -= 1
+            label_font.setPointSize(font_size)
+            label.setFont(label_font)
 
     def scroll_to_section(self, section: str, button: QPushButton):
         if self.selected_button:

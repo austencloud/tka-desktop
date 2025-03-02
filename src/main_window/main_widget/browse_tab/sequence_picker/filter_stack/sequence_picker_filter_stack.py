@@ -8,7 +8,7 @@ from .initial_filter_choice_widget.initial_filter_choice_widget import (
     InitialFilterChoiceWidget,
 )
 from .grid_mode_section import GridModeSection
-from .level_section import FilterByLevelSection
+from .filter_by_level_section import FilterByLevelSection
 from .sequence_length_section import SequenceLengthSection
 from .starting_letter_section import StartingLetterSection
 from .starting_position_section import StartingPositionSection
