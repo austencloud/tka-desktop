@@ -38,6 +38,10 @@ class SequencePickerSortWidget(QWidget):
                 "text": "Date Added",
                 "clicked": self.on_sort_by_date_added,
             },
+            "sort_by_difficulty_button": {  # ✅ Added Difficulty Sorting
+                "text": "Difficulty",
+                "clicked": self.on_sort_by_difficulty,
+            },
         }
 
         for button_name, button_info in button_data.items():
@@ -45,6 +49,18 @@ class SequencePickerSortWidget(QWidget):
             button.clicked.connect(button_info["clicked"])
             button.setCursor(Qt.CursorShape.PointingHandCursor)
             self.buttons[button_name] = button
+
+    def on_sort_by_difficulty(self):
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+        self.update_selected_button(self.buttons["sort_by_difficulty_button"])
+        self.settings_manager.browse_settings.set_sort_method("difficulty")
+        self.sequence_picker.sorter.sort_and_display_currently_filtered_sequences_by_method(
+            "difficulty"
+        )
+        self.browse_tab.sequence_picker.scroll_widget.scroll_area.verticalScrollBar().setValue(
+            0
+        )
+        QApplication.restoreOverrideCursor()
 
     def highlight_appropriate_button(self, sort_method):
         if sort_method == "sequence_length":

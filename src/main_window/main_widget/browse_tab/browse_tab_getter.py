@@ -12,18 +12,21 @@ class BrowseTabGetter:
         self.browse_tab = browse_tab
 
     def all_sequences(self) -> list[tuple[str, list[str], int]]:
-        """Retrieve all sequences with their respective lengths."""
+        """Retrieve all sequences with their respective difficulty levels."""
         dictionary_dir = get_data_path("generated_data\dictionary")
         sequences = [
             (
                 word,
                 thumbnails,
-                MetaDataExtractor().get_length(thumbnails[0]),
+                max(
+                    [MetaDataExtractor().get_level(thumbnail) for thumbnail in thumbnails if MetaDataExtractor().get_level(thumbnail) is not None],
+                    default=1,  # Default difficulty level
+                ),
             )
             for word, thumbnails in self.base_words(dictionary_dir)
-            for thumbnail in thumbnails
         ]
         return sequences
+
 
     def base_words(self, dictionary_dir) -> list[tuple[str, list[str]]]:
         """Helper method to retrieve words and their thumbnails."""

@@ -33,16 +33,33 @@ class SequencePickerSorter:
         )
         self.update_ui(sorted_sections, sort_method)
 
-    def get_sort_key(self, sort_method: str):
-        return {
-            "sequence_length": lambda sequence_item: (
-                sequence_item[2] if sequence_item[2] is not None else float("inf")
-            ),
-            "date_added": lambda sequence_item: self.section_manager.get_date_added(
-                sequence_item[1]
-            )
-            or datetime.min,
-        }.get(sort_method, lambda sequence_item: sequence_item[0])
+    def get_sort_key(self, sort_method: str) -> callable:
+        if sort_method == "sequence_length":
+
+            def sort_key(sequence_item) -> int:
+                return (
+                    sequence_item[2] if sequence_item[2] is not None else float("inf")
+                )
+
+        elif sort_method == "date_added":
+
+            def sort_key(sequence_item) -> datetime:
+                return (
+                    self.section_manager.get_date_added(sequence_item[1])
+                    or datetime.min
+                )
+
+        elif sort_method == "difficulty":  # ✅ Added Difficulty Sorting
+
+            def sort_key(sequence_item):
+                return sequence_item[2]
+
+        else:
+
+            def sort_key(sequence_item):
+                return sequence_item[0]
+
+        return sort_key
 
     def sort_sequences(self, sort_key, sort_method: str):
         self.browse_tab.sequence_picker.currently_displayed_sequences.sort(

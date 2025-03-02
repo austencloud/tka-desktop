@@ -20,6 +20,26 @@ class BrowseTabFilterManager:
             if any(self._is_favorite(thumbnail) for thumbnail in thumbnails)
         ]
 
+    def filter_by_difficulty(self) -> list[tuple[str, list[str], int]]:
+        """Sort sequences by difficulty level (ascending order)."""
+        dictionary_dir = get_data_path("generated_data\dictionary")
+
+        sequences = []
+        for word, thumbnails in self.browse_tab.get.base_words(dictionary_dir):
+            difficulty_levels = [
+                self.metadata_extractor.get_level(thumbnail) for thumbnail in thumbnails
+            ]
+
+            # Filter out None values and get the max difficulty in case of multiple variations
+            difficulty_levels = [level for level in difficulty_levels if level is not None]
+            max_difficulty = max(difficulty_levels, default=1)
+
+            sequences.append((word, thumbnails, max_difficulty))
+
+        # Sort by difficulty level (ascending)
+        return sorted(sequences, key=lambda seq: seq[2])
+
+
     def filter_all_sequences(self) -> list[tuple[str, list[str], int]]:
         dictionary_dir = get_data_path("generated_data\dictionary")
         return [

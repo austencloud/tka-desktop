@@ -74,7 +74,10 @@ class BrowseTabFilterController:
 
         # Step 3: re-render the UI
         self.ui_updater.update_and_display_ui(len(results))
-        if self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab() == "browse":
+        if (
+            self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
+            == "browse"
+        ):
             self.browse_tab.main_widget.left_stack.setCurrentWidget(
                 self.browse_tab.sequence_picker
             )
@@ -129,7 +132,8 @@ class BrowseTabFilterController:
             "starting_position": self._dict_filter_starting_pos,
             "favorites": self._dict_filter_favorites,
             "most_recent": self._dict_filter_most_recent,
-            GRID_MODE: self._dict_filter_grid_mode,
+            "difficulty": self._dict_filter_difficulty,  # ✅ Added new filter
+            "grid_mode": self._dict_filter_grid_mode,
             "show_all": self._dict_filter_show_all,
         }
 
@@ -149,6 +153,9 @@ class BrowseTabFilterController:
             for word, thumbs in base_words
             if word.startswith(letter)
         ]
+
+    def _dict_filter_difficulty(self, _unused):
+        return self.filter_manager.filter_by_difficulty()
 
     def _dict_filter_contains_letters(self, letters):
         base_words = self._base_words()

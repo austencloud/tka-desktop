@@ -79,3 +79,4 @@ class ThumbnailBox(QWidget):
             self.browse_tab.sequence_viewer.update_thumbnails(self.state.thumbnails)
 
         self.variation_number_label.update_index(self.state.current_index)
+        self.word_label.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
