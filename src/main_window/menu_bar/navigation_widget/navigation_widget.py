@@ -3,6 +3,9 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QFrame, QVBoxLayout
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import pyqtSignal
 
+from main_window.main_widget.tab_index import TAB_INDEX
+from main_window.main_widget.tab_name import TabName
+
 from .nav_button import NavButton
 
 if TYPE_CHECKING:
@@ -42,7 +45,9 @@ class NavigationWidget(QWidget):
         main_layout.addWidget(self.container_frame)
 
         self.tab_changed.connect(
-            lambda: self.mw.tab_switcher.on_tab_changed(self.current_index)
+            lambda: self.mw.tab_switcher.on_tab_changed(
+                list(TAB_INDEX.keys())[self.current_index]
+            )
         )
 
         self.set_active_tab(self.current_index)

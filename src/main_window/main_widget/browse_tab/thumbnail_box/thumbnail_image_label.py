@@ -35,8 +35,14 @@ class ThumbnailImageLabel(QLabel):
     def set_pixmap_to_fit(self, pixmap: QPixmap):
 
         aspect_ratio = pixmap.width() / pixmap.height()
-
-        max_width = self.thumbnail_box.width() - (self.thumbnail_box.margin * 2)
+        scrollbar_width = self.thumbnail_box.scroll_Area.verticalScrollBar().width()
+        scroll_widget_width = (
+            self.thumbnail_box.main_widget.left_stack.width()
+            - scrollbar_width
+            - self.thumbnail_box.sequence_picker.nav_sidebar.width()
+        )
+        width = scroll_widget_width // 3
+        max_width = width - (self.thumbnail_box.margin * 2)
         max_height = int(max_width / aspect_ratio)
 
         seq_len = self.metadata_extractor.get_length(

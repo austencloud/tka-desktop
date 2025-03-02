@@ -37,9 +37,9 @@ class SequencePickerGoBackButton(BaseGoBackButton):
             300,
             self.browse_tab.sequence_viewer.clear,
         )
-        self.browse_tab.settings_manager.set_browse_left_stack_index(
+        self.browse_tab.browse_settings.set_browse_left_stack_index(
             LeftStackIndex.FILTER_SELECTOR.value
         )
-        self.browse_tab.settings_manager.set_current_section("filter_selector")
-        self.browse_tab.settings_manager.set_current_filter(None)
+        self.browse_tab.browse_settings.set_current_section("filter_selector")
+        self.browse_tab.browse_settings.set_current_filter(None)
         # self.sequence_picker.filter_stack.show_section("filter_selector")

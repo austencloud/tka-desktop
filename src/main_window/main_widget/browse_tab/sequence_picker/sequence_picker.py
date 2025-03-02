@@ -7,9 +7,11 @@ from .sequence_picker_control_panel import SequencePickerControlPanel
 from .sequence_picker_progress_bar import SequencePickerProgressBar
 from .nav_sidebar.sequence_picker_nav_sidebar import SequencePickerNavSidebar
 from .sequence_picker_scroll_widget import SequencePickerScrollWidget
+from PyQt6.QtCore import QTimer
 
 if TYPE_CHECKING:
     from ..browse_tab import BrowseTab
+
 
 class SequencePicker(QWidget):
 
@@ -49,3 +51,4 @@ class SequencePicker(QWidget):
         self.main_layout.addLayout(content_layout)
 
         self.setLayout(self.main_layout)
+

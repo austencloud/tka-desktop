@@ -1,6 +1,8 @@
 import json
 from typing import TYPE_CHECKING, Union
 
+from main_window.main_widget.browse_tab.browse_tab_filter_controller import datetime
+
 if TYPE_CHECKING:
     from settings_manager.settings_manager import SettingsManager
 
@@ -24,7 +26,7 @@ class BrowseTabSettings:
     def set_sort_method(self, sort_method: str) -> None:
         self.settings.setValue("browse/sort_method", sort_method)
 
-    def get_current_filter(self) -> Union[str, dict]:
+    def get_current_filter(self) -> Union[str, dict, datetime]:
         json_string = self.settings.value("browse/current_filter", "")
         if not json_string:
             return {}
@@ -39,14 +41,30 @@ class BrowseTabSettings:
             and isinstance(data["__string__"], str)
         ):
             return data["__string__"]
+        elif (
+            isinstance(data, dict)
+            and "__datetime__" in data
+            and isinstance(data["__datetime__"], str)
+        ):
+            try:
+                return datetime.fromisoformat(data["__datetime__"])
+            except ValueError:
+                return data
         return data
 
-    def set_current_filter(self, filter_criteria: Union[str, dict]) -> None:
+    def set_current_filter(self, filter_criteria: Union[str, dict, datetime]) -> None:
+        def default_serializer(obj):
+            if isinstance(obj, datetime):
+                return {"__datetime__": obj.isoformat()}
+            raise TypeError(f"Type {type(obj)} not serializable")
+
         if isinstance(filter_criteria, str):
             data = {"__string__": filter_criteria}
+        elif isinstance(filter_criteria, datetime):
+            data = {"__datetime__": filter_criteria.isoformat()}
         else:
             data = filter_criteria
-        json_string = json.dumps(data)
+        json_string = json.dumps(data, default=default_serializer)
         self.settings.setValue("browse/current_filter", json_string)
 
     def get_current_section(self) -> str:

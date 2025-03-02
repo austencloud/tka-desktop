@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Union
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import QApplication
 
 from data.constants import GRID_MODE
@@ -27,20 +27,32 @@ class BrowseTabFilterController:
     # -------------------------------------------------------------------------
     # Public Method
     # -------------------------------------------------------------------------
+
     def apply_filter(self, filter_criteria: Union[str, dict]):
         """Fade out certain widgets, run the filtering logic, then update UI."""
+        # get the current tab name from the settings
+        tab_name = (
+            self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
+        )
+
         description = self._get_filter_description(filter_criteria)
-        self.browse_tab.settings_manager.set_current_filter(filter_criteria)
+        self.browse_tab.browse_settings.set_current_filter(filter_criteria)
 
         widgets_to_fade = [
             self.browse_tab.sequence_picker.filter_stack,
             self.browse_tab.sequence_picker,
         ]
 
-        self.fade_manager.widget_fader.fade_and_update(
-            widgets_to_fade,
-            lambda: self._apply_filter_after_fade(filter_criteria, description),
-        )
+        # if the tab name is browse, fade. If not, jsut apply the filter
+        if tab_name == "browse":
+            self.fade_manager.widget_fader.fade_and_update(
+                widgets_to_fade,
+                lambda: self._apply_filter_after_fade(filter_criteria, description),
+            )
+        else:
+            self._apply_filter_after_fade(filter_criteria, description)
+        QApplication.processEvents()
+        QTimer.singleShot(1000, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom)
 
     # -------------------------------------------------------------------------
     # Internals
@@ -67,7 +79,7 @@ class BrowseTabFilterController:
         self.browse_tab.main_widget.left_stack.setCurrentIndex(
             LeftStackIndex.SEQUENCE_PICKER.value
         )
-        self.browse_tab.settings_manager.set_browse_left_stack_index(
+        self.browse_tab.browse_settings.set_browse_left_stack_index(
             LeftStackIndex.SEQUENCE_PICKER.value
         )
 

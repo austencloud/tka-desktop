@@ -8,6 +8,8 @@ from main_window.main_widget.generate_tab.generate_tab import GenerateTab
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 from main_window.main_widget.startup_dialog import StartupDialog
+from main_window.main_widget.tab_index import TAB_INDEX
+from main_window.main_widget.tab_name import TabName
 from settings_manager.global_settings.app_context import AppContext
 from .browse_tab.browse_tab import BrowseTab
 from .fade_manager.fade_manager import FadeManager
@@ -131,6 +133,7 @@ class MainWidget(QWidget):
         self.manager = MainWidgetManagers(self)
         self.state_handler = MainWidgetState(self)
         self.ui_handler = MainWidgetUI(self)
+        self._already_initialized_once = False
 
     def ensure_user_exists(self):
         """Check if a user exists; if not, prompt for a name and show welcome info."""
@@ -146,18 +149,21 @@ class MainWidget(QWidget):
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self.background_widget.resize_background()
-        self.beat_frame = self.sequence_workbench.sequence_beat_frame
-        if (
-            self.left_stack.currentIndex() == self.left_sequence_picker_index
-            and self.right_stack.currentIndex() == self.right_sequence_viewer_index
-        ):
-            total_width = self.width()
-            left_width = int(total_width * (2 / 3))
-            right_width = total_width - left_width
-            self.left_stack.setFixedWidth(left_width)
-            self.right_stack.setFixedWidth(right_width)
-        else:
-            total_width = self.width()
-            half_width = int(total_width / 2)
-            self.left_stack.setFixedWidth(half_width)
-            self.right_stack.setFixedWidth(half_width)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if not self._already_initialized_once:
+            self._already_initialized_once = True
+
+            tab_name = TabName.from_string(
+                self.settings_manager.global_settings.get_current_tab()
+            )
+            tab_index = TAB_INDEX[tab_name]
+            left_index, right_index = self.tab_switcher.get_stack_indices_for_tab(
+                tab_name
+            )
+
+            self.tab_switcher.set_stacks_silently(left_index, right_index)
+
+            self.menu_bar.navigation_widget.current_index = tab_index
+            self.menu_bar.navigation_widget.update_buttons()

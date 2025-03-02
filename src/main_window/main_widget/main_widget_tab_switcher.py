@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
-
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QApplication
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_indices import LeftStackIndex, RightStackIndex
 from main_window.main_widget.tab_name import TabName
@@ -23,19 +24,20 @@ class MainWidgetTabSwitcher:
             self.mw.main_learn_tab_index: LeftStackIndex.LEARN_CODEX,
             self.mw.main_browse_tab_index: LeftStackIndex.SEQUENCE_PICKER,
             self.mw.main_generate_tab_index: LeftStackIndex.WORKBENCH,
-            self.mw.main_construct_tab_index: LeftStackIndex.WORKBENCH,
+            TAB_INDEX[TabName.CONSTRUCT]: LeftStackIndex.WORKBENCH,
         }
 
         self.index_to_tab_name = {v: k for k, v in TAB_INDEX.items()}
 
-    def on_tab_changed(self, index: int) -> None:
+    def on_tab_changed(self, tab_name: TabName):
         """Handle the transition when a tab is changed."""
-        left_new_index, right_new_index = self.get_stack_indices_for_tab(index)
+        index = TAB_INDEX[tab_name]
+        left_new_index, right_new_index = self.get_stack_indices_for_tab(tab_name)
 
         tab_name = self.index_to_tab_name.get(index, TabName.CONSTRUCT)
         AppContext.settings_manager().global_settings.set_current_tab(tab_name.value)
 
-        is_browse_tab = index == self.mw.main_browse_tab_index
+        is_browse_tab = tab_name == TabName.BROWSE
         width_ratio = (2 / 3, 1 / 3) if is_browse_tab else (1 / 2, 1 / 2)
 
         self.mw.fade_manager.parallel_stack_fader.fade_both_stacks(
@@ -45,17 +47,41 @@ class MainWidgetTabSwitcher:
             left_new_index,
             width_ratio,
         )
+        QApplication.processEvents()
+        if tab_name == TabName.BROWSE:
+            # wait 2 seconds
+            # QTimer.singleShot(2000, self.mw.browse_tab.resize_thumbnail_boxes)
+            QTimer.singleShot(
+                1000, self.mw.browse_tab.ui_updater.resize_thumbnails_top_to_bottom
+            )
 
-    def set_stacks_silently(self, left_index: int, right_index: int):
-        """Set the current indices of left and right stacks without animation."""
-        self.mw.left_stack.setCurrentIndex(left_index)
-        self.mw.right_stack.setCurrentIndex(right_index)
+    def set_stacks_silently(
+        self, left_index: LeftStackIndex, right_index: RightStackIndex
+    ):
+        """
+        Set the current indices of left and right stacks without animation,
+        and also apply the same 2/3 ratio used by on_tab_changed if it's the browse tab.
+        """
+        self.mw.left_stack.setCurrentIndex(left_index.value)
+        self.mw.right_stack.setCurrentIndex(right_index.value)
+        tab_name = AppContext.settings_manager().global_settings.get_current_tab()
+        tab_index = TAB_INDEX[TabName.from_string(tab_name)]
+        is_browse_tab = tab_index == self.mw.main_browse_tab_index
+        width_ratio = (2 / 3, 1 / 3) if is_browse_tab else (1 / 2, 1 / 2)
+        total_width = self.mw.width()
+        left_width = int(total_width * width_ratio[0])
+        right_width = total_width - left_width  # ensures total == self.mw.width()
 
-    def get_stack_indices_for_tab(self, index: int) -> tuple[int, int]:
+        self.mw.left_stack.setFixedWidth(left_width)
+        self.mw.right_stack.setFixedWidth(right_width)
+
+    def get_stack_indices_for_tab(
+        self, tab_name: TabName
+    ) -> tuple[LeftStackIndex, RightStackIndex]:
         """Get the left and right stack indices for the given tab index."""
+        index = TAB_INDEX[tab_name]
         left_index = self.tab_to_left_stack.get(index, LeftStackIndex.WORKBENCH)
-        right_index: int
-        if index == TAB_INDEX[TabName.CONSTRUCT]:
+        if tab_name == TabName.CONSTRUCT:
             current_sequence = self.mw.json_manager.loader_saver.load_current_sequence()
             right_index = (
                 RightStackIndex.OPTION_PICKER

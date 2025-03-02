@@ -82,7 +82,7 @@ class BrowseTabSelectionManager:
         )
         word = image_label.thumbnail_box.word
         var_index = image_label.thumbnail_box.state.current_index
-        self.browse_tab.settings_manager.set_selected_sequence(
+        self.browse_tab.browse_settings.set_selected_sequence(
             {"word": word, "variation_index": var_index}
         )
 

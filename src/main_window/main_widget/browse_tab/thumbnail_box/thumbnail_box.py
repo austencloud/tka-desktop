@@ -57,7 +57,9 @@ class ThumbnailBox(QWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+        self.resize_thumbnail_box()
 
+    def resize_thumbnail_box(self):
         scrollbar_width = self.scroll_Area.verticalScrollBar().width()
         scroll_widget_width = (
             self.main_widget.left_stack.width()

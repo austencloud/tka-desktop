@@ -29,9 +29,10 @@ class BaseFontColorUpdater:
                 """
             )
         else:
-            existing_style = widget.styleSheet() or ""
-            new_style = f"{existing_style} color: {self.font_color};"
-            widget.setStyleSheet(new_style)
+            if widget:
+                existing_style = widget.styleSheet() or ""
+                new_style = f"{existing_style} color: {self.font_color};"
+                widget.setStyleSheet(new_style)
 
     def _apply_font_colors(self, widgets: list[QWidget]) -> None:
         """Apply font color to a list of widgets."""

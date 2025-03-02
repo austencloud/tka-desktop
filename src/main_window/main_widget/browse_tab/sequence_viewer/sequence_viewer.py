@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QStackedWidget
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap
 from typing import TYPE_CHECKING, Optional
 
@@ -116,3 +116,4 @@ class SequenceViewer(QWidget):
 
     def get_thumbnail_at_current_index(self) -> Optional[str]:
         return self.state.get_current_thumbnail()
+

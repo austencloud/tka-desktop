@@ -2,6 +2,9 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QApplication, QMessageBox
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QIcon, QPixmap, QResizeEvent
+
+from main_window.main_widget.tab_index import TAB_INDEX
+from main_window.main_widget.tab_name import TabName
 from ...full_screen_image_overlay import FullScreenImageOverlay
 from ..temp_beat_frame.temp_beat_frame import TempBeatFrame
 from utils.path_helpers import get_image_path
@@ -93,7 +96,7 @@ class SequenceViewerActionButtonPanel(QWidget):
         sequence_json = self.sequence_viewer.state.sequence_json
         if sequence_json:
             self.sequence_viewer.main_widget.menu_bar.navigation_widget.set_active_tab(
-                self.sequence_viewer.main_widget.main_construct_tab_index
+                TAB_INDEX[TabName.CONSTRUCT]
             )
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
             populator = (

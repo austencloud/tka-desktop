@@ -26,7 +26,7 @@ class BrowseTabUIUpdater:
         self.browse_tab.sequence_picker.sorter._sort_only(sort_method)
 
         self._create_and_show_thumbnails(skip_scaling=True)
-        QTimer.singleShot(500, self._resize_thumbnails_top_to_bottom)
+        # QTimer.singleShot(500, self.resize_thumbnails_top_to_bottom)
 
     def _create_and_show_thumbnails(self, skip_scaling: bool = True):
         self.browse_tab.sequence_picker.sorter._display_sorted_sections(
@@ -34,12 +34,15 @@ class BrowseTabUIUpdater:
         )
         self._apply_thumbnail_styling()
 
-    def _resize_thumbnails_top_to_bottom(self):
-        for (
-            tb
-        ) in self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.values():
+    def resize_thumbnails_top_to_bottom(self):
+        # Make a separate list so we don’t mutate while iterating
+        thumbnail_box_list = list(
+            self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.values()
+        )
+        for tb in thumbnail_box_list:
             tb.image_label.update_thumbnail(tb.state.current_index)
             QApplication.processEvents()
+
 
     def _apply_thumbnail_styling(self):
         font_color = self.font_color_updater.get_font_color(

@@ -59,7 +59,7 @@ class SequencePickerFilterStack(QStackedWidget):
             self.sequence_picker.main_widget.fade_manager.stack_fader.fade_stack(
                 self.sequence_picker.filter_stack, index
             )
-            self.browse_tab.settings_manager.set_current_section(section_name)
+            self.browse_tab.browse_settings.set_current_section(section_name)
             self.current_filter_section = section_name
         else:
             print(f"Section '{section_name}' not found.")

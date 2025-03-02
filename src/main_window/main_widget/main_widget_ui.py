@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QStackedWidget
 
 from main_window.main_widget.codex.codex import Codex
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
@@ -17,6 +16,15 @@ from .main_background_widget.main_background_widget import MainBackgroundWidget
 from .font_color_updater.font_color_updater import FontColorUpdater
 from ..menu_bar.menu_bar import MenuBarWidget
 from .sequence_workbench.sequence_workbench import SequenceWorkbench
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import (
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QStackedWidget,
+    QSizePolicy,
+)
 
 if TYPE_CHECKING:
     from .main_widget import MainWidget
@@ -29,24 +37,7 @@ class MainWidgetUI:
         self._create_components()
         self._populate_stacks()
         self._initialize_layout()
-        self._set_initial_stack_indices()
-
-    def _set_initial_stack_indices(self):
-        mw = self.mw
-        current_tab_name = TabName.from_string(
-            mw.settings_manager.global_settings.get_current_tab()
-        )
-
-        tab_index = TAB_INDEX[current_tab_name]
-        left_index, right_index = mw.tab_switcher.get_stack_indices_for_tab(tab_index)
-
-        mw.tab_switcher.set_stacks_silently(left_index, right_index)
-
-        mw.menu_bar.navigation_widget.current_index = tab_index
-        mw.menu_bar.navigation_widget.update_buttons()
-        AppContext.settings_manager().global_settings.set_current_tab(
-            current_tab_name.value
-        )
+        # Defer the final step until the widget has actually been laid out/shown:
 
     def _create_components(self):
         mw = self.mw
@@ -59,6 +50,7 @@ class MainWidgetUI:
 
         mw.left_stack = QStackedWidget()
         mw.right_stack = QStackedWidget()
+        # set size policy to fixed
 
         mw.font_color_updater = FontColorUpdater(mw)
         mw.pictograph_collector = PictographCollector(mw)
