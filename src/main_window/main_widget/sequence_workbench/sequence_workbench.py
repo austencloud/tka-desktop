@@ -11,8 +11,8 @@ from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.dictio
 from main_window.main_widget.sequence_workbench.beat_deleter.beat_deleter import (
     BeatDeleter,
 )
-from main_window.main_widget.sequence_workbench.labels.difficulty_label import (
-    DifficultyLabel,
+from main_window.main_widget.sequence_workbench.labels.workbench_difficulty_label import (
+    WorkbenchDifficultyLabel,
 )
 from main_window.main_widget.sequence_workbench.labels.sequence_workbench_indicator_label import (
     SequenceWorkbenchIndicatorLabel,
@@ -40,9 +40,9 @@ if TYPE_CHECKING:
 class SequenceWorkbench(QWidget):
     beat_frame_layout: QHBoxLayout
     indicator_label_layout: QHBoxLayout
-    difficulty_label: DifficultyLabel
+    difficulty_label: WorkbenchDifficultyLabel
     current_word_label: CurrentWordLabel
-    
+
     def __init__(self, main_widget: "MainWidget") -> None:
         super().__init__()
         self.main_widget = main_widget
@@ -67,7 +67,7 @@ class SequenceWorkbench(QWidget):
         # Labels
         self.indicator_label = SequenceWorkbenchIndicatorLabel(self)
         self.current_word_label = CurrentWordLabel(self)
-        self.difficulty_label = DifficultyLabel(self)
+        self.difficulty_label = WorkbenchDifficultyLabel(self)
 
         # Sections
         self.button_panel = SequenceWorkbenchButtonPanel(self)

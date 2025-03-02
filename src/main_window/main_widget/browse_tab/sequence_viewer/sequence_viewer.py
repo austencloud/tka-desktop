@@ -37,7 +37,6 @@ class SequenceViewer(QWidget):
         layout.addStretch(1)
         layout.addWidget(self.word_label)
         layout.addWidget(self.stacked_widget)
-        layout.addWidget(self.variation_number_label)
         layout.addWidget(self.nav_buttons_widget)
         layout.addWidget(self.action_button_panel)
         layout.addStretch(1)
@@ -59,15 +58,12 @@ class SequenceViewer(QWidget):
 
     def update_thumbnails(self, thumbnails: list[str]):
         self.state.update_thumbnails(thumbnails)
-        self._update_display_after_thumbnail_change()
-
-    def _update_display_after_thumbnail_change(self):
         current_thumbnail = self.state.get_current_thumbnail()
         if current_thumbnail:
             self.update_preview(self.state.current_index)
-            self._toggle_navigation_visibility(len(self.state.thumbnails))
         else:
             self.clear()
+        self.variation_number_label.update_index(self.state.current_index)
 
     def update_preview(self, index: int):
         self.state.set_current_index(index)
@@ -88,6 +84,7 @@ class SequenceViewer(QWidget):
         else:
             self.stacked_widget.setCurrentWidget(self.placeholder_label)
             self.variation_number_label.clear()
+        self.variation_number_label.update_index(index)
 
     def update_nav_buttons(self):
         self.nav_buttons_widget.current_index = self.state.current_index
@@ -116,4 +113,3 @@ class SequenceViewer(QWidget):
 
     def get_thumbnail_at_current_index(self) -> Optional[str]:
         return self.state.get_current_thumbnail()
-

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     )
 
 
-class DifficultyLabel(QToolButton):
+class WorkbenchDifficultyLabel(QToolButton):
     def __init__(self, sequence_workbench: "SequenceWorkbench") -> None:
         """Handles drawing difficulty level labels in the workbench."""
         super().__init__(sequence_workbench)

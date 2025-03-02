@@ -29,9 +29,10 @@ class SequenceViewerNavButtonsWidget(QWidget):
 
         self.left_button = SequenceViewerNavButton("⮜", self)  # Left Arrow
         self.right_button = SequenceViewerNavButton("⮞", self)  # Right Arrow
-
+        
         layout.addStretch(1)
         layout.addWidget(self.left_button)
+        layout.addWidget(self.variation_number_label)  # Centered label
         layout.addWidget(self.right_button)
         layout.addStretch(1)
 

@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 from main_window.main_widget.browse_tab.thumbnail_box.favorites_manager import (
     FavoritesManager,
 )
-from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_nav_btns import (
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_nav_buttons_widget import (
     ThumbnailBoxNavButtonsWidget,
 )
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label import (
@@ -50,7 +50,6 @@ class ThumbnailBox(QWidget):
         layout.setSpacing(0)
         layout.addWidget(self.word_label)
         layout.addWidget(self.image_label)
-        layout.addWidget(self.variation_number_label)
         layout.addWidget(self.nav_buttons_widget)
         layout.addStretch()
         layout.setContentsMargins(self.margin, self.margin, self.margin, self.margin)
@@ -75,7 +74,6 @@ class ThumbnailBox(QWidget):
     def update_thumbnails(self, thumbnails=[]):
         self.state.update_thumbnails(thumbnails)
         self.nav_buttons_widget.state.thumbnails = thumbnails
-        self.image_label.thumbnail_box.state.thumbnails = thumbnails
 
         if self == self.browse_tab.sequence_viewer.current_thumbnail_box:
             self.browse_tab.sequence_viewer.update_thumbnails(self.state.thumbnails)

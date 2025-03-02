@@ -7,7 +7,7 @@ if TYPE_CHECKING:
         SequenceWorkbench,
     )
 
-from .labels.difficulty_label import DifficultyLabel
+from .labels.workbench_difficulty_label import WorkbenchDifficultyLabel
 from .labels.current_word_label import CurrentWordLabel
 
 

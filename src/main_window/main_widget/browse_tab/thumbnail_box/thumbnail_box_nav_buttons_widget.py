@@ -1,8 +1,14 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QPushButton, QWidget, QHBoxLayout
+from PyQt6.QtWidgets import QPushButton, QWidget, QHBoxLayout, QLabel
 from PyQt6.QtCore import Qt
 
+from main_window.main_widget.browse_tab.sequence_viewer import (
+    sequence_viewer_nav_button,
+)
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_nav_button import (
+    ThumbnailBoxNavButton,
+)
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import (
@@ -17,29 +23,36 @@ class ThumbnailBoxNavButtonsWidget(QWidget):
         self.state = thumbnail_box.state
         self.thumbnail_label = thumbnail_box.image_label
         self.variation_number_label = thumbnail_box.variation_number_label
+
         self._setup_layout()
-        self._setup_buttons()
+
         self.has_multiple_thumbnails = len(self.state.thumbnails) > 1
         if not self.has_multiple_thumbnails:
             self.hide()
 
-    def _setup_buttons(self):
-        button_texts = ["<", ">"]
-        for text in button_texts:
-            button = NavButton(text, self)
-            self.layout.addWidget(button)
-
     def _setup_layout(self):
-        self.layout: QHBoxLayout = QHBoxLayout()
-        self.setLayout(self.layout)
+        layout = QHBoxLayout(self)
+        layout.setSpacing(10)  # Moderate spacing
+        layout.setContentsMargins(5, 0, 5, 0)
+
+        self.left_button = ThumbnailBoxNavButton("⮜", self)
+        self.right_button = ThumbnailBoxNavButton("⮞", self)
+
+        layout.addStretch(1)
+        layout.addWidget(self.left_button)
+        layout.addWidget(self.variation_number_label)  # Centered label
+        layout.addWidget(self.right_button)
+        layout.addStretch(1)
+
+        self.setLayout(layout)
 
     def handle_button_click(self):
         sender: QPushButton = self.sender()
-        if sender.text() == "<":
+        if sender.text() in ("⮜", "←"):
             self.state.current_index = (self.state.current_index - 1) % len(
                 self.state.thumbnails
             )
-        elif sender.text() == ">":
+        else:
             self.state.current_index = (self.state.current_index + 1) % len(
                 self.state.thumbnails
             )
@@ -58,17 +71,22 @@ class ThumbnailBoxNavButtonsWidget(QWidget):
         self.thumbnail_label.update_thumbnail(index)
         self.variation_number_label.update_index(index)
 
-    def _setup_buttons(self):
-        self.left_button = NavButton("<", self)
-        self.right_button = NavButton(">", self)
-        self.layout.addWidget(self.left_button)
-        self.layout.addWidget(self.right_button)
+    def refresh(self):
+        self.update_thumbnail(self.state.current_index)
+        if len(self.state.thumbnails) == 1:
+            self.hide()
+        else:
+            self.show()
 
+    def resizeEvent(self, event):
+        button_size = self.thumbnail_box.main_widget.height() // 30  # Smaller height
+        for btn in (self.left_button, self.right_button):
+            font = btn.font()
+            font_size = min(
+                button_size - 4, self.thumbnail_box.main_widget.width() // 90
+            )
+            font.setPointSize(font_size)
+            btn.setFont(font)
+            btn.setFixedSize(int(button_size * 1.5), int(button_size))  # Wider buttons
 
-class NavButton(QPushButton):
-    def __init__(self, text: str, parent: ThumbnailBoxNavButtonsWidget):
-        super().__init__(text, parent)
-        self.clicked.connect(parent.handle_button_click)
-        self.setStyleSheet("background-color: white;")
-        self.setFont(QFont("Georgia", 16, QFont.Weight.Bold))
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        super().resizeEvent(event)
