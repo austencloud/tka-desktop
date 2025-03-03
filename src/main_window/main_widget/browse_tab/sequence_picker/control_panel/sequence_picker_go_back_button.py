@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
-
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtGui import QFontMetrics
 from main_window.main_widget.tab_indices import LeftStackIndex
 from styles.base_styled_button import BaseStyledButton
 
@@ -32,6 +33,16 @@ class SequencePickerGoBackButton(BaseStyledButton):
         """Handle resizing to update styles dynamically."""
         self._border_radius = min(self.height(), self.width()) // 2
         self.update_appearance()
-        self.setFixedWidth(int(self.sequence_picker.control_panel.width() // 10))
-        self.setFixedHeight(int(self.sequence_picker.height() // 16))
+        self.setFixedWidth(int(self.sequence_picker.main_widget.width() // 18))
+        self.setFixedHeight(int(self.sequence_picker.main_widget.height() // 16))
+
+        # Set the font size programmatically according to the button width
+        font = self.font()
+        font_size = QFontMetrics(font).horizontalAdvance(self.text()) // len(
+            self.text()
+        )
+        # Increase the font size by a factor to make it larger
+        font.setPointSize(int(font_size * 3))
+        self.setFont(font)
+
         super().resizeEvent(event)

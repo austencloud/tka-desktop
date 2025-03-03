@@ -1,3 +1,4 @@
+from PyQt6.QtGui import QFontMetrics
 from PyQt6.QtWidgets import QPushButton, QLabel
 from PyQt6.QtCore import Qt, QPoint
 from typing import TYPE_CHECKING
@@ -26,7 +27,9 @@ class NavSidebarManager:
         self.selected_button: QPushButton | None = None
 
     def update_sidebar(self, sections, sort_order: str):
+        """Update sidebar sections and determine max button width."""
         self.clear_sidebar()
+
         if sort_order == "sequence_length":
             section_obj = SidebarLengthSection(self)
         elif sort_order == "alphabetical":
@@ -37,20 +40,43 @@ class NavSidebarManager:
             section_obj = SidebarLevelSection(self)
         else:
             section_obj = SidebarGenericSection(self)
+
         section_obj.create_widgets(sections)
         self.current_section_obj = section_obj
+
+        # Pass sidebar width for accurate font measurement
+        SidebarButton.calculate_max_width(self.buttons, self.sidebar.width())
+        self.apply_button_widths()
+
         self.set_button_styles()
         self.sidebar.resize_sidebar()
 
+    def apply_button_widths(self):
+        """Apply uniform width to all sidebar buttons."""
+        for button in self.buttons:
+            button.setFixedWidth(SidebarButton._max_button_width)
+
+    def resize_sidebar(self):
+        """Handle sidebar resizing and reapply button widths."""
+        if self.sequence_picker and self.sequence_picker.main_widget:
+            fraction = 1 / 14.0
+            new_width = int(self.sequence_picker.main_widget.width() * fraction)
+            self.sidebar.setFixedWidth(new_width)
+
+        SidebarButton.calculate_max_width(self.buttons)
+        self.apply_button_widths()
+
     def clear_sidebar(self):
+        """Clear all sidebar widgets and reset buttons."""
         if self.current_section_obj:
             self.current_section_obj.clear()
             self.current_section_obj = None
-        # find and remove all stretches in the layout
+
         for i in reversed(range(self.layout.count())):
             item = self.layout.itemAt(i)
             if item and item.widget() is None:
                 self.layout.removeItem(item)
+
         self.buttons.clear()
         self.selected_button = None
 
@@ -60,9 +86,33 @@ class NavSidebarManager:
         button.setEnabled(enabled)
 
     def set_button_styles(self):
+        """Apply styles to all buttons."""
         for button in self.buttons:
             selected = button == self.selected_button
             self.style_button(button, selected=selected)
+
+    def scroll_to_section(self, section: str, button: QPushButton):
+        """Scroll sidebar to the corresponding section."""
+        if self.selected_button:
+            self.style_button(self.selected_button, selected=False)
+
+        self.selected_button = button
+        self.style_button(button, selected=True)
+
+        sort_method = self.settings_manager.browse_settings.get_sort_method()
+        if sort_method == "level":
+            section = f"Level {section}"
+        elif sort_method == "date_added":
+            parts = section.split("-")
+            section = f"{int(parts[0])}-{int(parts[1])}"
+
+        header = self.sequence_picker.scroll_widget.section_headers.get(section)
+        if header:
+            scroll_area = self.sequence_picker.scroll_widget.scroll_area
+            header_global_pos = header.mapToGlobal(QPoint(0, 0))
+            content_widget_pos = scroll_area.widget().mapFromGlobal(header_global_pos)
+            vertical_pos = content_widget_pos.y()
+            scroll_area.verticalScrollBar().setValue(vertical_pos)
 
     def style_header_label(self, label: QLabel):
         font_color = self.sequence_picker.main_widget.font_color_updater.get_font_color(
@@ -90,22 +140,3 @@ class NavSidebarManager:
             font_size -= 1
             label_font.setPointSize(font_size)
             label.setFont(label_font)
-
-    def scroll_to_section(self, section: str, button: QPushButton):
-        if self.selected_button:
-            self.style_button(self.selected_button, selected=False)
-        self.selected_button = button
-        self.style_button(button, selected=True)
-        sort_method = self.settings_manager.browse_settings.get_sort_method()
-        if sort_method == "level":
-            section = f"Level {section}"
-        elif sort_method == "date_added":
-            parts = section.split("-")
-            section = f"{int(parts[0])}-{int(parts[1])}"
-        header = self.sequence_picker.scroll_widget.section_headers.get(section)
-        if header:
-            scroll_area = self.sequence_picker.scroll_widget.scroll_area
-            header_global_pos = header.mapToGlobal(QPoint(0, 0))
-            content_widget_pos = scroll_area.widget().mapFromGlobal(header_global_pos)
-            vertical_pos = content_widget_pos.y()
-            scroll_area.verticalScrollBar().setValue(vertical_pos)

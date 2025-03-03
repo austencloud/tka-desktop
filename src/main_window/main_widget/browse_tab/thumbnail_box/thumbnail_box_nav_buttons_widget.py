@@ -74,11 +74,11 @@ class ThumbnailBoxNavButtonsWidget(QWidget):
             self.show()
 
     def resizeEvent(self, event):
-        button_size = self.thumbnail_box.main_widget.height() // 30  # Smaller height
+        button_size = self.thumbnail_box.main_widget.height() // 35  # Smaller height
         for btn in (self.left_button, self.right_button):
             font = btn.font()
             font_size = min(
-                button_size - 4, self.thumbnail_box.main_widget.width() // 90
+                button_size - 4, self.thumbnail_box.main_widget.width() // 120
             )
             font.setPointSize(font_size)
             btn.setFont(font)

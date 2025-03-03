@@ -15,6 +15,7 @@ class SequencePickerNavSidebar(QWidget):
         self.settings_manager = AppContext.settings_manager()
         self.scroll_content = QWidget()
         self.layout: QVBoxLayout = QVBoxLayout(self.scroll_content)
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.manager = NavSidebarManager(self)
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setContentsMargins(0, 0, 0, 0)

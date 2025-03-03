@@ -4,7 +4,6 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtCore import pyqtSignal
 
 from main_window.main_widget.tab_index import TAB_INDEX
-from main_window.main_widget.tab_name import TabName
 from styles.base_styled_button import BaseStyledButton
 
 
