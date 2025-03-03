@@ -4,7 +4,6 @@ import os
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import (
     QVBoxLayout,
-    QPushButton,
     QLabel,
     QGridLayout,
     QSpacerItem,
@@ -14,10 +13,13 @@ from PyQt6.QtCore import Qt
 from functools import partial
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
+from styles.base_styled_button import BaseStyledButton
 from utils.path_helpers import get_data_path
 
 from .filter_section_base import FilterSectionBase
-from settings_manager.global_settings.app_context import AppContext  # to get data_manager
+from settings_manager.global_settings.app_context import (
+    AppContext,
+)  # to get data_manager
 
 if TYPE_CHECKING:
     from .sequence_picker_filter_stack import SequencePickerFilterStack
@@ -29,7 +31,7 @@ class AuthorSection(FilterSectionBase):
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
         super().__init__(initial_selection_widget, "Select by Author:")
         self.main_widget = initial_selection_widget.browse_tab.main_widget
-        self.buttons: dict[str, QPushButton] = {}
+        self.buttons: dict[str, BaseStyledButton] = {}
         self.tally_labels: dict[str, QLabel] = {}
         self.sequence_counts: dict[str, int] = {}
         self.add_buttons()
@@ -76,12 +78,14 @@ class AuthorSection(FilterSectionBase):
         btn = self._create_author_button(author)
         label = self._create_sequence_count_label(author)
         vbox.addWidget(btn)
-        vbox.addItem(QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed))
+        vbox.addItem(
+            QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        )
         vbox.addWidget(label)
         return vbox
 
-    def _create_author_button(self, author: str) -> QPushButton:
-        btn = QPushButton(author)
+    def _create_author_button(self, author: str) -> BaseStyledButton:
+        btn = BaseStyledButton(author)
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
         btn.clicked.connect(partial(self.handle_author_click, author))
         self.buttons[author] = btn
@@ -101,7 +105,6 @@ class AuthorSection(FilterSectionBase):
 
     # The rest is mostly the same, except we have no _get_all_sequences_with_authors,
     # no repeated dictionary_dir scanning, etc.
-
 
     def _get_all_sequences_with_authors(self) -> list[tuple[str, list[str], str]]:
         """Retrieve and cache all sequences along with their authors."""

@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QVBoxLayout, QPushButton, QLabel, QGridLayout, QWidget
+from PyQt6.QtWidgets import QVBoxLayout, QLabel, QGridLayout, QWidget
 from PyQt6.QtCore import Qt
+
+from styles.base_styled_button import BaseStyledButton
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
@@ -12,7 +14,7 @@ class SequenceLengthSection(FilterSectionBase):
 
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
         super().__init__(initial_selection_widget, "Select by Sequence Length:")
-        self.buttons: dict[int, QPushButton] = {}
+        self.buttons: dict[int, BaseStyledButton] = {}
         self.sequence_tally_labels: dict[int, QLabel] = {}
         self.spacer_labels: list[QLabel] = []
         self.grid_layout = QGridLayout()
@@ -66,9 +68,9 @@ class SequenceLengthSection(FilterSectionBase):
         layout.addLayout(self.grid_layout)
         layout.addStretch(1)
 
-    def create_length_button(self, length: int) -> QPushButton:
-        """Create and configure a QPushButton for a given sequence length."""
-        button = QPushButton(str(length))
+    def create_length_button(self, length: int) -> BaseStyledButton:
+        """Create and configure a BaseStyledButton for a given sequence length."""
+        button = BaseStyledButton(str(length))
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.buttons[length] = button
         button.clicked.connect(

@@ -3,7 +3,6 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import (
     QVBoxLayout,
-    QPushButton,
     QLabel,
     QGridLayout,
     QSpacerItem,
@@ -18,6 +17,7 @@ import os
 
 from data.constants import GRID_MODE
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
+from styles.base_styled_button import BaseStyledButton
 from utils.path_helpers import get_data_path, get_image_path
 from .filter_section_base import FilterSectionBase
 
@@ -34,7 +34,7 @@ class GridModeSection(FilterSectionBase):
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
         super().__init__(initial_selection_widget, "Select by Grid Mode:")
         self.main_widget = initial_selection_widget.browse_tab.main_widget
-        self.buttons: dict[str, QPushButton] = {}
+        self.buttons: dict[str, BaseStyledButton] = {}
         self.description_labels: dict[str, QLabel] = {}
         self.grid_mode_images: dict[str, QLabel] = {}
         self.original_pixmaps: dict[str, QPixmap] = {}
@@ -89,9 +89,9 @@ class GridModeSection(FilterSectionBase):
         self.spacers[grid_mode] = spacer
         return spacer
 
-    def create_grid_mode_button(self, grid_mode: str) -> QPushButton:
+    def create_grid_mode_button(self, grid_mode: str) -> BaseStyledButton:
         """Create and configure the grid mode selection button."""
-        button = QPushButton(grid_mode)
+        button = BaseStyledButton(grid_mode)
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         button.clicked.connect(partial(self.handle_grid_mode_click, grid_mode.lower()))
         self.buttons[grid_mode] = button

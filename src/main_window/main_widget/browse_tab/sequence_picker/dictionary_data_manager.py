@@ -91,11 +91,13 @@ class DictionaryDataManager:
                 info = im.info
                 metadata_json = info.get("metadata")
                 if metadata_json:
-                    raw = json.loads(metadata_json)
+                    metadata: dict = json.loads(metadata_json)
+                    raw = metadata.get("sequence", {})[0]
                     # e.g. raw = {"author": "Bob", "level": 2, "date_added": "2023-12-01T10:00:00", ...}
                     meta_dict["author"] = raw.get("author")
                     meta_dict["grid_mode"] = raw.get("grid_mode")
                     meta_dict["level"] = raw.get("level")
+                    meta_dict["is_favorite"] = raw.get("is_favorite")
 
                     date_str = raw.get("date_added")
                     if date_str:
@@ -103,7 +105,30 @@ class DictionaryDataManager:
                             meta_dict["date_added"] = datetime.fromisoformat(date_str)
                         except ValueError:
                             meta_dict["date_added"] = None
-                    # etc.
+
+                    # Extract sequence details
+                    sequence = raw.get("sequence", [])
+                    if sequence:
+                        first_sequence = sequence[0]
+                        meta_dict["word"] = first_sequence.get("word")
+                        meta_dict["prop_type"] = first_sequence.get("prop_type")
+                        meta_dict["is_circular"] = first_sequence.get("is_circular")
+                        meta_dict["is_permutable"] = first_sequence.get("is_permutable")
+                        meta_dict["is_strictly_rotational_permutation"] = (
+                            first_sequence.get("is_strictly_rotational_permutation")
+                        )
+                        meta_dict["is_strictly_mirrored_permutation"] = (
+                            first_sequence.get("is_strictly_mirrored_permutation")
+                        )
+                        meta_dict["is_strictly_colorswapped_permutation"] = (
+                            first_sequence.get("is_strictly_colorswapped_permutation")
+                        )
+                        meta_dict["is_mirrored_color_swapped_permutation"] = (
+                            first_sequence.get("is_mirrored_color_swapped_permutation")
+                        )
+                        meta_dict["is_rotational_colorswapped_permutation"] = (
+                            first_sequence.get("is_rotational_colorswapped_permutation")
+                        )
         except FileNotFoundError:
             print(f"[WARNING] Thumbnail not found: {first_thumb}")
         except Exception as e:
@@ -153,11 +178,11 @@ class DictionaryDataManager:
     def get_all_words(self) -> list[str]:
         self.load_all_sequences()
         return [r.word for r in self._loaded_records]
-    
+
     def get_distinct_sequence_lengths(self) -> list[int]:
         self.load_all_sequences()
         return [len(r.word) for r in self._loaded_records]
-    
+
     def get_records_by_length(self, length: int) -> list[SequenceRecord]:
         self.load_all_sequences()
         return [r for r in self._loaded_records if len(r.word) == length]

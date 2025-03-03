@@ -3,7 +3,9 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt6.QtGui import QFont, QResizeEvent
 from PyQt6.QtCore import Qt
 
-from main_window.main_widget.browse_tab.sequence_picker.filter_stack.initial_filter_choice_widget.filter_button_group.filter_button import FilterButton
+from main_window.main_widget.browse_tab.sequence_picker.filter_stack.initial_filter_choice_widget.filter_button_group.filter_button import (
+    FilterButton,
+)
 
 if TYPE_CHECKING:
     from ..initial_filter_choice_widget import InitialFilterChoiceWidget
@@ -40,11 +42,11 @@ class FilterButtonGroup(QWidget):
 
         button_width = self.main_widget.width() // 7
         button_height = self.main_widget.height() // 10
-        border_radius = min(button_width, button_height) // 4
+        # border_radius = min(button_width, button_height) // 4
 
         self.button.setFixedSize(button_width, button_height)
         self.button.setFont(button_font)
-        self.button.set_rounded_button_style(border_radius)
+        # self.button.set_rounded_button_style(border_radius)
 
         font_size = self.main_widget.width() // 150
         color = self.settings_manager.global_settings.get_current_font_color()

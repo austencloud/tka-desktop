@@ -2,19 +2,21 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
-    QPushButton,
     QLabel,
     QWidget,
 )
 from PyQt6.QtCore import Qt
 
 from data.constants import LETTER
-from settings_manager.global_settings.app_context import AppContext  # to get data_manager
+from settings_manager.global_settings.app_context import AppContext
+from styles.base_styled_button import BaseStyledButton  # to get data_manager
 
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
-    from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import SequencePickerFilterStack
+    from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import (
+        SequencePickerFilterStack,
+    )
 
 
 class ContainsLettersSection(FilterSectionBase):
@@ -45,7 +47,7 @@ class ContainsLettersSection(FilterSectionBase):
         super().__init__(initial_selection_widget, "Select letters to be contained:")
         self.main_widget = initial_selection_widget.browse_tab.main_widget
         self.selected_letters: set[str] = set()
-        self.buttons: dict[str, QPushButton] = {}
+        self.buttons: dict[str, BaseStyledButton] = {}
         self.add_buttons()
 
     def add_buttons(self):
@@ -68,7 +70,7 @@ class ContainsLettersSection(FilterSectionBase):
         # Apply button
         apply_button_layout = QHBoxLayout()
         apply_button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.apply_button = QPushButton("Apply")
+        self.apply_button = BaseStyledButton("Apply")
         self.apply_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.apply_button.clicked.connect(self.apply_filter)
         apply_button_layout.addWidget(self.apply_button)
@@ -82,27 +84,28 @@ class ContainsLettersSection(FilterSectionBase):
                 button_row_layout = QHBoxLayout()
                 button_row_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 for letter in row_data:
-                    button = QPushButton(letter)
+                    button = BaseStyledButton(letter)
                     button.setCursor(Qt.CursorShape.PointingHandCursor)
                     button.setCheckable(True)
                     button.setProperty(LETTER, letter)
                     button.clicked.connect(self.update_letter_selection)
-                    self.update_button_style(button)  # Initialize style
+                    # self.update_button_style(button)  # Initialize style
                     self.buttons[letter] = button
                     button_row_layout.addWidget(button)
                 layout.addLayout(button_row_layout)
 
-    def update_button_style(self, button: QPushButton):
+        # def update_button_style(self, button: BaseStyledButton):
         """Update the button style based on its state."""
         if button.isChecked():
-            button.setStyleSheet(self.SELECTED_STYLE)
+            button.setEnabled(True)
         else:
-            button.setStyleSheet(self.UNSELECTED_STYLE)
+            button.setEnabled(False)
 
     def update_letter_selection(self):
         """Update the selected letters and the sequence tally."""
         for button in self.buttons.values():
-            self.update_button_style(button)
+            button.update_appearance()
+            button.set_selected(button.isChecked())
 
         self.selected_letters = {
             button.property(LETTER)
