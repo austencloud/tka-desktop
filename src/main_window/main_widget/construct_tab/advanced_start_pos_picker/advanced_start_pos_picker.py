@@ -1,4 +1,5 @@
 from copy import deepcopy
+from functools import partial
 from PyQt6.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout
 from typing import Callable, List, TYPE_CHECKING
 from base_widgets.pictograph.pictograph import Pictograph
@@ -106,9 +107,7 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
             for pictograph in pictographs:
                 self.all_variations[grid_mode].append(pictograph)
                 view = pictograph.elements.view
-                view.mousePressEvent = (
-                    lambda event, v=pictograph: self.on_variation_selected(v)
-                )
+                view.mousePressEvent = partial(self.on_variation_selected, pictograph)
                 view.update_borders()
 
     def on_variation_selected(self, variation: Pictograph) -> None:

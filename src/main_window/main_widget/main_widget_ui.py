@@ -45,8 +45,6 @@ class MainWidgetUI:
 
         mw.sequence_workbench = SequenceWorkbench(mw)
         mw.settings_dialog = SettingsDialog(mw)
-        settings_manager = AppContext.settings_manager()
-        json_manager = AppContext.json_manager()
 
         mw.left_stack = QStackedWidget()
         mw.right_stack = QStackedWidget()
@@ -61,8 +59,6 @@ class MainWidgetUI:
         AppContext.set_sequence_beat_frame(mw.sequence_workbench.sequence_beat_frame)
 
         mw.construct_tab = ConstructTab(
-            settings_manager=settings_manager,
-            json_manager=json_manager,
             beat_frame=mw.sequence_workbench.sequence_beat_frame,
             pictograph_dataset=mw.pictograph_dataset,
             size_provider=lambda: mw.size(),

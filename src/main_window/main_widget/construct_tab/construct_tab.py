@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QFrame, QVBoxLayout
 from PyQt6.QtCore import pyqtSignal, QSize
 from typing import TYPE_CHECKING, Callable
 
+from base_widgets.base_beat_frame import AppContext
 from enums.enums import Letter
 from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
@@ -29,8 +30,6 @@ class ConstructTab(QFrame):
 
     def __init__(
         self,
-        settings_manager: "SettingsManager",
-        json_manager: "JsonManager",
         beat_frame: "SequenceBeatFrame",
         pictograph_dataset: dict,
         size_provider: Callable[[], QSize],
@@ -39,8 +38,8 @@ class ConstructTab(QFrame):
     ) -> None:
         super().__init__()
 
-        self.settings_manager = settings_manager
-        self.json_manager = json_manager
+        self.settings_manager = AppContext.settings_manager()
+        self.json_manager = AppContext.json_manager()
         self.beat_frame = beat_frame
         self.pictograph_dataset = pictograph_dataset
         self.mw_size_provider = size_provider
@@ -53,10 +52,11 @@ class ConstructTab(QFrame):
             letter: {} for letter in Letter
         }
 
+        # In ConstructTab:
         self.add_to_sequence_manager = AddToSequenceManager(
             json_manager=self.json_manager,
             beat_frame=self.beat_frame,
-            last_beat=self.last_beat,
+            last_beat=lambda: self.last_beat,  # Use a getter function
         )
 
         self.option_picker = OptionPicker(
@@ -76,12 +76,6 @@ class ConstructTab(QFrame):
         self.advanced_start_pos_picker = AdvancedStartPosPicker(
             self.pictograph_dataset, self.beat_frame, self.mw_size_provider
         )
-
-        self._setup_layout()
-
-    def _setup_layout(self):
-        layout = QVBoxLayout(self)
-        self.setLayout(layout)
 
     def transition_to_option_picker(self):
         """Transition to the option picker view."""

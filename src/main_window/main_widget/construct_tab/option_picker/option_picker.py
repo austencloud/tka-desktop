@@ -49,5 +49,7 @@ class OptionPicker(QWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        for option in self.option_pool:
-            option.elements.view.resize_option_view()
+        for section in self.option_scroll.sections.values():
+            for pictograph in section.pictographs.values():
+                if pictograph.elements.view.isVisible():
+                    pictograph.elements.view.resize_option_view()

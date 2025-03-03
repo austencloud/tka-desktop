@@ -28,6 +28,9 @@ if TYPE_CHECKING:
         SequenceBeatFrame,
     )
 
+# Define start position keys at the top
+DIAMOND_START_POS_KEYS = ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"]
+BOX_START_POS_KEYS = ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
 
 class StartPosPicker(BaseStartPosPicker):
     SPACING = 10
@@ -85,11 +88,7 @@ class StartPosPicker(BaseStartPosPicker):
         """Load only the start positions relevant to the current grid mode."""
         self.pictograph_frame.clear_pictographs()
         grid_mode = DIAMOND
-        start_pos_keys = (
-            ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"]
-            if grid_mode == DIAMOND
-            else ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
-        )
+        start_pos_keys = DIAMOND_START_POS_KEYS if grid_mode == DIAMOND else BOX_START_POS_KEYS
         if grid_mode == BOX:
             self.get_box_pictographs()
             for position_key in start_pos_keys:
@@ -141,7 +140,7 @@ class StartPosPicker(BaseStartPosPicker):
 
     def get_start_pos_pictograph(self, start_pos_data) -> "Pictograph":
         if not start_pos_data:
-            return None
+            raise ValueError("start_pos_data cannot be None")
         start_pos_key = start_pos_data[END_POS]
         letter_str = self.start_pos_key_to_letter(start_pos_key)
         letter = Letter(letter_str)
