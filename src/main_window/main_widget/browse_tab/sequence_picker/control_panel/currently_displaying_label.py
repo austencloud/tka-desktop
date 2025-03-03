@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from .sequence_picker import SequencePicker
+    from ..sequence_picker import SequencePicker
 
 
 class CurrentlyDisplayingLabel(QLabel):

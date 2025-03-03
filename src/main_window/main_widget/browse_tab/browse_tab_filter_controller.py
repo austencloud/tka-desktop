@@ -6,17 +6,13 @@ from PyQt6.QtWidgets import QApplication
 
 from data.constants import GRID_MODE
 from main_window.main_widget.tab_indices import LeftStackIndex
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
 
 
 class BrowseTabFilterController:
-    """Handles all 'apply filter' operations for the BrowseTab.
-
-    Splits logic between simple (string) filters and dictionary-based (complex) filters.
-    """
-
     def __init__(self, browse_tab: "BrowseTab"):
         self.browse_tab = browse_tab
         self.filter_manager = browse_tab.filter_manager
@@ -24,42 +20,31 @@ class BrowseTabFilterController:
         self.fade_manager = browse_tab.main_widget.fade_manager
         self.metadata_extractor = browse_tab.metadata_extractor
 
-    # -------------------------------------------------------------------------
-    # Public Method
-    # -------------------------------------------------------------------------
-
     def apply_filter(self, filter_criteria: Union[str, dict]):
-        """Fade out certain widgets, run the filtering logic, then update UI."""
-        # get the current tab name from the settings
         tab_name = (
             self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
         )
-
         description = self._get_filter_description(filter_criteria)
         self.browse_tab.browse_settings.set_current_filter(filter_criteria)
-
         widgets_to_fade = [
             self.browse_tab.sequence_picker.filter_stack,
             self.browse_tab.sequence_picker,
         ]
-
-        # if the tab name is browse, fade. If not, jsut apply the filter
         if tab_name == "browse":
             self.fade_manager.widget_fader.fade_and_update(
                 widgets_to_fade,
-                lambda: self._apply_filter_after_fade(filter_criteria, description),
+                (
+                    lambda: self._apply_filter_after_fade(filter_criteria, description),
+                    lambda: self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom(),
+                ),
             )
+
         else:
             self._apply_filter_after_fade(filter_criteria, description)
+            self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
 
-    # -------------------------------------------------------------------------
-    # Internals
-    # -------------------------------------------------------------------------
     def _apply_filter_after_fade(self, filter_criteria, description: str):
-        """UI + filter pipeline after fade is done."""
-        self._prepare_ui_for_filtering(description)  # sets wait cursor, etc.
-
-        # Step 1: compute the results
+        self._prepare_ui_for_filtering(description)
         if isinstance(filter_criteria, str):
             results = self._handle_string_filter(filter_criteria)
         elif isinstance(filter_criteria, dict):
@@ -68,12 +53,12 @@ class BrowseTabFilterController:
             raise ValueError(
                 f"Invalid filter type: {type(filter_criteria)} (must be str or dict)."
             )
-
-        # Step 2: update the main widget state
         self.browse_tab.sequence_picker.currently_displayed_sequences = results
-
-        # Step 3: re-render the UI
-        self.ui_updater.update_and_display_ui(len(results))
+        if not self.browse_tab.sequence_picker.initialized:
+            skip_scaling = False
+        else:
+            skip_scaling = True
+        self.ui_updater.update_and_display_ui(len(results), skip_scaling)
         if (
             self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
             == "browse"
@@ -84,24 +69,16 @@ class BrowseTabFilterController:
         self.browse_tab.browse_settings.set_browse_left_stack_index(
             LeftStackIndex.SEQUENCE_PICKER.value
         )
-        QTimer.singleShot(0, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom)
 
     def _prepare_ui_for_filtering(self, description: str):
-        """Sets up the UI to reflect that a filter is being applied (cursor, labels, etc.)."""
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-
         control_panel = self.browse_tab.sequence_picker.control_panel
         control_panel.currently_displaying_label.setText(f"Displaying {description}")
         control_panel.count_label.setText("")
         self.browse_tab.sequence_picker.scroll_widget.clear_layout()
 
-    # -------------------------------------------------------------------------
-    # Filter Logic
-    # -------------------------------------------------------------------------
     def _handle_string_filter(self, filter_name: str):
-        """Run a known string-based filter using the FilterManager."""
         fm = self.filter_manager
-
         if filter_name == "favorites":
             return fm.filter_favorites()
         elif filter_name == "all":
@@ -115,14 +92,11 @@ class BrowseTabFilterController:
             raise ValueError(f"Unknown string filter: {filter_name}")
 
     def _handle_dict_filter(self, criteria: dict):
-        """Dispatch to a submethod based on the single filter_key in 'criteria'."""
         if len(criteria) != 1:
             raise ValueError(
                 "Dictionary filter must contain exactly one key-value pair."
             )
         (filter_key, filter_value) = next(iter(criteria.items()))
-
-        # Instead of a big chain, let's dispatch to a dictionary of submethods
         dispatch_map = {
             "starting_letter": self._dict_filter_starting_letter,
             "contains_letters": self._dict_filter_contains_letters,
@@ -132,19 +106,14 @@ class BrowseTabFilterController:
             "starting_position": self._dict_filter_starting_pos,
             "favorites": self._dict_filter_favorites,
             "most_recent": self._dict_filter_most_recent,
-            "level": self._dict_filter_difficulty,  # ✅ Added new filter
+            "difficulty": self._dict_filter_difficulty,
             "grid_mode": self._dict_filter_grid_mode,
             "show_all": self._dict_filter_show_all,
         }
-
         if filter_key not in dispatch_map:
             raise ValueError(f"Unknown dictionary filter key: {filter_key}")
-
         return dispatch_map[filter_key](filter_value)
 
-    # -------------------------------------------------------------------------
-    # Dictionary Sub-Filters (each one is small + readable)
-    # -------------------------------------------------------------------------
     def _dict_filter_starting_letter(self, letter):
         base_words = self._base_words()
         fm = self.filter_manager
@@ -181,12 +150,20 @@ class BrowseTabFilterController:
 
     def _dict_filter_level(self, level_value):
         base_words = self._base_words()
-        fm = self.filter_manager
-        return [
-            (w, t, fm._get_sequence_length(t[0]))
-            for w, t in base_words
-            if self.metadata_extractor.get_level(t[0]) == level_value
-        ]
+        filter_manager = self.filter_manager
+
+        results = []
+        for word, thumbs in base_words:
+            # If thumbs is empty or None, skip it
+            if not thumbs:
+                continue
+
+            # Otherwise, safe to do thumbs[0]
+            if self.metadata_extractor.get_level(thumbs[0]) == level_value:
+                seq_length = filter_manager._get_sequence_length(thumbs[0])
+                results.append((word, thumbs, seq_length))
+
+        return results
 
     def _dict_filter_author(self, author_value):
         base_words = self._base_words()
@@ -207,11 +184,9 @@ class BrowseTabFilterController:
         return result
 
     def _dict_filter_favorites(self, _unused):
-        # This is effectively the same as "fm.filter_favorites()", so let's just do that:
         return self.filter_manager.filter_favorites()
 
     def _dict_filter_most_recent(self, _unused):
-        # Same approach, no param needed
         return self.filter_manager.filter_most_recent()
 
     def _dict_filter_grid_mode(self, grid_mode_value):
@@ -226,21 +201,16 @@ class BrowseTabFilterController:
     def _dict_filter_show_all(self, _unused):
         return self.filter_manager.filter_all_sequences()
 
-    # -------------------------------------------------------------------------
-    # Helpers
-    # -------------------------------------------------------------------------
     def _base_words(self):
-        """Just a convenience function so we don't keep repeating ourselves."""
-        from utils.path_helpers import get_data_path
+        dictionary_dir = get_data_path("generated_data\\dictionary")
+        all_words = self.browse_tab.get.base_words(dictionary_dir)
+        base_words = []
+        for w, thumbs in all_words:
+            if thumbs:  # only store if thumbs is non-empty
+                base_words.append((w, thumbs))
+        return base_words
 
-        dictionary_dir = get_data_path("generated_data\dictionary")
-        return self.browse_tab.get.base_words(dictionary_dir)
-
-    # -------------------------------------------------------------------------
-    # Description Helpers
-    # -------------------------------------------------------------------------
     def _get_filter_description(self, filter_criteria: Union[str, dict]) -> str:
-        """Generates a user-friendly description for the filter being applied."""
         if isinstance(filter_criteria, str):
             if filter_criteria == "all":
                 return "all sequences"
@@ -248,16 +218,12 @@ class BrowseTabFilterController:
                 tag_name = filter_criteria.split("tag:")[1].strip()
                 return f"sequences with tag '{tag_name}'"
             return filter_criteria.replace("_", " ").capitalize()
-
-        # It's a dictionary
         return self._description_for_dict_filter(filter_criteria)
 
     def _description_for_dict_filter(self, filter_criteria: dict) -> str:
-        """Helper for describing dictionary-based filters."""
         if len(filter_criteria) != 1:
             return "Unknown Filter"
         key, value = list(filter_criteria.items())[0]
-
         desc_map = {
             "starting_letter": f"sequences starting with {value}",
             "contains_letters": f"sequences containing {value}",

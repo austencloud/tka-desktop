@@ -64,7 +64,6 @@ class ThumbnailImageLabel(QLabel):
 
         self.pixmap = scaled_pm  # Store scaled pixmap
         self.setPixmap(scaled_pm)
-        QApplication.processEvents()
 
     def _get_target_width(self, sequence_length):
         if sequence_length == 1:

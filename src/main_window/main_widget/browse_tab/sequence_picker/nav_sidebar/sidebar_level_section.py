@@ -1,8 +1,10 @@
-from PyQt6.QtWidgets import QPushButton, QLabel
+from PyQt6.QtWidgets import QLabel
 from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt
 
-from main_window.main_widget.browse_tab.sequence_picker.nav_sidebar.sidebar_button import SidebarButton
+from main_window.main_widget.browse_tab.sequence_picker.nav_sidebar.sidebar_button import (
+    SidebarButton,
+)
 
 
 from .base_sidebar_section import BaseSidebarSection
@@ -34,3 +36,4 @@ class SidebarLevelSection(BaseSidebarSection):
             self.manager.layout.addWidget(btn)
             self._widgets_created.append(btn)
             self.manager.buttons.append(btn)
+        self.manager.layout.addStretch(1)

@@ -18,19 +18,16 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
         self.sequence_picker = self.main_widget.browse_tab.sequence_picker
         self._update_filter_selector()
         self._update_control_panel()
-        # self._update_nav_sidebar()
         self._update_thumbnail_boxes()
 
     def _update_control_panel(self):
         control_panel = self.sequence_picker.control_panel
         control_panel_labels = [
-            control_panel.sort_widget.sort_by_label,
+            control_panel.sort_widget.sort_buttons_bar.sort_by_label,
             control_panel.currently_displaying_label,
             control_panel.count_label,
         ]
         self._apply_font_colors(control_panel_labels)
-        # control_panel.sort_widget.style_buttons()
-        # control_panel.sort_widget._style_sort_by_label()
 
     def _update_progress_bar(self):
         progress_bar = self.sequence_picker.progress_bar
@@ -40,10 +37,6 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
         ]
         self._apply_font_colors(progress_bar_labels)
 
-    def _update_nav_sidebar(self):
-        # Instead of explicitly referencing labels, 
-        # just tell the manager to re-apply font color:
-        self.main_widget.browse_tab.sequence_picker.nav_sidebar.manager.apply_font_color()
 
 
     def _update_thumbnail_boxes(self):

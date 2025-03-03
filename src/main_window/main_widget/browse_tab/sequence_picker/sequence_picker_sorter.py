@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox
-from main_window.main_window import QApplication
+from PyQt6.QtCore import QTimer
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.sequence_picker.sequence_picker import (
@@ -79,11 +79,11 @@ class SequencePickerSorter:
         self.sort_sequences(sort_key, sort_method)
         self.group_sequences_by_section(sort_method)
 
-    def _display_sorted_sections(self, skip_scaling: bool = False):
+    def display_sorted_sections(self, skip_scaling: bool = False):
         sort_method = (
             self.sequence_picker.control_panel.sort_widget.settings_manager.browse_settings.get_sort_method()
         )
-        sorted_sections = self.section_manager.get_sorted_sections(
+        sorted_sections = self.sequence_picker.section_manager.get_sorted_sections(
             sort_method, self.browse_tab.sequence_picker.sections.keys()
         )
         self.update_ui(sorted_sections, sort_method, skip_scaling=skip_scaling)
@@ -92,10 +92,9 @@ class SequencePickerSorter:
         self, sorted_sections: list[str], sort_method: str, skip_scaling: bool = False
     ):
         self.sequence_picker.nav_sidebar.update_sidebar(sorted_sections, sort_method)
-        self.sequence_picker.control_panel.sort_widget.highlight_appropriate_button(
+        self.sequence_picker.control_panel.sort_widget.sort_buttons_bar.highlight_button(
             sort_method
         )
-        QApplication.processEvents()
         current_section = None
         row_index = 0
 
@@ -122,10 +121,21 @@ class SequencePickerSorter:
                 column_index = (column_index + 1) % self.num_columns
                 if column_index == 0:
                     row_index += 1
+        if not self.sequence_picker.initialized:
+            selected_seq = (
+                self.sequence_picker.browse_tab.browse_settings.get_selected_sequence()
+            )
+            if selected_seq:
+                word = selected_seq.get("word")
+                var_index = selected_seq.get("variation_index", 0)
+            self.sequence_picker.browse_tab.reopen_sequence(word, var_index)
+            self.sequence_picker.initialized = True
 
         self.sequence_picker.control_panel.count_label.setText(
             f"Number of words: {len(self.browse_tab.sequence_picker.currently_displayed_sequences)}"
         )
+        if not skip_scaling:
+            QTimer.singleShot(0, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom)
 
     def add_section_headers(
         self, row_index: int, section: str, sort_method: str, current_section: str
@@ -136,21 +146,29 @@ class SequencePickerSorter:
 
             if year != current_section:
                 row_index += 1
-                self.section_manager.add_header(row_index, self.num_columns, year)
+                self.sequence_picker.section_manager.add_header(
+                    row_index, self.num_columns, year
+                )
                 row_index += 1
                 current_section = year
 
             row_index += 1
-            self.section_manager.add_header(row_index, self.num_columns, formatted_day)
+            self.sequence_picker.section_manager.add_header(
+                row_index, self.num_columns, formatted_day
+            )
             row_index += 1
         elif sort_method == "level":
             row_index += 1
             header_title = f"Level {section}"
-            self.section_manager.add_header(row_index, self.num_columns, header_title)
+            self.sequence_picker.section_manager.add_header(
+                row_index, self.num_columns, header_title
+            )
             row_index += 1
         else:
             row_index += 1
-            self.section_manager.add_header(row_index, self.num_columns, section)
+            self.sequence_picker.section_manager.add_header(
+                row_index, self.num_columns, section
+            )
             row_index += 1
         return row_index
 
@@ -176,10 +194,10 @@ class SequencePickerSorter:
 
         if not hidden:
             thumbnail_box.show()
-            if not skip_image:
-                thumbnail_box.image_label.update_thumbnail(
-                    thumbnail_box.state.current_index
-                )
+            # if not skip_image:
+            #     thumbnail_box.image_label.update_thumbnail(
+            #         thumbnail_box.state.current_index
+            #     )
 
     def reload_currently_displayed_filtered_sequences(self):
         sort_method = (

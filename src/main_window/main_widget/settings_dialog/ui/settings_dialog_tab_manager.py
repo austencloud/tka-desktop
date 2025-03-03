@@ -52,7 +52,7 @@ class SettingsDialogTabManager:
         elif isinstance(selected_tab, VisibilityTab):
             selected_tab.buttons_widget.update_visibility_buttons_from_settings()
         elif isinstance(selected_tab, BeatLayoutTab):
-            selected_tab.update_beat_layout_tab(selected_tab)
+            selected_tab.update_beat_layout_tab()
         elif isinstance(selected_tab, ImageExportTab):
             selected_tab.update_image_export_tab_from_settings()
 
