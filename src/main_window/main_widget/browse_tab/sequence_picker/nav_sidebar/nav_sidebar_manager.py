@@ -58,11 +58,6 @@ class NavSidebarManager:
 
     def resize_sidebar(self):
         """Handle sidebar resizing and reapply button widths."""
-        if self.sequence_picker and self.sequence_picker.main_widget:
-            fraction = 1 / 14.0
-            new_width = int(self.sequence_picker.main_widget.width() * fraction)
-            self.sidebar.setFixedWidth(new_width)
-
         SidebarButton.calculate_max_width(self.buttons)
         self.apply_button_widths()
 
