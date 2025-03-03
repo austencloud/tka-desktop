@@ -39,7 +39,7 @@ class BrowseTabFilterController:
         else:
             self._apply_filter_after_fade(filter_criteria, description)
 
-        # self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
+        QTimer.singleShot(0, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom)
 
     def _apply_filter_after_fade(self, filter_criteria, description: str):
         self._prepare_ui_for_filtering(description)
@@ -74,7 +74,6 @@ class BrowseTabFilterController:
         control_panel.currently_displaying_label.setText(f"Displaying {description}")
         control_panel.count_label.setText("")
         self.browse_tab.sequence_picker.scroll_widget.clear_layout()
-        # QApplication.processEvents()
 
     def _handle_string_filter(self, filter_name: str):
         fm = self.filter_manager

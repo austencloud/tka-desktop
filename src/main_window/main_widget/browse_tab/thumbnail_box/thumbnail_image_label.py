@@ -31,7 +31,6 @@ class ThumbnailImageLabel(QLabel):
         ):
             pixmap = QPixmap(self.thumbnail_box.state.thumbnails[index])
             self._set_pixmap_to_fit(pixmap)
-            QApplication.processEvents()
 
     def _set_pixmap_to_fit(self, pixmap: QPixmap):
         nav_bar = self.thumbnail_box.sequence_picker.nav_sidebar

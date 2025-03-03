@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox
 from main_window.main_window import QApplication
+from PyQt6.QtCore import QTimer
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.sequence_picker.sequence_picker import (
@@ -131,12 +132,17 @@ class SequencePickerSorter:
                 var_index = selected_seq.get("variation_index", 0)
             self.sequence_picker.browse_tab.reopen_sequence(word, var_index)
             self.sequence_picker.initialized = True
+            # QApplication.processEvents()
 
         self.sequence_picker.control_panel.count_label.setText(
             f"Number of words: {len(self.browse_tab.sequence_picker.currently_displayed_sequences)}"
         )
         if not skip_scaling:
-            self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
+
+            def resize_thumbnails():
+                self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
+
+            QTimer.singleShot(0, resize_thumbnails)
 
     def add_section_headers(
         self, row_index: int, section: str, sort_method: str, current_section: str
