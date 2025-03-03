@@ -134,8 +134,10 @@ class SequencePickerSorter:
         self.sequence_picker.control_panel.count_label.setText(
             f"Number of words: {len(self.browse_tab.sequence_picker.currently_displayed_sequences)}"
         )
-        if not skip_scaling:
-            QTimer.singleShot(0, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom)
+        # if not skip_scaling:
+        #     QTimer.singleShot(
+        #         0, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom
+        #     )
 
     def add_section_headers(
         self, row_index: int, section: str, sort_method: str, current_section: str

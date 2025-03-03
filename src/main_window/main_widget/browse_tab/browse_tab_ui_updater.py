@@ -31,7 +31,7 @@ class BrowseTabUIUpdater:
         self._apply_thumbnail_styling()
 
     def resize_thumbnails_top_to_bottom(self):
-
+        # QApplication.processEvents()
         sections_copy = dict(self.browse_tab.sequence_picker.sections)
         sort_method = self.settings_manager.browse_settings.get_sort_method()
         sorted_sections = (
@@ -54,6 +54,7 @@ class BrowseTabUIUpdater:
                 thumbnail_box.image_label.update_thumbnail(
                     thumbnail_box.state.current_index
                 )
+                QApplication.processEvents()
 
             if sort_method == "date_added":
                 month, day, _ = section.split("-")
@@ -62,7 +63,6 @@ class BrowseTabUIUpdater:
                 section = f"{month}-{day}"
 
             self._enable_button_for_section(section)
-            QApplication.processEvents()
 
     def _apply_thumbnail_styling(self):
         font_color = self.font_color_updater.get_font_color(
