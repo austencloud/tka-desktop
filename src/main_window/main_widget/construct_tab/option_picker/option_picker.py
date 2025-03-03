@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import pyqtSignal, QSize
 
 from base_widgets.pictograph.pictograph import Pictograph
-from main_window.main_widget.construct_tab.add_to_sequence_manager import (
+from main_window.main_widget.construct_tab.add_to_sequence_manager.add_to_sequence_manager import (
     AddToSequenceManager,
 )
 from main_window.main_widget.fade_manager.fade_manager import FadeManager

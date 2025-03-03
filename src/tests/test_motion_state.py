@@ -1,4 +1,4 @@
-from data.constants import PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR
+from data.constants import PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR, TURNS, END_LOC, BLUE, RED, PRO, ANTI, DASH
 from objects.motion.motion_state import MotionState
 
 

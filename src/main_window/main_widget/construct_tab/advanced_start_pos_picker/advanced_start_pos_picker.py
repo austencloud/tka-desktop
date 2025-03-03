@@ -97,9 +97,9 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
         self.all_variations: dict[str, List[Pictograph]] = {BOX: [], DIAMOND: []}
         for grid_mode in [BOX, DIAMOND]:
             pictographs = (
-                self.get_box_pictographs(advanced=True)
+                self.get_box_pictographs()
                 if grid_mode == BOX
-                else self.get_diamond_pictographs(advanced=True)
+                else self.get_diamond_pictographs()
             )
             pictographs.sort(
                 key=lambda p: (p.state.start_pos[:-1], int(p.state.start_pos[-1]))

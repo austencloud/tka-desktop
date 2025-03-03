@@ -1,17 +1,13 @@
 from PyQt6.QtWidgets import QGraphicsScene
 
-from base_widgets.pictograph.elements.pictograph_elements import PictographElements
-from base_widgets.pictograph.managers.getter.pictograph_getter import PictographGetter
-from base_widgets.pictograph.managers.pictograph_checker import PictographChecker
-from base_widgets.pictograph.managers.pictograph_data_copier import PictographDataCopier
-from base_widgets.pictograph.managers.pictograph_initializer import (
-    PictographInitializer,
-)
-from base_widgets.pictograph.managers.pictograph_managers import PictographManagers
-from base_widgets.pictograph.managers.updater.pictograph_updater import (
-    PictographUpdater,
-)
-from base_widgets.pictograph.state.pictograph_state import PictographState
+from .elements.pictograph_elements import PictographElements
+from .managers.getter.pictograph_getter import PictographGetter
+from .managers.pictograph_checker import PictographChecker
+from .managers.pictograph_data_copier import PictographDataCopier
+from .managers.pictograph_initializer import PictographInitializer
+from .managers.pictograph_managers import PictographManagers
+from .managers.updater.pictograph_updater import PictographUpdater
+from .state.pictograph_state import PictographState
 from placement_managers.arrow_placement_manager.arrow_placement_manager import (
     ArrowPlacementManager,
 )

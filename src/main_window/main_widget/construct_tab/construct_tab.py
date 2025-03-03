@@ -14,7 +14,7 @@ from settings_manager.settings_manager import SettingsManager
 
 from .start_pos_picker.start_pos_picker import StartPosPicker
 from .advanced_start_pos_picker.advanced_start_pos_picker import AdvancedStartPosPicker
-from .add_to_sequence_manager import AddToSequenceManager
+from .add_to_sequence_manager.add_to_sequence_manager import AddToSequenceManager
 from .option_picker.option_picker import OptionPicker
 
 if TYPE_CHECKING:

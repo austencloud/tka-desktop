@@ -25,7 +25,7 @@ class BaseStartPosPicker(QWidget):
         self.start_options: dict[str, Pictograph] = {}
 
     def create_pictograph_from_dict(
-        self, pictograph_data: dict, target_grid_mode: str, advanced: bool = False
+        self, pictograph_data: dict, target_grid_mode: str
     ) -> Pictograph:
         """
         Create a pictograph using the provided dictionary, setting a local grid_mode.
@@ -58,7 +58,7 @@ class BaseStartPosPicker(QWidget):
         end_pos = pictograph_data.get(END_POS, "no_end")
         return f"{letter}_{start_pos}_{end_pos}_{grid_mode}"
 
-    def get_box_pictographs(self, advanced: bool = False) -> list[Pictograph]:
+    def get_box_pictographs(self) -> list[Pictograph]:
         if self.box_pictographs:
             return self.box_pictographs
 
@@ -70,7 +70,7 @@ class BaseStartPosPicker(QWidget):
 
         return self.box_pictographs
 
-    def get_diamond_pictographs(self, advanced: bool = False) -> list[Pictograph]:
+    def get_diamond_pictographs(self) -> list[Pictograph]:
         if self.diamond_pictographs:
             return self.diamond_pictographs
 
