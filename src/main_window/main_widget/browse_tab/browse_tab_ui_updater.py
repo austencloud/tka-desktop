@@ -31,11 +31,11 @@ class BrowseTabUIUpdater:
         self._apply_thumbnail_styling()
 
     def resize_thumbnails_top_to_bottom(self):
-        current_window_width = self.browse_tab.sequence_picker.main_widget.width()
+        # current_window_width = self.browse_tab.sequence_picker.main_widget.width()
 
-        # Skip resize if width hasn't changed
-        if current_window_width == self._last_window_width:
-            return
+        # # Skip resize if width hasn't changed
+        # if current_window_width == self._last_window_width:
+        #     return
 
         sections_copy = dict(self.browse_tab.sequence_picker.sections)
         sort_method = self.settings_manager.browse_settings.get_sort_method()
@@ -72,7 +72,7 @@ class BrowseTabUIUpdater:
 
             self._enable_button_for_section(section)
 
-        self._last_window_width = current_window_width
+        # self._last_window_width = current_window_width
 
     def _apply_thumbnail_styling(self):
         font_color = self.font_color_updater.get_font_color(

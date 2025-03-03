@@ -43,7 +43,6 @@ class SortButtonsBar(QWidget):
             self.layout.addStretch(1)
 
         self.layout.addStretch(2)
-        self._apply_font_sizes()
 
     def highlight_button(self, identifier: str):
         """Update UI to show which button is selected."""

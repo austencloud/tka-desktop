@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Tuple
 from PyQt6.QtWidgets import (
     QVBoxLayout,
-    QPushButton,
     QLabel,
     QGridLayout,
     QSpacerItem,
@@ -12,6 +11,7 @@ from PyQt6.QtGui import QPixmap, QPainter, QPen
 import os
 from functools import partial
 
+from styles.base_styled_button import BaseStyledButton
 from utils.path_helpers import get_data_path, get_image_path
 from .filter_section_base import FilterSectionBase
 
@@ -31,7 +31,7 @@ class StartingPositionSection(FilterSectionBase):
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
         super().__init__(initial_selection_widget, "Select by Starting Position:")
         self.main_widget = initial_selection_widget.browse_tab.main_widget
-        self.buttons: dict[str, QPushButton] = {}
+        self.buttons: dict[str, BaseStyledButton] = {}
         self.description_labels: dict[str, QLabel] = {}
         self.position_images: dict[str, QLabel] = {}
         self.tally_labels: dict[str, QLabel] = {}
@@ -81,9 +81,9 @@ class StartingPositionSection(FilterSectionBase):
 
         return position_vbox
 
-    def create_position_button(self, position: str) -> QPushButton:
+    def create_position_button(self, position: str) -> BaseStyledButton:
         """Create and configure the position selection button."""
-        button = QPushButton(position)
+        button = BaseStyledButton(position)
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         button.clicked.connect(partial(self.handle_position_click, position))
         self.buttons[position] = button
