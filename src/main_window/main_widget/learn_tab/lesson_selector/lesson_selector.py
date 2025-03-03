@@ -8,13 +8,12 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from functools import partial
 
-from main_window.main_widget.learn_tab.lesson_selector.lesson_selector_button import LessonSelectorButton
+
 from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
     LessonWidget,
 )
-from main_window.main_widget.learn_tab.lesson_selector_button import (
-    LessonSelectorButton,
-)
+from styles.base_styled_button import BaseStyledButton
+
 
 from .lesson_mode_toggle_widget import LessonModeToggleWidget
 
@@ -31,7 +30,7 @@ class LessonSelector(QWidget):
         self.main_widget = learn_tab.main_widget
 
         # Store buttons and description labels for resizing
-        self.buttons: dict[str, LessonSelectorButton] = {}
+        self.buttons: dict[str, BaseStyledButton] = {}
         self.description_labels: dict[str, QLabel] = {}
 
         # Layout setup
@@ -81,7 +80,7 @@ class LessonSelector(QWidget):
         lesson_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Create the button
-        button = LessonSelectorButton(button_text)
+        button = BaseStyledButton(button_text)
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         button.clicked.connect(callback)
         self.buttons[button_text] = button
@@ -129,19 +128,18 @@ class LessonSelector(QWidget):
             label.setFont(font)
 
     def _resize_buttons(self):
+        """Manually resize each button based on parent size."""
         for button in self.buttons.values():
-            button_font_size = self.main_widget.width() // 80
-            button.setFixedSize(
-                self.main_widget.width() // 4, self.main_widget.height() // 10
-            )
+            button_width = self.main_widget.width() // 4
+            button_height = self.main_widget.height() // 10
+
+            button.setFixedSize(button_width, button_height)  # Manually set size
+            button.resize(button_width, button_height)  # Force resize event
+
             font = button.font()
             font.setFamily("Georgia")
-            font.setPointSize(button_font_size)
+            font.setPointSize(self.main_widget.width() // 80)
             button.setFont(font)
-            button_width = self.main_widget.width() // 7
-            button_height = self.main_widget.height() // 10
-            border_radius = min(button_width, button_height) // 4
-            button.set_rounded_button_style(border_radius)
 
     def _resize_descriptions(self):
         for description in self.description_labels.values():
@@ -152,7 +150,8 @@ class LessonSelector(QWidget):
 
     def start_lesson(self, lesson_number: int) -> None:
         lesson_widgets: list[LessonWidget] = [
-            self.learn_tab.lessons[lesson_type] for lesson_type in self.learn_tab.lessons
+            self.learn_tab.lessons[lesson_type]
+            for lesson_type in self.learn_tab.lessons
         ]
         lesson_widget = lesson_widgets[lesson_number - 1]
         lesson_widget_index = self.learn_tab.stack.indexOf(lesson_widget)

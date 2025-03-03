@@ -28,12 +28,12 @@ class SidebarLevelSection(BaseSidebarSection):
         self._widgets_created.append(spacer_line)
 
         for lvl in ["1", "2", "3"]:
-            btn = SidebarButton(lvl)
-            btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            btn.clicked.connect(
-                lambda _, lv=lvl, b=btn: self.manager.scroll_to_section(lv, b)
+            button = SidebarButton(lvl)
+            button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            button.clicked.connect(
+                lambda _, lv=lvl, b=button: self.manager.scroll_to_section(lv, b)
             )
-            self.manager.layout.addWidget(btn)
-            self._widgets_created.append(btn)
-            self.manager.buttons.append(btn)
+            self.add_centered_button(button)
+            self._widgets_created.append(button)
+            self.manager.buttons.append(button)
         self.manager.layout.addStretch(1)

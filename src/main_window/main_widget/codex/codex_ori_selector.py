@@ -6,7 +6,7 @@ import logging
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout, QComboBox, QVBoxLayout
 from PyQt6.QtCore import Qt
 
-from data.constants import BLUE_ATTRS, RED_ATTRS
+from data.constants import BLUE_ATTRS, RED_ATTRS, START_ORI, IN, CLOCK, OUT, COUNTER
 
 if TYPE_CHECKING:
     from .codex_control_widget import CodexControlWidget
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class CodexOriSelector(QWidget):
     """A widget containing a label and combo box for selecting Codex orientation/rotation modes."""
 
-    options = ["in", "clock", "out", "counter"]
+    options = [IN, CLOCK, OUT, COUNTER]
 
     def __init__(self, control_widget: "CodexControlWidget"):
         """Initializes the orientation selector widget with references from the control widget."""

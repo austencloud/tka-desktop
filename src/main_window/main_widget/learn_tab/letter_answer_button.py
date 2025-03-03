@@ -2,14 +2,16 @@ from typing import TYPE_CHECKING, Any, Callable
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import Qt
 
+from styles.base_styled_button import BaseStyledButton
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.lesson_widget.answers_widget import AnswersWidget
+    from main_window.main_widget.learn_tab.lesson_widget.answers_widget import (
+        AnswersWidget,
+    )
 
 
-
-class LetterAnswerButton(QPushButton):
+class LetterAnswerButton(BaseStyledButton):
     answer: Any
 
     def __init__(
@@ -19,7 +21,7 @@ class LetterAnswerButton(QPushButton):
         check_callback: Callable[[Any, Any], None],
         correct_answer: Any,
     ):
-        super().__init__(str(answer), answers_widget)
+        super().__init__(str(answer))
         self.answer_widget = answers_widget
         self.answer = answer
         self.check_callback = check_callback
@@ -27,35 +29,6 @@ class LetterAnswerButton(QPushButton):
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.clicked.connect(lambda _, a=answer: check_callback(a, correct_answer))
         self._radius = 0
-        self._update_style()
-
-    def _update_style(self):
-        self.setStyleSheet(
-            f"""
-            QPushButton {{
-                background-color: lightgray;
-                color: black;
-                padding: 5px;
-                border-radius: {self.width() // 2}px;
-                margin: 5px;
-                border: 3px solid black;
-            }}
-            QPushButton:hover {{
-                background: qlineargradient(
-                    spread:pad, x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(200, 200, 200, 1),
-                    stop:1 rgba(150, 150, 150, 1)
-                );
-                border: 3px solid gold;
-            }}
-            QPushButton:pressed {{
-                background-color: #d0d0d0;
-            }}
-            QPushButton:disabled {{
-                color: gray;
-            }}
-        """
-        )
 
     def resizeEvent(self, event):
         self.main_widget = self.answer_widget.lesson_widget.learn_tab.main_widget

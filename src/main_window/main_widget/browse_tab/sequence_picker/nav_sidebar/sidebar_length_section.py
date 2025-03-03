@@ -35,7 +35,7 @@ class SidebarLengthSection(BaseSidebarSection):
                     sec, btn
                 )
             )
-            self.manager.layout.addWidget(button)
+            self.add_centered_button(button)
             self._widgets_created.append(button)
             self.manager.buttons.append(button)  # So the manager can style it
 

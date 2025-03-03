@@ -1,8 +1,9 @@
-from PyQt6.QtWidgets import (
-    QPushButton,
-    QLabel,
-)
 from typing import TYPE_CHECKING
+
+from main_window.main_widget.browse_tab.sequence_picker.nav_sidebar.sidebar_button import (
+    SidebarButton,
+)
+from PyQt6.QtWidgets import QHBoxLayout, QWidget, QSpacerItem, QSizePolicy, QLabel, QPushButton
 
 
 if TYPE_CHECKING:
@@ -53,3 +54,25 @@ class BaseSidebarSection:
         day = parts[0].lstrip("0")
         month = parts[1].lstrip("0")
         return f"{day}-{month}"
+
+    def add_centered_button(self, button: SidebarButton):
+        """Wraps a button in a QHBoxLayout with stretchable spacers to center it."""
+        button_container = QWidget()
+        button_layout = QHBoxLayout(button_container)
+
+        left_spacer = QSpacerItem(
+            1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+        )
+        right_spacer = QSpacerItem(
+            1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+        )
+
+        button_layout.addItem(left_spacer)  # Add left spacer
+        button_layout.addWidget(button)  # Add the button
+        button_layout.addItem(right_spacer)  # Add right spacer
+
+        button_layout.setContentsMargins(0, 0, 0, 0)  # Remove extra margins
+        button_container.setLayout(button_layout)
+
+        self.manager.layout.addWidget(button_container)  # Add to main layout
+        self._widgets_created.append(button_container)  # Track for clearing later
