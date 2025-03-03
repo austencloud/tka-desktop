@@ -42,7 +42,7 @@ class SequencePickerNavSidebar(QWidget):
 
     def resize_sidebar(self):
         if self.sequence_picker and self.sequence_picker.main_widget:
-            fraction = 1 / 16.0
+            fraction = 1 / 14.0
             new_width = int(self.sequence_picker.main_widget.width() * fraction)
             self.setFixedWidth(new_width)
         for button in self.manager.buttons:
