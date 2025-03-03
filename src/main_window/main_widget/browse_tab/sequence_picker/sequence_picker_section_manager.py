@@ -109,16 +109,21 @@ class SequencePickerSectionManager:
     def get_date_added(self, thumbnails):
         dates = []
         for thumbnail in thumbnails:
-            image = Image.open(thumbnail)
-            info = image.info
-            metadata = info.get("metadata")
-            if metadata:
-                metadata_dict = json.loads(metadata)
-                date_added = metadata_dict.get("date_added")
-                if date_added:
-                    try:
-                        dates.append(datetime.fromisoformat(date_added))
-                    except ValueError:
-                        pass
+            try:
+                image = Image.open(thumbnail)
+                info = image.info
+                metadata = info.get("metadata")
+                if metadata:
+                    metadata_dict = json.loads(metadata)
+                    date_added = metadata_dict.get("date_added")
+                    if date_added:
+                        try:
+                            dates.append(datetime.fromisoformat(date_added))
+                        except ValueError:
+                            pass
+            except FileNotFoundError:
+                print(f"[WARNING] File not found: {thumbnail}")
+            except Exception as e:
+                print(f"[ERROR] An error occurred while processing {thumbnail}: {e}")
 
         return max(dates, default=datetime.min)

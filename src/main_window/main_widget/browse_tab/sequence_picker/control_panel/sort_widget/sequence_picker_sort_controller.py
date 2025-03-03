@@ -24,3 +24,4 @@ class SequencePickerSortController:
         self.browse_tab.sequence_picker.scroll_widget.scroll_area.verticalScrollBar().setValue(
             0
         )
+        self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
