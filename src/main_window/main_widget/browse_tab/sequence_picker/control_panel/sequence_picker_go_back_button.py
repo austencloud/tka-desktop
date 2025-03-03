@@ -33,7 +33,7 @@ class SequencePickerGoBackButton(BaseStyledButton):
         """Handle resizing to update styles dynamically."""
         self._border_radius = min(self.height(), self.width()) // 2
         self.update_appearance()
-        self.setFixedWidth(int(self.sequence_picker.main_widget.width() // 18))
+        self.setFixedWidth(int(self.sequence_picker.main_widget.width() // 15))
         self.setFixedHeight(int(self.sequence_picker.main_widget.height() // 16))
 
         # Set the font size programmatically according to the button width

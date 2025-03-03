@@ -24,7 +24,9 @@ class SequencePickerNavSidebar(QWidget):
     def setup_scroll_area(self):
         self.scroll_area.setContentsMargins(0, 0, 0, 0)
         self.scroll_content.setContentsMargins(0, 0, 0, 0)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.scroll_area.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setWidget(self.scroll_content)
         self.scroll_area.setStyleSheet("background: transparent;")
@@ -47,7 +49,7 @@ class SequencePickerNavSidebar(QWidget):
 
     def resize_sidebar(self):
         if self.sequence_picker and self.sequence_picker.main_widget:
-            fraction = 1 / 14.0
+            fraction = 1 / 12.0
             new_width = int(self.sequence_picker.main_widget.width() * fraction)
             self.setFixedWidth(new_width)
         self.adjust_button_fonts()

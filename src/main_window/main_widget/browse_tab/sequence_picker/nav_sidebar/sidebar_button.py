@@ -39,7 +39,7 @@ class SidebarButton(BaseStyledButton):
             font_metrics = QFontMetrics(btn_font)
             text_width = font_metrics.horizontalAdvance(button.text())
 
-            button_padding = int(sidebar_width // 1.8)  # Extra padding for aesthetics
+            button_padding = int(sidebar_width // 2.2)  # Extra padding for aesthetics
             max_width = max(max_width, text_width + button_padding)
 
         cls._max_button_width = max_width  # Store the new max width globally
