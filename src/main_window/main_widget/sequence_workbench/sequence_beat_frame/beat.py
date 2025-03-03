@@ -14,7 +14,7 @@ if TYPE_CHECKING:
         SequenceBeatFrame,
     )
 
-    from .beat_view import BeatView
+    from base_widgets.pictograph.elements.views.beat_view import BeatView
 
 
 class Beat(Pictograph):

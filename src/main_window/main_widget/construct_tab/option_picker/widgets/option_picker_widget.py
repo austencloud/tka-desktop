@@ -6,21 +6,21 @@ from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.construct_tab.add_to_sequence_manager.add_to_sequence_manager import (
     AddToSequenceManager,
 )
+from main_window.main_widget.construct_tab.option_picker.widgets.scroll.option_scroll import OptionScroll
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from .choose_your_next_pictograph_label import ChooseYourNextPictographLabel
-from .option_scroll.option_scroll import OptionScroll
-from .option_factory import OptionFactory
-from .option_getter import OptionGetter
-from .option_click_handler import OptionClickHandler
-from .option_updater import OptionUpdater
-from .reversal_filter.option_picker_reversal_filter import OptionPickerReversalFilter
-from .option_picker_layout_manager import OptionPickerLayoutManager
+from ..core.option_factory import OptionFactory
+from ..core.option_getter import OptionGetter
+from ..handlers.click_handler import OptionClickHandler
+from ..core.option_updater import OptionUpdater
+from .reversal_filter_widget import OptionPickerReversalFilter
+from ..layout.layout_manager import OptionPickerLayoutManager
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
     SequenceBeatFrame,
 )
 
 
-class OptionPicker(QWidget):
+class OptionPickerWidget(QWidget):
     option_selected = pyqtSignal(str)
     COLUMN_COUNT = 8
 

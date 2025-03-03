@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .option_picker import OptionPicker
+    from ..widgets.option_picker_widget import OptionPickerWidget
     from base_widgets.pictograph.pictograph import Pictograph
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class OptionClickHandler:
     def __init__(
-        self, option_picker: "OptionPicker", beat_frame: "SequenceBeatFrame"
+        self, option_picker: "OptionPickerWidget", beat_frame: "SequenceBeatFrame"
     ) -> None:
         self.option_picker = option_picker
         self.beat_frame = beat_frame

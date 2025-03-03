@@ -15,7 +15,7 @@ from settings_manager.settings_manager import SettingsManager
 from .start_pos_picker.start_pos_picker import StartPosPicker
 from .advanced_start_pos_picker.advanced_start_pos_picker import AdvancedStartPosPicker
 from .add_to_sequence_manager.add_to_sequence_manager import AddToSequenceManager
-from .option_picker.option_picker import OptionPicker
+from .option_picker.widgets.option_picker_widget import OptionPickerWidget
 
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_manager import JsonManager
@@ -59,7 +59,7 @@ class ConstructTab(QFrame):
             last_beat=lambda: self.last_beat,  # Use a getter function
         )
 
-        self.option_picker = OptionPicker(
+        self.option_picker = OptionPickerWidget(
             add_to_sequence_manager=self.add_to_sequence_manager,
             pictograph_dataset=self.pictograph_dataset,
             beat_frame=self.beat_frame,

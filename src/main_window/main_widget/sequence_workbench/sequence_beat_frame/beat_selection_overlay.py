@@ -8,7 +8,7 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_be
 )
 
 
-from .beat_view import BeatView
+from base_widgets.pictograph.elements.views.beat_view import BeatView
 
 if TYPE_CHECKING:
     from .sequence_beat_frame import SequenceBeatFrame

@@ -6,7 +6,7 @@ from utils.reversal_detector import (
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+    from base_widgets.pictograph.elements.views.beat_view import (
         Beat,
     )
     from .sequence_beat_frame import SequenceBeatFrame

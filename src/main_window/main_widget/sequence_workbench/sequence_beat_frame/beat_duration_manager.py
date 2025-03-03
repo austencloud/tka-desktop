@@ -4,7 +4,7 @@ from data.constants import BEAT
 from settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
-    from .beat_view import BeatView
+    from base_widgets.pictograph.elements.views.beat_view import BeatView
     from .sequence_beat_frame import SequenceBeatFrame
 
 

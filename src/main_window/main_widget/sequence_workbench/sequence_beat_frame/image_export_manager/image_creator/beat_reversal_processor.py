@@ -1,5 +1,5 @@
 from data.constants import SEQUENCE_START_POSITION
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+from base_widgets.pictograph.elements.views.beat_view import (
     BeatView,
 )
 from utils.reversal_detector import (

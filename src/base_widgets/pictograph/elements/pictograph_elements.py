@@ -6,7 +6,7 @@ from base_widgets.pictograph.elements.grid.grid import Grid
 from base_widgets.pictograph.elements.views.bordered_pictograph_view import (
     BorderedPictographView,
 )
-from main_window.main_widget.construct_tab.option_picker.option_view import OptionView
+from base_widgets.pictograph.elements.views.option_view import OptionView
 from base_widgets.pictograph.elements.views.start_pos_picker_pictograph_view import (
     StartPosPickerPictographView,
 )

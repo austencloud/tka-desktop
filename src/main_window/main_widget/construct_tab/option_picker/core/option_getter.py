@@ -87,8 +87,8 @@ class OptionGetter:
                     return rot
             return None
 
-        last_blue = get_last_rot(sequence[1:], BLUE)
-        last_red = get_last_rot(sequence[1:], RED)
+        last_blue = get_last_rot(sequence, BLUE)
+        last_red = get_last_rot(sequence, RED)
         curr_blue = o.get(BLUE_ATTRS, {}).get(PROP_ROT_DIR, NO_ROT)
         curr_red = o.get(RED_ATTRS, {}).get(PROP_ROT_DIR, NO_ROT)
         if curr_blue == NO_ROT:

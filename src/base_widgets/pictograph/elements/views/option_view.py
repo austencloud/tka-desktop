@@ -1,16 +1,18 @@
 from typing import TYPE_CHECKING, Callable
 from PyQt6.QtCore import Qt, QSize
-from base_widgets.pictograph.elements.views.bordered_pictograph_view import BorderedPictographView
+from base_widgets.pictograph.elements.views.bordered_pictograph_view import (
+    BorderedPictographView,
+)
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
-    from .option_picker import OptionPicker
+    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker_widget import OptionPickerWidget
 
 
 class OptionView(BorderedPictographView):
     def __init__(
         self,
-        op: "OptionPicker",
+        op: "OptionPickerWidget",
         pictograph: "Pictograph",
         mw_size_provider: Callable[[], QSize],
     ):

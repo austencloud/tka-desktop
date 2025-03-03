@@ -3,10 +3,12 @@ from PyQt6.QtCore import Qt
 from base_widgets.pictograph.elements.views.base_pictograph_view import (
     BasePictographView,
 )
-from .beat import Beat
-
+from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 if TYPE_CHECKING:
-    from .sequence_beat_frame import SequenceBeatFrame
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
+
 
 
 class BeatView(BasePictographView):

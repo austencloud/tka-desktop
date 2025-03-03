@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QFrame
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_frame_getter import (
     BeatFrameGetter,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+from base_widgets.pictograph.elements.views.beat_view import (
     BeatView,
 )
 

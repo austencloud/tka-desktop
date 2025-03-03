@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPainter, QPen, QColor
 from PyQt6.QtCore import Qt, QUrl, QTimer
 from typing import TYPE_CHECKING, Optional
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+from base_widgets.pictograph.elements.views.beat_view import (
     BeatView,
 )
 from utils.path_helpers import get_data_path

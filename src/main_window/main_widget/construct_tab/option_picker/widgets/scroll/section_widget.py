@@ -6,12 +6,15 @@ from data.constants import OPP, SAME
 from PyQt6.QtCore import Qt
 from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
-from .option_picker_section_header import OptionPickerSectionHeader
-from .option_picker_section_pictograph_frame import OptionPickerSectionPictographFrame
 from PyQt6.QtCore import QSize
-
+from main_window.main_widget.construct_tab.option_picker.widgets.scroll.section_pictograph_frame import (
+    OptionPickerSectionPictographFrame,
+)
+from main_window.main_widget.construct_tab.option_picker.widgets.scroll.section_header import (
+    OptionPickerSectionHeader,
+)
 if TYPE_CHECKING:
-    from ..option_scroll import OptionScroll
+    from .option_scroll import OptionScroll
 
 
 class OptionPickerSectionWidget(QGroupBox):

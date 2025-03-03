@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QGridLayout, QFrame, QSizePolicy
 from PyQt6.QtCore import Qt, QSize
 
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+from base_widgets.pictograph.elements.views.beat_view import (
     BeatView,
 )
 

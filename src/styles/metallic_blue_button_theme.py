@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from styles.button_state import ButtonState
 
 # Define transparency value for easy modification
-TRANSPARENCY = 0.5
+OPACITY = 0.7
 
 # Define common gradients as constants for readability
 # (Because nobody wants to stare at gradient gibberish at 2 AM)
@@ -23,10 +23,10 @@ GRAY_HOVER_GRADIENT = f"""
     qlineargradient(
         spread: pad,
         x1: 0, y1: 0, x2: 1, y2: 1,
-        stop: 0 rgba(80, 80, 80, {TRANSPARENCY}),
-        stop: 0.3 rgba(160, 160, 160, {TRANSPARENCY}),
-        stop: 0.6 rgba(120, 120, 120, {TRANSPARENCY}),
-        stop: 1 rgba(40, 40, 40, {TRANSPARENCY})
+        stop: 0 rgba(80, 80, 80, {OPACITY}),
+        stop: 0.3 rgba(160, 160, 160, {OPACITY}),
+        stop: 0.6 rgba(120, 120, 120, {OPACITY}),
+        stop: 1 rgba(40, 40, 40, {OPACITY})
     )
 """
 
@@ -34,8 +34,8 @@ DISABLED_HOVER_GRADIENT = f"""
     qlineargradient(
         spread: pad,
         x1: 0, y1: 0, x2: 1, y2: 1,
-        stop: 0 rgba(40, 40, 40, {TRANSPARENCY / 2}),
-        stop: 1 rgba(60, 60, 60, {TRANSPARENCY / 2})
+        stop: 0 rgba(40, 40, 40, {OPACITY / 2}),
+        stop: 1 rgba(60, 60, 60, {OPACITY / 2})
     )
 """
 
@@ -43,9 +43,9 @@ SHINY_NORMAL_GRADIENT = f"""
     qlineargradient(
         spread: pad,
         x1: 0, y1: 0, x2: 1, y2: 1,
-        stop: 0 rgba(58, 58, 58, {TRANSPARENCY}),
-        stop: 0.5 rgba(74, 74, 74, {TRANSPARENCY}),
-        stop: 1 rgba(90, 90, 90, {TRANSPARENCY})
+        stop: 0 rgba(30, 30, 30, {OPACITY}),
+        stop: 0.5 rgba(45, 45, 45, {OPACITY}),
+        stop: 1 rgba(60, 60, 60, {OPACITY})
     )
 """
 
@@ -100,7 +100,7 @@ class MetallicBlueButtonTheme:
         else:
             # Disabled state - Like the button had too much to drink
             return cls(
-                background=f"rgba(30, 30, 30, {TRANSPARENCY})",
+                background=f"rgba(30, 30, 30, {OPACITY})",
                 hover_background=DISABLED_HOVER_GRADIENT,
                 pressed_background="#707070",
                 font_color="gray",

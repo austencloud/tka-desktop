@@ -3,7 +3,6 @@ from PyQt6.QtGui import QFontMetrics
 from typing import Callable, Union
 from PyQt6.QtWidgets import QLabel
 
-
 class ResizableMixin:
     def __init__(self, size_provider: Callable[[], QSize], *args, **kwargs):
         self._size_provider = size_provider

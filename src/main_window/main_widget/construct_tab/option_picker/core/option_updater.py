@@ -5,12 +5,12 @@ from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
-    from .option_picker import OptionPicker
+    from ..widgets.option_picker_widget import OptionPickerWidget
 
 
 class OptionUpdater:
     def __init__(
-        self, option_picker: "OptionPicker", fade_manager: FadeManager
+        self, option_picker: "OptionPickerWidget", fade_manager: FadeManager
     ) -> None:
         self.option_picker = option_picker
         self.scroll_area = option_picker.option_scroll
@@ -33,11 +33,12 @@ class OptionUpdater:
 
     def update_options(self) -> None:
         sequence = self.json_loader.load_current_sequence()
+        sequence_without_metdata = sequence[1:]
         selected_filter = (
             self.option_picker.reversal_filter.reversal_combobox.currentData()
         )
         next_options = self.option_picker.option_getter.get_next_options(
-            sequence, selected_filter
+            sequence_without_metdata, selected_filter
         )
 
         for section in self.option_picker.option_scroll.sections.values():

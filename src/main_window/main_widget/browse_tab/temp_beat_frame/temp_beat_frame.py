@@ -19,7 +19,7 @@ from main_window.main_widget.browse_tab.temp_beat_frame.temp_beat_frame_layout_m
 
 from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+from base_widgets.pictograph.elements.views.beat_view import (
     BeatView,
 )
 

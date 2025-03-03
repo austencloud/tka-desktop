@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
+from base_widgets.base_beat_frame import BeatView
+
 if TYPE_CHECKING:
-    from ..beat_view import BeatView
     from .beat_deleter import BeatDeleter
 
 
@@ -13,7 +14,7 @@ class NonFirstBeatDeleter:
         index_of_selected_beat = self.deleter.beat_frame.beat_views.index(selected_beat)
         self.option_picker = self.deleter.main_widget.construct_tab.option_picker
         widgets = self.deleter.widget_collector.collect_shared_widgets()
-        views = [option.view for option in self.option_picker.option_pool]
+        views = [option.elements.view for option in self.option_picker.option_pool]
         widgets.extend(views)
         widgets.remove(self.deleter.beat_frame.start_pos_view)
         beats_to_remove = self.deleter.beat_frame.beat_views[:index_of_selected_beat]

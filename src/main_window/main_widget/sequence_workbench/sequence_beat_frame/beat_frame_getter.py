@@ -5,7 +5,7 @@ from utils.word_simplifier import WordSimplifier
 from PyQt6.QtWidgets import QGraphicsView
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_view import (
+    from base_widgets.pictograph.elements.views.beat_view import (
         BeatView,
     )
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (

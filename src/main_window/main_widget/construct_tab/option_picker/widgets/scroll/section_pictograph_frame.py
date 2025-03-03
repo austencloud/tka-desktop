@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QFrame, QGridLayout, QGraphicsOpacityEffect
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from .option_picker_section_widget import OptionPickerSectionWidget
+    from .section_widget import OptionPickerSectionWidget
 
 
 class OptionPickerSectionPictographFrame(QFrame):

@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QComboBox
 from PyQt6.QtCore import Qt, QSize
 
 if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.option_picker.reversal_filter.option_picker_reversal_filter import (
+    from main_window.main_widget.construct_tab.option_picker.widgets.reversal_filter_widget import (
         OptionPickerReversalFilter,
     )
 

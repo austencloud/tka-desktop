@@ -6,7 +6,7 @@ from enums.letter.letter_type import LetterType
 from utils.letter_type_text_painter import LetterTypeTextPainter
 
 if TYPE_CHECKING:
-    from .option_picker_section_widget import OptionPickerSectionWidget
+    from .section_widget import OptionPickerSectionWidget
 
 
 class OptionPickerSectionTypeButton(QPushButton):

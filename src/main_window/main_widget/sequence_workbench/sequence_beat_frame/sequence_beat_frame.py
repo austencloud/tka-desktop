@@ -22,7 +22,7 @@ from .beat_frame_resizer import BeatFrameResizer
 from .beat_frame_updater import BeatFrameUpdater
 
 from .beat_selection_overlay import BeatSelectionOverlay
-from .beat_view import BeatView
+from base_widgets.pictograph.elements.views.beat_view import BeatView
 from base_widgets.base_beat_frame import BaseBeatFrame
 from PyQt6.QtCore import pyqtSignal
 
