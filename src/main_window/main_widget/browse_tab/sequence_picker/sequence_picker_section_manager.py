@@ -92,8 +92,10 @@ class SequencePickerSectionManager:
         elif sort_order == "level":
             for thumbnail in thumbnails:
                 level = MetaDataExtractor().get_level(thumbnail)
-                if level is not None:
+                if level != 0:
                     return str(level)
+                else: 
+                    raise ValueError(f"Level not found for: {word}")
             return "Unknown"
         else:
             section: str = word[:2] if len(word) > 1 and word[1] == "-" else word[0]

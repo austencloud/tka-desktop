@@ -7,7 +7,7 @@ from main_window.main_widget.tab_indices import LeftStackIndex
 
 
 if TYPE_CHECKING:
-    from .sequence_picker import SequencePicker
+    from ..sequence_picker import SequencePicker
 
 
 class SequencePickerGoBackButton(BaseGoBackButton):

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
-from main_window.main_widget.browse_tab.sequence_picker.sequence_picker_go_back_button import (
+from main_window.main_widget.browse_tab.sequence_picker.control_panel.sequence_picker_go_back_button import (
     SequencePickerGoBackButton,
 )
 
@@ -9,7 +9,7 @@ from .currently_displaying_label import (
     CurrentlyDisplayingLabel,
 )
 from .sequence_picker_count_label import SequencePickerCountLabel
-from .sequence_picker_sort_widget import SequencePickerSortWidget
+from .sort_widget.sequence_picker_sort_widget import SequencePickerSortWidget
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.sequence_picker.sequence_picker import (
@@ -37,6 +37,5 @@ class SequencePickerControlPanel(QWidget):
         self.main_layout.addWidget(self.currently_displaying_label)
         self.main_layout.addWidget(self.count_label)
         self.main_layout.addWidget(self.sort_widget)
-        # self.main_layout.addWidget(self.sequence_picker.progress_bar)
 
         self.setLayout(self.main_layout)

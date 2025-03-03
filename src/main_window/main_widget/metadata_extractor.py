@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QMessageBox
 import json
 
 from data.constants import GRID_MODE, SEQUENCE_START_POSITION
+from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.thumbnail_finder import ThumbnailFinder
 from utils.path_helpers import get_data_path
 
@@ -99,7 +100,29 @@ class MetaDataExtractor:
     def get_level(self, file_path):
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata:
-            return metadata["sequence"][0]["level"]
+            if "level" in metadata["sequence"][0]:
+                if metadata["sequence"][0]["level"] != 0:
+                    return metadata["sequence"][0]["level"]
+                else:
+                    
+
+                    evaluator = SequenceLevelEvaluator()
+                    level = evaluator.get_sequence_difficulty_level(metadata["sequence"])
+                    metadata["sequence"][0]["level"] = level
+
+                    # Save the updated metadata back to the image
+                    try:
+                        with Image.open(file_path) as img:
+                            pnginfo = PngImagePlugin.PngInfo()
+                            pnginfo.add_text("metadata", json.dumps(metadata))
+                            img.save(file_path, pnginfo=pnginfo)
+                    except Exception as e:
+                        QMessageBox.critical(
+                            None,
+                            "Error",
+                            f"Error saving level to thumbnail: {e}",
+                        )
+                    return level
         return
 
     def get_length(self, file_path):

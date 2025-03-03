@@ -7,7 +7,7 @@ from PyQt6.QtCore import Qt
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from utils.path_helpers import get_data_path
 
-from ..sequence_picker_go_back_button import SequencePickerGoBackButton
+from ..control_panel.sequence_picker_go_back_button import SequencePickerGoBackButton
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import (

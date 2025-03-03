@@ -16,7 +16,6 @@ class BrowseTabUIUpdater:
         self._resize_job_id = 0
 
     def update_and_display_ui(self, total_sequences: int, skip_scaling: bool = True):
-        self.browse_tab.sequence_picker.progress_bar.setVisible(False)
         QApplication.restoreOverrideCursor()
 
         if total_sequences == 0:
@@ -28,12 +27,10 @@ class BrowseTabUIUpdater:
         self._create_and_show_thumbnails(skip_scaling)
 
     def _create_and_show_thumbnails(self, skip_scaling: bool = True):
-        self.browse_tab.sequence_picker.sorter._display_sorted_sections(skip_scaling)
+        self.browse_tab.sequence_picker.sorter.display_sorted_sections(skip_scaling)
         self._apply_thumbnail_styling()
 
     def resize_thumbnails_top_to_bottom(self):
-        self._resize_job_id += 1
-        current_job_id = self._resize_job_id
 
         sections_copy = dict(self.browse_tab.sequence_picker.sections)
         sort_method = self.settings_manager.browse_settings.get_sort_method()
@@ -47,32 +44,25 @@ class BrowseTabUIUpdater:
             button.set_button_enabled(False)
 
         scroll_widget = self.browse_tab.sequence_picker.scroll_widget
-        counter = 0
         for section in sorted_sections:
-            if current_job_id != self._resize_job_id:
-                return
-
             if section not in sections_copy:
                 return
             for word, _ in self.browse_tab.sequence_picker.sections.get(section, []):
-                if current_job_id != self._resize_job_id:
-                    return
                 if word not in scroll_widget.thumbnail_boxes:
                     return
                 thumbnail_box = scroll_widget.thumbnail_boxes[word]
                 thumbnail_box.image_label.update_thumbnail(
                     thumbnail_box.state.current_index
                 )
-                counter += 1
-                if counter > 6:
-                    QApplication.processEvents()
+
+            if sort_method == "date_added":
+                month, day, _ = section.split("-")
+                day = day.lstrip("0")
+                month = month.lstrip("0")
+                section = f"{month}-{day}"
 
             self._enable_button_for_section(section)
-
-        # QApplication.processEvents()
-
-    def cancel_resize_job(self):
-        self._resize_job_id += 1
+            QApplication.processEvents()
 
     def _apply_thumbnail_styling(self):
         font_color = self.font_color_updater.get_font_color(

@@ -1,4 +1,4 @@
-from data.constants import BLUE_ATTRS, RED_ATTRS, START_ORI, END_ORI, TURNS
+from data.constants import BLUE_ATTRS, IN, OUT, RED_ATTRS, START_ORI, END_ORI, TURNS
 
 
 class SequenceLevelEvaluator:
@@ -41,7 +41,7 @@ class SequenceLevelEvaluator:
         return has_turns
 
     def _has_non_radial_orientation(self, entry: dict) -> bool:
-        self.RADIAL_ORIENTATIONS = {"in", "out"}
+        self.RADIAL_ORIENTATIONS = {IN, OUT}
         blue_start_ori = entry[BLUE_ATTRS][START_ORI]
         blue_end_ori = entry[BLUE_ATTRS][END_ORI]
         red_start_ori = entry[RED_ATTRS][START_ORI]

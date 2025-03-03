@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QPushButton, QLabel
+from PyQt6.QtWidgets import QLabel
 from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt
 

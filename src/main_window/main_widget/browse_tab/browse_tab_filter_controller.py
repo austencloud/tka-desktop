@@ -33,13 +33,15 @@ class BrowseTabFilterController:
         if tab_name == "browse":
             self.fade_manager.widget_fader.fade_and_update(
                 widgets_to_fade,
-                lambda: self._apply_filter_after_fade(filter_criteria, description),
+                (
+                    lambda: self._apply_filter_after_fade(filter_criteria, description),
+                    lambda: self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom(),
+                ),
             )
 
         else:
             self._apply_filter_after_fade(filter_criteria, description)
-
-        QTimer.singleShot(0, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom)
+            self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
 
     def _apply_filter_after_fade(self, filter_criteria, description: str):
         self._prepare_ui_for_filtering(description)
