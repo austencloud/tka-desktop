@@ -16,7 +16,7 @@ class SequenceViewerState:
         if 0 <= index < len(self.thumbnails):
             self.current_index = index
 
-    def get_current_thumbnail(self) -> Optional[str]:
+    def get_current_thumbnail_str(self) -> Optional[str]:
         if self.thumbnails and 0 <= self.current_index < len(self.thumbnails):
             return self.thumbnails[self.current_index]
         return None

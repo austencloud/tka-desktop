@@ -55,17 +55,6 @@ class BrowseTab(QWidget):
         if filter_criteria:
             self.filter_controller.apply_filter(filter_criteria)
 
-        selected_seq = self.browse_settings.get_selected_sequence()
-        if selected_seq:
-            word = selected_seq.get("word")
-            var_index = selected_seq.get("variation_index", 0)
-
-            from PyQt6.QtCore import QTimer
-
-            # allow the event loop to pass
-            # QApplication.processEvents()
-            # QTimer.singleShot(0, lambda: self.reopen_sequence(word, var_index))
-
     def reopen_sequence(self, word: str, var_index: int):
         if word in self.sequence_picker.scroll_widget.thumbnail_boxes:
             box = self.sequence_picker.scroll_widget.thumbnail_boxes[word]

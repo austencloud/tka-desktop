@@ -58,7 +58,7 @@ class SequenceViewer(QWidget):
 
     def update_thumbnails(self, thumbnails: list[str]):
         self.state.update_thumbnails(thumbnails)
-        current_thumbnail = self.state.get_current_thumbnail()
+        current_thumbnail = self.state.get_current_thumbnail_str()
         if current_thumbnail:
             self.update_preview(self.state.current_index)
         else:
@@ -67,7 +67,7 @@ class SequenceViewer(QWidget):
 
     def update_preview(self, index: int):
         self.state.set_current_index(index)
-        current_thumbnail = self.state.get_current_thumbnail()
+        current_thumbnail = self.state.get_current_thumbnail_str()
 
         if current_thumbnail:
             pixmap = QPixmap(current_thumbnail)
@@ -112,4 +112,4 @@ class SequenceViewer(QWidget):
         self.current_thumbnail_box = None
 
     def get_thumbnail_at_current_index(self) -> Optional[str]:
-        return self.state.get_current_thumbnail()
+        return self.state.get_current_thumbnail_str()
