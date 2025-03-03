@@ -1,4 +1,7 @@
-from typing import TYPE_CHECKING, Tuple
+# author_section.py (refactored)
+
+import os
+from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import (
     QVBoxLayout,
     QPushButton,
@@ -8,20 +11,19 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
 )
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPixmap
-import os
 from functools import partial
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_data_path
+
 from .filter_section_base import FilterSectionBase
+from settings_manager.global_settings.app_context import AppContext  # to get data_manager
 
 if TYPE_CHECKING:
     from .sequence_picker_filter_stack import SequencePickerFilterStack
 
 
 class AuthorSection(FilterSectionBase):
-    IMAGE_DIR = get_image_path("author_images")
     MAX_COLUMNS = 3
 
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
@@ -29,8 +31,6 @@ class AuthorSection(FilterSectionBase):
         self.main_widget = initial_selection_widget.browse_tab.main_widget
         self.buttons: dict[str, QPushButton] = {}
         self.tally_labels: dict[str, QLabel] = {}
-        self.author_labels: dict[str, QLabel] = {}
-        self.original_pixmaps: dict[str, QPixmap] = {}
         self.sequence_counts: dict[str, int] = {}
         self.add_buttons()
 
@@ -38,11 +38,18 @@ class AuthorSection(FilterSectionBase):
         """Initialize the UI components for the author selection."""
         self.go_back_button.show()
         self.header_label.show()
+
         layout: QVBoxLayout = self.layout()
 
-        # Get unique authors and their sequence counts
-        self.sequence_counts = self._get_sequence_counts_per_author()
-        self.authors = sorted(self.sequence_counts.keys())
+        # Using the new data manager:
+        data_manager = AppContext.dictionary_data_manager()
+        all_authors = data_manager.get_distinct_authors()
+
+        # Build an author -> count map
+        # (like your old _get_sequence_counts_per_author)
+        for author in all_authors:
+            these_records = data_manager.get_records_by_author(author)
+            self.sequence_counts[author] = len(these_records)
 
         grid_layout = QGridLayout()
         grid_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -50,9 +57,9 @@ class AuthorSection(FilterSectionBase):
         grid_layout.setVerticalSpacing(20)
 
         row, col = 0, 0
-        for author in self.authors:
-            author_vbox = self.create_author_vbox(author)
-            grid_layout.addLayout(author_vbox, row, col)
+        for author in sorted(self.sequence_counts.keys()):
+            vbox = self._create_author_vbox(author)
+            grid_layout.addLayout(vbox, row, col)
 
             col += 1
             if col >= self.MAX_COLUMNS:
@@ -62,44 +69,41 @@ class AuthorSection(FilterSectionBase):
         layout.addLayout(grid_layout)
         layout.addStretch(1)
 
-    def create_author_vbox(self, author: str) -> QVBoxLayout:
-        """Create a vertical box layout containing all components for an author."""
-        author_vbox = QVBoxLayout()
-        author_vbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    def _create_author_vbox(self, author: str) -> QVBoxLayout:
+        vbox = QVBoxLayout()
+        vbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        button = self.create_author_button(author)
-        sequence_count_label = self.create_sequence_count_label(author)
+        btn = self._create_author_button(author)
+        label = self._create_sequence_count_label(author)
+        vbox.addWidget(btn)
+        vbox.addItem(QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed))
+        vbox.addWidget(label)
+        return vbox
 
-        author_vbox.addWidget(button)
-        author_vbox.addItem(
-            QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-        )
-        author_vbox.addWidget(sequence_count_label)
+    def _create_author_button(self, author: str) -> QPushButton:
+        btn = QPushButton(author)
+        btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        btn.clicked.connect(partial(self.handle_author_click, author))
+        self.buttons[author] = btn
+        return btn
 
-        return author_vbox
-
-    def create_author_button(self, author: str) -> QPushButton:
-        """Create and configure the author selection button."""
-        button = QPushButton(author)
-        button.setCursor(Qt.CursorShape.PointingHandCursor)
-        button.clicked.connect(partial(self.handle_author_click, author))
-        self.buttons[author] = button
-        return button
-
-    def create_sequence_count_label(self, author: str) -> QLabel:
-        """Create a label displaying the sequence count for an author."""
+    def _create_sequence_count_label(self, author: str) -> QLabel:
         count = self.sequence_counts.get(author, 0)
-        sequence_text = "sequence" if count == 1 else "sequences"
-        sequence_count_label = QLabel(f"{count} {sequence_text}")
-        sequence_count_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.tally_labels[author] = sequence_count_label
-        return sequence_count_label
+        seq_text = "sequence" if count == 1 else "sequences"
+        lbl = QLabel(f"{count} {seq_text}")
+        lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.tally_labels[author] = lbl
+        return lbl
 
     def handle_author_click(self, author: str):
-        """Handle clicks on author buttons."""
+        """Just pass the filter to your FilterController as you do now."""
         self.browse_tab.filter_controller.apply_filter({"author": author})
 
-    def _get_all_sequences_with_authors(self) -> list[Tuple[str, list[str], str]]:
+    # The rest is mostly the same, except we have no _get_all_sequences_with_authors,
+    # no repeated dictionary_dir scanning, etc.
+
+
+    def _get_all_sequences_with_authors(self) -> list[tuple[str, list[str], str]]:
         """Retrieve and cache all sequences along with their authors."""
         if hasattr(self, "_all_sequences_with_authors"):
             return self._all_sequences_with_authors
@@ -134,7 +138,7 @@ class AuthorSection(FilterSectionBase):
             author_counts[author] = author_counts.get(author, 0) + 1
         return author_counts
 
-    def get_sequences_by_author(self, author: str) -> list[Tuple[str, list[str]]]:
+    def get_sequences_by_author(self, author: str) -> list[tuple[str, list[str]]]:
         """Retrieve sequences that correspond to a specific author."""
         sequences_with_authors = self._get_all_sequences_with_authors()
         return [

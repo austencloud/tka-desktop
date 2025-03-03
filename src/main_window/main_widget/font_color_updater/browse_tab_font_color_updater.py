@@ -37,8 +37,6 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
         ]
         self._apply_font_colors(progress_bar_labels)
 
-
-
     def _update_thumbnail_boxes(self):
         for (
             thumbnail_box

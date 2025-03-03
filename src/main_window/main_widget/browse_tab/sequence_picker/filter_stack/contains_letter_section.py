@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
@@ -9,12 +9,12 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 from data.constants import LETTER
+from settings_manager.global_settings.app_context import AppContext  # to get data_manager
 
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import SequencePickerFilterStack
-
 
 
 class ContainsLettersSection(FilterSectionBase):
@@ -119,10 +119,12 @@ class ContainsLettersSection(FilterSectionBase):
         if not self.selected_letters:
             return 0
 
-        base_words = self.get_sorted_base_words("sequence_length")
+        data_manager = AppContext.dictionary_data_manager()
+        base_words = data_manager.get_all_words()
+
         return sum(
             any(letter in word for letter in self.selected_letters)
-            for word, _, _ in base_words
+            for word in base_words
         )
 
     def apply_filter(self):
@@ -130,42 +132,6 @@ class ContainsLettersSection(FilterSectionBase):
         self.browse_tab.filter_controller.apply_filter(
             {"contains_letters": list(self.selected_letters)}
         )
-
-    def organize_letters(self, letters: Iterable[str]) -> list[str]:
-        """Organize letters according to the predefined order."""
-        letters_set = set(letters)
-        return [letter for letter in self.LETTER_ORDER if letter in letters_set]
-
-    def format_display_letters(self, letters: list[str]) -> str:
-        """Format the display letters for UI."""
-        if len(letters) == 1:
-            return letters[0]
-        elif len(letters) == 2:
-            return f"{letters[0]} or {letters[1]}"
-        else:
-            return ", ".join(letters[:-1]) + ", or " + letters[-1]
-
-    def _is_valid_letter_match(
-        self, word: str, letter: str, letters: list[str]
-    ) -> bool:
-        """Check if a letter is a valid match in the word."""
-        if letter not in word:
-            return False
-
-        letter_with_dash = f"{letter}-"
-        if len(letter) == 1:
-            if letter_with_dash in word and letter_with_dash not in letters:
-                return False
-            if word.endswith(letter_with_dash) and letter_with_dash not in letters:
-                return False
-            index = word.find(letter)
-            if index != -1 and index < len(word) - 1 and word[index + 1] == "-":
-                return False
-        else:
-            if letter_with_dash in word and letter_with_dash not in letters:
-                return False
-
-        return True
 
     def resize_widget_font(self, widget: QWidget):
         font = widget.font()

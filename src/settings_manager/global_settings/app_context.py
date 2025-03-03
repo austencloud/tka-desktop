@@ -1,4 +1,7 @@
 from typing import TYPE_CHECKING, Optional
+from main_window.main_widget.browse_tab.sequence_picker.dictionary_data_manager import (
+    DictionaryDataManager,
+)
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
 
 if TYPE_CHECKING:
@@ -17,6 +20,7 @@ class AppContext:
     _special_placement_loader = None
     _sequence_beat_frame = None  # 👈 Initially None
     _selected_arrow: Optional["Arrow"] = None  # 👈 Add global selected arrow
+    _dict_data_manager = DictionaryDataManager()
 
     @classmethod
     def init(
@@ -93,3 +97,7 @@ class AppContext:
                 "AppContext.sequence_beat_frame() accessed before being set. Ensure it is initialized in MainWindow."
             )
         return cls._sequence_beat_frame
+
+    @classmethod
+    def dictionary_data_manager(cls) -> DictionaryDataManager:
+        return cls._dict_data_manager

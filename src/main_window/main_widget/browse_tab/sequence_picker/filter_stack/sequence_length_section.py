@@ -4,9 +4,7 @@ from PyQt6.QtCore import Qt
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
-    from main_window.main_widget.browse_tab.sequence_picker.filter_selector.sequence_picker_filter_stack import (
-        SequencePickerFilterStack,
-    )
+    from .sequence_picker_filter_stack import SequencePickerFilterStack
 
 
 class SequenceLengthSection(FilterSectionBase):
@@ -98,10 +96,10 @@ class SequenceLengthSection(FilterSectionBase):
 
     def display_only_thumbnails_with_sequence_length(self, length: int):
         """Display sequences of a specific length."""
-        self.filter_selector.browse_tab.settings.set_current_filter(
+        self.filter_selector.browse_tab.browse_settings.set_current_filter(
             {"sequence_length": length}
         )
-        self.browse_tab.filter_manager.prepare_ui_for_filtering(
+        self.browse_tab.filter_controller._prepare_ui_for_filtering(
             f"sequences of length {length}"
         )
 
