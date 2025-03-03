@@ -1,6 +1,6 @@
 from PyQt6.QtCore import Qt, QEvent, QRect
 from PyQt6.QtGui import QPixmap, QCursor, QMouseEvent, QPainter, QColor, QPen
-from PyQt6.QtWidgets import QLabel, QApplication
+from PyQt6.QtWidgets import QLabel
 from typing import TYPE_CHECKING
 
 from data.constants import BLUE

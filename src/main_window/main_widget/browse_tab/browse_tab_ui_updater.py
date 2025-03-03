@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication
 
 from settings_manager.global_settings.app_context import AppContext
@@ -14,6 +13,7 @@ class BrowseTabUIUpdater:
         self.settings_manager = AppContext.settings_manager()
         self.font_color_updater = browse_tab.main_widget.font_color_updater
         self._resize_job_id = 0
+        self._last_window_width = None  # Track width for resize optimization
 
     def update_and_display_ui(self, total_sequences: int, skip_scaling: bool = True):
         QApplication.restoreOverrideCursor()
@@ -31,7 +31,12 @@ class BrowseTabUIUpdater:
         self._apply_thumbnail_styling()
 
     def resize_thumbnails_top_to_bottom(self):
-        # QApplication.processEvents()
+        current_window_width = self.browse_tab.sequence_picker.main_widget.width()
+
+        # Skip resize if width hasn't changed
+        if current_window_width == self._last_window_width:
+            return
+
         sections_copy = dict(self.browse_tab.sequence_picker.sections)
         sort_method = self.settings_manager.browse_settings.get_sort_method()
         sorted_sections = (
@@ -40,8 +45,9 @@ class BrowseTabUIUpdater:
             )
         )
 
+        # Disable navigation buttons during resize
         for button in self.browse_tab.sequence_picker.nav_sidebar.manager.buttons:
-            button.set_button_enabled(False)
+            button.setEnabled(False)
 
         scroll_widget = self.browse_tab.sequence_picker.scroll_widget
         for section in sorted_sections:
@@ -51,11 +57,13 @@ class BrowseTabUIUpdater:
                 if word not in scroll_widget.thumbnail_boxes:
                     return
                 thumbnail_box = scroll_widget.thumbnail_boxes[word]
+
                 thumbnail_box.image_label.update_thumbnail(
                     thumbnail_box.state.current_index
                 )
                 QApplication.processEvents()
 
+            # Handle date formatting for navigation buttons
             if sort_method == "date_added":
                 month, day, _ = section.split("-")
                 day = day.lstrip("0")
@@ -63,6 +71,8 @@ class BrowseTabUIUpdater:
                 section = f"{month}-{day}"
 
             self._enable_button_for_section(section)
+
+        self._last_window_width = current_window_width
 
     def _apply_thumbnail_styling(self):
         font_color = self.font_color_updater.get_font_color(
@@ -84,5 +94,5 @@ class BrowseTabUIUpdater:
         nav_buttons = self.browse_tab.sequence_picker.nav_sidebar.manager.buttons
         for btn in nav_buttons:
             if getattr(btn, "section_key", None) == section_key:
-                btn.set_button_enabled(True)
+                btn.setEnabled(True)
                 break

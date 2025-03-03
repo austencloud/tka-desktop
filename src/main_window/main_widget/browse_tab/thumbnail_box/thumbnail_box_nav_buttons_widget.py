@@ -1,11 +1,6 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QPushButton, QWidget, QHBoxLayout, QLabel
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QPushButton, QWidget, QHBoxLayout
 
-from main_window.main_widget.browse_tab.sequence_viewer import (
-    sequence_viewer_nav_button,
-)
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_nav_button import (
     ThumbnailBoxNavButton,
 )

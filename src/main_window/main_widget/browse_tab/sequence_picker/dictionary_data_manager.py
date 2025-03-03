@@ -2,12 +2,11 @@
 import os
 import json
 from datetime import datetime
-from typing import Optional, Union
+from typing import Optional
 from dataclasses import dataclass, field
 
 from PIL import Image
 from utils.path_helpers import get_data_path
-from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 
 @dataclass

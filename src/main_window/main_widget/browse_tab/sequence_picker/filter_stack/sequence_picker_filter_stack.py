@@ -32,7 +32,7 @@ class SequencePickerFilterStack(QStackedWidget):
         self.contains_letter_section = ContainsLettersSection(self)
         self.length_section = SequenceLengthSection(self)
         self.level_section = FilterByLevelSection(self)
-        self.starting_position_section = StartingPositionSection(self)
+        self.start_pos_section = StartingPositionSection(self)
         self.author_section = AuthorSection(self)
         self.grid_mode_section = GridModeSection(self)
 
@@ -42,7 +42,7 @@ class SequencePickerFilterStack(QStackedWidget):
             "contains_letters": self.contains_letter_section,
             "sequence_length": self.length_section,
             "level": self.level_section,
-            "starting_position": self.starting_position_section,
+            "starting_position": self.start_pos_section,
             "author": self.author_section,
             GRID_MODE: self.grid_mode_section,
         }

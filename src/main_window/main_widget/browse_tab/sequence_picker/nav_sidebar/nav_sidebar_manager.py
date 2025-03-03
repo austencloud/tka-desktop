@@ -57,7 +57,7 @@ class NavSidebarManager:
     def style_button(self, button: SidebarButton, selected: bool = False, enabled=True):
         """Update button selection and reapply styles."""
         button.set_selected(selected)
-        button.set_button_enabled(enabled)
+        button.setEnabled(enabled)
 
     def set_button_styles(self):
         for button in self.buttons:

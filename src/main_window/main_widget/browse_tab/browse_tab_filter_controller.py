@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Union
 
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
 from data.constants import GRID_MODE

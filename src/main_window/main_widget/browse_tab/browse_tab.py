@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QApplication
+from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import QTimer
 
 from main_window.main_widget.browse_tab.browse_tab_filter_controller import (

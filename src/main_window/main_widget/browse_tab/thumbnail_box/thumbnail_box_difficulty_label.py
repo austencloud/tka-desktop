@@ -1,13 +1,12 @@
 from PyQt6.QtWidgets import QToolButton
-from PyQt6.QtGui import QPixmap, QIcon
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import QSize
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from main_window.main_widget.sequence_workbench.labels.difficulty_level_icon import (
     DifficultyLevelIcon,
 )
-from settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox

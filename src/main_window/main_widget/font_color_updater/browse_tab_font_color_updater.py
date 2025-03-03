@@ -52,7 +52,7 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
             filter_selector.contains_letter_section.header_label,
             filter_selector.length_section.header_label,
             filter_selector.level_section.header_label,
-            filter_selector.starting_position_section.header_label,
+            filter_selector.start_pos_section.header_label,
             filter_selector.author_section.header_label,
             filter_selector.grid_mode_section.header_label,
         ]
@@ -62,10 +62,8 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
             + list(
                 filter_selector.initial_filter_choice_widget.description_labels.values()
             )
-            + list(filter_selector.level_section.description_labels.values())
-            + list(
-                filter_selector.starting_position_section.description_labels.values()
-            )
+            + list(filter_selector.level_section.ui.description_labels.values())
+            + list(filter_selector.start_pos_section.description_labels.values())
             + list(filter_selector.grid_mode_section.description_labels.values())
         )
 
@@ -73,8 +71,8 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
             [filter_selector.starting_letter_section.sequence_tally_label]
             + [filter_selector.contains_letter_section.sequence_tally_label]
             + list(filter_selector.length_section.sequence_tally_labels.values())
-            + list(filter_selector.level_section.tally_labels.values())
-            + list(filter_selector.starting_position_section.tally_labels.values())
+            + list(filter_selector.level_section.ui.tally_labels.values())
+            + list(filter_selector.start_pos_section.tally_labels.values())
             + list(filter_selector.author_section.tally_labels.values())
             + list(filter_selector.grid_mode_section.tally_labels.values())
         )

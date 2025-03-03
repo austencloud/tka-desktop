@@ -5,8 +5,8 @@ from PyQt6.QtCore import pyqtSignal
 
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_name import TabName
+from styles.base_styled_button import BaseStyledButton
 
-from .menu_bar_nav_button import MenuBarNavButton
 
 if TYPE_CHECKING:
     from main_window.menu_bar.menu_bar import MenuBarWidget
@@ -19,7 +19,7 @@ class MenuBarNavWidget(QWidget):
         super().__init__(menu_bar)
         self.mw = menu_bar.main_widget
 
-        self.tab_buttons: list[MenuBarNavButton] = []
+        self.tab_buttons: list[BaseStyledButton] = []
         self.tab_names = ["Construct ⚒️", "Generate 🤖", "Browse 🔍", "Learn 🧠"]
 
         self.current_index = 0
@@ -32,7 +32,7 @@ class MenuBarNavWidget(QWidget):
         self.tab_layout.addStretch()  # Add stretch before the buttons
 
         for index, name in enumerate(self.tab_names):
-            button = MenuBarNavButton(name)
+            button = BaseStyledButton(name)
             button.clicked.connect(lambda _, idx=index: self.set_active_tab(idx))
             self.tab_buttons.append(button)
             self.tab_layout.addWidget(button)
@@ -70,12 +70,13 @@ class MenuBarNavWidget(QWidget):
 
         for idx, button in enumerate(self.tab_buttons):
             is_active = idx == self.current_index
-            button.set_active(is_active)
+            button.set_selected(is_active)
             button.setFont(font)
-            button.set_rounded_button_style(font_size)
+            button.update_appearance()
             button.setFixedWidth(button_width)
             button.setFixedHeight(button_height)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.update_buttons()
+        self.tab_layout.setSpacing(self.mw.width() // 100)

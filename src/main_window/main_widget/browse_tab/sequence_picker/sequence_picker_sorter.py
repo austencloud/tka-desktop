@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox
-from PyQt6.QtCore import QTimer
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.sequence_picker.sequence_picker import (
