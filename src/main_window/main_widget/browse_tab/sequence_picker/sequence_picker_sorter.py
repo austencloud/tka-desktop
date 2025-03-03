@@ -95,7 +95,7 @@ class SequencePickerSorter:
         self.sequence_picker.control_panel.sort_widget.highlight_appropriate_button(
             sort_method
         )
-        QApplication.processEvents()
+        # QApplication.processEvents()
         current_section = None
         row_index = 0
 
@@ -122,10 +122,21 @@ class SequencePickerSorter:
                 column_index = (column_index + 1) % self.num_columns
                 if column_index == 0:
                     row_index += 1
+        if not self.sequence_picker.initialized:
+            selected_seq = (
+                self.sequence_picker.browse_tab.browse_settings.get_selected_sequence()
+            )
+            if selected_seq:
+                word = selected_seq.get("word")
+                var_index = selected_seq.get("variation_index", 0)
+            self.sequence_picker.browse_tab.reopen_sequence(word, var_index)
+            self.sequence_picker.initialized = True
 
         self.sequence_picker.control_panel.count_label.setText(
             f"Number of words: {len(self.browse_tab.sequence_picker.currently_displayed_sequences)}"
         )
+        if not skip_scaling:
+            self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
 
     def add_section_headers(
         self, row_index: int, section: str, sort_method: str, current_section: str
@@ -176,10 +187,10 @@ class SequencePickerSorter:
 
         if not hidden:
             thumbnail_box.show()
-            if not skip_image:
-                thumbnail_box.image_label.update_thumbnail(
-                    thumbnail_box.state.current_index
-                )
+            # if not skip_image:
+            #     thumbnail_box.image_label.update_thumbnail(
+            #         thumbnail_box.state.current_index
+            #     )
 
     def reload_currently_displayed_filtered_sequences(self):
         sort_method = (

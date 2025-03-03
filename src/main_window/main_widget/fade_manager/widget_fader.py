@@ -1,10 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Union
-from PyQt6.QtWidgets import QWidget, QGraphicsOpacityEffect, QGraphicsItem
-from PyQt6.QtCore import (
-    QParallelAnimationGroup,
-    QPropertyAnimation,
-    QEasingCurve,
-)
+from PyQt6.QtWidgets import QWidget, QGraphicsOpacityEffect, QGraphicsItem, QApplication
+from PyQt6.QtCore import QParallelAnimationGroup, QPropertyAnimation, QEasingCurve
 from enums.enums import Glyph
 
 from base_widgets.pictograph.elements.grid.non_radial_points_group import (

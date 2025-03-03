@@ -6,9 +6,11 @@ from PyQt6.QtWidgets import QApplication
 
 from data.constants import GRID_MODE
 from main_window.main_widget.tab_indices import LeftStackIndex
+from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
+
 
 class BrowseTabFilterController:
     def __init__(self, browse_tab: "BrowseTab"):
@@ -33,8 +35,11 @@ class BrowseTabFilterController:
                 widgets_to_fade,
                 lambda: self._apply_filter_after_fade(filter_criteria, description),
             )
+
         else:
             self._apply_filter_after_fade(filter_criteria, description)
+
+        # self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
 
     def _apply_filter_after_fade(self, filter_criteria, description: str):
         self._prepare_ui_for_filtering(description)
@@ -47,7 +52,11 @@ class BrowseTabFilterController:
                 f"Invalid filter type: {type(filter_criteria)} (must be str or dict)."
             )
         self.browse_tab.sequence_picker.currently_displayed_sequences = results
-        self.ui_updater.update_and_display_ui(len(results))
+        if not self.browse_tab.sequence_picker.initialized:
+            skip_scaling = False
+        else:
+            skip_scaling = True
+        self.ui_updater.update_and_display_ui(len(results), skip_scaling)
         if (
             self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
             == "browse"
@@ -58,7 +67,6 @@ class BrowseTabFilterController:
         self.browse_tab.browse_settings.set_browse_left_stack_index(
             LeftStackIndex.SEQUENCE_PICKER.value
         )
-        QTimer.singleShot(0, self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom)
 
     def _prepare_ui_for_filtering(self, description: str):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -66,6 +74,7 @@ class BrowseTabFilterController:
         control_panel.currently_displaying_label.setText(f"Displaying {description}")
         control_panel.count_label.setText("")
         self.browse_tab.sequence_picker.scroll_widget.clear_layout()
+        # QApplication.processEvents()
 
     def _handle_string_filter(self, filter_name: str):
         fm = self.filter_manager
@@ -140,12 +149,20 @@ class BrowseTabFilterController:
 
     def _dict_filter_level(self, level_value):
         base_words = self._base_words()
-        fm = self.filter_manager
-        return [
-            (w, t, fm._get_sequence_length(t[0]))
-            for w, t in base_words
-            if self.metadata_extractor.get_level(t[0]) == level_value
-        ]
+        filter_manager = self.filter_manager
+
+        results = []
+        for word, thumbs in base_words:
+            # If thumbs is empty or None, skip it
+            if not thumbs:
+                continue
+
+            # Otherwise, safe to do thumbs[0]
+            if self.metadata_extractor.get_level(thumbs[0]) == level_value:
+                seq_length = filter_manager._get_sequence_length(thumbs[0])
+                results.append((word, thumbs, seq_length))
+
+        return results
 
     def _dict_filter_author(self, author_value):
         base_words = self._base_words()
@@ -184,9 +201,13 @@ class BrowseTabFilterController:
         return self.filter_manager.filter_all_sequences()
 
     def _base_words(self):
-        from utils.path_helpers import get_data_path
-        dictionary_dir = get_data_path("generated_data\dictionary")
-        return self.browse_tab.get.base_words(dictionary_dir)
+        dictionary_dir = get_data_path("generated_data\\dictionary")
+        all_words = self.browse_tab.get.base_words(dictionary_dir)
+        base_words = []
+        for w, thumbs in all_words:
+            if thumbs:  # only store if thumbs is non-empty
+                base_words.append((w, thumbs))
+        return base_words
 
     def _get_filter_description(self, filter_criteria: Union[str, dict]) -> str:
         if isinstance(filter_criteria, str):

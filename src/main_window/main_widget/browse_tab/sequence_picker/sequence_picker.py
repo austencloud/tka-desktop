@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 
 class SequencePicker(QWidget):
+    initialized = False
 
     def __init__(self, browse_tab: "BrowseTab"):
         super().__init__(browse_tab)

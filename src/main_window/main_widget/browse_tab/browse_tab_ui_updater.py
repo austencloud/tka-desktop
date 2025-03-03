@@ -7,6 +7,7 @@ from settings_manager.global_settings.app_context import AppContext
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
 
+
 class BrowseTabUIUpdater:
     def __init__(self, browse_tab: "BrowseTab"):
         self.browse_tab = browse_tab
@@ -14,7 +15,9 @@ class BrowseTabUIUpdater:
         self.font_color_updater = browse_tab.main_widget.font_color_updater
         self._resize_job_id = 0  # an integer that increments each time
 
-    def update_and_display_ui(self, total_sequences: int):
+    def update_and_display_ui(
+        self, total_sequences: int, skip_scaling: bool = True
+    ):
         self.browse_tab.sequence_picker.progress_bar.setVisible(False)
         QApplication.restoreOverrideCursor()
 
@@ -24,11 +27,11 @@ class BrowseTabUIUpdater:
         sort_method = self.settings_manager.browse_settings.get_sort_method()
         self.browse_tab.sequence_picker.sorter._sort_only(sort_method)
 
-        self._create_and_show_thumbnails(skip_scaling=True)
+        self._create_and_show_thumbnails(skip_scaling)
 
     def _create_and_show_thumbnails(self, skip_scaling: bool = True):
         self.browse_tab.sequence_picker.sorter._display_sorted_sections(
-            skip_scaling=True
+            skip_scaling
         )
         self._apply_thumbnail_styling()
 
@@ -49,6 +52,7 @@ class BrowseTabUIUpdater:
         )
 
         scroll_widget = self.browse_tab.sequence_picker.scroll_widget
+        # QApplication.processEvents()
         for section in sorted_sections:
             # 2) If a user changed filters or sorts, _resize_job_id changes,
             #    so we bail out
@@ -63,8 +67,10 @@ class BrowseTabUIUpdater:
                 if current_job_id != self._resize_job_id:
                     return
                 thumbnail_box = scroll_widget.thumbnail_boxes[word]
-                thumbnail_box.image_label.update_thumbnail(thumbnail_box.state.current_index)
-
+                thumbnail_box.image_label.update_thumbnail(
+                    thumbnail_box.state.current_index
+                )
+                QApplication.processEvents()
             # Optional: if you enable nav buttons section-by-section
             self._enable_button_for_section(section)
 

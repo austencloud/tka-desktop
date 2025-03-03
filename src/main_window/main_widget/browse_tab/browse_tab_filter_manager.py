@@ -42,10 +42,17 @@ class BrowseTabFilterManager:
 
     def filter_all_sequences(self) -> list[tuple[str, list[str], int]]:
         dictionary_dir = get_data_path("generated_data\dictionary")
-        return [
-            (word, thumbnails, self._get_sequence_length(thumbnails[0]))
-            for word, thumbnails in self.browse_tab.get.base_words(dictionary_dir)
-        ]
+        sequences = []
+        for word, thumbnails in self.browse_tab.get.base_words(dictionary_dir):
+            if not thumbnails:
+                print(f"No thumbnails found for {word}. Skipping...")
+                continue
+            try:
+                sequence_length = self._get_sequence_length(thumbnails[0])
+                sequences.append((word, thumbnails, sequence_length))
+            except Exception as e:
+                print(f"Error processing {word}: {e}")
+        return sequences
 
     def filter_most_recent(self) -> list[tuple[str, list[str], int]]:
         dictionary_dir = get_data_path("generated_data\dictionary")

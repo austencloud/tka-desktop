@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QApplication
 from PyQt6.QtCore import QTimer
 
 from main_window.main_widget.browse_tab.browse_tab_filter_controller import (
@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 
 
 class BrowseTab(QWidget):
+    
     def __init__(self, main_widget: "MainWidget") -> None:
         super().__init__()
         self.main_widget = main_widget
@@ -61,9 +62,11 @@ class BrowseTab(QWidget):
 
             from PyQt6.QtCore import QTimer
 
-            QTimer.singleShot(200, lambda: self._reopen_sequence(word, var_index))
+            # allow the event loop to pass
+            # QApplication.processEvents()
+            # QTimer.singleShot(0, lambda: self.reopen_sequence(word, var_index))
 
-    def _reopen_sequence(self, word: str, var_index: int):
+    def reopen_sequence(self, word: str, var_index: int):
         if word in self.sequence_picker.scroll_widget.thumbnail_boxes:
             box = self.sequence_picker.scroll_widget.thumbnail_boxes[word]
             if 0 <= var_index < len(box.state.thumbnails):
