@@ -23,7 +23,7 @@ class SidebarButton(QPushButton):
             "rgba(211, 211, 211, 0.5)" if self.is_selected else "rgba(0, 0, 0, 0.1)"
         )
         font_color = "black" if self.is_selected else "white"
-        border_color = "black" if self.isEnabled() else "#333"
+        border_color = "black" if self.isEnabled() else "#555"
         hover_background = "#555" if self.isEnabled() else "rgba(240, 240, 240, 0.5)"
         hover_font_color = "black" if self.isEnabled() else "#888"
 

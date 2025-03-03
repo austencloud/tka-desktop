@@ -1,6 +1,11 @@
 from typing import TYPE_CHECKING, Optional, Union
 from PyQt6.QtWidgets import QWidget, QGraphicsOpacityEffect, QGraphicsItem, QApplication
-from PyQt6.QtCore import QParallelAnimationGroup, QPropertyAnimation, QEasingCurve, QTimer
+from PyQt6.QtCore import (
+    QParallelAnimationGroup,
+    QPropertyAnimation,
+    QEasingCurve,
+    QTimer,
+)
 from enums.enums import Glyph
 
 from base_widgets.pictograph.elements.grid.non_radial_points_group import (
@@ -99,18 +104,18 @@ class WidgetFader:
     def fade_and_update(
         self,
         widgets: list[QWidget],
-        callbacks: Union[callable, tuple[callable, callable]] = None,
+        callback: Union[callable, tuple[callable, callable]] = None,
         duration: int = 250,
     ) -> None:
         fade_enabled = self.manager.fades_enabled()
         first_callback = None
         second_callback = None
 
-        if callbacks:
-            if isinstance(callbacks, tuple):
-                first_callback, second_callback = callbacks
+        if callback:
+            if isinstance(callback, tuple):
+                first_callback, second_callback = callback
             else:
-                first_callback = callbacks
+                first_callback = callback
 
         def on_fade_out_finished():
             if first_callback:
@@ -119,7 +124,7 @@ class WidgetFader:
 
             if fade_enabled:
                 self.fade_widgets(widgets, True, duration)
-                
+
                 if second_callback:
                     QTimer.singleShot(duration, second_callback)
             else:
