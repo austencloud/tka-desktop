@@ -26,14 +26,18 @@ class ButtonAnswersRenderer:
         answers: List[Any],
         check_callback: Callable[[Any, Any], None],
         correct_answer: Any,
-        answers_widget: "AnswersWidget" 
+        answers_widget: "AnswersWidget",
     ) -> None:
         # If no buttons exist yet, create them.
         if not self.buttons:
+            self.layout.setSpacing(
+                answers_widget.lesson_widget.learn_tab.main_widget.width() // 80
+            )
             for answer in answers:
                 button = LetterAnswerButton(
                     answer, answers_widget, check_callback, correct_answer
                 )
+
                 self.layout.addWidget(button)
                 self.buttons.append(button)
         else:

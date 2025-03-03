@@ -27,11 +27,11 @@ class SidebarLetterSection(BaseSidebarSection):
             button = SidebarButton(str(section))
             button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             button.clicked.connect(
-                lambda _, sec=section, btn=button: self.manager.scroll_to_section(
-                    sec, btn
+                lambda _, sec=section, button=button: self.manager.scroll_to_section(
+                    sec, button
                 )
             )
-            self.manager.layout.addWidget(button)
+            self.add_centered_button(button)
             self._widgets_created.append(button)
             self.manager.buttons.append(button)
         self.manager.layout.addStretch(1)

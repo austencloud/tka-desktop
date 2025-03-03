@@ -50,7 +50,7 @@ class SidebarDateAddedSection(BaseSidebarSection):
                     section, btn
                 )
             )
-            self.manager.layout.addWidget(date_button)
+            self.add_centered_button(date_button)
             self._widgets_created.append(date_button)
             self.manager.buttons.append(date_button)
         self.manager.layout.addStretch(1)

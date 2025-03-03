@@ -108,7 +108,18 @@ class LessonWidget(QWidget):
 
     def resizeEvent(self, event):
         self._resize_question_prompt()
+        self._resize_go_back_button()
         super().resizeEvent(event)
+
+    def _resize_go_back_button(self):
+        # set it to programatically resize the go back button
+        go_back_width = self.main_widget.width() // 10
+        go_back_height = self.main_widget.height() // 20
+        self.go_back_button.setFixedSize(go_back_width, go_back_height)
+        font = self.go_back_button.font()
+        font.setFamily("Georgia")
+        font.setPointSize(self.main_widget.width() // 80)
+        self.go_back_button.setFont(font)
 
     def _resize_question_prompt(self) -> None:
         question_prompt_font_size = self.main_widget.width() // 65
