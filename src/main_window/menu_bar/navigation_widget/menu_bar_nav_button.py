@@ -3,7 +3,7 @@ from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt
 
 
-class NavButton(QPushButton):
+class MenuBarNavButton(QPushButton):
     DEFAULT_BG_COLOR = "lightgray"
     ACTIVE_BG_GRADIENT = """
         background: qlineargradient(

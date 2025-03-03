@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QCursor
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal, QEvent
 
 
 class SidebarButton(QPushButton):
@@ -12,73 +12,63 @@ class SidebarButton(QPushButton):
         super().__init__(section_key)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.is_selected = False
-        self.update_styles()
-        self.clicked.connect(self.emit_clicked_signal)
         self.section_key = section_key
-    def update_styles(self):
-        """Apply the appropriate styles based on the selection state."""
-        background_color = "lightgray" if self.is_selected else "transparent"
+        self.border_radius = 5  # Default border radius
+        self.update_button_styles()
+        self.clicked.connect(self.emit_clicked_signal)
+
+    def update_button_styles(self) -> None:
+        """Apply the appropriate styles based on the selection state and enabled state."""
+        background_color = (
+            "rgba(211, 211, 211, 0.5)" if self.is_selected else "rgba(0, 0, 0, 0.1)"
+        )
         font_color = "black" if self.is_selected else "white"
+        border_color = "black" if self.isEnabled() else "#333"
+        hover_background = "#555" if self.isEnabled() else "rgba(240, 240, 240, 0.5)"
+        hover_font_color = "black" if self.isEnabled() else "#888"
 
         self.setStyleSheet(
             f"""
             QPushButton {{
                 background: {background_color};
-                border-radius: 5px;
+                border-radius: {self.border_radius}px;
                 color: {font_color};
                 padding: 5px;
                 font-weight: bold;
                 text-align: center;
+                border: 1px solid {border_color};
             }}
             QPushButton:hover {{
-                background: #f0f0f0;
-                color: black;
+                background: {hover_background};
+                color: {hover_font_color};
+                border: 1px solid white;
             }}
             """
         )
 
-    def set_selected(self, selected: bool):
+    def set_selected(self, selected: bool) -> None:
         """Update the button selection state and restyle it."""
         self.is_selected = selected
-        self.update_styles()
+        self.update_button_styles()
 
-    def emit_clicked_signal(self):
+    def emit_clicked_signal(self) -> None:
         """Emit a signal when clicked, passing the button label."""
         self.clicked_signal.emit(self.text())
 
-    def set_button_enabled(self, enabled: bool):
+    def set_button_enabled(self, enabled: bool) -> None:
         """Enables/disables the button and updates its style/cursor."""
-        background_color = "lightgray" if self.is_selected else "transparent"
-        font_color = "black" if self.is_selected else "white"
         self.setEnabled(enabled)
-        if enabled:
-            # Normal look
-            self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            self.setStyleSheet(
-                f"""
-                QPushButton {{
-                    background: {background_color};
-                    border-radius: 5px;
-                    color: {font_color};
-                    padding: 5px;
-                    font-weight: bold;
-                    text-align: center;
-                }}
-                QPushButton:hover {{
-                    background: #555;
-                }}
-                """
+        self.setCursor(
+            QCursor(
+                Qt.CursorShape.PointingHandCursor
+                if enabled
+                else Qt.CursorShape.ForbiddenCursor
             )
-        else:
-            # Disabled look
-            self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))  # or ForbiddenCursor
-            self.setStyleSheet(
-                """
-                QPushButton {
-                    background-color: gray;
-                    color: #888;
-                    border: 1px solid #333;
-                    font-weight: normal;
-                }
-            """
-            )
+        )
+        self.update_button_styles()
+
+    def resizeEvent(self, event: QEvent) -> None:
+        """Handle the resize event to update the border radius."""
+        self.border_radius = min(self.height(), self.width()) // 2
+        self.update_button_styles()
+        super().resizeEvent(event)
