@@ -28,6 +28,12 @@ def test_handpath_calculator(calculator: HandpathCalculator, start_loc, end_loc)
         (NORTH, "INVALID"),
         (None, WEST),
         (EAST, None),
+        (123, 456),  # Numbers instead of directions
+        ([], {}),  # Empty list and dictionary
+        (True, False),  # Boolean values
+        ("", ""),  # Empty strings
+        (object(), object()),  # Random objects
+        (b"bytes", b"bytes"),  # Byte strings
     ],
 )
 def test_handpath_calculator_invalid(

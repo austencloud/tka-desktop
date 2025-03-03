@@ -85,4 +85,6 @@ class HandpathCalculator:
         :param end_loc: The ending location.
         :return: The hand rotation direction (CLOCKWISE, COUNTER_CLOCKWISE, DASH, or STATIC).
         """
+        if not isinstance(start_loc, str) or not isinstance(end_loc, str):
+            return "NO HAND ROTATION FOUND"
         return self.hand_rot_dir_map[(start_loc, end_loc)]
