@@ -80,3 +80,4 @@ class ThumbnailBox(QWidget):
 
         self.variation_number_label.update_index(self.state.current_index)
         self.word_label.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
+        self.image_label.update_thumbnail(self.state.current_index)

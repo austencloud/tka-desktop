@@ -39,11 +39,10 @@ class BrowseTabDeletionHandler:
 
             else:
                 self.delete_empty_folders(get_data_path("generated_data\dictionary"))
-                thumbnail_box.state.current_index = 0
-                # self.sequence_picker.thumbnail_box_sorter.reload_currently_displayed_filtered_sequences()
-                thumbnail_box.image_label.update_thumbnail(
-                    thumbnail_box.state.current_index
-                )
+                # thumbnail_box.state.current_index = 0
+                # thumbnail_box.image_label.update_thumbnail(
+                #     thumbnail_box.state.current_index
+                # )
                 self.browse_tab.sequence_viewer.update_thumbnails(
                     thumbnail_box.state.thumbnails
                 )

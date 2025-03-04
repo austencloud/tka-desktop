@@ -94,7 +94,7 @@ class SequencePickerSectionManager:
                 level = MetaDataExtractor().get_level(thumbnail)
                 if level != 0:
                     return str(level)
-                else: 
+                else:
                     raise ValueError(f"Level not found for: {word}")
             return "Unknown"
         else:
@@ -120,9 +120,13 @@ class SequencePickerSectionManager:
                         try:
                             dates.append(datetime.fromisoformat(date_added))
                         except ValueError:
+                            print(
+                                f"[WARNING] Could not parse date for {thumbnail}"
+                            )  # Added logging
                             pass
-            except FileNotFoundError:
-                print(f"[WARNING] File not found: {thumbnail}")
+            except FileNotFoundError as e:
+                print(f"[WARNING] File not found: {thumbnail} - {e}")
+                continue 
             except Exception as e:
                 print(f"[ERROR] An error occurred while processing {thumbnail}: {e}")
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-
+from PyQt6.QtWidgets import QApplication
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox
 
 if TYPE_CHECKING:
@@ -120,7 +120,6 @@ class SequencePickerSorter:
                 column_index = (column_index + 1) % self.num_columns
                 if column_index == 0:
                     row_index += 1
-
         self.sequence_picker.control_panel.count_label.setText(
             f"Number of words: {len(self.browse_tab.sequence_picker.currently_displayed_sequences)}"
         )
