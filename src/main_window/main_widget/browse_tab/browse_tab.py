@@ -96,7 +96,6 @@ class BrowseTab(QWidget):
                 self.sequence_viewer.update_nav_buttons()
                 self.sequence_viewer.word_label.update_word_label(word)
                 self.sequence_viewer.variation_number_label.update_index(var_index)
-
                 self.set_current_thumbnail_box(word)
 
                 print(
@@ -115,4 +114,7 @@ class BrowseTab(QWidget):
                 self.sequence_viewer.current_thumbnail_box = box
                 index = self.sequence_viewer.state.current_index
                 box.nav_buttons_widget.update_thumbnail(index)
+                self.selection_handler.current_thumbnail = (
+                    self.sequence_viewer.current_thumbnail_box.image_label
+                )
                 return
