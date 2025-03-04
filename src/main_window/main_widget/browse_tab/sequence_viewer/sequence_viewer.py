@@ -90,18 +90,6 @@ class SequenceViewer(QWidget):
         self.nav_buttons_widget.current_index = self.state.current_index
         self.nav_buttons_widget.refresh()
 
-    def _toggle_navigation_visibility(self, num_thumbnails: int):
-        if num_thumbnails > 1:
-            self.nav_buttons_widget.show()
-            self.variation_number_label.show()
-        elif num_thumbnails == 1:
-            self.nav_buttons_widget.hide()
-            if self.current_thumbnail_box:
-                self.current_thumbnail_box.nav_buttons_widget.hide()
-            self.variation_number_label.hide()
-        else:
-            self.clear()
-
     def clear(self):
         self.state.clear()
         self.stacked_widget.setCurrentWidget(self.placeholder_label)

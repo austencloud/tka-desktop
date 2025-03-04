@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from enum import Enum
 from PyQt6.QtWidgets import QWidget, QStackedWidget
 
 from data.constants import GRID_MODE
@@ -15,6 +16,26 @@ from .starting_position_section import StartingPositionSection
 
 if TYPE_CHECKING:
     from ..sequence_picker import SequencePicker
+
+
+class BrowseTabSection(Enum):
+    FILTER_SELECTOR = "filter_selector"
+    STARTING_LETTER = "starting_letter"
+    CONTAINS_LETTERS = "contains_letters"
+    SEQUENCE_LENGTH = "sequence_length"
+    LEVEL = "level"
+    STARTING_POSITION = "starting_position"
+    AUTHOR = "author"
+    GRID_MODE = "grid_mode"
+    SEQUENCE_PICKER = "sequence_picker"
+
+    # write a function to get the enum from the string
+    @staticmethod
+    def from_str(string: str) -> "BrowseTabSection":
+        for section in BrowseTabSection:
+            if section.value == string:
+                return section
+        raise ValueError(f"Invalid filter section: {string}")
 
 
 class SequencePickerFilterStack(QStackedWidget):
@@ -36,33 +57,39 @@ class SequencePickerFilterStack(QStackedWidget):
         self.author_section = AuthorSection(self)
         self.grid_mode_section = GridModeSection(self)
 
-        self.section_map: dict[str, QWidget] = {
-            "filter_selector": self.initial_filter_choice_widget,
-            "starting_letter": self.starting_letter_section,
-            "contains_letters": self.contains_letter_section,
-            "sequence_length": self.length_section,
-            "level": self.level_section,
-            "starting_position": self.start_pos_section,
-            "author": self.author_section,
-            GRID_MODE: self.grid_mode_section,
+        self.section_map: dict[BrowseTabSection, QWidget] = {
+            BrowseTabSection.FILTER_SELECTOR: self.initial_filter_choice_widget,
+            BrowseTabSection.STARTING_LETTER: self.starting_letter_section,
+            BrowseTabSection.CONTAINS_LETTERS: self.contains_letter_section,
+            BrowseTabSection.SEQUENCE_LENGTH: self.length_section,
+            BrowseTabSection.LEVEL: self.level_section,
+            BrowseTabSection.STARTING_POSITION: self.start_pos_section,
+            BrowseTabSection.AUTHOR: self.author_section,
+            BrowseTabSection.GRID_MODE: self.grid_mode_section,
         }
 
         self.section_indexes = {}
         for name, widget in self.section_map.items():
             index = self.addWidget(widget)
             self.section_indexes[name] = index
-        self.current_filter_section: str = "filter_selector"
+        self.current_filter_section: BrowseTabSection = BrowseTabSection.FILTER_SELECTOR
 
-    def show_section(self, section_name: str):
-        index = self.section_indexes.get(section_name)
+    def show_section(self, filter_section_str: str):
+        # convert the str to an enum
+        filter_section_enum = BrowseTabSection.from_str(filter_section_str)
+        index = self.section_indexes.get(filter_section_enum)
         if index is not None:
             self.sequence_picker.main_widget.fade_manager.stack_fader.fade_stack(
                 self.sequence_picker.filter_stack, index
             )
-            self.browse_tab.browse_settings.set_current_section(section_name)
-            self.current_filter_section = section_name
+            self.browse_tab.browse_settings.set_current_section(
+                filter_section_enum.value
+            )
+            self.current_filter_section = filter_section_enum
         else:
-            print(f"Section '{section_name}' not found.")
+            print(
+                f"Section '{filter_section_str}' not found. Did you spell it correctly?"
+            )
 
     def show_filter_choice_widget(self):
-        self.show_section("filter_selector")
+        self.show_section(BrowseTabSection.FILTER_SELECTOR.value)

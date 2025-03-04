@@ -182,20 +182,46 @@ class MirroredPermutationExecutor(PermutationExecutor):
         previous_entry_attributes: dict,
         previous_matching_beat_attributes: dict,
     ) -> dict:
-        new_entry_attributes = {
-            MOTION_TYPE: previous_matching_beat_attributes[MOTION_TYPE],
-            START_ORI: previous_entry_attributes[END_ORI],
-            PROP_ROT_DIR: self.get_mirrored_prop_rot_dir(
+        if previous_matching_beat_attributes[MOTION_TYPE] == 'float':
+            motion_type = previous_matching_beat_attributes[MOTION_TYPE]
+            prop_rot_dir = self.get_mirrored_prop_rot_dir(
                 previous_matching_beat_attributes[PROP_ROT_DIR]
-            ),
-            START_LOC: previous_entry_attributes[END_LOC],
-            END_LOC: self.calculate_mirrored_permuatation_new_loc(
-                previous_matching_beat_attributes[END_LOC]
-            ),
-            TURNS: previous_matching_beat_attributes[TURNS],
-        }
+            )
+            prefloat_motion_type = previous_matching_beat_attributes['prefloat_motion_type']
+            prefloat_prop_rot_dir = self.get_mirrored_prop_rot_dir(
+                previous_matching_beat_attributes['prefloat_prop_rot_dir']
+            )
+            new_entry_attributes = {
+                MOTION_TYPE: motion_type,
+                START_ORI: previous_entry_attributes[END_ORI],
+                PROP_ROT_DIR: prop_rot_dir,
+                START_LOC: previous_entry_attributes[END_LOC],
+                END_LOC: self.calculate_mirrored_permuatation_new_loc(
+                    previous_matching_beat_attributes[END_LOC]
+                ),
+                TURNS: previous_matching_beat_attributes[TURNS],
+                PREFLOAT_MOTION_TYPE: prefloat_motion_type,
+                PREFLOAT_PROP_ROT_DIR: prefloat_prop_rot_dir,
+            }
+        else:
+            motion_type = previous_matching_beat_attributes[MOTION_TYPE]
+            prop_rot_dir = self.get_mirrored_prop_rot_dir(
+                previous_matching_beat_attributes[PROP_ROT_DIR]
+            )
+
+            new_entry_attributes = {
+                MOTION_TYPE: motion_type,
+                START_ORI: previous_entry_attributes[END_ORI],
+                PROP_ROT_DIR: prop_rot_dir,
+                START_LOC: previous_entry_attributes[END_LOC],
+                END_LOC: self.calculate_mirrored_permuatation_new_loc(
+                    previous_matching_beat_attributes[END_LOC]
+                ),
+                TURNS: previous_matching_beat_attributes[TURNS],
+            }
 
         return new_entry_attributes
+
 
     def calculate_mirrored_permuatation_new_loc(
         self, previous_matching_beat_end_loc: str

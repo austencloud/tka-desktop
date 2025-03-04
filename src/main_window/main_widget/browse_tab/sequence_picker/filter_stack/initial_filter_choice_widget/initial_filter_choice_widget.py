@@ -22,34 +22,19 @@ class InitialFilterChoiceWidget(QWidget):
         return date_string.replace(" 0", " ")
 
     FILTER_OPTIONS: dict[str, tuple[str, Union[str, dict[str, Any]]]] = {
-        "Starting Letter": (
-            "Display sequences that start with a specific letter.",
-            "starting_letter",
-        ),
-        "Contains Letter": (
-            "Display sequences that contain specific letters.",
-            "contains_letters",
-        ),
-        "Sequence Length": ("Display sequences by length.", "sequence_length"),
-        "Level": ("Display sequences by difficulty level.", "level"),
-        "Starting Position": (
-            "Display sequences by starting position.",
-            "starting_position",
-        ),
-        "Author": ("Display sequences by author.", "author"),
-        "Favorites": ("Display your favorite sequences.", {"favorites": True}),
+        "Start Letter": ("Sequences starting with a specific letter.", "starting_letter"),
+        "Contains Letter": ("Sequences containing specific letters.", "contains_letters"),
+        "Length": ("Sequences by length.", "sequence_length"),
+        "Level": ("Sequences by difficulty level.", "level"),
+        "Start Position": ("Sequences by starting position.", "starting_position"),
+        "Author": ("Sequences by author.", "author"),
+        "Favorites": ("Your favorite sequences.", {"favorites": True}),
         "Most Recent": (
-            f"Display sequences created since {datetime.now() - timedelta(weeks=1)}.",
+            f"Sequences created since {datetime.now() - timedelta(weeks=1)}.",
             {"most_recent": datetime.now() - timedelta(weeks=1)},
         ),
-        "Grid Mode": (
-            "Display sequences by grid mode (Box or Diamond).",
-            GRID_MODE,
-        ),
-        "Show All": (
-            "Display every sequence in the dictionary.",
-            {"show_all": True},
-        ),
+        "Grid Mode": ("Sequences by grid mode (Box or Diamond).", GRID_MODE),
+        "Show All": ("All sequences in the dictionary.", {"show_all": True}),
     }
 
     def __init__(self, filter_stack: "SequencePickerFilterStack"):
@@ -99,7 +84,7 @@ class InitialFilterChoiceWidget(QWidget):
         for label, (description, handler_arg) in self.FILTER_OPTIONS.items():
             if label == "Most Recent":
                 date_string = self._get_recent_date_string()
-                description = f"Display sequences created since {date_string}."
+                description = f"Sequences created since {date_string}."
             if isinstance(handler_arg, str):
                 handler = partial(self.filter_selector.show_section, handler_arg)
             else:

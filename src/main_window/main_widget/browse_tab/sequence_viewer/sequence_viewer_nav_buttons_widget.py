@@ -28,7 +28,7 @@ class SequenceViewerNavButtonsWidget(QWidget):
 
         self.left_button = SequenceViewerNavButton("⮜", self)  # Left Arrow
         self.right_button = SequenceViewerNavButton("⮞", self)  # Right Arrow
-        
+
         layout.addStretch(1)
         layout.addWidget(self.left_button)
         layout.addWidget(self.variation_number_label)  # Centered label
@@ -55,14 +55,12 @@ class SequenceViewerNavButtonsWidget(QWidget):
             f"{self.state.current_index + 1}/"
             f"{len(self.sequence_viewer.state.thumbnails)}"
         )
-
-        # Sync up with the thumbnail box
-        self.sequence_viewer.current_thumbnail_box.state.current_index = (
-            self.state.current_index
-        )
-        box_nav = self.sequence_viewer.current_thumbnail_box.nav_buttons_widget
-        box_nav.thumbnail_box.state.current_index = self.state.current_index
-        box_nav.update_thumbnail(self.state.current_index)
+        thumbnail_box = self.sequence_viewer.current_thumbnail_box
+        if thumbnail_box:
+            thumbnail_box.state.current_index = self.state.current_index
+            box_nav = self.sequence_viewer.current_thumbnail_box.nav_buttons_widget
+            box_nav.thumbnail_box.state.current_index = self.state.current_index
+            box_nav.update_thumbnail(self.state.current_index)
 
     def update_thumbnail(self):
         self.image_label.update_thumbnail(self.state.current_index)

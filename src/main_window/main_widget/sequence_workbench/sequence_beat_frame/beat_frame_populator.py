@@ -33,8 +33,8 @@ class BeatFramePopulator:
 
         if not self.current_sequence_json:
             return
-
-        self.beat_frame.updater.reset_beat_frame()
+        if not initial_state_load:
+            self.beat_frame.updater.reset_beat_frame()
         self._set_start_position()
         self._update_sequence_layout()
         self._update_sequence_word()

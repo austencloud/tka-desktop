@@ -20,7 +20,7 @@ class BrowseTabSelectionManager:
         self.sequence_viewer = self.browse_tab.sequence_viewer
         self.main_widget = self.browse_tab.main_widget
 
-    def on_box_thumbnail_clicked(
+    def on_thumbnail_clicked(
         self, image_label: "ThumbnailImageLabel", sequence_dict: dict
     ) -> None:
         sequence_viewer = self.sequence_viewer

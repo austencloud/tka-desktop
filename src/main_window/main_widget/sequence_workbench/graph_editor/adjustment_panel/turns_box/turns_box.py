@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, OPP, SAME
+from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, HEX_BLUE, HEX_RED, OPP, SAME
 from .prop_rot_dir_button_manager.prop_rot_dir_button_manager import (
     PropRotDirButtonManager,
 )
@@ -48,10 +48,23 @@ class TurnsBox(QFrame):
         self.setLayout(layout)
 
     def resizeEvent(self, event):
-        self.border_width = self.graph_editor.sequence_workbench.width() // 200
+        border_width = self.graph_editor.sequence_workbench.width() // 200
+        # Convert named colors to hex
+        color_hex = (
+            HEX_RED
+            if self.color == "red"
+            else HEX_BLUE if self.color == "blue" else self.color
+        )
+        # Convert hex to RGB
+        r, g, b = int(color_hex[1:3], 16), int(color_hex[3:5], 16), int(color_hex[5:7], 16)
+        # Whiten the color by blending with white (255, 255, 255)
+        whitened_r = min(255, r + (255 - r) // 2)
+        whitened_g = min(255, g + (255 - g) // 2)
+        whitened_b = min(255, b + (255 - b) // 2)
+        whitened_color = f"rgb({whitened_r}, {whitened_g}, {whitened_b})"
         self.setStyleSheet(
-            f"#{self.__class__.__name__} {{ border: {self.border_width}px solid "
-            f"{self.color}; background-color: white;}}"
+            f"#{self.__class__.__name__} {{ border: {border_width}px solid "
+            f"{color_hex}; background-color: {whitened_color};}}"
         )
         self.turns_widget.resizeEvent(event)
         self.header.resizeEvent(event)

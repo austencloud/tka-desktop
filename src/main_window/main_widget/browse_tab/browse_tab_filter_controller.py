@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Union
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QTimer
 
 from data.constants import GRID_MODE
 from main_window.main_widget.tab_indices import LeftStackIndex
@@ -20,7 +21,7 @@ class BrowseTabFilterController:
         self.fade_manager = browse_tab.main_widget.fade_manager
         self.metadata_extractor = browse_tab.metadata_extractor
 
-    def apply_filter(self, filter_criteria: Union[str, dict]):
+    def apply_filter(self, filter_criteria: Union[str, dict], fade=True):
         tab_name = (
             self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
         )
@@ -30,7 +31,7 @@ class BrowseTabFilterController:
             self.browse_tab.sequence_picker.filter_stack,
             self.browse_tab.sequence_picker,
         ]
-        if tab_name == "browse":
+        if tab_name == "browse" and fade:
             self.fade_manager.widget_fader.fade_and_update(
                 widgets_to_fade,
                 (
@@ -42,6 +43,9 @@ class BrowseTabFilterController:
         else:
             self._apply_filter_after_fade(filter_criteria, description)
             self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
+
+        self.browse_tab.browse_settings.set_current_section("sequence_picker")
+
 
     def _apply_filter_after_fade(self, filter_criteria, description: str):
         self._prepare_ui_for_filtering(description)
@@ -201,9 +205,8 @@ class BrowseTabFilterController:
     def _dict_filter_show_all(self, _unused):
         return self.filter_manager.filter_all_sequences()
 
-    def _base_words(self):
-        dictionary_dir = get_data_path("generated_data\\dictionary")
-        all_words = self.browse_tab.get.base_words(dictionary_dir)
+    def _base_words(self) -> list[tuple[str, list[str]]]:
+        all_words = self.browse_tab.get.base_words()
         base_words = []
         for w, thumbs in all_words:
             if thumbs:  # only store if thumbs is non-empty
