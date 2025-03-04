@@ -42,7 +42,7 @@ class BrowseTabFilterManager:
         return sorted(sequences, key=lambda seq: seq[2])
 
     def filter_all_sequences(self) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_data_path("generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\\dictionary")
         sequences = []
         for word, thumbnails in self.browse_tab.get.base_words():
             if not thumbnails:
@@ -56,7 +56,7 @@ class BrowseTabFilterManager:
         return sequences
 
     def filter_most_recent(self) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_data_path("generated_data\dictionary")
+        dictionary_dir = get_data_path("generated_data\\dictionary")
         filtered_sequences = []
 
         # Set the date range to the past two weeks
