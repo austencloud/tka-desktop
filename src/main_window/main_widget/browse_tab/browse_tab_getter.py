@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Generator
 import os
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from utils.path_helpers import get_data_path
@@ -30,17 +30,18 @@ class BrowseTabGetter:
         ]
         return sequences
 
-    def base_words(self) -> list[tuple[str, list[str]]]:
-        """Helper method to retrieve words and their thumbnails."""
-        dictionary_dir = get_data_path("generated_data\dictionary")
-        return [
-            (
-                word,
-                self.browse_tab.main_widget.thumbnail_finder.find_thumbnails(
-                    os.path.join(dictionary_dir, word)
-                ),
-            )
-            for word in os.listdir(dictionary_dir)
-            if os.path.isdir(os.path.join(dictionary_dir, word))
-            and "__pycache__" not in word
-        ]
+    def base_words(self) -> Generator[tuple[str, list[str]], Any, None]:
+        """Generator version of base_words() to optimize performance."""
+        dictionary_dir = get_data_path("generated_data/dictionary")
+
+        for word in os.listdir(dictionary_dir):
+            if (
+                os.path.isdir(os.path.join(dictionary_dir, word))
+                and "__pycache__" not in word
+            ):
+                thumbnails = (
+                    self.browse_tab.main_widget.thumbnail_finder.find_thumbnails(
+                        os.path.join(dictionary_dir, word)
+                    )
+                )
+                yield word, thumbnails
