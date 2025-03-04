@@ -5,8 +5,6 @@ from main_window.main_widget.codex.codex import Codex
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
-from main_window.main_widget.tab_index import TAB_INDEX
-from main_window.main_widget.tab_name import TabName
 from settings_manager.global_settings.app_context import AppContext
 from .construct_tab.construct_tab import ConstructTab
 from .generate_tab.generate_tab import GenerateTab
@@ -16,14 +14,10 @@ from .main_background_widget.main_background_widget import MainBackgroundWidget
 from .font_color_updater.font_color_updater import FontColorUpdater
 from ..menu_bar.menu_bar import MenuBarWidget
 from .sequence_workbench.sequence_workbench import SequenceWorkbench
-from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import (
-    QApplication,
-    QWidget,
     QVBoxLayout,
     QHBoxLayout,
     QStackedWidget,
-    QSizePolicy,
 )
 
 if TYPE_CHECKING:

@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtGui import QFontMetrics
 from main_window.main_widget.tab_indices import LeftStackIndex
 from styles.base_styled_button import BaseStyledButton

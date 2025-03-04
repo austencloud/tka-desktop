@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication
 from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import (
     BrowseTabSection,

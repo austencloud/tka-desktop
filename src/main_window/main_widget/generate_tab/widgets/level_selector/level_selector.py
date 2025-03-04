@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QToolButton, QLabel
-from PyQt6.QtGui import QIcon, QPixmap, QCursor
+from PyQt6.QtGui import QIcon, QCursor
 from PyQt6.QtCore import Qt, QSize
 from typing import TYPE_CHECKING
 

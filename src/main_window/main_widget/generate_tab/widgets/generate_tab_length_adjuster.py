@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel, QPushButton
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QFont, QIcon
+from PyQt6.QtGui import QFont
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.generate_tab.widgets.increment_adjuster_button import (

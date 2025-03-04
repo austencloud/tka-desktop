@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 from enum import Enum
 from PyQt6.QtWidgets import QWidget, QStackedWidget
 
-from data.constants import GRID_MODE
 from .author_section import AuthorSection
 from .contains_letter_section import ContainsLettersSection
 from .initial_filter_choice_widget.initial_filter_choice_widget import (

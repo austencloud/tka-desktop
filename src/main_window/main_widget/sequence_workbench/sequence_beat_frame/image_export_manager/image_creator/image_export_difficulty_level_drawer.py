@@ -1,4 +1,3 @@
-import math
 from typing import TYPE_CHECKING
 from PyQt6.QtGui import (
     QPainter,

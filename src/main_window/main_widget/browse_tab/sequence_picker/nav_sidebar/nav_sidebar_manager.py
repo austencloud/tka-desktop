@@ -1,4 +1,3 @@
-from PyQt6.QtGui import QFontMetrics
 from PyQt6.QtWidgets import QPushButton, QLabel
 from PyQt6.QtCore import Qt, QPoint
 from typing import TYPE_CHECKING

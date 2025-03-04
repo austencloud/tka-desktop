@@ -1,4 +1,3 @@
-from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import Qt
 
 from styles.base_styled_button import BaseStyledButton

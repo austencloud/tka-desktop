@@ -1,14 +1,12 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QSizePolicy, QWidget
+from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QWidget
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
         SequenceWorkbench,
     )
 
-from .labels.workbench_difficulty_label import WorkbenchDifficultyLabel
-from .labels.current_word_label import CurrentWordLabel
 
 
 class SequenceWorkbenchLayoutManager:

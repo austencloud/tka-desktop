@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QApplication
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox
 
 if TYPE_CHECKING:

@@ -1,24 +1,8 @@
-from typing import TYPE_CHECKING, Optional
-from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import QTimer
-import json
+from typing import TYPE_CHECKING
 
-from main_window.main_widget.browse_tab.browse_tab_filter_controller import (
-    BrowseTabFilterController,
-)
-from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from settings_manager.global_settings.app_context import AppContext
 
-from .sequence_picker.sequence_picker import SequencePicker
-from .browse_tab_filter_manager import BrowseTabFilterManager
-from .browse_tab_getter import BrowseTabGetter
-from .browse_tab_ui_updater import BrowseTabUIUpdater
-from .deletion_handler.browse_tab_deletion_handler import BrowseTabDeletionHandler
-from .browse_tab_selection_handler import BrowseTabSelectionManager
-from .sequence_viewer.sequence_viewer import SequenceViewer
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
     from settings_manager.browse_tab_settings import BrowseTabSettings
 
 

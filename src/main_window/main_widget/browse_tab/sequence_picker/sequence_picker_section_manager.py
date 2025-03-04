@@ -123,7 +123,6 @@ class SequencePickerSectionManager:
                             print(
                                 f"[WARNING] Could not parse date for {thumbnail}"
                             )  # Added logging
-                            pass
             except FileNotFoundError as e:
                 print(f"[WARNING] File not found: {thumbnail} - {e}")
                 continue 

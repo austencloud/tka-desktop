@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
@@ -13,7 +12,7 @@ from PyQt6.QtWidgets import (
 
 from main_window.main_widget.sequence_workbench.workbench_button import WorkbenchButton
 from .button_panel_placeholder import ButtonPanelPlaceholder
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
     from .sequence_workbench import SequenceWorkbench

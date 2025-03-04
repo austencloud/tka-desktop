@@ -1,16 +1,9 @@
-from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QToolButton
-from PyQt6.QtGui import QPixmap, QImage, QPainter, QFont, QPen, QFontMetrics, QIcon
-from PyQt6.QtCore import Qt, QRect, QPoint, QSize
+from PyQt6.QtGui import QPixmap, QImage, QPainter, QFont, QFontMetrics
+from PyQt6.QtCore import Qt, QRect, QPoint
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.difficult_level_gradients import (
     DifficultyLevelGradients,
 )
-from settings_manager.global_settings.app_context import AppContext
 
-if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_workbench import (
-        SequenceWorkbench,
-    )
 
 
 class DifficultyLevelIcon:

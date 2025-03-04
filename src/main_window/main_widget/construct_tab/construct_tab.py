@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QFrame, QVBoxLayout
+from PyQt6.QtWidgets import QFrame
 from PyQt6.QtCore import pyqtSignal, QSize
 from typing import TYPE_CHECKING, Callable
 
@@ -9,7 +9,6 @@ from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
     SequenceBeatFrame,
 )
-from settings_manager.settings_manager import SettingsManager
 
 
 from .start_pos_picker.start_pos_picker import StartPosPicker
@@ -18,7 +17,7 @@ from .add_to_sequence_manager.add_to_sequence_manager import AddToSequenceManage
 from .option_picker.widgets.option_picker_widget import OptionPickerWidget
 
 if TYPE_CHECKING:
-    from main_window.main_widget.json_manager.json_manager import JsonManager
+    pass
 
 
 class ConstructTab(QFrame):

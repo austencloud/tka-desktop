@@ -21,7 +21,6 @@ from main_window.main_widget.sequence_workbench.labels.sequence_workbench_indica
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
     SequenceBeatFrame,
 )
-from settings_manager.global_settings.app_context import AppContext
 from .full_screen_viewer import FullScreenViewer
 from .sequence_color_swapper import SequenceColorSwapper
 from .sequence_reflector import SequenceReflector

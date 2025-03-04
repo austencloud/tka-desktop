@@ -1,5 +1,5 @@
 from styles.base_styled_button import BaseStyledButton
-from PyQt6.QtGui import QFontMetrics, QFont
+from PyQt6.QtGui import QFontMetrics
 from PyQt6.QtCore import QEvent
 
 

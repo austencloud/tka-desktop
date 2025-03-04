@@ -3,11 +3,9 @@ from typing import TYPE_CHECKING, Union
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTimer
 
 from data.constants import GRID_MODE
 from main_window.main_widget.tab_indices import LeftStackIndex
-from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab

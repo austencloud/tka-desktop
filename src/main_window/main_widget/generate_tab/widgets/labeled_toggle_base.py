@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel
-from PyQt6.QtCore import Qt, pyqtSignal, QEvent, QPoint
+from PyQt6.QtCore import Qt, pyqtSignal, QEvent
 from typing import TYPE_CHECKING
 from base_widgets.pytoggle import PyToggle
 

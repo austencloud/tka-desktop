@@ -1,8 +1,5 @@
 from typing import TYPE_CHECKING
 
-from base_widgets.base_go_back_button import (
-    BaseGoBackButton,
-)
 from styles.base_styled_button import BaseStyledButton
 
 
