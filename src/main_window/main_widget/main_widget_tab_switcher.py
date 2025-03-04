@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication
+from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import (
+    BrowseTabSection,
+)
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_indices import LeftStackIndex, RightStackIndex
 from main_window.main_widget.tab_name import TabName
@@ -15,14 +18,12 @@ class MainWidgetTabSwitcher:
         self.mw = main_widget
 
         self.tab_to_right_stack = {
-            TAB_INDEX[TabName.BROWSE]: RightStackIndex.SEQUENCE_VIEWER,
             TAB_INDEX[TabName.GENERATE]: RightStackIndex.GENERATE_TAB,
             TAB_INDEX[TabName.LEARN]: RightStackIndex.LEARN_TAB,
         }
 
         self.tab_to_left_stack = {
             TAB_INDEX[TabName.LEARN]: LeftStackIndex.LEARN_CODEX,
-            TAB_INDEX[TabName.BROWSE]: LeftStackIndex.SEQUENCE_PICKER,
             TAB_INDEX[TabName.GENERATE]: LeftStackIndex.WORKBENCH,
             TAB_INDEX[TabName.CONSTRUCT]: LeftStackIndex.WORKBENCH,
         }
@@ -83,6 +84,21 @@ class MainWidgetTabSwitcher:
                 if len(current_sequence) > 1
                 else RightStackIndex.START_POS_PICKER
             )
+        elif tab_name == TabName.BROWSE:
+            current_section_str = (
+                self.mw.browse_tab.browse_settings.get_current_section()
+            )
+            browse_left_stack_index = (
+                self.mw.browse_tab.browse_settings.get_browse_left_stack_index()
+            )
+            filter_section_strs = [section.value for section in BrowseTabSection]
+            if current_section_str in filter_section_strs:
+                if current_section_str == BrowseTabSection.FILTER_SELECTOR.value:
+                    left_index = LeftStackIndex.FILTER_SELECTOR
+                else:
+                    left_index = LeftStackIndex.SEQUENCE_PICKER
+            right_index = RightStackIndex.SEQUENCE_VIEWER
+            # left_index = browse_left_stack_index
         else:
             right_index = self.tab_to_right_stack.get(index, index)
 

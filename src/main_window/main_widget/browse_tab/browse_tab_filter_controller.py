@@ -43,6 +43,9 @@ class BrowseTabFilterController:
             self._apply_filter_after_fade(filter_criteria, description)
             self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
 
+        # update the current_section in the settings
+        self.browse_tab.browse_settings.set_current_section("sequence_picker")
+
     def _apply_filter_after_fade(self, filter_criteria, description: str):
         self._prepare_ui_for_filtering(description)
         if isinstance(filter_criteria, str):

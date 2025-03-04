@@ -127,7 +127,7 @@ class SequencePickerSorter:
             if selected_seq:
                 word = selected_seq.get("word")
                 var_index = selected_seq.get("variation_index", 0)
-            self.sequence_picker.browse_tab.reopen_sequence(word, var_index)
+            self.sequence_picker.browse_tab.reopen_thumbnail(word, var_index)
             self.sequence_picker.initialized = True
 
         self.sequence_picker.control_panel.count_label.setText(

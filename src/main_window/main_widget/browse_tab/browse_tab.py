@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 
 class BrowseTab(QWidget):
-    
+
     def __init__(self, main_widget: "MainWidget") -> None:
         super().__init__()
         self.main_widget = main_widget
@@ -34,8 +34,8 @@ class BrowseTab(QWidget):
 
         self.filter_manager = BrowseTabFilterManager(self)
         self.filter_controller = BrowseTabFilterController(self)
-        self.sequence_picker = SequencePicker(self)
 
+        self.sequence_picker = SequencePicker(self)
         self.sequence_viewer = SequenceViewer(self)
 
         self.deletion_handler = BrowseTabDeletionHandler(self)
@@ -55,14 +55,18 @@ class BrowseTab(QWidget):
         if filter_criteria:
             self.filter_controller.apply_filter(filter_criteria)
 
-    def reopen_sequence(self, word: str, var_index: int):
+    def reopen_thumbnail(self, word: str, var_index: int):
         if word in self.sequence_picker.scroll_widget.thumbnail_boxes:
-            box = self.sequence_picker.scroll_widget.thumbnail_boxes[word]
+            box = self.sequence_picker.scroll_widget.thumbnail_boxes.get(word)
             if 0 <= var_index < len(box.state.thumbnails):
                 box.state.current_index = var_index
+                selected_thumbnail = box.state.thumbnails[var_index]
                 metadata = self.metadata_extractor.extract_metadata_from_file(
-                    box.state.thumbnails[var_index]
+                    selected_thumbnail
                 )
                 self.selection_handler.on_box_thumbnail_clicked(
                     box.image_label, metadata
                 )
+        else:
+            sequence_viewer_thumbnails = self.sequence_viewer.state.thumbnails
+            
