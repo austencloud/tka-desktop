@@ -121,13 +121,12 @@ class SequencePickerSorter:
                 if column_index == 0:
                     row_index += 1
 
-
         self.sequence_picker.control_panel.count_label.setText(
             f"Number of words: {len(self.browse_tab.sequence_picker.currently_displayed_sequences)}"
         )
         if not self.browse_tab.sequence_viewer.current_thumbnail_box:
             word = self.browse_tab.sequence_viewer.word_label.text()
-            self.browse_tab.set_current_thumbnail_box(word)
+            self.browse_tab.sequence_viewer.set_current_thumbnail_box(word)
 
     def add_section_headers(
         self, row_index: int, section: str, sort_method: str, current_section: str
@@ -186,7 +185,6 @@ class SequencePickerSorter:
 
         if not hidden:
             thumbnail_box.show()
-
 
     def reload_currently_displayed_filtered_sequences(self):
         sort_method = (

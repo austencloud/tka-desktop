@@ -101,3 +101,64 @@ class SequenceViewer(QWidget):
 
     def get_thumbnail_at_current_index(self) -> Optional[str]:
         return self.state.get_current_thumbnail_str()
+
+    def reopen_thumbnail(self, word: str, var_index: int):
+        """Reopens a thumbnail based on word and variation index."""
+        if word in self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes:
+            box = self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes[word]
+            if 0 <= var_index < len(box.state.thumbnails):
+                box.state.current_index = var_index
+                selected_thumbnail = box.state.thumbnails[var_index]
+                metadata = (
+                    self.browse_tab.metadata_extractor.extract_metadata_from_file(
+                        selected_thumbnail
+                    )
+                )
+                self.browse_tab.selection_handler.on_thumbnail_clicked(
+                    box.image_label, metadata
+                )
+                return
+
+        print(
+            f"[INFO] '{word}' not found in the current filter. Searching full dictionary..."
+        )
+
+        dictionary_words = self.browse_tab.get.base_words()
+        matching_entry = next(
+            (entry for entry in dictionary_words if entry[0] == word), None
+        )
+        if matching_entry:
+            thumbnails = matching_entry[1]
+
+            if thumbnails:
+                var_index = max(0, min(var_index, len(thumbnails) - 1))
+                selected_thumbnail = thumbnails[var_index]
+
+                self.update_thumbnails(thumbnails)
+                self.update_preview(var_index)
+                self.update_nav_buttons()
+                self.word_label.update_word_label(word)
+                self.variation_number_label.update_index(var_index)
+                self.set_current_thumbnail_box(word)
+
+                print(
+                    f"[SUCCESS] Loaded missing sequence: {word} (variation {var_index})"
+                )
+                return
+
+        print(f"[ERROR] Could not find sequence '{word}' in the dictionary.")
+
+    def set_current_thumbnail_box(self, word):
+        """Sets the current thumbnail box and updates the sequence viewer."""
+        thumbnail_boxes = self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes
+        if not thumbnail_boxes:
+            return
+        for box in thumbnail_boxes.values():
+            if box.word == word:
+                self.current_thumbnail_box = box
+                index = self.state.current_index
+                box.nav_buttons_widget.update_thumbnail(index)
+                self.browse_tab.selection_handler.current_thumbnail = (
+                    self.current_thumbnail_box.image_label
+                )
+                return
