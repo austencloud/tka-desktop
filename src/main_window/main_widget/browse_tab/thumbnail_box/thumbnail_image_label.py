@@ -8,6 +8,7 @@ from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox
+from PyQt6.QtCore import QSize
 
 
 class ThumbnailImageLabel(QLabel):
@@ -26,17 +27,29 @@ class ThumbnailImageLabel(QLabel):
         self._border_color = None  # Initialize border color
 
     def update_thumbnail(self, index):
-        if self.thumbnail_box.state.thumbnails and 0 <= index < len(
-            self.thumbnail_box.state.thumbnails
+        """Update the thumbnail only if resizing is necessary."""
+        if not self.thumbnail_box.state.thumbnails or not (
+            0 <= index < len(self.thumbnail_box.state.thumbnails)
         ):
-            pixmap = QPixmap(self.thumbnail_box.state.thumbnails[index])
-            self._set_pixmap_to_fit(pixmap)
+            return  # Invalid index or no thumbnails
 
-    def _set_pixmap_to_fit(self, pixmap: QPixmap):
+        # Calculate expected size before creating a new QPixmap
+        expected_size = self._calculate_expected_size()
+        if self.pixmap and self.pixmap.size() == expected_size:
+            return  # Skip redundant updates if the size is correct
+
+        # Create and scale only if necessary
+        new_pixmap = QPixmap(self.thumbnail_box.state.thumbnails[index])
+        if not new_pixmap.isNull():
+            self._set_pixmap_to_fit(new_pixmap, expected_size)
+
+    def _calculate_expected_size(self):
+        """Calculate the expected thumbnail size based on layout constraints."""
         nav_bar = self.thumbnail_box.sequence_picker.nav_sidebar
         if nav_bar.width() < 20:
             nav_bar.resize_sidebar()
-        aspect_ratio = pixmap.width() / pixmap.height()
+
+        # Calculate available space
         scrollbar_width = (
             self.thumbnail_box.sequence_picker.scroll_widget.calculate_scrollbar_width()
         )
@@ -45,49 +58,51 @@ class ThumbnailImageLabel(QLabel):
             - scrollbar_width
             - self.thumbnail_box.sequence_picker.nav_sidebar.width()
         )
-        width = scroll_widget_width // 3
-        max_width = int(width - (self.thumbnail_box.margin * 2))
-        max_height = int(max_width / aspect_ratio)
+        max_width = int(scroll_widget_width // 3 - (self.thumbnail_box.margin * 2))
 
+        # Adjust width for single-length sequences
         seq_len = self.metadata_extractor.get_length(
             self.thumbnail_box.state.thumbnails[self.thumbnail_box.state.current_index]
         )
         if seq_len == 1:
             max_width = int(max_width * 0.6)
 
-        scaled_pm = pixmap.scaled(
-            max_width,
-            max_height,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation,
-        )
-
-        self.pixmap = scaled_pm  # Store scaled pixmap
-        self.setPixmap(scaled_pm)
-
-    def _get_target_width(self, sequence_length):
-        if sequence_length == 1:
-            target_width = int(self.thumbnail_box.width() * 0.6) - int(
-                self.thumbnail_box.margin * 2
-            )
+        # Maintain aspect ratio
+        if self.pixmap:
+            aspect_ratio = self.pixmap.width() / self.pixmap.height()
         else:
-            target_width = self.thumbnail_box.width() - int(
-                self.thumbnail_box.margin * 2
+            aspect_ratio = 1  # Default to square if no pixmap available
+
+        max_height = int(max_width / aspect_ratio)
+        return QSize(max_width, max_height)  # Convert to QSize. Finally!
+
+    def _set_pixmap_to_fit(self, pixmap: QPixmap, expected_size: QSize):
+        """Set the pixmap only if resizing is needed."""
+        max_width, max_height = expected_size.width(), expected_size.height()
+
+        # Skip scaling if the new pixmap already matches the expected size
+        if pixmap.width() == max_width and pixmap.height() == max_height:
+            self.pixmap = pixmap
+        else:
+            self.pixmap = pixmap.scaled(
+                max_width,
+                max_height,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
             )
 
-        return target_width
+        self.setPixmap(self.pixmap)
 
     def mousePressEvent(self, event: "QMouseEvent"):
-        if self.thumbnail_box.state.thumbnails:
-            metadata = self.metadata_extractor.extract_metadata_from_file(
-                self.thumbnail_box.state.thumbnails[0]
-            )
-            self.thumbnail_box.browse_tab.selection_handler.on_thumbnail_clicked(
-                self, metadata
-            )
+        if not self.thumbnail_box.state.thumbnails:
+            raise ValueError(f"No thumbnails for {self.thumbnail_box.word}")
 
-        else:
-            ValueError(f"No thumbnails for {self.thumbnail_box.word}")
+        metadata = self.metadata_extractor.extract_metadata_from_file(
+            self.thumbnail_box.state.thumbnails[0]
+        )
+        self.thumbnail_box.browse_tab.selection_handler.on_thumbnail_clicked(
+            self, metadata
+        )
 
     def enterEvent(self, event: QEvent):
         self._border_color = "gold"  # Set border color on hover
@@ -95,19 +110,15 @@ class ThumbnailImageLabel(QLabel):
         super().enterEvent(event)
 
     def leaveEvent(self, event: QEvent):
-        if self.is_selected:
-            self._border_color = BLUE  # Set border color if selected
-        else:
-            self._border_color = None  # Remove border
+        self._border_color = (
+            BLUE if self.is_selected else None
+        )  # Set border color if selected
         self.update()  # Trigger repaint
         super().leaveEvent(event)
 
     def set_selected(self, selected: bool):
         self.is_selected = selected
-        if selected:
-            self._border_color = BLUE  # Set border color if selected
-        else:
-            self._border_color = None  # Remove border
+        self._border_color = BLUE if selected else None  # Update border color
         self.update()  # Trigger repaint
 
     def paintEvent(self, event):
@@ -118,7 +129,7 @@ class ThumbnailImageLabel(QLabel):
             pen = QPen(QColor(self._border_color))
             pen.setWidth(self.border_width)  # Set pen width
             pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)  # Set hard edges
-            painter.setPen(pen)  # Use color name to get QColor
+            painter.setPen(pen)
 
             # Calculate the top-center position for the pixmap
             x = (self.width() - self.pixmap.width()) // 2
