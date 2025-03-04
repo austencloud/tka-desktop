@@ -5,7 +5,6 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export
 )
 
 
-
 class DifficultyLevelIcon:
     @staticmethod
     def get_pixmap(difficulty_level: int, size: int) -> QPixmap:
@@ -84,11 +83,19 @@ class DifficultyLevelIcon:
         rect: QRect, bounding_rect: QRect, difficulty_level: int
     ) -> tuple[int, int]:
         """Calculates the position for the text."""
-        text_x = rect.center().x() - bounding_rect.width() // 2
-        text_y = rect.center().y() - bounding_rect.height() // 2
+        bounding_width = bounding_rect.width()
+        text_x = rect.center().x() - bounding_width // 2
+        bounding_height = bounding_rect.height()
+        text_y = rect.center().y() - bounding_height // 2
 
         # Subtle position tweaks per level
-        text_y -= 4 if difficulty_level != 3 else 6
-        if difficulty_level == 3:
-            text_x += 2
+        if difficulty_level == 1:
+            text_x += bounding_width // 10
+            text_y -= bounding_height // 10
+        elif difficulty_level == 2:
+            text_x += 0
+            text_y -= bounding_height // 12
+        elif difficulty_level == 3:
+            text_x += 0
+            text_y -= bounding_height // 8
         return text_x, text_y
