@@ -51,9 +51,11 @@ class BrowseTabPersistenceManager:
         self.thumbnail_queue = [word for word, _ in self.browse_tab.get.base_words()]
 
         # Filter out words that already have thumbnail boxes
-        existing_words = set(
-            self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.keys()
-        )
+        existing_words = {
+            word
+            for word, box in self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.items()
+            if box.initialized == True
+        }
         self.thumbnail_queue = [
             word for word in self.thumbnail_queue if word not in existing_words
         ]
@@ -79,12 +81,15 @@ class BrowseTabPersistenceManager:
 
         # Continue preloading with a slight delay to keep UI responsive
         if self.thumbnail_queue:
-            QTimer.singleShot(10, self.preload_next_thumbnail)
+            QTimer.singleShot(50, self.preload_next_thumbnail)
 
     def add_thumbnail_box(self, word: str, thumbnails: list[str]):
         """Adds a new thumbnail box to the scroll widget."""
         scroll_widget = self.browse_tab.sequence_picker.scroll_widget
         thumbnail_box = ThumbnailBox(self.browse_tab, word, thumbnails)
+        if scroll_widget.thumbnail_boxes.get(word):
+            if scroll_widget.thumbnail_boxes[word].initialized:
+                return
         scroll_widget.thumbnail_boxes[word] = thumbnail_box
         scroll_widget.grid_layout.addWidget(thumbnail_box)
         thumbnail_box.update_thumbnails(thumbnails)  # Ensure it loads properly

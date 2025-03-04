@@ -37,7 +37,8 @@ class ThumbnailImageLabel(QLabel):
         expected_size = self._calculate_expected_size()
         if self.pixmap and self.pixmap.size() == expected_size:
             return  # Skip redundant updates if the size is correct
-
+        if self.thumbnail_box.initialized == False:
+            self.thumbnail_box.initialized = True
         # Create and scale only if necessary
         new_pixmap = QPixmap(self.thumbnail_box.state.thumbnails[index])
         if not new_pixmap.isNull():
