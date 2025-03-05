@@ -34,7 +34,7 @@ class SequenceViewerWordLabel(QLabel):
         self.setStyleSheet(f"color: {color};")
 
         available_width = self.header.width() - (
-            self.header.favorite_button.width() * 3
+            self.header.favorite_button.width() * 5
         )
         fm = self.fontMetrics()
         while fm.horizontalAdvance(self.text()) > available_width and font_size > 1:

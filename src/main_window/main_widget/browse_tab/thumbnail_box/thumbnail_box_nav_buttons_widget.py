@@ -63,7 +63,7 @@ class ThumbnailBoxNavButtonsWidget(QWidget):
             sequence_viewer.update_preview(self.state.current_index)
 
     def update_thumbnail(self, index):
-        self.refresh()
+        # self.refresh()
         self.thumbnail_label.update_thumbnail(index)
         self.variation_number_label.update_index(index)
 
@@ -84,5 +84,5 @@ class ThumbnailBoxNavButtonsWidget(QWidget):
             font.setPointSize(font_size)
             btn.setFont(font)
             btn.setFixedSize(int(button_size * 1.5), int(button_size))  # Wider buttons
-        self.refresh()
+        # self.refresh()
         super().resizeEvent(event)
