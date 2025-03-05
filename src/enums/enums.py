@@ -250,7 +250,7 @@ class OrientationTypes(Enum):
 
 
 class Axes(Enum):
-    HORIZONTAL = "horizontal"
+    HORIZONTAL = HORIZONTAL
     VERTICAL = "vertical"
 
 

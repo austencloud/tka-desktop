@@ -1,5 +1,6 @@
+from tkinter import HORIZONTAL
 from typing import TYPE_CHECKING
-from data.constants import BLUE_ATTRS, END_POS, RED_ATTRS
+from data.constants import BLUE_ATTRS, END_POS, RED_ATTRS, VERTICAL
 from data.positions import mirrored_positions
 
 if TYPE_CHECKING:
@@ -36,7 +37,7 @@ class MirroredColorSwappedPermutationChecker:
             first_entry[END_POS], VERTICAL
         )
         mirrored_horizontal = self._get_mirrored_and_colorswapped_position(
-            first_entry[END_POS], "horizontal"
+            first_entry[END_POS], HORIZONTAL
         )
 
         return second_entry[END_POS] in [

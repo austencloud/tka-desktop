@@ -1,5 +1,6 @@
+from tkinter import HORIZONTAL
 from typing import TYPE_CHECKING
-from data.constants import END_POS
+from data.constants import END_POS, VERTICAL
 from data.positions import mirrored_positions
 
 if TYPE_CHECKING:
@@ -36,7 +37,7 @@ class StrictlyMirroredPermutationChecker:
     def _is_mirrored(self, first_entry, second_entry) -> bool:
         mirrored_vertical = self._get_mirrored_position(first_entry[END_POS], VERTICAL)
         mirrored_horizontal = self._get_mirrored_position(
-            first_entry[END_POS], "horizontal"
+            first_entry[END_POS], HORIZONTAL
         )
 
         return second_entry[END_POS] in [

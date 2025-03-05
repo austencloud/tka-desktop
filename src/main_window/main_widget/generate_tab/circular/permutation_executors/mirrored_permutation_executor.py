@@ -146,7 +146,7 @@ class MirroredPermutationExecutor(PermutationExecutor):
                 GAMMA13: GAMMA5,
                 GAMMA15: GAMMA3,
             },
-            "horizontal": {
+            HORIZONTAL: {
                 ALPHA1: ALPHA5,
                 ALPHA3: ALPHA3,
                 ALPHA5: ALPHA1,
@@ -182,14 +182,16 @@ class MirroredPermutationExecutor(PermutationExecutor):
         previous_entry_attributes: dict,
         previous_matching_beat_attributes: dict,
     ) -> dict:
-        if previous_matching_beat_attributes[MOTION_TYPE] == 'float':
+        if previous_matching_beat_attributes[MOTION_TYPE] == "float":
             motion_type = previous_matching_beat_attributes[MOTION_TYPE]
             prop_rot_dir = self.get_mirrored_prop_rot_dir(
                 previous_matching_beat_attributes[PROP_ROT_DIR]
             )
-            prefloat_motion_type = previous_matching_beat_attributes['prefloat_motion_type']
+            prefloat_motion_type = previous_matching_beat_attributes[
+                "prefloat_motion_type"
+            ]
             prefloat_prop_rot_dir = self.get_mirrored_prop_rot_dir(
-                previous_matching_beat_attributes['prefloat_prop_rot_dir']
+                previous_matching_beat_attributes["prefloat_prop_rot_dir"]
             )
             new_entry_attributes = {
                 MOTION_TYPE: motion_type,
@@ -222,13 +224,12 @@ class MirroredPermutationExecutor(PermutationExecutor):
 
         return new_entry_attributes
 
-
     def calculate_mirrored_permuatation_new_loc(
         self, previous_matching_beat_end_loc: str
     ) -> str:
         if self.vertical_or_horizontal == VERTICAL:
             return self.get_vertical_mirrored_location(previous_matching_beat_end_loc)
-        elif self.vertical_or_horizontal == "horizontal":
+        elif self.vertical_or_horizontal == HORIZONTAL:
             return self.get_horizontal_mirrored_location(previous_matching_beat_end_loc)
 
     def get_mirrored_rotation(self, rotation: str) -> str:

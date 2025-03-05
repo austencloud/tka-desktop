@@ -123,7 +123,7 @@ class WidgetFader:
             self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
 
             if fade_enabled:
-                self.fade_widgets(widgets, True, duration)
+                self.fade_widgets(widgets, fade_in=True, duration=duration)
 
                 if second_callback:
                     QTimer.singleShot(duration, second_callback)

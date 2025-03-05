@@ -36,7 +36,7 @@ mirrored_positions = {
         GAMMA15: GAMMA3,
         GAMMA16: GAMMA2,
     },
-    "horizontal": {
+    HORIZONTAL: {
         ALPHA1: ALPHA5,
         ALPHA2: ALPHA4,
         ALPHA3: ALPHA3,

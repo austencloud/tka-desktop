@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from data.constants import BLUE_ATTRS, RED_ATTRS
+from data.constants import BLUE_ATTRS, RED_ATTRS, LETTER, MOTION_TYPE, PROP_ROT_DIR
 
 
 if TYPE_CHECKING:
