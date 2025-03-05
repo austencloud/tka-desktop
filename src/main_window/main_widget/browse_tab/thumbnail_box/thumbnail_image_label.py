@@ -37,9 +37,11 @@ class ThumbnailImageLabel(QLabel):
         if not self.pixmap or not self.current_path or self.current_path != path:
             self.current_path = path
             self.pixmap = QPixmap(path)
-        size = self._calculate_expected_size()
+        expected_size = self._calculate_expected_size()
+        self.setFixedSize(expected_size)  # Set fixed size before loading image
+
         if not self.pixmap.isNull():
-            self._set_pixmap_to_fit(self.pixmap, size)
+            self._set_pixmap_to_fit(self.pixmap, expected_size)
             self.setPixmap(self.pixmap)
             self.update()
 
@@ -79,21 +81,6 @@ class ThumbnailImageLabel(QLabel):
                 Qt.AspectRatioMode.KeepAspectRatio,
                 Qt.TransformationMode.SmoothTransformation,
             )
-
-    # def _set_pixmap_to_fit(self, pixmap: QPixmap, expected_size: QSize):
-    #     """Set the pixmap only if resizing is needed."""
-    #     expected_width, expected_height = expected_size.width(), expected_size.height()
-
-    #     # Skip scaling if the new pixmap already matches the expected size
-    #     if pixmap.width() == expected_width or pixmap.height() == expected_height:
-    #         self.pixmap = pixmap
-    #     else:
-    #         self.pixmap = pixmap.scaled(
-    #             expected_width,
-    #             expected_height,
-    #             Qt.AspectRatioMode.KeepAspectRatio,
-    #             Qt.TransformationMode.SmoothTransformation,
-    #         )
 
     def mousePressEvent(self, event: "QMouseEvent"):
         if not self.thumbnail_box.state.thumbnails:
@@ -139,3 +126,8 @@ class ThumbnailImageLabel(QLabel):
                     -self.border_width // 2,
                 )
             )
+
+    # def resizeEvent(self, event):
+    #     expected_size = self._calculate_expected_size()
+    #     self.setFixedSize(expected_size)  # Set fixed size before loading image
+    #     super().resizeEvent(event)
