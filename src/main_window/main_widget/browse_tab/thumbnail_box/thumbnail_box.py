@@ -79,7 +79,7 @@ class ThumbnailBox(QWidget):
         if self == self.browse_tab.sequence_viewer.current_thumbnail_box:
             self.browse_tab.sequence_viewer.update_thumbnails(self.state.thumbnails)
 
-        self.variation_number_label.update_index(self.state.current_index)
+        # self.variation_number_label.update_index(self.state.current_index)
         self.header.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
         self.image_label.update_thumbnail(self.state.current_index)
         if self.initialized == False:

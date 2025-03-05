@@ -66,6 +66,8 @@ class SequenceViewer(QWidget):
     def update_thumbnails(self, thumbnails: list[str]):
         self.state.update_thumbnails(thumbnails)
         current_thumbnail = self.state.get_current_thumbnail()
+        self.header.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
+        
         if current_thumbnail:
             self.update_preview(self.state.current_index)
         else:

@@ -2,7 +2,7 @@ from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtWidgets import QWidget, QHBoxLayout
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.browse_tab.thumbnail_box.favorite_sequence_button import (
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_favorite_sequence_button import (
     ThumbnailBoxFavoriteSequenceButton,
 )
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_word_label import (
