@@ -7,3 +7,4 @@
 - Customize pictograph thumbnails for prop type or visibility
 - More customizable variables in the browser options panel
 - Add an undo feature
+- When making a mirrored circular sequence that starts in alpha, we need an option to color swap the second half (which would necessitate ending at the vertically mirrored version of the start position )

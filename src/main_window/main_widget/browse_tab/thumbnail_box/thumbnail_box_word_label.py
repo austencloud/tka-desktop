@@ -5,18 +5,17 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-
-    from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_header import (
-        SequenceViewerHeader,
+    from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
+        ThumbnailBoxHeader,
     )
     from settings_manager.settings_manager import SettingsManager
 
 
-class SequenceViewerWordLabel(QLabel):
+class ThumbnailBoxWordLabel(QLabel):
     def __init__(
         self,
         text: str,
-        header: "SequenceViewerHeader",
+        header: "ThumbnailBoxHeader",
         settings_manager: "SettingsManager",
     ):
         super().__init__(text, header)
@@ -44,5 +43,3 @@ class SequenceViewerWordLabel(QLabel):
             fm = self.fontMetrics()
         super().resizeEvent(event)
 
-    def update_word_label(self, text: str):
-        self.setText(text)

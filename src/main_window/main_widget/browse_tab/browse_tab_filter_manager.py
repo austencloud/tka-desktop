@@ -13,7 +13,6 @@ class BrowseTabFilterManager:
         self.metadata_extractor = self.browse_tab.metadata_extractor
 
     def filter_favorites(self) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_data_path("generated_data\dictionary")
         return [
             (word, thumbnails, self._get_sequence_length(thumbnails[0]))
             for word, thumbnails in self.browse_tab.get.base_words()
@@ -22,7 +21,6 @@ class BrowseTabFilterManager:
 
     def filter_by_difficulty(self) -> list[tuple[str, list[str], int]]:
         """Sort sequences by difficulty level (ascending order)."""
-        dictionary_dir = get_data_path("generated_data\dictionary")
 
         sequences = []
         for word, thumbnails in self.browse_tab.get.base_words():
@@ -42,7 +40,6 @@ class BrowseTabFilterManager:
         return sorted(sequences, key=lambda seq: seq[2])
 
     def filter_all_sequences(self) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_data_path("generated_data\\dictionary")
         sequences = []
         for word, thumbnails in self.browse_tab.get.base_words():
             if not thumbnails:
@@ -56,7 +53,6 @@ class BrowseTabFilterManager:
         return sequences
 
     def filter_most_recent(self) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_data_path("generated_data\\dictionary")
         filtered_sequences = []
 
         # Set the date range to the past two weeks
@@ -88,7 +84,6 @@ class BrowseTabFilterManager:
         return filtered_sequences
 
     def filter_by_tag(self, tag: str) -> list[tuple[str, list[str], int]]:
-        dictionary_dir = get_data_path("generated_data\dictionary")
         return [
             (word, thumbnails, self._get_sequence_length(thumbnails[0]))
             for word, thumbnails in self.browse_tab.get.base_words()

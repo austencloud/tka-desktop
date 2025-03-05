@@ -3,13 +3,17 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 from typing import TYPE_CHECKING, Optional
 
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_favorites_manager import SequenceViewerFavoritesManager
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_header import SequenceViewerHeader
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
+    ThumbnailBoxHeader,
+)
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 from .sequence_viewer_state import SequenceViewerState
 from .sequence_viewer_image_label import SequenceViewerImageLabel
 from .placeholder_text_label import PlaceholderTextLabel
 from .sequence_viewer_action_button_panel import SequenceViewerActionButtonPanel
-from .sequence_viewer_word_label import SequenceViewerWordLabel
 from .sequence_viewer_nav_buttons_widget import SequenceViewerNavButtonsWidget
 from ..thumbnail_box.thumbnail_box import ThumbnailBox
 from ..thumbnail_box.variation_number_label import VariationNumberLabel
@@ -24,9 +28,12 @@ class SequenceViewer(QWidget):
         super().__init__(browse_tab)
         self.main_widget = browse_tab.main_widget
         self.browse_tab = browse_tab
-
+        self.word = ""
+        self.favorites_manager = None
         self.current_thumbnail_box: Optional[ThumbnailBox] = None
         self.state = SequenceViewerState()
+        self.favorites_manager = SequenceViewerFavoritesManager(self)
+
         self._setup_components()
         self._setup_layout()
         self.clear()
@@ -35,7 +42,7 @@ class SequenceViewer(QWidget):
         layout = QVBoxLayout(self)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addStretch(1)
-        layout.addWidget(self.word_label)
+        layout.addWidget(self.header)
         layout.addWidget(self.stacked_widget)
         layout.addWidget(self.nav_buttons_widget)
         layout.addWidget(self.action_button_panel)
@@ -53,12 +60,12 @@ class SequenceViewer(QWidget):
 
         self.variation_number_label = VariationNumberLabel(self)
         self.nav_buttons_widget = SequenceViewerNavButtonsWidget(self)
-        self.word_label = SequenceViewerWordLabel(self)
+        self.header = SequenceViewerHeader(self)
         self.action_button_panel = SequenceViewerActionButtonPanel(self)
 
     def update_thumbnails(self, thumbnails: list[str]):
         self.state.update_thumbnails(thumbnails)
-        current_thumbnail = self.state.get_current_thumbnail_str()
+        current_thumbnail = self.state.get_current_thumbnail()
         if current_thumbnail:
             self.update_preview(self.state.current_index)
         else:
@@ -66,7 +73,7 @@ class SequenceViewer(QWidget):
 
     def update_preview(self, index: int):
         self.state.set_current_index(index)
-        current_thumbnail = self.state.get_current_thumbnail_str()
+        current_thumbnail = self.state.get_current_thumbnail()
 
         if current_thumbnail:
             pixmap = QPixmap(current_thumbnail)
@@ -92,13 +99,13 @@ class SequenceViewer(QWidget):
         self.state.clear()
         self.stacked_widget.setCurrentWidget(self.placeholder_label)
         self.variation_number_label.clear()
-        self.word_label.clear()
+        self.header.word_label.clear()
         self.nav_buttons_widget.hide()
         self.variation_number_label.hide()
         self.current_thumbnail_box = None
 
     def get_thumbnail_at_current_index(self) -> Optional[str]:
-        return self.state.get_current_thumbnail_str()
+        return self.state.get_current_thumbnail()
 
     def reopen_thumbnail(self, word: str, var_index: int):
         """Reopens a thumbnail based on word and variation index."""
@@ -135,7 +142,7 @@ class SequenceViewer(QWidget):
                 self.update_thumbnails(thumbnails)
                 self.update_preview(var_index)
                 self.update_nav_buttons()
-                self.word_label.update_word_label(word)
+                self.header.word_label.setText(word)
                 self.variation_number_label.update_index(var_index)
                 self.set_current_thumbnail_box(word)
 
@@ -148,6 +155,7 @@ class SequenceViewer(QWidget):
 
     def set_current_thumbnail_box(self, word):
         """Sets the current thumbnail box and updates the sequence viewer."""
+        self.word = word
         thumbnail_boxes = self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes
         if not thumbnail_boxes:
             return
@@ -159,4 +167,5 @@ class SequenceViewer(QWidget):
                 self.browse_tab.selection_handler.current_thumbnail = (
                     self.current_thumbnail_box.image_label
                 )
+                self.favorites_manager = box.favorites_manager
                 return

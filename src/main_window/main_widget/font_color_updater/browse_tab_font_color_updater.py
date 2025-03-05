@@ -41,8 +41,8 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
         for (
             thumbnail_box
         ) in self.sequence_picker.scroll_widget.thumbnail_boxes.values():
-            self._apply_font_color(thumbnail_box.word_label)
-            thumbnail_box.word_label.reload_favorite_icon()
+            self._apply_font_color(thumbnail_box.header)
+            thumbnail_box.header.reload_favorite_icon()
             self._apply_font_color(thumbnail_box.variation_number_label)
 
     def _update_filter_selector(self):
@@ -83,7 +83,7 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
     def _update_sequence_viewer(self):
         sequence_viewer = self.main_widget.browse_tab.sequence_viewer
         viewer_labels = [
-            sequence_viewer.word_label,
+            sequence_viewer.header,
             sequence_viewer.variation_number_label,
             sequence_viewer.placeholder_label,
         ]

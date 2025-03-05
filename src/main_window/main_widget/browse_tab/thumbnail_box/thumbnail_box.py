@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
-from main_window.main_widget.browse_tab.thumbnail_box.favorites_manager import (
-    FavoritesManager,
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_favorites_manager import (
+    ThumbnailBoxFavoritesManager,
 )
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_nav_buttons_widget import (
     ThumbnailBoxNavButtonsWidget,
@@ -11,7 +11,7 @@ from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label impo
     ThumbnailImageLabel,
 )
 
-from .word_label import WordLabel
+from .thumbnail_box_header import ThumbnailBoxHeader
 from .variation_number_label import VariationNumberLabel
 from .thumbnail_box_state import ThumbnailBoxState
 
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 class ThumbnailBox(QWidget):
     margin = 10
     initialized = False
-    
+
     def __init__(
         self, browse_tab: "BrowseTab", word: str, thumbnails: list[str]
     ) -> None:
@@ -39,8 +39,8 @@ class ThumbnailBox(QWidget):
         self._setup_layout()
 
     def _setup_components(self):
-        self.favorites_manager = FavoritesManager(self)
-        self.word_label = WordLabel(self)
+        self.favorites_manager = ThumbnailBoxFavoritesManager(self)
+        self.header = ThumbnailBoxHeader(self)
         self.image_label = ThumbnailImageLabel(self)
         self.variation_number_label = VariationNumberLabel(self)
         self.nav_buttons_widget = ThumbnailBoxNavButtonsWidget(self)
@@ -49,7 +49,7 @@ class ThumbnailBox(QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         layout = QVBoxLayout(self)
         layout.setSpacing(0)
-        layout.addWidget(self.word_label)
+        layout.addWidget(self.header)
         layout.addWidget(self.image_label)
         layout.addWidget(self.nav_buttons_widget)
         layout.addStretch()
@@ -80,7 +80,7 @@ class ThumbnailBox(QWidget):
             self.browse_tab.sequence_viewer.update_thumbnails(self.state.thumbnails)
 
         self.variation_number_label.update_index(self.state.current_index)
-        self.word_label.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
+        self.header.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
         self.image_label.update_thumbnail(self.state.current_index)
         if self.initialized == False:
             self.initialized = True

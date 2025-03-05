@@ -2,10 +2,12 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QApplication
 from PyQt6.QtGui import QPixmap
 
-from main_window.main_widget.browse_tab.thumbnail_box.favorites_manager import (
-    FavoritesManager,
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_favorites_manager import (
+    ThumbnailBoxFavoritesManager,
 )
-from main_window.main_widget.browse_tab.thumbnail_box.word_label import WordLabel
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
+    ThumbnailBoxHeader,
+)
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from main_window.main_widget.write_tab.act_browser.act_thumbnail_image_label import (
     ActThumbnailImageLabel,
@@ -26,9 +28,9 @@ class ActThumbnailBox(QWidget):
         self.current_index = 0
         self.margin = 10
 
-        self.favorites_manager = FavoritesManager(self)
+        self.favorites_manager = ThumbnailBoxFavoritesManager(self)
 
-        self.word_label = WordLabel(self)
+        self.header = ThumbnailBoxHeader(self)
         self.image_label = ActThumbnailImageLabel(self)
 
         self._setup_layout()
@@ -37,13 +39,13 @@ class ActThumbnailBox(QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)  # No margins in the layout
-        layout.addWidget(self.word_label)
+        layout.addWidget(self.header)
         layout.addWidget(self.image_label)
         self.setLayout(layout)
 
     def toggle_favorite_status(self):
         self.favorite_status = not self.favorite_status
-        self.word_label.update_favorite_icon(self.favorite_status)
+        self.header.update_favorite_icon(self.favorite_status)
         QApplication.processEvents()
         self.save_favorite_status()
 

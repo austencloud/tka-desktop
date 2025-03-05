@@ -2,32 +2,41 @@ from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtWidgets import QWidget, QHBoxLayout
 from typing import TYPE_CHECKING
 
+
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_favorite_sequence_button import (
+    SequenceViewerFavoriteSequenceButton,
+)
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_word_label import (
+    SequenceViewerWordLabel,
+)
 from main_window.main_widget.browse_tab.thumbnail_box.favorite_sequence_button import (
     ThumbnailBoxFavoriteSequenceButton,
 )
-from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_word_label import (
-    ThumbnailBoxWordLabel,
-)
 from settings_manager.global_settings.app_context import AppContext
-from .thumbnail_box_difficulty_label import ThumbnailBoxDifficultyLabel
+
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_difficulty_level import (
+    SequenceViewerDifficultyLabel,
+)
 
 if TYPE_CHECKING:
-    from .thumbnail_box import ThumbnailBox
+    from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer import (
+        SequenceViewer,
+    )
 
 
-class ThumbnailBoxHeader(QWidget):
-    def __init__(self, thumbnail_box: "ThumbnailBox"):
-        super().__init__(thumbnail_box)
-        self.thumbnail_box = thumbnail_box
+class SequenceViewerHeader(QWidget):
+    def __init__(self, sequence_viewer: "SequenceViewer"):
+        super().__init__(sequence_viewer)
+        self.sequence_viewer = sequence_viewer
         self.setContentsMargins(0, 0, 0, 0)
         self.setFixedHeight(60)
         self.settings_manager = AppContext.settings_manager()
 
-        self.difficulty_label = ThumbnailBoxDifficultyLabel(thumbnail_box)
-        self.word_label = ThumbnailBoxWordLabel(
-            thumbnail_box.word, self, self.settings_manager
+        self.difficulty_label = SequenceViewerDifficultyLabel(sequence_viewer)
+        self.word_label = SequenceViewerWordLabel(
+            sequence_viewer.word, self, self.settings_manager
         )
-        self.favorite_button = ThumbnailBoxFavoriteSequenceButton(thumbnail_box)
+        self.favorite_button = SequenceViewerFavoriteSequenceButton(sequence_viewer)
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(5, 0, 5, 0)

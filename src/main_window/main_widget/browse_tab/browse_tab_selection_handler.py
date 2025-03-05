@@ -38,7 +38,7 @@ class BrowseTabSelectionManager:
         return [
             sequence_viewer.image_label,
             sequence_viewer.placeholder_label,
-            sequence_viewer.word_label,
+            sequence_viewer.header,
             sequence_viewer.variation_number_label,
             sequence_viewer.nav_buttons_widget,
             sequence_viewer.action_button_panel,
@@ -114,6 +114,6 @@ class BrowseTabSelectionManager:
         sequence_viewer.state.current_index = index
         sequence_viewer.current_thumbnail_box = thumbnail_box
         sequence_viewer.variation_number_label.update_index(index)
-        sequence_viewer.word_label.update_word_label(word)
+        sequence_viewer.header.word_label.update_word_label(word)
         sequence_viewer.update_thumbnails(sequence_viewer.state.thumbnails)
         sequence_viewer.update_nav_buttons()
