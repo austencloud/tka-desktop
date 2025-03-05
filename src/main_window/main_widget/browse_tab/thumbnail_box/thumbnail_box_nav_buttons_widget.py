@@ -63,7 +63,7 @@ class ThumbnailBoxNavButtonsWidget(QWidget):
             sequence_viewer.update_preview(self.state.current_index)
 
     def update_thumbnail(self, index):
-        self.refresh()
+        # self.refresh()
         self.thumbnail_label.update_thumbnail(index)
         self.variation_number_label.update_index(index)
 
