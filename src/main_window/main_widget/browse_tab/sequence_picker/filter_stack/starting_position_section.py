@@ -11,7 +11,7 @@ from PyQt6.QtGui import QPixmap, QPainter, QPen
 import os
 from functools import partial
 
-from styles.styled_button import StyledButton
+from styles.base_styled_button import StyledButton
 from utils.path_helpers import get_data_path, get_image_path
 from .filter_section_base import FilterSectionBase
 

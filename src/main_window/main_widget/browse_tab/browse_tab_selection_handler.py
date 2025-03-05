@@ -64,9 +64,8 @@ class BrowseTabSelectionManager:
         if self.current_thumbnail:
             self.current_thumbnail.set_selected(False)
 
-        self.sequence_viewer.update_thumbnails(
-            image_label.thumbnail_box.state.thumbnails
-        )
+        thumbnails = image_label.thumbnail_box.state.thumbnails
+        self.sequence_viewer.update_thumbnails(thumbnails)
         self.select_viewer_thumbnail(
             image_label.thumbnail_box,
             image_label.thumbnail_box.state.current_index,

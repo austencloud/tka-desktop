@@ -13,7 +13,7 @@ from PyQt6.QtCore import Qt
 from functools import partial
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from styles.styled_button import StyledButton
+from styles.base_styled_button import StyledButton
 from utils.path_helpers import get_data_path
 
 from .filter_section_base import FilterSectionBase

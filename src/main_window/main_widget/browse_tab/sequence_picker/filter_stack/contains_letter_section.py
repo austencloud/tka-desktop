@@ -9,7 +9,7 @@ from PyQt6.QtCore import Qt
 
 from data.constants import LETTER
 from settings_manager.global_settings.app_context import AppContext
-from styles.styled_button import StyledButton  # to get data_manager
+from styles.base_styled_button import StyledButton  # to get data_manager
 
 from .filter_section_base import FilterSectionBase
 

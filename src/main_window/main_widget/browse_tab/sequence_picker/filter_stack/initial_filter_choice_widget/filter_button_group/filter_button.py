@@ -1,6 +1,6 @@
 from PyQt6.QtCore import Qt
 
-from styles.styled_button import StyledButton
+from styles.base_styled_button import StyledButton
 
 
 class FilterButton(StyledButton):

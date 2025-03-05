@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QGridLayout, QWidget
 from PyQt6.QtCore import Qt
 
-from styles.styled_button import StyledButton
+from styles.base_styled_button import StyledButton
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:

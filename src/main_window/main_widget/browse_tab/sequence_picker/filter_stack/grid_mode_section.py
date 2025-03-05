@@ -17,7 +17,7 @@ import os
 
 from data.constants import GRID_MODE
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from styles.styled_button import StyledButton
+from styles.base_styled_button import StyledButton
 from utils.path_helpers import get_data_path, get_image_path
 from .filter_section_base import FilterSectionBase
 
