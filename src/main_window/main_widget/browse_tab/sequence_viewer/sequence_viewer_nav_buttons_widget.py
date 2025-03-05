@@ -65,18 +65,20 @@ class SequenceViewerNavButtonsWidget(QWidget):
         self.image_label.update_thumbnail(self.state.current_index)
         self.variation_number_label.update_index(self.state.current_index)
 
+
     def refresh(self):
-        """Update the navigation buttons based on current state."""
-        # Access current thumbnails directly from the sequence viewer's state
+        """Update the navigation buttons based on the current state's thumbnails."""
+        # Access the current thumbnails from the sequence viewer's state
         thumbnails = self.sequence_viewer.state.thumbnails
         self.update_thumbnail()
+
         if len(thumbnails) == 1:
             self.variation_number_label.hide()
             self.hide()
         else:
             self.variation_number_label.show()
             self.show()
-            # Ensure current_index is from the updated state
+            # Update the label with the current index from the state
             current_index = self.sequence_viewer.state.current_index
             self.variation_number_label.update_index(current_index)
 

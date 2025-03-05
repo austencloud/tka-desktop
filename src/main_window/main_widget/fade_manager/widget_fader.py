@@ -123,10 +123,18 @@ class WidgetFader:
             self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
 
             if fade_enabled:
-                self.fade_widgets(widgets, fade_in=True, duration=duration)
+                # Add callback to clear effects after fade-in completes
+                def after_fade_in():
+                    self.manager.graphics_effect_remover.clear_graphics_effects(widgets)
+                    if second_callback:
+                        second_callback()
 
-                if second_callback:
-                    QTimer.singleShot(duration, second_callback)
+                self.fade_widgets(
+                    widgets,
+                    fade_in=True,
+                    duration=duration,
+                    callback=after_fade_in,  # Clear effects here
+                )
             else:
                 if second_callback:
                     second_callback()

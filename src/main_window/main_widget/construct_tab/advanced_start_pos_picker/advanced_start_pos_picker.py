@@ -110,5 +110,5 @@ class AdvancedStartPosPicker(BaseStartPosPicker):
                 view.mousePressEvent = partial(self.on_variation_selected, pictograph)
                 view.update_borders()
 
-    def on_variation_selected(self, variation: Pictograph) -> None:
+    def on_variation_selected(self, variation: Pictograph, event=None) -> None:
         self.start_position_adder.add_start_pos_to_sequence(variation)

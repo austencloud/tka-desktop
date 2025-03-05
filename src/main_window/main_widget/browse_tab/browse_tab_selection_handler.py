@@ -30,7 +30,6 @@ class BrowseTabSelectionManager:
             lambda: self.select_box_thumbnail(image_label, sequence_dict),
             300,
         )
-        # self.select_box_thumbnail(image_label, sequence_dict)
         print("Thumbnail clicked")
 
     def _get_widgets_to_fade(self):
