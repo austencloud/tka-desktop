@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtGui import QFontMetrics
 from main_window.main_widget.tab_indices import LeftStackIndex
-from styles.base_styled_button import StyledButton
+from styles.styled_button import StyledButton
 
 if TYPE_CHECKING:
     from ..sequence_picker import SequencePicker

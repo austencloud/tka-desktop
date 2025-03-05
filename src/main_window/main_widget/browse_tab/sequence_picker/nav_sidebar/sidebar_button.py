@@ -1,4 +1,4 @@
-from styles.base_styled_button import StyledButton
+from styles.styled_button import StyledButton
 from PyQt6.QtGui import QFontMetrics
 from PyQt6.QtCore import QEvent
 

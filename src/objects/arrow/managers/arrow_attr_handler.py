@@ -1,6 +1,6 @@
 from typing import Union, TYPE_CHECKING
 
-from enums.enums import Turns
+from enums.glyph_enum import Turns
 from data.constants import *
 
 if TYPE_CHECKING:

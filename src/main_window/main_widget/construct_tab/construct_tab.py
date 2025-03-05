@@ -3,7 +3,7 @@ from PyQt6.QtCore import pyqtSignal, QSize
 from typing import TYPE_CHECKING, Callable
 
 from base_widgets.base_beat_frame import AppContext
-from enums.enums import Letter
+from enums.glyph_enum import Letter
 from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (

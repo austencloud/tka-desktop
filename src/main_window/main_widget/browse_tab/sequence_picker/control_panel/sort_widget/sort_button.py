@@ -1,5 +1,5 @@
 from PyQt6.QtCore import QEvent
-from styles.base_styled_button import StyledButton
+from styles.styled_button import StyledButton
 
 
 class SortButton(StyledButton):

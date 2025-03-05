@@ -9,7 +9,7 @@ from PyQt6.QtCore import Qt, QEvent, QObject
 from PyQt6.QtGui import QFontMetrics
 
 from data.constants import LETTER
-from styles.base_styled_button import StyledButton
+from styles.styled_button import StyledButton
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:

@@ -1,8 +1,11 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QApplication, QMessageBox
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QApplication, QMessageBox
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QIcon, QPixmap, QResizeEvent
 
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.ori_picker_box.ori_picker_widget.rotate_button import (
+    StyledButton,
+)
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_name import TabName
 from ...full_screen_image_overlay import FullScreenImageOverlay
@@ -14,9 +17,9 @@ if TYPE_CHECKING:
 
 
 class SequenceViewerActionButtonPanel(QWidget):
-    delete_variation_button: QPushButton
-    edit_sequence_button: QPushButton
-    save_image_button: QPushButton
+    delete_variation_button: StyledButton
+    edit_sequence_button: StyledButton
+    save_image_button: StyledButton
 
     def __init__(self, sequence_viewer: "SequenceViewer"):
         super().__init__(sequence_viewer)
@@ -66,7 +69,7 @@ class SequenceViewerActionButtonPanel(QWidget):
         self.layout.addStretch(2)
         for key, data in buttons_data.items():
             icon_path = get_image_path(f"icons/sequence_workbench_icons/{data['icon']}")
-            button = QPushButton(QIcon(icon_path), "", self, toolTip=data["tooltip"])
+            button = StyledButton("", icon_path)
             button.setToolTip(data["tooltip"])
             if data["action"]:
                 button.clicked.connect(data["action"])
@@ -157,7 +160,7 @@ class SequenceViewerActionButtonPanel(QWidget):
             "delete_variation",
             "view_full_screen",
         ]:
-            button: QPushButton = getattr(self, f"{button_name}_button")
+            button: StyledButton = getattr(self, f"{button_name}_button")
             button.setMinimumSize(QSize(btn_size, btn_size))
             button.setMaximumSize(QSize(btn_size, btn_size))
             button.setIconSize(QSize(icon_size, icon_size))

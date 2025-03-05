@@ -60,8 +60,8 @@ class SequencePropertiesManager:
             return
 
         self.instantiate_sequence(sequence)
-        # properties = self.check_all_properties()
-        # sequence[0].update(properties)
+        properties = self.check_all_properties()
+        sequence[0].update(properties)
 
         AppContext.json_manager().loader_saver.save_current_sequence(sequence)
 
@@ -112,10 +112,9 @@ class SequencePropertiesManager:
                 AppContext.json_manager().loader_saver.load_current_sequence()
             ),
             "author": AppContext.settings_manager().users.user_manager.get_current_user(),
-            "level": SequenceLevelEvaluator.get_sequence_difficulty_level(
+            "level": SequenceLevelEvaluator().get_sequence_difficulty_level(
                 self.sequence
             ),
-            GRID_MODE: self.properties[GRID_MODE],
             "is_circular": self.properties["ends_at_start_pos"],
             "is_permutable": self.properties["is_permutable"],
             **{
@@ -130,7 +129,6 @@ class SequencePropertiesManager:
             "word": "",
             "author": AppContext.settings_manager().users.user_manager.get_current_user(),
             "level": 0,
-            GRID_MODE: DIAMOND,
             "is_circular": False,
             "is_permutable": False,
             "is_strictly_rotated_permutation": False,

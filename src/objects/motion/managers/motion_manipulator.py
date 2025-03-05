@@ -2,7 +2,7 @@ from typing import Callable
 
 from data.constants import *
 from data.start_end_loc_map import get_start_end_locs
-from enums.enums
+from enums.glyph_enum
  import Handpaths
 
 from typing import TYPE_CHECKING

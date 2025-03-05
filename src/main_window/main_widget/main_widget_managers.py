@@ -36,7 +36,7 @@ class MainWidgetManagers:
         # mw.special_placements = mw.special_placement_loader.load_special_placements()
 
     def _setup_pictograph_cache(self) -> None:
-        from enums.enums import Letter
+        from enums.glyph_enum import Letter
 
         self.main_widget.pictograph_cache = {}
         for letter in Letter:

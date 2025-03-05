@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt
 from base_widgets.pictograph.elements.grid.non_radial_points_group import (
     NonRadialPointsGroup,
 )
-from enums.enums import Glyph
+from enums.glyph_enum import Glyph
 from objects.glyphs.reversal_glyph import ReversalGlyph
 from objects.glyphs.start_to_end_pos_glyph.start_to_end_pos_glyph import (
     StartToEndPosGlyph,

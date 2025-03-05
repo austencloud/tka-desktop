@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 
-from styles.base_styled_button import StyledButton
+from styles.styled_button import StyledButton
 
 if TYPE_CHECKING:
     from .thumbnail_box_nav_buttons_widget import ThumbnailBoxNavButtonsWidget

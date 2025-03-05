@@ -1,12 +1,21 @@
+from enum import Enum
 from typing import TYPE_CHECKING, Union
 
 from data.constants import *
 from data.prop_class_mapping import PropType
-from enums.enums import PropAttribute
 
 
 if TYPE_CHECKING:
     from objects.prop.prop import Prop
+
+
+class PropAttribute(Enum):
+    COLOR = "color"
+    PROP_TYPE = "prop_type"
+    LOC = "loc"
+    ORI = "ori"
+    MOTION = "motion"
+    LAYER = "layer"
 
 
 class PropAttrManager:

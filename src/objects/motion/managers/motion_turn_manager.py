@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Union
 
-from enums.enums
+from enums.glyph_enum
  import Turns
 from data.constants import BLUE, RED
 

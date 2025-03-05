@@ -86,7 +86,6 @@ class SequenceViewer(QWidget):
         self.variation_number_label.update_index(index)
 
     def update_nav_buttons(self):
-        self.nav_buttons_widget.current_index = self.state.current_index
         self.nav_buttons_widget.refresh()
 
     def clear(self):

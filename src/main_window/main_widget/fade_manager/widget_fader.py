@@ -6,7 +6,7 @@ from PyQt6.QtCore import (
     QEasingCurve,
     QTimer,
 )
-from enums.enums import Glyph
+from enums.glyph_enum import Glyph
 
 from base_widgets.pictograph.elements.grid.non_radial_points_group import (
     NonRadialPointsGroup,

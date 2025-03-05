@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from enums.enums import Glyph
+from enums.glyph_enum import Glyph
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph

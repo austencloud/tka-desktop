@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtGui import QCursor
+from PyQt6.QtGui import QCursor, QIcon
 from PyQt6.QtCore import Qt, pyqtSignal, QEvent
 from styles.button_state import ButtonState
 from styles.metallic_blue_button_theme import MetallicBlueButtonTheme
@@ -10,11 +10,14 @@ class StyledButton(QPushButton):
 
     clicked_signal = pyqtSignal(str)  # Custom signal for button clicks
 
-    def __init__(self, label: str):
+    def __init__(self, label: str, icon_path: str = None):
         super().__init__(label)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self._state = ButtonState.NORMAL
         self._border_radius = 5
+        # If you pass an icon path, I'm gonna use it!
+        if icon_path:
+            self.setIcon(QIcon(icon_path))
         self.update_appearance()
 
         self.clicked.connect(self._on_clicked)

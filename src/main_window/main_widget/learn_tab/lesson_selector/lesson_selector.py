@@ -12,7 +12,7 @@ from functools import partial
 from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
     LessonWidget,
 )
-from styles.base_styled_button import StyledButton
+from styles.styled_button import StyledButton
 
 
 from .lesson_mode_toggle_widget import LessonModeToggleWidget

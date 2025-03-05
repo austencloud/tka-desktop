@@ -11,17 +11,15 @@ class SequenceViewerNavButtonsWidget(QWidget):
     def __init__(self, sequence_viewer: "SequenceViewer"):
         super().__init__(sequence_viewer)
         self.sequence_viewer = sequence_viewer
-        self.thumbnails = sequence_viewer.state.thumbnails
+        # Remove cached thumbnails reference
         self.state = sequence_viewer.state
-        self.current_index = self.state.current_index
         self.variation_number_label = sequence_viewer.variation_number_label
         self.image_label = sequence_viewer.image_label
 
         self._setup_buttons()
-        self.has_multiple_thumbnails = len(self.thumbnails) > 1
+        self.has_multiple_thumbnails = len(self.state.thumbnails) > 1
         if not self.has_multiple_thumbnails:
             self.hide()
-
     def _setup_buttons(self):
         layout = QHBoxLayout(self)
         layout.setSpacing(15)  # Adjust spacing between buttons
@@ -67,6 +65,8 @@ class SequenceViewerNavButtonsWidget(QWidget):
         self.variation_number_label.update_index(self.state.current_index)
 
     def refresh(self):
+        """Update the navigation buttons based on current state."""
+        # Access current thumbnails directly from the sequence viewer's state
         thumbnails = self.sequence_viewer.state.thumbnails
         self.update_thumbnail()
         if len(thumbnails) == 1:
@@ -75,7 +75,9 @@ class SequenceViewerNavButtonsWidget(QWidget):
         else:
             self.variation_number_label.show()
             self.show()
-            self.variation_number_label.update_index(self.current_index + 1)
+            # Ensure current_index is from the updated state
+            current_index = self.sequence_viewer.state.current_index
+            self.variation_number_label.update_index(current_index)
 
     def resizeEvent(self, event):
         # Ensure proper button and font sizing

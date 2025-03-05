@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
-from styles.base_styled_button import StyledButton
+
+from styles.styled_button import StyledButton
 
 if TYPE_CHECKING:
     from main_window.main_widget.generate_tab.generate_tab import GenerateTab

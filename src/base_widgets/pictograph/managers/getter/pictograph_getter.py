@@ -8,7 +8,7 @@ from base_widgets.pictograph.managers.getter.lead_state_determiner import (
     LeadStateDeterminer,
 )
 from data.constants import *
-from enums.enums import Glyph
+from enums.glyph_enum import Glyph
 from enums.letter.letter import Letter
 from enums.letter.letter_type import LetterType
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
