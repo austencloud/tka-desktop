@@ -1,5 +1,8 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import QTimer
+
+from settings_manager.global_settings.app_context import AppContext
+
 from .thumbnail_box.thumbnail_box import ThumbnailBox
 
 if TYPE_CHECKING:
@@ -55,7 +58,11 @@ class BrowseTabPersistenceManager:
             word for word in self.thumbnail_queue if word not in existing_words
         ]
         if self.thumbnail_queue:
-            self.preload_next_thumbnail()
+            if (
+                AppContext.settings_manager().global_settings.get_current_tab()
+                == "browse"
+            ):
+                self.preload_next_thumbnail()
 
     def preload_next_thumbnail(self):
         """Preloads the next thumbnail box in the queue."""
@@ -68,7 +75,7 @@ class BrowseTabPersistenceManager:
         if thumbnails:
             self.add_thumbnail_box(word, thumbnails)
         if self.thumbnail_queue:
-            QTimer.singleShot(50, self.preload_next_thumbnail)
+            QTimer.singleShot(200, self.preload_next_thumbnail)
 
     def add_thumbnail_box(self, word: str, thumbnails: list[str]):
         """Adds a new thumbnail box to the scroll widget."""

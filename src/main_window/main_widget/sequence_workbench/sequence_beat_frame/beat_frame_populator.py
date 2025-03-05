@@ -103,7 +103,7 @@ class BeatFramePopulator:
             target_tab = AppContext.settings_manager().global_settings.get_current_tab()
             toggle_animation = target_tab == "construct"
             QTimer.singleShot(
-                200,
+                1500,
                 lambda: self.selection_overlay.select_beat_view(
                     last_beat.view, toggle_animation
                 ),

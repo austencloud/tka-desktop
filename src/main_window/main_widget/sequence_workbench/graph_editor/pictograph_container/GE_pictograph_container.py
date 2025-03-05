@@ -49,14 +49,7 @@ class GraphEditorPictographContainer(QWidget):
         pictograph.managers.updater.update_pictograph(
             reference_beat.state.pictograph_data
         )
-        prop_type = (
-            self.graph_editor.main_widget.settings_manager.global_settings.get_prop_type()
-        )
-        if prop_type:
-            self.graph_editor.main_widget.settings_manager.global_settings.prop_type_changer.replace_props(
-                prop_type, pictograph
-            )
-            
+
         
         
         beat_number_text = reference_beat.beat_number_item.beat_number_int

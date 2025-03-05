@@ -20,29 +20,19 @@ class GraphicsEffectRemover:
         widgets = default_widgets + widgets
 
         for widget in widgets:
-            if widget and _is_widget_alive(widget):
-                self._remove_all_graphics_effects(widget)
+            # if widget and _is_widget_alive(widget):
+            self._remove_all_graphics_effects(widget)
 
     def _remove_all_graphics_effects(self, widget: QWidget):
         """Recursively remove effects with deletion safety."""
         try:
-            if _is_widget_alive(widget) and widget.graphicsEffect():
-                widget.setGraphicsEffect(None)
+            widget.setGraphicsEffect(None)
 
-            if _is_widget_alive(widget) and hasattr(widget, "children"):
+            if hasattr(widget, "children"):
                 for child in widget.findChildren(QWidget):
-                    if _is_widget_alive(child) and child.graphicsEffect():
+                    if child.graphicsEffect():
                         if child.__class__.__base__ != BaseIndicatorLabel:
                             child.setGraphicsEffect(None)
         except RuntimeError:
             pass  # Silently ignore already-deleted widgets
 
-
-def _is_widget_alive(widget: QWidget) -> bool:
-    """Check if a Qt widget's C++ object still exists."""
-    try:
-        # Attempt to access a trivial property to detect zombie state
-        widget.objectName()
-        return True
-    except RuntimeError:
-        return False

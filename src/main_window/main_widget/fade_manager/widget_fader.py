@@ -15,7 +15,6 @@ from main_window.main_widget.base_indicator_label import BaseIndicatorLabel
 from main_window.main_widget.fade_manager.fadeable_opacity_effect import (
     FadableOpacityEffect,
 )
-from main_window.main_widget.fade_manager.graphics_effect_remover import _is_widget_alive
 
 if TYPE_CHECKING:
     from main_window.main_widget.fade_manager.fade_manager import FadeManager
@@ -94,8 +93,7 @@ class WidgetFader:
         anim_group.start()
 
     def _ensure_opacity_effect(self, widget: QWidget) -> QGraphicsOpacityEffect:
-        if not _is_widget_alive(widget):
-            return None  # Skip deleted widgets
+
         effect = widget.graphicsEffect()
         if effect and isinstance(effect, QGraphicsOpacityEffect):
             return effect
@@ -110,7 +108,6 @@ class WidgetFader:
         callback: Union[callable, tuple[callable, callable]] = None,
         duration: int = 250,
     ) -> None:
-        valid_widgets = [w for w in widgets if _is_widget_alive(w)]
 
         fade_enabled = self.manager.fades_enabled()
         first_callback = None

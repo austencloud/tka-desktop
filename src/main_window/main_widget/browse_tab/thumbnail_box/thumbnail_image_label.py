@@ -43,6 +43,10 @@ class ThumbnailImageLabel(QLabel):
         new_pixmap = QPixmap(self.thumbnail_box.state.thumbnails[index])
         if not new_pixmap.isNull():
             self._set_pixmap_to_fit(new_pixmap, expected_size)
+        else:
+            print(
+                f"Failed to load thumbnail: {self.thumbnail_box.state.thumbnails[index]}"
+            )
 
     def _calculate_expected_size(self):
         """Calculate the expected thumbnail size based on layout constraints."""
@@ -93,6 +97,7 @@ class ThumbnailImageLabel(QLabel):
             )
 
         self.setPixmap(self.pixmap)
+        self.update()
 
     def mousePressEvent(self, event: "QMouseEvent"):
         if not self.thumbnail_box.state.thumbnails:

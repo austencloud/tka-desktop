@@ -2,7 +2,9 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
 from .thumbnail_box.thumbnail_box import ThumbnailBox
 from settings_manager.global_settings.app_context import AppContext
-from .sequence_picker.nav_sidebar.sidebar_button_ui_updater import SidebarButtonUIUpdater
+from .sequence_picker.nav_sidebar.sidebar_button_ui_updater import (
+    SidebarButtonUIUpdater,
+)
 from .thumbnail_box.thumbnail_box_ui_updater import ThumbnailBoxUIUpdater
 
 if TYPE_CHECKING:
@@ -43,6 +45,7 @@ class BrowseTabUIUpdater:
 
     def resize_thumbnails_top_to_bottom(self):
         """Resizes thumbnails from top to bottom, enabling navigation buttons."""
+
         sections_copy = dict(self.browse_tab.sequence_picker.sections)
         sort_method = self.settings_manager.browse_settings.get_sort_method()
         sorted_sections = (
@@ -51,7 +54,6 @@ class BrowseTabUIUpdater:
             )
         )
 
-        # Disable navigation buttons during resize
         self.sidebar_button_updater.disable_all_buttons()
 
         scroll_widget = self.browse_tab.sequence_picker.scroll_widget
@@ -61,11 +63,12 @@ class BrowseTabUIUpdater:
             for word, _ in self.browse_tab.sequence_picker.sections.get(section, []):
                 if word not in scroll_widget.thumbnail_boxes:
                     return
+
                 thumbnail_box = scroll_widget.thumbnail_boxes[word]
 
                 self.thumbnail_updater.update_thumbnail_image(thumbnail_box)
+                # print("Resized thumbnail: ", thumbnail_box.word)
                 QApplication.processEvents()
-
             # Handle date formatting for navigation buttons
             if sort_method == "date_added":
                 month, day, _ = section.split("-")

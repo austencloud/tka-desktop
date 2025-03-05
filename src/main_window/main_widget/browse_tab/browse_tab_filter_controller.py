@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QApplication
 
 from data.constants import GRID_MODE
 from main_window.main_widget.tab_indices import LeftStackIndex
+from settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
@@ -20,16 +21,14 @@ class BrowseTabFilterController:
         self.metadata_extractor = browse_tab.metadata_extractor
 
     def apply_filter(self, filter_criteria: Union[str, dict], fade=True):
-        tab_name = (
-            self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
-        )
+        current_tab = AppContext.settings_manager().global_settings.get_current_tab()
         description = self._get_filter_description(filter_criteria)
         self.browse_tab.browse_settings.set_current_filter(filter_criteria)
         widgets_to_fade = [
             self.browse_tab.sequence_picker.filter_stack,
             self.browse_tab.sequence_picker,
         ]
-        if tab_name == "browse" and fade:
+        if current_tab == "browse" and fade:
             self.fade_manager.widget_fader.fade_and_update(
                 widgets_to_fade,
                 (
@@ -40,10 +39,10 @@ class BrowseTabFilterController:
 
         else:
             self._apply_filter_after_fade(filter_criteria, description)
-            self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
+            if current_tab == "browse":
+                self.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
 
         self.browse_tab.browse_settings.set_current_section("sequence_picker")
-
 
     def _apply_filter_after_fade(self, filter_criteria, description: str):
         self._prepare_ui_for_filtering(description)
