@@ -5,7 +5,9 @@ from PyQt6.QtGui import QPixmap
 from main_window.main_widget.browse_tab.thumbnail_box.favorites_manager import (
     FavoritesManager,
 )
-from main_window.main_widget.browse_tab.thumbnail_box.word_label import WordLabel
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
+    ThumbnailBoxHeader,
+)
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from main_window.main_widget.write_tab.act_browser.act_thumbnail_image_label import (
     ActThumbnailImageLabel,
@@ -28,7 +30,7 @@ class ActThumbnailBox(QWidget):
 
         self.favorites_manager = FavoritesManager(self)
 
-        self.word_label = WordLabel(self)
+        self.word_label = ThumbnailBoxHeader(self)
         self.image_label = ActThumbnailImageLabel(self)
 
         self._setup_layout()

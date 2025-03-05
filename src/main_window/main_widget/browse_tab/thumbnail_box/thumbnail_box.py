@@ -11,7 +11,7 @@ from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label impo
     ThumbnailImageLabel,
 )
 
-from .word_label import WordLabel
+from .thumbnail_box_header import ThumbnailBoxHeader
 from .variation_number_label import VariationNumberLabel
 from .thumbnail_box_state import ThumbnailBoxState
 
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 class ThumbnailBox(QWidget):
     margin = 10
     initialized = False
-    
+
     def __init__(
         self, browse_tab: "BrowseTab", word: str, thumbnails: list[str]
     ) -> None:
@@ -40,7 +40,7 @@ class ThumbnailBox(QWidget):
 
     def _setup_components(self):
         self.favorites_manager = FavoritesManager(self)
-        self.word_label = WordLabel(self)
+        self.word_label = ThumbnailBoxHeader(self)
         self.image_label = ThumbnailImageLabel(self)
         self.variation_number_label = VariationNumberLabel(self)
         self.nav_buttons_widget = ThumbnailBoxNavButtonsWidget(self)

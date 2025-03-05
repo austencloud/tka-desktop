@@ -35,6 +35,6 @@ class ThumbnailBoxUIUpdater:
     ):
         """Applies styling to a single thumbnail box."""
         tb.word_label.setStyleSheet(f"color: {font_color};")
-        tb.word_label.star_icon_empty_path = star_icon_path
-        tb.word_label.reload_favorite_icon()
+        tb.word_label.favorite_button.star_icon_empty_path = star_icon_path
+        tb.word_label.favorite_button.update_favorite_icon(tb.favorites_manager.favorite_status)
         tb.variation_number_label.setStyleSheet(f"color: {font_color};")

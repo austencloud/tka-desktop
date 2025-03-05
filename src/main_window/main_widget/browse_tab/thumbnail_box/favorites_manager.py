@@ -21,7 +21,7 @@ class FavoritesManager:
 
     def toggle_favorite_status(self):
         self.favorite_status = not self.favorite_status
-        self.thumbnail_box.word_label.update_favorite_icon(self.favorite_status)
+        self.thumbnail_box.word_label.favorite_button.update_favorite_icon(self.favorite_status)
         QApplication.processEvents()
         self.save_favorite_status()
 
