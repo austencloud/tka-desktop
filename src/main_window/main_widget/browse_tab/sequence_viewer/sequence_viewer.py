@@ -63,7 +63,6 @@ class SequenceViewer(QWidget):
             self.update_preview(self.state.current_index)
         else:
             self.clear()
-        self.variation_number_label.update_index(self.state.current_index)
 
     def update_preview(self, index: int):
         self.state.set_current_index(index)
