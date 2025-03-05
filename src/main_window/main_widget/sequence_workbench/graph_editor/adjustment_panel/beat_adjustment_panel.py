@@ -80,6 +80,26 @@ class BeatAdjustmentPanel(QFrame):
             self.update_turns_displays()
             self.update_rot_dir_buttons()
 
+        elif widget_index == ORI_WIDGET_INDEX:
+            self.update_ori_displays()
+
+    def update_ori_displays(self) -> None:
+        """Update the orientation displays in the orientation boxes."""
+        selected_beat_view = self.beat_frame.get.currently_selected_beat_view()
+        if not selected_beat_view:
+            return
+        blue_motion = selected_beat_view.beat.elements.blue_motion
+        red_motion = selected_beat_view.beat.elements.red_motion
+        for box, motion in zip(
+            [self.blue_ori_picker, self.red_ori_picker], [blue_motion, red_motion]
+        ):
+            box.ori_picker_widget.clickable_ori_label.set_orientation(
+                motion.state.end_ori
+            )
+            box.ori_picker_widget.ori_setter.update_current_orientation_index(
+                motion.state.end_ori
+            )
+            
     def update_rot_dir_buttons(self) -> None:
         """Update the rotation direction buttons based on the current pictograph state."""
         reference_beat = self.beat_frame.get.currently_selected_beat_view()

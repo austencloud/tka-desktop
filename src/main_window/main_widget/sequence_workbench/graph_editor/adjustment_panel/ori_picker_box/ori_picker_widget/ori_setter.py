@@ -30,7 +30,7 @@ class OrientationSetter:
 
     def set_orientation(self, orientation: str) -> None:
         """Apply the orientation to the related pictographs and data structures."""
-        self._update_current_orientation_index(orientation)
+        self.update_current_orientation_index(orientation)
         self._update_clickable_ori_label(orientation)
 
         if len(self.json_manager.loader_saver.load_current_sequence()) > 1:
@@ -54,7 +54,7 @@ class OrientationSetter:
             }
         )
 
-    def _update_current_orientation_index(self, orientation: str) -> None:
+    def update_current_orientation_index(self, orientation: str) -> None:
         self.ori_picker_widget.current_orientation_index = (
             self.ori_picker_widget.orientations.index(orientation)
         )

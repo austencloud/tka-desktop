@@ -40,12 +40,9 @@ class TurnsWidget(QWidget):
     def _setup_layout(self) -> None:
         layout: QVBoxLayout = QVBoxLayout(self)
         layout.setSpacing(0)
-        layout.addWidget(self.turns_text)
-        layout.addStretch(1)
-        layout.addWidget(self.display_frame)
-        layout.addStretch(2)
-        layout.addWidget(self.motion_type_label)
-        layout.addStretch(2)
+        layout.addWidget(self.turns_text, 1)
+        layout.addWidget(self.display_frame, 3)
+        layout.addWidget(self.motion_type_label, 1)
 
     def update_turns_display(self, motion: "Motion", new_turns: str) -> None:
         self.turns_box.matching_motion = motion
