@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     )
 
 
-class FavoritesManager:
+class ThumbnailBoxFavoritesManager:
     def __init__(self, thumbnail_box: "ThumbnailBox"):
         self.thumbnail_box = thumbnail_box
         self.favorite_status = False  # Default favorite status

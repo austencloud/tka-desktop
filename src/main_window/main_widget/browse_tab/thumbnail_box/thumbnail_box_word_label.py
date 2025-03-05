@@ -5,11 +5,13 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import ThumbnailBoxHeader
+    from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
+        ThumbnailBoxHeader,
+    )
     from settings_manager.settings_manager import SettingsManager
 
 
-class WordLabel(QLabel):
+class ThumbnailBoxWordLabel(QLabel):
     def __init__(
         self,
         text: str,
@@ -40,3 +42,4 @@ class WordLabel(QLabel):
             self.setFont(font)
             fm = self.fontMetrics()
         super().resizeEvent(event)
+

@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
-from main_window.main_widget.browse_tab.thumbnail_box.favorites_manager import (
-    FavoritesManager,
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_favorites_manager import (
+    ThumbnailBoxFavoritesManager,
 )
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_nav_buttons_widget import (
     ThumbnailBoxNavButtonsWidget,
@@ -39,7 +39,7 @@ class ThumbnailBox(QWidget):
         self._setup_layout()
 
     def _setup_components(self):
-        self.favorites_manager = FavoritesManager(self)
+        self.favorites_manager = ThumbnailBoxFavoritesManager(self)
         self.header = ThumbnailBoxHeader(self)
         self.image_label = ThumbnailImageLabel(self)
         self.variation_number_label = VariationNumberLabel(self)

@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QApplication
 from PyQt6.QtGui import QPixmap
 
-from main_window.main_widget.browse_tab.thumbnail_box.favorites_manager import (
-    FavoritesManager,
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_favorites_manager import (
+    ThumbnailBoxFavoritesManager,
 )
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
     ThumbnailBoxHeader,
@@ -28,7 +28,7 @@ class ActThumbnailBox(QWidget):
         self.current_index = 0
         self.margin = 10
 
-        self.favorites_manager = FavoritesManager(self)
+        self.favorites_manager = ThumbnailBoxFavoritesManager(self)
 
         self.header = ThumbnailBoxHeader(self)
         self.image_label = ActThumbnailImageLabel(self)

@@ -8,13 +8,15 @@ from settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
-    from .thumbnail_box import ThumbnailBox
+    from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer import (
+        SequenceViewer,
+    )
 
 
-class ThumbnailBoxFavoriteSequenceButton(QPushButton):
-    def __init__(self, thumbnail_box: "ThumbnailBox"):
+class SequenceViewerFavoriteSequenceButton(QPushButton):
+    def __init__(self, sequence_viewer: "SequenceViewer"):
         super().__init__()
-        self.thumbnail_box = thumbnail_box
+        self.sequence_viewer = sequence_viewer
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setFlat(True)
 
@@ -26,11 +28,11 @@ class ThumbnailBoxFavoriteSequenceButton(QPushButton):
         )
 
         self.clicked.connect(self.toggle_favorite_status)
-        self.update_favorite_icon(self.thumbnail_box.favorites_manager.is_favorite())
+        self.update_favorite_icon(self.sequence_viewer.favorites_manager.is_favorite())
 
     def toggle_favorite_status(self):
-        self.thumbnail_box.favorites_manager.toggle_favorite_status()
-        self.update_favorite_icon(self.thumbnail_box.favorites_manager.is_favorite())
+        self.sequence_viewer.favorites_manager.toggle_favorite_status()
+        self.update_favorite_icon(self.sequence_viewer.favorites_manager.is_favorite())
 
     def update_favorite_icon(self, is_favorite: bool):
         self.setIcon(self.star_icon_filled if is_favorite else self.star_icon_empty)
@@ -43,7 +45,7 @@ class ThumbnailBoxFavoriteSequenceButton(QPushButton):
         return f"{color}_star_outline.png" if color in ["black", "white"] else None
 
     def resizeEvent(self, event):
-        font_size = self.thumbnail_box.width() // 18
+        font_size = self.sequence_viewer.width() // 18
         icon_size = QSize(font_size + 10, font_size + 10)
         self.setIconSize(icon_size)
         self.setFixedSize(icon_size.width(), icon_size.height())

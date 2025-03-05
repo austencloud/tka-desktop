@@ -83,7 +83,7 @@ class BrowseTabFontColorUpdater(BaseFontColorUpdater):
     def _update_sequence_viewer(self):
         sequence_viewer = self.main_widget.browse_tab.sequence_viewer
         viewer_labels = [
-            sequence_viewer.word_label,
+            sequence_viewer.header,
             sequence_viewer.variation_number_label,
             sequence_viewer.placeholder_label,
         ]
