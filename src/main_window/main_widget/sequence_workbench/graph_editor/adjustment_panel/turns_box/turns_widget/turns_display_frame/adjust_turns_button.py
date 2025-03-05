@@ -88,7 +88,7 @@ class AdjustTurnsButton(StyledButton):
             svgData = QByteArray(file.read().encode("utf-8"))
 
         if not enabled:
-            svgData.replace(b"black", b"#b5b5b5")
+            svgData.replace(b"black", b"gray")
 
         self.svg_renderer.load(svgData)
         self.update()

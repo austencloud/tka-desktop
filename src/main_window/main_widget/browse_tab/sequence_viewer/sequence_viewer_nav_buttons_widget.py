@@ -20,6 +20,7 @@ class SequenceViewerNavButtonsWidget(QWidget):
         self.has_multiple_thumbnails = len(self.state.thumbnails) > 1
         if not self.has_multiple_thumbnails:
             self.hide()
+
     def _setup_buttons(self):
         layout = QHBoxLayout(self)
         layout.setSpacing(15)  # Adjust spacing between buttons

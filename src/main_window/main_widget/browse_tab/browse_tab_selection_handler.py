@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label import (
@@ -29,6 +30,8 @@ class BrowseTabSelectionManager:
             lambda: self.select_box_thumbnail(image_label, sequence_dict),
             300,
         )
+        # self.select_box_thumbnail(image_label, sequence_dict)
+        print("Thumbnail clicked")
 
     def _get_widgets_to_fade(self):
         """Returns a list of widgets to be faded during thumbnail selection."""
@@ -40,7 +43,7 @@ class BrowseTabSelectionManager:
             sequence_viewer.variation_number_label,
             sequence_viewer.nav_buttons_widget,
             sequence_viewer.action_button_panel,
-        ]  # Oh, the widgets we fade!
+        ]
 
     def select_box_thumbnail(
         self,
@@ -52,6 +55,7 @@ class BrowseTabSelectionManager:
         self._update_thumbnail_display(image_label)
         self._update_selected_thumbnail(image_label)
         self._update_labels_and_settings(image_label)
+        QApplication.processEvents()
 
     def _update_sequence_data(
         self, image_label: "ThumbnailImageLabel", sequence_dict: dict
@@ -113,4 +117,4 @@ class BrowseTabSelectionManager:
         sequence_viewer.variation_number_label.update_index(index)
         sequence_viewer.word_label.update_word_label(word)
         sequence_viewer.update_thumbnails(sequence_viewer.state.thumbnails)
-        sequence_viewer.update_nav_buttons() 
+        sequence_viewer.update_nav_buttons()
