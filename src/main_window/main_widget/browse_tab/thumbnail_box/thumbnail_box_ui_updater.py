@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QApplication
 from .thumbnail_box import ThumbnailBox
-from settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
@@ -34,7 +32,9 @@ class ThumbnailBoxUIUpdater:
         self, tb: "ThumbnailBox", font_color, star_icon_path
     ):
         """Applies styling to a single thumbnail box."""
-        tb.word_label.setStyleSheet(f"color: {font_color};")
-        tb.word_label.favorite_button.star_icon_empty_path = star_icon_path
-        tb.word_label.favorite_button.update_favorite_icon(tb.favorites_manager.favorite_status)
+        tb.header.setStyleSheet(f"color: {font_color};")
+        tb.header.favorite_button.star_icon_empty_path = star_icon_path
+        tb.header.favorite_button.update_favorite_icon(
+            tb.favorites_manager.favorite_status
+        )
         tb.variation_number_label.setStyleSheet(f"color: {font_color};")

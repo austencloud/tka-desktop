@@ -18,7 +18,7 @@ class WriteTabFontColorUpdater(BaseFontColorUpdater):
         self._apply_font_color(act_sheet.act_container)
 
         for thumbnail_box in act_tab.act_browser.thumbnail_boxes:
-            self._apply_font_color(thumbnail_box.word_label)
+            self._apply_font_color(thumbnail_box.header)
 
         for box in act_sheet.act_container.cue_scroll.cue_frame.cue_boxes.values():
             for widget in [box.timestamp, box.cue_label]:

@@ -40,7 +40,7 @@ class ThumbnailBox(QWidget):
 
     def _setup_components(self):
         self.favorites_manager = FavoritesManager(self)
-        self.word_label = ThumbnailBoxHeader(self)
+        self.header = ThumbnailBoxHeader(self)
         self.image_label = ThumbnailImageLabel(self)
         self.variation_number_label = VariationNumberLabel(self)
         self.nav_buttons_widget = ThumbnailBoxNavButtonsWidget(self)
@@ -49,7 +49,7 @@ class ThumbnailBox(QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         layout = QVBoxLayout(self)
         layout.setSpacing(0)
-        layout.addWidget(self.word_label)
+        layout.addWidget(self.header)
         layout.addWidget(self.image_label)
         layout.addWidget(self.nav_buttons_widget)
         layout.addStretch()
@@ -80,7 +80,7 @@ class ThumbnailBox(QWidget):
             self.browse_tab.sequence_viewer.update_thumbnails(self.state.thumbnails)
 
         self.variation_number_label.update_index(self.state.current_index)
-        self.word_label.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
+        self.header.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
         self.image_label.update_thumbnail(self.state.current_index)
         if self.initialized == False:
             self.initialized = True

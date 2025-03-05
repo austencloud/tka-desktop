@@ -1,12 +1,11 @@
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtWidgets import QLabel, QPushButton, QWidget, QHBoxLayout
-from PyQt6.QtGui import QFont, QIcon
+from PyQt6.QtWidgets import QPushButton
+from PyQt6.QtGui import QIcon
 from typing import TYPE_CHECKING, Literal
 import os
 
 from settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_image_path
-from .thumbnail_box_difficulty_label import ThumbnailBoxDifficultyLabel
 
 if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox

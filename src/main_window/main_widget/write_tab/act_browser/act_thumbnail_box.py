@@ -30,7 +30,7 @@ class ActThumbnailBox(QWidget):
 
         self.favorites_manager = FavoritesManager(self)
 
-        self.word_label = ThumbnailBoxHeader(self)
+        self.header = ThumbnailBoxHeader(self)
         self.image_label = ActThumbnailImageLabel(self)
 
         self._setup_layout()
@@ -39,13 +39,13 @@ class ActThumbnailBox(QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)  # No margins in the layout
-        layout.addWidget(self.word_label)
+        layout.addWidget(self.header)
         layout.addWidget(self.image_label)
         self.setLayout(layout)
 
     def toggle_favorite_status(self):
         self.favorite_status = not self.favorite_status
-        self.word_label.update_favorite_icon(self.favorite_status)
+        self.header.update_favorite_icon(self.favorite_status)
         QApplication.processEvents()
         self.save_favorite_status()
 
