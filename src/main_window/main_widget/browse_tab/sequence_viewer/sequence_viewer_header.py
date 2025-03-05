@@ -9,7 +9,7 @@ from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_favorite
 from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_word_label import (
     SequenceViewerWordLabel,
 )
-from main_window.main_widget.browse_tab.thumbnail_box.favorite_sequence_button import (
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_favorite_sequence_button import (
     ThumbnailBoxFavoriteSequenceButton,
 )
 from settings_manager.global_settings.app_context import AppContext
