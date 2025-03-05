@@ -4,7 +4,7 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtCore import pyqtSignal
 
 from main_window.main_widget.tab_index import TAB_INDEX
-from styles.styled_button import StyledButton
+from styles.base_styled_button import StyledButton
 
 
 if TYPE_CHECKING:

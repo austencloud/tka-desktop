@@ -74,12 +74,19 @@ class ClickableOriLabel(QLabel):
         padding = font_metrics.horizontalAdvance("  ")
 
         required_width = text_width + padding
-        self.setMinimumWidth(required_width)
+        self.setFixedWidth(int(required_width * 1.1))
 
         border_size = max(int(required_width / 60), 1)
         border_color = self._get_border_color(self.ori_picker_widget.color)
+        border_radius = self.width() // 2
+        self.setStyleSheet("")
         self.setStyleSheet(
-            f"QLabel {{ border: {border_size}px solid {border_color}; background-color: white; }}"
+            f"QLabel {{\n"
+            f"    border: {border_size}px solid {border_color};\n"
+            f"    background-color: white;\n"
+            f"    border-radius: {border_radius}px;\n"
+            f"}}"
         )
+
 
         super().resizeEvent(event)

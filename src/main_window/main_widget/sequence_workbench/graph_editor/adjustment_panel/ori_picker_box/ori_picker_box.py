@@ -3,6 +3,7 @@ from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, HEX_BLUE, HEX_RED, OPP,
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 from .ori_picker_widget.ori_picker_widget import OriPickerWidget
 from .ori_picker_header import OriPickerHeader
+from .color_utils import ColorUtils
 
 if TYPE_CHECKING:
     from ..beat_adjustment_panel import BeatAdjustmentPanel
@@ -50,13 +51,7 @@ class OriPickerBox(QFrame):
             if self.color == "red"
             else HEX_BLUE if self.color == "blue" else self.color
         )
-        # Convert hex to RGB
-        r, g, b = int(color_hex[1:3], 16), int(color_hex[3:5], 16), int(color_hex[5:7], 16)
-        # Whiten the color by blending with white (255, 255, 255)
-        whitened_r = min(255, r + (255 - r) // 2)
-        whitened_g = min(255, g + (255 - g) // 2)
-        whitened_b = min(255, b + (255 - b) // 2)
-        whitened_color = f"rgb({whitened_r}, {whitened_g}, {whitened_b})"
+        whitened_color = ColorUtils.lighten_color(color_hex)
         self.setStyleSheet(
             f"#{self.__class__.__name__} {{ border: {border_width}px solid "
             f"{color_hex}; background-color: {whitened_color};}}"

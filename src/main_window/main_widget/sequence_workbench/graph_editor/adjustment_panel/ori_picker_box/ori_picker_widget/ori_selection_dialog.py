@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 from data.constants import BLUE, HEX_BLUE, HEX_RED
 from .ori_button import OriButton  # Import the new OriButton class
+from ..color_utils import ColorUtils
 
 if TYPE_CHECKING:
     from .ori_picker_widget import OriPickerWidget
@@ -23,14 +24,9 @@ class OriSelectionDialog(QDialog):
 
     def _set_dialog_style(self):
         border_color = HEX_BLUE if self.ori_picker_widget.color == BLUE else HEX_RED
+        background_color = ColorUtils.lighten_color(border_color)
         self.setStyleSheet(
-            f"""
-            QDialog {{
-                border: 2px solid {border_color};
-                border-radius: 5px;
-                background-color: white;
-            }}
-            """
+            f"background-color: {background_color}; border: 2px solid {border_color};"
         )
 
     def _setup_buttons(self):

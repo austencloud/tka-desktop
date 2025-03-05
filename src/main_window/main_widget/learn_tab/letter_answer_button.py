@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Callable
 from PyQt6.QtCore import Qt
 
-from styles.styled_button import StyledButton
+from styles.base_styled_button import StyledButton
 
 
 if TYPE_CHECKING:
