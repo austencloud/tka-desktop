@@ -84,5 +84,5 @@ class ThumbnailBoxNavButtonsWidget(QWidget):
             font.setPointSize(font_size)
             btn.setFont(font)
             btn.setFixedSize(int(button_size * 1.5), int(button_size))  # Wider buttons
-        self.refresh()
+        # self.refresh()
         super().resizeEvent(event)
