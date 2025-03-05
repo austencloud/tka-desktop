@@ -114,6 +114,6 @@ class BrowseTabSelectionManager:
         sequence_viewer.state.current_index = index
         sequence_viewer.current_thumbnail_box = thumbnail_box
         sequence_viewer.variation_number_label.update_index(index)
-        sequence_viewer.header.word_label.update_word_label(word)
+        sequence_viewer.word_label.update_word_label(word)
         sequence_viewer.update_thumbnails(sequence_viewer.state.thumbnails)
         sequence_viewer.update_nav_buttons()

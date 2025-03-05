@@ -3,10 +3,20 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 from typing import TYPE_CHECKING, Optional
 
-from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_favorites_manager import SequenceViewerFavoritesManager
-from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_header import SequenceViewerHeader
-from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
-    ThumbnailBoxHeader,
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_difficulty_level import (
+    SequenceViewerDifficultyLabel,
+)
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_favorite_sequence_button import (
+    SequenceViewerFavoriteSequenceButton,
+)
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_favorites_manager import (
+    SequenceViewerFavoritesManager,
+)
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_header import (
+    SequenceViewerHeader,
+)
+from main_window.main_widget.browse_tab.sequence_viewer.sequence_viewer_word_label import (
+    SequenceViewerWordLabel,
 )
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
@@ -32,11 +42,25 @@ class SequenceViewer(QWidget):
         self.favorites_manager = None
         self.current_thumbnail_box: Optional[ThumbnailBox] = None
         self.state = SequenceViewerState()
-        self.favorites_manager = SequenceViewerFavoritesManager(self)
-
         self._setup_components()
         self._setup_layout()
         self.clear()
+
+    def _setup_components(self):
+        self.placeholder_label = PlaceholderTextLabel(self)
+        self.image_label = SequenceViewerImageLabel(self)
+        self.stacked_widget = QStackedWidget()
+        self.variation_number_label = VariationNumberLabel(self)
+        self.nav_buttons_widget = SequenceViewerNavButtonsWidget(self)
+        self.action_button_panel = SequenceViewerActionButtonPanel(self)
+        self.favorites_manager = SequenceViewerFavoritesManager(self)
+        self.difficulty_label = SequenceViewerDifficultyLabel(self)
+        self.word_label = SequenceViewerWordLabel(self.word, self)
+        self.favorite_button = SequenceViewerFavoriteSequenceButton(self)
+        self.header = SequenceViewerHeader(self)
+
+        self.stacked_widget.addWidget(self.placeholder_label)
+        self.stacked_widget.addWidget(self.image_label)
 
     def _setup_layout(self):
         layout = QVBoxLayout(self)
@@ -50,24 +74,11 @@ class SequenceViewer(QWidget):
 
         self.setLayout(layout)
 
-    def _setup_components(self):
-        self.placeholder_label = PlaceholderTextLabel(self)
-        self.image_label = SequenceViewerImageLabel(self)
-        self.stacked_widget = QStackedWidget()
-
-        self.stacked_widget.addWidget(self.placeholder_label)
-        self.stacked_widget.addWidget(self.image_label)
-
-        self.variation_number_label = VariationNumberLabel(self)
-        self.nav_buttons_widget = SequenceViewerNavButtonsWidget(self)
-        self.header = SequenceViewerHeader(self)
-        self.action_button_panel = SequenceViewerActionButtonPanel(self)
-
     def update_thumbnails(self, thumbnails: list[str]):
         self.state.update_thumbnails(thumbnails)
         current_thumbnail = self.state.get_current_thumbnail()
-        self.header.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
-        
+        self.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
+
         if current_thumbnail:
             self.update_preview(self.state.current_index)
         else:
@@ -101,7 +112,7 @@ class SequenceViewer(QWidget):
         self.state.clear()
         self.stacked_widget.setCurrentWidget(self.placeholder_label)
         self.variation_number_label.clear()
-        self.header.word_label.clear()
+        self.word_label.clear()
         self.nav_buttons_widget.hide()
         self.variation_number_label.hide()
         self.current_thumbnail_box = None
@@ -144,7 +155,7 @@ class SequenceViewer(QWidget):
                 self.update_thumbnails(thumbnails)
                 self.update_preview(var_index)
                 self.update_nav_buttons()
-                self.header.word_label.setText(word)
+                self.word_label.setText(word)
                 self.variation_number_label.update_index(var_index)
                 self.set_current_thumbnail_box(word)
 
