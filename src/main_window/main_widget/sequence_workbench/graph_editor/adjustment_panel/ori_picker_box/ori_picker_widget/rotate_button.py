@@ -4,13 +4,15 @@ from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QSize
 
+from styles.styled_button import StyledButton
+
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.ori_picker_box.ori_picker_widget.rotate_buttons_widget import (
         RotateButtonsWidget,
     )
 
 
-class RotateButton(QPushButton):
+class RotateButton(StyledButton):
     def __init__(
         self,
         rotate_buttons_widget: "RotateButtonsWidget",
@@ -26,7 +28,7 @@ class RotateButton(QPushButton):
     def resize_button(self):
         button_size = int(
             self.rotate_buttons_widget.ori_picker_widget.ori_picker_box.graph_editor.height()
-            // 6
+            // 4.5
         )
         icon_size = int(button_size * 0.6)
         self.setFixedSize(QSize(button_size, button_size))

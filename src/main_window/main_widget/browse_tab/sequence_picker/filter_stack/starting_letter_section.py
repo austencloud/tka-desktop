@@ -9,7 +9,7 @@ from PyQt6.QtCore import Qt, QEvent, QObject
 from PyQt6.QtGui import QFontMetrics
 
 from data.constants import LETTER
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
@@ -34,7 +34,7 @@ class StartingLetterSection(FilterSectionBase):
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
         super().__init__(initial_selection_widget, "Select by starting letter:")
         self.main_widget = initial_selection_widget.browse_tab.main_widget
-        self.buttons: dict[str, BaseStyledButton] = {}
+        self.buttons: dict[str, StyledButton] = {}
         self.sequence_tally: dict[str, int] = {}
         self.sequence_tally_label = QLabel("")
         self.add_buttons()
@@ -63,9 +63,9 @@ class StartingLetterSection(FilterSectionBase):
                     button_row_layout.addWidget(button)
                 layout.addLayout(button_row_layout)
 
-    def create_letter_button(self, letter: str) -> BaseStyledButton:
+    def create_letter_button(self, letter: str) -> StyledButton:
         """Create a BaseStyledButton for a given letter."""
-        button = BaseStyledButton(letter)
+        button = StyledButton(letter)
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.buttons[letter] = button
         button.setProperty(LETTER, letter)

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QGridLayout, QWidget
 from PyQt6.QtCore import Qt
 
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 from .filter_section_base import FilterSectionBase
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ class SequenceLengthSection(FilterSectionBase):
 
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
         super().__init__(initial_selection_widget, "Select by Sequence Length:")
-        self.buttons: dict[int, BaseStyledButton] = {}
+        self.buttons: dict[int, StyledButton] = {}
         self.sequence_tally_labels: dict[int, QLabel] = {}
         self.spacer_labels: list[QLabel] = []
         self.grid_layout = QGridLayout()
@@ -68,9 +68,9 @@ class SequenceLengthSection(FilterSectionBase):
         layout.addLayout(self.grid_layout)
         layout.addStretch(1)
 
-    def create_length_button(self, length: int) -> BaseStyledButton:
+    def create_length_button(self, length: int) -> StyledButton:
         """Create and configure a BaseStyledButton for a given sequence length."""
-        button = BaseStyledButton(str(length))
+        button = StyledButton(str(length))
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.buttons[length] = button
         button.clicked.connect(

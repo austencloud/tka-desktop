@@ -1,7 +1,8 @@
 from PyQt6.QtCore import QEvent
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 
-class SortButton(BaseStyledButton):
+
+class SortButton(StyledButton):
     """A specialized button for sort options."""
 
     def __init__(self, label: str, identifier: str):

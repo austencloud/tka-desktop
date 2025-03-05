@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Callable
 from PyQt6.QtCore import Qt
 
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 
 
 if TYPE_CHECKING:
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     )
 
 
-class LetterAnswerButton(BaseStyledButton):
+class LetterAnswerButton(StyledButton):
     answer: Any
 
     def __init__(

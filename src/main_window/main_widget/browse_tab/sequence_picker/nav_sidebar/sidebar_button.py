@@ -1,9 +1,9 @@
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 from PyQt6.QtGui import QFontMetrics
 from PyQt6.QtCore import QEvent
 
 
-class SidebarButton(BaseStyledButton):
+class SidebarButton(StyledButton):
     """A specialized button for the sidebar with dynamic width adjustment."""
 
     _max_button_width = 0  # Store max width across all buttons

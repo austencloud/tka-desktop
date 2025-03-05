@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtGui import QFontMetrics
 from main_window.main_widget.tab_indices import LeftStackIndex
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 
 if TYPE_CHECKING:
     from ..sequence_picker import SequencePicker
 
 
-class SequencePickerGoBackButton(BaseStyledButton):
+class SequencePickerGoBackButton(StyledButton):
     """A go-back button that returns to the initial filter selection."""
 
     def __init__(self, sequence_picker: "SequencePicker"):

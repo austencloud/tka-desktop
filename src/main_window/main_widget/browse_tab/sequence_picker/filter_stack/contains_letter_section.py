@@ -9,7 +9,7 @@ from PyQt6.QtCore import Qt
 
 from data.constants import LETTER
 from settings_manager.global_settings.app_context import AppContext
-from styles.base_styled_button import BaseStyledButton  # to get data_manager
+from styles.styled_button import StyledButton  # to get data_manager
 
 from .filter_section_base import FilterSectionBase
 
@@ -47,7 +47,7 @@ class ContainsLettersSection(FilterSectionBase):
         super().__init__(initial_selection_widget, "Select letters to be contained:")
         self.main_widget = initial_selection_widget.browse_tab.main_widget
         self.selected_letters: set[str] = set()
-        self.buttons: dict[str, BaseStyledButton] = {}
+        self.buttons: dict[str, StyledButton] = {}
         self.add_buttons()
 
     def add_buttons(self):
@@ -70,7 +70,7 @@ class ContainsLettersSection(FilterSectionBase):
         # Apply button
         apply_button_layout = QHBoxLayout()
         apply_button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.apply_button = BaseStyledButton("Apply")
+        self.apply_button = StyledButton("Apply")
         self.apply_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.apply_button.clicked.connect(self.apply_filter)
         apply_button_layout.addWidget(self.apply_button)
@@ -84,7 +84,7 @@ class ContainsLettersSection(FilterSectionBase):
                 button_row_layout = QHBoxLayout()
                 button_row_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 for letter in row_data:
-                    button = BaseStyledButton(letter)
+                    button = StyledButton(letter)
                     button.setCursor(Qt.CursorShape.PointingHandCursor)
                     button.setCheckable(True)
                     button.setProperty(LETTER, letter)

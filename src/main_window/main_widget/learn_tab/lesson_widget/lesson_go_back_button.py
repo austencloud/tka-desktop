@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 
 
 if TYPE_CHECKING:
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     )
 
 
-class LessonGoBackButton(BaseStyledButton):
+class LessonGoBackButton(StyledButton):
     def __init__(self, lesson_widget: "LessonWidget"):
         super().__init__("Back")
         self.lesson_widget = lesson_widget

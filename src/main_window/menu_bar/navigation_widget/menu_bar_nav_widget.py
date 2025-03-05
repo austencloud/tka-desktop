@@ -4,7 +4,7 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtCore import pyqtSignal
 
 from main_window.main_widget.tab_index import TAB_INDEX
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 
 
 if TYPE_CHECKING:
@@ -18,7 +18,7 @@ class MenuBarNavWidget(QWidget):
         super().__init__(menu_bar)
         self.mw = menu_bar.main_widget
 
-        self.tab_buttons: list[BaseStyledButton] = []
+        self.tab_buttons: list[StyledButton] = []
         self.tab_names = ["Construct ⚒️", "Generate 🤖", "Browse 🔍", "Learn 🧠"]
 
         self.current_index = 0
@@ -31,7 +31,7 @@ class MenuBarNavWidget(QWidget):
         self.tab_layout.addStretch()  # Add stretch before the buttons
 
         for index, name in enumerate(self.tab_names):
-            button = BaseStyledButton(name)
+            button = StyledButton(name)
             button.clicked.connect(lambda _, idx=index: self.set_active_tab(idx))
             self.tab_buttons.append(button)
             self.tab_layout.addWidget(button)

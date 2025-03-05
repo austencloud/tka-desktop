@@ -5,19 +5,19 @@ from PyQt6.QtGui import (
     QColor,
     QCursor,
     QBrush,
-    QLinearGradient,
     QPen,
 )
 from PyQt6.QtWidgets import QAbstractButton
 from PyQt6.QtSvg import QSvgRenderer
 
 from data.constants import BLUE, RED
+from styles.styled_button import StyledButton
 
 if TYPE_CHECKING:
     from ..turns_widget import TurnsWidget
 
 
-class AdjustTurnsButton(QAbstractButton):
+class AdjustTurnsButton(StyledButton):
     def __init__(self, svg_path, turns_widget: "TurnsWidget") -> None:
         super().__init__(turns_widget)
         self.svg_path = svg_path
@@ -33,15 +33,10 @@ class AdjustTurnsButton(QAbstractButton):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        gradient = QLinearGradient(0, 0, 0, self.height())
-        if self.pressed:
-            gradient.setColorAt(0.0, QColor("#d3d3d3"))
-            gradient.setColorAt(1.0, QColor("#a9a9a9"))
-        else:
-            gradient.setColorAt(0.0, QColor("white"))
-            gradient.setColorAt(1.0, QColor("#f0f0f0"))
+        # Draw a translucent white background if hovered
+        if self.hovered and self.isEnabled():
+            painter.fillRect(self.rect(), QColor(255, 255, 255, 80))
 
-        painter.fillRect(self.rect(), QBrush(gradient))
         turns_box_color = self.turns_widget.turns_box.color
         if turns_box_color == RED:
             border_color = "#ED1C24"
@@ -50,12 +45,14 @@ class AdjustTurnsButton(QAbstractButton):
         else:
             border_color = "black"
 
+        # If hovered, draw a white border. If pressed, use the turns_box color. Otherwise black border.
         if self.isEnabled():
-            if self.hovered or self.pressed:
+            if self.hovered:
+                painter.setPen(QPen(QColor("white"), 4))
+            elif self.pressed:
                 painter.setPen(QPen(QColor(f"{border_color}"), 5))
             else:
                 painter.setPen(QPen(QColor("black"), 2))
-            painter.drawRect(self.rect().adjusted(1, 1, -1, -1))
 
         icon_size = int(min(self.width(), self.height()) * 0.9)
         x = (self.width() - icon_size) / 2
@@ -63,7 +60,7 @@ class AdjustTurnsButton(QAbstractButton):
         icon_rect = QRectF(x, y, icon_size, icon_size)
         self.svg_renderer.render(painter, icon_rect)
         painter.end()
-        
+
     def mousePressEvent(self, event):
         self.pressed = True
         self.update()
@@ -97,7 +94,7 @@ class AdjustTurnsButton(QAbstractButton):
         self.update()
 
     def resizeEvent(self, event) -> None:
-        size = int(self.turns_box.graph_editor.height() * 0.25)
+        size = int(self.turns_box.graph_editor.height() * 0.3)
         self.setMaximumWidth(size)
         self.setMaximumHeight(size)
         super().resizeEvent(event)

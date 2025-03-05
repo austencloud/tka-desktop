@@ -12,7 +12,7 @@ from functools import partial
 from main_window.main_widget.learn_tab.lesson_widget.lesson_widget import (
     LessonWidget,
 )
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 
 
 from .lesson_mode_toggle_widget import LessonModeToggleWidget
@@ -30,7 +30,7 @@ class LessonSelector(QWidget):
         self.main_widget = learn_tab.main_widget
 
         # Store buttons and description labels for resizing
-        self.buttons: dict[str, BaseStyledButton] = {}
+        self.buttons: dict[str, StyledButton] = {}
         self.description_labels: dict[str, QLabel] = {}
 
         # Layout setup
@@ -80,7 +80,7 @@ class LessonSelector(QWidget):
         lesson_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Create the button
-        button = BaseStyledButton(button_text)
+        button = StyledButton(button_text)
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         button.clicked.connect(callback)
         self.buttons[button_text] = button

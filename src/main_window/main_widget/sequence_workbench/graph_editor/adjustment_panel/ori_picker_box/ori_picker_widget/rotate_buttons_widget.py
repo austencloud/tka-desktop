@@ -18,8 +18,12 @@ class RotateButtonsWidget(QWidget):
         super().__init__(ori_picker_widget)
         self.ori_picker_widget = ori_picker_widget
         path = get_image_path("icons")
-        self.ccw_button = RotateButton(self, f"{path}/rotate_ccw.png", self.rotate_ccw)
-        self.cw_button = RotateButton(self, f"{path}/rotate_cw.png", self.rotate_cw)
+        self.ccw_button = RotateButton(
+            self, f"{path}/rotate_ccw_white.png", self.rotate_ccw
+        )
+        self.cw_button = RotateButton(
+            self, f"{path}/rotate_cw_white.png", self.rotate_cw
+        )
 
         layout = QHBoxLayout(self)
         layout.addWidget(self.ccw_button)

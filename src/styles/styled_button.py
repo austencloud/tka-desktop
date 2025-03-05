@@ -5,7 +5,7 @@ from styles.button_state import ButtonState
 from styles.metallic_blue_button_theme import MetallicBlueButtonTheme
 
 
-class BaseStyledButton(QPushButton):
+class StyledButton(QPushButton):
     """A base QPushButton with shared metallic blue styling and state handling."""
 
     clicked_signal = pyqtSignal(str)  # Custom signal for button clicks

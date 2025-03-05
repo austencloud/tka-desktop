@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 
 if TYPE_CHECKING:
     from .thumbnail_box_nav_buttons_widget import ThumbnailBoxNavButtonsWidget
 
 
-class ThumbnailBoxNavButton(BaseStyledButton):
+class ThumbnailBoxNavButton(StyledButton):
     def __init__(self, text: str, parent: "ThumbnailBoxNavButtonsWidget"):
         super().__init__(text)
 

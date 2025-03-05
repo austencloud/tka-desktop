@@ -13,7 +13,7 @@ from PyQt6.QtCore import Qt
 from functools import partial
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 from utils.path_helpers import get_data_path
 
 from .filter_section_base import FilterSectionBase
@@ -29,7 +29,7 @@ class AuthorSection(FilterSectionBase):
     def __init__(self, initial_selection_widget: "SequencePickerFilterStack"):
         super().__init__(initial_selection_widget, "Select by Author:")
         self.main_widget = initial_selection_widget.browse_tab.main_widget
-        self.buttons: dict[str, BaseStyledButton] = {}
+        self.buttons: dict[str, StyledButton] = {}
         self.tally_labels: dict[str, QLabel] = {}
         self.sequence_counts: dict[str, int] = {}
         self.add_buttons()
@@ -82,8 +82,8 @@ class AuthorSection(FilterSectionBase):
         vbox.addWidget(label)
         return vbox
 
-    def _create_author_button(self, author: str) -> BaseStyledButton:
-        btn = BaseStyledButton(author)
+    def _create_author_button(self, author: str) -> StyledButton:
+        btn = StyledButton(author)
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
         btn.clicked.connect(partial(self.handle_author_click, author))
         self.buttons[author] = btn

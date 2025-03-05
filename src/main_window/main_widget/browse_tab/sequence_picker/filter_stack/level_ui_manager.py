@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 
 
 if TYPE_CHECKING:
@@ -36,14 +36,14 @@ class LevelUIManager:
         self.filter_section = filter_section
         self.data_manager = data_manager
         self.image_handler = image_handler
-        self.buttons: dict[int, BaseStyledButton] = {}
+        self.buttons: dict[int, StyledButton] = {}
         self.description_labels: dict[int, QLabel] = {}
         self.tally_labels: dict[int, QLabel] = {}
 
     def setup_ui(self) -> None:
         self.filter_section.go_back_button.show()
         self.filter_section.header_label.show()
-        layout:QVBoxLayout = self.filter_section.layout()
+        layout: QVBoxLayout = self.filter_section.layout()
 
         grid_layout = QGridLayout()
         grid_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -76,8 +76,8 @@ class LevelUIManager:
 
         return level_vbox
 
-    def _create_level_button(self, level: int) -> BaseStyledButton:
-        button = BaseStyledButton(f"Level {level}")
+    def _create_level_button(self, level: int) -> StyledButton:
+        button = StyledButton(f"Level {level}")
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         button.clicked.connect(partial(self.filter_section.handle_level_click, level))
         self.buttons[level] = button

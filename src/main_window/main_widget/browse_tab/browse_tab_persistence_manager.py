@@ -14,8 +14,8 @@ class BrowseTabPersistenceManager:
 
     def __init__(self, browse_tab: "BrowseTab") -> None:
         self.browse_tab = browse_tab
-        self.preloading_paused = False  # 🆕 Flag to pause/resume background preloading
-        self.thumbnail_queue = []  # 🆕 Queue of words to preload
+        self.preloading_paused = False
+        self.thumbnail_queue = []
 
     def apply_saved_browse_state(self):
         """Applies the saved browse state on startup."""
@@ -40,17 +40,12 @@ class BrowseTabPersistenceManager:
         if filter_criteria:
             filter_controller.apply_filter(filter_criteria, fade=False)
 
-        # 🆕 Start background preloading after state is fully restored
         QTimer.singleShot(100, self.start_background_preloading)
 
     def start_background_preloading(self):
         """Begins preloading all thumbnail boxes asynchronously."""
         print("[INFO] Starting background preloading of thumbnails...")
-
-        # Get all available words from the dictionary
         self.thumbnail_queue = [word for word, _ in self.browse_tab.get.base_words()]
-
-        # Filter out words that already have thumbnail boxes
         existing_words = {
             word
             for word, box in self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.items()
@@ -59,27 +54,19 @@ class BrowseTabPersistenceManager:
         self.thumbnail_queue = [
             word for word in self.thumbnail_queue if word not in existing_words
         ]
-
-        # Start preloading if there are thumbnails to load
         if self.thumbnail_queue:
             self.preload_next_thumbnail()
 
     def preload_next_thumbnail(self):
         """Preloads the next thumbnail box in the queue."""
         if self.preloading_paused or not self.thumbnail_queue:
-            return  # Stop if preloading is paused or finished
-
+            return
         word = self.thumbnail_queue.pop(0)
-
-        # ✅ Find the corresponding thumbnails correctly
         thumbnails = next(
             (thumbs for w, thumbs in self.browse_tab.get.base_words() if w == word), []
         )
-
         if thumbnails:
             self.add_thumbnail_box(word, thumbnails)
-
-        # Continue preloading with a slight delay to keep UI responsive
         if self.thumbnail_queue:
             QTimer.singleShot(50, self.preload_next_thumbnail)
 
@@ -92,9 +79,9 @@ class BrowseTabPersistenceManager:
                 return
         scroll_widget.thumbnail_boxes[word] = thumbnail_box
         scroll_widget.grid_layout.addWidget(thumbnail_box)
-        thumbnail_box.update_thumbnails(thumbnails)  # Ensure it loads properly
+        thumbnail_box.update_thumbnails(thumbnails)
         thumbnail_box.image_label.update_thumbnail(thumbnail_box.state.current_index)
-        thumbnail_box.hide()  # Hide the box until it's fully loaded
+        thumbnail_box.hide()
         print(f"[LOADED] Preloaded thumbnail box: {word}")
 
     def pause_preloading(self):

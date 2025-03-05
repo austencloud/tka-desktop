@@ -1,8 +1,9 @@
 from PyQt6.QtCore import Qt
 
-from styles.base_styled_button import BaseStyledButton
+from styles.styled_button import StyledButton
 
-class FilterButton(BaseStyledButton):
+
+class FilterButton(StyledButton):
     def __init__(self, label: str):
         super().__init__(label)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -12,7 +13,7 @@ class FilterButton(BaseStyledButton):
         #         border: 2px solid black;
         #     }
         #     QPushButton:hover {
-        #         background-color: lightgray; 
+        #         background-color: lightgray;
         #     }
         # """
         # self.setStyleSheet(self._default_stylesheet)
@@ -41,8 +42,6 @@ class FilterButton(BaseStyledButton):
     #         }}
     #     """
     #     )
-
-
 
     # def set_rounded_button_style(self, radius: int):
     #     self._radius = radius
