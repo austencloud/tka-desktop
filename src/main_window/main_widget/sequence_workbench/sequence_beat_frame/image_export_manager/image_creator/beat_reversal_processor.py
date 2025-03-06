@@ -14,7 +14,7 @@ class BeatReversalProcessor:
     def process_reversals(sequence: list[dict], filled_beats: list["BeatView"]) -> None:
         """Process reversals and update pictographs before drawing."""
         sequence_so_far = []
-        for i, (beat_dict, beat_view) in enumerate(zip(sequence[2:], filled_beats)):
+        for i, (beat_data, beat_view) in enumerate(zip(sequence[2:], filled_beats)):
             filtered_sequence_so_far = [
                 beat
                 for beat in sequence_so_far
@@ -23,7 +23,7 @@ class BeatReversalProcessor:
             ]
 
             reversal_info = ReversalDetector.detect_reversal(
-                filtered_sequence_so_far, beat_dict
+                filtered_sequence_so_far, beat_data
             )
             pictograph = beat_view.beat
             pictograph.state.blue_reversal = False
@@ -35,4 +35,4 @@ class BeatReversalProcessor:
             beat_view.update()
             beat_view.repaint()
 
-            sequence_so_far.append(beat_dict)
+            sequence_so_far.append(beat_data)

@@ -51,14 +51,14 @@ class SequenceRotater(BaseSequenceModifier):
 
         rotated_sequence = [metadata]
 
-        start_pos_beat_dict = (
+        start_pos_beat_data = (
             self.sequence_workbench.beat_frame.start_pos_view.start_pos.state.pictograph_data.copy()
         )
-        self._rotate_dict(start_pos_beat_dict)
-        rotated_sequence.append(start_pos_beat_dict)
+        self._rotate_dict(start_pos_beat_data)
+        rotated_sequence.append(start_pos_beat_data)
 
-        for beat_dict in self.sequence_workbench.beat_frame.get.beat_dicts():
-            rotated_dict = beat_dict.copy()
+        for beat_data in self.sequence_workbench.beat_frame.get.beat_datas():
+            rotated_dict = beat_data.copy()
             self._rotate_dict(rotated_dict)
             rotated_sequence.append(rotated_dict)
 

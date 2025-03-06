@@ -3,6 +3,12 @@ from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import
 from ..CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map
+from data.position_maps import (
+    half_position_map,
+    quarter_position_map_cw,
+    quarter_position_map_ccw,
+    position_swap_mapping,
+)
 
 
 class StrictSwappedCAPExecutor(CAPExecutor):
@@ -43,7 +49,11 @@ class StrictSwappedCAPExecutor(CAPExecutor):
 
     def can_perform_CAP(self, sequence: list[dict]) -> bool:
         """Ensures that the sequence can be swapped."""
-        return sequence[1][END_POS] == sequence[-1][END_POS]
+        is_swappable = (
+            sequence[-1][END_POS] in position_swap_mapping[sequence[1][END_POS]]
+        )
+
+        return is_swappable
 
     def create_new_CAP_entry(
         self,
@@ -65,10 +75,10 @@ class StrictSwappedCAPExecutor(CAPExecutor):
             TIMING: previous_matching_beat[TIMING],
             DIRECTION: previous_matching_beat[DIRECTION],
             BLUE_ATTRS: self.create_new_attributes(
-                previous_entry[BLUE_ATTRS], previous_matching_beat[BLUE_ATTRS]
+                previous_entry[BLUE_ATTRS], previous_matching_beat[RED_ATTRS]
             ),
             RED_ATTRS: self.create_new_attributes(
-                previous_entry[RED_ATTRS], previous_matching_beat[RED_ATTRS]
+                previous_entry[RED_ATTRS], previous_matching_beat[BLUE_ATTRS]
             ),
         }
 
@@ -98,7 +108,6 @@ class StrictSwappedCAPExecutor(CAPExecutor):
         """Creates swapped attributes by flipping relevant properties."""
         motion_type = previous_matching_beat_attributes[MOTION_TYPE]
         prop_rot_dir = previous_matching_beat_attributes[PROP_ROT_DIR]
-        
 
         new_entry_attributes = {
             MOTION_TYPE: motion_type,
@@ -119,4 +128,3 @@ class StrictSwappedCAPExecutor(CAPExecutor):
             )
 
         return new_entry_attributes
-

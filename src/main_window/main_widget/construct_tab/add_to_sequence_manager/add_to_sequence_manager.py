@@ -24,11 +24,11 @@ class AddToSequenceManager:
     def create_new_beat(self, clicked_option: "Pictograph") -> "Beat":
         sequence = self.json_manager.loader_saver.load_current_sequence()
 
-        last_beat_dict = None
+        last_beat_data = None
         if len(sequence) > 1:
-            last_beat_dict = sequence[-1]
-            if last_beat_dict.get("is_placeholder", False):
-                last_beat_dict = sequence[-2]
+            last_beat_data = sequence[-1]
+            if last_beat_data.get("is_placeholder", False):
+                last_beat_data = sequence[-2]
 
         new_beat = Beat(self.beat_frame)
         new_beat.setSceneRect(clicked_option.sceneRect())

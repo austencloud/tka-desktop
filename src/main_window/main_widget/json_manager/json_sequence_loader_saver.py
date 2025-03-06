@@ -88,6 +88,6 @@ class JsonSequenceLoaderSaver:
             last_pictograph_data.get(BLUE_ATTRS, {}).get(END_ORI, 0) if sequence else 0
         )
 
-    def load_last_beat_dict(self) -> dict:
+    def load_last_beat_data(self) -> dict:
         sequence = self.load_current_sequence_json()
         return sequence[-1] if sequence else {}

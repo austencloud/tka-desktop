@@ -27,7 +27,7 @@ class SequencePropertiesManager:
         # Default properties
         self.properties = {
             "ends_at_start_pos": False,
-            "is_permutable": False,
+            "can_be_CAP": False,
             "is_strict_rotated_CAP": False,
             "is_strict_mirrored_CAP": False,
             "is_strict_swapped_CAP": False,
@@ -76,7 +76,7 @@ class SequencePropertiesManager:
 
         # Check basic properties
         self.properties["ends_at_start_pos"] = self._check_ends_at_start_pos()
-        self.properties["is_permutable"] = self._check_is_permutable()
+        self.properties["can_be_CAP"] = self._check_can_be_CAP()
 
         # Check for CAPs, starting with strict rotated
         self.properties["is_strict_rotated_CAP"] = self.checkers[
@@ -109,7 +109,7 @@ class SequencePropertiesManager:
                 self.sequence
             ),
             "is_circular": self.properties["ends_at_start_pos"],
-            "is_permutable": self.properties["is_permutable"],
+            "can_be_CAP": self.properties["can_be_CAP"],
             **{
                 key: self.properties[key]
                 for key in self.properties
@@ -123,7 +123,7 @@ class SequencePropertiesManager:
             "author": AppContext.settings_manager().users.user_manager.get_current_user(),
             "level": 0,
             "is_circular": False,
-            "is_permutable": False,
+            "can_be_CAP": False,
             "is_strict_rotated_CAP": False,
             "is_strict_mirrored_CAP": False,
             "is_strict_swapped_CAP": False,
@@ -137,7 +137,7 @@ class SequencePropertiesManager:
         else:
             return self.sequence[-1][END_POS] == self.sequence[0][END_POS]
 
-    def _check_is_permutable(self) -> bool:
+    def _check_can_be_CAP(self) -> bool:
         if self.sequence[-1].get("is_placeholder", False):
             return self.sequence[-2][END_POS].rstrip("0123456789") == self.sequence[0][
                 END_POS

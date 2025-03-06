@@ -77,7 +77,7 @@ class BeatFrameGetter:
         """Get the index of a given beat view."""
         return self.beat_frame.beat_views.index(beat_view)
 
-    def beat_dicts(self):
+    def beat_datas(self):
         return [
             beat.beat.managers.get.pictograph_data()
             for beat in self.beat_frame.beat_views

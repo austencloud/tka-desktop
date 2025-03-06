@@ -54,9 +54,9 @@ class SequenceColorSwapper(BaseSequenceModifier):
         self._color_swap_pictograph_data(start_pos_beat_data)
         swapped_sequence.append(start_pos_beat_data)
 
-        beat_dicts = self.sequence_workbench.beat_frame.get.beat_dicts()
+        beat_datas = self.sequence_workbench.beat_frame.get.beat_datas()
 
-        for beat_data in beat_dicts:
+        for beat_data in beat_datas:
             swapped_beat_data = beat_data.copy()
             self._color_swap_pictograph_data(swapped_beat_data)
 

@@ -74,23 +74,27 @@ class BeatFrameUpdater:
     def update_beats_from(self, modified_sequence_json: list[dict]):
         self.json_manager.loader_saver.clear_current_sequence_file()
 
-        def update_beat(beat: "Beat", beat_dict: dict, start_pos: bool = False):
-            beat.managers.updater.update_pictograph(beat_dict)
+        def update_beat(beat: "Beat", beat_data: dict, start_pos: bool = False):
+            beat.managers.updater.update_pictograph(beat_data)
 
             if not start_pos:
-                self.json_manager.updater.update_current_sequence_file_with_beat(beat)
+                self.json_manager.updater.update_current_sequence_file_with_beat(
+                    beat, beat_data
+                )
 
         # Start position update
         if len(modified_sequence_json) > 1:
             start_pos_dict = modified_sequence_json[1]
             start_pos = self.bf.start_pos_view.start_pos
             update_beat(start_pos, start_pos_dict, start_pos=True)
-            self.json_manager.start_pos_handler.set_start_position_data(start_pos)
+            self.json_manager.start_pos_handler.set_start_position_data(
+                start_pos, start_pos_dict
+            )
 
         # Update beats
-        for i, beat_dict in enumerate(modified_sequence_json[2:], start=0):
+        for i, beat_data in enumerate(modified_sequence_json[2:], start=0):
             if i < len(self.bf.beat_views) and self.bf.beat_views[i].is_filled:
-                update_beat(self.bf.beat_views[i].beat, beat_dict)
+                update_beat(self.bf.beat_views[i].beat, beat_data)
             else:
                 break
 

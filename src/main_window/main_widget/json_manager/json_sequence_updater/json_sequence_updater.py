@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 from data.constants import BEAT
 
 
-
 from .json_duration_updater import JsonDurationUpdater
 from .json_prop_rot_dir_updater import JsonstrUpdater
 from .json_prop_type_updater import JsonPropTypeUpdater
@@ -30,13 +29,15 @@ class JsonSequenceUpdater:
         self.prop_rot_dir_updater = JsonstrUpdater(self)
         self.duration_updater = JsonDurationUpdater(self)
 
-    def update_current_sequence_file_with_beat(self, beat: "Beat"):
+    def update_current_sequence_file_with_beat(
+        self, beat: "Beat", beat_data: dict = None
+    ):
         view = beat.view
         sequence_data = self.json_manager.loader_saver.load_current_sequence()
         sequence_metadata = sequence_data[0] if "word" in sequence_data[0] else {}
         sequence_beats = sequence_data[1:]
-
-        beat_data = beat.state.pictograph_data.copy()
+        if not beat_data:
+            beat_data = beat.state.pictograph_data.copy()
         beat_data["duration"] = beat.duration
         number = self.get_next_beat_number(sequence_beats)
         view.number = number

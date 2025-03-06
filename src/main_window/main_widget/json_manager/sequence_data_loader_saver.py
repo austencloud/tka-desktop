@@ -61,7 +61,7 @@ class SequenceDataLoaderSaver:
                 .name.lower(),
                 GRID_MODE: DIAMOND,
                 "is_circular": False,
-                "is_permutable": False,
+                "can_be_CAP": False,
                 "is_strict_rotated_CAP": False,
                 "is_strict_mirrored_CAP": False,
                 "is_strict_swapped_CAP": False,
@@ -93,16 +93,16 @@ class SequenceDataLoaderSaver:
                 )
             if "is_circular" not in sequence[0]:
                 sequence[0]["is_circular"] = False
-            if "is_permutable" not in sequence[0]:
-                sequence[0]["is_permutable"] = False
+            if "can_be_CAP" not in sequence[0]:
+                sequence[0]["can_be_CAP"] = False
 
         # Add beat numbers to each beat at the beginning
         beat_number = 0
         for beat in sequence:
             if LETTER in beat or SEQUENCE_START_POSITION in beat:
-                beat_dict_with_beat_number = {BEAT: beat_number}
-                beat_dict_with_beat_number.update(beat)
-                sequence[sequence.index(beat)] = beat_dict_with_beat_number
+                beat_data_with_beat_number = {BEAT: beat_number}
+                beat_data_with_beat_number.update(beat)
+                sequence[sequence.index(beat)] = beat_data_with_beat_number
                 beat_number += 1
 
         with open(self.current_sequence_json, "w", encoding="utf-8") as file:
@@ -160,7 +160,7 @@ class SequenceDataLoaderSaver:
             return last_pictograph_data[BLUE_ATTRS][END_ORI]
         return 0
 
-    def load_last_beat_dict(self) -> dict:
+    def load_last_beat_data(self) -> dict:
         sequence = self.load_current_sequence()
         if sequence:
             return sequence[-1]

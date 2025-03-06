@@ -113,7 +113,7 @@ class DictionaryDataManager:
                         meta_dict["word"] = first_sequence.get("word")
                         meta_dict["prop_type"] = first_sequence.get("prop_type")
                         meta_dict["is_circular"] = first_sequence.get("is_circular")
-                        meta_dict["is_permutable"] = first_sequence.get("is_permutable")
+                        meta_dict["can_be_CAP"] = first_sequence.get("can_be_CAP")
                         meta_dict["is_strict_rotational_CAP"] = first_sequence.get(
                             "is_strict_rotational_CAP"
                         )

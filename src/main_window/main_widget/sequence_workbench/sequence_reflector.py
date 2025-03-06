@@ -53,14 +53,14 @@ class SequenceReflector(BaseSequenceModifier):
         metadata = self.json_loader.load_current_sequence()[0].copy()
         mirrored_sequence = [metadata]
 
-        start_pos_beat_dict = (
+        start_pos_beat_data = (
             self.sequence_workbench.beat_frame.start_pos_view.start_pos.state.pictograph_data.copy()
         )
-        self._reflect_dict(start_pos_beat_dict)
-        mirrored_sequence.append(start_pos_beat_dict)
+        self._reflect_dict(start_pos_beat_data)
+        mirrored_sequence.append(start_pos_beat_data)
 
-        for beat_dict in self.sequence_workbench.beat_frame.get.beat_dicts():
-            mirrored_dict = beat_dict.copy()
+        for beat_data in self.sequence_workbench.beat_frame.get.beat_datas():
+            mirrored_dict = beat_data.copy()
             self._reflect_dict(mirrored_dict)
             mirrored_sequence.append(mirrored_dict)
         for beat_view in self.sequence_workbench.beat_frame.beat_views:

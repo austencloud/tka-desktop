@@ -1,17 +1,19 @@
 class ReversalDetector:
     @staticmethod
-    def detect_reversal(sequence_so_far: list, current_beat_dict: dict):
+    def detect_reversal(sequence_so_far: list, current_beat_data: dict):
         """
         Detects reversals between the last valid prop_rot_dir in the sequence and the current beat.
         """
-        reversal_info = {'blue_reversal': False, 'red_reversal': False}
+        reversal_info = {"blue_reversal": False, "red_reversal": False}
 
-        for color in ['blue_attributes', 'red_attributes']:
-            last_prop_rot_dir = ReversalDetector._get_last_valid_prop_rot_dir(sequence_so_far, color)
-            curr_prop_rot_dir = current_beat_dict.get(color, {}).get('prop_rot_dir')
+        for color in ["blue_attributes", "red_attributes"]:
+            last_prop_rot_dir = ReversalDetector._get_last_valid_prop_rot_dir(
+                sequence_so_far, color
+            )
+            curr_prop_rot_dir = current_beat_data.get(color, {}).get("prop_rot_dir")
 
             # For 'no_rot' or None, use last known direction
-            if curr_prop_rot_dir == 'no_rot' or curr_prop_rot_dir is None:
+            if curr_prop_rot_dir == "no_rot" or curr_prop_rot_dir is None:
                 curr_prop_rot_dir = last_prop_rot_dir
 
             # If still None, consider continuous
@@ -28,8 +30,8 @@ class ReversalDetector:
         """
         Traverse the sequence backward to find the last valid prop_rot_dir for the given color.
         """
-        for beat_dict in reversed(sequence):
-            prop_rot_dir = beat_dict.get(color, {}).get('prop_rot_dir')
-            if prop_rot_dir and prop_rot_dir != 'no_rot':
+        for beat_data in reversed(sequence):
+            prop_rot_dir = beat_data.get(color, {}).get("prop_rot_dir")
+            if prop_rot_dir and prop_rot_dir != "no_rot":
                 return prop_rot_dir
         return None  # No valid previous direction found
