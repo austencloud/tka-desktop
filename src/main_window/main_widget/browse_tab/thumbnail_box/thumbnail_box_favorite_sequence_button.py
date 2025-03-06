@@ -29,8 +29,19 @@ class ThumbnailBoxFavoriteSequenceButton(QPushButton):
         self.update_favorite_icon(self.thumbnail_box.favorites_manager.is_favorite())
 
     def toggle_favorite_status(self):
+        sequence_viewer = self.thumbnail_box.browse_tab.sequence_viewer
         self.thumbnail_box.favorites_manager.toggle_favorite_status()
-        self.update_favorite_icon(self.thumbnail_box.favorites_manager.is_favorite())
+        is_favorite = self.thumbnail_box.favorites_manager.is_favorite()
+        self.update_favorite_icon(is_favorite)
+        
+        if self.thumbnail_box.in_sequence_viewer:
+            matching_box = sequence_viewer.state.matching_thumbnail_box
+            favorite_button = matching_box.header.favorite_button
+            favorite_button.update_favorite_icon(is_favorite)
+        else:
+            sequence_viewer_box = sequence_viewer.thumbnail_box
+            favorite_button = sequence_viewer_box.header.favorite_button
+            favorite_button.update_favorite_icon(is_favorite)
 
     def update_favorite_icon(self, is_favorite: bool):
         self.setIcon(self.star_icon_filled if is_favorite else self.star_icon_empty)

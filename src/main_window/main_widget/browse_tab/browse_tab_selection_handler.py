@@ -89,6 +89,10 @@ class BrowseTabSelectionManager:
         self.sequence_viewer.thumbnail_box.nav_buttons_widget.variation_number_label.update_index(
             var_index
         )
+        is_favorite = image_label.thumbnail_box.favorites_manager.is_favorite()
+        self.sequence_viewer.thumbnail_box.header.favorite_button.update_favorite_icon(
+            is_favorite
+        )
 
     def select_viewer_thumbnail(self, thumbnail_box, index, word):
         """Selects a thumbnail in the sequence viewer."""
