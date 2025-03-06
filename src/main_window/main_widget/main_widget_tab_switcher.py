@@ -48,7 +48,7 @@ class MainWidgetTabSwitcher:
         )
         QApplication.processEvents()
         if tab_name == TabName.BROWSE:
-            self.mw.browse_tab.sequence_viewer.image_label.set_pixmap_to_fit()
+            self.mw.browse_tab.sequence_viewer.thumbnail_box.image_label.set_pixmap_to_fit()
             self.mw.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
 
     def set_stacks_silently(

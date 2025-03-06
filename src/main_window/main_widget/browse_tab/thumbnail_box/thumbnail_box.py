@@ -24,7 +24,11 @@ class ThumbnailBox(QWidget):
     initialized = False
 
     def __init__(
-        self, browse_tab: "BrowseTab", word: str, thumbnails: list[str]
+        self,
+        browse_tab: "BrowseTab",
+        word: str,
+        thumbnails: list[str],
+        in_sequence_viewer=False,
     ) -> None:
         super().__init__(browse_tab)
         self.word = word
@@ -32,7 +36,7 @@ class ThumbnailBox(QWidget):
         self.browse_tab = browse_tab
         self.sequence_picker = self.browse_tab.sequence_picker
         self.scroll_Area = self.sequence_picker.scroll_widget.scroll_area
-
+        self.in_sequence_viewer = in_sequence_viewer
         self.state = ThumbnailBoxState(thumbnails)
 
         self._setup_components()
@@ -49,10 +53,11 @@ class ThumbnailBox(QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         layout = QVBoxLayout(self)
         layout.setSpacing(0)
+        layout.addStretch(1)
         layout.addWidget(self.header)
         layout.addWidget(self.image_label)
         layout.addWidget(self.nav_buttons_widget)
-        layout.addStretch()
+        layout.addStretch(1)
         layout.setContentsMargins(self.margin, self.margin, self.margin, self.margin)
 
     def resizeEvent(self, event):
@@ -60,23 +65,28 @@ class ThumbnailBox(QWidget):
         self.resize_thumbnail_box()
 
     def resize_thumbnail_box(self):
-        nav_bar = self.sequence_picker.nav_sidebar
-        if nav_bar.width() < 20:
-            nav_bar.resize_sidebar()
-        scrollbar_width = self.sequence_picker.scroll_widget.calculate_scrollbar_width()
-        scroll_widget_width = (
-            self.main_widget.width() * 2 / 3
-            - scrollbar_width
-            - self.sequence_picker.nav_sidebar.width()
-        )
-        width = int(scroll_widget_width // 3)
-        self.setFixedWidth(width)
+        if self.in_sequence_viewer:
+            self.setFixedWidth(self.browse_tab.sequence_viewer.width())
+        else:
+            nav_bar = self.sequence_picker.nav_sidebar
+            if nav_bar.width() < 20:
+                nav_bar.resize_sidebar()
+            scrollbar_width = (
+                self.sequence_picker.scroll_widget.calculate_scrollbar_width()
+            )
+            scroll_widget_width = (
+                self.main_widget.width() * 2 / 3
+                - scrollbar_width
+                - self.sequence_picker.nav_sidebar.width()
+            )
+            width = int(scroll_widget_width // 3)
+            self.setFixedWidth(width)
 
     def update_thumbnails(self, thumbnails=[]):
         self.state.update_thumbnails(thumbnails)
         self.nav_buttons_widget.state.thumbnails = thumbnails
 
-        if self == self.browse_tab.sequence_viewer.current_thumbnail_box:
+        if self == self.browse_tab.sequence_viewer.state.current_thumbnail_box:
             self.browse_tab.sequence_viewer.update_thumbnails(self.state.thumbnails)
 
         # self.variation_number_label.update_index(self.state.current_index)

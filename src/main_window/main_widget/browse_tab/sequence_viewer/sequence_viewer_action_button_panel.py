@@ -48,14 +48,14 @@ class SequenceViewerActionButtonPanel(QWidget):
                 "tooltip": "Delete Variation",
                 "action": lambda: (
                     self.browse_tab.deletion_handler.delete_variation(
-                        self.sequence_viewer.current_thumbnail_box,
+                        self.sequence_viewer.state.current_thumbnail_box,
                         (
                             (
-                                self.sequence_viewer.current_thumbnail_box.state.current_index
+                                self.sequence_viewer.state.current_thumbnail_box.state.current_index
                             )
                         ),
                     )
-                    if self.sequence_viewer.current_thumbnail_box
+                    if self.sequence_viewer.state.current_thumbnail_box
                     else None
                 ),
             },
@@ -122,7 +122,7 @@ class SequenceViewerActionButtonPanel(QWidget):
 
     def save_image(self):
         sequence_json = self.sequence_viewer.state.sequence_json
-        current_thumbnail = self.sequence_viewer.state.thumbnails[
+        current_thumbnail = self.sequence_viewer.thumbnail_box.state.thumbnails[
             self.sequence_viewer.state.current_index
         ]
         if not current_thumbnail:

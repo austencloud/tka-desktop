@@ -35,6 +35,13 @@ class ThumbnailBoxFavoriteSequenceButton(QPushButton):
     def update_favorite_icon(self, is_favorite: bool):
         self.setIcon(self.star_icon_filled if is_favorite else self.star_icon_empty)
 
+    def reload_favorite_icon(self):
+        self.star_icon_empty_path = self.get_star_outline_icon()
+        self.star_icon_empty = QIcon(
+            os.path.join(get_image_path("icons"), self.star_icon_empty_path)
+        )
+        self.update_favorite_icon(self.thumbnail_box.favorites_manager.is_favorite())
+
     def get_star_outline_icon(
         self,
     ) -> None | Literal["black_star_outline.png"] | Literal["white_star_outline.png"]:

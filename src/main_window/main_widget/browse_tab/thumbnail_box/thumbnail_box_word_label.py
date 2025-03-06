@@ -32,9 +32,7 @@ class ThumbnailBoxWordLabel(QLabel):
         color = self.settings_manager.global_settings.get_current_font_color()
         self.setStyleSheet(f"color: {color};")
 
-        available_width = self.header.width() - (
-            self.header.favorite_button.width() * 3
-        )
+        available_width = self.header.width() * 0.8
         fm = self.fontMetrics()
         while fm.horizontalAdvance(self.text()) > available_width and font_size > 1:
             font_size -= 1
@@ -42,4 +40,3 @@ class ThumbnailBoxWordLabel(QLabel):
             self.setFont(font)
             fm = self.fontMetrics()
         super().resizeEvent(event)
-

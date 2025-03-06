@@ -122,8 +122,8 @@ class SequencePickerSorter:
         self.sequence_picker.control_panel.count_label.setText(
             f"Number of words: {len(self.browse_tab.sequence_picker.currently_displayed_sequences)}"
         )
-        if not self.browse_tab.sequence_viewer.current_thumbnail_box:
-            word = self.browse_tab.sequence_viewer.word_label.text()
+        if not self.browse_tab.sequence_viewer.state.current_thumbnail_box:
+            word = self.browse_tab.sequence_viewer.thumbnail_box.header.word_label.text()
             self.browse_tab.sequence_viewer.set_current_thumbnail_box(word)
 
     def add_section_headers(

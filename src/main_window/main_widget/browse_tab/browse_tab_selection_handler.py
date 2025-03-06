@@ -36,11 +36,10 @@ class BrowseTabSelectionManager:
         """Returns a list of widgets to be faded during thumbnail selection."""
         sequence_viewer = self.sequence_viewer
         return [
-            sequence_viewer.image_label,
-            sequence_viewer.placeholder_label,
-            sequence_viewer.header,
-            sequence_viewer.variation_number_label,
-            sequence_viewer.nav_buttons_widget,
+            sequence_viewer.thumbnail_box.image_label,
+            sequence_viewer.thumbnail_box.header,
+            sequence_viewer.thumbnail_box.variation_number_label,
+            sequence_viewer.thumbnail_box.nav_buttons_widget,
             sequence_viewer.action_button_panel,
         ]
 
@@ -61,10 +60,10 @@ class BrowseTabSelectionManager:
     ):
         """Updates sequence-related data in the browse tab and sequence viewer."""
         self.browse_tab.sequence_picker.selected_sequence_dict = sequence_dict
-        self.sequence_viewer.state.thumbnails = (
+        self.sequence_viewer.thumbnail_box.state.thumbnails = (
             image_label.thumbnail_box.state.thumbnails
         )
-        self.sequence_viewer.current_thumbnail_box = image_label.thumbnail_box
+        self.sequence_viewer.state.current_thumbnail_box = image_label.thumbnail_box
 
     def _update_thumbnail_display(self, image_label: "ThumbnailImageLabel"):
         """Updates the displayed thumbnail in the sequence viewer."""
@@ -73,9 +72,9 @@ class BrowseTabSelectionManager:
                 image_label.thumbnail_box.state.current_index
             ]
         )
-        self.sequence_viewer.image_label.setPixmap(
+        self.sequence_viewer.thumbnail_box.image_label.setPixmap(
             thumbnail_pixmap.scaled(
-                self.sequence_viewer.image_label.size() * 0.9,
+                self.sequence_viewer.thumbnail_box.image_label.size() * 0.9,
                 Qt.AspectRatioMode.KeepAspectRatio,
                 Qt.TransformationMode.SmoothTransformation,
             )
@@ -88,7 +87,6 @@ class BrowseTabSelectionManager:
 
         self.current_thumbnail = image_label
         self.current_thumbnail.set_selected(True)
-        self.current_thumbnail.is_selected = True
 
     def _update_labels_and_settings(self, image_label: "ThumbnailImageLabel"):
         """Updates labels and browse settings based on the selected thumbnail."""
@@ -99,7 +97,7 @@ class BrowseTabSelectionManager:
             image_label.thumbnail_box.state.current_index,
             image_label.thumbnail_box.word,
         )
-        self.sequence_viewer.variation_number_label.update_index(
+        self.sequence_viewer.thumbnail_box.variation_number_label.update_index(
             image_label.thumbnail_box.state.current_index
         )
         word = image_label.thumbnail_box.word
@@ -111,9 +109,11 @@ class BrowseTabSelectionManager:
     def select_viewer_thumbnail(self, thumbnail_box, index, word):
         """Selects a thumbnail in the sequence viewer."""
         sequence_viewer = self.sequence_viewer
-        sequence_viewer.state.current_index = index
-        sequence_viewer.current_thumbnail_box = thumbnail_box
-        sequence_viewer.variation_number_label.update_index(index)
-        sequence_viewer.word_label.update_word_label(word)
-        sequence_viewer.update_thumbnails(sequence_viewer.state.thumbnails)
+        sequence_viewer.thumbnail_box.state.current_index = index
+        sequence_viewer.state.current_thumbnail_box = thumbnail_box
+        sequence_viewer.thumbnail_box.variation_number_label.update_index(index)
+        sequence_viewer.thumbnail_box.header.word_label.setText(word)
+        sequence_viewer.update_thumbnails(
+            sequence_viewer.thumbnail_box.state.thumbnails
+        )
         sequence_viewer.update_nav_buttons()

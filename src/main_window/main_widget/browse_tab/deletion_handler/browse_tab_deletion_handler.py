@@ -36,7 +36,7 @@ class BrowseTabDeletionHandler:
             if len(thumbnail_box.state.thumbnails) == 0:
                 self.delete_word(thumbnail_box.word)
                 self.browse_tab.sequence_viewer.update_thumbnails(
-                    self.browse_tab.sequence_viewer.state.thumbnails
+                    self.browse_tab.sequence_viewer.thumbnail_box.state.thumbnails
                 )
 
             else:
@@ -72,7 +72,7 @@ class BrowseTabDeletionHandler:
         self.variation_number_fixer.ensure_sequential_versions()
         self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.pop(base_word)
         self.browse_tab.sequence_viewer.update_thumbnails(
-            self.browse_tab.sequence_viewer.state.thumbnails
+            self.browse_tab.sequence_viewer.thumbnail_box.state.thumbnails
         )
         self.sequence_picker.sorter.reload_currently_displayed_filtered_sequences()
 
