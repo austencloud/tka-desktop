@@ -54,10 +54,10 @@ class SettingsDialog(QDialog):
 
         elif last_tab == "Beat Layout":
             self.ui.beat_layout_tab.on_sequence_length_changed(
-                self.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+                self.main_widget.sequence_workbench.beat_frame.get.beat_count()
             )
             self.ui.beat_layout_tab.controls.length_selector.num_beats_spinbox.setValue(
-                self.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+                self.main_widget.sequence_workbench.beat_frame.get.beat_count()
             )
         elif last_tab == "Image Export":
             self.ui.image_export_tab.update_image_export_tab_from_settings()

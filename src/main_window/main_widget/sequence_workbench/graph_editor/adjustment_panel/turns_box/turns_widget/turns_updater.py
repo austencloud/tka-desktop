@@ -27,7 +27,7 @@ class TurnsUpdater:
         self.json_manager = AppContext.json_manager()
         self.json_updater = self.json_manager.updater
         self.beat_frame = (
-            turns_widget.turns_box.adjustment_panel.graph_editor.sequence_workbench.sequence_beat_frame
+            turns_widget.turns_box.adjustment_panel.graph_editor.sequence_workbench.beat_frame
         )
         self.prop_rot_dir_manager = self.turns_box.prop_rot_dir_button_manager
 

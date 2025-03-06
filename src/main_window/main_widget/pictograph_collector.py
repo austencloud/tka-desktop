@@ -51,7 +51,7 @@ class PictographCollector:
 
     def _collect_from_sequence_beat_frame(self) -> list["Pictograph"]:
         sequence_workbench = self.main_widget.sequence_workbench
-        beat_frame = sequence_workbench.sequence_beat_frame
+        beat_frame = sequence_workbench.beat_frame
         beat_views = beat_frame.beat_views
         pictographs = []
         pictographs.append(beat_frame.start_pos_view.beat)

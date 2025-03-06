@@ -13,18 +13,19 @@ class AddToDictionaryUI:
     def __init__(
         self,
         sequence_workbench: "SequenceWorkbench",
-        dictionary_service: "DictionaryService",
     ):
         self.sequence_workbench = sequence_workbench
-        self.dictionary_service = dictionary_service
+        self.dictionary_service = sequence_workbench.dictionary_service
 
     def add_to_dictionary(self):
-        seq = self.sequence_workbench.main_widget.json_manager.loader_saver.load_current_sequence()
+        seq = (
+            self.sequence_workbench.main_widget.json_manager.loader_saver.load_current_sequence()
+        )
         if self.is_sequence_invalid(seq):
             self.display_message("You must build a sequence.")
             return
 
-        word = self.sequence_workbench.sequence_beat_frame.get.current_word()
+        word = self.sequence_workbench.beat_frame.get.current_word()
         result = self.dictionary_service.add_variation(seq, word)
 
         status = result["status"]
@@ -56,4 +57,3 @@ class AddToDictionaryUI:
         return main_widget.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.get(
             base_word
         )
-

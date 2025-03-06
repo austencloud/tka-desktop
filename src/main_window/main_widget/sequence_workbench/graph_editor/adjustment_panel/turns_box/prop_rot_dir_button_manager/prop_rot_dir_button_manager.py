@@ -39,7 +39,7 @@ class PropRotDirButtonManager:
         self.prop_rot_dir_buttons = self._setup_prop_rot_dir_buttons()
         self.buttons = self.prop_rot_dir_buttons
         self.graph_editor = turns_box.graph_editor
-        self.beat_frame = self.graph_editor.sequence_workbench.sequence_beat_frame
+        self.beat_frame = self.graph_editor.sequence_workbench.beat_frame
         self.main_widget = self.graph_editor.main_widget
         self.json_manager = self.graph_editor.main_widget.json_manager
 
@@ -76,7 +76,7 @@ class PropRotDirButtonManager:
         if self.turns_box.prop_rot_dir_btn_state[prop_rot_dir]:
             return
         selected_beat = (
-            self.graph_editor.sequence_workbench.sequence_beat_frame.get.currently_selected_beat_view()
+            self.graph_editor.sequence_workbench.beat_frame.get.currently_selected_beat_view()
         )
         both_pictographs: list[Beat] = [
             selected_beat.beat,
@@ -163,9 +163,9 @@ class PropRotDirButtonManager:
         self.graph_editor.main_widget.json_manager.ori_validation_engine.run(
             is_current_sequence=True
         )
-        self.graph_editor.sequence_workbench.sequence_beat_frame.updater.update_beats_from_current_sequence_json()
+        self.graph_editor.sequence_workbench.beat_frame.updater.update_beats_from_current_sequence_json()
         self.graph_editor.main_widget.sequence_workbench.current_word_label.set_current_word(
-            self.graph_editor.sequence_workbench.sequence_beat_frame.get.current_word()
+            self.graph_editor.sequence_workbench.beat_frame.get.current_word()
         )
 
     def _update_button_states(

@@ -32,7 +32,7 @@ class ImageExportTab(QWidget):
         self.control_panel.settingChanged.connect(self.update_preview)
 
         # CONNECT THE SEQUENCE UPDATE SIGNAL TO update_preview
-        self.main_widget.sequence_workbench.sequence_beat_frame.updateImageExportPreview.connect(
+        self.main_widget.sequence_workbench.beat_frame.updateImageExportPreview.connect(
             self.update_preview
         )
 
@@ -87,7 +87,7 @@ class ImageExportTab(QWidget):
 
     def _get_current_sequence(self):
         return (
-            self.main_widget.sequence_workbench.sequence_beat_frame.json_manager.loader_saver.load_current_sequence()
+            self.main_widget.sequence_workbench.beat_frame.json_manager.loader_saver.load_current_sequence()
         )
 
     def resizeEvent(self, event):

@@ -19,7 +19,7 @@ class FullScreenViewer:
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
         self.main_widget = sequence_workbench.main_widget
-        self.beat_frame = sequence_workbench.sequence_beat_frame
+        self.beat_frame = sequence_workbench.beat_frame
         self.indicator_label = sequence_workbench.indicator_label
         self.json_loader = AppContext.json_manager().loader_saver
 

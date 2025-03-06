@@ -83,7 +83,7 @@ class BeatFramePopulator:
             reversal_info = ReversalDetector.detect_reversal(
                 self.current_sequence_json, pictograph_data
             )
-            self.sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+            self.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 pictograph_data,
                 override_grow_sequence=True,
                 update_word=False,
@@ -93,9 +93,7 @@ class BeatFramePopulator:
             )
 
     def _finalize_sequence(self, initial_state_load):
-        last_beat = (
-            self.sequence_workbench.sequence_beat_frame.get.last_filled_beat().beat
-        )
+        last_beat = self.sequence_workbench.beat_frame.get.last_filled_beat().beat
         self.construct_tab.last_beat = last_beat
         self.construct_tab.option_picker.updater.update_options()
         self.sequence_workbench.difficulty_label.update_difficulty_label()

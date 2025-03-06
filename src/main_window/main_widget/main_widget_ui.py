@@ -50,10 +50,10 @@ class MainWidgetUI:
         mw.menu_bar = MenuBarWidget(mw)
         mw.codex = Codex(mw)
 
-        AppContext.set_sequence_beat_frame(mw.sequence_workbench.sequence_beat_frame)
+        AppContext.set_sequence_beat_frame(mw.sequence_workbench.beat_frame)
 
         mw.construct_tab = ConstructTab(
-            beat_frame=mw.sequence_workbench.sequence_beat_frame,
+            beat_frame=mw.sequence_workbench.beat_frame,
             pictograph_dataset=mw.pictograph_dataset,
             size_provider=lambda: mw.size(),
             fade_to_stack_index=lambda index: mw.fade_manager.stack_fader.fade_stack(
@@ -69,7 +69,7 @@ class MainWidgetUI:
 
         mw.background_widget = MainBackgroundWidget(mw)
         mw.background_widget.lower()
-        mw.state_handler.load_state(mw.sequence_workbench.sequence_beat_frame)
+        mw.state_handler.load_state(mw.sequence_workbench.beat_frame)
         self.splash_screen.updater.update_progress("Finalizing")
         mw.font_color_updater.update_main_widget_font_colors(
             mw.settings_manager.global_settings.get_background_type()

@@ -20,7 +20,7 @@ class BeatAdjustmentPanel(QFrame):
         super().__init__(graph_editor)
         self.graph_editor = graph_editor
         self.GE_pictograph = graph_editor.pictograph_container.GE_pictograph
-        self.beat_frame = self.graph_editor.sequence_workbench.sequence_beat_frame
+        self.beat_frame = self.graph_editor.sequence_workbench.beat_frame
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self._initialize_ui()
 
@@ -99,7 +99,7 @@ class BeatAdjustmentPanel(QFrame):
             box.ori_picker_widget.ori_setter.update_current_orientation_index(
                 motion.state.end_ori
             )
-            
+
     def update_rot_dir_buttons(self) -> None:
         """Update the rotation direction buttons based on the current pictograph state."""
         reference_beat = self.beat_frame.get.currently_selected_beat_view()

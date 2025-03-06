@@ -38,7 +38,7 @@ class GenerateTabController:
 
     def handle_generate_sequence(self, overwrite: bool):
         if overwrite:
-            self.tab.main_widget.sequence_workbench.sequence_beat_frame.sequence_workbench.beat_deleter.reset_widgets(
+            self.tab.main_widget.sequence_workbench.beat_frame.sequence_workbench.beat_deleter.reset_widgets(
                 False
             )
 

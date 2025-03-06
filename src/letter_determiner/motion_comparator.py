@@ -58,6 +58,6 @@ class MotionComparator:
     def _get_json_index_for_current_beat(self) -> int:
         """Retrieve the JSON index for the currently selected beat."""
         return (
-            self.main_widget.sequence_workbench.sequence_beat_frame.get.index_of_currently_selected_beat()
+            self.main_widget.sequence_workbench.beat_frame.get.index_of_currently_selected_beat()
             + 2
         )

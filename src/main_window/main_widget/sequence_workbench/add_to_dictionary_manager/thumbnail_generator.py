@@ -17,13 +17,9 @@ if TYPE_CHECKING:
 
 
 class ThumbnailGenerator:
-    def __init__(
-        self,
-        image_creator: "ImageCreator",
-        beat_frame: "SequenceBeatFrame",
-    ):
-        self.image_creator = image_creator
+    def __init__(self, beat_frame: "SequenceBeatFrame"):
         self.beat_frame = beat_frame
+        self.image_creator = beat_frame.image_export_manager.image_creator
 
     def generate_and_save_thumbnail(
         self,

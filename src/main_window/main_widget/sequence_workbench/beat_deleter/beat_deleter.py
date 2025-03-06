@@ -24,7 +24,7 @@ class BeatDeleter:
 
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
-        self.beat_frame = sequence_workbench.sequence_beat_frame
+        self.beat_frame = sequence_workbench.beat_frame
         self.json_manager = AppContext.json_manager()
         self.main_widget = sequence_workbench.main_widget
         self.selection_overlay = self.beat_frame.selection_overlay
@@ -84,7 +84,7 @@ class BeatDeleter:
         self.beat_frame.layout_manager.configure_beat_frame_for_filled_beats()
         self.sequence_workbench.graph_editor.pictograph_container.GE_view.set_to_blank_grid()
         self.sequence_workbench.main_widget.construct_tab.last_beat = (
-            self.sequence_workbench.sequence_beat_frame.start_pos
+            self.sequence_workbench.beat_frame.start_pos
         )
         self.sequence_workbench.graph_editor.update_graph_editor()
         self.sequence_workbench.difficulty_label.update_difficulty_label()

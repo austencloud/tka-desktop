@@ -28,7 +28,7 @@ class LetterDeterminer:
     ) -> Letter:
         """Determine the letter based on motion attributes."""
         if not self.beat_frame:
-            self.beat_frame = self.main_widget.sequence_workbench.sequence_beat_frame
+            self.beat_frame = self.main_widget.sequence_workbench.beat_frame
         other_motion = motion.pictograph.managers.get.other_motion(motion)
 
         if (

@@ -61,7 +61,7 @@ class SequenceBuilderStartPosManager:
                 ):
                     self._set_orientation_in(pictograph_data)
                     start_pos_beat = StartPositionBeat(
-                        self.main_widget.sequence_workbench.sequence_beat_frame
+                        self.main_widget.sequence_workbench.beat_frame
                     )
                     start_pos_beat.managers.updater.update_pictograph(
                         deepcopy(pictograph_data)
@@ -69,7 +69,7 @@ class SequenceBuilderStartPosManager:
                     self.main_widget.json_manager.start_pos_handler.set_start_position_data(
                         start_pos_beat
                     )
-                    self.main_widget.sequence_workbench.sequence_beat_frame.start_pos_view.set_start_pos(
+                    self.main_widget.sequence_workbench.beat_frame.start_pos_view.set_start_pos(
                         start_pos_beat
                     )
                     return

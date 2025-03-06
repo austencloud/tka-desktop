@@ -33,7 +33,7 @@ class ImageExportPreviewPanel(QFrame):
         """Generate and properly scale the preview image while maintaining aspect ratio."""
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         self.image_export_manager: "ImageExportManager" = (
-            self.tab.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager
+            self.tab.main_widget.sequence_workbench.beat_frame.image_export_manager
         )
 
         # Generate the image directly

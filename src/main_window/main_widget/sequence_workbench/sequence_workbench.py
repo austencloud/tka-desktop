@@ -26,7 +26,6 @@ from .sequence_color_swapper import SequenceColorSwapper
 from .sequence_reflector import SequenceReflector
 from .sequence_rotater import SequenceRotater
 from .sequence_workbench_layout_manager import SequenceWorkbenchLayoutManager
-from .sequence_auto_completer.sequence_auto_completer import SequenceAutoCompleter
 from .labels.current_word_label import CurrentWordLabel
 from .graph_editor.graph_editor import GraphEditor
 from .sequence_workbench_button_panel import SequenceWorkbenchButtonPanel
@@ -47,16 +46,11 @@ class SequenceWorkbench(QWidget):
         self.main_widget = main_widget
         self.main_widget.splash.updater.update_progress("SequenceWorkbench")
         self.setObjectName("SequenceWorkbench")
-        # Managers
 
-        self.autocompleter = SequenceAutoCompleter(self)
         self.scroll_area = SequenceWorkbenchScrollArea(self)
-        self.sequence_beat_frame = SequenceBeatFrame(self)
-        self.dictionary_service = DictionaryService(
-            self.sequence_beat_frame.image_export_manager.image_creator,
-            self.sequence_beat_frame,
-        )
-        self.add_to_dictionary_ui = AddToDictionaryUI(self, self.dictionary_service)
+        self.beat_frame = SequenceBeatFrame(self)
+        self.dictionary_service = DictionaryService(self.beat_frame)
+        self.add_to_dictionary_ui = AddToDictionaryUI(self)
 
         # Modification Managers
         self.mirror_manager = SequenceReflector(self)
@@ -79,7 +73,6 @@ class SequenceWorkbench(QWidget):
         self.layout_manager = SequenceWorkbenchLayoutManager(self)
         self.beat_deleter = BeatDeleter(self)
 
-        # Create the “UI” class that uses it:
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

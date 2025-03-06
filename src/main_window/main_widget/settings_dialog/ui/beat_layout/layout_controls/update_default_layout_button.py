@@ -33,7 +33,7 @@ class UpdateDefaultLayoutButton(QPushButton):
             str(self.control_widget.layout_tab.num_beats), list(layout_tuple)
         )
         beat_frame = (
-            self.control_widget.layout_tab.main_widget.sequence_workbench.sequence_beat_frame
+            self.control_widget.layout_tab.main_widget.sequence_workbench.beat_frame
         )
         beat_frame.layout_manager.configure_beat_frame(beat_frame.get.beat_count())
 

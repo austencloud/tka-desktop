@@ -27,7 +27,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
         super().__init__(sequence_workbench)
         self.sequence_workbench = sequence_workbench
         self.main_widget = self.sequence_workbench.main_widget
-        self.beat_frame = self.sequence_workbench.sequence_beat_frame
+        self.beat_frame = self.sequence_workbench.beat_frame
         self.export_manager = self.beat_frame.image_export_manager
         self.indicator_label = self.sequence_workbench.indicator_label
 
@@ -118,9 +118,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
 
     def toggle_swap_colors_icon(self):
         icon_name = "yinyang1.svg" if self.colors_swapped else "yinyang2.svg"
-        new_icon_path = get_image_path(
-            f"icons/sequence_workbench_icons/{icon_name}"
-        )
+        new_icon_path = get_image_path(f"icons/sequence_workbench_icons/{icon_name}")
         self.colors_swapped = not self.colors_swapped
         new_icon = QIcon(new_icon_path)
         self.swap_colors_button.setIcon(new_icon)
@@ -182,12 +180,10 @@ class SequenceWorkbenchButtonPanel(QFrame):
             button.update_size(button_size)
 
         self.layout.setSpacing(
-            self.sequence_workbench.sequence_beat_frame.main_widget.height() // 120
+            self.sequence_workbench.beat_frame.main_widget.height() // 120
         )
 
-        spacer_size = (
-            self.sequence_workbench.sequence_beat_frame.main_widget.height() // 20
-        )
+        spacer_size = self.sequence_workbench.beat_frame.main_widget.height() // 20
         for spacer in self.spacers:
             spacer.changeSize(
                 20,
@@ -196,4 +192,3 @@ class SequenceWorkbenchButtonPanel(QFrame):
                 QSizePolicy.Policy.Expanding,
             )
         self.layout.update()
-

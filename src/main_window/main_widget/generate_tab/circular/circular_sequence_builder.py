@@ -89,7 +89,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 red_rot_dir,
             )
             self.sequence.append(next_pictograph)
-            self.sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+            self.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
                 update_image_export_preview=False,
@@ -103,7 +103,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         construct_tab.option_picker.updater.update_options()
 
         QApplication.restoreOverrideCursor()
-        self.sequence_workbench.sequence_beat_frame.emit_update_image_export_preview()
+        self.sequence_workbench.beat_frame.emit_update_image_export_preview()
 
     def _generate_next_pictograph(
         self,

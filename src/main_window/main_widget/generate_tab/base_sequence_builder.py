@@ -63,7 +63,7 @@ class BaseSequenceBuilder:
             self.sequence = self.json_manager.loader_saver.load_current_sequence()
 
         try:
-            self.sequence_workbench.sequence_beat_frame.populator.modify_layout_for_chosen_number_of_beats(
+            self.sequence_workbench.beat_frame.populator.modify_layout_for_chosen_number_of_beats(
                 int(length)
             )
         except Exception as e:

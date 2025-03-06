@@ -24,9 +24,7 @@ class OrientationSetter:
         self.ori_picker_box = ori_picker_widget.ori_picker_box
         self.ori_adjusted = ori_picker_widget.ori_adjusted
         self.option_picker = ori_picker_widget.option_picker
-        self.beat_frame = (
-            self.ori_picker_box.graph_editor.sequence_workbench.sequence_beat_frame
-        )
+        self.beat_frame = self.ori_picker_box.graph_editor.sequence_workbench.beat_frame
 
     def set_orientation(self, orientation: str) -> None:
         """Apply the orientation to the related pictographs and data structures."""

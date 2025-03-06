@@ -33,7 +33,7 @@ class AddToDictionaryManager:
         self.process_sequence(current_sequence)
 
     def process_sequence(self, current_sequence):
-        base_word = self.sequence_workbench.sequence_beat_frame.get.current_word()
+        base_word = self.sequence_workbench.beat_frame.get.current_word()
         base_path = os.path.join(self.dictionary_dir, base_word)
 
         if not os.path.exists(base_path):

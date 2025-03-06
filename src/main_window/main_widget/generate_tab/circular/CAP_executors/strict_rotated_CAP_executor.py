@@ -79,7 +79,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
             new_entries.append(next_pictograph)
             sequence.append(next_pictograph)
 
-            sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+            sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
                 update_word=False,

@@ -25,9 +25,7 @@ class BeatLayoutTab(QWidget):
         self._setup_layout()
 
     def showEvent(self, a0):
-        self.num_beats = (
-            self.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
-        )
+        self.num_beats = self.main_widget.sequence_workbench.beat_frame.get.beat_count()
         default_layout = self.layout_settings.get_layout_setting(str(self.num_beats))
         self.beat_frame.current_layout = tuple(default_layout)
         self.controls.length_selector.num_beats_spinbox.setValue(self.num_beats)
@@ -79,7 +77,7 @@ class BeatLayoutTab(QWidget):
 
     def update_beat_layout_tab(self):
         beat_count = (
-            self.settings_dialog.main_widget.sequence_workbench.sequence_beat_frame.get.beat_count()
+            self.settings_dialog.main_widget.sequence_workbench.beat_frame.get.beat_count()
         )
         self.controls.layout_selector._update_valid_layouts(beat_count)
         self.controls.length_selector.num_beats_spinbox.setValue(beat_count)

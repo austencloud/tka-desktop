@@ -29,7 +29,7 @@ class GraphEditorPictographContainer(QWidget):
 
     def update_pictograph(self, reference_beat: "Beat" = None) -> None:
         selected_beat_view = (
-            self.graph_editor.sequence_workbench.sequence_beat_frame.get.currently_selected_beat_view()
+            self.graph_editor.sequence_workbench.beat_frame.get.currently_selected_beat_view()
         )
         if not selected_beat_view:
             return
@@ -45,13 +45,10 @@ class GraphEditorPictographContainer(QWidget):
         pictograph.state.blue_reversal = reference_beat.state.blue_reversal
         pictograph.state.red_reversal = reference_beat.state.red_reversal
 
-
         pictograph.managers.updater.update_pictograph(
             reference_beat.state.pictograph_data
         )
 
-        
-        
         beat_number_text = reference_beat.beat_number_item.beat_number_int
         if beat_number_text:
             pictograph.beat_number_item.update_beat_number(beat_number_text)

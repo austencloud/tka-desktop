@@ -38,9 +38,7 @@ class SequenceRotater(BaseSequenceModifier):
             QApplication.restoreOverrideCursor()
             return
         rotated_sequence = self._rotate_sequence()
-        self.sequence_workbench.sequence_beat_frame.updater.update_beats_from(
-            rotated_sequence
-        )
+        self.sequence_workbench.beat_frame.updater.update_beats_from(rotated_sequence)
         self._update_ui()
         QApplication.restoreOverrideCursor()
 
@@ -54,12 +52,12 @@ class SequenceRotater(BaseSequenceModifier):
         rotated_sequence = [metadata]
 
         start_pos_beat_dict = (
-            self.sequence_workbench.sequence_beat_frame.start_pos_view.start_pos.state.pictograph_data.copy()
+            self.sequence_workbench.beat_frame.start_pos_view.start_pos.state.pictograph_data.copy()
         )
         self._rotate_dict(start_pos_beat_dict)
         rotated_sequence.append(start_pos_beat_dict)
 
-        for beat_dict in self.sequence_workbench.sequence_beat_frame.get.beat_dicts():
+        for beat_dict in self.sequence_workbench.beat_frame.get.beat_dicts():
             rotated_dict = beat_dict.copy()
             self._rotate_dict(rotated_dict)
             rotated_sequence.append(rotated_dict)

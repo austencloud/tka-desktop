@@ -48,8 +48,10 @@ class FreeFormSequenceBuilder(BaseSequenceBuilder):
                 red_rot_dir,
             )
             self.sequence.append(next_pictograph)
-            self.sequence_workbench.sequence_beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
-                next_pictograph, override_grow_sequence=True, update_image_export_preview=False
+            self.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+                next_pictograph,
+                override_grow_sequence=True,
+                update_image_export_preview=False,
             )
             QApplication.processEvents()
 

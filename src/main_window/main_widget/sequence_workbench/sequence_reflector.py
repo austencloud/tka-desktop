@@ -44,9 +44,7 @@ class SequenceReflector(BaseSequenceModifier):
             QApplication.restoreOverrideCursor()
             return
         mirrored_sequence = self._reflect_sequence()
-        self.sequence_workbench.sequence_beat_frame.updater.update_beats_from(
-            mirrored_sequence
-        )
+        self.sequence_workbench.beat_frame.updater.update_beats_from(mirrored_sequence)
         self._update_ui()
         QApplication.restoreOverrideCursor()
 
@@ -56,16 +54,16 @@ class SequenceReflector(BaseSequenceModifier):
         mirrored_sequence = [metadata]
 
         start_pos_beat_dict = (
-            self.sequence_workbench.sequence_beat_frame.start_pos_view.start_pos.state.pictograph_data.copy()
+            self.sequence_workbench.beat_frame.start_pos_view.start_pos.state.pictograph_data.copy()
         )
         self._reflect_dict(start_pos_beat_dict)
         mirrored_sequence.append(start_pos_beat_dict)
 
-        for beat_dict in self.sequence_workbench.sequence_beat_frame.get.beat_dicts():
+        for beat_dict in self.sequence_workbench.beat_frame.get.beat_dicts():
             mirrored_dict = beat_dict.copy()
             self._reflect_dict(mirrored_dict)
             mirrored_sequence.append(mirrored_dict)
-        for beat_view in self.sequence_workbench.sequence_beat_frame.beat_views:
+        for beat_view in self.sequence_workbench.beat_frame.beat_views:
             if beat_view.is_filled:
                 beat = beat_view.beat
 

@@ -17,14 +17,11 @@ if TYPE_CHECKING:
 
 
 class DictionaryService:
-    def __init__(
-        self,
-        image_creator: "ImageCreator",
-        beat_frame: "SequenceBeatFrame",
-    ):
-        self.dictionary_dir = get_data_path("generated_data\dictionary")
+    dictionary_dir = get_data_path("generated_data\\dictionary")
+    
+    def __init__(self, beat_frame: "SequenceBeatFrame"):
         self.structural_checker = StructuralVariationChecker()
-        self.thumbnail_generator = ThumbnailGenerator(image_creator, beat_frame)
+        self.thumbnail_generator = ThumbnailGenerator(beat_frame)
 
     def add_variation(
         self, sequence_data: List[dict], base_word: str

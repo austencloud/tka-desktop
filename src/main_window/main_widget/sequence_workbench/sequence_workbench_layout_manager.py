@@ -8,7 +8,6 @@ if TYPE_CHECKING:
     )
 
 
-
 class SequenceWorkbenchLayoutManager:
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sw = sequence_workbench
@@ -37,7 +36,7 @@ class SequenceWorkbenchLayoutManager:
         word_layout.addWidget(self.dummy_widget)
         word_layout.addStretch(2)
 
-        self.sw.scroll_area.setWidget(self.sw.sequence_beat_frame)
+        self.sw.scroll_area.setWidget(self.sw.beat_frame)
 
         self.main_layout.addStretch(2)
         self.main_layout.addLayout(word_layout, 4)
