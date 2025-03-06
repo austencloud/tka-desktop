@@ -24,27 +24,16 @@ class PictographUpdater:
         self.placement_updater = PlacementUpdater(pictograph)
 
     def update_pictograph(self, pictograph_data: dict = None) -> None:
-        try:
-            if not self.pictograph.managers.get.is_initialized:
-                self.pictograph.managers.get.initiallize_getter()
-        except Exception as e:
-            logger.error(f"Error during initialization: {e}", exc_info=True)
-            return
+        if not self.pictograph.managers.get.is_initialized:
+            self.pictograph.managers.get.initiallize_getter()
 
-        try:
-            self._apply_data_update(pictograph_data)
-        except Exception as e:
-            logger.error(f"Error applying data updates: {e}", exc_info=True)
-
-        try:
-            self.glyph_updater.update()
-            self.placement_updater.update()
-        except Exception as e:
-            logger.error(f"Error updating glyphs or placements: {e}", exc_info=True)
+        self._apply_data_update(pictograph_data)
+        self.glyph_updater.update()
+        self.placement_updater.update()
 
     def _apply_data_update(self, pictograph_data: dict) -> None:
         if pictograph_data:
-            self.pictograph.state.update_pictograph_state(pictograph_data)
+            self.pictograph.state.update_pictograph_state(pictograph_data.copy())
 
         self.update_grid_mode_if_changed()
 
@@ -60,11 +49,7 @@ class PictographUpdater:
 
         self.pictograph.elements.tka_glyph.update_tka_glyph()
         self.pictograph.elements.reversal_glyph.update_reversal_symbols()
-        # if pictograph_data:
-        #     for color in [RED, BLUE]:
-        #         self.pictograph.elements.props[color].updater.update_prop(
-        #             self.get_prop_data(pictograph_data, color)
-        #         )
+
 
         logger.debug("Data update (partial or complete) applied successfully.")
 

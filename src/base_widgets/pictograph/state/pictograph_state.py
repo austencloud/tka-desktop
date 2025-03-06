@@ -31,7 +31,9 @@ class PictographState:
     def update_pictograph_state(
         self, pictograph_data: dict[str, Union[str, dict[str, str]]]
     ) -> None:
-        for key, value in deepcopy(list(pictograph_data.items())):
+        copied_data = deepcopy(pictograph_data)  # Deep copy the entire structure
+
+        for key, value in copied_data.items():
             if key == LETTER:
                 try:
                     letter_obj: Letter = Letter.get_letter(value)
@@ -43,25 +45,29 @@ class PictographState:
                 )
                 self.letter_type = LetterType.get_letter_type(letter_obj)
                 self.pictograph_data["letter_type"] = self.letter_type.name
+
             elif key in (BLUE_ATTRS, RED_ATTRS):
                 if key not in self.pictograph_data:
                     self.pictograph_data[key] = {}
-                if isinstance(value, dict):
-                    deep_merge_dict(self.pictograph_data[key], value)
-                else:
-                    self.pictograph_data[key] = value
+
+                # Ensure deep copy for attributes
+                self.pictograph_data[key] = deepcopy(value)
+
             elif key == "letter_type":
                 self.letter_type = LetterType.from_string(value)
                 self.pictograph_data[key] = self.letter_type.name
+
             else:
                 setattr(self, key, value)
                 self.pictograph_data[key] = value
 
-
 def deep_merge_dict(dest: dict, src: dict) -> dict:
+    merged = deepcopy(dest)  # Ensure we don't modify the original dictionary
+
     for key, value in src.items():
-        if key in dest and isinstance(dest[key], dict) and isinstance(value, dict):
-            deep_merge_dict(dest[key], value)
+        if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
+            merged[key] = deep_merge_dict(merged[key], value)
         else:
-            dest[key] = value
-    return dest
+            merged[key] = deepcopy(value)  # Ensure deep copy of values
+
+    return merged

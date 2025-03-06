@@ -29,7 +29,7 @@ class JsonStartPositionHandler:
         self.manager = manager
 
     def set_start_position_data(
-        self, start_pos_pictograph: Pictograph, start_position_dict: dict = {}
+        self, start_pos_pictograph: Pictograph, start_pos_data: dict = {}
     ) -> None:
         red_start_ori = start_pos_pictograph.state.pictograph_data[RED_ATTRS][START_ORI]
         blue_start_ori = start_pos_pictograph.state.pictograph_data[BLUE_ATTRS][
@@ -37,8 +37,8 @@ class JsonStartPositionHandler:
         ]
 
         sequence = self.manager.loader_saver.load_current_sequence()
-        if not start_position_dict:
-            start_position_dict = {
+        if not start_pos_data:
+            start_pos_data = {
                 BEAT: 0,
                 SEQUENCE_START_POSITION: self.get_sequence_start_position(
                     start_pos_pictograph
@@ -68,9 +68,9 @@ class JsonStartPositionHandler:
             }
 
         if len(sequence) == 1:
-            sequence.append(start_position_dict)
+            sequence.append(start_pos_data)
         else:
-            sequence.insert(1, start_position_dict)
+            sequence.insert(1, start_pos_data)
 
         self.manager.loader_saver.save_current_sequence(sequence)
 
