@@ -33,13 +33,19 @@ class ThumbnailBoxFavoriteSequenceButton(QPushButton):
         self.thumbnail_box.favorites_manager.toggle_favorite_status()
         is_favorite = self.thumbnail_box.favorites_manager.is_favorite()
         self.update_favorite_icon(is_favorite)
-        
+
         if self.thumbnail_box.in_sequence_viewer:
             matching_box = sequence_viewer.state.matching_thumbnail_box
+            matching_box.favorites_manager.toggle_favorite_status()
             favorite_button = matching_box.header.favorite_button
             favorite_button.update_favorite_icon(is_favorite)
         else:
+            sequence_viewer_word = sequence_viewer.thumbnail_box.word
+            thumbnail_box_word = self.thumbnail_box.word
+            if sequence_viewer_word != thumbnail_box_word:
+                return
             sequence_viewer_box = sequence_viewer.thumbnail_box
+            sequence_viewer_box.favorites_manager.toggle_favorite_status()
             favorite_button = sequence_viewer_box.header.favorite_button
             favorite_button.update_favorite_icon(is_favorite)
 
@@ -66,3 +72,7 @@ class ThumbnailBoxFavoriteSequenceButton(QPushButton):
         self.setIconSize(icon_size)
         self.setFixedSize(icon_size.width(), icon_size.height())
         super().resizeEvent(event)
+
+    def showEvent(self, event):
+        self.reload_favorite_icon()
+        super().showEvent(event)

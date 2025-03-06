@@ -132,7 +132,7 @@ class SequenceViewer(QWidget):
 
     def set_current_thumbnail_box(self, word):
         """Sets the current thumbnail box and updates the sequence viewer."""
-        self.word = word
+        self.thumbnail_box.word = word
         thumbnail_boxes = self.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes
         if not thumbnail_boxes:
             return
