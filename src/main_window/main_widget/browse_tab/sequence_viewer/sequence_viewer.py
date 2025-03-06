@@ -60,7 +60,7 @@ class SequenceViewer(QWidget):
             if not pixmap.isNull():
                 self.thumbnail_box.image_label.update_thumbnail(index)
 
-                if self.state.current_thumbnail_box:
+                if self.state.matching_thumbnail_box:
                     metadata_extractor = MetaDataExtractor()
                     self.state.sequence_json = (
                         metadata_extractor.extract_metadata_from_file(current_thumbnail)
@@ -79,7 +79,7 @@ class SequenceViewer(QWidget):
         self.thumbnail_box.header.word_label.clear()
         self.thumbnail_box.nav_buttons_widget.hide()
         self.thumbnail_box.variation_number_label.hide()
-        self.state.current_thumbnail_box = None
+        self.state.matching_thumbnail_box = None
 
     def get_thumbnail_at_current_index(self) -> Optional[str]:
         return self.thumbnail_box.state.get_current_thumbnail()
@@ -138,11 +138,11 @@ class SequenceViewer(QWidget):
             return
         for box in thumbnail_boxes.values():
             if box.word == word:
-                self.state.current_thumbnail_box = box
+                self.state.matching_thumbnail_box = box
                 index = self.thumbnail_box.state.current_index
                 box.nav_buttons_widget.update_thumbnail(index)
                 self.browse_tab.selection_handler.current_thumbnail = (
-                    self.state.current_thumbnail_box.image_label
+                    self.state.matching_thumbnail_box.image_label
                 )
                 self.favorites_manager = box.favorites_manager
                 return

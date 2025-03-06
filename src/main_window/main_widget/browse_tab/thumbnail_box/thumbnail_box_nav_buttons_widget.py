@@ -53,13 +53,13 @@ class ThumbnailBoxNavButtonsWidget(QWidget):
             )
 
         self.update_thumbnail(self.state.current_index)
-
-        if (
-            self.thumbnail_label
-            == self.thumbnail_box.browse_tab.selection_handler.current_thumbnail
-        ):
-            sequence_viewer = self.thumbnail_box.browse_tab.sequence_viewer
-            sequence_viewer.state.current_index = self.state.current_index
+        sequence_viewer = self.thumbnail_box.browse_tab.sequence_viewer
+        if self.thumbnail_box.in_sequence_viewer:
+            sequence_viewer.state.matching_thumbnail_box.image_label.update_thumbnail(
+                self.state.current_index
+            )
+        else:
+            sequence_viewer.thumbnail_box.state.current_index = self.state.current_index
             sequence_viewer.update_preview(self.state.current_index)
 
     def update_thumbnail(self, index):

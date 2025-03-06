@@ -85,7 +85,7 @@ class ThumbnailBox(QWidget):
         self.state.update_thumbnails(thumbnails)
         self.nav_buttons_widget.state.thumbnails = thumbnails
 
-        if self == self.browse_tab.sequence_viewer.state.current_thumbnail_box:
+        if self == self.browse_tab.sequence_viewer.state.matching_thumbnail_box:
             self.browse_tab.sequence_viewer.update_thumbnails(self.state.thumbnails)
 
         # self.variation_number_label.update_index(self.state.current_index)

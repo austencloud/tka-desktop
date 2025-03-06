@@ -30,6 +30,7 @@ class VariationNumberLabel(QLabel):
     def update_index(self, index: int):
         if len(self.parent.state.thumbnails) > 1:
             self.setText(f"{index + 1}/{len(self.parent.state.thumbnails)}")
+            self.show()
         else:
             self.hide()
 

@@ -48,14 +48,14 @@ class SequenceViewerActionButtonPanel(QWidget):
                 "tooltip": "Delete Variation",
                 "action": lambda: (
                     self.browse_tab.deletion_handler.delete_variation(
-                        self.sequence_viewer.state.current_thumbnail_box,
+                        self.sequence_viewer.state.matching_thumbnail_box,
                         (
                             (
-                                self.sequence_viewer.state.current_thumbnail_box.state.current_index
+                                self.sequence_viewer.state.matching_thumbnail_box.state.current_index
                             )
                         ),
                     )
-                    if self.sequence_viewer.state.current_thumbnail_box
+                    if self.sequence_viewer.state.matching_thumbnail_box
                     else None
                 ),
             },

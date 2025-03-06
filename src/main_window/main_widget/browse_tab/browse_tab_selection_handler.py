@@ -2,6 +2,9 @@ from typing import TYPE_CHECKING
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
+from sympy import sequence
+
+from main_window.main_widget.browse_tab.sequence_viewer import sequence_viewer
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label import (
@@ -44,7 +47,6 @@ class BrowseTabSelectionManager:
     ) -> None:
         """Selects a thumbnail from the box and updates the sequence viewer."""
         self._update_sequence_data(image_label, sequence_dict)
-        self._update_thumbnail_display(image_label)
         self._update_selected_thumbnail(image_label)
         self._update_labels_and_settings(image_label)
         QApplication.processEvents()
@@ -57,22 +59,7 @@ class BrowseTabSelectionManager:
         self.sequence_viewer.thumbnail_box.state.thumbnails = (
             image_label.thumbnail_box.state.thumbnails
         )
-        self.sequence_viewer.state.current_thumbnail_box = image_label.thumbnail_box
-
-    def _update_thumbnail_display(self, image_label: "ThumbnailImageLabel"):
-        """Updates the displayed thumbnail in the sequence viewer."""
-        thumbnail_pixmap = QPixmap(
-            image_label.thumbnail_box.state.thumbnails[
-                image_label.thumbnail_box.state.current_index
-            ]
-        )
-        self.sequence_viewer.thumbnail_box.image_label.setPixmap(
-            thumbnail_pixmap.scaled(
-                self.sequence_viewer.thumbnail_box.image_label.size() * 0.9,
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-        )
+        self.sequence_viewer.state.matching_thumbnail_box = image_label.thumbnail_box
 
     def _update_selected_thumbnail(self, image_label: "ThumbnailImageLabel"):
         """Updates the visual state of the selected thumbnail."""
@@ -99,12 +86,15 @@ class BrowseTabSelectionManager:
         self.browse_tab.browse_settings.set_selected_sequence(
             {"word": word, "variation_index": var_index}
         )
+        self.sequence_viewer.thumbnail_box.nav_buttons_widget.variation_number_label.update_index(
+            var_index
+        )
 
     def select_viewer_thumbnail(self, thumbnail_box, index, word):
         """Selects a thumbnail in the sequence viewer."""
         sequence_viewer = self.sequence_viewer
         sequence_viewer.thumbnail_box.state.current_index = index
-        sequence_viewer.state.current_thumbnail_box = thumbnail_box
+        sequence_viewer.state.matching_thumbnail_box = thumbnail_box
         sequence_viewer.thumbnail_box.variation_number_label.update_index(index)
         sequence_viewer.thumbnail_box.header.word_label.setText(word)
         sequence_viewer.update_thumbnails(
