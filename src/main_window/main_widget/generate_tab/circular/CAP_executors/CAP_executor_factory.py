@@ -2,18 +2,18 @@ from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_executor im
     CAPExecutor,
 )
 from .CAP_type import CAPType
-from .strict_mirrored_CAP_executor import StrictMirroredCAPExecutor
-from .strict_rotated_CAP_executor import StrictRotatedCAPExecutor
-
+from .strict_mirrored.strict_mirrored_CAP_executor import StrictMirroredCAPExecutor
+from .strict_rotated.strict_rotated_CAP_executor import StrictRotatedCAPExecutor
+from .strict_swapped.strict_swapped_CAP_executor import StrictSwappedCAPExecutor
 
 class CAPExecutorFactory:
     _executor_map = {
         CAPType.STRICT_MIRRORED: StrictMirroredCAPExecutor,
         CAPType.STRICT_ROTATED: StrictRotatedCAPExecutor,
-        # CAPExecutorType.STRICT_SWAPPED: StrictSwappedCAPExecutor,
-        # CAPExecutorType.MIRRORED_SWAPPED: MirroredSwappedCAPExecutor,
-        # CAPExecutorType.MIRRORED_COMPLIMENTARY: MirroredComplimentaryCAPExecutor,
-        # CAPExecutorType.COMPLIMENTARY_SWAPPED: ComplimentarySwappedCAPExecutor,
+        CAPType.STRICT_SWAPPED: StrictSwappedCAPExecutor,
+        # CAPType.MIRRORED_SWAPPED: MirroredSwappedCAPExecutor,
+        # CAPType.MIRRORED_COMPLIMENTARY: MirroredComplimentaryCAPExecutor,
+        # CAPType.COMPLIMENTARY_SWAPPED: ComplimentarySwappedCAPExecutor,
     }
 
     @staticmethod
@@ -22,4 +22,4 @@ class CAPExecutorFactory:
         if executor_class:
             return executor_class(circular_sequence_generator)
         else:
-            raise ValueError(f"Unknown CAPExecutorType: {cap_type}")
+            raise ValueError(f"Unknown CAPType: {cap_type}")

@@ -31,18 +31,17 @@ from data.CAP_executors.rotated_loc_maps import (
     loc_map_cw,
     loc_map_ccw,
     loc_map_dash,
-    loc_map_static,
-    hand_rot_dir_map,
+    loc_map_static, hand_rot_dir_map
 )
 from PyQt6.QtWidgets import QApplication
 
 from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import CAPType
 from objects.motion.managers.handpath_calculator import HandpathCalculator
-from .CAP_executor import CAPExecutor
+from ..CAP_executor import CAPExecutor
 from data.positions_map import positions_map
 
 if TYPE_CHECKING:
-    from ..circular_sequence_builder import CircularSequenceBuilder
+    from ...circular_sequence_builder import CircularSequenceBuilder
 
 
 class StrictRotatedCAPExecutor(CAPExecutor):

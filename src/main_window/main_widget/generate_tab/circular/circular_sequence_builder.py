@@ -16,7 +16,7 @@ from data.constants import (
 from data.position_maps import (
     half_position_map,
     quarter_position_map_cw,
-    quarter_position_map_ccw,
+    quarter_position_map_ccw, position_swap_mapping
 )
 from data.quartered_CAPs import quartered_CAPs
 from data.halved_CAPs import halved_CAPs
@@ -40,6 +40,9 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             ),
             CAPType.STRICT_MIRRORED: CAPExecutorFactory.create_executor(
                 CAPType.STRICT_MIRRORED, self
+            ),
+            CAPType.STRICT_SWAPPED: CAPExecutorFactory.create_executor(
+                CAPType.STRICT_SWAPPED, self
             ),
         }
 
@@ -70,7 +73,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             elif slice_size == "halved":
                 word_length = length // 2
             available_range = word_length - length_of_sequence_upon_start
-        elif CAP_type == CAPType.STRICT_MIRRORED:
+        elif CAP_type == CAPType.STRICT_MIRRORED or CAP_type == CAPType.STRICT_SWAPPED:
             word_length = length // 2
             available_range = word_length - length_of_sequence_upon_start
 
@@ -143,6 +146,16 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 )
             else:
                 next_beat = random.choice(options)
+        elif CAP_type == CAPType.STRICT_SWAPPED:
+            if is_last_in_word:
+                expected_end_pos = self.get_expected_end_pos_for_swapped(
+                    self.sequence[1][END_POS]
+                )
+                next_beat = self._select_pictograph_with_end_pos(
+                    options, expected_end_pos
+                )
+            else:
+                next_beat = random.choice(options)
 
         if level == 2 or level == 3:
             next_beat = self.set_turns(next_beat, turn_blue, turn_red)
@@ -160,6 +173,10 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         next_beat = self.update_beat_number(next_beat, self.sequence)
         return next_beat
+
+    def get_expected_end_pos_for_swapped(self, start_pos: str) -> str:
+
+        return position_swap_mapping.get(start_pos, None)
 
     def _determine_rotated_end_pos(self, slice_size: str) -> str:
         """Determine the expected end position based on rotation type and current sequence."""
@@ -199,6 +216,9 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                     executor.create_CAPs(sequence)
             elif cap_type == CAPType.STRICT_MIRRORED:
                 if self.can_perform_strict_mirrored_CAP(sequence):
+                    executor.create_CAPs(sequence)
+            elif cap_type == CAPType.STRICT_SWAPPED:
+                if executor.can_perform_CAP(sequence):
                     executor.create_CAPs(sequence)
 
     def can_perform_strict_rotated_CAP(
