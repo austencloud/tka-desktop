@@ -5,7 +5,7 @@ from main_window.main_widget.generate_tab.circular.permutation_executors.strict_
     StrictMirroredPermutationExecutor,
 )
 from main_window.main_widget.generate_tab.circular.permutation_executors.strict_rotated_permutation_executor import (
-    RotatedPermutationExecutor,
+    StrictRotatedPermutationExecutor,
 )
 
 from .permutation_dialog import PermutationDialog
@@ -24,7 +24,7 @@ class SequenceAutoCompleter:
     def __init__(self, sequence_workbench: "SequenceWorkbench"):
         self.sequence_workbench = sequence_workbench
         self.main_widget = sequence_workbench.main_widget
-        self.rotated_permutation_executor = RotatedPermutationExecutor(self)
+        self.rotated_permutation_executor = StrictRotatedPermutationExecutor(self)
         self.mirrored_permutation_executor = StrictMirroredPermutationExecutor(
             self, False
         )
@@ -53,7 +53,7 @@ class SequenceAutoCompleter:
         if dialog.exec():
             option = dialog.get_options()
             if option == "rotation":
-                executor = RotatedPermutationExecutor(self)
+                executor = StrictRotatedPermutationExecutor(self)
                 executor.create_permutations(sequence)
             elif option == "vertical_mirror":
                 executor = StrictMirroredPermutationExecutor(self, False)

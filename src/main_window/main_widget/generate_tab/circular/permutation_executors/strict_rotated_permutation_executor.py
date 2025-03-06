@@ -48,7 +48,7 @@ if TYPE_CHECKING:
     from ..circular_sequence_builder import CircularSequenceBuilder
 
 
-class RotatedPermutationExecutor(PermutationExecutor):
+class StrictRotatedPermutationExecutor(PermutationExecutor):
     def __init__(self, circular_sequence_generator: "CircularSequenceBuilder"):
         self.circular_sequence_generator = circular_sequence_generator
         self.hand_rot_dir_calculator = HandpathCalculator()
@@ -315,18 +315,18 @@ class RotatedPermutationExecutor(PermutationExecutor):
         return sequence[index_map[beat_number]]
 
     def get_index_map(self, halved_or_quartered: str, length: int) -> dict[int, int]:
+        """Generates index mappings for quartered/halved sequences."""
+        if length < 4 and halved_or_quartered == "quartered":
+            return {i: max(i - 1, 0) for i in range(1, length + 1)}
+        elif length < 2 and halved_or_quartered == "halved":
+            return {i: max(i - 1, 0) for i in range(1, length + 1)}
+        
         if halved_or_quartered == "quartered":
-            return {
-                i: i - (length // 4) + 1 for i in range((length // 4) + 1, length + 1)
-            }
+            return {i: i - (length // 4) + 1 for i in range((length // 4) + 1, length + 1)}
         elif halved_or_quartered == "halved":
-            return {
-                i: i - (length // 2) + 1 for i in range((length // 2) + 1, length + 1)
-            }
+            return {i: i - (length // 2) + 1 for i in range((length // 2) + 1, length + 1)}
         else:
-            raise ValueError(
-                "Invalid permutation type. Expected 'quartered' or 'halved'."
-            )
+            raise ValueError("Invalid permutation type. Expected 'quartered' or 'halved'.")
 
     def get_previous_matching_beat_mirrored(
         self,

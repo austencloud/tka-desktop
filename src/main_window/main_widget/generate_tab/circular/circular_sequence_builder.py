@@ -26,7 +26,7 @@ from .permutation_executors.strict_mirrored_permutation_executor import (
     StrictMirroredPermutationExecutor,
 )
 from .permutation_executors.strict_rotated_permutation_executor import (
-    RotatedPermutationExecutor,
+    StrictRotatedPermutationExecutor,
 )
 from ..turn_intensity_manager import TurnIntensityManager
 
@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 class CircularSequenceBuilder(BaseSequenceBuilder):
     def __init__(self, generate_tab: "GenerateTab"):
         super().__init__(generate_tab)
-        self.rotated_executor = RotatedPermutationExecutor(self)
+        self.rotated_executor = StrictRotatedPermutationExecutor(self)
         self.mirrored_executor = StrictMirroredPermutationExecutor(self, False)
 
     def build_sequence(
