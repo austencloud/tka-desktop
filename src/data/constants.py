@@ -90,6 +90,7 @@ RED_TURNS = "red_turns"
 
 RED = "red"
 BLUE = "blue"
+GOLD = "gold"
 
 HEX_RED = "#ED1C24"
 HEX_BLUE = "#2E3192"

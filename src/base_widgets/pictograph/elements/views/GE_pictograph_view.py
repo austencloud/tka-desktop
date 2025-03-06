@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication
 from base_widgets.pictograph.elements.views.base_pictograph_view import (
     BasePictographView,
 )
+from data.constants import GOLD
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.hotkey_graph_adjuster import (
     HotkeyGraphAdjuster,
 )
@@ -85,7 +86,7 @@ class GE_PictographView(BasePictographView):
 
         right_edge = self.viewport().width() - 1
         painter.drawLine(right_edge, 0, right_edge, self.viewport().height())
-        overlay_color = QColor("gold")
+        overlay_color = QColor(GOLD)
         overlay_pen = QPen(overlay_color, 4)
         overlay_pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
         painter.setPen(overlay_pen)

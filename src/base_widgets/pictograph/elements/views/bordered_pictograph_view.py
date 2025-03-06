@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt, QEvent, QRectF
 from PyQt6.QtGui import QPainter, QPen, QColor, QCursor
 
+from data.constants import GOLD
 from enums.letter.letter_type import LetterType
 from base_widgets.pictograph.elements.views.base_pictograph_view import (
     BasePictographView,
@@ -46,8 +47,8 @@ class BorderedPictographView(BasePictographView):
         """Set the border colors to gold, typically on hover."""
         if getattr(self.pictograph.state, "disable_gold_overlay", False):
             return
-        self.primary_color = "gold"
-        self.secondary_color = "gold"
+        self.primary_color = GOLD
+        self.secondary_color = GOLD
         self.update()
 
     def reset_border(self):

@@ -16,7 +16,7 @@ from .browse_tab_filter_manager import BrowseTabFilterManager
 from .browse_tab_getter import BrowseTabGetter
 from .browse_tab_ui_updater import BrowseTabUIUpdater
 from .deletion_handler.browse_tab_deletion_handler import BrowseTabDeletionHandler
-from .browse_tab_selection_handler import BrowseTabSelectionManager
+from .browse_tab_selection_handler import BrowseTabSelectionHandler
 from .sequence_viewer.sequence_viewer import SequenceViewer
 from .browse_tab_state import BrowseTabState
 
@@ -43,7 +43,7 @@ class BrowseTab(QWidget):
         self.sequence_viewer = SequenceViewer(self)
 
         self.deletion_handler = BrowseTabDeletionHandler(self)
-        self.selection_handler = BrowseTabSelectionManager(self)
+        self.selection_handler = BrowseTabSelectionHandler(self)
         self.get = BrowseTabGetter(self)
 
         self.persistence_manager = BrowseTabPersistenceManager(self)

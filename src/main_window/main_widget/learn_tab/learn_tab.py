@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QStackedLayout
 from main_window.main_widget.learn_tab.lesson_configs import LESSON_CONFIGS
 from .lesson_selector.lesson_selector import LessonSelector
@@ -16,7 +16,7 @@ class LearnTab(QWidget):
         super().__init__(main_widget)
         self.main_widget = main_widget
         self.main_widget.splash.updater.update_progress("LearnTab")
-        self.lessons: Dict[str, LessonWidget] = {}
+        self.lessons: dict[str, LessonWidget] = {}
         self.stack = QStackedLayout()
         self._setup_components()
         self._setup_layout()

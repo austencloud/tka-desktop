@@ -103,7 +103,7 @@ class StyledBorderOverlay(QWidget):
             return
         self.saved_primary_color = self.primary_color
         self.saved_secondary_color = self.secondary_color
-        self.update_border_color_and_width("gold", "gold")
+        self.update_border_color_and_width(GOLD, GOLD)
 
     def reset_border(self) -> None:
         if self.saved_primary_color and self.saved_secondary_color:
@@ -114,7 +114,7 @@ class StyledBorderOverlay(QWidget):
     def set_thick_gold_border(self) -> None:
         self.saved_primary_color = self.primary_color
         self.saved_secondary_color = self.secondary_color
-        self.update_border_color_and_width("gold", "gold")
+        self.update_border_color_and_width(GOLD, GOLD)
 
     def remove_border(self) -> None:
         self.is_set = False

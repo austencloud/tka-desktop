@@ -1,21 +1,14 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
-from sympy import sequence
-
-from main_window.main_widget.browse_tab.sequence_viewer import sequence_viewer
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label import (
         ThumbnailImageLabel,
     )
-    from main_window.main_widget.browse_tab.browse_tab import (
-        BrowseTab,
-    )
+    from main_window.main_widget.browse_tab.browse_tab import BrowseTab
 
 
-class BrowseTabSelectionManager:
+class BrowseTabSelectionHandler:
     current_thumbnail: "ThumbnailImageLabel" = None
 
     def __init__(self, dictionary_widget: "BrowseTab") -> None:
@@ -23,27 +16,28 @@ class BrowseTabSelectionManager:
         self.sequence_viewer = self.browse_tab.sequence_viewer
         self.main_widget = self.browse_tab.main_widget
 
-    def on_thumbnail_clicked(
-        self, image_label: "ThumbnailImageLabel", sequence_dict: dict
-    ) -> None:
+    def on_thumbnail_clicked(self, image_label: "ThumbnailImageLabel") -> None:
         """Handles the event when a thumbnail is clicked."""
-        widgets = self._get_widgets_to_fade()  # Getting widgets to fade
+        if not image_label.thumbnail_box.state.thumbnails:
+            raise ValueError(f"No thumbnails for {image_label.thumbnail_box.word}")
+
+        sequence_dict = self.browse_tab.metadata_extractor.extract_metadata_from_file(
+            image_label.thumbnail_box.state.thumbnails[0]
+        )
+
+        widgets = self._get_widgets_to_fade()
         self.main_widget.fade_manager.widget_fader.fade_and_update(
             widgets,
             lambda: self.select_box_thumbnail(image_label, sequence_dict),
             300,
         )
-        print("Thumbnail clicked")
 
     def _get_widgets_to_fade(self):
         """Returns a list of widgets to be faded during thumbnail selection."""
-        sequence_viewer = self.sequence_viewer
-        return [sequence_viewer.thumbnail_box]
+        return [self.sequence_viewer.thumbnail_box]
 
     def select_box_thumbnail(
-        self,
-        image_label: "ThumbnailImageLabel",
-        sequence_dict: dict,
+        self, image_label: "ThumbnailImageLabel", sequence_dict: dict
     ) -> None:
         """Selects a thumbnail from the box and updates the sequence viewer."""
         self._update_sequence_data(image_label, sequence_dict)

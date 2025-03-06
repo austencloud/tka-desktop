@@ -24,7 +24,7 @@ class SR_BeatSelectionManager(QWidget):
         self.current_index = 0
         self.audio_output = QAudioOutput()  # Create an audio output
         self.audio_output.setVolume(1.0)  # Set volume to 100%
-        self.border_color = QColor("gold")
+        self.border_color = QColor(GOLD)
         self.border_width = 6
         path = get_data_path("audio/metronomes/")
         self.metronome_sounds = {

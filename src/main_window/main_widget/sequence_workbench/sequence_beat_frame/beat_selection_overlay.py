@@ -3,6 +3,7 @@ from PyQt6.QtGui import QPainter, QPen, QColor
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING, Optional
 
+from data.constants import GOLD
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
@@ -18,7 +19,7 @@ class BeatSelectionOverlay(QWidget):
     def __init__(self, beat_frame: "SequenceBeatFrame"):
         super().__init__(beat_frame)
         self.selected_beat: Optional[BeatView | StartPositionBeatView] = None
-        self.border_color = QColor("gold")
+        self.border_color = QColor(GOLD)
         self.border_width = 4
         self.beat_frame = beat_frame
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
