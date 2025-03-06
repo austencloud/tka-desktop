@@ -35,13 +35,7 @@ class BrowseTabSelectionManager:
     def _get_widgets_to_fade(self):
         """Returns a list of widgets to be faded during thumbnail selection."""
         sequence_viewer = self.sequence_viewer
-        return [
-            sequence_viewer.thumbnail_box.image_label,
-            sequence_viewer.thumbnail_box.header,
-            sequence_viewer.thumbnail_box.variation_number_label,
-            sequence_viewer.thumbnail_box.nav_buttons_widget,
-            sequence_viewer.action_button_panel,
-        ]
+        return [sequence_viewer.thumbnail_box]
 
     def select_box_thumbnail(
         self,

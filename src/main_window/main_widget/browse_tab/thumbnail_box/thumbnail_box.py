@@ -53,11 +53,10 @@ class ThumbnailBox(QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         layout = QVBoxLayout(self)
         layout.setSpacing(0)
-        layout.addStretch(1)
         layout.addWidget(self.header)
         layout.addWidget(self.image_label)
         layout.addWidget(self.nav_buttons_widget)
-        layout.addStretch(1)
+        layout.addStretch()
         layout.setContentsMargins(self.margin, self.margin, self.margin, self.margin)
 
     def resizeEvent(self, event):
