@@ -6,13 +6,13 @@ if TYPE_CHECKING:
     from ..circular_sequence_builder import CircularSequenceBuilder
 
 
-class PermutationExecutor:
-    """Base class for all permutation executors, handling shared logic."""
+class CAPExecutor:
+    """Base class for all CAP executors, handling shared logic."""
 
     def __init__(self, circular_sequence_generator: "CircularSequenceBuilder"):
         self.circular_sequence_generator = circular_sequence_generator
 
-    def create_permutations(self, sequence: list[dict]):
+    def create_CAPs(self, sequence: list[dict]):
         """Must be implemented by subclasses."""
         raise NotImplementedError("This method should be overridden by subclasses.")
 

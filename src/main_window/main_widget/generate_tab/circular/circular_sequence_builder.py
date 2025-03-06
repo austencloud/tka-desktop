@@ -19,14 +19,14 @@ from data.position_maps import (
     quarter_position_map_cw,
     quarter_position_map_ccw,
 )
-from data.quartered_permutations import quartered_permutations
-from data.halved_permutations import halved_permutations
+from data.quartered_CAPs import quartered_CAPs
+from data.halved_CAPs import halved_CAPs
 from ..base_sequence_builder import BaseSequenceBuilder
-from .permutation_executors.strict_mirrored_permutation_executor import (
-    StrictMirroredPermutationExecutor,
+from .CAP_executors.strict_mirrored_CAP_executor import (
+    StrictMirroredCAPExecutor,
 )
-from .permutation_executors.strict_rotated_permutation_executor import (
-    StrictRotatedPermutationExecutor,
+from .CAP_executors.strict_rotated_CAP_executor import (
+    StrictRotatedCAPExecutor,
 )
 from ..turn_intensity_manager import TurnIntensityManager
 
@@ -38,8 +38,8 @@ if TYPE_CHECKING:
 class CircularSequenceBuilder(BaseSequenceBuilder):
     def __init__(self, generate_tab: "GenerateTab"):
         super().__init__(generate_tab)
-        self.rotated_executor = StrictRotatedPermutationExecutor(self)
-        self.mirrored_executor = StrictMirroredPermutationExecutor(self, False)
+        self.rotated_executor = StrictRotatedCAPExecutor(self)
+        self.mirrored_executor = StrictMirroredCAPExecutor(self, False)
 
     def build_sequence(
         self,
@@ -47,11 +47,11 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         turn_intensity: int,
         level: int,
         slice_size: str,
-        permutation_type: str,
+        CAP_type: str,
         prop_continuity: bool,
     ):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        self.initialize_sequence(length, permutation_type=permutation_type)
+        self.initialize_sequence(length, CAP_type=CAP_type)
 
         if prop_continuity == "continuous":
             blue_rot_dir = random.choice([CLOCKWISE, COUNTER_CLOCKWISE])
@@ -62,13 +62,13 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         length_of_sequence_upon_start = len(self.sequence) - 2
 
-        if permutation_type == "strict_rotated":
+        if CAP_type == "strict_rotated":
             if slice_size == "quartered":
                 word_length = length // 4
             elif slice_size == "halved":
                 word_length = length // 2
             available_range = word_length - length_of_sequence_upon_start
-        elif permutation_type == "strict_mirrored":
+        elif CAP_type == "strict_mirrored":
             word_length = length // 2
             available_range = word_length - length_of_sequence_upon_start
 
@@ -83,7 +83,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 turns_red[i],
                 is_last_in_word,
                 slice_size,
-                permutation_type,
+                CAP_type,
                 prop_continuity,
                 blue_rot_dir,
                 red_rot_dir,
@@ -97,7 +97,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
             QApplication.processEvents()
 
-        self._apply_permutations(self.sequence, permutation_type, slice_size)
+        self._apply_CAPs(self.sequence, CAP_type, slice_size)
 
         construct_tab = self.main_widget.construct_tab
         construct_tab.option_picker.updater.update_options()
@@ -112,7 +112,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         turn_red: float,
         is_last_in_word: bool,
         rotation_type: str,
-        permutation_type: str,
+        CAP_type: str,
         prop_continuity: str,
         blue_rot_dir: str,
         red_rot_dir: str,
@@ -125,7 +125,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             options = self.filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir
             )
-        if permutation_type == "strict_rotated":
+        if CAP_type == "strict_rotated":
             if is_last_in_word:
                 expected_end_pos = self._determine_rotated_end_pos(rotation_type)
                 next_beat = self._select_pictograph_with_end_pos(
@@ -133,7 +133,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 )
             else:
                 next_beat = random.choice(options)
-        elif permutation_type == "strict_mirrored":
+        elif CAP_type == "strict_mirrored":
             if is_last_in_word:
                 expected_end_pos = self.sequence[1][END_POS]
                 next_beat = self._select_pictograph_with_end_pos(
@@ -187,22 +187,22 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             )
         return random.choice(valid_options)
 
-    def _apply_permutations(
-        self, sequence: list[dict], permutation_type: str, rotation_type: str
+    def _apply_CAPs(
+        self, sequence: list[dict], CAP_type: str, rotation_type: str
     ) -> None:
-        if permutation_type == "strict_rotated":
-            if self.can_perform_rotationed_permutation(sequence, rotation_type):
-                self.rotated_executor.create_permutations(sequence)
-        elif permutation_type == "strict_mirrored":
-            if self.mirrored_executor.can_perform_mirrored_permutation(sequence):
-                self.mirrored_executor.create_permutations(sequence, VERTICAL)
+        if CAP_type == "strict_rotated":
+            if self.can_perform_rotationed_CAP(sequence, rotation_type):
+                self.rotated_executor.create_CAPs(sequence)
+        elif CAP_type == "strict_mirrored":
+            if self.mirrored_executor.can_perform_mirrored_CAP(sequence):
+                self.mirrored_executor.create_CAPs(sequence, VERTICAL)
 
-    def can_perform_rotationed_permutation(
+    def can_perform_rotationed_CAP(
         self, sequence: list[dict], rotation_type: str
     ) -> bool:
         start_pos = sequence[1][END_POS]
         end_pos = sequence[-1][END_POS]
         if rotation_type == "quartered":
-            return (start_pos, end_pos) in quartered_permutations
+            return (start_pos, end_pos) in quartered_CAPs
         elif rotation_type == "halved":
-            return (start_pos, end_pos) in halved_permutations
+            return (start_pos, end_pos) in halved_CAPs

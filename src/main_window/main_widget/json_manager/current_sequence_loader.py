@@ -34,10 +34,10 @@ class CurrentSequenceLoader:
                 GRID_MODE: DIAMOND,
                 "is_circular": False,
                 "is_permutable": False,
-                "is_strict_rotated_permutation": False,
-                "is_strict_mirrored_permutation": False,
-                "is_strict_swapped_permutation": False,
-                "is_mirrored_swapped_permutation": False,
-                "is_rotated_swapped_permutation": False,
+                "is_strict_rotated_CAP": False,
+                "is_strict_mirrored_CAP": False,
+                "is_strict_swapped_CAP": False,
+                "is_mirrored_swapped_CAP": False,
+                "is_rotated_swapped_CAP": False,
             }
         ]

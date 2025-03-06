@@ -36,11 +36,11 @@ class SequenceBuilderStartPosManager:
         # This could be parameterized; for now, we assume DIAMOND mode.
         self.grid_mode = DIAMOND
 
-    def add_start_position(self, permutation_type: str = "") -> None:
+    def add_start_position(self, CAP_type: str = "") -> None:
         """
         Chooses a random valid start position and adds it to the sequence.
         """
-        if permutation_type == "mirrored":
+        if CAP_type == "mirrored":
             start_keys = self.ALPHABETA_KEYS
         else:
             start_keys = (

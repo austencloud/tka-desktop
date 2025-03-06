@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QVBoxLayout, QHBoxLayo
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
-from .permutation_type_button import PermutationTypeButton
+from .CAP_type_button import PermutationTypeButton
 
 PERMUTATION_TYPES = {
     "strict_mirrored": "Strict Mirrored",
@@ -68,7 +68,7 @@ class PermutationTypePicker(QWidget):
                 if other_btn != button:
                     other_btn.set_active(False)
 
-            self.generate_tab.settings.set_setting("permutation_type", button.perm_type)
+            self.generate_tab.settings.set_setting("CAP_type", button.perm_type)
             self.generate_tab.controller._update_ui_visibility()
 
     def set_active_type(self, perm_type: str):

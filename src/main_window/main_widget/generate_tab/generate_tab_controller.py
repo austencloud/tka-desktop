@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.generate_tab.widgets.permutation_type_picker.permutation_type_picker import (
+from main_window.main_widget.generate_tab.widgets.CAP_type_picker.CAP_type_picker import (
     PERMUTATION_TYPES,
 )
 
@@ -57,16 +57,14 @@ class GenerateTabController:
             )
         else:
             rotation_type = self.settings.get_setting("rotation_type") or "halved"
-            permutation_type = (
-                self.settings.get_setting("permutation_type") or "rotated"
-            )
+            CAP_type = self.settings.get_setting("CAP_type") or "strict_rotated"
 
             self.tab.circular_builder.build_sequence(
                 length,
                 intensity,
                 level,
                 rotation_type,
-                permutation_type,
+                CAP_type,
                 prop_continuity,
             )
 
@@ -82,8 +80,8 @@ class GenerateTabController:
         self.tab.slice_size_toggle.set_state(
             self.settings.get_setting("rotation_type") == "quartered"
         )
-        perm_type = self.settings.get_setting("permutation_type") or "strict_mirrored"
-        self.tab.permutation_type_picker.set_active_type(perm_type)
+        perm_type = self.settings.get_setting("CAP_type") or "strict_mirrored"
+        self.tab.CAP_type_picker.set_active_type(perm_type)
         current_sequence_length = (
             len(self.tab.main_widget.json_manager.loader_saver.load_current_sequence())
             - 1
@@ -95,9 +93,9 @@ class GenerateTabController:
         if rotation_type:
             self.tab.slice_size_toggle.set_state(rotation_type == "quartered")
 
-        perm_type = self.settings.get_setting("permutation_type")
+        perm_type = self.settings.get_setting("CAP_type")
         if perm_type:
-            self.tab.permutation_type_picker.set_active_type(perm_type)
+            self.tab.CAP_type_picker.set_active_type(perm_type)
 
     def _load_freeform_settings(self):
         letter_types = self.settings.get_setting("selected_letter_types")
@@ -110,15 +108,15 @@ class GenerateTabController:
         is_circular = not is_freeform
 
         self.tab.slice_size_toggle.setVisible(False)
-        self.tab.permutation_type_picker.setVisible(False)
+        self.tab.CAP_type_picker.setVisible(False)
         self.tab.letter_picker.setVisible(False)
 
         self.tab.slice_size_toggle.setVisible(is_circular)
-        self.tab.permutation_type_picker.setVisible(is_circular)
+        self.tab.CAP_type_picker.setVisible(is_circular)
         self.tab.letter_picker.setVisible(is_freeform)
 
-        permutation_type = self.settings.get_setting("permutation_type")
-        if permutation_type in [
+        CAP_type = self.settings.get_setting("CAP_type")
+        if CAP_type in [
             "strict_swapped",
             "strict_mirrored",
             "mirrored_swapped",

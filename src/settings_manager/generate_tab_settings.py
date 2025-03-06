@@ -27,7 +27,7 @@ class GenerateTabSettings:
                 "Static",
             ]
         },
-        "circular": {"rotation_type": "quartered", "permutation_type": "rotated"},
+        "circular": {"rotation_type": "quartered", "CAP_type": "rotated"},
     }
 
     def __init__(self, settings: QSettings):

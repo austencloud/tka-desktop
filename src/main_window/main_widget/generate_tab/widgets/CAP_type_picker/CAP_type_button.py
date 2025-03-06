@@ -1,4 +1,4 @@
-# updated file: main_window/main_widget/generate_tab/widgets/permutation_type_button.py
+# updated file: main_window/main_widget/generate_tab/widgets/CAP_type_button.py
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QCursor, QFont
@@ -6,7 +6,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from styles.dark_theme_styler import DarkThemeStyler
 
 if TYPE_CHECKING:
-    from .permutation_type_picker import PermutationTypePicker
+    from .CAP_type_picker import PermutationTypePicker
 
 
 class PermutationTypeButton(QPushButton):
@@ -16,10 +16,10 @@ class PermutationTypeButton(QPushButton):
         self,
         text: str,
         perm_type: str,
-        permutation_type_picker: "PermutationTypePicker",
+        CAP_type_picker: "PermutationTypePicker",
     ):
-        super().__init__(text, permutation_type_picker)
-        self.permutation_type_picker = permutation_type_picker
+        super().__init__(text, CAP_type_picker)
+        self.CAP_type_picker = CAP_type_picker
         self.perm_type = perm_type
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.setCheckable(True)
@@ -69,10 +69,10 @@ class PermutationTypeButton(QPushButton):
 
     def resizeEvent(self, event):
         font = self.font()
-        font.setPointSize(self.permutation_type_picker.generate_tab.height() // 60)
+        font.setPointSize(self.CAP_type_picker.generate_tab.height() // 60)
         self.setFont(font)
         self.setFixedSize(
-            self.permutation_type_picker.generate_tab.width() // 4,
-            self.permutation_type_picker.generate_tab.height() // 12,
+            self.CAP_type_picker.generate_tab.width() // 4,
+            self.CAP_type_picker.generate_tab.height() // 12,
         )
         super().resizeEvent(event)

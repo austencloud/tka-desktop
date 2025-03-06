@@ -1,7 +1,7 @@
 from data.constants import *
 
 
-halved_permutations = {
+halved_CAPs = {
     (ALPHA1, ALPHA5),
     (ALPHA2, ALPHA6),
     (ALPHA3, ALPHA7),

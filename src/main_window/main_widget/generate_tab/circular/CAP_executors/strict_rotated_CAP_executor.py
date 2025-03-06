@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
-from data.quartered_permutations import quartered_permutations
-from data.halved_permutations import halved_permutations
+from data.quartered_CAPs import quartered_CAPs
+from data.halved_CAPs import halved_CAPs
 from data.constants import (
     BEAT,
     BLUE,
@@ -41,19 +41,19 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
 
 from objects.motion.managers.handpath_calculator import HandpathCalculator
-from .permutation_executor_base import PermutationExecutor
+from .CAP_executor_base import CAPExecutor
 from data.positions_map import positions_map
 
 if TYPE_CHECKING:
     from ..circular_sequence_builder import CircularSequenceBuilder
 
 
-class StrictRotatedPermutationExecutor(PermutationExecutor):
+class StrictRotatedCAPExecutor(CAPExecutor):
     def __init__(self, circular_sequence_generator: "CircularSequenceBuilder"):
         self.circular_sequence_generator = circular_sequence_generator
         self.hand_rot_dir_calculator = HandpathCalculator()
 
-    def create_permutations(self, sequence: list[dict]):
+    def create_CAPs(self, sequence: list[dict]):
         start_position_entry = (
             sequence.pop(0) if SEQUENCE_START_POSITION in sequence[0] else None
         )
@@ -69,7 +69,7 @@ class StrictRotatedPermutationExecutor(PermutationExecutor):
         )
         entries_to_add = self.determine_how_many_entries_to_add(sequence_length)
         for _ in range(entries_to_add):
-            next_pictograph = self.create_new_rotated_permutation_entry(
+            next_pictograph = self.create_new_rotated_CAP_entry(
                 sequence,
                 last_entry,
                 next_beat_number,
@@ -97,32 +97,32 @@ class StrictRotatedPermutationExecutor(PermutationExecutor):
             sequence.insert(0, start_position_entry)
 
     def determine_how_many_entries_to_add(self, sequence_length: int) -> int:
-        if self.is_quartered_permutation():
+        if self.is_quartered_CAP():
             return sequence_length * 3
-        elif self.is_halved_permutation():
+        elif self.is_halved_CAP():
             return sequence_length
         return 0
 
-    def is_quartered_permutation(self) -> bool:
+    def is_quartered_CAP(self) -> bool:
         sequence = (
             self.circular_sequence_generator.json_manager.loader_saver.load_current_sequence()
         )
         start_pos = sequence[1][END_POS]
         end_pos = sequence[-1][END_POS]
-        return (start_pos, end_pos) in quartered_permutations
+        return (start_pos, end_pos) in quartered_CAPs
 
-    def is_halved_permutation(self) -> bool:
+    def is_halved_CAP(self) -> bool:
         sequence = (
             self.circular_sequence_generator.json_manager.loader_saver.load_current_sequence()
         )
         start_pos = sequence[1][END_POS]
         end_pos = sequence[-1][END_POS]
-        return (start_pos, end_pos) in halved_permutations
+        return (start_pos, end_pos) in halved_CAPs
 
     def get_halved_or_quartered(self) -> str:
-        if self.is_halved_permutation():
+        if self.is_halved_CAP():
             return "halved"
-        elif self.is_quartered_permutation():
+        elif self.is_quartered_CAP():
             return "quartered"
         return ""
 
@@ -181,7 +181,7 @@ class StrictRotatedPermutationExecutor(PermutationExecutor):
 
         return loc_map[start_loc]
 
-    def create_new_rotated_permutation_entry(
+    def create_new_rotated_CAP_entry(
         self,
         sequence,
         previous_entry,
@@ -320,13 +320,17 @@ class StrictRotatedPermutationExecutor(PermutationExecutor):
             return {i: max(i - 1, 0) for i in range(1, length + 1)}
         elif length < 2 and halved_or_quartered == "halved":
             return {i: max(i - 1, 0) for i in range(1, length + 1)}
-        
+
         if halved_or_quartered == "quartered":
-            return {i: i - (length // 4) + 1 for i in range((length // 4) + 1, length + 1)}
+            return {
+                i: i - (length // 4) + 1 for i in range((length // 4) + 1, length + 1)
+            }
         elif halved_or_quartered == "halved":
-            return {i: i - (length // 2) + 1 for i in range((length // 2) + 1, length + 1)}
+            return {
+                i: i - (length // 2) + 1 for i in range((length // 2) + 1, length + 1)
+            }
         else:
-            raise ValueError("Invalid permutation type. Expected 'quartered' or 'halved'.")
+            raise ValueError("Invalid CAP type. Expected 'quartered' or 'halved'.")
 
     def get_previous_matching_beat_mirrored(
         self,

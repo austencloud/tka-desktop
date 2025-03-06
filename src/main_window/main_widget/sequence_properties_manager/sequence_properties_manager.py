@@ -2,19 +2,19 @@ from typing import TYPE_CHECKING
 
 from data.constants import DIAMOND, END_POS, GRID_MODE, LETTER
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
-from main_window.main_widget.sequence_properties_manager.strict_swapped_permutation_checker import (
+from main_window.main_widget.sequence_properties_manager.strict_swapped_CAP_checker import (
     StrictSwappedPermutationChecker,
 )
 from settings_manager.global_settings.app_context import AppContext
 
-from .mirrored_swapped_permutation_checker import (
+from .mirrored_swapped_CAP_checker import (
     MirroredSwappedPermutationChecker,
 )
-from .strict_mirrored_permutation_checker import StrictMirroredPermutationChecker
-from .rotated_swapped_permutation_checker import (
+from .strict_mirrored_CAP_checker import StrictMirroredPermutationChecker
+from .rotated_swapped_CAP_checker import (
     RotatedSwappedPermutationChecker,
 )
-from .strict_rotated_permutation_checker import StrictRotatedPermutationChecker
+from .strict_rotated_CAP_checker import StrictRotatedPermutationChecker
 
 if TYPE_CHECKING:
     pass
@@ -28,20 +28,20 @@ class SequencePropertiesManager:
         self.properties = {
             "ends_at_start_pos": False,
             "is_permutable": False,
-            "is_strict_rotated_permutation": False,
-            "is_strict_mirrored_permutation": False,
-            "is_strict_swapped_permutation": False,
-            "is_mirrored_swapped_permutation": False,
-            "is_rotated_swapped_permutation": False,
+            "is_strict_rotated_CAP": False,
+            "is_strict_mirrored_CAP": False,
+            "is_strict_swapped_CAP": False,
+            "is_mirrored_swapped_CAP": False,
+            "is_rotated_swapped_CAP": False,
         }
 
         # Instantiate the individual checkers
         self.checkers = {
-            "is_strict_rotated_permutation": StrictRotatedPermutationChecker(self),
-            "is_strict_mirrored_permutation": StrictMirroredPermutationChecker(self),
-            "is_strict_swapped_permutation": StrictSwappedPermutationChecker(self),
-            "is_mirrored_swapped_permutation": MirroredSwappedPermutationChecker(self),
-            "is_rotated_swapped_permutation": RotatedSwappedPermutationChecker(self),
+            "is_strict_rotated_CAP": StrictRotatedPermutationChecker(self),
+            "is_strict_mirrored_CAP": StrictMirroredPermutationChecker(self),
+            "is_strict_swapped_CAP": StrictSwappedPermutationChecker(self),
+            "is_mirrored_swapped_CAP": MirroredSwappedPermutationChecker(self),
+            "is_rotated_swapped_CAP": RotatedSwappedPermutationChecker(self),
         }
 
     def instantiate_sequence(self, sequence):
@@ -78,18 +78,18 @@ class SequencePropertiesManager:
         self.properties["ends_at_start_pos"] = self._check_ends_at_start_pos()
         self.properties["is_permutable"] = self._check_is_permutable()
 
-        # Check for permutations, starting with strict rotated
-        self.properties["is_strict_rotated_permutation"] = self.checkers[
-            "is_strict_rotated_permutation"
+        # Check for CAPs, starting with strict rotated
+        self.properties["is_strict_rotated_CAP"] = self.checkers[
+            "is_strict_rotated_CAP"
         ].check()
 
-        if not self.properties["is_strict_rotated_permutation"]:
+        if not self.properties["is_strict_rotated_CAP"]:
             # Cascade checks if not rotated
             for key in [
-                "is_strict_mirrored_permutation",
-                "is_strict_swapped_permutation",
-                "is_mirrored_swapped_permutation",
-                "is_rotated_swapped_permutation",
+                "is_strict_mirrored_CAP",
+                "is_strict_swapped_CAP",
+                "is_mirrored_swapped_CAP",
+                "is_rotated_swapped_CAP",
             ]:
                 self.properties[key] = self.checkers[key].check()
 
@@ -124,11 +124,11 @@ class SequencePropertiesManager:
             "level": 0,
             "is_circular": False,
             "is_permutable": False,
-            "is_strict_rotated_permutation": False,
-            "is_strict_mirrored_permutation": False,
-            "is_strict_swapped_permutation": False,
-            "is_mirrored_swapped_permutation": False,
-            "is_rotated_swapped_permutation": False,
+            "is_strict_rotated_CAP": False,
+            "is_strict_mirrored_CAP": False,
+            "is_strict_swapped_CAP": False,
+            "is_mirrored_swapped_CAP": False,
+            "is_rotated_swapped_CAP": False,
         }
 
     def _check_ends_at_start_pos(self) -> bool:

@@ -1,7 +1,7 @@
 from data.constants import *
 
 
-quartered_permutations = {
+quartered_CAPs = {
     (ALPHA1, ALPHA3),
     (ALPHA2, ALPHA4),
     (ALPHA3, ALPHA5),
