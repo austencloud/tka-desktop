@@ -30,7 +30,7 @@ class CodexAnimationManager(QObject):
         if self.animation.state() == QAbstractAnimation.State.Running:
             self.animation.stop()
 
-        learn_tab = self.codex.learn_tab
+        learn_tab = self.codex.main_widget.learn_tab
         learn_tab_width = learn_tab.width()
         current_width = self.codex.width()
 

@@ -76,7 +76,7 @@
     "(1, 1)": {
       "pro_from_layer1": [-95, -15],
       "anti_from_layer2": [45, -65],
-      "anti_from_layer1": [75, -50]
+      "anti_from_layer1": [35.0, -90.0]
     },
     "(1, 1.5)": {
       "anti_from_layer1": [-10, 65],

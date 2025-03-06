@@ -20,7 +20,7 @@ class BrowseTabUIUpdater:
         self.thumbnail_updater = ThumbnailBoxUIUpdater(browse_tab)
         self.sidebar_button_updater = SidebarButtonUIUpdater(browse_tab)
         self._resize_job_id = 0
-        self._last_window_width = None  # Track width for resize optimization
+        self._last_window_width = None
 
     def update_and_display_ui(self, total_sequences: int, skip_scaling: bool = True):
         """Updates and displays the UI based on the total number of sequences."""
