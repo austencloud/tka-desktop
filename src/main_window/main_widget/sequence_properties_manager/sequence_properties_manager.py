@@ -3,18 +3,18 @@ from typing import TYPE_CHECKING
 from data.constants import DIAMOND, END_POS, GRID_MODE, LETTER
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.sequence_properties_manager.strict_swapped_CAP_checker import (
-    StrictSwappedPermutationChecker,
+    StrictSwappedCAPChecker,
 )
 from settings_manager.global_settings.app_context import AppContext
 
 from .mirrored_swapped_CAP_checker import (
-    MirroredSwappedPermutationChecker,
+    MirroredSwappedCAPChecker,
 )
-from .strict_mirrored_CAP_checker import StrictMirroredPermutationChecker
+from .strict_mirrored_CAP_checker import StrictMirroredCAPChecker
 from .rotated_swapped_CAP_checker import (
-    RotatedSwappedPermutationChecker,
+    RotatedSwappedCAPChecker,
 )
-from .strict_rotated_CAP_checker import StrictRotatedPermutationChecker
+from .strict_rotated_CAP_checker import StrictRotatedCAPChecker
 
 if TYPE_CHECKING:
     pass
@@ -37,11 +37,11 @@ class SequencePropertiesManager:
 
         # Instantiate the individual checkers
         self.checkers = {
-            "is_strict_rotated_CAP": StrictRotatedPermutationChecker(self),
-            "is_strict_mirrored_CAP": StrictMirroredPermutationChecker(self),
-            "is_strict_swapped_CAP": StrictSwappedPermutationChecker(self),
-            "is_mirrored_swapped_CAP": MirroredSwappedPermutationChecker(self),
-            "is_rotated_swapped_CAP": RotatedSwappedPermutationChecker(self),
+            "is_strict_rotated_CAP": StrictRotatedCAPChecker(self),
+            "is_strict_mirrored_CAP": StrictMirroredCAPChecker(self),
+            "is_strict_swapped_CAP": StrictSwappedCAPChecker(self),
+            "is_mirrored_swapped_CAP": MirroredSwappedCAPChecker(self),
+            "is_rotated_swapped_CAP": RotatedSwappedCAPChecker(self),
         }
 
     def instantiate_sequence(self, sequence):

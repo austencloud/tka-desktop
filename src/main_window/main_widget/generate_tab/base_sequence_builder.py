@@ -136,9 +136,14 @@ class BaseSequenceBuilder:
 
     def _set_random_prop_rot_dir(self, next_data: dict[str, Any], color: str) -> None:
         """Randomly sets the prop rotation direction for the specified color."""
-        next_data[f"{color}_attributes"][PROP_ROT_DIR] = random.choice(
-            [CLOCKWISE, COUNTER_CLOCKWISE]
-        )
+        if color == BLUE:
+            next_data[BLUE_ATTRS][PROP_ROT_DIR] = random.choice(
+                [CLOCKWISE, COUNTER_CLOCKWISE]
+            )
+        elif color == RED:
+            next_data[RED_ATTRS][PROP_ROT_DIR] = random.choice(
+                [CLOCKWISE, COUNTER_CLOCKWISE]
+            )
 
     def update_beat_number(
         self, next_data: dict[str, Any], sequence: list

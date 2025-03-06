@@ -1,10 +1,13 @@
 from data.constants import *
+from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import CAPType
 from .CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map, horizontal_loc_mirror_map
 
 
 class StrictMirroredCAPExecutor(CAPExecutor):
+    CAP_TYPE = CAPType.STRICT_MIRRORED  # Add this
+
     def __init__(self, circular_sequence_generator, color_swap_second_half: bool):
         super().__init__(circular_sequence_generator)
         self.color_swap_second_half = color_swap_second_half
@@ -12,7 +15,6 @@ class StrictMirroredCAPExecutor(CAPExecutor):
     def create_CAPs(self, sequence: list[dict], vertical_or_horizontal: str):
         """Creates mirrored CAPs for a circular sequence."""
 
-        self.vertical_or_horizontal = vertical_or_horizontal
         sequence_length = len(sequence) - 2
         last_entry = sequence[-1]
         next_beat_number = last_entry[BEAT] + 1
@@ -21,7 +23,7 @@ class StrictMirroredCAPExecutor(CAPExecutor):
         )
 
         for i in range(2, sequence_length + 2):  # Skip first two beats
-            next_pictograph = self.create_new_mirrored_CAP_entry(
+            next_pictograph = self.create_new_CAP_entry(
                 sequence,
                 last_entry,
                 next_beat_number + i - 2,
@@ -40,7 +42,11 @@ class StrictMirroredCAPExecutor(CAPExecutor):
             )
             QApplication.processEvents()
 
-    def create_new_mirrored_CAP_entry(
+    def can_perform_CAP(self, sequence: list[dict]) -> bool:
+        """Ensures that the sequence can be mirrored."""
+        return sequence[1][END_POS] == sequence[-1][END_POS]
+
+    def create_new_CAP_entry(
         self,
         sequence,
         previous_entry,
@@ -88,17 +94,10 @@ class StrictMirroredCAPExecutor(CAPExecutor):
 
         return new_entry
 
-
-
     def get_mirrored_position(self, previous_matching_beat) -> str:
-        """Handles mirroring based on the grid mode."""
-        mirrored_positions = {
-            VERTICAL: vertical_loc_mirror_map,
-            HORIZONTAL: horizontal_loc_mirror_map,
-        }
-        return mirrored_positions[self.vertical_or_horizontal].get(
-            previous_matching_beat[END_POS],
-            previous_matching_beat[END_POS],  # Fallback to original position
+        """Returns the vertical mirrored position."""
+        return vertical_loc_mirror_map.get(
+            previous_matching_beat[END_POS], previous_matching_beat[END_POS]
         )
 
     def create_new_attributes(
@@ -146,12 +145,9 @@ class StrictMirroredCAPExecutor(CAPExecutor):
         self, previous_matching_beat_end_loc: str
     ) -> str:
         """Finds the new mirrored location based on grid mode."""
-        if self.vertical_or_horizontal == VERTICAL:
-            return vertical_loc_mirror_map.get(
-                previous_matching_beat_end_loc, previous_matching_beat_end_loc
+        new_location = vertical_loc_mirror_map.get(previous_matching_beat_end_loc)
+        if new_location is None:
+            raise ValueError(
+                f"No mirrored location found for {previous_matching_beat_end_loc} in vertical mirror map."
             )
-        elif self.vertical_or_horizontal == HORIZONTAL:
-            return horizontal_loc_mirror_map.get(
-                previous_matching_beat_end_loc, previous_matching_beat_end_loc
-            )
-        return previous_matching_beat_end_loc  # Fallback
+        return new_location

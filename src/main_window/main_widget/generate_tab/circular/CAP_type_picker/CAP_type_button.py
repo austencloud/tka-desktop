@@ -1,22 +1,22 @@
 # updated file: main_window/main_widget/generate_tab/widgets/CAP_type_button.py
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtGui import QCursor, QFont
+from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt, pyqtSignal
 from styles.dark_theme_styler import DarkThemeStyler
 
 if TYPE_CHECKING:
-    from .CAP_type_picker import PermutationTypePicker
+    from .CAP_picker import CAPPicker
 
 
-class PermutationTypeButton(QPushButton):
+class CAPTypeButton(QPushButton):
     toggled = pyqtSignal(bool)
 
     def __init__(
         self,
         text: str,
         perm_type: str,
-        CAP_type_picker: "PermutationTypePicker",
+        CAP_type_picker: "CAPPicker",
     ):
         super().__init__(text, CAP_type_picker)
         self.CAP_type_picker = CAP_type_picker

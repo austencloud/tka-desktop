@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from .sequence_properties_manager import SequencePropertiesManager
 
 
-class StrictRotatedPermutationChecker:
+class StrictRotatedCAPChecker:
     def __init__(self, manager: "SequencePropertiesManager"):
         self.manager = manager
 

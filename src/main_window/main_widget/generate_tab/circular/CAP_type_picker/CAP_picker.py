@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QVBoxLayout, QHBoxLayo
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
-from .CAP_type_button import PermutationTypeButton
+from .CAP_type_button import CAPTypeButton
 
 PERMUTATION_TYPES = {
     "strict_mirrored": "Strict Mirrored",
@@ -14,11 +14,11 @@ if TYPE_CHECKING:
     from ...generate_tab import GenerateTab
 
 
-class PermutationTypePicker(QWidget):
+class CAPPicker(QWidget):
     def __init__(self, generate_tab: "GenerateTab"):
         super().__init__()
         self.generate_tab = generate_tab
-        self.buttons: dict[str, PermutationTypeButton] = {}
+        self.buttons: dict[str, CAPTypeButton] = {}
         self._create_layout()
         self._connect_signals()
 
@@ -28,7 +28,7 @@ class PermutationTypePicker(QWidget):
 
         # Create label in its own centered HBox
         label_layout = QHBoxLayout()
-        self.label = QLabel("Type:")
+        self.label = QLabel("CAP Type:")
         label_layout.addWidget(self.label, alignment=Qt.AlignmentFlag.AlignCenter)
         self.layout.addLayout(label_layout)
 
@@ -43,7 +43,7 @@ class PermutationTypePicker(QWidget):
         ]
 
         for perm_type, row, col in buttons:
-            btn = PermutationTypeButton(PERMUTATION_TYPES[perm_type], perm_type, self)
+            btn = CAPTypeButton(PERMUTATION_TYPES[perm_type], perm_type, self)
             self.buttons[perm_type] = btn
             self.grid_layout.addWidget(btn, row, col)
 
@@ -62,7 +62,7 @@ class PermutationTypePicker(QWidget):
                 lambda checked, b=btn: self._handle_button_toggle(b, checked)
             )
 
-    def _handle_button_toggle(self, button: PermutationTypeButton, checked: bool):
+    def _handle_button_toggle(self, button: CAPTypeButton, checked: bool):
         if checked:
             for other_btn in self.buttons.values():
                 if other_btn != button:

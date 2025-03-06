@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     )
 
 
-class StrictSwappedPermutationChecker:
+class StrictSwappedCAPChecker:
     def __init__(self, manager: "SequencePropertiesManager"):
         self.manager = manager
 

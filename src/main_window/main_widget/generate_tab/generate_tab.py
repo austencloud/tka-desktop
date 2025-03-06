@@ -1,8 +1,9 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSpacerItem, QSizePolicy
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.generate_tab.widgets.CAP_type_picker.CAP_type_picker import (
-    PermutationTypePicker,
+
+from main_window.main_widget.generate_tab.circular.CAP_type_picker.CAP_picker import (
+    CAPPicker,
 )
 from settings_manager.global_settings.app_context import AppContext
 
@@ -59,7 +60,7 @@ class GenerateTab(QWidget):
         self.prop_continuity_toggle = PropContinuityToggle(self)
         self.letter_picker = LetterTypePickerWidget(self)
         self.slice_size_toggle = SliceSizeToggle(self)
-        self.CAP_type_picker = PermutationTypePicker(self)
+        self.CAP_type_picker = CAPPicker(self)
 
     def resizeEvent(self, event):
         available_height = self.height() // 24

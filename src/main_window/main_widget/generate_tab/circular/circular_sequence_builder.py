@@ -21,22 +21,10 @@ from data.position_maps import (
 )
 from data.quartered_CAPs import quartered_CAPs
 from data.halved_CAPs import halved_CAPs
-from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_executor import (
-    CAPExecutor,
-)
-from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_executor_factory import (
-    CAPExecutorFactory,
-)
-from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import (
-    CAPType,
-)
+from .CAP_executors.CAP_executor import CAPExecutor
+from .CAP_executors.CAP_executor_factory import CAPExecutorFactory
+from .CAP_executors.CAP_type import CAPType
 from ..base_sequence_builder import BaseSequenceBuilder
-from .CAP_executors.strict_mirrored_CAP_executor import (
-    StrictMirroredCAPExecutor,
-)
-from .CAP_executors.strict_rotated_CAP_executor import (
-    StrictRotatedCAPExecutor,
-)
 from ..turn_intensity_manager import TurnIntensityManager
 
 

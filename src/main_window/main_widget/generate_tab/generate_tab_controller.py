@@ -1,8 +1,5 @@
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.generate_tab.widgets.CAP_type_picker.CAP_type_picker import (
-    PERMUTATION_TYPES,
-)
 
 if TYPE_CHECKING:
     from .generate_tab import GenerateTab

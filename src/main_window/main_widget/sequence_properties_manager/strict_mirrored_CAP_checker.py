@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     )
 
 
-class StrictMirroredPermutationChecker:
+class StrictMirroredCAPChecker:
     def __init__(self, manager: "SequencePropertiesManager"):
         self.manager = manager
 

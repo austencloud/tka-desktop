@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     )
 
 
-class RotatedSwappedPermutationChecker:
+class RotatedSwappedCAPChecker:
     def __init__(self, manager: "SequencePropertiesManager"):
         self.manager = manager
         self.rotation_maps = self._initialize_rotation_maps()

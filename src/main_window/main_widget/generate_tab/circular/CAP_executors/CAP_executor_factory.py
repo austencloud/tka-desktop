@@ -12,6 +12,8 @@ class CAPExecutorFactory:
         CAPType.STRICT_ROTATED: StrictRotatedCAPExecutor,
         # CAPExecutorType.STRICT_SWAPPED: StrictSwappedCAPExecutor,
         # CAPExecutorType.MIRRORED_SWAPPED: MirroredSwappedCAPExecutor,
+        # CAPExecutorType.MIRRORED_COMPLIMENTARY: MirroredComplimentaryCAPExecutor,
+        # CAPExecutorType.COMPLIMENTARY_SWAPPED: ComplimentarySwappedCAPExecutor,
     }
 
     @staticmethod
