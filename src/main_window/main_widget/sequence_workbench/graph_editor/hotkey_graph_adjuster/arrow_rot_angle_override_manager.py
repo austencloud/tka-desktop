@@ -31,7 +31,7 @@ class ArrowRotAngleOverrideManager:
         self.view = hotkey_graph_adjuster.ge_view
 
         self.arrow_placement_manager = (
-            self.view.scene().managers.arrow_placement_manager
+            self.view.pictograph.managers.arrow_placement_manager
         )
         self.data_updater = self.arrow_placement_manager.data_updater
         self.key_generator = ArrowRotAngleOverrideKeyGenerator()
@@ -44,7 +44,7 @@ class ArrowRotAngleOverrideManager:
             AppContext.get_selected_arrow().motion
         )
         data = AppContext.special_placement_loader().load_or_return_special_placements()
-        letter = self.view.scene().state.letter
+        letter = self.view.pictograph.state.letter
         self._apply_override_if_needed(letter, data, ori_key)
         AppContext.special_placement_loader().reload()
         for (
@@ -67,28 +67,26 @@ class ArrowRotAngleOverrideManager:
         rot_angle_key = self.key_generator.generate_rotation_angle_override_key(
             AppContext.get_selected_arrow()
         )
-        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(
-            self.hotkey_graph_adjuster.ge_view.scene()
-        )
+        turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.view.pictograph)
         self._apply_rotation_override(letter, data, ori_key, turns_tuple, rot_angle_key)
 
     def _apply_rotation_override(
         self,
         letter_enum: Letter,
-        data: dict,
+        all_placement_data: dict[str, dict[str, dict[str, dict]]],
         ori_key: str,
         turns_tuple: str,
         rot_angle_key: str,
     ) -> None:
         letter_data = (
-            data.get(self.view.scene().state.grid_mode, {})
+            all_placement_data.get(self.view.pictograph.state.grid_mode, {})
             .get(ori_key, {})
             .get(letter_enum.value, {})
         )
         turn_data = letter_data.get(turns_tuple, {})
         letter_data[turns_tuple] = turn_data
-        data.get(
-            self.hotkey_graph_adjuster.ge_view.scene().state.grid_mode,
+        all_placement_data.get(
+            self.view.pictograph.state.grid_mode,
             {},
         ).get(
             ori_key, {}
@@ -102,7 +100,7 @@ class ArrowRotAngleOverrideManager:
         self.data_updater.update_specific_entry_in_json(
             letter_enum, letter_data, ori_key
         )
-        self.view.scene().managers.updater.update_pictograph()
+        self.view.pictograph.managers.updater.update_pictograph()
 
     def handle_mirrored_rotation_angle_override(
         self, other_letter_data, rotation_angle_override, mirrored_turns_tuple
@@ -114,7 +112,7 @@ class ArrowRotAngleOverrideManager:
 
     def _update_mirrored_entry_with_rotation_override(self, updated_turn_data: dict):
         mirrored_entry_manager = (
-            self.hotkey_graph_adjuster.ge_view.scene().managers.arrow_placement_manager.data_updater.mirrored_entry_manager
+            self.view.pictograph.managers.arrow_placement_manager.data_updater.mirrored_entry_manager
         )
         mirrored_entry_manager.rot_angle_manager.update_rotation_angle_in_mirrored_entry(
             AppContext.get_selected_arrow(),
@@ -123,7 +121,7 @@ class ArrowRotAngleOverrideManager:
 
     def _update_mirrored_entry_with_rotation_override_removal(self, hybrid_key: str):
         mirrored_entry_handler = (
-            self.hotkey_graph_adjuster.ge_view.scene().managers.arrow_placement_manager.data_updater.mirrored_entry_manager
+            self.view.pictograph.managers.arrow_placement_manager.data_updater.mirrored_entry_manager
         )
         if mirrored_entry_handler:
             mirrored_entry_handler.rot_angle_manager.remove_rotation_angle_in_mirrored_entry(

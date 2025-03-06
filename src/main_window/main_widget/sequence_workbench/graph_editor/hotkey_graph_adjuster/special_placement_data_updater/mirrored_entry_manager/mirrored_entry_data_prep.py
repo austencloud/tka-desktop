@@ -30,7 +30,9 @@ class MirroredEntryDataPrep:
             motion
         )
 
-    def get_keys_for_mixed_start_ori(self, letter, ori_key) -> tuple[str, dict]:
+    def get_keys_for_mixed_start_ori(
+        self, grid_mode, letter, ori_key
+    ) -> tuple[str, dict]:
         """Fetches keys and data for mixed start orientation cases."""
         if self.manager.data_updater.checker.starts_from_mixed_orientation():
             other_ori_key = (
@@ -38,15 +40,16 @@ class MirroredEntryDataPrep:
                     ori_key
                 )
             )
-            other_letter_data = self._get_letter_data(other_ori_key, letter)
+            other_letter_data = self._get_letter_data(grid_mode, other_ori_key, letter)
             return other_ori_key, other_letter_data
-        return ori_key, self._get_letter_data(ori_key, letter)
+        return ori_key, self._get_letter_data(grid_mode, ori_key, letter)
 
-    def _get_letter_data(self, ori_key: str, letter: Letter) -> dict:
+    def _get_letter_data(self, grid_mode: str, ori_key: str, letter: Letter) -> dict:
         """Fetches letter data for a given orientation key and letter."""
         return (
             AppContext.special_placement_loader()
             .load_or_return_special_placements()
+            .get(grid_mode, {})
             .get(ori_key, {})
             .get(letter.value, {})
         )
@@ -55,7 +58,9 @@ class MirroredEntryDataPrep:
         self, ori_key: str, letter: Letter, arrow: Arrow
     ) -> tuple[dict, dict]:
         """Fetches letter data and the original turns tuple for the given arrow."""
-        letter_data = self._get_letter_data(ori_key, letter)
+        letter_data = self._get_letter_data(
+            arrow.pictograph.state.grid_mode, ori_key, letter
+        )
         original_turns_tuple = self.manager.turns_tuple_generator.generate_turns_tuple(
             arrow.pictograph
         )
