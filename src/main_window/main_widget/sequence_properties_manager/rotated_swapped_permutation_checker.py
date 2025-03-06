@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     )
 
 
-class RotatedColorSwappedPermutationChecker:
+class RotatedSwappedPermutationChecker:
     def __init__(self, manager: "SequencePropertiesManager"):
         self.manager = manager
         self.rotation_maps = self._initialize_rotation_maps()
@@ -136,7 +136,7 @@ class RotatedColorSwappedPermutationChecker:
         first_part = sequence[:beats_per_repetition]
         second_part = sequence[beats_per_repetition : 2 * beats_per_repetition]
 
-        if self._matches_rotated_and_color_swapped(
+        if self._matches_rotated_and_swapped(
             first_part, second_part, "2_repetitions", "1st-2nd"
         ):
             return "First-Second Match"
@@ -150,15 +150,15 @@ class RotatedColorSwappedPermutationChecker:
         fourth_quarter = sequence[3 * beats_per_repetition :]
 
         match_results = []
-        if self._matches_rotated_and_color_swapped(
+        if self._matches_rotated_and_swapped(
             first_quarter, fourth_quarter, "4_repetitions", "1st-4th"
         ):
             match_results.append("First-Fourth Match")
-        if self._matches_rotated_and_color_swapped(
+        if self._matches_rotated_and_swapped(
             first_quarter, third_quarter, "4_repetitions", "1st-3rd"
         ):
             match_results.append("First-Third Match")
-        if self._matches_rotated_and_color_swapped(
+        if self._matches_rotated_and_swapped(
             first_quarter, second_quarter, "4_repetitions", "1st-2nd"
         ):
             match_results.append("First-Second Match")
@@ -173,7 +173,7 @@ class RotatedColorSwappedPermutationChecker:
 
         return False
 
-    def _matches_rotated_and_color_swapped(
+    def _matches_rotated_and_swapped(
         self,
         first_part: list[dict],
         second_part: list[dict],
@@ -185,13 +185,13 @@ class RotatedColorSwappedPermutationChecker:
             return False
 
         for i in range(len(first_part)):
-            if not self._is_rotated_and_color_swapped(
+            if not self._is_rotated_and_swapped(
                 first_part[i], second_part[i], rotation_map
             ):
                 return False
         return True
 
-    def _is_rotated_and_color_swapped(
+    def _is_rotated_and_swapped(
         self, first_entry: dict, second_entry: dict, rotation_map: dict[str, str]
     ) -> bool:
         first_entry_rotated_pos = rotation_map.get(first_entry[END_POS])

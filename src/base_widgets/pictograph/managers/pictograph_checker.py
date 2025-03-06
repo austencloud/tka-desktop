@@ -201,7 +201,7 @@ class PictographChecker:
             for prop in self.pictograph.elements.props.values()
         )
 
-    def has_strictly_placed_props(self) -> bool:
+    def has_strict_placed_props(self) -> bool:
         strict_props = [
             PropType.Bigdoublestar,
             PropType.Bighoop,

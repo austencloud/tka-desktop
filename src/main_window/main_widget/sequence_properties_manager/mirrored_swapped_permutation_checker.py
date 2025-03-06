@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     )
 
 
-class MirroredColorSwappedPermutationChecker:
+class MirroredSwappedPermutationChecker:
     def __init__(self, manager: "SequencePropertiesManager"):
         self.manager = manager
 
@@ -27,16 +27,16 @@ class MirroredColorSwappedPermutationChecker:
             first_entry = first_half[i]
             second_entry = second_half[i]
 
-            if not (self._is_mirrored_and_color_swapped(first_entry, second_entry)):
+            if not (self._is_mirrored_and_swapped(first_entry, second_entry)):
                 return False
 
         return True
 
-    def _is_mirrored_and_color_swapped(self, first_entry, second_entry) -> bool:
-        mirrored_vertical = self._get_mirrored_and_colorswapped_position(
+    def _is_mirrored_and_swapped(self, first_entry, second_entry) -> bool:
+        mirrored_vertical = self._get_mirrored_and_swapped_position(
             first_entry[END_POS], VERTICAL
         )
-        mirrored_horizontal = self._get_mirrored_and_colorswapped_position(
+        mirrored_horizontal = self._get_mirrored_and_swapped_position(
             first_entry[END_POS], HORIZONTAL
         )
 
@@ -45,11 +45,11 @@ class MirroredColorSwappedPermutationChecker:
             mirrored_horizontal,
         ]
 
-    def _is_color_swapped(self, first_entry, second_entry) -> bool:
+    def _is_swapped(self, first_entry, second_entry) -> bool:
         return (
             first_entry[BLUE_ATTRS] == second_entry[RED_ATTRS]
             and first_entry[RED_ATTRS] == second_entry[BLUE_ATTRS]
         )
 
-    def _get_mirrored_and_colorswapped_position(self, position, direction):
+    def _get_mirrored_and_swapped_position(self, position, direction):
         return mirrored_positions[direction][position]

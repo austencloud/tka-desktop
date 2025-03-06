@@ -25,7 +25,7 @@ from ..base_sequence_builder import BaseSequenceBuilder
 from .permutation_executors.mirrored_permutation_executor import (
     MirroredPermutationExecutor,
 )
-from .permutation_executors.rotated_permutation_executor import (
+from .permutation_executors.strict_rotated_permutation_executor import (
     RotatedPermutationExecutor,
 )
 from ..turn_intensity_manager import TurnIntensityManager
@@ -62,13 +62,13 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         length_of_sequence_upon_start = len(self.sequence) - 2
 
-        if permutation_type == "rotated":
+        if permutation_type == "strict_rotated":
             if slice_size == "quartered":
                 word_length = length // 4
             elif slice_size == "halved":
                 word_length = length // 2
             available_range = word_length - length_of_sequence_upon_start
-        elif permutation_type == "mirrored":
+        elif permutation_type == "strict_mirrored":
             word_length = length // 2
             available_range = word_length - length_of_sequence_upon_start
 
@@ -125,7 +125,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             options = self.filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir
             )
-        if permutation_type == "rotated":
+        if permutation_type == "strict_rotated":
             if is_last_in_word:
                 expected_end_pos = self._determine_rotated_end_pos(rotation_type)
                 next_beat = self._select_pictograph_with_end_pos(
@@ -133,7 +133,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 )
             else:
                 next_beat = random.choice(options)
-        elif permutation_type == "mirrored":
+        elif permutation_type == "strict_mirrored":
             if is_last_in_word:
                 expected_end_pos = self.sequence[1][END_POS]
                 next_beat = self._select_pictograph_with_end_pos(
@@ -190,10 +190,10 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
     def _apply_permutations(
         self, sequence: list[dict], permutation_type: str, rotation_type: str
     ) -> None:
-        if permutation_type == "rotated":
+        if permutation_type == "strict_rotated":
             if self.can_perform_rotationed_permutation(sequence, rotation_type):
                 self.rotated_executor.create_permutations(sequence)
-        elif permutation_type == "mirrored":
+        elif permutation_type == "strict_mirrored":
             if self.mirrored_executor.can_perform_mirrored_permutation(sequence):
                 self.mirrored_executor.create_permutations(sequence, VERTICAL)
 

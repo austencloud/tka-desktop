@@ -4,7 +4,7 @@ from data.constants import END_POS
 from main_window.main_widget.generate_tab.circular.permutation_executors.mirrored_permutation_executor import (
     MirroredPermutationExecutor,
 )
-from main_window.main_widget.generate_tab.circular.permutation_executors.rotated_permutation_executor import (
+from main_window.main_widget.generate_tab.circular.permutation_executors.strict_rotated_permutation_executor import (
     RotatedPermutationExecutor,
 )
 

@@ -23,7 +23,7 @@ class DefaultPropPositioner:
         """
         Sets the prop to its default location based on its `loc` attribute.
         """
-        strict = self.pictograph.managers.check.has_strictly_placed_props()
+        strict = self.pictograph.managers.check.has_strict_placed_props()
 
         point_suffix = "_strict" if strict else ""
 

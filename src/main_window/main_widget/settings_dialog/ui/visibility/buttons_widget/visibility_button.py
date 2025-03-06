@@ -3,11 +3,12 @@ from PyQt6.QtGui import QCursor, QFont
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 from styles.dark_theme_styler import DarkThemeStyler
+from styles.styled_button import StyledButton
 if TYPE_CHECKING:
     from .visibility_buttons_widget import VisibilityButtonsWidget
 
 
-class VisibilityButton(QPushButton):
+class VisibilityButton(StyledButton):
     """A visibility toggle button styled with modern effects."""
 
     def __init__(self, name: str, visibility_buttons_widget: "VisibilityButtonsWidget"):
@@ -34,7 +35,7 @@ class VisibilityButton(QPushButton):
             )
         )
         self.is_toggled = is_toggled
-        self._apply_style(self.is_toggled)  # Apply correct styles on init
+        # self._apply_style(self.is_toggled)  # Apply correct styles on init
 
     def _toggle_state(self):
         """Handle button toggle state with parallel fading."""
@@ -48,55 +49,55 @@ class VisibilityButton(QPushButton):
 
         # Create a parallel fade animation
         view.interaction_manager.fade_and_toggle_visibility(element, self.is_toggled)
-        self._apply_style(self.is_toggled)  # Update button style
+        # self._apply_style(self.is_toggled)  # Update button style
 
     def set_active(self, is_active: bool):
         """Updates the button style when toggled."""
         self.is_toggled = is_active
-        self._apply_style(is_active)
+        # self._apply_style(is_active)
 
-    def _apply_style(self, is_active=False):
-        """Applies styling dynamically based on active state."""
-        if is_active:
-            self.setStyleSheet(
-                f"""
-                QPushButton {{
-                    {DarkThemeStyler.ACTIVE_BG_GRADIENT}
-                    border: 2px solid {DarkThemeStyler.ACCENT_COLOR};
-                    color: white;
-                    padding: 8px 12px;
-                    border-radius: 8px;
-                    font-weight: bold;
-                }}
-                QPushButton:hover {{
-                    {DarkThemeStyler.ACTIVE_BG_GRADIENT}
-                }}
-                QPushButton:pressed {{
-                    background-color: {DarkThemeStyler.BORDER_COLOR};
-                }}
-            """
-            )
-        else:
-            self.setStyleSheet(
-                f"""
-                QPushButton {{
-                    {DarkThemeStyler.DEFAULT_BG_GRADIENT}
-                    border: 2px solid {DarkThemeStyler.BORDER_COLOR};
-                    color: {DarkThemeStyler.TEXT_COLOR};
-                    padding: 8px 12px;
-                    border-radius: 8px;
-                    font-weight: bold;
-                }}
-                QPushButton:hover {{
-                    {DarkThemeStyler.DARK_HOVER_GRADIENT}
-                }}
-                QPushButton:pressed {{
-                    background-color: {DarkThemeStyler.BORDER_COLOR};
-                }}
-            """
-            )
-        self.update()  # Ensure the UI updates
-        self.repaint()  # Force an immediate refresh
+    # def _apply_style(self, is_active=False):
+    #     """Applies styling dynamically based on active state."""
+    #     if is_active:
+    #         self.setStyleSheet(
+    #             f"""
+    #             QPushButton {{
+    #                 {DarkThemeStyler.ACTIVE_BG_GRADIENT}
+    #                 border: 2px solid {DarkThemeStyler.ACCENT_COLOR};
+    #                 color: white;
+    #                 padding: 8px 12px;
+    #                 border-radius: 8px;
+    #                 font-weight: bold;
+    #             }}
+    #             QPushButton:hover {{
+    #                 {DarkThemeStyler.ACTIVE_BG_GRADIENT}
+    #             }}
+    #             QPushButton:pressed {{
+    #                 background-color: {DarkThemeStyler.BORDER_COLOR};
+    #             }}
+    #         """
+    #         )
+    #     else:
+    #         self.setStyleSheet(
+    #             f"""
+    #             QPushButton {{
+    #                 {DarkThemeStyler.DEFAULT_BG_GRADIENT}
+    #                 border: 2px solid {DarkThemeStyler.BORDER_COLOR};
+    #                 color: {DarkThemeStyler.TEXT_COLOR};
+    #                 padding: 8px 12px;
+    #                 border-radius: 8px;
+    #                 font-weight: bold;
+    #             }}
+    #             QPushButton:hover {{
+    #                 {DarkThemeStyler.DARK_HOVER_GRADIENT}
+    #             }}
+    #             QPushButton:pressed {{
+    #                 background-color: {DarkThemeStyler.BORDER_COLOR};
+    #             }}
+    #         """
+    #         )
+    #     self.update()  # Ensure the UI updates
+    #     self.repaint()  # Force an immediate refresh
 
     def resizeEvent(self, event):
         """Dynamically adjust button size without affecting layout."""

@@ -61,7 +61,7 @@ small_bilateral_prop_types = [
     PropType.Eightrings,
     PropType.Chicken,
 ]
-non_strictly_placed_props = [
+non_strict_placed_props = [
     PropType.Staff,
     PropType.Fan,
     PropType.Club,
@@ -75,7 +75,7 @@ non_strictly_placed_props = [
     PropType.Eightrings,
     PropType.BigEightRings,
 ]
-strictly_placed_props = [
+strict_placed_props = [
     PropType.Bighoop,
     PropType.Doublestar,
     PropType.Bigbuugeng,

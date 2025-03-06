@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSpacerItem, QSizePolicy
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.generate_tab.widgets.permutation_type_toggle import (
-    PermutationTypeToggle,
+from main_window.main_widget.generate_tab.widgets.permutation_type_picker.permutation_type_picker import (
+    PermutationTypePicker,
 )
 from settings_manager.global_settings.app_context import AppContext
 
@@ -24,7 +24,8 @@ from .circular.circular_sequence_builder import CircularSequenceBuilder
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
-
+# In your settings manager, ensure permutation_type can handle new values
+# Add these to your valid permutation types:
 
 class GenerateTab(QWidget):
     def __init__(self, main_widget: "MainWidget"):
@@ -57,7 +58,7 @@ class GenerateTab(QWidget):
         self.prop_continuity_toggle = PropContinuityToggle(self)
         self.letter_picker = LetterTypePickerWidget(self)
         self.slice_size_toggle = SliceSizeToggle(self)
-        self.permutation_type_toggle = PermutationTypeToggle(self)
+        self.permutation_type_picker = PermutationTypePicker(self)
 
     def resizeEvent(self, event):
         available_height = self.height() // 24

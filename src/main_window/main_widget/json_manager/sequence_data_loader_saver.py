@@ -62,11 +62,11 @@ class SequenceDataLoaderSaver:
                 GRID_MODE: DIAMOND,
                 "is_circular": False,
                 "is_permutable": False,
-                "is_strictly_rotated_permutation": False,
-                "is_strictly_mirrored_permutation": False,
-                "is_strictly_colorswapped_permutation": False,
-                "is_mirrored_color_swapped_permutation": False,
-                "is_rotated_colorswapped_permutation": False,
+                "is_strict_rotated_permutation": False,
+                "is_strict_mirrored_permutation": False,
+                "is_strict_swapped_permutation": False,
+                "is_mirrored_swapped_permutation": False,
+                "is_rotated_swapped_permutation": False,
             }
         ]
 

@@ -1,5 +1,9 @@
 from typing import TYPE_CHECKING
 
+from main_window.main_widget.generate_tab.widgets.permutation_type_picker.permutation_type_picker import (
+    PERMUTATION_TYPES,
+)
+
 if TYPE_CHECKING:
     from .generate_tab import GenerateTab
 
@@ -78,9 +82,8 @@ class GenerateTabController:
         self.tab.slice_size_toggle.set_state(
             self.settings.get_setting("rotation_type") == "quartered"
         )
-        self.tab.permutation_type_toggle.set_state(
-            self.settings.get_setting("permutation_type") == "rotated"
-        )
+        perm_type = self.settings.get_setting("permutation_type") or "strict_mirrored"
+        self.tab.permutation_type_picker.set_active_type(perm_type)
         current_sequence_length = (
             len(self.tab.main_widget.json_manager.loader_saver.load_current_sequence())
             - 1
@@ -92,9 +95,9 @@ class GenerateTabController:
         if rotation_type:
             self.tab.slice_size_toggle.set_state(rotation_type == "quartered")
 
-        permutation_type = self.settings.get_setting("permutation_type")
-        if permutation_type:
-            self.tab.permutation_type_toggle.set_state(permutation_type == "rotated")
+        perm_type = self.settings.get_setting("permutation_type")
+        if perm_type:
+            self.tab.permutation_type_picker.set_active_type(perm_type)
 
     def _load_freeform_settings(self):
         letter_types = self.settings.get_setting("selected_letter_types")
@@ -103,14 +106,23 @@ class GenerateTabController:
 
     def _update_ui_visibility(self):
         is_freeform = self.current_mode == "freeform"
-        self.tab.letter_picker.setVisible(is_freeform)
 
         is_circular = not is_freeform
+
+        self.tab.slice_size_toggle.setVisible(False)
+        self.tab.permutation_type_picker.setVisible(False)
+        self.tab.letter_picker.setVisible(False)
+
         self.tab.slice_size_toggle.setVisible(is_circular)
-        self.tab.permutation_type_toggle.setVisible(is_circular)
+        self.tab.permutation_type_picker.setVisible(is_circular)
+        self.tab.letter_picker.setVisible(is_freeform)
 
         permutation_type = self.settings.get_setting("permutation_type")
-        if permutation_type == "mirrored":
+        if permutation_type in [
+            "strict_swapped",
+            "strict_mirrored",
+            "mirrored_swapped",
+        ]:
             self.tab.slice_size_toggle.setVisible(False)  # Hide slice size toggle
 
     def _as_bool(self, val) -> bool:

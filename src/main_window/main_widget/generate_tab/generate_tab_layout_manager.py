@@ -34,7 +34,7 @@ class GenerateTabLayoutManager:
         content_layout.addWidget(self.generate_tab.prop_continuity_toggle, 1)
         content_layout.addWidget(self.generate_tab.letter_picker, 1)
         content_layout.addWidget(self.generate_tab.slice_size_toggle, 1)
-        content_layout.addWidget(self.generate_tab.permutation_type_toggle, 1)
+        content_layout.addWidget(self.generate_tab.permutation_type_picker, 1)
 
         content_layout.insertSpacerItem(
             content_layout.count(), self.generate_tab.bottom_spacer

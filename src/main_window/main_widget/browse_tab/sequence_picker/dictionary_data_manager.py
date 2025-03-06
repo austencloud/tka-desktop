@@ -114,20 +114,20 @@ class DictionaryDataManager:
                         meta_dict["prop_type"] = first_sequence.get("prop_type")
                         meta_dict["is_circular"] = first_sequence.get("is_circular")
                         meta_dict["is_permutable"] = first_sequence.get("is_permutable")
-                        meta_dict["is_strictly_rotational_permutation"] = (
-                            first_sequence.get("is_strictly_rotational_permutation")
+                        meta_dict["is_strict_rotational_permutation"] = (
+                            first_sequence.get("is_strict_rotational_permutation")
                         )
-                        meta_dict["is_strictly_mirrored_permutation"] = (
-                            first_sequence.get("is_strictly_mirrored_permutation")
+                        meta_dict["is_strict_mirrored_permutation"] = (
+                            first_sequence.get("is_strict_mirrored_permutation")
                         )
-                        meta_dict["is_strictly_colorswapped_permutation"] = (
-                            first_sequence.get("is_strictly_colorswapped_permutation")
+                        meta_dict["is_strict_swapped_permutation"] = first_sequence.get(
+                            "is_strict_swapped_permutation"
                         )
-                        meta_dict["is_mirrored_color_swapped_permutation"] = (
-                            first_sequence.get("is_mirrored_color_swapped_permutation")
+                        meta_dict["is_mirrored_swapped_permutation"] = (
+                            first_sequence.get("is_mirrored_swapped_permutation")
                         )
-                        meta_dict["is_rotational_colorswapped_permutation"] = (
-                            first_sequence.get("is_rotational_colorswapped_permutation")
+                        meta_dict["is_rotational_swapped_permutation"] = (
+                            first_sequence.get("is_rotational_swapped_permutation")
                         )
         except FileNotFoundError:
             print(f"[WARNING] Thumbnail not found: {first_thumb}")

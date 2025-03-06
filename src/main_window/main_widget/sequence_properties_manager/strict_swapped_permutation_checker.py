@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     )
 
 
-class StrictlyColorSwappedPermutationChecker:
+class StrictSwappedPermutationChecker:
     def __init__(self, manager: "SequencePropertiesManager"):
         self.manager = manager
 
@@ -27,13 +27,13 @@ class StrictlyColorSwappedPermutationChecker:
             first_entry = first_half[i]
             second_entry = second_half[i]
 
-            if not self._is_color_swapped(first_entry, second_entry):
+            if not self._is_swapped(first_entry, second_entry):
                 return False
 
         return True
 
-    def _is_color_swapped(self, first_entry, second_entry) -> bool:
-        # Strictly checks if the roles are swapped without any mirroring
+    def _is_swapped(self, first_entry, second_entry) -> bool:
+        # strict checks if the roles are swapped without any mirroring
         return (
             first_entry[BLUE_ATTRS] == second_entry[RED_ATTRS]
             and first_entry[RED_ATTRS] == second_entry[BLUE_ATTRS]
