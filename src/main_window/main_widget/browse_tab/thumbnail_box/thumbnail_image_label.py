@@ -41,9 +41,6 @@ class ThumbnailImageLabel(QLabel):
 
     def _calculate_available_space(self) -> QSize:
         """Calculate available space for the image."""
-        # if self._cached_available_size:
-        #     return self._cached_available_size  # Use cached size if available
-
         if self.thumbnail_box.in_sequence_viewer:
             sequence_viewer = self.thumbnail_box.browse_tab.sequence_viewer
             available_width = int(sequence_viewer.main_widget.width() * 1 / 3 * 0.95)

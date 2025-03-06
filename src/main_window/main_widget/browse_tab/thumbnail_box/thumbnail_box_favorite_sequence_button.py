@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtWidgets import QPushButton
+from PyQt6.QtWidgets import QPushButton, QApplication
 from PyQt6.QtGui import QIcon
 from typing import TYPE_CHECKING, Literal
 import os
@@ -15,7 +15,10 @@ class ThumbnailBoxFavoriteSequenceButton(QPushButton):
     def __init__(self, thumbnail_box: "ThumbnailBox"):
         super().__init__()
         self.thumbnail_box = thumbnail_box
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        if self.thumbnail_box.in_sequence_viewer:
+            self.setCursor(Qt.CursorShape.ArrowCursor)
+        else:
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setFlat(True)
 
         icons_path = get_image_path("icons")

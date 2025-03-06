@@ -87,6 +87,7 @@ class BrowseTabSelectionHandler:
         self.sequence_viewer.thumbnail_box.header.favorite_button.update_favorite_icon(
             is_favorite
         )
+        self.sequence_viewer.thumbnail_box.word = word
 
     def select_viewer_thumbnail(self, thumbnail_box, index, word):
         """Selects a thumbnail in the sequence viewer."""
