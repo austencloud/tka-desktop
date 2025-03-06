@@ -173,3 +173,6 @@ class ThumbnailImageLabel(QLabel):
         self._cached_available_size = None  # Invalidate cache
         self.border_width = self.width() // 100
         super().resizeEvent(event)
+
+
+

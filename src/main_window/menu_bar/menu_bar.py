@@ -15,10 +15,9 @@ class MenuBarWidget(QWidget):
         self.main_widget = main_widget
         self.main_widget.splash.updater.update_progress("MenuBarWidget")
 
-        self.layout: QHBoxLayout = QHBoxLayout(self)
         self.social_media_widget = SocialMediaWidget(self)
-        self.settings_button = SettingsButton(self)
         self.navigation_widget = MenuBarNavWidget(self)
+        self.settings_button = SettingsButton(self)
 
     def resizeEvent(self, event):
         self.social_media_widget.resize_social_media_buttons()

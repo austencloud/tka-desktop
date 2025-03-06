@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QPushButton
+from PyQt6.QtWidgets import QWidget, QGridLayout, QVBoxLayout
 from PyQt6.QtGui import QIcon, QDesktopServices
 from PyQt6.QtCore import Qt, QSize, QUrl
+from styles.styled_button import StyledButton
 from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
@@ -76,28 +77,10 @@ class SocialMediaWidget(QWidget):
 
     def _create_icon_button(self, icon_path, tooltip, click_handler):
         """Creates a single icon button."""
-        button = QPushButton()
+        button = StyledButton("", icon_path=icon_path)
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         icon = QIcon(icon_path)
         button.setIcon(icon)
-        icon_size = QSize(
-            self.main_widget.height() // 40,
-            self.main_widget.height() // 40,
-        )
-        button.setIconSize(icon_size)
-        button.setFixedSize(icon_size.width() + 10, icon_size.height() + 10)
-        button.setStyleSheet(
-            """
-            QPushButton {
-                border: none;
-                background-color: white;
-                border-radius: 5px;
-            }
-            QPushButton:hover {
-                background-color: #e6e6e6;
-            }
-            """
-        )
         button.setToolTip(tooltip)
         button.clicked.connect(click_handler)
         return button
@@ -105,12 +88,14 @@ class SocialMediaWidget(QWidget):
     def resize_social_media_buttons(self):
         """Resizes social media buttons on window resize."""
         icon_size = QSize(
-            self.main_widget.height() // 40,
-            self.main_widget.height() // 40,
+            self.main_widget.height() // 30,
+            self.main_widget.height() // 30,
         )
         for button in self.social_buttons:
             button.setIconSize(icon_size)
-            button.setFixedSize(icon_size.width() + 10, icon_size.height() + 10)
+            button.setFixedSize(
+                int(icon_size.width() * 1.2), int(icon_size.height() * 1.2)
+            )
 
     # ---- Social link handlers ----
     def _open_paypal_link(self):
