@@ -28,7 +28,7 @@ class PermutationTypePicker(QWidget):
 
         # Create label in its own centered HBox
         label_layout = QHBoxLayout()
-        self.label = QLabel("Permutation Type:")
+        self.label = QLabel("Type:")
         label_layout.addWidget(self.label, alignment=Qt.AlignmentFlag.AlignCenter)
         self.layout.addLayout(label_layout)
 

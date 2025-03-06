@@ -22,8 +22,8 @@ from data.position_maps import (
 from data.quartered_permutations import quartered_permutations
 from data.halved_permutations import halved_permutations
 from ..base_sequence_builder import BaseSequenceBuilder
-from .permutation_executors.mirrored_permutation_executor import (
-    MirroredPermutationExecutor,
+from .permutation_executors.strict_mirrored_permutation_executor import (
+    StrictMirroredPermutationExecutor,
 )
 from .permutation_executors.strict_rotated_permutation_executor import (
     RotatedPermutationExecutor,
@@ -39,7 +39,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
     def __init__(self, generate_tab: "GenerateTab"):
         super().__init__(generate_tab)
         self.rotated_executor = RotatedPermutationExecutor(self)
-        self.mirrored_executor = MirroredPermutationExecutor(self, False)
+        self.mirrored_executor = StrictMirroredPermutationExecutor(self, False)
 
     def build_sequence(
         self,

@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
 from data.constants import END_POS
-from main_window.main_widget.generate_tab.circular.permutation_executors.mirrored_permutation_executor import (
-    MirroredPermutationExecutor,
+from main_window.main_widget.generate_tab.circular.permutation_executors.strict_mirrored_permutation_executor import (
+    StrictMirroredPermutationExecutor,
 )
 from main_window.main_widget.generate_tab.circular.permutation_executors.strict_rotated_permutation_executor import (
     RotatedPermutationExecutor,
@@ -25,7 +25,9 @@ class SequenceAutoCompleter:
         self.sequence_workbench = sequence_workbench
         self.main_widget = sequence_workbench.main_widget
         self.rotated_permutation_executor = RotatedPermutationExecutor(self)
-        self.mirrored_permutation_executor = MirroredPermutationExecutor(self, False)
+        self.mirrored_permutation_executor = StrictMirroredPermutationExecutor(
+            self, False
+        )
 
     def auto_complete_sequence(self):
         sequence = (
@@ -54,10 +56,10 @@ class SequenceAutoCompleter:
                 executor = RotatedPermutationExecutor(self)
                 executor.create_permutations(sequence)
             elif option == "vertical_mirror":
-                executor = MirroredPermutationExecutor(self, False)
+                executor = StrictMirroredPermutationExecutor(self, False)
                 executor.create_permutations(sequence, VERTICAL)
             elif option == "horizontal_mirror":
-                executor = MirroredPermutationExecutor(self, False)
+                executor = StrictMirroredPermutationExecutor(self, False)
                 executor.create_permutations(sequence, HORIZONTAL)
 
     def get_valid_permutations(self, sequence: list[dict]) -> dict[str, bool]:

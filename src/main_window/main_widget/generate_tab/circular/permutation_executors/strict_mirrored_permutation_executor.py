@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from ..circular_sequence_builder import CircularSequenceBuilder
 
 
-class MirroredPermutationExecutor(PermutationExecutor):
+class StrictMirroredPermutationExecutor(PermutationExecutor):
     def __init__(
         self,
         circular_sequence_generator: "CircularSequenceBuilder",
