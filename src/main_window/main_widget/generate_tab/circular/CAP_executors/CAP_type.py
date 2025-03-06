@@ -8,8 +8,10 @@ class CAPType(Enum):
     MIRRORED_SWAPPED = "mirrored_swapped"
 
     @staticmethod
-    def from_str(s):
-        for cap_type in CAPType:
-            if cap_type.value == s:
-                return cap_type
-        raise ValueError(f"Invalid CAPType string: {s}")
+    def from_str(s: str):
+        """Fast lookup instead of iterating over the enum."""
+        _lookup_map = {cap_type.value: cap_type for cap_type in CAPType}
+        try:
+            return _lookup_map[s]
+        except KeyError:
+            raise ValueError(f"Invalid CAPType string: {s}")

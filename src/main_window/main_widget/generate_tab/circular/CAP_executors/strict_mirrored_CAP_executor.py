@@ -2,17 +2,16 @@ from data.constants import *
 from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import CAPType
 from .CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
-from data.locations import vertical_loc_mirror_map, horizontal_loc_mirror_map
+from data.locations import vertical_loc_mirror_map
 
 
 class StrictMirroredCAPExecutor(CAPExecutor):
     CAP_TYPE = CAPType.STRICT_MIRRORED  # Add this
 
-    def __init__(self, circular_sequence_generator, color_swap_second_half: bool):
+    def __init__(self, circular_sequence_generator):
         super().__init__(circular_sequence_generator)
-        self.color_swap_second_half = color_swap_second_half
 
-    def create_CAPs(self, sequence: list[dict], vertical_or_horizontal: str):
+    def create_CAPs(self, sequence: list[dict]):
         """Creates mirrored CAPs for a circular sequence."""
 
         sequence_length = len(sequence) - 2
@@ -84,13 +83,6 @@ class StrictMirroredCAPExecutor(CAPExecutor):
                 new_entry, RED
             )
         )
-
-        # Swap colors at the midpoint of the sequence
-        if (
-            self.color_swap_second_half
-            and beat_number >= final_intended_sequence_length // 2
-        ):
-            new_entry = self.swap_colors(new_entry)
 
         return new_entry
 

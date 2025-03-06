@@ -12,7 +12,6 @@ from data.constants import (
     MOTION_TYPE,
     RED_ATTRS,
     STATIC,
-    VERTICAL,
 )
 from data.position_maps import (
     half_position_map,
@@ -200,7 +199,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                     executor.create_CAPs(sequence)
             elif cap_type == CAPType.STRICT_MIRRORED:
                 if self.can_perform_strict_mirrored_CAP(sequence):
-                    executor.create_CAPs(sequence, VERTICAL)
+                    executor.create_CAPs(sequence)
 
     def can_perform_strict_rotated_CAP(
         self, sequence: list[dict], rotation_type: str

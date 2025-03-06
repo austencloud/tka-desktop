@@ -20,9 +20,6 @@ class CAPExecutorFactory:
     def create_executor(cap_type: CAPType, circular_sequence_generator) -> CAPExecutor:
         executor_class = CAPExecutorFactory._executor_map.get(cap_type)
         if executor_class:
-            if cap_type == CAPType.STRICT_MIRRORED:
-                return executor_class(circular_sequence_generator, False)
-            else:
-                return executor_class(circular_sequence_generator)
+            return executor_class(circular_sequence_generator)
         else:
             raise ValueError(f"Unknown CAPExecutorType: {cap_type}")
