@@ -29,7 +29,7 @@ class ArrowRotAngleOverrideManager:
     def __init__(self, hotkey_graph_adjuster: "HotkeyGraphAdjuster") -> None:
         self.hotkey_graph_adjuster = hotkey_graph_adjuster
         self.view = hotkey_graph_adjuster.ge_view
-
+        self.ge_pictograph = self.view.pictograph
         self.arrow_placement_manager = (
             self.view.pictograph.managers.arrow_placement_manager
         )
@@ -100,7 +100,15 @@ class ArrowRotAngleOverrideManager:
         self.data_updater.update_specific_entry_in_json(
             letter_enum, letter_data, ori_key
         )
-        self.view.pictograph.managers.updater.update_pictograph()
+        for (
+            pictograph
+        ) in (
+            self.ge_pictograph.main_widget.pictograph_collector.collect_all_pictographs()
+        ):
+            if pictograph.state.letter == self.ge_pictograph.state.letter:
+                pictograph.managers.updater.update_pictograph(
+                    pictograph.state.pictograph_data
+                )
 
     def handle_mirrored_rotation_angle_override(
         self, other_letter_data, rotation_angle_override, mirrored_turns_tuple
