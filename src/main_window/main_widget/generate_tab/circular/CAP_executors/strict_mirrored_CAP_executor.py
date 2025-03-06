@@ -1,5 +1,5 @@
 from data.constants import *
-from .CAP_executor_base import CAPExecutor
+from .CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map, horizontal_loc_mirror_map
 
@@ -11,8 +11,6 @@ class StrictMirroredCAPExecutor(CAPExecutor):
 
     def create_CAPs(self, sequence: list[dict], vertical_or_horizontal: str):
         """Creates mirrored CAPs for a circular sequence."""
-        if not self.can_perform_mirrored_CAP(sequence):
-            return
 
         self.vertical_or_horizontal = vertical_or_horizontal
         sequence_length = len(sequence) - 2
@@ -90,9 +88,7 @@ class StrictMirroredCAPExecutor(CAPExecutor):
 
         return new_entry
 
-    def can_perform_mirrored_CAP(self, sequence: list[dict]) -> bool:
-        """Ensures that the sequence can be mirrored."""
-        return sequence[1][END_POS] == sequence[-1][END_POS]
+
 
     def get_mirrored_position(self, previous_matching_beat) -> str:
         """Handles mirroring based on the grid mode."""

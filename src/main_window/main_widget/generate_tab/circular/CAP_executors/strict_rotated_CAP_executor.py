@@ -41,7 +41,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
 
 from objects.motion.managers.handpath_calculator import HandpathCalculator
-from .CAP_executor_base import CAPExecutor
+from .CAP_executor import CAPExecutor
 from data.positions_map import positions_map
 
 if TYPE_CHECKING:

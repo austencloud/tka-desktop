@@ -57,7 +57,7 @@ class GenerateTabController:
             )
         else:
             rotation_type = self.settings.get_setting("rotation_type") or "halved"
-            CAP_type = self.settings.get_setting("CAP_type") or "strict_rotated"
+            CAP_type = self.settings.get_CAP_type() or "strict_rotated"
 
             self.tab.circular_builder.build_sequence(
                 length,

@@ -2,6 +2,8 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import QSettings
 
+from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import CAPType
+
 if TYPE_CHECKING:
     pass
 
@@ -48,3 +50,6 @@ class GenerateTabSettings:
 
     def set_current_mode(self, mode: str):
         self.settings.setValue("generator/current_mode", mode)
+
+    def get_CAP_type(self) -> str:
+        return CAPType.from_str(self.get_setting("CAP_type"))

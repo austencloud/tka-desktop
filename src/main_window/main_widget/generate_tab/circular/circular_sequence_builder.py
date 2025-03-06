@@ -21,6 +21,15 @@ from data.position_maps import (
 )
 from data.quartered_CAPs import quartered_CAPs
 from data.halved_CAPs import halved_CAPs
+from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_executor import (
+    CAPExecutor,
+)
+from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_executor_factory import (
+    CAPExecutorFactory,
+)
+from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import (
+    CAPType,
+)
 from ..base_sequence_builder import BaseSequenceBuilder
 from .CAP_executors.strict_mirrored_CAP_executor import (
     StrictMirroredCAPExecutor,
@@ -38,8 +47,14 @@ if TYPE_CHECKING:
 class CircularSequenceBuilder(BaseSequenceBuilder):
     def __init__(self, generate_tab: "GenerateTab"):
         super().__init__(generate_tab)
-        self.rotated_executor = StrictRotatedCAPExecutor(self)
-        self.mirrored_executor = StrictMirroredCAPExecutor(self, False)
+        self.executors: dict[CAPType, CAPExecutor] = {
+            CAPType.STRICT_ROTATED: CAPExecutorFactory.create_executor(
+                CAPType.STRICT_ROTATED, self
+            ),
+            CAPType.STRICT_MIRRORED: CAPExecutorFactory.create_executor(
+                CAPType.STRICT_MIRRORED, self
+            ),
+        }
 
     def build_sequence(
         self,
@@ -62,13 +77,13 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         length_of_sequence_upon_start = len(self.sequence) - 2
 
-        if CAP_type == "strict_rotated":
+        if CAP_type == CAPType.STRICT_ROTATED:
             if slice_size == "quartered":
                 word_length = length // 4
             elif slice_size == "halved":
                 word_length = length // 2
             available_range = word_length - length_of_sequence_upon_start
-        elif CAP_type == "strict_mirrored":
+        elif CAP_type == CAPType.STRICT_MIRRORED:
             word_length = length // 2
             available_range = word_length - length_of_sequence_upon_start
 
@@ -125,7 +140,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             options = self.filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir
             )
-        if CAP_type == "strict_rotated":
+        if CAP_type == CAPType.STRICT_ROTATED:
             if is_last_in_word:
                 expected_end_pos = self._determine_rotated_end_pos(rotation_type)
                 next_beat = self._select_pictograph_with_end_pos(
@@ -133,7 +148,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 )
             else:
                 next_beat = random.choice(options)
-        elif CAP_type == "strict_mirrored":
+        elif CAP_type == CAPType.STRICT_MIRRORED:
             if is_last_in_word:
                 expected_end_pos = self.sequence[1][END_POS]
                 next_beat = self._select_pictograph_with_end_pos(
@@ -188,16 +203,18 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         return random.choice(valid_options)
 
     def _apply_CAPs(
-        self, sequence: list[dict], CAP_type: str, rotation_type: str
+        self, sequence: list[dict], cap_type: CAPType, rotation_type: str
     ) -> None:
-        if CAP_type == "strict_rotated":
-            if self.can_perform_rotationed_CAP(sequence, rotation_type):
-                self.rotated_executor.create_CAPs(sequence)
-        elif CAP_type == "strict_mirrored":
-            if self.mirrored_executor.can_perform_mirrored_CAP(sequence):
-                self.mirrored_executor.create_CAPs(sequence, VERTICAL)
+        executor = self.executors.get(cap_type)
+        if executor:
+            if cap_type == CAPType.STRICT_ROTATED:
+                if self.can_perform_strict_rotated_CAP(sequence, rotation_type):
+                    executor.create_CAPs(sequence)
+            elif cap_type == CAPType.STRICT_MIRRORED:
+                if self.can_perform_strict_mirrored_CAP(sequence):
+                    executor.create_CAPs(sequence, VERTICAL)
 
-    def can_perform_rotationed_CAP(
+    def can_perform_strict_rotated_CAP(
         self, sequence: list[dict], rotation_type: str
     ) -> bool:
         start_pos = sequence[1][END_POS]
@@ -206,3 +223,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             return (start_pos, end_pos) in quartered_CAPs
         elif rotation_type == "halved":
             return (start_pos, end_pos) in halved_CAPs
+
+    def can_perform_strict_mirrored_CAP(self, sequence: list[dict]) -> bool:
+        """Ensures that the sequence can be mirrored."""
+        return sequence[1][END_POS] == sequence[-1][END_POS]
