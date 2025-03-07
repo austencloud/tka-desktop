@@ -66,7 +66,7 @@ class GenerateTabController:
             )
 
     def _apply_unified_settings(self):
-        seq_level = self.settings.get_setting("sequence_level") or 1
+        seq_level = self.settings.get_setting("level") or 1
         seq_length = self.settings.get_setting("length") or 16
         turn_intensity = self.settings.get_setting("turn_intensity") or 1
         cont_rot = self.settings.get_setting("prop_continuity") or "continuous"
