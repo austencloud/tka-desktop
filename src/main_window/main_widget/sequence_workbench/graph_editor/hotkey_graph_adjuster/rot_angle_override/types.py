@@ -3,19 +3,13 @@ from typing import TypeGuard, TypedDict, NewType
 from data.constants import BOX, DIAMOND, SKEWED
 from enums.letter.letter import Letter
 
-# Type-safe string aliases
-OriKey = NewType("OriKey", str)
-RotationKey = NewType("RotationKey", str)
-GridMode = NewType("GridMode", str)
-TurnsTuple = NewType("TurnsTuple", str)
-
 
 # types.py
 from typing import NotRequired
 
 
 class PlacementDataEntry(TypedDict):
-    turns_tuple: dict[TurnsTuple, dict[RotationKey, bool]]
+    turns_tuple: dict[str, dict[str, bool]]
 
 
 class OrientationData(TypedDict):
@@ -23,28 +17,17 @@ class OrientationData(TypedDict):
 
 
 class GridModeData(TypedDict):
-    orientations: dict[OriKey, OrientationData]
+    orientations: dict[str, OrientationData]
 
 
 class PlacementData(TypedDict):
-    grid_modes: dict[GridMode, GridModeData]
+    grid_modes: dict[str, GridModeData]
 
 
 class OverrideData(TypedDict):
     letter: Letter
-    ori_key: OriKey
-    turns_tuple: TurnsTuple
-    rot_angle_key: RotationKey
+    ori_key: str
+    turns_tuple: str
+    rot_angle_key: str
     placement_data: PlacementData
     validation_hash: NotRequired[str]  # Example of optional field
-
-
-# types.py
-
-
-def is_valid_grid_mode(value: str) -> TypeGuard[GridMode]:
-    return value in [DIAMOND, BOX, SKEWED]
-
-
-def is_valid_ori_key(value: str) -> TypeGuard[OriKey]:
-    return value.startswith("from_layer")  # Match your key patterns
