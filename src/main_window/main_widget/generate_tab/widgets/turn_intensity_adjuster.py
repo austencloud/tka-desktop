@@ -101,7 +101,7 @@ class TurnIntensityAdjuster(QWidget):
 
     def adjust_values(self, level):
         """Adjusts available turn intensity values based on the difficulty level."""
-        self.values = [1, 2, 3] if level == 2 else [0.5, 1, 1.5, 2, 2.5, 3]
+        self.values = [1, 2, 3] if level == 2 else [0, 0.5, 1, 1.5, 2, 2.5, 3]
         if self.intensity not in self.values:
             self.intensity = min(self.values, key=lambda x: abs(x - self.intensity))
             self.intensity_value_label.setText(str(self.intensity))

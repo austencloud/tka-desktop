@@ -21,11 +21,7 @@ class DualFloatLetterDeterminer:
     def determine_letter(self, motion: "Motion") -> Letter:
         """Determine the letter for dual float motions."""
         other_motion = motion.pictograph.managers.get.other_motion(motion)
-
-        # Update pre-float attributes
         self.prefloat_updater.update_prefloat_attributes(motion, other_motion)
-
-        # Find and return the correct letter
         return self._find_matching_letter(motion, other_motion)
 
     def _find_matching_letter(self, motion: "Motion", other_motion: "Motion") -> Letter:

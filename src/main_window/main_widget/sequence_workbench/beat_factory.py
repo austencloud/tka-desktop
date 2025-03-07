@@ -78,7 +78,7 @@ class BeatFactory:
         )
         for motion in new_beat.elements.motion_set.values():
             if motion.state.motion_type == FLOAT:
-                letter = self.main_widget.letter_determiner.determine_letter(motion)
+                letter = self.main_widget.letter_determiner.determine_letter(pictograph_data)
                 new_beat.state.letter = letter
                 new_beat.elements.tka_glyph.update_tka_glyph()
         self.main_widget.sequence_properties_manager.update_sequence_properties()

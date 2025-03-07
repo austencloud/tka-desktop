@@ -3,7 +3,7 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt
 from enums.letter.letter import Letter
-
+from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import (
     ANTI,
     CLOCKWISE,
@@ -88,11 +88,8 @@ class PropRotDirButtonManager:
                 if motion.state.color == self.turns_box.color:
                     motion.state.prop_rot_dir = prop_rot_dir
                     motion.state.motion_type = self._get_new_motion_type(motion)
-                    new_letter = self.graph_editor.main_widget.letter_determiner.determine_letter(
-                        motion, swap_prop_rot_dir=True
-                    )
-                    self._update_pictograph_and_json(motion, new_letter)
-                    pictograph.update()
+                    self._update_pictograph_and_json(motion)
+                    self.update_pictograph_letter(pictograph)
 
             pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
 
@@ -113,6 +110,23 @@ class PropRotDirButtonManager:
         self.option_picker.updater.refresh_options()
         QApplication.restoreOverrideCursor()
 
+    def update_pictograph_letter(self, pictograph: "Pictograph") -> None:
+        new_letter = self.graph_editor.main_widget.letter_determiner.determine_letter(
+            pictograph.state.pictograph_data, swap_prop_rot_dir=True
+        )
+        if new_letter:
+            pictograph.state.pictograph_data[LETTER] = new_letter.value
+            pictograph.state.letter = new_letter
+            pictograph.managers.updater.update_pictograph(pictograph.state.pictograph_data)
+        
+        if new_letter:
+            json_updater = self.json_manager.updater
+            pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
+            json_index = pictograph_index + 2
+            json_updater.letter_updater.update_letter_in_json_at_index(
+                json_index, new_letter.value
+            )
+
     def _get_new_motion_type(self, motion: "Motion"):
         motion_type = motion.state.motion_type
         if motion_type == ANTI:
@@ -125,9 +139,7 @@ class PropRotDirButtonManager:
             new_motion_type = motion_type
         return new_motion_type
 
-    def _update_pictograph_and_json(
-        self, motion: "Motion", new_letter: Letter = None
-    ) -> None:
+    def _update_pictograph_and_json(self, motion: "Motion") -> None:
         """Update the pictograph and JSON with the new letter and motion attributes."""
         pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
         beat = motion.pictograph
@@ -140,17 +152,9 @@ class PropRotDirButtonManager:
 
         beat.state.pictograph_data[motion.state.color + "_attributes"].update(new_dict)
 
-        if new_letter:
-            beat.state.pictograph_data[LETTER] = new_letter.value
-            beat.state.letter = new_letter
-
         beat.managers.updater.update_pictograph(beat.state.pictograph_data)
         json_index = pictograph_index + 2
         json_updater = self.json_manager.updater
-        if new_letter:
-            json_updater.letter_updater.update_letter_in_json_at_index(
-                json_index, new_letter.value
-            )
         self.turns_box.turns_widget.motion_type_label.update_display(
             motion.state.motion_type
         )

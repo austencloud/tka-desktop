@@ -65,9 +65,11 @@ class TurnsAdjustmentManager(QObject):
 
         for motion in [matching_motion, GE_motion]:
             motion.state.turns = new_turns
-            new_letter = self.get_new_letter(new_turns, motion)
             self.turns_widget.turns_box.prop_rot_dir_button_manager._update_pictograph_and_json(
-                motion, new_letter
+                motion
+            )
+            self.turns_widget.turns_box.prop_rot_dir_button_manager.update_pictograph_letter(
+                motion.pictograph
             )
             motion.state.prefloat_motion_type
 
@@ -76,16 +78,6 @@ class TurnsAdjustmentManager(QObject):
         self.beat_frame.updater.update_beats_from(sequence)
         self.turns_adjusted.emit(new_turns)
         QApplication.restoreOverrideCursor()
-
-    def get_new_letter(self, new_turns, motion):
-        need_to_determine_new_letter: bool = self.determine_if_new_letter_is_needed(
-            motion, new_turns
-        )
-        if need_to_determine_new_letter:
-            new_letter = self.main_widget.letter_determiner.determine_letter(motion)
-        else:
-            new_letter = None
-        return new_letter
 
     def determine_if_new_letter_is_needed(self, motion: Motion, new_turns) -> bool:
         if new_turns == "fl":
