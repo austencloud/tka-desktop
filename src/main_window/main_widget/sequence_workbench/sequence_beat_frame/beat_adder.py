@@ -33,7 +33,6 @@ class BeatAdder:
             AppContext.settings_manager().global_settings.get_grow_sequence()
         )
 
-
         next_beat_index = self.beat_frame.get.next_available_beat()
         if next_beat_number == 65:
             self.sequence_workbench.indicator_label.show_message(
@@ -66,7 +65,7 @@ class BeatAdder:
                 self.beats[next_beat_index].beat
             )
             if update_word:
-                self.sequence_workbench.current_word_label.update_current_word_label_from_beats()
+                self.sequence_workbench.current_word_label.update_current_word_label()
         if update_image_export_preview:
             self.beat_frame.emit_update_image_export_preview()
         if next_beat_number and update_level == True:

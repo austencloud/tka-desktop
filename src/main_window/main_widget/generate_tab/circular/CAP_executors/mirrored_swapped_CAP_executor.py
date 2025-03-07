@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map
 from data.positions_maps import mirrored_swapped_positions
 
+
 class MirroredSwappedCAPExecutor(CAPExecutor):
     CAP_TYPE = CAPType.MIRRORED_SWAPPED  # Add this
 
@@ -36,14 +37,17 @@ class MirroredSwappedCAPExecutor(CAPExecutor):
             sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
-                update_word=False,
+                update_word=True,
                 update_image_export_preview=False,
             )
             QApplication.processEvents()
 
     def can_perform_CAP(self, sequence: list[dict]) -> bool:
         """Ensures that the sequence can be mirrored."""
-        return mirrored_swapped_positions[VERTICAL].get(sequence[1][END_POS]) == sequence[-1][END_POS]
+        return (
+            mirrored_swapped_positions[VERTICAL].get(sequence[1][END_POS])
+            == sequence[-1][END_POS]
+        )
 
     def create_new_CAP_entry(
         self,

@@ -86,7 +86,7 @@ class RotatedComplementaryCAPExecutor(CAPExecutor):
             sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
-                update_word=False,
+                update_word=True,
                 update_image_export_preview=False,
             )
             QApplication.processEvents()
@@ -94,7 +94,7 @@ class RotatedComplementaryCAPExecutor(CAPExecutor):
             last_entry = next_pictograph
             next_beat_number += 1
 
-        sequence_workbench.current_word_label.update_current_word_label_from_beats()
+        sequence_workbench.current_word_label.update_current_word_label()
 
         if start_position_entry:
             start_position_entry[BEAT] = 0

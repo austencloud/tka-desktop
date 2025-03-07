@@ -102,7 +102,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
             sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
-                update_word=False,
+                update_word=True,
                 update_image_export_preview=False,
             )
             QApplication.processEvents()
@@ -110,7 +110,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
             last_entry = next_pictograph
             next_beat_number += 1
 
-        sequence_workbench.current_word_label.update_current_word_label_from_beats()
+        sequence_workbench.current_word_label.update_current_word_label()
 
         if start_position_entry:
             start_position_entry[BEAT] = 0
@@ -191,11 +191,10 @@ class StrictRotatedCAPExecutor(CAPExecutor):
             possible_last_beats: list[dict] = []
             for letter in pictograph_dataset:
                 for pictograph_data in pictograph_dataset[letter]:
-                    if pictograph_data.get(
-                        START_POS
-                    ) == current_end_pos and pictograph_data.get(
-                        END_POS
-                    ) == new_end_pos:
+                    if (
+                        pictograph_data.get(START_POS) == current_end_pos
+                        and pictograph_data.get(END_POS) == new_end_pos
+                    ):
                         possible_last_beats.append(pictograph_data)
             if len(possible_last_beats) == 0:
                 raise ValueError(
@@ -211,22 +210,21 @@ class StrictRotatedCAPExecutor(CAPExecutor):
                 new_entry[BEAT] = beat_number
                 if float(new_entry[BLUE_ATTRS][TURNS]) > 0 and new_entry[BLUE_ATTRS][
                     MOTION_TYPE
-                ] in [DASH,STATIC]:
-                    new_entry[BLUE_ATTRS][PROP_ROT_DIR] = previous_matching_beat[
-                        BLUE_ATTRS
-                    ][PROP_ROT_DIR] if previous_matching_beat[
-                        BLUE_ATTRS
-                    ][PROP_ROT_DIR] != NO_ROT else previous_entry[BLUE_ATTRS][PROP_ROT_DIR]
+                ] in [DASH, STATIC]:
+                    new_entry[BLUE_ATTRS][PROP_ROT_DIR] = (
+                        previous_matching_beat[BLUE_ATTRS][PROP_ROT_DIR]
+                        if previous_matching_beat[BLUE_ATTRS][PROP_ROT_DIR] != NO_ROT
+                        else previous_entry[BLUE_ATTRS][PROP_ROT_DIR]
+                    )
                 if float(new_entry[RED_ATTRS][TURNS]) > 0 and new_entry[RED_ATTRS][
                     MOTION_TYPE
-                ] in [DASH,STATIC]:
-                    new_entry[RED_ATTRS][PROP_ROT_DIR] = previous_matching_beat[
-                        RED_ATTRS
-                    ][PROP_ROT_DIR] if previous_matching_beat[
-                        RED_ATTRS
-                    ][PROP_ROT_DIR] != NO_ROT else previous_entry[RED_ATTRS][PROP_ROT_DIR]
-                    
-                    
+                ] in [DASH, STATIC]:
+                    new_entry[RED_ATTRS][PROP_ROT_DIR] = (
+                        previous_matching_beat[RED_ATTRS][PROP_ROT_DIR]
+                        if previous_matching_beat[RED_ATTRS][PROP_ROT_DIR] != NO_ROT
+                        else previous_entry[RED_ATTRS][PROP_ROT_DIR]
+                    )
+
                 new_entry[BLUE_ATTRS][START_ORI] = previous_entry[BLUE_ATTRS][END_ORI]
                 new_entry[RED_ATTRS][START_ORI] = previous_entry[RED_ATTRS][END_ORI]
                 new_entry[BLUE_ATTRS][END_ORI] = (

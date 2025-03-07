@@ -109,5 +109,5 @@ class BeatFrameUpdater:
         self.bf.start_pos_view.is_filled = False
         self.bf.selection_overlay.deselect_beat()
 
-        self.bf.sequence_workbench.current_word_label.update_current_word_label_from_beats()
+        self.bf.sequence_workbench.current_word_label.update_current_word_label()
         QApplication.processEvents()

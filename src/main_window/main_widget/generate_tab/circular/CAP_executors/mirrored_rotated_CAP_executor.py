@@ -34,7 +34,7 @@ class MirroredRotatedCAPExecutor(CAPExecutor):
             sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
-                update_word=False,
+                update_word=True,
                 update_image_export_preview=False,
             )
             QApplication.processEvents()

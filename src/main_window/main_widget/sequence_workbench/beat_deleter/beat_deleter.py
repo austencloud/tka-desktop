@@ -57,7 +57,7 @@ class BeatDeleter:
             self.beat_frame
         )
         self.beat_frame.layout_manager.configure_beat_frame_for_filled_beats()
-        self.beat_frame.sequence_workbench.current_word_label.update_current_word_label_from_beats()
+        self.beat_frame.sequence_workbench.current_word_label.update_current_word_label()
         self.beat_frame.sequence_workbench.difficulty_label.update_difficulty_label()
         self.beat_frame.emit_update_image_export_preview()
         self.sequence_workbench.difficulty_label.update_difficulty_label()

@@ -83,7 +83,8 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         )
 
         self._apply_CAPs(self.sequence, CAP_type, slice_size)
-
+        # current_word_label = self.sequence_workbench.current_word_label
+        # current_word_label.update_current_word_label()
         construct_tab = self.main_widget.construct_tab
         construct_tab.option_picker.updater.update_options()
 
@@ -224,7 +225,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 CAPType.STRICT_ROTATED
             )
             sequence = strict_rotated_executor.create_CAPs(
-                sequence, halved_or_quartered="halved", end_mirrored = True
+                sequence, halved_or_quartered="halved", end_mirrored=True
             )
             executor.create_CAPs(sequence)
 

@@ -86,7 +86,7 @@ class BeatFramePopulator:
             self.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 pictograph_data,
                 override_grow_sequence=True,
-                update_word=False,
+                update_word=True,
                 update_level=False,
                 reversal_info=reversal_info,
                 select_beat=select_beat,

@@ -4,6 +4,7 @@ from .CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 from enums.letter.complementary_letter_getter import ComplementaryLetterGetter
 
+
 class StrictComplementaryCAPExecutor(CAPExecutor):
     CAP_TYPE = CAPType.SWAPPED_COMPLEMENTARY  # Add this
 
@@ -38,7 +39,7 @@ class StrictComplementaryCAPExecutor(CAPExecutor):
             sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
-                update_word=False,
+                update_word=True,
                 update_image_export_preview=False,
             )
             QApplication.processEvents()

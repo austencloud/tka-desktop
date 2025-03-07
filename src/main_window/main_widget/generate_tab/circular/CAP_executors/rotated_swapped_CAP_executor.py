@@ -65,7 +65,6 @@ class RotatedSwappedCAPExecutor(CAPExecutor):
 
         new_entries = []
         next_beat_number = last_entry[BEAT] + 1
-        
 
         sequence_workbench = (
             self.circular_sequence_generator.main_widget.sequence_workbench
@@ -83,7 +82,7 @@ class RotatedSwappedCAPExecutor(CAPExecutor):
             sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
-                update_word=False,
+                update_word=True,
                 update_image_export_preview=False,
             )
             QApplication.processEvents()
@@ -91,12 +90,11 @@ class RotatedSwappedCAPExecutor(CAPExecutor):
             last_entry = next_pictograph
             next_beat_number += 1
 
-        sequence_workbench.current_word_label.update_current_word_label_from_beats()
+        sequence_workbench.current_word_label.update_current_word_label()
 
         if start_position_entry:
             start_position_entry[BEAT] = 0
             sequence.insert(0, start_position_entry)
-
 
     def calculate_rotated_permuatation_new_loc(
         self, start_loc: str, hand_rot_dir: str
@@ -209,9 +207,7 @@ class RotatedSwappedCAPExecutor(CAPExecutor):
         if length < 2:
             return {i: max(i - 1, 0) for i in range(1, length + 1)}
 
-        return {
-            i: i - (length // 2) + 1 for i in range((length // 2) + 1, length + 1)
-        }
+        return {i: i - (length // 2) + 1 for i in range((length // 2) + 1, length + 1)}
 
     def get_previous_matching_beat_mirrored(
         self,
@@ -265,4 +261,3 @@ class RotatedSwappedCAPExecutor(CAPExecutor):
                 previous_matching_beat_attributes[PREFLOAT_PROP_ROT_DIR]
             )
         return new_entry_attributes
-
