@@ -17,7 +17,7 @@ from placement_managers.attr_key_generator import (
 
 
 from objects.arrow.arrow import Arrow
-from PyQt6.QtCore import QPointF
+from PyQt6.QtCore import QPoint
 
 if TYPE_CHECKING:
 
@@ -73,7 +73,7 @@ class SpecialPlacementDataUpdater:
         letter_data: dict,
         turns_tuple: str,
         arrow: Arrow,
-        adjustment: QPointF,  # Ensure this is a QPointF
+        adjustment: QPoint,  # Ensure this is a QPoint
     ) -> None:
         turn_data = letter_data.get(turns_tuple, {})
         key = self.attr_key_generator.get_key_from_arrow(arrow)
@@ -81,11 +81,12 @@ class SpecialPlacementDataUpdater:
         if key in turn_data and turn_data[key] != {}:
             turn_data[key][0] += adjustment.x()  # ✅ Extract x value
             turn_data[key][1] += adjustment.y()  # ✅ Extract y value
+            turn_data[key] = [int(turn_data[key][0]), int(turn_data[key][1])]
         else:
             default_adjustment = self.get_default_adjustment_callback(arrow)
             turn_data[key] = [
-                default_adjustment.x() + adjustment.x(),  # ✅ Extract x value
-                default_adjustment.y() + adjustment.y(),  # ✅ Extract y value
+                int(default_adjustment.x() + adjustment.x()),  # ✅ Extract x value
+                int(default_adjustment.y() + adjustment.y()),  # ✅ Extract y value
             ]
 
         letter_data[turns_tuple] = turn_data
@@ -113,14 +114,14 @@ class SpecialPlacementDataUpdater:
         AppContext.special_placement_saver().save_json_data(existing_data, file_path)
 
     def update_arrow_adjustments_in_json(
-        self, adjustment: tuple[int, int] | QPointF, turns_tuple: str
+        self, adjustment: tuple[int, int] | QPoint, turns_tuple: str
     ) -> None:
         selected_arrow = AppContext.get_selected_arrow()
         if not selected_arrow:
             return
 
         if isinstance(adjustment, tuple):
-            adjustment = QPointF(*adjustment)
+            adjustment = QPoint(*adjustment)
 
         letter = selected_arrow.pictograph.state.letter
         ori_key = self.ori_key_generator.generate_ori_key_from_motion(
