@@ -43,24 +43,19 @@ class DotHandler:
         letter_scene_rect = self.glyph.letter_item.sceneBoundingRect()
         letter_scene_center = letter_scene_rect.center()
 
-        # Define the ideal positions for SAME and OPP dots
         dot_positions = {
             SAME: (letter_scene_rect.top() - padding, self.glyph.same_dot),
             OPP: (letter_scene_rect.bottom() + padding, self.glyph.opp_dot),
         }
 
-        # Update each dot's position
         for position, dot in dot_positions.values():
             dot_height = dot.boundingRect().height()
-            # Center the dot vertically at the specified position
             dot_center = QPointF(
                 letter_scene_center.x(),
                 position
                 + (-dot_height / 2 if dot == self.glyph.same_dot else dot_height / 2),
             )
-            # Offset by the dot’s own boundingRect center
             dot.setPos(dot_center - dot.boundingRect().center())
 
-        # Set visibility based on the direction (SAME or OPP)
         self.glyph.same_dot.setVisible(direction == SAME)
         self.glyph.opp_dot.setVisible(direction == OPP)

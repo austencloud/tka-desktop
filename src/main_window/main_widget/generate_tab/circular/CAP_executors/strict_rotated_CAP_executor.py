@@ -207,23 +207,35 @@ class StrictRotatedCAPExecutor(CAPExecutor):
                 new_entry[BLUE_ATTRS][TURNS] = previous_matching_beat[BLUE_ATTRS][TURNS]
                 new_entry[RED_ATTRS][TURNS] = previous_matching_beat[RED_ATTRS][TURNS]
                 new_entry[BEAT] = beat_number
-                if float(new_entry[BLUE_ATTRS][TURNS]) > 0 and new_entry[BLUE_ATTRS][
-                    MOTION_TYPE
-                ] in [DASH, STATIC]:
-                    new_entry[BLUE_ATTRS][PROP_ROT_DIR] = (
-                        previous_matching_beat[BLUE_ATTRS][PROP_ROT_DIR]
-                        if previous_matching_beat[BLUE_ATTRS][PROP_ROT_DIR] != NO_ROT
-                        else previous_entry[BLUE_ATTRS][PROP_ROT_DIR]
-                    )
-                if float(new_entry[RED_ATTRS][TURNS]) > 0 and new_entry[RED_ATTRS][
-                    MOTION_TYPE
-                ] in [DASH, STATIC]:
-                    new_entry[RED_ATTRS][PROP_ROT_DIR] = (
-                        previous_matching_beat[RED_ATTRS][PROP_ROT_DIR]
-                        if previous_matching_beat[RED_ATTRS][PROP_ROT_DIR] != NO_ROT
-                        else previous_entry[RED_ATTRS][PROP_ROT_DIR]
-                    )
-
+                blue_turns = new_entry[BLUE_ATTRS][TURNS]
+                if not blue_turns == "fl":
+                    if float(blue_turns) > 0 and new_entry[BLUE_ATTRS][MOTION_TYPE] in [
+                        DASH,
+                        STATIC,
+                    ]:
+                        new_entry[BLUE_ATTRS][PROP_ROT_DIR] = (
+                            previous_matching_beat[BLUE_ATTRS][PROP_ROT_DIR]
+                            if previous_matching_beat[BLUE_ATTRS][PROP_ROT_DIR]
+                            != NO_ROT
+                            else previous_entry[BLUE_ATTRS][PROP_ROT_DIR]
+                        )
+                else:
+                    new_entry[BLUE_ATTRS][PROP_ROT_DIR] = NO_ROT
+                    
+                red_turns = new_entry[RED_ATTRS][TURNS]
+                if not red_turns == "fl":
+                    if float(red_turns) > 0 and new_entry[RED_ATTRS][MOTION_TYPE] in [
+                        DASH,
+                        STATIC,
+                    ]:
+                        new_entry[RED_ATTRS][PROP_ROT_DIR] = (
+                            previous_matching_beat[RED_ATTRS][PROP_ROT_DIR]
+                            if previous_matching_beat[RED_ATTRS][PROP_ROT_DIR] != NO_ROT
+                            else previous_entry[RED_ATTRS][PROP_ROT_DIR]
+                        )
+                else:
+                    new_entry[RED_ATTRS][PROP_ROT_DIR] = NO_ROT
+                    
                 new_entry[BLUE_ATTRS][START_ORI] = previous_entry[BLUE_ATTRS][END_ORI]
                 new_entry[RED_ATTRS][START_ORI] = previous_entry[RED_ATTRS][END_ORI]
                 new_entry[BLUE_ATTRS][END_ORI] = (
