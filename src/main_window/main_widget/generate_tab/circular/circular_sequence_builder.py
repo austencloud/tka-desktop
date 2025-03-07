@@ -24,7 +24,7 @@ from .utils.rotation_determiner import RotationDeterminer
 from .utils.end_position_selector import RotatedEndPositionSelector
 from .utils.pictograph_selector import PictographSelector
 from .utils.word_length_calculator import WordLengthCalculator
-from .CAP_executor_factory import CAPExecutorFactory
+from .CAP_executor_factory import CAPExecutorFactory, StrictRotatedCAPExecutor
 from data.constants import *
 from data.positions_maps import rotated_and_swapped_positions
 
@@ -45,49 +45,83 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
     ):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
-            self.initialize_sequence(length, CAP_type=CAP_type)
-
-            blue_rot_dir, red_rot_dir = RotationDeterminer.get_rotation_dirs(
-                prop_continuity
+            self._build_sequence_internal(
+                length, turn_intensity, level, slice_size, CAP_type, prop_continuity
             )
-
-            word_length, available_range = WordLengthCalculator.calculate(
-                CAP_type, slice_size, length, len(self.sequence)
-            )
-
-            turn_manager = TurnIntensityManager(word_length, level, turn_intensity)
-            turns_blue, turns_red = turn_manager.allocate_turns_for_blue_and_red()
-
-            for i in range(available_range):
-                is_last_in_word = i == available_range - 1
-                next_pictograph = self._generate_next_pictograph(
-                    level,
-                    turns_blue[i],
-                    turns_red[i],
-                    is_last_in_word,
-                    slice_size,
-                    CAP_type,
-                    prop_continuity,
-                    blue_rot_dir,
-                    red_rot_dir,
-                )
-                self.sequence.append(next_pictograph)
-                self.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
-                    next_pictograph,
-                    override_grow_sequence=True,
-                    update_image_export_preview=False,
-                )
-                QApplication.processEvents()
-
-            self._apply_CAPs(self.sequence, CAP_type, slice_size)
-
-            construct_tab = self.main_widget.construct_tab
-            construct_tab.option_picker.updater.update_options()
-
         finally:
             QApplication.restoreOverrideCursor()
-            # self.main_widget.generate_tab.auto_complete_button.setEnabled(False)
             self.sequence_workbench.beat_frame.emit_update_image_export_preview()
+
+    def _build_sequence_internal(
+        self, length, turn_intensity, level, slice_size, CAP_type, prop_continuity
+    ):
+        self.initialize_sequence(length, CAP_type=CAP_type)
+        blue_rot_dir, red_rot_dir = RotationDeterminer.get_rotation_dirs(
+            prop_continuity
+        )
+
+        word_length, available_range = WordLengthCalculator.calculate(
+            CAP_type, slice_size, length, len(self.sequence)
+        )
+        if CAP_type == CAPType.MIRRORED_ROTATED:
+            word_length = int(word_length / 2)
+            available_range = int(available_range / 2)
+
+        turn_manager = TurnIntensityManager(word_length, level, turn_intensity)
+        turns_blue, turns_red = turn_manager.allocate_turns_for_blue_and_red()
+
+        self._generate_pictographs(
+            available_range,
+            level,
+            turns_blue,
+            turns_red,
+            slice_size,
+            CAP_type,
+            prop_continuity,
+            blue_rot_dir,
+            red_rot_dir,
+        )
+
+        self._apply_CAPs(self.sequence, CAP_type, slice_size)
+
+        construct_tab = self.main_widget.construct_tab
+        construct_tab.option_picker.updater.update_options()
+
+    def _generate_pictographs(
+        self,
+        available_range,
+        level,
+        turns_blue,
+        turns_red,
+        slice_size,
+        CAP_type,
+        prop_continuity,
+        blue_rot_dir,
+        red_rot_dir,
+    ):
+        for i in range(available_range):
+            is_last_in_word = i == available_range - 1
+            next_pictograph = self._generate_next_pictograph(
+                level,
+                turns_blue[i],
+                turns_red[i],
+                is_last_in_word,
+                slice_size,
+                CAP_type,
+                prop_continuity,
+                blue_rot_dir,
+                red_rot_dir,
+            )
+            self._add_pictograph_to_sequence(next_pictograph)
+            QApplication.processEvents()
+
+    def _add_pictograph_to_sequence(self, next_pictograph):
+        self.sequence.append(next_pictograph)
+        self.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+            next_pictograph,
+            override_grow_sequence=True,
+            update_image_export_preview=False,
+        )
 
     def _generate_next_pictograph(
         self,
@@ -101,6 +135,27 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         blue_rot_dir,
         red_rot_dir,
     ):
+        options = self._get_filtered_options(prop_continuity, blue_rot_dir, red_rot_dir)
+
+        next_beat = self._select_next_beat(
+            options, is_last_in_word, CAP_type, slice_size
+        )
+
+        if level in (2, 3):
+            next_beat = self.set_turns(next_beat, turn_blue, turn_red)
+
+        if next_beat[BLUE_ATTRS][MOTION_TYPE] in [DASH, STATIC] or next_beat[RED_ATTRS][
+            MOTION_TYPE
+        ] in [DASH, STATIC]:
+            self.update_dash_static_prop_rot_dirs(
+                next_beat, prop_continuity, blue_rot_dir, red_rot_dir
+            )
+
+        self.update_start_orientations(next_beat, self.sequence[-1])
+        self.update_end_orientations(next_beat)
+        return self.update_beat_number(next_beat, self.sequence)
+
+    def _get_filtered_options(self, prop_continuity, blue_rot_dir, red_rot_dir):
         options = deepcopy(
             self.main_widget.construct_tab.option_picker.option_getter._load_all_next_option_dicts(
                 self.sequence
@@ -110,6 +165,17 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             options = self.filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir
             )
+        return options
+
+    def _select_next_beat(self, options, is_last_in_word, CAP_type, slice_size):
+        if is_last_in_word:
+            expected_end_pos = self._determine_expected_end_pos(CAP_type, slice_size)
+            next_beat = PictographSelector.select_pictograph(options, expected_end_pos)
+        else:
+            next_beat = random.choice(options)
+        return next_beat
+
+    def _determine_expected_end_pos(self, CAP_type, slice_size):
         end_pos_selectors = {
             CAPType.STRICT_ROTATED: lambda: RotatedEndPositionSelector.determine_rotated_end_pos(
                 slice_size, self.sequence[1][END_POS]
@@ -136,37 +202,33 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             CAPType.ROTATED_SWAPPED: lambda: rotated_and_swapped_positions[
                 self.sequence[1][END_POS]
             ],
+            CAPType.MIRRORED_ROTATED: lambda: (
+                RotatedEndPositionSelector.determine_rotated_end_pos(
+                    "halved", self.sequence[1][END_POS]
+                )
+            ),
         }
 
-        if is_last_in_word:
-            end_pos_selector = end_pos_selectors.get(CAP_type)
-            if end_pos_selector:
-                expected_end_pos = end_pos_selector()
-            else:
-                raise ValueError(
-                    "CAP type not implemented yet. Please implement the CAP type."
-                )
-            next_beat = PictographSelector.select_pictograph(options, expected_end_pos)
+        end_pos_selector = end_pos_selectors.get(CAP_type)
+        if end_pos_selector:
+            return end_pos_selector()
         else:
-            next_beat = random.choice(options)
-
-        if level in (2, 3):
-            next_beat = self.set_turns(next_beat, turn_blue, turn_red)
-
-        if next_beat[BLUE_ATTRS][MOTION_TYPE] in [DASH, STATIC] or next_beat[RED_ATTRS][
-            MOTION_TYPE
-        ] in [DASH, STATIC]:
-            self.update_dash_static_prop_rot_dirs(
-                next_beat, prop_continuity, blue_rot_dir, red_rot_dir
+            raise ValueError(
+                "CAP type not implemented yet. Please implement the CAP type."
             )
-
-        self.update_start_orientations(next_beat, self.sequence[-1])
-        self.update_end_orientations(next_beat)
-        return self.update_beat_number(next_beat, self.sequence)
 
     def _apply_CAPs(self, sequence, cap_type: CAPType, rotation_type):
         executor = self.executors.get(cap_type)
-        if executor:
+        if executor and CAPType(cap_type) == CAPType.MIRRORED_ROTATED:
+            strict_rotated_executor: "StrictRotatedCAPExecutor" = self.executors.get(
+                CAPType.STRICT_ROTATED
+            )
+            sequence = strict_rotated_executor.create_CAPs(
+                sequence, halved_or_quartered="halved", end_mirrored = True
+            )
+            executor.create_CAPs(sequence)
+
+        elif executor:
             executor.create_CAPs(sequence)
         else:
             raise ValueError(f"No executor found for CAP type: {cap_type.name}")

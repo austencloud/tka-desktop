@@ -14,7 +14,7 @@ PERMUTATION_TYPES = {
     "rotated_complementary": "Rotated / Complementary",
     "mirrored_complementary": "Mirrored / Complementary",
     "rotated_swapped": "Rotated / Swapped",
-    # "mirrored_rotated": "Mirrored / Rotated",
+    "mirrored_rotated": "Mirrored / Rotated",
     # "mirrored_complementary_rotated": "Mirrored / Complementary / Rotated",
     # "rotated_swapped_complementary": "Rotated / Swapped / Complementary",
     # "mirrored_swapped_complementary": "Mirrored / Swapped / Complementary",
@@ -56,13 +56,12 @@ class CAPPicker(QWidget):
             ("rotated_complementary", 1, 2),
             ("mirrored_complementary", 1, 3),
             ("rotated_swapped", 2, 0),
-            # ("mirrored_rotated", 2, 1),
+            ("mirrored_rotated", 2, 1),
             # ("mirrored_complementary_rotated", 2, 2),
             # ("rotated_swapped_complementary", 2, 3),
             # ("mirrored_swapped_complementary", 3, 0),
             # ("mirrored_rotated_swapped", 3, 1),
             # ("mirrored_rotated_complementary_swapped", 3, 2),
-            
         ]
 
         for perm_type, row, col in buttons:

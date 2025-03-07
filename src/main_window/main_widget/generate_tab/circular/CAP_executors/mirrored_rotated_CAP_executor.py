@@ -6,7 +6,7 @@ from data.locations import vertical_loc_mirror_map
 from data.positions_maps import mirrored_positions
 
 
-class StrictMirroredCAPExecutor(CAPExecutor):
+class MirroredRotatedCAPExecutor(CAPExecutor):
     CAP_TYPE = CAPType.STRICT_MIRRORED  # Add this
 
     def __init__(self, circular_sequence_generator):
@@ -14,13 +14,10 @@ class StrictMirroredCAPExecutor(CAPExecutor):
 
     def create_CAPs(self, sequence: list[dict]):
         """Creates mirrored CAPs for a circular sequence."""
-
         sequence_length = len(sequence) - 2
         last_entry = sequence[-1]
         next_beat_number = last_entry[BEAT] + 1
-        final_intended_sequence_length = (
-            sequence_length + self.determine_how_many_entries_to_add(sequence_length)
-        )
+        final_intended_sequence_length = sequence_length * 2
 
         for i in range(2, sequence_length + 2):  # Skip first two beats
             next_pictograph = self.create_new_CAP_entry(
@@ -68,31 +65,14 @@ class StrictMirroredCAPExecutor(CAPExecutor):
             END_POS: self.get_mirrored_position(previous_matching_beat),
             TIMING: previous_matching_beat[TIMING],
             DIRECTION: previous_matching_beat[DIRECTION],
-            BLUE_ATTRS: self.generate_mirrored_attributes(
+            BLUE_ATTRS: self.create_new_attributes(
                 previous_entry[BLUE_ATTRS], previous_matching_beat[BLUE_ATTRS]
             ),
-            RED_ATTRS: self.generate_mirrored_attributes(
+            RED_ATTRS: self.create_new_attributes(
                 previous_entry[RED_ATTRS], previous_matching_beat[RED_ATTRS]
             ),
         }
-        
-        if previous_matching_beat[BLUE_ATTRS].get(PREFLOAT_MOTION_TYPE, ""):
-            new_entry[BLUE_ATTRS][PREFLOAT_MOTION_TYPE] = previous_matching_beat[
-                BLUE_ATTRS
-            ][PREFLOAT_MOTION_TYPE]
-        if previous_matching_beat[BLUE_ATTRS].get(PREFLOAT_PROP_ROT_DIR, ""):
-            new_entry[BLUE_ATTRS][PREFLOAT_PROP_ROT_DIR] = previous_matching_beat[
-                BLUE_ATTRS
-            ][PREFLOAT_PROP_ROT_DIR]
-        if previous_matching_beat[RED_ATTRS].get(PREFLOAT_MOTION_TYPE, ""):
-            new_entry[RED_ATTRS][PREFLOAT_MOTION_TYPE] = previous_matching_beat[
-                RED_ATTRS
-            ][PREFLOAT_MOTION_TYPE]
-        if previous_matching_beat[RED_ATTRS].get(PREFLOAT_PROP_ROT_DIR, ""):
-            new_entry[RED_ATTRS][PREFLOAT_PROP_ROT_DIR] = previous_matching_beat[
-                RED_ATTRS
-            ][PREFLOAT_PROP_ROT_DIR]
-            
+
         # Ensure orientations are set properly
         new_entry[BLUE_ATTRS][END_ORI] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
@@ -113,7 +93,7 @@ class StrictMirroredCAPExecutor(CAPExecutor):
             previous_matching_beat[END_POS], previous_matching_beat[END_POS]
         )
 
-    def generate_mirrored_attributes(
+    def create_new_attributes(
         self, previous_entry_attributes: dict, previous_matching_beat_attributes: dict
     ) -> dict:
         """Creates mirrored attributes by flipping relevant properties."""

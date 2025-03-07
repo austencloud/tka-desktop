@@ -1,11 +1,14 @@
 from typing import TYPE_CHECKING
 from data.quartered_CAPs import quartered_CAPs
 from data.halved_CAPs import halved_CAPs
+from data.positions_maps import mirrored_positions
 from data.constants import (
     BEAT,
     BLUE,
     BLUE_ATTRS,
     CCW_HANDPATH,
+    CLOCKWISE,
+    COUNTER_CLOCKWISE,
     CW_HANDPATH,
     DASH,
     DIRECTION,
@@ -14,6 +17,7 @@ from data.constants import (
     END_POS,
     LETTER,
     MOTION_TYPE,
+    NO_ROT,
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
     PROP_ROT_DIR,
@@ -26,6 +30,7 @@ from data.constants import (
     STATIC,
     TIMING,
     TURNS,
+    VERTICAL,
 )
 from data.CAP_executors.rotated_loc_maps import (
     loc_map_cw,
@@ -34,6 +39,8 @@ from data.CAP_executors.rotated_loc_maps import (
     loc_map_static,
     hand_rot_dir_map,
 )
+from data.locations import vertical_loc_mirror_map
+
 from PyQt6.QtWidgets import QApplication
 
 from main_window.main_widget.generate_tab.circular.CAP_type import CAPType
@@ -52,7 +59,12 @@ class StrictRotatedCAPExecutor(CAPExecutor):
         self.circular_sequence_generator = circular_sequence_generator
         self.hand_rot_dir_calculator = HandpathCalculator()
 
-    def create_CAPs(self, sequence: list[dict]):
+    def create_CAPs(
+        self,
+        sequence: list[dict],
+        halved_or_quartered: str = None,
+        end_mirrored: bool = False,
+    ):
         start_position_entry = (
             sequence.pop(0) if SEQUENCE_START_POSITION in sequence[0] else None
         )
@@ -61,19 +73,28 @@ class StrictRotatedCAPExecutor(CAPExecutor):
 
         new_entries = []
         next_beat_number = last_entry[BEAT] + 1
-        halved_or_quartered = self.get_halved_or_quartered()
+        if not halved_or_quartered:
+            halved_or_quartered = self.get_halved_or_quartered()
 
         sequence_workbench = (
             self.circular_sequence_generator.main_widget.sequence_workbench
         )
-        entries_to_add = self.determine_how_many_entries_to_add(sequence_length)
+        if halved_or_quartered == "halved":
+            entries_to_add = sequence_length
+        elif halved_or_quartered == "quartered":
+            entries_to_add = sequence_length * 3
+
         for _ in range(entries_to_add):
-            next_pictograph = self.create_new_rotated_CAP_entry(
+            final_intended_sequence_length = sequence_length + entries_to_add
+            is_end_of_sequence = next_beat_number == final_intended_sequence_length
+            next_pictograph = self.create_new_CAP_entry(
                 sequence,
                 last_entry,
                 next_beat_number,
-                sequence_length + entries_to_add,
+                final_intended_sequence_length,
                 halved_or_quartered,
+                is_end_of_sequence,
+                end_mirrored,
             )
             new_entries.append(next_pictograph)
             sequence.append(next_pictograph)
@@ -94,6 +115,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
         if start_position_entry:
             start_position_entry[BEAT] = 0
             sequence.insert(0, start_position_entry)
+        return sequence
 
     def determine_how_many_entries_to_add(self, sequence_length: int) -> int:
         if self.is_quartered_CAP():
@@ -138,13 +160,15 @@ class StrictRotatedCAPExecutor(CAPExecutor):
             loc_map = loc_map_static
         return loc_map[start_loc]
 
-    def create_new_rotated_CAP_entry(
+    def create_new_CAP_entry(
         self,
         sequence,
         previous_entry,
         beat_number: int,
         final_intended_sequence_length: int,
         halved_or_quartered: str,
+        is_end_of_sequence: bool,
+        end_mirrored: bool,
     ) -> dict:
         previous_matching_beat = self.get_previous_matching_beat(
             sequence,
@@ -152,23 +176,113 @@ class StrictRotatedCAPExecutor(CAPExecutor):
             final_intended_sequence_length,
             halved_or_quartered,
         )
+        if end_mirrored and is_end_of_sequence:
+            new_end_pos = self.calculate_new_end_pos(
+                previous_matching_beat,
+                is_end_of_sequence,
+                end_mirrored,
+                halved_or_quartered,
+            )
+            current_end_pos = sequence[-1][END_POS]
+            #  use the letters data stored in the main widget to find a letter that can get you from the current end pos to the new end pos
+            pictograph_dataset = (
+                self.circular_sequence_generator.main_widget.pictograph_dataset
+            )
+            possible_last_beats: list[dict] = []
+            for letter in pictograph_dataset:
+                for pictograph_data in pictograph_dataset[letter]:
+                    if pictograph_data.get(
+                        START_POS
+                    ) == current_end_pos and pictograph_data.get(
+                        END_POS
+                    ) == new_end_pos:
+                        possible_last_beats.append(pictograph_data)
+            if len(possible_last_beats) == 0:
+                raise ValueError(
+                    f"Could not find a pictograph that goes from {current_end_pos} to {new_end_pos}"
+                )
+            elif len(possible_last_beats) >= 1:
+                # randomize the selection of the last beat
+                import random
 
-        new_entry = {
-            BEAT: beat_number,
-            LETTER: previous_matching_beat[LETTER],
-            START_POS: previous_entry[END_POS],
-            END_POS: self.calculate_new_end_pos(previous_matching_beat, previous_entry),
-            TIMING: previous_matching_beat[TIMING],
-            DIRECTION: previous_matching_beat[DIRECTION],
-            BLUE_ATTRS: self.create_new_attributes(
-                previous_entry[BLUE_ATTRS],
-                previous_matching_beat[BLUE_ATTRS],
-            ),
-            RED_ATTRS: self.create_new_attributes(
-                previous_entry[RED_ATTRS],
-                previous_matching_beat[RED_ATTRS],
-            ),
-        }
+                new_entry = random.choice(possible_last_beats)
+                new_entry[BLUE_ATTRS][TURNS] = previous_matching_beat[BLUE_ATTRS][TURNS]
+                new_entry[RED_ATTRS][TURNS] = previous_matching_beat[RED_ATTRS][TURNS]
+                new_entry[BEAT] = beat_number
+                if float(new_entry[BLUE_ATTRS][TURNS]) > 0 and new_entry[BLUE_ATTRS][
+                    MOTION_TYPE
+                ] in [DASH,STATIC]:
+                    new_entry[BLUE_ATTRS][PROP_ROT_DIR] = previous_matching_beat[
+                        BLUE_ATTRS
+                    ][PROP_ROT_DIR] if previous_matching_beat[
+                        BLUE_ATTRS
+                    ][PROP_ROT_DIR] != NO_ROT else previous_entry[BLUE_ATTRS][PROP_ROT_DIR]
+                if float(new_entry[RED_ATTRS][TURNS]) > 0 and new_entry[RED_ATTRS][
+                    MOTION_TYPE
+                ] in [DASH,STATIC]:
+                    new_entry[RED_ATTRS][PROP_ROT_DIR] = previous_matching_beat[
+                        RED_ATTRS
+                    ][PROP_ROT_DIR] if previous_matching_beat[
+                        RED_ATTRS
+                    ][PROP_ROT_DIR] != NO_ROT else previous_entry[RED_ATTRS][PROP_ROT_DIR]
+                    
+                    
+                new_entry[BLUE_ATTRS][START_ORI] = previous_entry[BLUE_ATTRS][END_ORI]
+                new_entry[RED_ATTRS][START_ORI] = previous_entry[RED_ATTRS][END_ORI]
+                new_entry[BLUE_ATTRS][END_ORI] = (
+                    self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
+                        new_entry, BLUE
+                    )
+                )
+                new_entry[RED_ATTRS][END_ORI] = (
+                    self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(
+                        new_entry, RED
+                    )
+                )
+                # new_entry[BLUE_ATTRS][PROP_ROT_DIR] = previous_matching_beat[
+                #     BLUE_ATTRS
+                # ][PROP_ROT_DIR]
+                # new_entry[RED_ATTRS][PROP_ROT_DIR] = previous_matching_beat[RED_ATTRS][
+                #     PROP_ROT_DIR
+                # ]
+                # new_entry = {
+                #     BEAT: beat_number,
+                #     LETTER: previous_matching_beat[LETTER],
+                #     START_POS: previous_entry[END_POS],
+                #     END_POS: new_end_pos,
+                #     TIMING: previous_matching_beat[TIMING],
+                #     DIRECTION: previous_matching_beat[DIRECTION],
+                #     BLUE_ATTRS: self.generate_mirrored_attributes(
+                #         previous_entry[BLUE_ATTRS],
+                #         previous_matching_beat[BLUE_ATTRS],
+                #     ),
+                #     RED_ATTRS: self.generate_mirrored_attributes(
+                #         previous_entry[RED_ATTRS],
+                #         previous_matching_beat[RED_ATTRS],
+                #     ),
+                # }
+        else:
+            new_entry = {
+                BEAT: beat_number,
+                LETTER: previous_matching_beat[LETTER],
+                START_POS: previous_entry[END_POS],
+                END_POS: self.calculate_new_end_pos(
+                    previous_matching_beat,
+                    is_end_of_sequence,
+                    end_mirrored,
+                    halved_or_quartered,
+                ),
+                TIMING: previous_matching_beat[TIMING],
+                DIRECTION: previous_matching_beat[DIRECTION],
+                BLUE_ATTRS: self.create_new_attributes(
+                    previous_entry[BLUE_ATTRS],
+                    previous_matching_beat[BLUE_ATTRS],
+                ),
+                RED_ATTRS: self.create_new_attributes(
+                    previous_entry[RED_ATTRS],
+                    previous_matching_beat[RED_ATTRS],
+                ),
+            }
 
         if previous_matching_beat[BLUE_ATTRS].get(PREFLOAT_MOTION_TYPE, ""):
             new_entry[BLUE_ATTRS][PREFLOAT_MOTION_TYPE] = previous_matching_beat[
@@ -200,29 +314,86 @@ class StrictRotatedCAPExecutor(CAPExecutor):
 
         return new_entry
 
-    def calculate_new_end_pos(
-        self, previous_matching_beat: dict, previous_entry: dict
+    def generate_mirrored_attributes(
+        self, previous_entry_attributes: dict, previous_matching_beat_attributes: dict
+    ) -> dict:
+        """Creates mirrored attributes by flipping relevant properties."""
+        motion_type = previous_matching_beat_attributes[MOTION_TYPE]
+        prop_rot_dir = self.get_mirrored_prop_rot_dir(
+            previous_matching_beat_attributes[PROP_ROT_DIR]
+        )
+
+        new_entry_attributes = {
+            MOTION_TYPE: motion_type,
+            START_ORI: previous_entry_attributes[END_ORI],
+            PROP_ROT_DIR: prop_rot_dir,
+            START_LOC: previous_entry_attributes[END_LOC],
+            END_LOC: self.calculate_mirrored_CAP_new_loc(
+                previous_matching_beat_attributes[END_LOC]
+            ),
+            TURNS: previous_matching_beat_attributes[TURNS],
+        }
+
+        # Handle floating states
+        if previous_matching_beat_attributes.get(PREFLOAT_MOTION_TYPE):
+            new_entry_attributes[PREFLOAT_MOTION_TYPE] = (
+                previous_matching_beat_attributes[PREFLOAT_MOTION_TYPE]
+            )
+            new_entry_attributes[PREFLOAT_PROP_ROT_DIR] = (
+                self.get_mirrored_prop_rot_dir(
+                    previous_matching_beat_attributes[PREFLOAT_PROP_ROT_DIR]
+                )
+            )
+
+    def get_mirrored_prop_rot_dir(self, prop_rot_dir: str) -> str:
+        """Mirrors prop rotation direction."""
+        if prop_rot_dir == CLOCKWISE:
+            return COUNTER_CLOCKWISE
+        elif prop_rot_dir == COUNTER_CLOCKWISE:
+            return CLOCKWISE
+        return NO_ROT
+
+    def calculate_mirrored_CAP_new_loc(
+        self, previous_matching_beat_end_loc: str
     ) -> str:
-        blue_hand_rot_dir = self.hand_rot_dir_calculator.get_hand_rot_dir(
-            previous_matching_beat[BLUE_ATTRS][START_LOC],
-            previous_matching_beat[BLUE_ATTRS][END_LOC],
-        )
-        red_hand_rot_dir = self.hand_rot_dir_calculator.get_hand_rot_dir(
-            previous_matching_beat[RED_ATTRS][START_LOC],
-            previous_matching_beat[RED_ATTRS][END_LOC],
-        )
+        """Finds the new mirrored location based on grid mode."""
+        new_location = vertical_loc_mirror_map.get(previous_matching_beat_end_loc)
+        if new_location is None:
+            raise ValueError(
+                f"No mirrored location found for {previous_matching_beat_end_loc} in vertical mirror map."
+            )
+        return new_location
 
-        new_blue_end_loc = self.calculate_rotated_permuatation_new_loc(
-            previous_entry[BLUE_ATTRS][END_LOC],
-            blue_hand_rot_dir,
-        )
+        return new_entry_attributes
 
-        new_red_end_loc = self.calculate_rotated_permuatation_new_loc(
-            previous_entry[RED_ATTRS][END_LOC],
-            red_hand_rot_dir,
-        )
-        new_end_pos = positions_map.get((new_blue_end_loc, new_red_end_loc))
-        return new_end_pos
+    def calculate_new_end_pos(
+        self,
+        previous_matching_beat: dict,
+        is_last_in_word: bool,
+        end_mirrored: bool,
+        halved_or_quartered: str,
+    ) -> str:
+        if halved_or_quartered == "quartered":
+            map = quartered_CAPs
+        elif halved_or_quartered == "halved":
+            map = halved_CAPs
+        calculated_end_position = [
+            end_pos
+            for (start_pos, end_pos) in map
+            if start_pos == previous_matching_beat[END_POS]
+        ][0]
+
+        if is_last_in_word and end_mirrored:
+            mirrored_end_pos = mirrored_positions[VERTICAL].get(calculated_end_position)
+            if mirrored_end_pos:
+                return mirrored_end_pos
+            else:
+                ValueError(
+                    f"Could not find mirrored position for {calculated_end_position}"
+                )
+
+        else:
+            return calculated_end_position
 
     def get_hand_rot_dir_from_locs(self, start_loc: str, end_loc: str) -> str:
         return hand_rot_dir_map.get((start_loc, end_loc))

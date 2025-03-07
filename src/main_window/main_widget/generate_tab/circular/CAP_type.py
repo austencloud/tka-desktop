@@ -15,7 +15,7 @@ class CAPType(Enum):
     MIRRORED_COMPLEMENTARY = "mirrored_complementary"
     ROTATED_SWAPPED = "rotated_swapped"
 
-    # MIRRORED_ROTATED = "mirrored_rotated"
+    MIRRORED_ROTATED = "mirrored_rotated"
     # MIRRORED_COMPLEMENTARY_ROTATED = "mirrored_complementary_rotated"
     # ROTATED_SWAPPED_COMPLEMENTARY = "rotated_swapped_complementary"
     # MIRRORED_SWAPPED_COMPLEMENTARY = "mirrored_swapped_complementary"
