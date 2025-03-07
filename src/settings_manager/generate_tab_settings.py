@@ -2,7 +2,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import QSettings
 
-from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import CAPType
+from main_window.main_widget.generate_tab.circular.CAP_type import CAPType
 
 if TYPE_CHECKING:
     pass

@@ -26,13 +26,13 @@ class TurnsBoxHeader(BaseAdjustmentBoxHeaderWidget):
         else:
             prop_rot_dir_button_mngr.show_prop_rot_dir_buttons()
             if motion.state.prop_rot_dir == CLOCKWISE:
-                prop_rot_dir_button_mngr.cw_button.press()
-                prop_rot_dir_button_mngr.ccw_button.unpress()
+                prop_rot_dir_button_mngr.cw_button.set_selected(True)
+                prop_rot_dir_button_mngr.ccw_button.set_selected(False)
                 self.turns_box.prop_rot_dir_btn_state[CLOCKWISE] = True
                 self.turns_box.prop_rot_dir_btn_state[COUNTER_CLOCKWISE] = False
             elif motion.state.prop_rot_dir == COUNTER_CLOCKWISE:
-                prop_rot_dir_button_mngr.ccw_button.press()
-                prop_rot_dir_button_mngr.cw_button.unpress()
+                prop_rot_dir_button_mngr.ccw_button.set_selected(True)
+                prop_rot_dir_button_mngr.cw_button.set_selected(False)
                 self.turns_box.prop_rot_dir_btn_state[CLOCKWISE] = False
                 self.turns_box.prop_rot_dir_btn_state[COUNTER_CLOCKWISE] = True
         # QApplication.processEvents()

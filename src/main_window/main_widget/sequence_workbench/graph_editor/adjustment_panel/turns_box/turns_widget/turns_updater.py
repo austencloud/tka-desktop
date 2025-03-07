@@ -124,7 +124,7 @@ class TurnsUpdater:
         self._set_prop_rot_dir_state_default()
         prop_rot_dir_manager = self.turns_box.prop_rot_dir_button_manager
         prop_rot_dir_manager.show_prop_rot_dir_buttons()
-        prop_rot_dir_manager.cw_button.press()
+        prop_rot_dir_manager.cw_button.set_selected(True)
         return CLOCKWISE
 
     def _set_prop_rot_dir_state_default(self) -> None:

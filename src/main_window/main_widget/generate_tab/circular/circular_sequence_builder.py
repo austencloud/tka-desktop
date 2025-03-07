@@ -17,14 +17,14 @@ from data.positions_maps import (
     mirrored_swapped_positions,
 )
 from .CAP_executors.CAP_executor import CAPExecutor
-from .CAP_executors.CAP_executor_factory import CAPExecutorFactory
-from .CAP_executors.CAP_type import CAPType
+from .CAP_type import CAPType
 from ..base_sequence_builder import BaseSequenceBuilder
 from ..turn_intensity_manager import TurnIntensityManager
 from .utils.rotation_determiner import RotationDeterminer
 from .utils.end_position_selector import RotatedEndPositionSelector
 from .utils.pictograph_selector import PictographSelector
 from .utils.word_length_calculator import WordLengthCalculator
+from .CAP_executor_factory import CAPExecutorFactory
 from data.constants import *
 
 if TYPE_CHECKING:
@@ -127,10 +127,18 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
             elif CAP_type == CAPType.STRICT_SWAPPED:
                 expected_end_pos = swapped_positions[self.sequence[1][END_POS]]
+            elif CAP_type == CAPType.SWAPPED_COMPLEMENTARY:
+                expected_end_pos = swapped_positions[self.sequence[1][END_POS]]
+            elif CAP_type == CAPType.STRICT_COMPLEMENTARY:
+                expected_end_pos = self.sequence[1][END_POS]
+            elif CAP_type == CAPType.ROTATED_COMPLEMENTARY:
+                expected_end_pos = RotatedEndPositionSelector.determine_rotated_end_pos(
+                    "halved", self.sequence[1][END_POS]
+                )
             else:
-                # raise an error- not implemented yet
-                print("CAP type not implemented yet")
-                expected_end_pos = None
+                raise ValueError(
+                    "CAP type not implemented yet. Please implement the CAP type."
+                )
             next_beat = PictographSelector.select_pictograph(options, expected_end_pos)
         else:
             next_beat = random.choice(options)
@@ -152,11 +160,6 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
     def _apply_CAPs(self, sequence, cap_type: CAPType, rotation_type):
         executor = self.executors.get(cap_type)
         if executor:
-            if executor.can_perform_CAP(sequence):
-                executor.create_CAPs(sequence)
-            else:
-                raise ValueError(
-                    f"Cannot perform {cap_type.name} CAP on the given sequence."
-                )
+            executor.create_CAPs(sequence)
         else:
             raise ValueError(f"No executor found for CAP type: {cap_type.name}")

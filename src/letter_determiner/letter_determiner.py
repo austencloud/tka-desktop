@@ -123,3 +123,4 @@ class LetterDeterminer:
             and example[f"{non_shift.state.color}_attributes"]["end_loc"]
             == non_shift.state.end_loc
         )
+

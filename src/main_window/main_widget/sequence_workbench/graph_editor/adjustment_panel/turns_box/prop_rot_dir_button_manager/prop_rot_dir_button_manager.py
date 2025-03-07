@@ -56,8 +56,8 @@ class PropRotDirButtonManager:
             lambda: self._set_prop_rot_dir(COUNTER_CLOCKWISE),
             COUNTER_CLOCKWISE,
         )
-        self.cw_button.unpress()
-        self.ccw_button.unpress()
+        self.cw_button.set_selected(False)
+        self.ccw_button.set_selected(False)
         self.cw_button.hide()
         self.ccw_button.hide()
         return [self.cw_button, self.ccw_button]
@@ -65,8 +65,8 @@ class PropRotDirButtonManager:
     def create_prop_rot_dir_button(
         self, icon_path: str, callback, prop_rot_dir
     ) -> PropRotDirButton:
-        button = PropRotDirButton(self.turns_box, prop_rot_dir)
-        button.setIcon(QIcon(icon_path))
+        button = PropRotDirButton(self.turns_box, prop_rot_dir, icon_path)
+        # button.setIcon(QIcon(icon_path))
         button.clicked.connect(callback)
         return button
 
@@ -174,10 +174,10 @@ class PropRotDirButtonManager:
     ) -> None:
         for button in self.prop_rot_dir_buttons:
             if button.prop_rot_dir == prop_rot_dir:
-                button.press()
+                button.set_selected(True)
                 button.update_state_dict(self.turns_box.prop_rot_dir_btn_state, True)
             else:
-                button.unpress()
+                button.set_selected(False)
                 button.update_state_dict(self.turns_box.prop_rot_dir_btn_state, False)
 
     def show_prop_rot_dir_buttons(self) -> None:
@@ -195,8 +195,8 @@ class PropRotDirButtonManager:
         }.get(prop_rot_dir, prop_rot_dir)
 
     def unpress_prop_rot_dir_buttons(self) -> None:
-        self.cw_button.unpress()
-        self.ccw_button.unpress()
+        self.cw_button.set_selected(False)
+        self.ccw_button.set_selected(False)
 
     def update_prop_rotation_buttons(self, motion: "Motion", new_turns: int) -> None:
         """Adjust prop rotation direction buttons based on the new turns value."""
@@ -234,7 +234,7 @@ class PropRotDirButtonManager:
         """Set default prop rotation direction to clockwise."""
         self._set_prop_rot_dir_state_default()
         self.show_prop_rot_dir_buttons()
-        self.cw_button.press()
+        self.cw_button.set_selected(True)
         return CLOCKWISE
 
     def _set_prop_rot_dir_state_default(self) -> None:
