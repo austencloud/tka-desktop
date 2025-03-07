@@ -1,5 +1,6 @@
 # src/main_window/main_widget/sequence_workbench/graph_editor/hotkey_graph_adjuster/arrow_rot_angle_override_manager.py
 from typing import TYPE_CHECKING
+from enums.letter.letter import Letter
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
     ArrowRotAngleOverrideKeyGenerator,
 )
@@ -51,13 +52,17 @@ class RotAngleOverrideDataHandler:
         )
 
     def _get_letter_data(
-        self, override_data: dict[str, str, dict[str, dict[str, bool]]]
-    ) -> dict[str, dict[str, dict[str, bool]]]:
+        self,
+        override_data: dict[
+            str, str | Letter | dict[str, dict[str, dict[str, dict[str, bool]]]]
+        ],
+    ) -> dict[str, dict[str, bool]]:
+
         return (
             override_data["placement_data"]
-            .get(self.manager.view.pictograph.state.grid_mode, {})  # type: ignore
-            .get(override_data["ori_key"], {})  # type: ignore
-            .get(override_data["letter"].value, {})  # type: ignore
+            .get(self.manager.view.pictograph.state.grid_mode, {})
+            .get(override_data["ori_key"], {})
+            .get(override_data["letter"].value, {})
         )
 
     def _remove_rotation_override(self, override_data: dict, turn_data: dict) -> None:
