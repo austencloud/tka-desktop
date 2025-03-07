@@ -3,7 +3,6 @@ import logging
 from typing import TYPE_CHECKING
 
 from enums.letter.letter import Letter
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.special_placement_data_updater.placement_data_cleaner import PlacementDataCleaner
 from utils.path_helpers import get_data_path
 
 from .mirrored_entry_manager.mirrored_entry_manager import MirroredEntryManager

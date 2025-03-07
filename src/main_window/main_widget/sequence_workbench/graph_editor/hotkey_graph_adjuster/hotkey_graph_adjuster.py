@@ -1,14 +1,8 @@
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.arrow_movement_manager import (
-    ArrowMovementManager,
-)
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.prop_placement_override_manager import (
-    PropPlacementOverrideManager,
-)
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.special_placement_data_updater.special_placement_entry_remover import (
-    SpecialPlacementEntryRemover,
-)
+from .arrow_movement_manager import ArrowMovementManager
+from .prop_placement_override_manager import PropPlacementOverrideManager
+from .data_updater.special_placement_entry_remover import SpecialPlacementEntryRemover
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )

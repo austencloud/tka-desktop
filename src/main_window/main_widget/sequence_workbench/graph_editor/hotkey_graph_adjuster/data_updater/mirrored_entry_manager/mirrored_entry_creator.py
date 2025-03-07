@@ -8,7 +8,7 @@ from placement_managers.attr_key_generator import (
 )
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import (
+    from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.data_updater.special_placement_data_updater import (
         SpecialPlacementDataUpdater,
     )
 
@@ -52,7 +52,9 @@ class MirroredEntryCreator:
             if attr_key not in letter_data:
                 letter_data[attr_key] = {}
 
-            other_letter_data[mirrored_turns_tuple][attr_key] = letter_data[turns_tuple][attr_key]
+            other_letter_data[mirrored_turns_tuple][attr_key] = letter_data[
+                turns_tuple
+            ][attr_key]
 
             self._initialize_dicts(mirrored_turns_tuple, other_letter_data, attr_key)
             self.special_placement_data_updater.update_specific_entry_in_json(

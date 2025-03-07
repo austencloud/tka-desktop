@@ -8,7 +8,7 @@ from .mirrored_entry_creator import MirroredEntryCreator
 from .mirrored_entry_updater.mirrored_entry_updater import MirroredEntryUpdater
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import (
+    from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.data_updater.special_placement_data_updater import (
         SpecialPlacementDataUpdater,
     )
 

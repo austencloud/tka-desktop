@@ -2,8 +2,9 @@ from email.policy import default
 from typing import TYPE_CHECKING
 from venv import logger
 
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
-
+from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.data_updater.special_placement_data_updater import (
+    SpecialPlacementDataUpdater,
+)
 
 
 from .arrow_placement_context import ArrowPlacementContext

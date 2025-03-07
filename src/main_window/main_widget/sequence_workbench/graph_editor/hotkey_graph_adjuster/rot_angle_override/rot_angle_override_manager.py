@@ -1,7 +1,7 @@
 # src/main_window/main_widget/sequence_workbench/graph_editor/hotkey_graph_adjuster/arrow_rot_angle_override_manager.py
 from typing import TYPE_CHECKING
 from enums.letter.letter import Letter
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.special_placement_data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
+from ..data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
 from .rot_angle_override_data_handler import RotAngleOverrideDataHandler
 from .rot_angle_override_coordinator import RotAngleOverrideCoordinator
 from .rot_angle_override_validator import RotAngleOverrideValidator
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class RotAngleOverrideManager:
-    """Main coordinator for rotation angle override functionality"""
+    """Main coordinator for arrow rotation angle override functionality"""
 
     def __init__(self, hotkey_graph_adjuster: "HotkeyGraphAdjuster") -> None:
         self.hotkey_graph_adjuster = hotkey_graph_adjuster
@@ -36,7 +36,7 @@ class RotAngleOverrideManager:
         """Main entry point for handling rotation angle overrides"""
         self.coordinator.execute_override_flow()
 
-    def _get_data_updater(self)  -> SpecialPlacementDataUpdater:
+    def _get_data_updater(self) -> SpecialPlacementDataUpdater:
         return self.view.pictograph.managers.arrow_placement_manager.data_updater
 
     @property
