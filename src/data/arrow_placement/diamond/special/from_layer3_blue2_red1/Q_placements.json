@@ -109,6 +109,9 @@
     "(0, fl)": {
       "float_from_layer2": [90, -70],
       "float_from_layer1": [25, -30]
+    },
+    "(fl, 0)": {
+      "float_from_layer2": [70, -70]
     }
   }
 }

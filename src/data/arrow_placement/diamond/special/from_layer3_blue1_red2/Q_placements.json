@@ -107,8 +107,7 @@
       "anti_from_layer2": [105, -95]
     },
     "(0, fl)": {
-      "float_from_layer2": [90, -70],
-      "anti_from_layer1": [35, -35]
+      "float_from_layer2": [70, -70]
     },
     "(fl, 0)": {
       "float_from_layer1": [25, -30]

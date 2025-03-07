@@ -35,31 +35,25 @@ class DirectionalTupleGenerator:
     # Special cases for Type5 motions
     _special_type5_cases = {
         DIAMOND: {
-            (BLUE, (NORTH, SOUTH)): lambda x, y: [(x, y), (-y, x), (-x, -y), (y, -x)],
-            (BLUE, (EAST, WEST)): lambda x, y: [(x, y), (-y, -x), (x, -y), (y, x)],
-            (RED, (NORTH, SOUTH)): lambda x, y: [(x, y), (-y, -x), (-x, -y), (y, -x)],
-            (RED, (WEST, EAST)): lambda x, y: [(-x, y), (-y, -x), (-x, -y), (y, x)],
+            (NORTH, SOUTH): lambda x, y: [(x, y), (-y, -x), (-x, -y), (y, -x)],
+            (SOUTH, NORTH): lambda x, y: [(x, -y), (-y, x), (-x, y), (y, x)],
+            (EAST, WEST): lambda x, y: [(x, y), (-y, -x), (x, -y), (y, x)],
+            (WEST, EAST): lambda x, y: [(-x, y), (-y, -x), (-x, -y), (y, x)],
         },
         BOX: {
-            (BLUE, (NORTHEAST, SOUTHWEST)): lambda x, y: [
+            (NORTHEAST, SOUTHWEST): lambda x, y: [
                 (x, y),
                 (y, x),
                 (-x, -y),
                 (y, x),
             ],
-            (BLUE, (NORTHWEST, SOUTHEAST)): lambda x, y: [
+            (NORTHWEST, SOUTHEAST): lambda x, y: [
                 (x, -y),
                 (-y, -x),
                 (x, -y),
                 (y, x),
             ],
-            (RED, (NORTHEAST, SOUTHWEST)): lambda x, y: [
-                (x, y),
-                (y, x),
-                (-x, -y),
-                (y, x),
-            ],
-            (RED, (SOUTHEAST, NORTHWEST)): lambda x, y: [
+            (SOUTHEAST, NORTHWEST): lambda x, y: [
                 (-x, y),
                 (-y, -x),
                 (-x, y),
@@ -100,7 +94,7 @@ class DirectionalTupleGenerator:
         DIAMOND: {
             CLOCKWISE: lambda x, y: [(x, -y), (y, x), (-x, y), (-y, -x)],
             COUNTER_CLOCKWISE: lambda x, y: [(-x, -y), (y, -x), (x, y), (-y, x)],
-            NO_ROT: lambda x, y: [(x, y), (-y, x), (x, -y), (y, -x)],
+            NO_ROT: lambda x, y: [(x, y), (-y, -x), (x, -y), (y, x)],
         },
         BOX: {
             CLOCKWISE: lambda x, y: [(-y, x), (-x, -y), (y, -x), (x, y)],
@@ -134,10 +128,9 @@ class DirectionalTupleGenerator:
 
     def _handle_type5_zero_turns(self, x: int, y: int) -> list[tuple[int, int]]:
         """Handles special cases where Type5 letters require unique rotations."""
-        color = self.motion.state.color
         start_loc, end_loc = self.motion.state.start_loc, self.motion.state.end_loc
         return self._special_type5_cases.get(self.grid_mode, {}).get(
-            (color, (start_loc, end_loc)), lambda x, y: [(x, y)] * 4
+            (start_loc, end_loc), lambda x, y: [(x, y)] * 4
         )(x, y)
 
     def get_directional_tuples(self, x: int, y: int) -> list[tuple[int, int]]:
