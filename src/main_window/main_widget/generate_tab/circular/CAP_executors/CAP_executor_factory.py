@@ -1,6 +1,7 @@
 from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_executor import (
     CAPExecutor,
 )
+from main_window.main_widget.generate_tab.circular.CAP_executors.mirrored_swapped.mirrored_swapped_CAP_executor import MirroredSwappedCAPExecutor
 from .CAP_type import CAPType
 from .strict_mirrored.strict_mirrored_CAP_executor import StrictMirroredCAPExecutor
 from .strict_rotated.strict_rotated_CAP_executor import StrictRotatedCAPExecutor

@@ -286,6 +286,45 @@ mirrored_positions = {
     },
 }
 
+
+mirrored_swapped_positions = {
+    VERTICAL: {
+        ALPHA1: ALPHA5,
+        ALPHA2: ALPHA4,
+        ALPHA3: ALPHA3,
+        ALPHA4: ALPHA2,
+        ALPHA5: ALPHA1,
+        ALPHA6: ALPHA8,
+        ALPHA7: ALPHA7,
+        ALPHA8: ALPHA6,
+        BETA1: BETA1,
+        BETA2: BETA8,
+        BETA3: BETA7,
+        BETA4: BETA6,
+        BETA5: BETA5,
+        BETA6: BETA4,
+        BETA7: BETA3,
+        BETA8: BETA2,
+        GAMMA1: GAMMA3,
+        GAMMA2: GAMMA2,
+        GAMMA3: GAMMA1,
+        GAMMA4: GAMMA8,
+        GAMMA5: GAMMA7,
+        GAMMA6: GAMMA6,
+        GAMMA7: GAMMA5,
+        GAMMA8: GAMMA4,
+        GAMMA9: GAMMA15,
+        GAMMA10: GAMMA14,
+        GAMMA11: GAMMA13,
+        GAMMA12: GAMMA12,
+        GAMMA13: GAMMA11,
+        GAMMA14: GAMMA10,
+        GAMMA15: GAMMA9,
+        GAMMA16: GAMMA16,
+    }
+}
+
+
 diamond_positions = [
     ALPHA1,
     ALPHA3,
