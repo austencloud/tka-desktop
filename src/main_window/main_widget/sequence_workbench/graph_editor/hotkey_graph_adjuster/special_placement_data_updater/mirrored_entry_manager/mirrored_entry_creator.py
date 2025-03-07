@@ -35,7 +35,7 @@ class MirroredEntryCreator:
         letter_data, _ = self._fetch_letter_data_and_original_turn_data(
             ori_key, letter, arrow
         )
-
+        turns_tuple = self.turns_tuple_generator.generate_turns_tuple(arrow.pictograph)
         if arrow.pictograph.managers.check.starts_from_mixed_orientation():
             other_ori_key, other_letter_data = self._get_keys_for_mixed_start_ori(
                 letter, ori_key
@@ -52,7 +52,7 @@ class MirroredEntryCreator:
             if attr_key not in letter_data:
                 letter_data[attr_key] = {}
 
-            other_letter_data[mirrored_turns_tuple][attr_key] = letter_data[attr_key]
+            other_letter_data[mirrored_turns_tuple][attr_key] = letter_data[turns_tuple][attr_key]
 
             self._initialize_dicts(mirrored_turns_tuple, other_letter_data, attr_key)
             self.special_placement_data_updater.update_specific_entry_in_json(

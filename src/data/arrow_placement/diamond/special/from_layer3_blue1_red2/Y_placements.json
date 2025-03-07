@@ -39,7 +39,7 @@
       "static_to_layer1_rot_angle_override": true
     },
     "(o, fl, 0.5)": {
-      "static_from_layer1": {}
+      "static_from_layer1": [-20, 60]
     }
   }
 }
