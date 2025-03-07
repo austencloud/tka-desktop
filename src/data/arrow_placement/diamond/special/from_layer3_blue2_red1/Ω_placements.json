@@ -10,7 +10,8 @@
       "static_from_layer1": [-80, 0]
     },
     "(o, fl, 0.5)": {
-      "static_from_layer1": [100, 100]
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [-100, -85]
     }
   }
 }
