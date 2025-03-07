@@ -7,7 +7,6 @@ from data.positions_maps import swapped_positions
 
 
 class StrictSwappedCAPExecutor(CAPExecutor):
-    CAP_TYPE = CAPType.STRICT_SWAPPED  # Add this
 
     def __init__(self, circular_sequence_generator):
         super().__init__(circular_sequence_generator)

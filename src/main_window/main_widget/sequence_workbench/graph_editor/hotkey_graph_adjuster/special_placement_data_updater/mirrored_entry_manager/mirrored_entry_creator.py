@@ -40,9 +40,7 @@ class MirroredEntryCreator:
             other_ori_key, other_letter_data = self._get_keys_for_mixed_start_ori(
                 letter, ori_key
             )
-            turns_tuple = self.turns_tuple_generator.generate_turns_tuple(
-                arrow.pictograph
-            )
+
             mirrored_turns_tuple = self.turns_tuple_generator.generate_mirrored_tuple(
                 arrow
             )

@@ -35,7 +35,8 @@
       "static": [100, 120]
     },
     "(s, 0.5, 1)": {
-      "static": [105, -10]
+      "static": [105, -10],
+      "swap_beta_w_nonradial_blue_dash_s_red_static_w": true
     },
     "(s, 0.5, 2.5)": {
       "static": [0, 45],

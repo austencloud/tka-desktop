@@ -6,7 +6,6 @@ from enums.letter.complementary_letter_getter import ComplementaryLetterGetter
 
 
 class StrictComplementaryCAPExecutor(CAPExecutor):
-    CAP_TYPE = CAPType.SWAPPED_COMPLEMENTARY  # Add this
 
     def __init__(self, circular_sequence_generator):
         super().__init__(circular_sequence_generator)

@@ -51,7 +51,6 @@ if TYPE_CHECKING:
 
 
 class RotatedComplementaryCAPExecutor(CAPExecutor):
-    CAP_TYPE = CAPType.STRICT_ROTATED
 
     def __init__(self, circular_sequence_generator: "CircularSequenceBuilder"):
         self.circular_sequence_generator = circular_sequence_generator

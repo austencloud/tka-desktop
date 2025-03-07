@@ -53,7 +53,6 @@ if TYPE_CHECKING:
 
 
 class StrictRotatedCAPExecutor(CAPExecutor):
-    CAP_TYPE = CAPType.STRICT_ROTATED
 
     def __init__(self, circular_sequence_generator: "CircularSequenceBuilder"):
         self.circular_sequence_generator = circular_sequence_generator
@@ -102,7 +101,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
             sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
-                update_word=True,
+                update_word=False,
                 update_image_export_preview=False,
             )
             QApplication.processEvents()

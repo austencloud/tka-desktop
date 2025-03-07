@@ -77,7 +77,8 @@ class TurnsTupleGenerator:
         return ""
 
     def generate_mirrored_tuple(self, arrow: Arrow) -> Union[str, None]:
-        return self.mirrored_generator.generate(arrow)
+        mirrored_tuple = self.mirrored_generator.generate(arrow)
+        return mirrored_tuple
 
     def _get_generator_key(self, pictograph: "Pictograph") -> Union[str, LetterType]:
         letter = pictograph.state.letter

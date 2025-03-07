@@ -6,7 +6,6 @@ from PyQt6.QtWidgets import QApplication
 
 
 class SwappedComplementaryCAPExecutor(CAPExecutor):
-    CAP_TYPE = CAPType.SWAPPED_COMPLEMENTARY  # Add this
 
     def __init__(self, circular_sequence_generator):
         super().__init__(circular_sequence_generator)

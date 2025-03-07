@@ -68,13 +68,13 @@ class CAPTypeButton(QPushButton):
             )
 
     def resizeEvent(self, event):
-        target_width = self.CAP_type_picker.generate_tab.main_widget.width() // 10
-        target_height = self.CAP_type_picker.generate_tab.main_widget.height() // 18
+        target_width = self.CAP_type_picker.generate_tab.main_widget.width() // 12
+        target_height = self.CAP_type_picker.generate_tab.main_widget.height() // 24
         self.setFixedSize(target_width, target_height)
 
         # Set font size based on button height
         font = self.font()
-        font.setPointSize(int(target_height * 0.18))  # Font size ~30% of button height
+        font.setPointSize(int(target_height * 0.2))  # Font size ~30% of button height
         self.setFont(font)
 
         super().resizeEvent(event)

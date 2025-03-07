@@ -7,7 +7,6 @@ from data.positions_maps import mirrored_positions
 
 
 class MirroredRotatedCAPExecutor(CAPExecutor):
-    CAP_TYPE = CAPType.STRICT_MIRRORED  # Add this
 
     def __init__(self, circular_sequence_generator):
         super().__init__(circular_sequence_generator)
@@ -34,7 +33,7 @@ class MirroredRotatedCAPExecutor(CAPExecutor):
             sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
                 next_pictograph,
                 override_grow_sequence=True,
-                update_word=True,
+                update_word=False,
                 update_image_export_preview=False,
             )
             QApplication.processEvents()
@@ -72,7 +71,24 @@ class MirroredRotatedCAPExecutor(CAPExecutor):
                 previous_entry[RED_ATTRS], previous_matching_beat[RED_ATTRS]
             ),
         }
-
+        
+        if previous_matching_beat[BLUE_ATTRS].get(PREFLOAT_MOTION_TYPE, ""):
+            new_entry[BLUE_ATTRS][PREFLOAT_MOTION_TYPE] = previous_matching_beat[
+                BLUE_ATTRS
+            ][PREFLOAT_MOTION_TYPE]
+        if previous_matching_beat[BLUE_ATTRS].get(PREFLOAT_PROP_ROT_DIR, ""):
+            new_entry[BLUE_ATTRS][PREFLOAT_PROP_ROT_DIR] = previous_matching_beat[
+                BLUE_ATTRS
+            ][PREFLOAT_PROP_ROT_DIR]
+        if previous_matching_beat[RED_ATTRS].get(PREFLOAT_MOTION_TYPE, ""):
+            new_entry[RED_ATTRS][PREFLOAT_MOTION_TYPE] = previous_matching_beat[
+                RED_ATTRS
+            ][PREFLOAT_MOTION_TYPE]
+        if previous_matching_beat[RED_ATTRS].get(PREFLOAT_PROP_ROT_DIR, ""):
+            new_entry[RED_ATTRS][PREFLOAT_PROP_ROT_DIR] = previous_matching_beat[
+                RED_ATTRS
+            ][PREFLOAT_PROP_ROT_DIR]
+            
         # Ensure orientations are set properly
         new_entry[BLUE_ATTRS][END_ORI] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(

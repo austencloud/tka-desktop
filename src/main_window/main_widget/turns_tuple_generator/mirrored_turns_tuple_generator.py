@@ -24,10 +24,11 @@ class MirroredTurnsTupleGenerator:
                 != arrow.pictograph.managers.get.other_motion(
                     arrow.motion
                 ).state.motion_type
-                or letter.value in ["S", "T"]
-                or letter_type == LetterType.Type2
             ):
                 return self.turns_tuple_generator.generate_turns_tuple(arrow.pictograph)
+
+        if letter_type == LetterType.Type2 or letter.value in ["S", "T"]:
+            return self.turns_tuple_generator.generate_turns_tuple(arrow.pictograph)
 
         if letter.value == "Λ-":
             return self.handle_lambda_dash(arrow)

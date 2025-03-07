@@ -63,7 +63,10 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         word_length, available_range = WordLengthCalculator.calculate(
             CAP_type, slice_size, length, len(self.sequence)
         )
-        if CAP_type == CAPType.MIRRORED_ROTATED:
+        if CAP_type in [
+            CAPType.MIRRORED_ROTATED,
+            CAPType.MIRRORED_COMPLEMENTARY_ROTATED,
+        ]:
             word_length = int(word_length / 2)
             available_range = int(available_range / 2)
 
@@ -208,6 +211,11 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                     "halved", self.sequence[1][END_POS]
                 )
             ),
+            CAPType.MIRRORED_COMPLEMENTARY_ROTATED: lambda: (
+                RotatedEndPositionSelector.determine_rotated_end_pos(
+                    "halved", self.sequence[1][END_POS]
+                )
+            ),
         }
 
         end_pos_selector = end_pos_selectors.get(CAP_type)
@@ -220,15 +228,21 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
     def _apply_CAPs(self, sequence, cap_type: CAPType, rotation_type):
         executor = self.executors.get(cap_type)
-        if executor and CAPType(cap_type) == CAPType.MIRRORED_ROTATED:
+        if executor and CAPType(cap_type) in [
+            CAPType.MIRRORED_ROTATED,
+            CAPType.MIRRORED_COMPLEMENTARY_ROTATED,
+        ]:
             strict_rotated_executor: "StrictRotatedCAPExecutor" = self.executors.get(
                 CAPType.STRICT_ROTATED
             )
             sequence = strict_rotated_executor.create_CAPs(
                 sequence, halved_or_quartered="halved", end_mirrored=True
             )
-            executor.create_CAPs(sequence)
-
+            if cap_type == CAPType.MIRRORED_COMPLEMENTARY_ROTATED:
+                self.executors.get(CAPType.MIRRORED_COMPLEMENTARY).create_CAPs(sequence)
+            elif cap_type == CAPType.MIRRORED_ROTATED:
+                self.executors.get(CAPType.STRICT_MIRRORED).create_CAPs(sequence)
+            
         elif executor:
             executor.create_CAPs(sequence)
         else:

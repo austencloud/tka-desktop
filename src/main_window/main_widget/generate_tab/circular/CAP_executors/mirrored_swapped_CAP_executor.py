@@ -7,7 +7,6 @@ from data.positions_maps import mirrored_swapped_positions
 
 
 class MirroredSwappedCAPExecutor(CAPExecutor):
-    CAP_TYPE = CAPType.MIRRORED_SWAPPED  # Add this
 
     def __init__(self, circular_sequence_generator):
         super().__init__(circular_sequence_generator)
