@@ -112,8 +112,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
         )
 
     def _create_button(self, icon_path: str, callback, tooltip: str) -> WorkbenchButton:
-        button_size = self.sequence_workbench.main_widget.height() // 20  # Initial size
-        button = WorkbenchButton(icon_path, tooltip, callback, button_size)
+        button = WorkbenchButton(icon_path, tooltip, callback)
         return button
 
     def toggle_swap_colors_icon(self):

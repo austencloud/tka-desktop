@@ -74,7 +74,7 @@ class CAPTypeButton(QPushButton):
 
         # Set font size based on button height
         font = self.font()
-        font.setPointSize(int(target_height * 0.25))  # Font size ~30% of button height
+        font.setPointSize(int(target_height * 0.18))  # Font size ~30% of button height
         self.setFont(font)
 
         super().resizeEvent(event)

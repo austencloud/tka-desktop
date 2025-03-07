@@ -229,10 +229,9 @@
       "blue": [-30, 0]
     },
     "(o, 1, 1)": {
-      "swap_beta_w_radial_blue_static_w_red_static_w": true,
-      "swap_beta_e_radial_blue_static_e_red_static_e": true,
       "red": [100, 0],
-      "blue": [100, 0]
+      "blue": [100, 0],
+      "swap_beta_w_radial_blue_static_w_red_static_w": true
     },
     "(o, 1, 3)": {},
     "(ccw, 0, 3)": {},

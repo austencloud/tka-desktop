@@ -17,36 +17,7 @@ class CAPExecutor:
 
     def create_CAPs(self, sequence: list[dict], **kwargs):
         """Handles generic CAP creation, using specialized logic from subclasses."""
-        if not self.can_perform_CAP(sequence):
-            return
-
-        sequence_length = len(sequence) - 2
-        last_entry = sequence[-1]
-        next_beat_number = last_entry[BEAT] + 1
-        final_intended_sequence_length = (
-            sequence_length + self.determine_how_many_entries_to_add(sequence_length)
-        )
-
-        for i in range(2, sequence_length + 2):  # Skip first two beats
-            next_pictograph = self.create_new_CAP_entry(
-                sequence,
-                last_entry,
-                next_beat_number + i - 2,
-                final_intended_sequence_length,
-                **kwargs
-            )
-            sequence.append(next_pictograph)
-            last_entry = next_pictograph
-
-            # Add to UI
-            sequence_workbench = self.circular_sequence_generator.sequence_workbench
-            sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
-                next_pictograph,
-                override_grow_sequence=True,
-                update_word=False,
-                update_image_export_preview=False,
-            )
-            QApplication.processEvents()
+        raise NotImplementedError("Subclasses must implement create_CAPs.")
 
     def determine_how_many_entries_to_add(self, sequence_length: int) -> int:
         """Determines how many entries need to be added for full circularity. Can be overridden."""

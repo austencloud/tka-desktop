@@ -101,7 +101,6 @@ class GenerateTabController:
 
     def _update_ui_visibility(self):
         is_freeform = self.current_mode == "freeform"
-
         is_circular = not is_freeform
 
         self.tab.slice_size_toggle.setVisible(False)
@@ -113,11 +112,7 @@ class GenerateTabController:
         self.tab.letter_picker.setVisible(is_freeform)
 
         CAP_type = self.settings.get_setting("CAP_type")
-        if CAP_type in [
-            "strict_swapped",
-            "strict_mirrored",
-            "mirrored_swapped",
-        ]:
+        if CAP_type != "strict_rotated":
             self.tab.slice_size_toggle.setVisible(False)  # Hide slice size toggle
 
     def _as_bool(self, val) -> bool:

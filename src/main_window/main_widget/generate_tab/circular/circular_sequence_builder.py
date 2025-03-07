@@ -26,6 +26,7 @@ from .utils.pictograph_selector import PictographSelector
 from .utils.word_length_calculator import WordLengthCalculator
 from .CAP_executor_factory import CAPExecutorFactory
 from data.constants import *
+from data.positions_maps import rotated_and_swapped_positions
 
 if TYPE_CHECKING:
     from main_window.main_widget.generate_tab.generate_tab import GenerateTab
@@ -85,7 +86,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
         finally:
             QApplication.restoreOverrideCursor()
-            self.main_widget.generate_tab.auto_complete_button.setEnabled(False)
+            # self.main_widget.generate_tab.auto_complete_button.setEnabled(False)
             self.sequence_workbench.beat_frame.emit_update_image_export_preview()
 
     def _generate_next_pictograph(
@@ -109,32 +110,38 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             options = self.filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir
             )
+        end_pos_selectors = {
+            CAPType.STRICT_ROTATED: lambda: RotatedEndPositionSelector.determine_rotated_end_pos(
+                slice_size, self.sequence[1][END_POS]
+            ),
+            CAPType.STRICT_MIRRORED: lambda: mirrored_positions[VERTICAL][
+                self.sequence[1][END_POS]
+            ],
+            CAPType.MIRRORED_SWAPPED: lambda: mirrored_swapped_positions[VERTICAL][
+                self.sequence[1][END_POS]
+            ],
+            CAPType.STRICT_SWAPPED: lambda: swapped_positions[
+                self.sequence[1][END_POS]
+            ],
+            CAPType.SWAPPED_COMPLEMENTARY: lambda: swapped_positions[
+                self.sequence[1][END_POS]
+            ],
+            CAPType.STRICT_COMPLEMENTARY: lambda: self.sequence[1][END_POS],
+            CAPType.ROTATED_COMPLEMENTARY: lambda: RotatedEndPositionSelector.determine_rotated_end_pos(
+                "halved", self.sequence[1][END_POS]
+            ),
+            CAPType.MIRRORED_COMPLEMENTARY: lambda: mirrored_positions[VERTICAL][
+                self.sequence[1][END_POS]
+            ],
+            CAPType.ROTATED_SWAPPED: lambda: rotated_and_swapped_positions[
+                self.sequence[1][END_POS]
+            ],
+        }
 
         if is_last_in_word:
-            if CAP_type == CAPType.STRICT_ROTATED:
-                expected_end_pos = RotatedEndPositionSelector.determine_rotated_end_pos(
-                    slice_size, self.sequence[1][END_POS]
-                )
-            elif CAP_type == CAPType.STRICT_MIRRORED:
-
-                expected_end_pos = mirrored_positions[VERTICAL][
-                    self.sequence[1][END_POS]
-                ]
-            elif CAP_type == CAPType.MIRRORED_SWAPPED:
-                expected_end_pos = mirrored_swapped_positions[VERTICAL][
-                    self.sequence[1][END_POS]
-                ]
-
-            elif CAP_type == CAPType.STRICT_SWAPPED:
-                expected_end_pos = swapped_positions[self.sequence[1][END_POS]]
-            elif CAP_type == CAPType.SWAPPED_COMPLEMENTARY:
-                expected_end_pos = swapped_positions[self.sequence[1][END_POS]]
-            elif CAP_type == CAPType.STRICT_COMPLEMENTARY:
-                expected_end_pos = self.sequence[1][END_POS]
-            elif CAP_type == CAPType.ROTATED_COMPLEMENTARY:
-                expected_end_pos = RotatedEndPositionSelector.determine_rotated_end_pos(
-                    "halved", self.sequence[1][END_POS]
-                )
+            end_pos_selector = end_pos_selectors.get(CAP_type)
+            if end_pos_selector:
+                expected_end_pos = end_pos_selector()
             else:
                 raise ValueError(
                     "CAP type not implemented yet. Please implement the CAP type."

@@ -214,6 +214,40 @@ positions_map: dict[tuple[str], str] = {
 }
 from data.constants import *
 
+rotated_and_swapped_positions = {
+    ALPHA1: ALPHA1,
+    ALPHA2: ALPHA2,
+    ALPHA3: ALPHA3,
+    ALPHA4: ALPHA4,
+    ALPHA5: ALPHA5,
+    ALPHA6: ALPHA6,
+    ALPHA7: ALPHA7,
+    ALPHA8: ALPHA8,
+    BETA1: BETA5,
+    BETA2: BETA6,
+    BETA3: BETA7,
+    BETA4: BETA8,
+    BETA5: BETA1,
+    BETA6: BETA2,
+    BETA7: BETA3,
+    BETA8: BETA4,
+    GAMMA1: GAMMA11,
+    GAMMA2: GAMMA12,
+    GAMMA3: GAMMA13,
+    GAMMA4: GAMMA14,
+    GAMMA5: GAMMA15,
+    GAMMA6: GAMMA16,
+    GAMMA7: GAMMA9,
+    GAMMA8: GAMMA10,
+    GAMMA9: GAMMA7,
+    GAMMA10: GAMMA8,
+    GAMMA11: GAMMA1,
+    GAMMA12: GAMMA2,
+    GAMMA13: GAMMA3,
+    GAMMA14: GAMMA4,
+    GAMMA15: GAMMA5,
+    GAMMA16: GAMMA6,
+}
 
 mirrored_positions = {
     VERTICAL: {

@@ -9,6 +9,14 @@ from .CAP_executors.strict_mirrored_CAP_executor import StrictMirroredCAPExecuto
 from .CAP_executors.strict_rotated_CAP_executor import StrictRotatedCAPExecutor
 from .CAP_executors.strict_swapped_CAP_executor import StrictSwappedCAPExecutor
 from .CAP_executors.strict_complementary_CAP_executor import StrictComplementaryCAPExecutor
+from .CAP_executors.mirrored_complementary_CAP_executor import MirroredComplementaryCAPExecutor
+from .CAP_executors.rotated_swapped_CAP_executor import RotatedSwappedCAPExecutor
+# from .CAP_executors.mirrored_rotated_CAP_executor import MirroredRotatedCAPExecutor
+# from .CAP_executors.mirrored_complementary_rotated_CAP_executor import MirroredComplementaryRotatedCAPExecutor
+# from .CAP_executors.rotated_swapped_complementary_CAP_executor import RotatedSwappedComplementaryCAPExecutor
+# from .CAP_executors.mirrored_swapped_complementary_CAP_executor import MirroredSwappedComplementaryCAPExecutor
+# from .CAP_executors.mirrored_rotated_swapped_CAP_executor import MirroredRotatedSwappedCAPExecutor
+# from .CAP_executors.mirrored_rotated_complementary_swapped_CAP_executor import MirroredRotatedComplementarySwappedCAPExecutor
 
 class CAPExecutorFactory:
     _executor_map = {
@@ -19,8 +27,8 @@ class CAPExecutorFactory:
         CAPType.SWAPPED_COMPLEMENTARY: SwappedComplementaryCAPExecutor,
         CAPType.STRICT_COMPLEMENTARY: StrictComplementaryCAPExecutor,
         CAPType.ROTATED_COMPLEMENTARY: RotatedComplementaryCAPExecutor,
-        # CAPType.MIRRORED_COMPLEMENTARY: MirroredComplementaryCAPExecutor,
-        # CAPType.ROTATED_SWAPPED: RotatedSwappedCAPExecutor,
+        CAPType.MIRRORED_COMPLEMENTARY: MirroredComplementaryCAPExecutor,
+        CAPType.ROTATED_SWAPPED: RotatedSwappedCAPExecutor,
         # CAPType.MIRRORED_ROTATED: MirroredRotatedCAPExecutor,
         # CAPType.MIRRORED_COMPLEMENTARY_ROTATED: MirroredComplementaryRotatedCAPExecutor,
         # CAPType.ROTATED_SWAPPED_COMPLEMENTARY: RotatedSwappedComplementaryCAPExecutor,
