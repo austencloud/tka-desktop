@@ -3,7 +3,7 @@ from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import
 from ..CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map
-
+from data.positions_maps import mirrored_positions
 
 class StrictMirroredCAPExecutor(CAPExecutor):
     CAP_TYPE = CAPType.STRICT_MIRRORED  # Add this
@@ -43,7 +43,7 @@ class StrictMirroredCAPExecutor(CAPExecutor):
 
     def can_perform_CAP(self, sequence: list[dict]) -> bool:
         """Ensures that the sequence can be mirrored."""
-        return sequence[1][END_POS] == sequence[-1][END_POS]
+        return mirrored_positions[VERTICAL].get(sequence[1][END_POS]) == sequence[-1][END_POS]
 
     def create_new_CAP_entry(
         self,

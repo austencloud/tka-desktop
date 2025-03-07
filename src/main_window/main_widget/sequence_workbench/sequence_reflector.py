@@ -13,7 +13,7 @@ from data.constants import (
     START_POS,
     VERTICAL,
 )
-from data.positions import mirrored_positions
+from data.positions_maps import mirrored_positions
 from data.locations import vertical_loc_mirror_map
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
     BaseSequenceModifier,

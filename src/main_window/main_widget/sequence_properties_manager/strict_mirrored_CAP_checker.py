@@ -1,7 +1,7 @@
 from tkinter import HORIZONTAL
 from typing import TYPE_CHECKING
 from data.constants import END_POS, VERTICAL
-from data.positions import mirrored_positions
+from data.positions_maps import mirrored_positions
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (

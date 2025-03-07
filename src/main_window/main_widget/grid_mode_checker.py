@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Literal
 from data.constants import BOX, DIAMOND, END_POS, START_POS
-from data.positions import box_positions, diamond_positions
+from data.positions_maps import box_positions, diamond_positions
 
 if TYPE_CHECKING:
     pass
@@ -12,7 +12,7 @@ class GridModeChecker:
     @staticmethod
     def get_grid_mode(
         pictograph_data: dict,
-    ) -> None | Literal[BOX] | Literal[DIAMOND] | Literal["skewed"]:
+    ) -> None | Literal["box"] | Literal["diamond"] | Literal["skewed"]:
         start_pos = pictograph_data.get(START_POS) or pictograph_data.get(
             END_POS
         )  # Handles the start position

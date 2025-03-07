@@ -4,10 +4,7 @@ from ..CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map
 from data.positions_maps import (
-    half_position_map,
-    quarter_position_map_cw,
-    quarter_position_map_ccw,
-    position_swap_mapping,
+    swapped_positions,
 )
 
 
@@ -49,9 +46,7 @@ class StrictSwappedCAPExecutor(CAPExecutor):
 
     def can_perform_CAP(self, sequence: list[dict]) -> bool:
         """Ensures that the sequence can be swapped."""
-        is_swappable = (
-            sequence[-1][END_POS] in position_swap_mapping[sequence[1][END_POS]]
-        )
+        is_swappable = sequence[-1][END_POS] in swapped_positions[sequence[1][END_POS]]
 
         return is_swappable
 

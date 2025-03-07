@@ -11,7 +11,7 @@ from data.constants import (
     VERTICAL,
 )
 from data.locations import vertical_loc_mirror_map
-from data.positions import mirrored_positions
+from data.positions_maps import mirrored_positions
 
 logger = logging.getLogger(__name__)
 if TYPE_CHECKING:

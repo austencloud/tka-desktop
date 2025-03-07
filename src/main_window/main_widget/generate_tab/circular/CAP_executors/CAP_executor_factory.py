@@ -11,7 +11,7 @@ class CAPExecutorFactory:
         CAPType.STRICT_MIRRORED: StrictMirroredCAPExecutor,
         CAPType.STRICT_ROTATED: StrictRotatedCAPExecutor,
         CAPType.STRICT_SWAPPED: StrictSwappedCAPExecutor,
-        # CAPType.MIRRORED_SWAPPED: MirroredSwappedCAPExecutor,
+        CAPType.MIRRORED_SWAPPED: MirroredSwappedCAPExecutor,
         # CAPType.MIRRORED_COMPLIMENTARY: MirroredComplimentaryCAPExecutor,
         # CAPType.COMPLIMENTARY_SWAPPED: ComplimentarySwappedCAPExecutor,
     }
@@ -23,3 +23,4 @@ class CAPExecutorFactory:
             return executor_class(circular_sequence_generator)
         else:
             raise ValueError(f"Unknown CAPType: {cap_type}")
+

@@ -4,7 +4,7 @@ from copy import deepcopy
 from base_widgets.pictograph.elements.views.start_pos_picker_pictograph_view import (
     StartPosPickerPictographView,
 )
-from data.positions import box_positions, diamond_positions
+from data.positions_maps import box_positions, diamond_positions
 from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import BOX, DIAMOND, END_POS, GRID_MODE, LETTER, START_POS
 from PyQt6.QtCore import QSize
