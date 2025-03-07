@@ -318,6 +318,12 @@
     },
     "(o, 1.5, 3, op, op)": {
       "static_to_layer1_rot_angle_override": true
+    },
+    "(o, 1, 1, op, op)": {
+      "dash": [0, -55]
+    },
+    "(s, 1, 1, cl, op)": {
+      "dash": [0, -55]
     }
   }
 }

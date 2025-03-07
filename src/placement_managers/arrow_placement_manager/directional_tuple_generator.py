@@ -1,32 +1,3 @@
-import logging
-from typing import List, Tuple, Dict
-from enums.letter.letter_type import LetterType
-from data.constants import (
-    PRO,
-    ANTI,
-    FLOAT,
-    DASH,
-    STATIC,
-    CLOCKWISE,
-    COUNTER_CLOCKWISE,
-    NO_ROT,
-    DIAMOND,
-    BOX,
-    NORTHEAST,
-    SOUTHEAST,
-    SOUTHWEST,
-    NORTHWEST,
-    NORTH,
-    SOUTH,
-    EAST,
-    WEST,
-    BLUE,
-    RED,
-)
-from objects.motion.motion import Motion
-
-import logging
-from typing import List, Tuple, Dict
 from enums.letter.letter_type import LetterType
 from data.constants import (
     PRO,
@@ -123,17 +94,18 @@ class DirectionalTupleGenerator:
             CLOCKWISE: lambda x, y: [(-x, y), (-y, -x), (x, -y), (y, x)],
             COUNTER_CLOCKWISE: lambda x, y: [(x, y), (-y, x), (-x, -y), (y, -x)],
         },
-        # Optionally, add a mapping for FLOAT if needed.
     }
 
     _dash_mapping = {
         DIAMOND: {
             CLOCKWISE: lambda x, y: [(x, -y), (y, x), (-x, y), (-y, -x)],
             COUNTER_CLOCKWISE: lambda x, y: [(-x, -y), (y, -x), (x, y), (-y, x)],
+            NO_ROT: lambda x, y: [(x, y), (-y, x), (x, -y), (y, -x)],
         },
         BOX: {
             CLOCKWISE: lambda x, y: [(-y, x), (-x, -y), (y, -x), (x, y)],
             COUNTER_CLOCKWISE: lambda x, y: [(-x, y), (-y, -x), (x, -y), (y, x)],
+            NO_ROT: lambda x, y: [(x, y), (-y, x), (-x, -y), (y, -x)],
         },
     }
 
@@ -160,7 +132,7 @@ class DirectionalTupleGenerator:
             else DIAMOND
         )
 
-    def _handle_type5_zero_turns(self, x: int, y: int) -> List[Tuple[int, int]]:
+    def _handle_type5_zero_turns(self, x: int, y: int) -> list[tuple[int, int]]:
         """Handles special cases where Type5 letters require unique rotations."""
         color = self.motion.state.color
         start_loc, end_loc = self.motion.state.start_loc, self.motion.state.end_loc
@@ -168,7 +140,7 @@ class DirectionalTupleGenerator:
             (color, (start_loc, end_loc)), lambda x, y: [(x, y)] * 4
         )(x, y)
 
-    def get_directional_tuples(self, x: int, y: int) -> List[Tuple[int, int]]:
+    def get_directional_tuples(self, x: int, y: int) -> list[tuple[int, int]]:
         """Retrieves the directional tuples based on motion properties, accounting for all edge cases."""
         motion_type = self.motion.state.motion_type
         rotation = self.motion.state.prop_rot_dir
@@ -187,7 +159,7 @@ class DirectionalTupleGenerator:
 
         return self._handle_shift_tuples(x, y)
 
-    def _handle_shift_tuples(self, x: int, y: int) -> List[Tuple[int, int]]:
+    def _handle_shift_tuples(self, x: int, y: int) -> list[tuple[int, int]]:
         """Handles PRO, ANTI, and FLOAT directional tuples."""
         if self.motion.state.motion_type == FLOAT:
             handpath_direction = self._handpath_calculator.get_hand_rot_dir(
@@ -213,16 +185,16 @@ class DirectionalTupleGenerator:
             x, y
         )
 
-    def _handle_dash_tuples(self, x: int, y: int) -> List[Tuple[int, int]]:
+    def _handle_dash_tuples(self, x: int, y: int) -> list[tuple[int, int]]:
         """Handles DASH motion types."""
-        if self.motion.state.prop_rot_dir == NO_ROT:
-            return [(x, y), (-y, x), (-x, -y), (y, -x)]
 
-        return self._dash_mapping.get(self.grid_mode, {}).get(
+        dash_motion_tuples = self._dash_mapping.get(self.grid_mode, {}).get(
             self.motion.state.prop_rot_dir, lambda x, y: [(x, y)] * 4
         )(x, y)
 
-    def _handle_static_tuples(self, x: int, y: int) -> List[Tuple[int, int]]:
+        return dash_motion_tuples
+
+    def _handle_static_tuples(self, x: int, y: int) -> list[tuple[int, int]]:
         """Handles STATIC motion types."""
         if self.motion.state.prop_rot_dir == NO_ROT:
             return [(x, y), (-x, -y), (-y, x), (y, -x)]
