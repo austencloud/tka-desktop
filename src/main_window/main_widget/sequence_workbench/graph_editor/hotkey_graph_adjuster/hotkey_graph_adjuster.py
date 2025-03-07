@@ -14,7 +14,7 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
 )
 
 
-from .arrow_rot_angle_override_manager import ArrowRotAngleOverrideManager
+from .rot_angle_override.rot_angle_override_manager import RotAngleOverrideManager
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.elements.views.GE_pictograph_view import (
@@ -29,6 +29,6 @@ class HotkeyGraphAdjuster:
         self.movement_manager = ArrowMovementManager(view)
         self.turns_tuple_generator = TurnsTupleGenerator()
 
-        self.rotation_angle_override_manager = ArrowRotAngleOverrideManager(self)
+        self.rot_angle_override_manager = RotAngleOverrideManager(self)
         self.prop_placement_override_manager = PropPlacementOverrideManager(self)
         self.entry_remover = SpecialPlacementEntryRemover(self)

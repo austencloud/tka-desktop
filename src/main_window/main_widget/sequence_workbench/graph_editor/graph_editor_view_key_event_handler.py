@@ -30,7 +30,7 @@ class GraphEditorViewKeyEventHandler:
                     key, shift_held, ctrl_held
                 )
             elif key == Qt.Key.Key_X:
-                self.hotkey_graph_adjuster.rotation_angle_override_manager.handle_arrow_rot_angle_override()
+                self.hotkey_graph_adjuster.rot_angle_override_manager.handle_arrow_rot_angle_override()
                 self.pictograph.managers.updater.update_pictograph()
             elif key == Qt.Key.Key_Z:
                 self.hotkey_graph_adjuster.entry_remover.remove_special_placement_entry(
