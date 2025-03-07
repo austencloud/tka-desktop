@@ -12,12 +12,14 @@ from objects.arrow.arrow import Arrow
 from placement_managers.attr_key_generator import (
     AttrKeyGenerator,
 )
-
+from .placement_data_cleaner import PlacementDataCleaner
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.hotkey_graph_adjuster import (
         HotkeyGraphAdjuster,
     )
     from .special_placement_data_updater import SpecialPlacementDataUpdater
+
+
 
 
 class SpecialPlacementEntryRemover:
@@ -75,6 +77,7 @@ class SpecialPlacementEntryRemover:
                 self._handle_standard_start_ori_mirrored_entry_removal(
                     letter, arrow, letter_data, key
                 )
+
             data[letter.value] = letter_data
             AppContext.special_placement_saver().save_json_data(data, file_path)
 
@@ -148,6 +151,7 @@ class SpecialPlacementEntryRemover:
 
     def _generate_file_path(self, ori_key: str, letter: Letter, grid_mode: str) -> str:
         file_path = os.path.join(
+            "src",
             "data",
             "arrow_placement",
             grid_mode,

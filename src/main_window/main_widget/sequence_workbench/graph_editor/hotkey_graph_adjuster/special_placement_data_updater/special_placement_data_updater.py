@@ -3,6 +3,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from enums.letter.letter import Letter
+from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.special_placement_data_updater.placement_data_cleaner import PlacementDataCleaner
 from utils.path_helpers import get_data_path
 
 from .mirrored_entry_manager.mirrored_entry_manager import MirroredEntryManager
@@ -105,13 +106,12 @@ class SpecialPlacementDataUpdater:
             )
         )
 
-        existing_data = (
+        placement_data = (
             AppContext.special_placement_loader().load_json_data(file_path) or {}
         )
 
-        existing_data[letter.value] = letter_data
-
-        AppContext.special_placement_saver().save_json_data(existing_data, file_path)
+        placement_data[letter.value] = letter_data
+        AppContext.special_placement_saver().save_json_data(placement_data, file_path)
 
     def update_arrow_adjustments_in_json(
         self, adjustment: tuple[int, int] | QPoint, turns_tuple: str
