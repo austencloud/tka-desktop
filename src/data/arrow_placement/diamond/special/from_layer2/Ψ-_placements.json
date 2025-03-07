@@ -138,12 +138,8 @@
       "red_rot_angle_override": true
     },
     "(cw, 0, 1)": {
-      "blue": [40, 0],
       "swap_beta_e_nonradial_blue_dash_s_red_dash_n": true,
       "swap_beta_n_nonradial_blue_dash_e_red_dash_w": true
-    },
-    "(ccw, 0, 1)": {
-      "red": [40, 0]
     }
   }
 }
