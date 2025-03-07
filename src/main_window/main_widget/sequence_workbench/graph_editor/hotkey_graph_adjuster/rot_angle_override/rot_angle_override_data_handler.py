@@ -1,6 +1,13 @@
 # src/main_window/main_widget/sequence_workbench/graph_editor/hotkey_graph_adjuster/arrow_rot_angle_override_manager.py
 from typing import TYPE_CHECKING
 from enums.letter.letter import Letter
+from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rot_angle_override.types import (
+    GridMode,
+    OriKey,
+    OverrideData,
+    RotationKey,
+    TurnsTuple,
+)
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
     ArrowRotAngleOverrideKeyGenerator,
 )
@@ -18,18 +25,20 @@ class RotAngleOverrideDataHandler:
         self.manager = manager
         self.key_generator = ArrowRotAngleOverrideKeyGenerator()
 
-    def prepare_override_data(self) -> dict:
-        return {
-            "letter": self.manager.current_letter,
-            "ori_key": self._generate_ori_key(),
-            "turns_tuple": self.manager.turns_generator.generate_turns_tuple(
-                self.manager.view.pictograph
+    def prepare_override_data(self) -> OverrideData:
+        return OverrideData(
+            letter=self.manager.current_letter,
+            ori_key=OriKey(self._generate_ori_key()),
+            turns_tuple=TurnsTuple(
+                self.manager.turns_generator.generate_turns_tuple(
+                    self.manager.view.pictograph
+                )
             ),
-            "rot_angle_key": self._generate_rotation_key(),
-            "placement_data": AppContext.special_placement_loader().load_or_return_special_placements(),
-        }
+            rot_angle_key=RotationKey(self._generate_rotation_key()),
+            placement_data=AppContext.special_placement_loader().load_or_return_special_placements(),
+        )
 
-    def apply_rotation_override(self, override_data: dict) -> None:
+    def apply_rotation_override(self, override_data: OverrideData) -> None:
         letter_data = self._get_letter_data(override_data)
         turn_data = letter_data.get(override_data["turns_tuple"], {})
 
@@ -41,26 +50,23 @@ class RotAngleOverrideDataHandler:
         self._save_updated_data(override_data, letter_data)
         self._handle_mirrored_entries(override_data, turn_data)
 
-    def _generate_ori_key(self) -> str:
+    def _generate_ori_key(self) -> OriKey:
         return self.manager.data_updater.ori_key_generator.generate_ori_key_from_motion(
             AppContext.get_selected_arrow().motion
         )
 
-    def _generate_rotation_key(self) -> str:
+    def _generate_rotation_key(self) -> RotationKey:
         return self.key_generator.generate_rotation_angle_override_key(
             AppContext.get_selected_arrow()
         )
 
     def _get_letter_data(
-        self,
-        override_data: dict[
-            str, str | Letter | dict[str, dict[str, dict[str, dict[str, bool]]]]
-        ],
-    ) -> dict[str, dict[str, bool]]:
-
+        self, override_data: OverrideData
+    ) -> dict[TurnsTuple, dict[RotationKey, bool]]:
+        grid_mode = GridMode(self.manager.view.pictograph.state.grid_mode)
         return (
             override_data["placement_data"]
-            .get(self.manager.view.pictograph.state.grid_mode, {})
+            .get(grid_mode, {})
             .get(override_data["ori_key"], {})
             .get(override_data["letter"].value, {})
         )
