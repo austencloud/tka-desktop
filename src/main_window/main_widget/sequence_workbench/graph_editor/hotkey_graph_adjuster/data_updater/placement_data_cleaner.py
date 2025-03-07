@@ -9,6 +9,10 @@ class PlacementDataCleaner:
                 del letter_data[key]
             elif isinstance(value, dict):
                 letter_data[key] = PlacementDataCleaner.clean_placement_data(value)
+            elif isinstance(value, list):
+                letter_data[key] = [
+                    int(item) if isinstance(item, float) else item for item in value
+                ]
             elif isinstance(value, float):
                 letter_data[key] = int(value)
         return letter_data
