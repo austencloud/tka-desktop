@@ -187,7 +187,7 @@ TRIQUETRA2 = "triquetra2"
 
 DIAMOND = "diamond"
 BOX = "box"
-
+SKEWED = "skewed"
 ALPHA = "alpha"
 BETA = "beta"
 GAMMA = "gamma"

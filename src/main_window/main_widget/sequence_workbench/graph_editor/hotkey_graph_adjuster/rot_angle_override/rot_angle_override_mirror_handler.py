@@ -21,7 +21,7 @@ class RotAngleOverrideMirrorHandler:
             turn_data,
         )
 
-    def handle_removal(self, hybrid_key: str) -> None:
+    def handle_removal(self, hybrid_key: RotationKey) -> None:
         mirrored_entry_handler = self.manager.data_updater.mirrored_entry_manager
         if mirrored_entry_handler:
             mirrored_entry_handler.rot_angle_manager.remove_rotation_angle_in_mirrored_entry(
