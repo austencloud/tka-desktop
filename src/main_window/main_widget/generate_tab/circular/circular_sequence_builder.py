@@ -13,7 +13,7 @@ from data.constants import (
     RED_ATTRS,
     STATIC,
 )
-from data.position_maps import (
+from data.positions_maps import (
     half_position_map,
     quarter_position_map_cw,
     quarter_position_map_ccw, position_swap_mapping

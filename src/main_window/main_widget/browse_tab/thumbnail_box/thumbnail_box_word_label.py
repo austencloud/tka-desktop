@@ -3,12 +3,16 @@ from PyQt6.QtWidgets import QLabel
 from PyQt6.QtGui import QFont
 from typing import TYPE_CHECKING
 
+from utils.word_simplifier import WordSimplifier
+
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
         ThumbnailBoxHeader,
     )
     from settings_manager.settings_manager import SettingsManager
+
+WORD_LENGTH = 8
 
 
 class ThumbnailBoxWordLabel(QLabel):
@@ -40,3 +44,32 @@ class ThumbnailBoxWordLabel(QLabel):
             self.setFont(font)
             fm = self.fontMetrics()
         super().resizeEvent(event)
+
+    def set_current_word(self, word: str):
+        self.simplified_word = WordSimplifier.simplify_repeated_word(word)
+        self.current_word = self.simplified_word
+
+        # Get the first 8 letter characters of the word, including the dash
+        count = 0
+        result = []
+        for char in self.simplified_word:
+            if char.isalpha():
+                count += 1
+            result.append(char)
+            if count == WORD_LENGTH:
+                break
+
+        # Join the result list to form the final string
+        truncated_word = "".join(result)
+
+        # Add "..." if the count is higher than WORD_LENGTH
+        word_without_dashes = self.simplified_word.replace("-", "")
+        truncated_word_without_dashes = truncated_word.replace("-", "")
+
+        if count == WORD_LENGTH and len(word_without_dashes) > len(
+            truncated_word_without_dashes
+        ):
+            truncated_word += "..."
+
+        self.line_edit.setText(truncated_word)
+        self.resizeEvent(None)

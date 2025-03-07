@@ -1,12 +1,13 @@
 from enum import Enum
 
 class CAPType(Enum):
-    STRICT_MIRRORED = "strict_mirrored"
     STRICT_ROTATED = "strict_rotated"
+    STRICT_MIRRORED = "strict_mirrored"
     STRICT_SWAPPED = "strict_swapped"
     STRICT_COMPLEMENTARY = "strict_complementary"
     
     SWAPPED_COMPLIMENTARY = "swapped_complimentary"
+    
     ROTATED_COMPLIMENTARY = "rotated_complimentary"
     MIRRORED_COMPLIMENTARY = "mirrored_complimentary"
     

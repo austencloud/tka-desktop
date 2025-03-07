@@ -176,6 +176,9 @@
     "(0, fl)": {
       "pro_from_layer1": {},
       "float_from_layer2": {}
+    },
+    "(0.5, fl)": {
+      "float_from_layer2": {}
     }
   }
 }

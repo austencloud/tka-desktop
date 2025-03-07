@@ -7,7 +7,6 @@ from data.constants import (
     START_LOC,
     START_POS,
 )
-from data.positions_map import positions_map
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
@@ -15,7 +14,7 @@ from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
     BaseSequenceModifier,
 )
 from settings_manager.global_settings.app_context import AppContext
-
+from data.positions_maps import positions_map
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (

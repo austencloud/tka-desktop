@@ -3,7 +3,7 @@ from main_window.main_widget.generate_tab.circular.CAP_executors.CAP_type import
 from ..CAP_executor import CAPExecutor
 from PyQt6.QtWidgets import QApplication
 from data.locations import vertical_loc_mirror_map
-from data.position_maps import (
+from data.positions_maps import (
     half_position_map,
     quarter_position_map_cw,
     quarter_position_map_ccw,

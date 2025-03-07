@@ -8,7 +8,7 @@ from data.constants import (
     RED_ATTRS,
     START_LOC,
 )
-from data.positions_map import positions_map
+from data.positions_maps import positions_map
 from data.locations import cw_loc_order
 
 from PyQt6.QtCore import Qt
