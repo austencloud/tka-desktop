@@ -21,10 +21,10 @@ from data.constants import (
     START_LOC,
 )
 from letter_determination.determination_result import DeterminationResult
-from letter_determination.strategies.base_strategy import BaseDeterminationStrategy
+from letter_determination.strategies.base_strategy import LetterDeterminationStrategy
 
 
-class NonHybridShiftStrategy(BaseDeterminationStrategy):
+class NonHybridShiftStrategy(LetterDeterminationStrategy):
     def execute(
         self, pictograph: dict, swap_prop_rot_dir: bool = False
     ) -> DeterminationResult:

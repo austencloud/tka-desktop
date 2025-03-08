@@ -1,26 +1,16 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
-from data.constants import (
-    BLUE,
-    BLUE_ATTRS,
-    FLOAT,
-    MOTION_TYPE,
-    PROP_ROT_DIR,
-    RED,
-    RED_ATTRS,
-    STATIC,
-)
+from data.constants import BLUE_ATTRS, MOTION_TYPE, PROP_ROT_DIR, RED_ATTRS, STATIC
 from enums.letter.letter import Letter
-
 from main_window.main_widget.json_manager.json_manager import JsonManager
-
-from .determination_result import DeterminationResult
 from .services.attribute_manager import AttributeManager
 from .services.json_handler import LetterDeterminationJsonHandler
 from .services.motion_comparator import MotionComparator
+from .strategies.non_hybrid_shift import NonHybridShiftStrategy
+from .strategies.dual_float import DualFloatStrategy
 
 if TYPE_CHECKING:
-    from .strategies.base_strategy import BaseDeterminationStrategy
+    from .strategies.base_strategy import LetterDeterminationStrategy
 
 
 class LetterDeterminer:
@@ -34,14 +24,11 @@ class LetterDeterminer:
         self.comparator = MotionComparator(pictograph_dataset)
         self.attribute_manager = AttributeManager(self.json_handler)
 
-        from .strategies.non_hybrid_shift import NonHybridShiftStrategy
-        from .strategies.dual_float import DualFloatStrategy
-
         self.strategies = [DualFloatStrategy, NonHybridShiftStrategy]
 
     def determine_letter(
         self, pictograph_data: dict, swap_prop_rot_dir: bool = False
-    ) -> str:
+    ) -> Letter:
         self.attribute_manager.sync_attributes(pictograph_data)
 
         if (
@@ -51,7 +38,7 @@ class LetterDeterminer:
             return None
 
         for strategy_class in self.strategies:
-            strategy: "BaseDeterminationStrategy" = strategy_class(
+            strategy: "LetterDeterminationStrategy" = strategy_class(
                 self.comparator, self.attribute_manager
             )
 
@@ -88,28 +75,6 @@ class LetterDeterminer:
         for letter, examples in self.pictograph_dataset.items():
             for example in examples:
                 if self.comparator.compare(pictograph_data, example):
-                    return letter
-
-        return None
-
-    def _get_letter_from_pictograph_and_color(
-        self, motion_color: str, pictograph_data: dict, swap_prop_rot_dir: bool
-    ) -> Optional[Letter]:
-        blue_attrs: dict = pictograph_data[BLUE_ATTRS]
-        red_attrs: dict = pictograph_data[RED_ATTRS]
-
-        self.attribute_manager.sync_attributes(pictograph_data)
-
-        blue_copy = blue_attrs.copy()
-        red_copy = red_attrs.copy()
-
-        pictograph_data_copy = pictograph_data.copy()
-        pictograph_data_copy[RED_ATTRS] = red_copy
-        pictograph_data_copy[BLUE_ATTRS] = blue_copy
-
-        for letter, examples in self.pictograph_dataset.items():
-            for example in examples:
-                if self.comparator.compare(pictograph_data_copy, example):
                     return letter
 
         return None

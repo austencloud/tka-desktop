@@ -1,4 +1,3 @@
-import numpy as np
 from data.constants import (
     ANTI,
     BLUE_ATTRS,

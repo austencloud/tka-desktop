@@ -1,5 +1,5 @@
 # services/json_handler.py
-from typing import TYPE_CHECKING, Protocol, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from main_window.main_widget.json_manager.json_manager import JsonManager

@@ -3,13 +3,13 @@ from dataclasses import dataclass
 
 from data.constants import BLUE_ATTRS, FLOAT, MOTION_TYPE, RED_ATTRS, START_LOC
 from ..core import DeterminationResult
-from .base_strategy import BaseDeterminationStrategy
+from .base_strategy import LetterDeterminationStrategy
 from ..services.motion_comparator import MotionComparator
 from ..services.attribute_manager import AttributeManager
 
 
 @dataclass
-class DualFloatStrategy(BaseDeterminationStrategy):
+class DualFloatStrategy(LetterDeterminationStrategy):
     comparator: MotionComparator
     attribute_manager: AttributeManager
 
@@ -23,7 +23,10 @@ class DualFloatStrategy(BaseDeterminationStrategy):
         return self._match_exact(data)
 
     def _is_dual_float(self, pictograph_data: dict) -> bool:
-        return pictograph_data[BLUE_ATTRS][MOTION_TYPE] == FLOAT and pictograph_data[RED_ATTRS][MOTION_TYPE] == FLOAT
+        return (
+            pictograph_data[BLUE_ATTRS][MOTION_TYPE] == FLOAT
+            and pictograph_data[RED_ATTRS][MOTION_TYPE] == FLOAT
+        )
 
     def _match_exact(self, pictograph_data: dict) -> DeterminationResult:
         """Mirror original example-by-example matching"""
