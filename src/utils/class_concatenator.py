@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import winsound  # For a built-in system success sound on Windows
 from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
@@ -10,6 +11,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QMessageBox,
 )
+from PyQt6.QtCore import QUrl
 
 class ClassConcatenatorApp(QWidget):
     def __init__(self):
@@ -34,7 +36,6 @@ class ClassConcatenatorApp(QWidget):
         layout.addWidget(self.run_button)
 
         self.setLayout(layout)
-
         self.selected_directory = ""
 
     def select_directory(self):
@@ -68,6 +69,7 @@ class ClassConcatenatorApp(QWidget):
                 outfile.write("\n".join(sorted(imports)) + "\n\n")
                 for class_definition in class_definitions:
                     outfile.write(class_definition + "\n\n")
+            winsound.MessageBeep(winsound.MB_ICONASTERISK)
             QMessageBox.information(
                 self, "Success", f"Classes concatenated into {output_file}"
             )

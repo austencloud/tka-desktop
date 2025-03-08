@@ -1,11 +1,11 @@
 # models/pictograph.py
 from dataclasses import dataclass
 from typing import Dict, Any
-from ..models.motion import MotionAttributes
+from ..models.motion import dict
 
 
 @dataclass
-class PictographData:
+class dict:
     beat: int
     letter: str
     letter_type: str
@@ -14,8 +14,8 @@ class PictographData:
     end_pos: str
     timing: str
     direction: str
-    blue_attributes: MotionAttributes
-    red_attributes: MotionAttributes
+    blue_attributes: dict
+    red_attributes: dict
 
     def serialized_attributes(self) -> Dict[str, Any]:
         return {

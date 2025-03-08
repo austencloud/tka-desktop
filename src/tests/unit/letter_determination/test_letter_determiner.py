@@ -1,9 +1,9 @@
 import pytest
 from enums.letter.letter import Letter
 from letter_determination.core import LetterDeterminer
-from letter_determination.models.pictograph import PictographData
+from letter_determination.models.pictograph import dict
 from letter_determination.models.motion import (
-    MotionAttributes,
+    dict,
     str,
     str,
 )
@@ -70,7 +70,7 @@ def mock_json_handler():
 def letter_determiner(mock_json_handler):
     dataset = {
         Letter.B: [
-            PictographData(
+            dict(
                 beat=1,
                 letter="C",
                 letter_type=LETTER_TYPE,
@@ -79,7 +79,7 @@ def letter_determiner(mock_json_handler):
                 end_pos=ALPHA3,
                 timing=SPLIT,
                 direction=SAME,
-                blue_attributes=MotionAttributes(
+                blue_attributes=dict(
                     motion_type=str.ANTI,
                     start_ori=IN,
                     prop_rot_dir=str.COUNTER_CLOCKWISE,
@@ -88,7 +88,7 @@ def letter_determiner(mock_json_handler):
                     turns=0,
                     end_ori=OUT,
                 ),
-                red_attributes=MotionAttributes(
+                red_attributes=dict(
                     motion_type=FLOAT,
                     start_ori=IN,
                     prop_rot_dir=str.NONE,
@@ -100,7 +100,7 @@ def letter_determiner(mock_json_handler):
             )
         ],
         Letter.A: [
-            PictographData(
+            dict(
                 beat=1,
                 letter="C",
                 letter_type=LETTER_TYPE,
@@ -109,7 +109,7 @@ def letter_determiner(mock_json_handler):
                 end_pos=ALPHA3,
                 timing=SPLIT,
                 direction=SAME,
-                blue_attributes=MotionAttributes(
+                blue_attributes=dict(
                     motion_type=str.PRO,
                     start_ori=IN,
                     prop_rot_dir=str.CLOCKWISE,
@@ -118,7 +118,7 @@ def letter_determiner(mock_json_handler):
                     turns=0,
                     end_ori=IN,
                 ),
-                red_attributes=MotionAttributes(
+                red_attributes=dict(
                     motion_type=FLOAT,
                     start_ori=IN,
                     prop_rot_dir=str.NONE,
@@ -134,7 +134,7 @@ def letter_determiner(mock_json_handler):
 
 
 def test_letter_determiner_case_c_to_b(letter_determiner):
-    pictograph = PictographData(
+    pictograph = dict(
         beat=1,
         letter="C",
         letter_type=LETTER_TYPE,
@@ -143,7 +143,7 @@ def test_letter_determiner_case_c_to_b(letter_determiner):
         end_pos=ALPHA3,
         timing=SPLIT,
         direction=SAME,
-        blue_attributes=MotionAttributes(
+        blue_attributes=dict(
             motion_type=str.ANTI,
             start_ori=IN,
             prop_rot_dir=str.COUNTER_CLOCKWISE,
@@ -152,7 +152,7 @@ def test_letter_determiner_case_c_to_b(letter_determiner):
             turns=0,
             end_ori=OUT,
         ),
-        red_attributes=MotionAttributes(
+        red_attributes=dict(
             motion_type=FLOAT,
             start_ori=IN,
             prop_rot_dir=str.NONE,
@@ -169,7 +169,7 @@ def test_letter_determiner_case_c_to_b(letter_determiner):
 
 
 def test_letter_determiner_case_c_to_a(letter_determiner):
-    pictograph = PictographData(
+    pictograph = dict(
         beat=1,
         letter="C",
         letter_type=LETTER_TYPE,
@@ -178,7 +178,7 @@ def test_letter_determiner_case_c_to_a(letter_determiner):
         end_pos=ALPHA3,
         timing=SPLIT,
         direction=SAME,
-        blue_attributes=MotionAttributes(
+        blue_attributes=dict(
             motion_type=str.PRO,
             start_ori=IN,
             prop_rot_dir=str.CLOCKWISE,
@@ -187,7 +187,7 @@ def test_letter_determiner_case_c_to_a(letter_determiner):
             turns=0,
             end_ori=IN,
         ),
-        red_attributes=MotionAttributes(
+        red_attributes=dict(
             motion_type=FLOAT,
             start_ori=IN,
             prop_rot_dir=str.NONE,

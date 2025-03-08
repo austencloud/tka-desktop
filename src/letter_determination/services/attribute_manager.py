@@ -2,19 +2,22 @@
 from typing import Optional
 
 from data.constants import (
+    ANTI,
     BEAT,
     BLUE,
     BLUE_ATTRS,
     FLOAT,
     MOTION_TYPE,
+    NO_ROT,
     PREFLOAT_MOTION_TYPE,
     PREFLOAT_PROP_ROT_DIR,
+    PRO,
     PROP_ROT_DIR,
     RED,
     RED_ATTRS,
 )
-from ..models.pictograph import PictographData
-from ..models.motion import MotionAttributes, str, str
+from ..models.pictograph import dict
+from ..models.motion import dict, str, str
 from ..services.json_handler import LetterDeterminationJsonHandler
 
 
@@ -22,32 +25,65 @@ class AttributeManager:
     def __init__(self, json_handler: "LetterDeterminationJsonHandler"):
         self.json_handler = json_handler
 
-    def sync_attributes(self, pictograph_data: PictographData) -> None:
+    def sync_attributes(self, pictograph_data: dict) -> None:
         """Ensure prefloat attributes are updated in pictograph data and stored in JSON."""
         for color, attrs in [
-            ("blue", pictograph_data[BLUE_ATTRS]),
+            (BLUE, pictograph_data[BLUE_ATTRS]),
             (RED, pictograph_data[RED_ATTRS]),
         ]:
             if attrs[MOTION_TYPE] == FLOAT:
-                other_attrs = (
+                other_attrs:dict = (
                     pictograph_data[RED_ATTRS]
                     if color == BLUE
                     else pictograph_data[BLUE_ATTRS]
                 )
 
                 # Update prefloat motion type
-                attrs[PREFLOAT_MOTION_TYPE] = other_attrs[MOTION_TYPE]
+                attrs[PREFLOAT_MOTION_TYPE] = (
+                    other_attrs[MOTION_TYPE]
+                    if other_attrs[MOTION_TYPE] in [PRO, ANTI]
+                    else (
+                        other_attrs[PREFLOAT_MOTION_TYPE]
+                        if other_attrs[MOTION_TYPE] in [PRO, ANTI]
+                        else (
+                            attrs[MOTION_TYPE]
+                            if attrs[MOTION_TYPE] in [PRO, ANTI]
+                            else None
+                        )
+                    )
+                )
                 self.json_handler.update_prefloat_motion_type(
-                    pictograph_data[BEAT], color, other_attrs[MOTION_TYPE]
+                    pictograph_data[BEAT],
+                    color,
+                    (
+                        other_attrs[MOTION_TYPE]
+                        if other_attrs[MOTION_TYPE] in [PRO, ANTI]
+                        else (
+                            other_attrs[PREFLOAT_MOTION_TYPE]
+                            if other_attrs[MOTION_TYPE] in [PRO, ANTI]
+                            else (
+                                attrs[MOTION_TYPE]
+                                if attrs[MOTION_TYPE] in [PRO, ANTI]
+                                else None
+                            )
+                        )
+                    ),
                 )
 
                 # Update prefloat prop rotation direction
-                attrs[PREFLOAT_PROP_ROT_DIR] = self._get_opposite_rotation_direction(
-                    other_attrs[PROP_ROT_DIR]
-                )
-                self.json_handler.update_prefloat_prop_rot_dir(
-                    pictograph_data[BEAT], color, attrs[PREFLOAT_PROP_ROT_DIR]
-                )
+                if other_attrs[MOTION_TYPE] in [PRO, ANTI]:
+                    attrs[PREFLOAT_PROP_ROT_DIR] = self._get_opposite_rotation_direction(
+                        other_attrs[PROP_ROT_DIR]
+                        if other_attrs[PROP_ROT_DIR] != NO_ROT
+                        else (
+                            other_attrs.get(PREFLOAT_PROP_ROT_DIR)
+                            if other_attrs[MOTION_TYPE] in [PRO, ANTI]
+                            else NO_ROT
+                        )
+                    )
+                    self.json_handler.update_prefloat_prop_rot_dir(
+                        pictograph_data[BEAT], color, attrs[PREFLOAT_PROP_ROT_DIR]
+                    )
 
     def _get_opposite_rotation_direction(self, rotation: str) -> str:
         if rotation == str.CLOCKWISE.value:
@@ -57,11 +93,11 @@ class AttributeManager:
         else:
             raise ValueError(f"Invalid rotation direction: {rotation}")
 
-    def _update_prefloat_from_storage(self, pictograph: PictographData) -> None:
+    def _update_prefloat_from_storage(self, pictograph: dict) -> None:
         json_index = self._get_json_index(pictograph)
 
         for color in [BLUE, RED]:
-            attr: MotionAttributes = getattr(pictograph, f"{color}_attributes")
+            attr: dict = getattr(pictograph, f"{color}_attributes")
             if attr.is_float:
                 stored_motion_type = self.json_handler.get_json_prefloat_motion_type(
                     json_index, color
@@ -76,10 +112,10 @@ class AttributeManager:
                     attr.prefloat_prop_rot_dir = str(stored_rotation)
 
     def _update_float_attributes(
-        self, attr: MotionAttributes, pictograph: PictographData, color: str
+        self, attr: dict, pictograph: dict, color: str
     ) -> None:
         other_color = RED if color == BLUE else BLUE
-        other_attr: MotionAttributes = getattr(pictograph, f"{other_color}_attributes")
+        other_attr: dict = getattr(pictograph, f"{other_color}_attributes")
 
         attr.prefloat_motion_type = other_attr.motion_type
         json_index = self._get_json_index(pictograph)
@@ -94,7 +130,7 @@ class AttributeManager:
             attr.prefloat_prop_rot_dir = new_rotation
             self.json_handler.update_prefloat_rotation(json_index, color, new_rotation)
 
-    def _calculate_prop_rotation(self, attr: MotionAttributes, direction: str) -> str:
+    def _calculate_prop_rotation(self, attr: dict, direction: str) -> str:
         base_rotation = attr.prop_rot_dir
         if direction == "opp":
             return self._reverse_rotation(base_rotation)
@@ -105,12 +141,12 @@ class AttributeManager:
             return str.COUNTER_CLOCKWISE
         return str.CLOCKWISE
 
-    def _save_current_state(self, pictograph: PictographData) -> None:
+    def _save_current_state(self, pictograph: dict) -> None:
         """Ensure prefloat motion type and rotation direction are stored in JSON."""
         json_index = self._get_json_index(pictograph)
 
-        for color in ["blue", RED]:
-            attr: MotionAttributes = getattr(pictograph, f"{color}_attributes")
+        for color in [BLUE, RED]:
+            attr: dict = getattr(pictograph, f"{color}_attributes")
 
             if attr.is_float:
                 if attr.prefloat_motion_type:
@@ -123,26 +159,5 @@ class AttributeManager:
                         json_index, color, attr.prefloat_prop_rot_dir.value
                     )
 
-    def _get_json_index(self, pictograph: PictographData) -> int:
-        return pictograph.beat + 2
-
-    def update_prefloat_attributes(
-        red_attrs: MotionAttributes, blue_attrs: MotionAttributes
-    ) -> None:
-        """Update prefloat attributes based on the given red and blue attributes."""
-        red_attrs.prefloat_motion_type = blue_attrs.motion_type
-        red_attrs.prefloat_prop_rot_dir = blue_attrs.prop_rot_dir
-
-    # In letter_determination/services/attribute_manager.py
-    def update_json_prefloat_attrs(self, pictograph: PictographData, color: str):
-        json_index = self.json_handler.get_current_json_index()
-
-        # Update motion type
-        self.json_handler.update_prefloat_motion_type(
-            json_index, color, pictograph.get_attributes(color).prefloat_motion_type
-        )
-
-        # Update prop rotation direction
-        self.json_handler.update_prefloat_prop_rot_dir(
-            json_index, color, pictograph.get_attributes(color).prefloat_prop_rot_dir
-        )
+    def _get_json_index(self, pictograph_data: dict) -> int:
+        return pictograph_data[BEAT] + 1

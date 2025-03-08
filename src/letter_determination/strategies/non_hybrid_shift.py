@@ -1,126 +1,175 @@
 # strategies/non_hybrid_shift.py
-from data.constants import OPP
+from typing import Optional
+from data.constants import (
+    ANTI,
+    BLUE,
+    BLUE_ATTRS,
+    CLOCKWISE,
+    COUNTER_CLOCKWISE,
+    DIRECTION,
+    END_LOC,
+    FLOAT,
+    MOTION_TYPE,
+    NO_ROT,
+    OPP,
+    PREFLOAT_MOTION_TYPE,
+    PREFLOAT_PROP_ROT_DIR,
+    PRO,
+    PROP_ROT_DIR,
+    RED,
+    RED_ATTRS,
+    START_LOC,
+)
 from letter_determination.determination_result import DeterminationResult
 from letter_determination.strategies.base_strategy import BaseDeterminationStrategy
-from ..models.motion import MotionAttributes, str
-from ..models.pictograph import PictographData
+from ..models.motion import dict, str
+from ..models.pictograph import dict
 
 
 class NonHybridShiftStrategy(BaseDeterminationStrategy):
     def execute(
-        self, pictograph: PictographData, swap_prop_rot_dir: bool = False
+        self, pictograph: dict, swap_prop_rot_dir: bool = False
     ) -> DeterminationResult:
         """Enhanced version with proper OPP direction handling"""
         self.attribute_manager.sync_attributes(pictograph)
-        float_attr, shift_attr, float_color = self._identify_components(pictograph)
+        float_attr, non_float_attrs, float_color = self._identify_components(pictograph)
 
-        if not float_attr or not shift_attr:
-            return DeterminationResult(None, {})
+        if not float_attr or not non_float_attrs:
+            return None
 
         # Handle direction-based inversion BEFORE setting prefloat attributes
         self._update_prefloat_attributes(
-            pictograph, float_attr, shift_attr, float_color
+            pictograph, float_attr, non_float_attrs, float_color
         )
 
         # Modified comparison logic that accounts for OPP direction
-        return self._find_matching_letter(pictograph, float_attr, shift_attr)
+        return self._find_matching_letter(pictograph, float_attr, non_float_attrs)
+
+    def _identify_components(self, data: dict) -> tuple[dict, dict, str]:
+        """Identify float and shift attributes"""
+        float_attrs = next(
+            (
+                attr
+                for attr in [data[BLUE_ATTRS], data[RED_ATTRS]]
+                if attr[MOTION_TYPE] == FLOAT
+            ),
+            None,
+        )
+        non_float_attrs = next(
+            (
+                attr
+                for attr in [data[BLUE_ATTRS], data[RED_ATTRS]]
+                if attr[MOTION_TYPE] != FLOAT
+            ),
+            None,
+        )
+        if float_attrs == data[BLUE_ATTRS]:
+            return float_attrs, non_float_attrs, BLUE
+        return float_attrs, non_float_attrs, RED
 
     def _update_prefloat_attributes(
         self,
-        data: PictographData,
-        float_attr: MotionAttributes,
-        shift_attr: MotionAttributes,
+        pictograph_data: dict,
+        float_attr: dict,
+        non_float_attrs: dict,
         color: str,
     ):
         """Updated to use direction-aware rotation calculation"""
-        json_index = self.attribute_manager._get_json_index(data)
+        json_index = self.attribute_manager._get_json_index(pictograph_data)
 
         # Set prefloat motion type
-        float_attr.prefloat_motion_type = shift_attr.motion_type
+        float_attr[PREFLOAT_MOTION_TYPE] = non_float_attrs[MOTION_TYPE]
         self.attribute_manager.json_handler.update_prefloat_motion_type(
-            json_index, color, shift_attr.motion_type
+            json_index, color, non_float_attrs[MOTION_TYPE]
         )
 
         # Get direction-adjusted rotation
-        base_rotation = self._get_base_rotation(float_attr, shift_attr)
-        final_rotation = self._apply_direction_inversion(data.direction, base_rotation)
+        base_rotation = self._get_base_rotation(float_attr, non_float_attrs)
+        final_rotation = self._apply_direction_inversion(
+            pictograph_data[DIRECTION], base_rotation
+        )
 
         # Set prefloat rotation
-        float_attr.prefloat_prop_rot_dir = final_rotation
+        float_attr[PREFLOAT_PROP_ROT_DIR] = final_rotation
         self.attribute_manager.json_handler.update_prefloat_prop_rot_dir(
             json_index, color, final_rotation
         )
 
-    def _get_base_rotation(
-        self, float_attr: MotionAttributes, shift_attr: MotionAttributes
-    ) -> str:
+    def _get_base_rotation(self, float_attrs: dict, non_float_attrs: dict) -> str:
         """Resolve rotation source based on motion state"""
-        if float_attr.prop_rot_dir == str.NONE:
-            return shift_attr.prop_rot_dir
-        return float_attr.prop_rot_dir
+        if float_attrs[PROP_ROT_DIR] == NO_ROT:
+            return non_float_attrs[PROP_ROT_DIR]
+        return float_attrs[PROP_ROT_DIR]
 
-    def _apply_direction_inversion(self, direction: str, rotation: str) -> str:
+    def _apply_direction_inversion(self, direction: str, prop_rot_dir: str) -> str:
         """Handle OPP direction inversion"""
         if direction == OPP:
-            return str.COUNTER_CLOCKWISE if rotation == str.CLOCKWISE else str.CLOCKWISE
-        return rotation
+            return COUNTER_CLOCKWISE if prop_rot_dir == CLOCKWISE else CLOCKWISE
+        return prop_rot_dir
 
     def _find_matching_letter(
         self,
-        pictograph: PictographData,
-        float_attr: MotionAttributes,
-        shift_attr: MotionAttributes,
-    ) -> DeterminationResult:
+        pictograph: dict,
+        float_attr: dict,
+        non_float_attrs: dict,
+    ) -> Optional[str]:
         """Match using prefloat-aware comparison"""
         for letter, examples in self.comparator.dataset.items():
             for example in examples:
-                if self._matches_example(pictograph, float_attr, shift_attr, example):
-                    return DeterminationResult(letter, example.serialized_attributes())
-        return DeterminationResult(None, {})
+                if self._matches_example(
+                    pictograph, float_attr, non_float_attrs, example
+                ):
+                    return letter
+        return None
 
     def _matches_example(
         self,
-        pictograph: PictographData,
-        float_attr: MotionAttributes,
-        shift_attr: MotionAttributes,
-        example: PictographData,
+        pictograph: dict,
+        float_attrs: dict,
+        non_float_attrs: dict,
+        example: dict,
     ) -> bool:
-        """Direction-aware comparison logic"""
-        # Get example components
-        example_float = next(
-            (
-                attr
-                for attr in [example.blue_attributes, example.red_attributes]
-                if attr.is_float
-            ),
-            None,
+        """Corrected comparison logic that avoids searching for FLOAT in examples"""
+
+        # Get example components (neither will be FLOAT)
+        example_blue = example[BLUE_ATTRS]
+        example_red = example[RED_ATTRS]
+
+        # Identify the shift motion in the example (since it has no floats)
+        reference_for_non_float = (
+            example_blue if example_red[MOTION_TYPE] == FLOAT else example_red
         )
-        example_shift = next(
-            (
-                attr
-                for attr in [example.blue_attributes, example.red_attributes]
-                if not attr.is_float
-            ),
-            None,
+        reference_for_float = (
+            example_blue if reference_for_non_float == example_red else example_red
         )
 
-        # Verify float match with prefloat attributes
+        # Ensure we are comparing the float motion against the example’s shift motion
         float_match = (
-            example_float.start_loc == float_attr.start_loc
-            and example_float.end_loc == float_attr.end_loc
-            and example_float.prop_rot_dir == float_attr.prefloat_prop_rot_dir
-            and example_float.motion_type == float_attr.prefloat_motion_type
+            float_attrs[START_LOC] == reference_for_float[START_LOC]
+            and float_attrs[END_LOC] == reference_for_float[END_LOC]
+            and float_attrs[PREFLOAT_PROP_ROT_DIR] == reference_for_float[PROP_ROT_DIR]
+            and float_attrs[PREFLOAT_MOTION_TYPE] == reference_for_float[MOTION_TYPE]
         )
 
-        # Verify shift match with direction adjustment
-        shift_match = (
-            example_shift.start_loc == shift_attr.start_loc
-            and example_shift.end_loc == shift_attr.end_loc
-            and example_shift.prop_rot_dir
+        # Verify shift motion with potential OPP direction inversion
+        non_float_match = (
+            non_float_attrs[START_LOC] == reference_for_non_float[START_LOC]
+            and non_float_attrs[END_LOC] == reference_for_non_float[END_LOC]
+            and non_float_attrs[PROP_ROT_DIR]
             == self._apply_direction_inversion(
-                pictograph.direction, shift_attr.prop_rot_dir
+                pictograph[DIRECTION], reference_for_non_float[PROP_ROT_DIR]
             )
-            and example_shift.motion_type == shift_attr.motion_type
+            and non_float_attrs[MOTION_TYPE] == reference_for_non_float[MOTION_TYPE]
         )
 
-        return float_match and shift_match
+        return float_match and non_float_match
+
+    def applies_to(self, pictograph: dict) -> bool:
+        """This strategy applies when one motion is FLOAT and the other is PRO/ANTI."""
+        return (
+            pictograph[BLUE_ATTRS][MOTION_TYPE] == FLOAT
+            and pictograph[RED_ATTRS][MOTION_TYPE] in [PRO, ANTI]
+        ) or (
+            pictograph[RED_ATTRS][MOTION_TYPE] == FLOAT
+            and pictograph[BLUE_ATTRS][MOTION_TYPE] in [PRO, ANTI]
+        )

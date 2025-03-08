@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 
-from base_widgets.pictograph.managers.pictograph_data_copier import PictographDataCopier
+from base_widgets.pictograph.managers.pictograph_data_copier import dictCopier
 from objects.glyphs.reversal_glyph import ReversalGlyph
 from placement_managers.arrow_placement_manager.arrow_placement_manager import (
     ArrowPlacementManager,
@@ -33,4 +33,4 @@ class PictographManagers:
     initializer: "PictographInitializer" = None
     updater: "PictographUpdater" = None
     svg_manager: "SvgManager" = None
-    data_copier: "PictographDataCopier" = None
+    data_copier: "dictCopier" = None

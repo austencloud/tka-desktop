@@ -1,6 +1,6 @@
 import pytest
 from letter_determination.core import LetterDeterminer
-from main_window.main_widget.pictograph_data_loader import PictographDataLoader
+from main_window.main_widget.pictograph_data_loader import dictLoader
 from .mocks.widgets import MockMainWidget
 
 
@@ -8,7 +8,7 @@ from .mocks.widgets import MockMainWidget
 def mock_main_widget() -> MockMainWidget:
     """Fixture providing a mocked main widget with loaded pictograph data"""
     widget = MockMainWidget()
-    loader = PictographDataLoader(widget)
+    loader = dictLoader(widget)
     widget.pictograph_dataset = loader.load_pictograph_dataset()
     return widget
 

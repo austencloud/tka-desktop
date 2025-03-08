@@ -6,7 +6,7 @@ from ..core import DeterminationResult
 from .base_strategy import BaseDeterminationStrategy
 from ..services.motion_comparator import MotionComparator
 from ..services.attribute_manager import AttributeManager
-from ..models.pictograph import PictographData
+from ..models.pictograph import dict
 
 
 @dataclass
@@ -15,32 +15,26 @@ class DualFloatStrategy(BaseDeterminationStrategy):
     attribute_manager: AttributeManager
 
     def execute(
-        self, data: PictographData, swap_prop_rot_dir: bool = False
+        self, data: dict, swap_prop_rot_dir: bool = False
     ) -> DeterminationResult:
         if not self._is_dual_float(data):
-            return DeterminationResult(
-                letter=None, matched_attributes={}
-            )  # ✅ Correct fields
+            return None
 
         self.attribute_manager.sync_attributes(data)
         return self._match_exact(data)
 
-    def _is_dual_float(self, data: PictographData) -> bool:
-        return data.blue_attributes.is_float and data.red_attributes.is_float
+    def _is_dual_float(self, pictograph_data: dict) -> bool:
+        return pictograph_data[BLUE_ATTRS][MOTION_TYPE] == FLOAT and pictograph_data[RED_ATTRS][MOTION_TYPE] == FLOAT
 
-    def _match_exact(self, data: PictographData) -> DeterminationResult:
+    def _match_exact(self, pictograph_data: dict) -> DeterminationResult:
         """Mirror original example-by-example matching"""
         for letter, examples in self.comparator.dataset.items():
             for example in examples:
-                if self.comparator.compare(data, example):
-                    return DeterminationResult(
-                        success=True,
-                        letter=letter,
-                        matched_attributes=example.serialized_attributes(),
-                    )
-        return DeterminationResult(success=False)
+                if self.comparator.compare(pictograph_data, example):
+                    return letter
+        return None
 
-    def applies_to(self, pictograph: PictographData) -> bool:
+    def applies_to(self, pictograph: dict) -> bool:
         """This strategy only applies when both motions are FLOAT and have valid attributes."""
         return (
             pictograph[BLUE_ATTRS][MOTION_TYPE] == FLOAT

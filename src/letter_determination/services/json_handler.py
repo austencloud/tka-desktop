@@ -47,3 +47,6 @@ class LetterDeterminationJsonHandler:
         self.updater.prop_rot_dir_updater.update_prefloat_prop_rot_dir_in_json(
             index, color, rotation.value
         )
+
+    def get_current_json_index(self, data: dict) -> int:
+        pass

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from data.constants import BEAT
 from settings_manager.global_settings.app_context import AppContext
 from utils.reversal_detector import (
     ReversalDetector,
@@ -50,7 +51,7 @@ class BeatAdder:
             new_beat.state.blue_reversal = reversal_info.get("blue_reversal", False)
             new_beat.state.red_reversal = reversal_info.get("red_reversal", False)
             self.beats[next_beat_index].set_beat(new_beat, next_beat_number)
-
+            new_beat.state.pictograph_data[BEAT] = next_beat_number
             if grow_sequence and not override_grow_sequence:
                 self._adjust_layout_and_update_sequence_builder(next_beat_index)
             elif not grow_sequence or override_grow_sequence:

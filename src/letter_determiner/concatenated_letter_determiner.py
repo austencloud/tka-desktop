@@ -502,7 +502,7 @@ class PrefloatAttributeUpdater:
 # )
 # from enums.letter.letter import Letter
 # from letter_determiner.letter_determiner import LetterDeterminer
-# from main_window.main_widget.pictograph_data_loader import PictographDataLoader
+# from main_window.main_widget.pictograph_data_loader import dictLoader
 
 
 # class MockBeatFrame:
@@ -553,7 +553,7 @@ class PrefloatAttributeUpdater:
 # @pytest.fixture
 # def mock_main_widget():
 #     widget = MockMainWidget()
-#     loader = PictographDataLoader(widget)
+#     loader = dictLoader(widget)
 #     widget.pictograph_dataset = loader.load_pictograph_dataset()
 #     return widget
 

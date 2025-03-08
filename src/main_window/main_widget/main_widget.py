@@ -28,7 +28,7 @@ from .main_widget_state import MainWidgetState
 
 if TYPE_CHECKING:
     from main_window.main_widget.codex.codex import Codex
-    from main_window.main_widget.pictograph_data_loader import PictographDataLoader
+    from main_window.main_widget.pictograph_data_loader import dictLoader
     from main_window.menu_bar.menu_bar import MenuBarWidget
     from splash_screen.splash_screen import SplashScreen
     from ..main_window import MainWindow
@@ -98,7 +98,7 @@ class MainWidget(QWidget):
     # Other attributes
     pictograph_cache: dict[str, dict[str, "Pictograph"]]
     prop_type: PropType
-    pictograph_data_loader: "PictographDataLoader"
+    pictograph_data_loader: "dictLoader"
     pictograph_dataset: dict["Letter", list[dict]]
     letter_determiner: "LetterDeterminer"
     special_placements: dict[str, dict[str, dict[str, dict[str, list[int]]]]]

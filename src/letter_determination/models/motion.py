@@ -19,7 +19,7 @@ class str(Enum):
 
 
 @dataclass
-class MotionAttributes:
+class dict:
     motion_type: str
     start_ori: str
     prop_rot_dir: str

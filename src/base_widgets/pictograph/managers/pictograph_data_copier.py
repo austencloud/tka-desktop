@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
 
 
-class PictographDataCopier:
+class dictCopier:
     def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
 

@@ -1,142 +1,168 @@
-# services/motion_comparator.py
-from typing import Dict, List, Tuple
 import numpy as np
-
-from data.constants import BLUE_ATTRS, FLOAT, RED_ATTRS
-
-from ..models.motion import str, str
-from ..models.pictograph import PictographData, MotionAttributes
+from data.constants import (
+    ANTI,
+    BLUE_ATTRS,
+    CLOCKWISE,
+    COUNTER_CLOCKWISE,
+    END_LOC,
+    END_POS,
+    FLOAT,
+    MOTION_TYPE,
+    PREFLOAT_MOTION_TYPE,
+    PREFLOAT_PROP_ROT_DIR,
+    PRO,
+    PROP_ROT_DIR,
+    RED_ATTRS,
+    START_LOC,
+    START_POS,
+)
 
 
 class MotionComparator:
-    def __init__(self, dataset: Dict[str, List[PictographData]]):
+    def __init__(self, dataset: dict[str, list[dict]]):
         self.dataset = dataset
 
-    def compare(
-        self,
-        blue_attrs: MotionAttributes,
-        red_attrs: MotionAttributes,
-        example: PictographData,
-    ) -> bool:
+    def compare(self, pictograph_data: dict, example: dict) -> bool:
         """Compare blue and red motion attributes with an example, considering prefloat properties."""
-        blue_copy = blue_attrs.serialize()
-        red_copy = red_attrs.serialize()
+        blue_attrs: dict = pictograph_data[BLUE_ATTRS]
+        red_attrs: dict = pictograph_data[RED_ATTRS]
+
+        blue_copy = blue_attrs.copy()
+        red_copy = red_attrs.copy()
 
         # Ensure prefloat attributes are correctly applied
-        if blue_attrs.is_float:
-            blue_copy["prefloat_motion_type"] = red_attrs.motion_type
-            blue_copy["prefloat_prop_rot_dir"] = red_attrs.prop_rot_dir
+        if blue_attrs[MOTION_TYPE] == FLOAT:
+            blue_copy[PREFLOAT_MOTION_TYPE] = red_attrs[MOTION_TYPE]
+            blue_copy[PREFLOAT_PROP_ROT_DIR] = red_attrs[PROP_ROT_DIR]
 
-        if red_attrs.is_float:
-            red_copy["prefloat_motion_type"] = blue_attrs.motion_type
-            red_copy["prefloat_prop_rot_dir"] = blue_attrs.prop_rot_dir
+        if red_attrs[MOTION_TYPE] == FLOAT:
+            red_copy[PREFLOAT_MOTION_TYPE] = blue_attrs[MOTION_TYPE]
+            red_copy[PREFLOAT_PROP_ROT_DIR] = blue_attrs[PROP_ROT_DIR]
 
-        return example[BLUE_ATTRS] == MotionAttributes(**blue_copy) and example[
-            RED_ATTRS
-        ] == MotionAttributes(**red_copy)
+        red_motion_type = (
+            red_copy[MOTION_TYPE]
+            if red_copy[MOTION_TYPE] != FLOAT
+            else red_copy[PREFLOAT_MOTION_TYPE]
+        )
+        blue_motion_type = (
+            blue_copy[MOTION_TYPE]
+            if blue_copy[MOTION_TYPE] != FLOAT
+            else blue_copy[PREFLOAT_MOTION_TYPE]
+        )
+        # instead of comparing if all values match, compare the motion type and the start loc and the end loc only.
+        if pictograph_data[START_POS] == example[START_POS]:
+            if pictograph_data[END_POS] == example[END_POS]:
+                if example[BLUE_ATTRS][MOTION_TYPE] == blue_motion_type:
+                    if example[RED_ATTRS][MOTION_TYPE] == red_motion_type:
+                        return True
 
-    def _is_prefloat_matching(
-        self, motion_attrs: MotionAttributes, example_attrs: MotionAttributes
-    ) -> bool:
+        return example[BLUE_ATTRS] == blue_copy and example[RED_ATTRS] == red_copy
+
+    def _is_prefloat_matching(self, motion_attrs: dict, example_attrs: dict) -> bool:
         """Ensure prefloat attributes match correctly."""
         return (
-            example_attrs.prefloat_motion_type is None
-            or example_attrs.prefloat_motion_type == motion_attrs.prefloat_motion_type
+            example_attrs[PREFLOAT_MOTION_TYPE] is None
+            or example_attrs[PREFLOAT_MOTION_TYPE] == motion_attrs[PREFLOAT_MOTION_TYPE]
         ) and (
-            example_attrs.prefloat_prop_rot_dir is None
-            or example_attrs.prefloat_prop_rot_dir == motion_attrs.prefloat_prop_rot_dir
+            example_attrs[PREFLOAT_PROP_ROT_DIR] is None
+            or example_attrs[PREFLOAT_PROP_ROT_DIR]
+            == motion_attrs[PREFLOAT_PROP_ROT_DIR]
         )
 
     def compare_motion_to_example(
         self,
-        motion_attrs: MotionAttributes,
-        example_attrs: MotionAttributes,
+        motion_attrs: dict,
+        example_attrs: dict,
         swap_prop_rot_dir: bool = False,
     ) -> bool:
         """Compare a single motion's attributes to an example from the dataset."""
 
         # Apply swap if needed
-        expected_rot_dir = example_attrs.prop_rot_dir
+        expected_prop_rot_dir = example_attrs[PROP_ROT_DIR]
         if swap_prop_rot_dir:
-            expected_rot_dir = self._reverse_rotation(expected_rot_dir)
+            expected_prop_rot_dir = self._reverse_prop_rot_dir(expected_prop_rot_dir)
 
         return (
-            motion_attrs.start_loc == example_attrs.start_loc
-            and motion_attrs.end_loc == example_attrs.end_loc
+            motion_attrs[START_LOC] == example_attrs[START_LOC]
+            and motion_attrs[END_LOC] == example_attrs[END_LOC]
             and self._is_motion_type_matching(motion_attrs, example_attrs)
-            and motion_attrs.prop_rot_dir == expected_rot_dir  # Swapped if necessary
+            and motion_attrs[PROP_ROT_DIR]
+            == expected_prop_rot_dir  # Swapped if necessary
         )
 
-    def _is_motion_type_matching(
-        self, motion_attrs: MotionAttributes, example_attrs: MotionAttributes
-    ) -> bool:
+    def _is_motion_type_matching(self, motion_attrs: dict, example_attrs: dict) -> bool:
         """Check if motion type matches example, considering prefloat attributes."""
         return (
-            example_attrs.motion_type == motion_attrs.motion_type
-            or example_attrs.motion_type == motion_attrs.prefloat_motion_type
+            example_attrs[MOTION_TYPE] == motion_attrs[MOTION_TYPE]
+            or example_attrs[MOTION_TYPE] == motion_attrs[PREFLOAT_MOTION_TYPE]
         )
 
     def _is_prop_rot_dir_matching(
-        self, motion_attrs: MotionAttributes, example_attrs: MotionAttributes
+        self, motion_attrs: dict, example_attrs: dict
     ) -> bool:
         """Check if rotation direction matches, considering prefloat attributes."""
         return (
-            example_attrs.prop_rot_dir == motion_attrs.prop_rot_dir
-            or example_attrs.prop_rot_dir == motion_attrs.prefloat_prop_rot_dir
+            example_attrs[PROP_ROT_DIR] == motion_attrs[PROP_ROT_DIR]
+            or example_attrs[PROP_ROT_DIR] == motion_attrs[PREFLOAT_PROP_ROT_DIR]
         )
 
-    def _reverse_rotation(self, direction: str) -> str:
-        if direction == str.CLOCKWISE:
-            return str.COUNTER_CLOCKWISE
-        return str.CLOCKWISE
+    def _reverse_prop_rot_dir(self, prop_rot_dir: str) -> str:
+        if prop_rot_dir == CLOCKWISE:
+            return COUNTER_CLOCKWISE
+        return CLOCKWISE
+
+    def _reverse_motion_type(self, motion_type: str) -> str:
+        if motion_type == PRO:
+            return ANTI
+        return PRO
 
     def compare_with_prefloat(
         self,
-        target: PictographData,
-        example: PictographData,
+        target: dict,
+        example: dict,
         swap_prop_rot_dir: bool = False,
     ) -> float:
         """Special comparison accounting for prefloat attributes"""
         float_attr = (
-            target.blue_attributes
-            if target.blue_attributes.is_float
-            else target.red_attributes
+            target[BLUE_ATTRS]
+            if target[BLUE_ATTRS][MOTION_TYPE] == FLOAT
+            else target[RED_ATTRS]
         )
         shift_attr = (
-            target.red_attributes
-            if target.blue_attributes.is_float
-            else target.blue_attributes
+            target[RED_ATTRS]
+            if target[BLUE_ATTRS][MOTION_TYPE] == FLOAT
+            else target[BLUE_ATTRS]
         )
 
         example_float = (
-            example.blue_attributes
-            if example.blue_attributes.motion_type == FLOAT
-            else example.red_attributes
+            example[BLUE_ATTRS]
+            if example[BLUE_ATTRS][MOTION_TYPE] == FLOAT
+            else example[RED_ATTRS]
         )
         example_shift = (
-            example.red_attributes
-            if example.blue_attributes.motion_type == FLOAT
-            else example.blue_attributes
+            example[RED_ATTRS]
+            if example[BLUE_ATTRS][MOTION_TYPE] == FLOAT
+            else example[BLUE_ATTRS]
         )
 
         # Apply swapping logic to prefloat rotation direction
-        float_expected_rot_dir = example_float.prop_rot_dir
+        float_expected_rot_dir = example_float[PROP_ROT_DIR]
         if swap_prop_rot_dir:
-            float_expected_rot_dir = self._reverse_rotation(float_expected_rot_dir)
+            float_expected_rot_dir = self._reverse_prop_rot_dir(float_expected_rot_dir)
 
         float_match = (
-            float_attr.start_loc == example_float.start_loc
-            and float_attr.end_loc == example_float.end_loc
+            float_attr[START_LOC] == example_float[START_LOC]
+            and float_attr[END_LOC] == example_float[END_LOC]
             and float_expected_rot_dir
-            == self._reverse_rotation(float_attr.prefloat_prop_rot_dir)
-            and example_float.motion_type == float_attr.prefloat_motion_type
+            == self._reverse_prop_rot_dir(float_attr[PREFLOAT_PROP_ROT_DIR])
+            and example_float[MOTION_TYPE] == float_attr[PREFLOAT_MOTION_TYPE]
         )
 
         shift_match = (
-            shift_attr.start_loc == example_shift.start_loc
-            and shift_attr.end_loc == example_shift.end_loc
-            and shift_attr.prop_rot_dir == example_shift.prop_rot_dir
-            and shift_attr.motion_type == example_shift.motion_type
+            shift_attr[START_LOC] == example_shift[START_LOC]
+            and shift_attr[END_LOC] == example_shift[END_LOC]
+            and shift_attr[PROP_ROT_DIR] == example_shift[PROP_ROT_DIR]
+            and shift_attr[MOTION_TYPE] == example_shift[MOTION_TYPE]
         )
 
         return 1.0 if float_match and shift_match else 0.0
