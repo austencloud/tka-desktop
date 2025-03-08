@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 
 from data.constants import BLUE_ATTRS, FLOAT, MOTION_TYPE, RED_ATTRS, START_LOC
-from ..core import DeterminationResult
+from letter_determination.determination_result import DeterminationResult
 from .base_strategy import LetterDeterminationStrategy
 from ..services.motion_comparator import MotionComparator
 from ..services.attribute_manager import AttributeManager

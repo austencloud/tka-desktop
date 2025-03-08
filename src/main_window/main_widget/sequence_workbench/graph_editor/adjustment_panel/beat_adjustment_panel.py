@@ -110,10 +110,10 @@ class BeatAdjustmentPanel(QFrame):
             blue_rot_dir = blue_motion.state.prop_rot_dir
             red_rot_dir = red_motion.state.prop_rot_dir
 
-            self.blue_turns_box.prop_rot_dir_button_manager._update_button_states(
+            self.blue_turns_box.prop_rot_dir_button_manager.logic_handler.update_button_states(
                 blue_rot_dir
             )
-            self.red_turns_box.prop_rot_dir_button_manager._update_button_states(
+            self.red_turns_box.prop_rot_dir_button_manager.logic_handler.update_button_states(
                 red_rot_dir
             )
 

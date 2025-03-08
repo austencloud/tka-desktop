@@ -100,31 +100,30 @@ class TurnsUpdater:
         """Handle button states when turns are zero."""
         if motion.state.motion_type in [DASH, STATIC]:
             motion.state.prop_rot_dir = NO_ROT
-            self.prop_rot_dir_manager.unpress_prop_rot_dir_buttons()
-            self.prop_rot_dir_manager.hide_prop_rot_dir_buttons()
+            self.turns_box.header.unpress_prop_rot_dir_buttons()
+            self.turns_box.header.hide_prop_rot_dir_buttons()
         elif motion.state.motion_type in [PRO, ANTI]:
-            self.prop_rot_dir_manager.show_prop_rot_dir_buttons()
+            self.turns_box.header.show_prop_rot_dir_buttons()
 
     def _handle_float_turn_buttons(self, motion: "Motion") -> None:
         """Handle button states when turns are 'float'."""
-        self.prop_rot_dir_manager.unpress_prop_rot_dir_buttons()
-        self.prop_rot_dir_manager.hide_prop_rot_dir_buttons()
+        self.turns_box.header.unpress_prop_rot_dir_buttons()
+        self.turns_box.header.hide_prop_rot_dir_buttons()
         motion.state.motion_type = FLOAT
         motion.state.prop_rot_dir = NO_ROT
 
     def _handle_positive_turns(self, motion: "Motion") -> None:
         """Handle button states when turns are positive."""
-        self.prop_rot_dir_manager.show_prop_rot_dir_buttons()
+        self.turns_box.header.show_prop_rot_dir_buttons()
         if motion.state.prop_rot_dir == NO_ROT:
             motion.state.prop_rot_dir = self._get_default_prop_rot_dir()
-            self.prop_rot_dir_manager.show_prop_rot_dir_buttons()
+            self.turns_box.header.show_prop_rot_dir_buttons()
 
     def _get_default_prop_rot_dir(self) -> PropRotDir:
         """Set default prop rotation direction to clockwise."""
         self._set_prop_rot_dir_state_default()
-        prop_rot_dir_manager = self.turns_box.prop_rot_dir_button_manager
-        prop_rot_dir_manager.show_prop_rot_dir_buttons()
-        prop_rot_dir_manager.cw_button.set_selected(True)
+        self.turns_box.header.show_prop_rot_dir_buttons()
+        self.turns_box.header.cw_button.set_selected(True)
         return CLOCKWISE
 
     def _set_prop_rot_dir_state_default(self) -> None:

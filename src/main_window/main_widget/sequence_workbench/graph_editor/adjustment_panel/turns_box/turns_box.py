@@ -36,8 +36,8 @@ class TurnsBox(QFrame):
         self._setup_layout()
 
     def _setup_widgets(self) -> None:
-        self.prop_rot_dir_button_manager = PropRotDirButtonManager(self)
         self.header = TurnsBoxHeader(self)
+        self.prop_rot_dir_button_manager = PropRotDirButtonManager(self)
         self.turns_widget = TurnsWidget(self)
 
     def _setup_layout(self) -> None:
@@ -56,7 +56,11 @@ class TurnsBox(QFrame):
             else HEX_BLUE if self.color == "blue" else self.color
         )
         # Convert hex to RGB
-        r, g, b = int(color_hex[1:3], 16), int(color_hex[3:5], 16), int(color_hex[5:7], 16)
+        r, g, b = (
+            int(color_hex[1:3], 16),
+            int(color_hex[3:5], 16),
+            int(color_hex[5:7], 16),
+        )
         # Whiten the color by blending with white (255, 255, 255)
         whitened_r = min(255, r + (255 - r) // 2)
         whitened_g = min(255, g + (255 - g) // 2)

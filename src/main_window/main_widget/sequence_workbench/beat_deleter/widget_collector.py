@@ -74,8 +74,8 @@ class WidgetCollector:
                 [
                     turns_box.turns_widget.display_frame.turns_label,
                     turns_box.turns_widget.motion_type_label,
-                    turns_box.prop_rot_dir_button_manager.ccw_button,
-                    turns_box.prop_rot_dir_button_manager.cw_button,
+                    turns_box.header.ccw_button,
+                    turns_box.header.cw_button,
                 ]
             )
         for ori_picker in ori_pickers:
