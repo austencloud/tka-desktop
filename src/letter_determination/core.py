@@ -14,8 +14,6 @@ from enums.letter.letter import Letter
 
 from main_window.main_widget.json_manager.json_manager import JsonManager
 
-from .models.motion import dict, str
-from .models.pictograph import dict
 from .determination_result import DeterminationResult
 from .services.attribute_manager import AttributeManager
 from .services.json_handler import LetterDeterminationJsonHandler
@@ -44,7 +42,7 @@ class LetterDeterminer:
 
     def determine_letter(
         self, pictograph_data: dict, swap_prop_rot_dir: bool = False
-    ) -> Letter:
+    ) -> str:
         """Determine the letter for the given pictograph using strategies or fallback."""
         self.attribute_manager.sync_attributes(pictograph_data)
         # if (

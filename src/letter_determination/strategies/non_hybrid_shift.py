@@ -22,8 +22,6 @@ from data.constants import (
 )
 from letter_determination.determination_result import DeterminationResult
 from letter_determination.strategies.base_strategy import BaseDeterminationStrategy
-from ..models.motion import dict, str
-from ..models.pictograph import dict
 
 
 class NonHybridShiftStrategy(BaseDeterminationStrategy):

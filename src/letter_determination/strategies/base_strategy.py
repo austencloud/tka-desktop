@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from enums.letter.letter import Letter
-from ..models.pictograph import dict
 from ..determination_result import DeterminationResult
 
 if TYPE_CHECKING:

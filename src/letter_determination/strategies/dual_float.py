@@ -6,7 +6,6 @@ from ..core import DeterminationResult
 from .base_strategy import BaseDeterminationStrategy
 from ..services.motion_comparator import MotionComparator
 from ..services.attribute_manager import AttributeManager
-from ..models.pictograph import dict
 
 
 @dataclass
