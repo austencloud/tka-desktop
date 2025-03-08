@@ -34,7 +34,6 @@ class LetterDeterminer:
         self.comparator = MotionComparator(pictograph_dataset)
         self.attribute_manager = AttributeManager(self.json_handler)
 
-        # ✅ Import strategies lazily to break circular import loop
         from .strategies.non_hybrid_shift import NonHybridShiftStrategy
         from .strategies.dual_float import DualFloatStrategy
 
@@ -43,17 +42,8 @@ class LetterDeterminer:
     def determine_letter(
         self, pictograph_data: dict, swap_prop_rot_dir: bool = False
     ) -> str:
-        """Determine the letter for the given pictograph using strategies or fallback."""
         self.attribute_manager.sync_attributes(pictograph_data)
-        # if (
-        #     pictograph_data[BLUE_ATTRS][MOTION_TYPE] == FLOAT
-        #     and pictograph_data[RED_ATTRS][MOTION_TYPE] == FLOAT
-        # ):
-        #     self.attribute_manager.update_prefloat_attributes(
-        #         pictograph_data[BLUE_ATTRS], pictograph_data[RED_ATTRS]
-        #     )
 
-        # If both motions are static, return early
         if (
             pictograph_data[BLUE_ATTRS][MOTION_TYPE] == STATIC
             and pictograph_data[RED_ATTRS][MOTION_TYPE] == STATIC
@@ -65,9 +55,7 @@ class LetterDeterminer:
                 self.comparator, self.attribute_manager
             )
 
-            if strategy.applies_to(
-                pictograph_data
-            ):  # Ensure only applicable strategies run
+            if strategy.applies_to(pictograph_data):
                 letter: Letter = strategy.execute(
                     pictograph_data, swap_prop_rot_dir=swap_prop_rot_dir
                 )
@@ -79,14 +67,11 @@ class LetterDeterminer:
     def _fallback_search(
         self, pictograph_data: dict, swap_prop_rot_dir: bool
     ) -> Optional[Letter]:
-        """Fallback search that ensures prefloat motion attributes are respected."""
         blue_attrs: dict = pictograph_data[BLUE_ATTRS]
         red_attrs: dict = pictograph_data[RED_ATTRS]
 
-        # Ensure prefloat attributes are updated before comparison
         self.attribute_manager.sync_attributes(pictograph_data)
 
-        # Create temporary copies to avoid modifying original data
         blue_copy = blue_attrs.copy()
         red_copy = red_attrs.copy()
 
@@ -110,31 +95,14 @@ class LetterDeterminer:
     def _get_letter_from_pictograph_and_color(
         self, motion_color: str, pictograph_data: dict, swap_prop_rot_dir: bool
     ) -> Optional[Letter]:
-        """Fallback search that ensures prefloat motion attributes are respected."""
         blue_attrs: dict = pictograph_data[BLUE_ATTRS]
         red_attrs: dict = pictograph_data[RED_ATTRS]
 
-        # Ensure prefloat attributes are updated before comparison
         self.attribute_manager.sync_attributes(pictograph_data)
 
-        # Create temporary copies to avoid modifying original data
         blue_copy = blue_attrs.copy()
         red_copy = red_attrs.copy()
 
-        # if motion_color == BLUE and swap_prop_rot_dir:
-        #     blue_copy[PROP_ROT_DIR] = self.comparator._reverse_prop_rot_dir(
-        #         blue_copy[PROP_ROT_DIR]
-        #     )
-        #     blue_copy[MOTION_TYPE] = self.comparator._reverse_motion_type(
-        #         blue_copy[MOTION_TYPE]
-        #     )
-        # elif motion_color == RED and swap_prop_rot_dir:
-        #     red_copy[PROP_ROT_DIR] = self.comparator._reverse_prop_rot_dir(
-        #         red_copy[PROP_ROT_DIR]
-        #     )
-        #     red_copy[MOTION_TYPE] = self.comparator._reverse_motion_type(
-        #         red_copy[MOTION_TYPE]
-        #     )
         pictograph_data_copy = pictograph_data.copy()
         pictograph_data_copy[RED_ATTRS] = red_copy
         pictograph_data_copy[BLUE_ATTRS] = blue_copy

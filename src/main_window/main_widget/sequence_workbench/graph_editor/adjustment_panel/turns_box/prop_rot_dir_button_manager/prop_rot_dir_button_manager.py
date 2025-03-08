@@ -89,7 +89,7 @@ class PropRotDirButtonManager:
                     motion.state.prop_rot_dir = prop_rot_dir
                     motion.state.motion_type = self._get_new_motion_type(motion)
                     self._update_pictograph_and_json(motion)
-                    self.update_pictograph_letter(pictograph, motion.state.color)
+                    self.update_pictograph_letter(pictograph)
 
             pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
 
@@ -110,9 +110,9 @@ class PropRotDirButtonManager:
         self.option_picker.updater.refresh_options()
         QApplication.restoreOverrideCursor()
 
-    def update_pictograph_letter(self, pictograph: "Pictograph", color: str) -> None:
-        new_letter = self.graph_editor.main_widget.letter_determiner._get_letter_from_pictograph_and_color(
-            color, pictograph.state.pictograph_data, swap_prop_rot_dir=True
+    def update_pictograph_letter(self, pictograph: "Pictograph") -> None:
+        new_letter = self.graph_editor.main_widget.letter_determiner.determine_letter(
+            pictograph.state.pictograph_data, swap_prop_rot_dir=True
         )
         if new_letter:
             pictograph.state.pictograph_data[LETTER] = new_letter.value

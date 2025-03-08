@@ -72,7 +72,7 @@ class TurnsAdjustmentManager(QObject):
                 motion.pictograph.state.pictograph_data
             )
         self.turns_widget.turns_box.prop_rot_dir_button_manager.update_pictograph_letter(
-            motion.pictograph, motion.state.color
+            motion.pictograph
         )
 
         self.main_widget.construct_tab.option_picker.updater.update_options()
