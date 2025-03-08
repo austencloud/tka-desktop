@@ -1,7 +1,8 @@
 # strategies/non_hybrid_shift.py
 from data.constants import OPP
-from ..models.motion import MotionAttributes, RotationDirection
-from ..core import BaseDeterminationStrategy, DeterminationResult
+from letter_determination.determination_result import DeterminationResult
+from letter_determination.strategies.base_strategy import BaseDeterminationStrategy
+from ..models.motion import MotionAttributes, str
 from ..models.pictograph import PictographData
 
 
@@ -52,22 +53,16 @@ class NonHybridShiftStrategy(BaseDeterminationStrategy):
 
     def _get_base_rotation(
         self, float_attr: MotionAttributes, shift_attr: MotionAttributes
-    ) -> RotationDirection:
+    ) -> str:
         """Resolve rotation source based on motion state"""
-        if float_attr.prop_rot_dir == RotationDirection.NONE:
+        if float_attr.prop_rot_dir == str.NONE:
             return shift_attr.prop_rot_dir
         return float_attr.prop_rot_dir
 
-    def _apply_direction_inversion(
-        self, direction: str, rotation: RotationDirection
-    ) -> RotationDirection:
+    def _apply_direction_inversion(self, direction: str, rotation: str) -> str:
         """Handle OPP direction inversion"""
         if direction == OPP:
-            return (
-                RotationDirection.COUNTER_CLOCKWISE
-                if rotation == RotationDirection.CLOCKWISE
-                else RotationDirection.CLOCKWISE
-            )
+            return str.COUNTER_CLOCKWISE if rotation == str.CLOCKWISE else str.CLOCKWISE
         return rotation
 
     def _find_matching_letter(

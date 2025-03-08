@@ -4,8 +4,8 @@ from letter_determination.core import LetterDeterminer
 from letter_determination.models.pictograph import PictographData
 from letter_determination.models.motion import (
     MotionAttributes,
-    MotionType,
-    RotationDirection,
+    str,
+    str,
 )
 from letter_determination.services.json_handler import LetterDeterminationJsonHandler
 from data.constants import (
@@ -32,26 +32,26 @@ def mock_json_handler():
             self.updater = MockUpdater()
 
         def get_json_prefloat_motion_type(self, index: int, color: str):
-            return MotionType.ANTI  # ✅ Return Enum, not string
+            return str.ANTI  # ✅ Return Enum, not string
 
         def get_json_prefloat_prop_rot_dir(self, index: int, color: str):
-            return RotationDirection.COUNTER_CLOCKWISE  # ✅ Return Enum, not string
+            return str.COUNTER_CLOCKWISE  # ✅ Return Enum, not string
 
-        def update_prefloat_motion_type(self, index: int, color: str, motion_type: MotionType):
+        def update_prefloat_motion_type(self, index: int, color: str, motion_type: str):
             pass
 
-        def update_prefloat_prop_rot_dir(self, index: int, color: str, direction: RotationDirection):
+        def update_prefloat_prop_rot_dir(self, index: int, color: str, direction: str):
             pass
 
     class MockLoaderSaver:
         def get_json_prefloat_motion_type(self, index, color):
-            return MotionType.ANTI  # ✅ Return Enum
+            return str.ANTI  # ✅ Return Enum
 
         def get_json_prefloat_prop_rot_dir(self, index, color):
-            return RotationDirection.COUNTER_CLOCKWISE  # ✅ Return Enum
+            return str.COUNTER_CLOCKWISE  # ✅ Return Enum
 
     class MockUpdater:
-        class MotionTypeUpdater:
+        class strUpdater:
             def update_json_prefloat_motion_type(self, index, color, motion_type):
                 pass
 
@@ -60,7 +60,7 @@ def mock_json_handler():
                 pass
 
         def __init__(self):
-            self.motion_type_updater = self.MotionTypeUpdater()
+            self.motion_type_updater = self.strUpdater()
             self.prop_rot_dir_updater = self.PropRotDirUpdater()
 
     return MockJsonHandler()
@@ -80,18 +80,18 @@ def letter_determiner(mock_json_handler):
                 timing=SPLIT,
                 direction=SAME,
                 blue_attributes=MotionAttributes(
-                    motion_type=MotionType.ANTI,
+                    motion_type=str.ANTI,
                     start_ori=IN,
-                    prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
+                    prop_rot_dir=str.COUNTER_CLOCKWISE,
                     start_loc=SOUTH,
                     end_loc=WEST,
                     turns=0,
                     end_ori=OUT,
                 ),
                 red_attributes=MotionAttributes(
-                    motion_type=MotionType.FLOAT,
+                    motion_type=FLOAT,
                     start_ori=IN,
-                    prop_rot_dir=RotationDirection.NONE,
+                    prop_rot_dir=str.NONE,
                     start_loc=NORTH,
                     end_loc=EAST,
                     turns="fl",
@@ -110,18 +110,18 @@ def letter_determiner(mock_json_handler):
                 timing=SPLIT,
                 direction=SAME,
                 blue_attributes=MotionAttributes(
-                    motion_type=MotionType.PRO,
+                    motion_type=str.PRO,
                     start_ori=IN,
-                    prop_rot_dir=RotationDirection.CLOCKWISE,
+                    prop_rot_dir=str.CLOCKWISE,
                     start_loc=SOUTH,
                     end_loc=WEST,
                     turns=0,
                     end_ori=IN,
                 ),
                 red_attributes=MotionAttributes(
-                    motion_type=MotionType.FLOAT,
+                    motion_type=FLOAT,
                     start_ori=IN,
-                    prop_rot_dir=RotationDirection.NONE,
+                    prop_rot_dir=str.NONE,
                     start_loc=NORTH,
                     end_loc=EAST,
                     turns="fl",
@@ -144,24 +144,24 @@ def test_letter_determiner_case_c_to_b(letter_determiner):
         timing=SPLIT,
         direction=SAME,
         blue_attributes=MotionAttributes(
-            motion_type=MotionType.ANTI,
+            motion_type=str.ANTI,
             start_ori=IN,
-            prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
+            prop_rot_dir=str.COUNTER_CLOCKWISE,
             start_loc=SOUTH,
             end_loc=WEST,
             turns=0,
             end_ori=OUT,
         ),
         red_attributes=MotionAttributes(
-            motion_type=MotionType.FLOAT,
+            motion_type=FLOAT,
             start_ori=IN,
-            prop_rot_dir=RotationDirection.NONE,
+            prop_rot_dir=str.NONE,
             start_loc=NORTH,
             end_loc=EAST,
             turns="fl",
             end_ori=CLOCK,
-            prefloat_motion_type=MotionType.ANTI,  # ✅ Ensure Prefloat Motion Type is included
-            prefloat_prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,  # ✅ Ensure Prefloat Prop Rotation is included
+            prefloat_motion_type=str.ANTI,  # ✅ Ensure Prefloat Motion Type is included
+            prefloat_prop_rot_dir=str.COUNTER_CLOCKWISE,  # ✅ Ensure Prefloat Prop Rotation is included
         ),
     )
     result = letter_determiner.determine_letter(pictograph)
@@ -179,24 +179,24 @@ def test_letter_determiner_case_c_to_a(letter_determiner):
         timing=SPLIT,
         direction=SAME,
         blue_attributes=MotionAttributes(
-            motion_type=MotionType.PRO,
+            motion_type=str.PRO,
             start_ori=IN,
-            prop_rot_dir=RotationDirection.CLOCKWISE,
+            prop_rot_dir=str.CLOCKWISE,
             start_loc=SOUTH,
             end_loc=WEST,
             turns=0,
             end_ori=IN,
         ),
         red_attributes=MotionAttributes(
-            motion_type=MotionType.FLOAT,
+            motion_type=FLOAT,
             start_ori=IN,
-            prop_rot_dir=RotationDirection.NONE,
+            prop_rot_dir=str.NONE,
             start_loc=NORTH,
             end_loc=EAST,
             turns="fl",
             end_ori=CLOCK,
-            prefloat_motion_type=MotionType.ANTI,  # ✅ Ensure Prefloat Motion Type is included
-            prefloat_prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,  # ✅ Ensure Prefloat Prop Rotation is included
+            prefloat_motion_type=str.ANTI,  # ✅ Ensure Prefloat Motion Type is included
+            prefloat_prop_rot_dir=str.COUNTER_CLOCKWISE,  # ✅ Ensure Prefloat Prop Rotation is included
         ),
     )
     result = letter_determiner.determine_letter(pictograph)

@@ -1,5 +1,7 @@
 # strategies/dual_float.py
 from dataclasses import dataclass
+
+from data.constants import BLUE_ATTRS, FLOAT, MOTION_TYPE, RED_ATTRS, START_LOC
 from ..core import DeterminationResult
 from .base_strategy import BaseDeterminationStrategy
 from ..services.motion_comparator import MotionComparator
@@ -41,8 +43,8 @@ class DualFloatStrategy(BaseDeterminationStrategy):
     def applies_to(self, pictograph: PictographData) -> bool:
         """This strategy only applies when both motions are FLOAT and have valid attributes."""
         return (
-            pictograph.blue_attributes.is_float
-            and pictograph.red_attributes.is_float
-            and pictograph.blue_attributes.start_loc is not None
-            and pictograph.red_attributes.start_loc is not None
+            pictograph[BLUE_ATTRS][MOTION_TYPE] == FLOAT
+            and pictograph[RED_ATTRS][MOTION_TYPE] == FLOAT
+            and pictograph[BLUE_ATTRS][START_LOC] is not None
+            and pictograph[RED_ATTRS][START_LOC] is not None
         )

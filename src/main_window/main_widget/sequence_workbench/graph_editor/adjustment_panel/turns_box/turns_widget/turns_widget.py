@@ -11,10 +11,10 @@ from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.tu
 from objects.motion.motion import Motion
 
 from .turns_text_label import TurnsTextLabel
-from .motion_type_setter import MotionTypeSetter
+from .motion_type_setter import strSetter
 from .direct_set_dialog.direct_set_turns_dialog import DirectSetTurnsDialog
 from .turns_adjustment_manager import TurnsAdjustmentManager
-from .motion_type_label_widget import MotionTypeLabel
+from .motion_type_label_widget import strLabel
 
 if TYPE_CHECKING:
     from ..turns_box import TurnsBox
@@ -34,8 +34,8 @@ class TurnsWidget(QWidget):
         self.display_frame = TurnsDisplayFrame(self)
         self.direct_set_dialog = DirectSetTurnsDialog(self)
         self.turns_text = TurnsTextLabel(self)
-        self.motion_type_label = MotionTypeLabel(self)
-        self.motion_type_setter = MotionTypeSetter(self)
+        self.motion_type_label = strLabel(self)
+        self.motion_type_setter = strSetter(self)
 
     def _setup_layout(self) -> None:
         layout: QVBoxLayout = QVBoxLayout(self)

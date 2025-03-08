@@ -46,7 +46,7 @@ if TYPE_CHECKING:
     from .thumbnail_finder import ThumbnailFinder
     from .grid_mode_checker import GridModeChecker
     from base_widgets.pictograph.pictograph import Pictograph
-    from letter_determiner.letter_determiner import LetterDeterminer
+    from letter_determination.core import LetterDeterminer
 
 
 class MainWidget(QWidget):

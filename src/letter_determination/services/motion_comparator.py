@@ -2,7 +2,9 @@
 from typing import Dict, List, Tuple
 import numpy as np
 
-from ..models.motion import MotionType, RotationDirection
+from data.constants import BLUE_ATTRS, FLOAT, RED_ATTRS
+
+from ..models.motion import str, str
 from ..models.pictograph import PictographData, MotionAttributes
 
 
@@ -11,24 +13,27 @@ class MotionComparator:
         self.dataset = dataset
 
     def compare(
-        self, blue: MotionAttributes, red: MotionAttributes, example: PictographData
+        self,
+        blue_attrs: MotionAttributes,
+        red_attrs: MotionAttributes,
+        example: PictographData,
     ) -> bool:
         """Compare blue and red motion attributes with an example, considering prefloat properties."""
-        blue_copy = blue.serialize()
-        red_copy = red.serialize()
+        blue_copy = blue_attrs.serialize()
+        red_copy = red_attrs.serialize()
 
         # Ensure prefloat attributes are correctly applied
-        if blue.is_float:
-            blue_copy["prefloat_motion_type"] = red.motion_type.value
-            blue_copy["prefloat_prop_rot_dir"] = red.prop_rot_dir.value
+        if blue_attrs.is_float:
+            blue_copy["prefloat_motion_type"] = red_attrs.motion_type
+            blue_copy["prefloat_prop_rot_dir"] = red_attrs.prop_rot_dir
 
-        if red.is_float:
-            red_copy["prefloat_motion_type"] = blue.motion_type.value
-            red_copy["prefloat_prop_rot_dir"] = blue.prop_rot_dir.value
+        if red_attrs.is_float:
+            red_copy["prefloat_motion_type"] = blue_attrs.motion_type
+            red_copy["prefloat_prop_rot_dir"] = blue_attrs.prop_rot_dir
 
-        return example.blue_attributes == MotionAttributes(
-            **blue_copy
-        ) and example.red_attributes == MotionAttributes(**red_copy)
+        return example[BLUE_ATTRS] == MotionAttributes(**blue_copy) and example[
+            RED_ATTRS
+        ] == MotionAttributes(**red_copy)
 
     def _is_prefloat_matching(
         self, motion_attrs: MotionAttributes, example_attrs: MotionAttributes
@@ -80,10 +85,10 @@ class MotionComparator:
             or example_attrs.prop_rot_dir == motion_attrs.prefloat_prop_rot_dir
         )
 
-    def _reverse_rotation(self, direction: RotationDirection) -> RotationDirection:
-        if direction == RotationDirection.CLOCKWISE:
-            return RotationDirection.COUNTER_CLOCKWISE
-        return RotationDirection.CLOCKWISE
+    def _reverse_rotation(self, direction: str) -> str:
+        if direction == str.CLOCKWISE:
+            return str.COUNTER_CLOCKWISE
+        return str.CLOCKWISE
 
     def compare_with_prefloat(
         self,
@@ -105,12 +110,12 @@ class MotionComparator:
 
         example_float = (
             example.blue_attributes
-            if example.blue_attributes.motion_type == MotionType.FLOAT
+            if example.blue_attributes.motion_type == FLOAT
             else example.red_attributes
         )
         example_shift = (
             example.red_attributes
-            if example.blue_attributes.motion_type == MotionType.FLOAT
+            if example.blue_attributes.motion_type == FLOAT
             else example.blue_attributes
         )
 

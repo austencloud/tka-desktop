@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     )
 
 
-class JsonstrUpdater:
+class JsonPropRotDirUpdater:
     def __init__(self, json_updater: "JsonSequenceUpdater") -> None:
         self.json_manager = json_updater.json_manager
 

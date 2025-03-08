@@ -4,7 +4,7 @@ from data.constants import BEAT
 
 
 from .json_duration_updater import JsonDurationUpdater
-from .json_prop_rot_dir_updater import JsonstrUpdater
+from .json_prop_rot_dir_updater import JsonPropRotDirUpdater
 from .json_prop_type_updater import JsonPropTypeUpdater
 from .json_letter_updater import JsonLetterUpdater
 from .json_motion_type_updater import JsonMotionTypeUpdater
@@ -26,7 +26,7 @@ class JsonSequenceUpdater:
         self.motion_type_updater = JsonMotionTypeUpdater(self)
         self.prop_type_updater = JsonPropTypeUpdater(self)
         self.letter_updater = JsonLetterUpdater(self)
-        self.prop_rot_dir_updater = JsonstrUpdater(self)
+        self.prop_rot_dir_updater = JsonPropRotDirUpdater(self)
         self.duration_updater = JsonDurationUpdater(self)
 
     def update_current_sequence_file_with_beat(

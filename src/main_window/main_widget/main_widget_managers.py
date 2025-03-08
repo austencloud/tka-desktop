@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from letter_determiner.letter_determiner import LetterDeterminer
+from letter_determination.core import LetterDeterminer
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.pictograph_data_loader import PictographDataLoader
 from settings_manager.global_settings.app_context import AppContext
@@ -48,7 +48,12 @@ class MainWidgetManagers:
 
     def _setup_letters(self) -> None:
         self.main_widget.pictograph_data_loader = PictographDataLoader(self.main_widget)
-        self.main_widget.pictograph_dataset = (
+        pictograph_dataset = (
             self.main_widget.pictograph_data_loader.load_pictograph_dataset()
         )
-        self.main_widget.letter_determiner = LetterDeterminer(self.main_widget)
+
+        self.main_widget.pictograph_dataset = pictograph_dataset
+        self.main_widget.letter_determiner = LetterDeterminer(
+            pictograph_dataset=pictograph_dataset,
+            json_manager=self.main_widget.json_manager,
+        )

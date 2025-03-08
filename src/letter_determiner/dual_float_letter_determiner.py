@@ -5,7 +5,7 @@ from .motion_comparator import MotionComparator
 from .prefloat_attribute_updater import PrefloatAttributeUpdater
 
 if TYPE_CHECKING:
-    from .letter_determiner import LetterDeterminer
+    from letter_determination.core import LetterDeterminer
     from objects.motion.motion import Motion
 
 

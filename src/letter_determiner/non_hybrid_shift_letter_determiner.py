@@ -28,7 +28,7 @@ from letter_determiner.prefloat_attribute_updater import PrefloatAttributeUpdate
 
 if TYPE_CHECKING:
     from objects.motion.motion import Motion
-    from .letter_determiner import LetterDeterminer
+    from letter_determination.core import LetterDeterminer
 
 
 class NonHybridShiftLetterDeterminer:
@@ -83,7 +83,6 @@ class NonHybridShiftLetterDeterminer:
                 float_attrs, non_float_attrs, non_float_color, pictograph_data
             )
 
-
             float_attrs[PREFLOAT_PROP_ROT_DIR] = prop_rot_dir
             self.prefloat_updater.update_prefloat_prop_rot_dir_in_json(
                 json_index, float_color, prop_rot_dir
@@ -131,7 +130,9 @@ class NonHybridShiftLetterDeterminer:
         if prop_rot_dir == NO_ROT:
             prefloat_prop_rot_dir = float_attrs.get(PREFLOAT_PROP_ROT_DIR)
             if prefloat_prop_rot_dir:
-                prop_rot_dir = self._get_opposite_rotation_direction(prefloat_prop_rot_dir)
+                prop_rot_dir = self._get_opposite_rotation_direction(
+                    prefloat_prop_rot_dir
+                )
             else:
                 raise ValueError(
                     f"Prop Rot Dir not found in {non_float_color} attributes"

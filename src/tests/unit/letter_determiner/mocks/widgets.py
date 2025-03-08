@@ -25,9 +25,9 @@ class MockJsonManager:
 class MockLoaderSaver:
     def get_json_prefloat_prop_rot_dir(self, json_index: int, color: str) -> str:
         return CLOCKWISE
-    
 
-class MockMotionTypeUpdater:
+
+class MockstrUpdater:
     def update_json_prefloat_motion_type(self, *args, **kwargs):
         pass
 
@@ -39,7 +39,7 @@ class MockPropRotDirUpdater:
 
 class MockUpdater:
     def __init__(self):
-        self.motion_type_updater = MockMotionTypeUpdater()
+        self.motion_type_updater = MockstrUpdater()
         self.prop_rot_dir_updater = MockPropRotDirUpdater()
 
 

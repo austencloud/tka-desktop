@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from .turns_widget import TurnsWidget
 
 
-class MotionTypeLabel(QLabel):
+class strLabel(QLabel):
     def __init__(self, turns_widget: "TurnsWidget") -> None:
         super().__init__("", turns_widget)
         self.turns_widget = turns_widget
