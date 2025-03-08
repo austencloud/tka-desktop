@@ -24,7 +24,7 @@ class PropRotDirLogicHandler(QObject):
         super().__init__()
         self.turns_box = turns_box
         self.ui_handler = ui_handler
-        self.current_motion = None
+        self.current_motion: "Motion" = None
 
     def validate_rotation_change(self, new_direction: str) -> bool:
         """Check if rotation change is valid."""
@@ -121,7 +121,6 @@ class PropRotDirLogicHandler(QObject):
 
             # Update UI with reversal symbols
             pictograph.elements.reversal_glyph.update_reversal_symbols()
-
 
     def _get_affected_pictographs(self) -> list[Pictograph]:
         """Retrieve pictographs that need updating due to rotation changes."""

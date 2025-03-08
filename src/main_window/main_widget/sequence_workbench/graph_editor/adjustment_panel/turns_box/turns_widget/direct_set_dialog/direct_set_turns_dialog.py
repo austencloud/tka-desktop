@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QDialog, QHBoxLayout
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 from data.constants import ANTI, BLUE, FLOAT, HEX_BLUE, HEX_RED, PRO
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.new_turns_adjustment_manager.turns_value import TurnsValue
 from .direct_set_turns_button import DirectSetTurnsButton
 
 if TYPE_CHECKING:
@@ -19,6 +20,7 @@ class DirectSetTurnsDialog(QDialog):
         self.turns_widget = turns_widget
         self.turns_box = turns_widget.turns_box
         self.turns_display_frame = turns_widget.display_frame
+        self.adjustment_manager = turns_widget.adjustment_manager
         self._set_dialog_style()
         self._setup_buttons()
         self._setup_layout()
@@ -35,12 +37,12 @@ class DirectSetTurnsDialog(QDialog):
         )
 
     def _setup_buttons(self):
-        turns_values = ["0", "0.5", "1", "1.5", "2", "2.5", "3"]  # Remove 'fl'
+        turns_values = ["0", "0.5", "1", "1.5", "2", "2.5", "3"]  
         if self.turns_box.matching_motion.state.motion_type in [PRO, ANTI, FLOAT]:
             turns_values.insert(0, "fl")
         for value in turns_values:
             button = DirectSetTurnsButton(value, self)
-            # button.resize_direct_set_turn_button()
+            
             button.clicked.connect(
                 lambda _, v=value: self.select_turns(
                     "fl" if v == "fl" else float(v) if "." in v else int(v)
@@ -63,9 +65,8 @@ class DirectSetTurnsDialog(QDialog):
         global_turns_label_pos = self.turns_display_frame.turns_label.mapToGlobal(
             self.turns_display_frame.turns_label.pos()
         )
-        # get the position of the left top corner of the turns widget
+        
         turns_widget_pos = self.turns_widget.mapToGlobal(self.turns_widget.pos())
-        dialog_width = self.width()
         dialog_x = turns_widget_pos.x()
         dialog_y = global_turns_label_pos.y() + turns_label_rect.height()
         self.move(int(dialog_x), int(dialog_y))
@@ -77,5 +78,5 @@ class DirectSetTurnsDialog(QDialog):
         self.updateGeometry()
 
     def select_turns(self, value):
-        self.turns_widget.adjustment_manager.direct_set_turns(value)
+        self.turns_widget.adjustment_manager.direct_set(TurnsValue(value))
         self.accept()

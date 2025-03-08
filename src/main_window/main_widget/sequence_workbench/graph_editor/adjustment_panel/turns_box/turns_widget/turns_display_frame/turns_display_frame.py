@@ -40,17 +40,15 @@ class TurnsDisplayFrame(QFrame):
         layout.addWidget(self.increment_button, 1)
 
     def _attach_listeners(self):
-        self.increment_button.clicked.connect(
-            lambda: self.adjustment_manager.adjust_turns(1)
-        )
+        self.increment_button.clicked.connect(lambda: self.adjustment_manager.adjust(1))
         self.decrement_button.clicked.connect(
-            lambda: self.adjustment_manager.adjust_turns(-1)
+            lambda: self.adjustment_manager.adjust(-1)
         )
         self.decrement_button.customContextMenuRequested.connect(
-            lambda: self.adjustment_manager.adjust_turns(-0.5)
+            lambda: self.adjustment_manager.adjust(-0.5)
         )
         self.increment_button.customContextMenuRequested.connect(
-            lambda: self.adjustment_manager.adjust_turns(0.5)
+            lambda: self.adjustment_manager.adjust(0.5)
         )
         self.turns_label.clicked.connect(self.on_turns_label_clicked)
 

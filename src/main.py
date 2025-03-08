@@ -1,3 +1,4 @@
+
 import sys
 import os
 from PyQt6.QtCore import QTimer
@@ -7,6 +8,7 @@ from main_window.main_widget.json_manager.special_placement_saver import (
     SpecialPlacementSaver,
 )
 from main_window.main_window import MainWindow
+from settings_manager.global_settings import app_context
 from utils.path_helpers import get_data_path
 from settings_manager.settings_manager import SettingsManager
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
@@ -36,6 +38,7 @@ def main() -> None:
     json_manager = JsonManager()
     special_placement_handler = SpecialPlacementSaver()
     special_placement_loader = SpecialPlacementLoader()
+
     AppContext.init(
         settings_manager,
         json_manager,
@@ -43,7 +46,10 @@ def main() -> None:
         special_placement_loader=special_placement_loader,
     )
 
+    # Explicitly set the MainWindow instance in AppContext before using it
     main_window = MainWindow(profiler, splash_screen)
+    AppContext._main_window = main_window  
+
     main_window.show()
     main_window.raise_()
 

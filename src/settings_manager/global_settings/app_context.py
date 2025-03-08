@@ -3,8 +3,13 @@ from main_window.main_widget.browse_tab.sequence_picker.dictionary_data_manager 
     DictionaryDataManager,
 )
 from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
+from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
+    from main import MainWindow
     from objects.arrow.arrow import Arrow
     from main_window.main_widget.json_manager.json_manager import JsonManager
     from main_window.main_widget.json_manager.special_placement_saver import (
@@ -18,9 +23,10 @@ class AppContext:
     _json_manager = None
     _special_placement_handler = None
     _special_placement_loader = None
-    _sequence_beat_frame = None  # 👈 Initially None
-    _selected_arrow: Optional["Arrow"] = None  # 👈 Add global selected arrow
+    _sequence_beat_frame = None
+    _selected_arrow: Optional["Arrow"] = None
     _dict_data_manager = DictionaryDataManager()
+    _main_window = None  # Will be resolved dynamically
 
     @classmethod
     def init(
@@ -30,6 +36,7 @@ class AppContext:
         special_placement_handler,
         special_placement_loader,
     ):
+        """Initialize AppContext with required services."""
         cls._settings_manager = settings_manager
         cls._json_manager = json_manager
         cls._special_placement_handler = special_placement_handler
@@ -90,7 +97,7 @@ class AppContext:
         cls._sequence_beat_frame = sequence_beat_frame
 
     @classmethod
-    def sequence_beat_frame(cls):
+    def sequence_beat_frame(cls) -> "SequenceBeatFrame":
         """Retrieve sequence_beat_frame only if it's set."""
         if cls._sequence_beat_frame is None:
             raise RuntimeError(
@@ -101,3 +108,25 @@ class AppContext:
     @classmethod
     def dictionary_data_manager(cls) -> DictionaryDataManager:
         return cls._dict_data_manager
+
+    @classmethod
+    def main_window(cls) -> "MainWindow":
+        """Retrieve the MainWindow instance safely"""
+        if cls._main_window:  # First check if it's already set
+            return cls._main_window
+
+        from main_window.main_window import MainWindow  # Lazy import
+
+        app: QApplication = QApplication.instance()
+        if not app:
+            raise RuntimeError("QApplication not initialized")
+
+        # Search through top-level widgets
+        for widget in app.topLevelWidgets():
+            if isinstance(widget, MainWindow):
+                cls._main_window = widget
+                return cls._main_window
+
+        raise RuntimeError(
+            f"MainWindow not found! Top-level widgets found: {app.topLevelWidgets()}"
+        )

@@ -2,6 +2,9 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 from data.constants import END_ORI, LETTER, MOTION_TYPE, NO_ROT, PROP_ROT_DIR, TURNS
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.new_turns_adjustment_manager.turns_value import (
+    TurnsValue,
+)
 from objects.motion.motion import Motion
 from base_widgets.pictograph.pictograph import Pictograph
 from .prop_rot_dir_logic_handler import PropRotDirLogicHandler
@@ -41,6 +44,33 @@ class PropRotDirButtonManager:
 
         if motion.state.turns > 0 and motion.state.prop_rot_dir == NO_ROT:
             self.set_prop_rot_dir(self.logic_handler._get_default_prop_rot_dir())
+
+    def update_for_turns_change(self, value: "TurnsValue") -> None:
+        """Update buttons when turns change."""
+
+        # Ensure valid motion reference
+        if not self.logic_handler.current_motion:
+            return
+
+        motion = self.logic_handler.current_motion
+
+        # If turns are zero or float, reset rotation direction
+        if value.raw_value == 0 or value.raw_value == "fl":
+            self.set_prop_rot_dir(NO_ROT)  # Reset to default if no turns
+
+        # If turns are non-zero, ensure a valid rotation direction is set
+        elif motion.state.prop_rot_dir == NO_ROT:
+            default_dir = self.logic_handler._get_default_prop_rot_dir()
+            self.set_prop_rot_dir(default_dir)
+
+        # Sync button states
+        self.state.update_state(motion.state.prop_rot_dir, True)
+
+        # Update pictograph and JSON
+        self._update_pictograph_and_json(motion)
+
+        # Refresh UI to reflect changes
+        self.turns_box.header.update_turns_box_header()
 
     def set_motion(self, motion: "Motion") -> None:
         """Called when motion changes to update UI and logic states."""

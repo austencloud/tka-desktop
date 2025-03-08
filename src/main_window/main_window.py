@@ -3,14 +3,14 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QMainWindow, QApplication
 from PyQt6.QtCore import Qt
 
-from main_window.palette_manager import PaletteManager
+from palette_manager import PaletteManager
 
 
 from .main_widget.main_widget import MainWidget
 from main_window.main_window_geometry_manager import MainWindowGeometryManager
 
 if TYPE_CHECKING:
-    from profiler import Profiler 
+    from profiler import Profiler
     from splash_screen.splash_screen import SplashScreen
 
 
@@ -38,4 +38,3 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         super().closeEvent(event)
         QApplication.instance().installEventFilter(self)
-

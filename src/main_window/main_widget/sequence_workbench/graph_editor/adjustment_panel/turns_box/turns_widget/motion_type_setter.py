@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from .turns_widget import TurnsWidget
 
 
-class strSetter:
+class MotionTypeSetter:
     def __init__(self, turns_widget: "TurnsWidget") -> None:
         self.turns_widget = turns_widget
 

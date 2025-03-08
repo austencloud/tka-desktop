@@ -8,6 +8,9 @@
           "program": "${workspaceFolder}/src/main.py",
           "console": "integratedTerminal",
           "justMyCode": true,
+          "env": {
+              "PYTHONPATH": "${workspaceFolder}/src"
+          }
       }
   ]
 }
