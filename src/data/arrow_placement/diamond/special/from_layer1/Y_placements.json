@@ -2,19 +2,24 @@
   "Y": {
     "(s, 2.5, 3)": {
       "static_to_layer1_rot_angle_override": true,
-      "pro": [30.0, 85.0]
+      "pro": [30, 85]
     },
     "(o, 0, 1)": {
-      "pro": [45.0, -40.0]
+      "pro": [45, -40]
     },
     "(o, fl, 0.5)": {
       "static_rot_angle_override": true,
-      "static": [-100.0, -120.0]
+      "static": [-100, -120]
     },
     "(o, 1, 1)": {
-      "pro": [-40.0, -25.0],
+      "pro": [-40, -25],
       "static_rot_angle_override": true,
-      "static": [-95.0, 0.0]
+      "static": [-95, 0]
+    },
+    "(o, 0.5, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [-100, -100],
+      "swap_beta_e_nonradial_blue_static_e_red_pro_se": true
     }
   }
 }

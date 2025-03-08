@@ -119,7 +119,8 @@ ANTI = "anti"
 FLOAT = "float"
 DASH = "dash"
 STATIC = "static"
-
+LETTER_TYPE = "letter_type"
+DURATION = "duration"
 
 VTG_DIR = "vtg_dir"
 VTG_TIMING = "vtg_timing"

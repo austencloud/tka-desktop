@@ -68,10 +68,12 @@ class TurnsAdjustmentManager(QObject):
             self.turns_widget.turns_box.prop_rot_dir_button_manager._update_pictograph_and_json(
                 motion
             )
-            self.turns_widget.turns_box.prop_rot_dir_button_manager.update_pictograph_letter(
-                motion.pictograph
+            motion.pictograph.managers.updater.update_pictograph(
+                motion.pictograph.state.pictograph_data
             )
-            motion.state.prefloat_motion_type
+        self.turns_widget.turns_box.prop_rot_dir_button_manager.update_pictograph_letter(
+            motion.pictograph
+        )
 
         self.main_widget.construct_tab.option_picker.updater.update_options()
         sequence = self.json_manager.loader_saver.load_current_sequence()

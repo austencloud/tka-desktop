@@ -10,7 +10,7 @@ from data.constants import (
     PRO,
     ANTI,
 )
-from letter_determiner.non_hybrid_letter_determiner import (
+from letter_determiner.non_hybrid_shift_letter_determiner import (
     NonHybridShiftLetterDeterminer,
 )
 from letter_determiner.motion_comparator import MotionComparator
@@ -21,8 +21,6 @@ if TYPE_CHECKING:
 
 
 class LetterDeterminer:
-    """Determines the correct letter based on pictograph attributes."""
-
     def __init__(self, main_widget: "MainWidget") -> None:
         self.main_widget = main_widget
         self.letters = self.main_widget.pictograph_dataset
@@ -35,32 +33,46 @@ class LetterDeterminer:
     def determine_letter(
         self, pictograph_data: dict, swap_prop_rot_dir: bool = False
     ) -> Optional[Letter]:
-        """Determine the letter based on pictograph attributes."""
         blue_attrs = pictograph_data[BLUE_ATTRS]
         red_attrs = pictograph_data[RED_ATTRS]
 
-        # Check for dual float case
-        if blue_attrs[MOTION_TYPE] == FLOAT and red_attrs[MOTION_TYPE] == FLOAT:
-            self.prefloat_updater.update_prefloat_attributes(pictograph_data, BLUE, RED)
-            return self._find_matching_letter(blue_attrs, red_attrs)
+        if self._is_dual_float_case(blue_attrs, red_attrs):
+            letter = self._handle_dual_float_case(pictograph_data)
+        else:
+            letter = self._handle_hybrid_case(pictograph_data, swap_prop_rot_dir)
 
-        # Check for non-hybrid cases
-        if blue_attrs[MOTION_TYPE] in [PRO, ANTI] and red_attrs[MOTION_TYPE] == FLOAT:
-            return self.non_hybrid_letter_determiner.determine_letter(
-                pictograph_data, BLUE, swap_prop_rot_dir
-            )
-        if red_attrs[MOTION_TYPE] in [PRO, ANTI] and blue_attrs[MOTION_TYPE] == FLOAT:
-            return self.non_hybrid_letter_determiner.determine_letter(
-                pictograph_data, RED, swap_prop_rot_dir
-            )
+        # if letter == None:
+        #     raise ValueError("Letter not found")
 
-        # Default case
+        return letter
+
+    def _is_dual_float_case(self, blue: dict, red: dict) -> bool:
+        return blue[MOTION_TYPE] == FLOAT and red[MOTION_TYPE] == FLOAT
+
+    def _handle_dual_float_case(self, pictograph_data: dict) -> Optional[Letter]:
+        self.prefloat_updater.update_prefloat_attributes(pictograph_data, BLUE, RED)
+        blue_attrs = pictograph_data[BLUE_ATTRS]
+        red_attrs = pictograph_data[RED_ATTRS]
+        return self._find_matching_letter(blue_attrs, red_attrs)
+
+    def _handle_hybrid_case(
+        self, pictograph_data: dict, swap_prop_rot_dir: bool
+    ) -> Optional[Letter]:
+        blue_attrs = pictograph_data[BLUE_ATTRS]
+        red_attrs = pictograph_data[RED_ATTRS]
+
+        if (
+            blue_attrs[MOTION_TYPE] in [PRO, ANTI] and red_attrs[MOTION_TYPE] == FLOAT
+        ) or (
+            red_attrs[MOTION_TYPE] in [PRO, ANTI] and blue_attrs[MOTION_TYPE] == FLOAT
+        ):
+
+            return self.non_hybrid_letter_determiner.determine_letter(pictograph_data)
         return self._find_matching_letter(blue_attrs, red_attrs)
 
     def _find_matching_letter(
         self, blue_attrs: dict, red_attrs: dict
     ) -> Optional[Letter]:
-        """Find the matching letter by comparing attributes to the dataset."""
         for letter, examples in self.letters.items():
             for example in examples:
                 if self.comparator.compare_dual_motion_to_example(
