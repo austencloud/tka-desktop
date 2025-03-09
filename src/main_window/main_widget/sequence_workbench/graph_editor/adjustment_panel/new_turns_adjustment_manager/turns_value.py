@@ -1,6 +1,4 @@
-# New domain model for turns logic
 from typing import Union
-
 
 class TurnsValue:
     def __init__(self, value: Union[int, float, str]):
@@ -13,7 +11,7 @@ class TurnsValue:
             raise ValueError("Invalid turns type")
         if isinstance(value, str) and value != "fl":
             raise ValueError("Invalid string value")
-        if isinstance(value, (int, float)) and not (0 <= value <= 3):
+        if isinstance(value, (int, float)) and not (-0.5 <= value <= 3):
             raise ValueError("Turns out of range")
 
     @property
@@ -26,9 +24,15 @@ class TurnsValue:
 
     def adjust(self, delta: Union[int, float]) -> "TurnsValue":
         if self.raw_value == "fl":
-            return TurnsValue(0) if delta > 0 else self
-        new_value = self.raw_value + delta
-        return TurnsValue(max(0, min(3, new_value)))
+            new_value = 0
+        else:
+            new_value = self.raw_value + delta
+
+        if new_value < -0.5:
+            return TurnsValue("fl")
+        if new_value < 0:
+            return TurnsValue("fl")
+        return TurnsValue(min(3, new_value))
 
     def __eq__(self, other: "TurnsValue"):
         return self.raw_value == other.raw_value

@@ -54,6 +54,7 @@ class GraphEditorPictographContainer(QWidget):
             pictograph.beat_number_item.update_beat_number(beat_number_text)
         else:
             pictograph.start_text_item.add_start_text()
+        self.graph_editor.pictograph_selected.emit()
 
     def resizeEvent(self, event):
         self.layout.setContentsMargins(0, 0, 0, 0)

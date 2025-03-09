@@ -22,7 +22,7 @@ class LetterDeterminationJsonHandler:
     def update_prefloat_motion_type(self, index: int, color: str, motion_type: str):
         """Update JSON with prefloat motion type."""
 
-        self.updater.motion_type_updater.update_json_prefloat_motion_type(
+        self.updater.motion_type_updater.update_prefloat_motion_type_in_json(
             index, color, motion_type
         )
 

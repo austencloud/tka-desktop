@@ -133,7 +133,7 @@ class TurnsUpdater:
 
     def _update_prefloat_values_in_json(self, motion: "Motion", index: int) -> None:
         """Update prefloat values in JSON."""
-        self.json_updater.motion_type_updater.update_json_prefloat_motion_type(
+        self.json_updater.motion_type_updater.update_prefloat_motion_type_in_json(
             index, motion.state.color, motion.state.prefloat_motion_type
         )
         self.json_updater.prop_rot_dir_updater.update_prefloat_prop_rot_dir_in_json(

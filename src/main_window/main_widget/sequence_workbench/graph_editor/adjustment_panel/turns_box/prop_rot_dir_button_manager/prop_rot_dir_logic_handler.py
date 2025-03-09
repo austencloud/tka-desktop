@@ -95,10 +95,10 @@ class PropRotDirLogicHandler(QObject):
             )
 
             # Sync changes with JSON
-            json_updater.motion_type_updater.update_json_motion_type(
+            json_updater.motion_type_updater.update_motion_type_in_json(
                 json_index, motion.state.color, motion.state.motion_type
             )
-            json_updater.prop_rot_dir_updater.update_json_prop_rot_dir(
+            json_updater.prop_rot_dir_updater.update_prop_rot_dir_in_json(
                 json_index, motion.state.color, motion.state.prop_rot_dir
             )
 
@@ -174,10 +174,10 @@ class PropRotDirLogicHandler(QObject):
             )
 
             # Sync changes with JSON
-            json_updater.motion_type_updater.update_json_motion_type(
+            json_updater.motion_type_updater.update_motion_type_in_json(
                 json_index, motion.state.color, motion.state.motion_type
             )
-            json_updater.prop_rot_dir_updater.update_json_prop_rot_dir(
+            json_updater.prop_rot_dir_updater.update_prop_rot_dir_in_json(
                 json_index, motion.state.color, motion.state.prop_rot_dir
             )
 

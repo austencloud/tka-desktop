@@ -1,13 +1,26 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
-from data.constants import END_ORI, LETTER, MOTION_TYPE, NO_ROT, PROP_ROT_DIR, TURNS
+from data.constants import (
+    END_ORI,
+    LETTER,
+    MOTION_TYPE,
+    NO_ROT,
+    PROP_ROT_DIR,
+    TURNS,
+    CLOCKWISE,
+    COUNTER_CLOCKWISE,
+)
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.new_turns_adjustment_manager.turns_value import (
     TurnsValue,
 )
 from base_widgets.pictograph.pictograph import Pictograph
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_btn_state import PropRotationState
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_logic_handler import PropRotDirLogicHandler
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_btn_state import (
+    PropRotationState,
+)
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_logic_handler import (
+    PropRotDirLogicHandler,
+)
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
@@ -21,6 +34,34 @@ class PropRotDirButtonManager:
         self.logic_handler = PropRotDirLogicHandler(turns_box, self.state)
 
         self.state.state_changed.connect(self.turns_box.header.update_turns_box_header)
+
+    def update_buttons_for_prop_rot_dir(self, prop_rot_dir: str) -> None:
+        """Update the button UI to reflect the given prop rotation direction."""
+        if prop_rot_dir == NO_ROT:
+            # Handle the NO_ROT case - unselect all buttons
+            self.state.update_state(CLOCKWISE, False)  # Clear all selections
+            if hasattr(self.turns_box.header, "unpress_prop_rot_dir_buttons"):
+                self.turns_box.header.unpress_prop_rot_dir_buttons()
+        else:
+            # Set the state for the given direction
+            self.state.update_state(prop_rot_dir, True)
+
+            # Update header buttons visually
+            header = self.turns_box.header
+            if prop_rot_dir == CLOCKWISE:
+                if hasattr(header, "cw_button"):
+                    header.cw_button.set_selected(True)
+                if hasattr(header, "ccw_button"):
+                    header.ccw_button.set_selected(False)
+            else:  # COUNTER_CLOCKWISE
+                if hasattr(header, "cw_button"):
+                    header.cw_button.set_selected(False)
+                if hasattr(header, "ccw_button"):
+                    header.ccw_button.set_selected(True)
+
+            # Make sure buttons are visible
+            if hasattr(header, "show_prop_rot_dir_buttons"):
+                header.show_prop_rot_dir_buttons()
 
     def set_prop_rot_dir(self, prop_rot_dir: str) -> None:
         """Set the prop rotation direction and update the motion and letter."""
@@ -125,10 +166,10 @@ class PropRotDirButtonManager:
         self.turns_box.turns_widget.motion_type_label.update_display(
             motion.state.motion_type
         )
-        json_updater.motion_type_updater.update_json_motion_type(
+        json_updater.motion_type_updater.update_motion_type_in_json(
             json_index, motion.state.color, motion.state.motion_type
         )
-        json_updater.prop_rot_dir_updater.update_json_prop_rot_dir(
+        json_updater.prop_rot_dir_updater.update_prop_rot_dir_in_json(
             json_index, motion.state.color, motion.state.prop_rot_dir
         )
         self.graph_editor.main_widget.json_manager.ori_validation_engine.run(

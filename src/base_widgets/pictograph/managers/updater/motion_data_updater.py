@@ -45,28 +45,51 @@ class MotionDataUpdater:
                 return
         else:
             motion_dataset = {}
+            
         for motion in self.pictograph.elements.motion_set.values():
             try:
+                # Show graphics if we have data for this color
                 if motion_dataset.get(motion.state.color):
                     self._show_motion_graphics(motion.state.color)
-                if motion_dataset.get(motion.state.color, {}).get(TURNS, "") == "fl":
+                
+                # CRITICAL: Handle float turns FIRST - before any other updates
+                turns_value = motion_dataset.get(motion.state.color, {}).get(TURNS)
+                if turns_value == "fl":
+                    # Ensure motion type is set to FLOAT when turns are "fl"
                     motion.state.turns = "fl"
-
+                    motion.state.motion_type = FLOAT
+                    motion.state.prop_rot_dir = NO_ROT
+                    
+                    # Also update the dataset to ensure consistency during update_motion
+                    if motion.state.color in motion_dataset:
+                        motion_dataset[motion.state.color][MOTION_TYPE] = FLOAT
+                        motion_dataset[motion.state.color][PROP_ROT_DIR] = NO_ROT
+                
+                # Update the motion with the dataset (which now has consistent motion type)
                 if motion_dataset:
                     motion.updater.update_motion(
                         motion_dataset.get(motion.state.color, {})
                     )
+                
+                # Initialize arrow if needed
                 if not motion.arrow.state.initialized:
                     motion.arrow.setup_components()
-                turns_value = motion_dataset.get(motion.state.color, {}).get(TURNS)
+                
+                # Set turns value from dataset (should be redundant but just in case)
                 if turns_value is not None:
                     motion.state.turns = turns_value
+                    # Double-check consistency between turns and motion type
+                    if turns_value == "fl" and motion.state.motion_type != FLOAT:
+                        motion.state.motion_type = FLOAT
+                        motion.state.prop_rot_dir = NO_ROT
+                    
             except Exception as e:
                 logger.error(
                     f"Error updating motion for {motion.state.color}: {e}",
                     exc_info=True,
                 )
 
+        # Handle lead states for specific letters
         for motion in self.pictograph.elements.motion_set.values():
             try:
                 if motion.pictograph.state.letter in [
@@ -130,6 +153,8 @@ class MotionDataUpdater:
                 for attr in motion_attributes
                 if attr in motion_data
             }
+            
+            # Handle prefloat motion type
             prefloat_motion = motion_data.get(PREFLOAT_MOTION_TYPE)
             dataset_for_color[PREFLOAT_MOTION_TYPE] = (
                 None
@@ -138,6 +163,8 @@ class MotionDataUpdater:
                     PREFLOAT_MOTION_TYPE, dataset_for_color.get(MOTION_TYPE)
                 )
             )
+            
+            # Handle prefloat prop rotation direction
             prefloat_prop_rot = motion_data.get(PREFLOAT_PROP_ROT_DIR)
             dataset_for_color[PREFLOAT_PROP_ROT_DIR] = (
                 None
@@ -146,6 +173,12 @@ class MotionDataUpdater:
                     PREFLOAT_PROP_ROT_DIR, dataset_for_color.get(PROP_ROT_DIR)
                 )
             )
+            
+            # Ensure motion type is FLOAT if turns is "fl"
+            if dataset_for_color.get(TURNS) == "fl" and dataset_for_color.get(MOTION_TYPE) != FLOAT:
+                dataset_for_color[MOTION_TYPE] = FLOAT
+                dataset_for_color[PROP_ROT_DIR] = NO_ROT
+                
             motion_dataset[color] = dataset_for_color
         return motion_dataset
 

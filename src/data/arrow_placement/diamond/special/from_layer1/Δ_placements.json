@@ -73,8 +73,8 @@
       "anti": [-90, 25]
     },
     "(o, 2.5, 2.5)": {
-      "anti": [-75.0, 40.0],
-      "static": [0.0, 0.0]
+      "anti": [-75, 40],
+      "static": [0, 0]
     },
     "(2.5, 0)": {
       "anti": [-80, 50]
@@ -102,6 +102,10 @@
     "(s, 2.5, 1)": {
       "static_to_layer1_rot_angle_override": true,
       "static": [-70, 0]
+    },
+    "(0, 0.5)": {
+      "static": [-25, 10],
+      "static_rot_angle_override": true
     }
   }
 }

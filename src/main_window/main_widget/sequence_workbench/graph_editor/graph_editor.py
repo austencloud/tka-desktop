@@ -14,6 +14,7 @@ from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_animat
 from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_toggle_tab import (
     GraphEditorToggleTab,
 )
+from settings_manager.settings_manager import pyqtSignal
 
 from .arrow_selection_manager import ArrowSelectionManager
 from .graph_editor_layout_manager import GraphEditorLayoutManager
@@ -33,6 +34,7 @@ class GraphEditor(QFrame):
     left_stack: QStackedLayout
     right_stack: QStackedLayout
     is_toggled: bool = False
+    pictograph_selected: pyqtSignal = pyqtSignal()
 
     def __init__(self, sequence_workbench: "SequenceWorkbench") -> None:
         super().__init__(sequence_workbench)

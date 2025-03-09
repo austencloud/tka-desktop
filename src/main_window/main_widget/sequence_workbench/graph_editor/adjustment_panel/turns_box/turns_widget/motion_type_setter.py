@@ -11,12 +11,5 @@ class MotionTypeSetter:
 
     def set_motion_type(self, motion: "Motion", motion_type: str) -> None:
         """Set the motion type and update the pictograph."""
-        if motion.state.motion_type == motion_type:
-            return  # No change needed
-
-        # Update the motion type
         motion.state.motion_type = motion_type
-        # self.turns_widget.turns_updater.set_motion_turns(motion, motion.state.turns)
-
-        # Update the motion type buttons in the UI
-        self.turns_widget.motion_type_label.update(motion_type)
+        self.turns_widget.motion_type_label.update_display(motion_type)

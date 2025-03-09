@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional
 
 from data.constants import DASH, STATIC
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import ArrowRotAngleOverrideKeyGenerator
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
 from objects.arrow.arrow import Arrow
 from settings_manager.global_settings.app_context import AppContext
 
@@ -61,9 +62,7 @@ class MirroredEntryAdapter:
         class RotationAngleManagerAdapter:
             def __init__(self):
                 self.data_updater: "SpecialPlacementDataUpdater" = data_updater
-                self.turns_tuple_generator = MirroredEntryFactory.create_service(
-                    self.data_updater
-                ).turns_manager
+                self.turns_tuple_generator = TurnsTupleGenerator()
 
             def update_rotation_angle_in_mirrored_entry(
                 self, arrow: Arrow, updated_turn_data: dict
