@@ -1,10 +1,12 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QStackedWidget, QWidget, QSizePolicy
 from data.constants import BLUE, RED, IN
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.turns_box import (
+    TurnsBox,
+)
 from .ori_picker_box.ori_picker_box import OriPickerBox
 
 # from .turns_box.turns_box import TurnsBox
-from .new_turns_box.ui.turns_box import TurnsBox
 
 if TYPE_CHECKING:
     from ..graph_editor import GraphEditor
@@ -112,11 +114,11 @@ class BeatAdjustmentPanel(QFrame):
             blue_rot_dir = blue_motion.state.prop_rot_dir
             red_rot_dir = red_motion.state.prop_rot_dir
 
-            self.blue_turns_box.prop_rot_dir_manager.state.update_state(
-                blue_rot_dir, True
+            self.blue_turns_box.prop_rot_dir_button_manager.logic_handler.update_button_states(
+                blue_rot_dir
             )
-            self.red_turns_box.prop_rot_dir_manager.state.update_state(
-                red_rot_dir, True
+            self.red_turns_box.prop_rot_dir_button_manager.logic_handler.update_button_states(
+                red_rot_dir
             )
 
     def _set_current_stack_widgets(self, index):

@@ -91,3 +91,8 @@ class JsonSequenceUpdater:
         for beat_view in beat_views:
             if beat_view.is_filled:
                 self.update_current_sequence_file_with_beat(beat_view.beat)
+
+    def update_letter_in_json_at_index(self, index: int, new_letter: str):
+        sequence_data = self.json_manager.loader_saver.load_current_sequence()
+        sequence_data[index]["letter"] = new_letter
+        self.json_manager.loader_saver.save_current_sequence(sequence_data)
