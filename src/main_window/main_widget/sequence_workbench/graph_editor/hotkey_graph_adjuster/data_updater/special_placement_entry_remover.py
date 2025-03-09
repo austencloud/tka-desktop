@@ -12,7 +12,6 @@ from objects.arrow.arrow import Arrow
 from placement_managers.attr_key_generator import (
     AttrKeyGenerator,
 )
-from .placement_data_cleaner import PlacementDataCleaner
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.hotkey_graph_adjuster import (
         HotkeyGraphAdjuster,

@@ -4,10 +4,8 @@ from PyQt6.QtGui import (
     QPainter,
     QColor,
     QCursor,
-    QBrush,
     QPen,
 )
-from PyQt6.QtWidgets import QAbstractButton
 from PyQt6.QtSvg import QSvgRenderer
 
 from data.constants import BLUE, RED

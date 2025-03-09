@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
 from base_widgets.pictograph.pictograph import Pictograph
+from data.constants import BLUE_ATTRS, MOTION_TYPE, STATIC
 from settings_manager.global_settings.app_context import AppContext
 
 from .start_pos_beat import StartPositionBeat
@@ -32,6 +33,7 @@ class StartPositionAdder:
 
             if not graph_editor.is_toggled:
                 graph_editor.animator.toggle()
+            start_pos_dict[BLUE_ATTRS][MOTION_TYPE] == STATIC    
             start_pos_beat.managers.updater.update_pictograph(deepcopy(start_pos_dict))
             clicked_start_option.managers.updater.update_dict_from_attributes()
             AppContext.json_manager().start_pos_handler.set_start_position_data(

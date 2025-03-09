@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING, Dict
 from data.constants import CLOCKWISE, COUNTER_CLOCKWISE
 
 if TYPE_CHECKING:
-    from ..turns_box import TurnsBox
-    from objects.motion.motion import Motion
+    pass
 
 
 class PropRotationState(QObject):

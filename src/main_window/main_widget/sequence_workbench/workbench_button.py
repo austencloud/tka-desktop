@@ -1,5 +1,3 @@
-from PyQt6.QtWidgets import QPushButton
-from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QSize
 
 from styles.styled_button import StyledButton

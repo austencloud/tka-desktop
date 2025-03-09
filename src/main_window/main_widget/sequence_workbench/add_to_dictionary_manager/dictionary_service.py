@@ -8,9 +8,6 @@ from .thumbnail_generator import ThumbnailGenerator
 from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.image_creator import (
-        ImageCreator,
-    )
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )

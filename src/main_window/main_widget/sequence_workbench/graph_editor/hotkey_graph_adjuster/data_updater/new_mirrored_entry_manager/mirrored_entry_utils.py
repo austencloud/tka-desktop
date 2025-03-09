@@ -2,7 +2,7 @@
 Utility functions for working with mirrored entries.
 """
 import logging
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Tuple
 
 from enums.letter.letter import Letter
 from data.constants import BLUE, RED, IN, OUT, CLOCK, COUNTER

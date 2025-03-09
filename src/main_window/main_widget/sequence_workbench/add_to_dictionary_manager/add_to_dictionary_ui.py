@@ -1,9 +1,6 @@
 from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.dictionary_service import (
-        DictionaryService,
-    )
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
         SequenceWorkbench,
     )

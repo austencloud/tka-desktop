@@ -2,7 +2,6 @@
 Factory for creating and configuring mirrored entry components.
 """
 import logging
-from typing import Optional
 
 from objects.arrow.arrow import Arrow
 from settings_manager.global_settings.app_context import AppContext

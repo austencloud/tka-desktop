@@ -2,7 +2,6 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 
-from data.constants import ANTI, FLOAT, PRO
 from ...new_turns_adjustment_manager.json_turns_repository import JsonTurnsRepository
 from ...new_turns_adjustment_manager.turns_adjustment_manager import (
     TurnsAdjustmentManager,

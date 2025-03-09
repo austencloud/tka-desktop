@@ -1,6 +1,5 @@
 # src/main_window/main_widget/sequence_workbench/graph_editor/hotkey_graph_adjuster/rot_angle_override/types.py
-from typing import TypeGuard, TypedDict, NewType
-from data.constants import BOX, DIAMOND, SKEWED
+from typing import TypedDict
 from enums.letter.letter import Letter
 
 
