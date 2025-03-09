@@ -1,4 +1,4 @@
-# src/main_window/main_widget/sequence_workbench/graph_editor/hotkey_graph_adjuster/arrow_rot_angle_override_manager.py
+# rot_angle_override_manager.py (modifications)
 from typing import TYPE_CHECKING
 from enums.letter.letter import Letter
 from ..data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
@@ -21,7 +21,8 @@ class RotAngleOverrideManager:
     def __init__(self, hotkey_graph_adjuster: "HotkeyGraphAdjuster") -> None:
         self.hotkey_graph_adjuster = hotkey_graph_adjuster
         self.view = hotkey_graph_adjuster.ge_view
-        self.current_letter = self.view.pictograph.state.letter
+        self.graph_editor = self.view.graph_editor
+        self.state = self.graph_editor.state  # Reference to centralized state
 
         self.data_updater = self._get_data_updater()
         self.turns_generator = TurnsTupleGenerator()
@@ -41,8 +42,5 @@ class RotAngleOverrideManager:
 
     @property
     def current_letter(self) -> Letter:
-        return self.view.pictograph.state.letter
-
-    @current_letter.setter
-    def current_letter(self, value: Letter):
-        self.view.pictograph.state.letter = value
+        """Get the current letter from the state."""
+        return self.state.get_letter()

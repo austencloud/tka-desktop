@@ -2,8 +2,12 @@ import logging
 from typing import TYPE_CHECKING, Optional
 
 from data.constants import DASH, STATIC
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import ArrowRotAngleOverrideKeyGenerator
-from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
+from main_window.main_widget.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
+    ArrowRotAngleOverrideKeyGenerator,
+)
+from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
+    TurnsTupleGenerator,
+)
 from objects.arrow.arrow import Arrow
 from settings_manager.global_settings.app_context import AppContext
 
@@ -12,7 +16,7 @@ from .mirrored_entry_utils import MirroredEntryUtils
 
 logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.data_updater.special_placement_data_updater import (
+    from main_window.main_widget.hotkey_graph_adjuster.data_updater.special_placement_data_updater import (
         SpecialPlacementDataUpdater,
     )
 

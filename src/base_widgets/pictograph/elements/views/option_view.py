@@ -6,13 +6,15 @@ from base_widgets.pictograph.elements.views.bordered_pictograph_view import (
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
-    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker_widget import OptionPickerWidget
+    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker import (
+        OptionPicker,
+    )
 
 
 class OptionView(BorderedPictographView):
     def __init__(
         self,
-        op: "OptionPickerWidget",
+        op: "OptionPicker",
         pictograph: "Pictograph",
         mw_size_provider: Callable[[], QSize],
     ):

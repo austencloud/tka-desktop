@@ -1,3 +1,4 @@
+# ori_picker_box.py (modification)
 from typing import TYPE_CHECKING
 from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, HEX_BLUE, HEX_RED, OPP, SAME
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
@@ -28,10 +29,13 @@ class OriPickerBox(QFrame):
         self.color = color
         self.start_pos = start_pos
         self.graph_editor = self.adjustment_panel.graph_editor
+        self.state = self.graph_editor.state  # Reference to centralized state
+
         self.setObjectName(self.__class__.__name__)
 
         self._setup_widgets()
         self._setup_layout()
+        self._connect_state_signals()
 
     def _setup_widgets(self) -> None:
         self.header = OriPickerHeader(self)
@@ -43,6 +47,20 @@ class OriPickerBox(QFrame):
         layout.addWidget(self.ori_picker_widget)
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
+
+    def _connect_state_signals(self) -> None:
+        """Connect to the centralized state signals"""
+        self.state.orientation_changed.connect(self._handle_orientation_changed)
+
+    def _handle_orientation_changed(self, color, orientation):
+        """Handle orientation changes from central state"""
+        if color == self.color:
+            self.ori_picker_widget.clickable_ori_label.set_orientation(orientation)
+
+    # Update method to push changes to the centralized state
+    def update_orientation(self, orientation):
+        """Update orientation in the centralized state"""
+        self.state.set_orientation(self.color, orientation)
 
     def resizeEvent(self, event):
         border_width = self.graph_editor.sequence_workbench.width() // 200

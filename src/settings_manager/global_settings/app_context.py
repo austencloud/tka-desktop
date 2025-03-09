@@ -6,6 +6,9 @@ from main_window.main_widget.special_placement_loader import SpecialPlacementLoa
 from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
+    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker import (
+        OptionPicker,
+    )
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
@@ -97,15 +100,6 @@ class AppContext:
         cls._sequence_beat_frame = sequence_beat_frame
 
     @classmethod
-    def sequence_beat_frame(cls) -> "SequenceBeatFrame":
-        """Retrieve sequence_beat_frame only if it's set."""
-        if cls._sequence_beat_frame is None:
-            raise RuntimeError(
-                "AppContext.sequence_beat_frame() accessed before being set. Ensure it is initialized in MainWindow."
-            )
-        return cls._sequence_beat_frame
-
-    @classmethod
     def dictionary_data_manager(cls) -> DictionaryDataManager:
         return cls._dict_data_manager
 
@@ -130,3 +124,20 @@ class AppContext:
         raise RuntimeError(
             f"MainWindow not found! Top-level widgets found: {app.topLevelWidgets()}"
         )
+
+    @classmethod
+    def sequence_beat_frame(cls) -> "SequenceBeatFrame":
+        """Retrieve sequence_beat_frame only if it's set."""
+        if cls._sequence_beat_frame is None:
+            raise RuntimeError(
+                "AppContext.sequence_beat_frame() accessed before being set. Ensure it is initialized in MainWindow."
+            )
+        return cls._sequence_beat_frame
+
+    @classmethod
+    def option_picker(cls) -> "OptionPicker":
+        return cls.main_widget().construct_tab.option_picker
+
+    @classmethod
+    def main_widget(cls):
+        return cls.main_window().main_widget

@@ -20,7 +20,7 @@ from .rotation_angle_processor import RotationAngleProcessor
 
 logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.data_updater.special_placement_data_updater import (
+    from main_window.main_widget.hotkey_graph_adjuster.data_updater.special_placement_data_updater import (
         SpecialPlacementDataUpdater,
     )
 

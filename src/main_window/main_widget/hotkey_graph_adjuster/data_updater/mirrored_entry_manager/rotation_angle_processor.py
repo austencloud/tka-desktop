@@ -3,11 +3,12 @@ from typing import Dict, Any, Optional
 
 from data.constants import DASH, STATIC
 from objects.arrow.arrow import Arrow
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
+from main_window.main_widget.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
     ArrowRotAngleOverrideKeyGenerator,
 )
 
 logger = logging.getLogger(__name__)
+
 
 class RotationAngleProcessor:
     def __init__(self):
