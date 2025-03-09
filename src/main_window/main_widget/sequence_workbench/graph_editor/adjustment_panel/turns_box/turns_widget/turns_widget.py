@@ -2,19 +2,19 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 
-from ...new_turns_adjustment_manager.json_turns_repository import JsonTurnsRepository
-from ...new_turns_adjustment_manager.turns_adjustment_manager import (
+from ...turns_adjustment_manager.json_turns_repository import JsonTurnsRepository
+from ...turns_adjustment_manager.turns_adjustment_manager import (
     TurnsAdjustmentManager,
 )
-from ...new_turns_adjustment_manager.turns_presenter import TurnsPresenter
-from ...new_turns_adjustment_manager.turns_state import TurnsState
-from ...new_turns_adjustment_manager.turns_value import TurnsValue
+from ...turns_adjustment_manager.turns_presenter import TurnsPresenter
+from ...turns_adjustment_manager.turns_state import TurnsState
+from ...turns_adjustment_manager.turns_value import TurnsValue
 from ...turns_box.turns_widget.turns_display_frame.turns_display_frame import (
     TurnsDisplayFrame,
 )
 
 from .turns_text_label import TurnsTextLabel
-from .motion_type_setter import MotionTypeSetter
+from ...turns_adjustment_manager.motion_type_setter import MotionTypeSetter
 from .direct_set_dialog.direct_set_turns_dialog import DirectSetTurnsDialog
 from .motion_type_label import MotionTypeLabel
 from settings_manager.global_settings.app_context import AppContext

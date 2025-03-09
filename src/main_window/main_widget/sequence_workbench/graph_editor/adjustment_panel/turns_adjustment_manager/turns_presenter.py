@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QMessageBox
 from data.constants import ANTI, FLOAT, PRO
 
-from ..new_turns_adjustment_manager.turns_value import TurnsValue
+from ..turns_adjustment_manager.turns_value import TurnsValue
 
 if TYPE_CHECKING:
     from ..turns_box.turns_widget.turns_widget import TurnsWidget

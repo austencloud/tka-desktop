@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from objects.motion.motion import Motion
-    from .turns_widget import TurnsWidget
+    from ..turns_box.turns_widget.turns_widget import TurnsWidget
 
 
 class MotionTypeSetter:

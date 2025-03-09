@@ -3,7 +3,7 @@ from PyQt6.QtCore import QObject
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_button_manager import (
     PropRotDirButtonManager,
 )
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.turns_widget.motion_type_setter import (
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.motion_type_setter import (
     MotionTypeSetter,
 )
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat

@@ -1,10 +1,10 @@
 # Abstract command
 from abc import ABC, abstractmethod
 
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.new_turns_adjustment_manager.turns_state import (
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_state import (
     TurnsState,
 )
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.new_turns_adjustment_manager.turns_value import (
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import (
     TurnsValue,
 )
 

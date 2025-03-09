@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from enums.letter.letter import Letter
 from utils.path_helpers import get_data_path
 
-from .new_mirrored_entry_manager.mirrored_entry_manager import MirroredEntryManager
+from .mirrored_entry_manager.mirrored_entry_manager import MirroredEntryManager
 from .ori_key_generator import OriKeyGenerator
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,

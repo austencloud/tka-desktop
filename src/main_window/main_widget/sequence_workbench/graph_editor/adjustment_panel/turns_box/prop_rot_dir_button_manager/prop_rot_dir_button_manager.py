@@ -11,7 +11,7 @@ from data.constants import (
     CLOCKWISE,
     COUNTER_CLOCKWISE,
 )
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.new_turns_adjustment_manager.turns_value import (
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import (
     TurnsValue,
 )
 from base_widgets.pictograph.pictograph import Pictograph

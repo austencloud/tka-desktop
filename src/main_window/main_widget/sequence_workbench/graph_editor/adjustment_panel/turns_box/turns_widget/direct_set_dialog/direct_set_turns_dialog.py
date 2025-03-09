@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QDialog, QHBoxLayout
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 from data.constants import ANTI, BLUE, FLOAT, HEX_BLUE, HEX_RED, PRO
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.new_turns_adjustment_manager.turns_value import TurnsValue
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import TurnsValue
 from .direct_set_turns_button import DirectSetTurnsButton
 
 if TYPE_CHECKING:
