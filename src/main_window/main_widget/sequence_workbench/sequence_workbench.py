@@ -1,13 +1,17 @@
+# Example of how to use the refactored DictionaryService in SequenceWorkbench
+
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QHBoxLayout
 
-
-from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.add_to_dictionary_ui import (
-    AddToDictionaryUI,
-)
+# Import the refactored DictionaryService and UI
 from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.dictionary_service import (
     DictionaryService,
 )
+from main_window.main_widget.sequence_workbench.add_to_dictionary_manager.add_to_dictionary_ui import (
+    AddToDictionaryUI,
+)
+
+# Other imports remain the same
 from main_window.main_widget.sequence_workbench.beat_deleter.beat_deleter import (
     BeatDeleter,
 )
@@ -17,7 +21,6 @@ from main_window.main_widget.sequence_workbench.labels.workbench_difficulty_labe
 from main_window.main_widget.sequence_workbench.labels.sequence_workbench_indicator_label import (
     SequenceWorkbenchIndicatorLabel,
 )
-
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
     SequenceBeatFrame,
 )
@@ -47,9 +50,14 @@ class SequenceWorkbench(QWidget):
         self.main_widget.splash.updater.update_progress("SequenceWorkbench")
         self.setObjectName("SequenceWorkbench")
 
+        # Initialize UI components
         self.scroll_area = SequenceWorkbenchScrollArea(self)
         self.beat_frame = SequenceBeatFrame(self)
+
+        # Initialize the refactored DictionaryService with the beat_frame
         self.dictionary_service = DictionaryService(self.beat_frame)
+
+        # Initialize the UI wrapper that uses the dictionary service
         self.add_to_dictionary_ui = AddToDictionaryUI(self)
 
         # Modification Managers
@@ -72,7 +80,6 @@ class SequenceWorkbench(QWidget):
         # Layout
         self.layout_manager = SequenceWorkbenchLayoutManager(self)
         self.beat_deleter = BeatDeleter(self)
-
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

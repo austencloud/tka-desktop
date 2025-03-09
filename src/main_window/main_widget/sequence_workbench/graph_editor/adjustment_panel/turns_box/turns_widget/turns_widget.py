@@ -33,14 +33,11 @@ class TurnsWidget(QWidget):
         self._setup_layout()
         self._connect_signals()
 
-        
-        if hasattr(self.turns_box.graph_editor, "pictograph_selected"):
-            self.turns_box.graph_editor.pictograph_selected.connect(
-                self.reset_state_for_new_pictograph
-            )
+        self.turns_box.graph_editor.pictograph_selected.connect(
+            self.reset_state_for_new_pictograph
+        )
 
     def _setup_components(self) -> None:
-        
         initial_value = self._get_initial_turns_value()
         self.state = TurnsState(initial_value)
 
@@ -60,14 +57,12 @@ class TurnsWidget(QWidget):
         )
         self.adjustment_manager.connect_motion_type_setter(self.motion_type_setter)
 
-        
         current_motion = self._get_current_motion()
         if current_motion:
             motion_type = current_motion.state.motion_type
             self.presenter.update_display(initial_value, motion_type)
 
     def _get_initial_turns_value(self) -> TurnsValue:
-        """Get the initial turns value from the current pictograph"""
         try:
             current_motion = self._get_current_motion()
             if current_motion:
@@ -76,10 +71,9 @@ class TurnsWidget(QWidget):
                 return TurnsValue(turns_value)
         except (AttributeError, KeyError) as e:
             print(f"Error getting initial turns value: {e}")
-        return TurnsValue(0)  
+        return TurnsValue(0)
 
     def _get_current_motion(self):
-        """Get the current motion based on the color"""
         try:
             current_beat = (
                 self.turns_box.graph_editor.pictograph_container.GE_view.pictograph
@@ -90,7 +84,6 @@ class TurnsWidget(QWidget):
             return None
 
     def reset_state_for_new_pictograph(self) -> None:
-        """Reset the turns state when a new pictograph is selected"""
         try:
             current_motion = self._get_current_motion()
             if not current_motion:
@@ -98,45 +91,20 @@ class TurnsWidget(QWidget):
 
             new_value = current_motion.state.turns
             motion_type = current_motion.state.motion_type
-            print(f"Resetting turns state to: {new_value}, motion type: {motion_type}")
 
-            
             new_turns_value = TurnsValue(new_value)
 
-            
             self.state.current = new_turns_value
 
-            
             self.presenter.update_display(new_turns_value, motion_type)
 
-            
             if new_value == "fl" and hasattr(
                 self.adjustment_manager, "_prefloat_motion_type"
             ):
-                
+
                 beat_index = self.adjustment_manager._get_beat_index()
                 if beat_index:
                     json_manager = AppContext.json_manager()
-                    prefloat_motion_type = (
-                        json_manager.loader_saver.get_json_prefloat_motion_type(
-                            beat_index, self.turns_box.color
-                        )
-                    )
-                    prefloat_prop_rot_dir = (
-                        json_manager.loader_saver.get_json_prefloat_prop_rot_dir(
-                            beat_index, self.turns_box.color
-                        )
-                    )
-
-                    
-                    if prefloat_motion_type:
-                        self.adjustment_manager._prefloat_motion_type = (
-                            prefloat_motion_type
-                        )
-                    if prefloat_prop_rot_dir:
-                        self.adjustment_manager._prefloat_prop_rot_dir = (
-                            prefloat_prop_rot_dir
-                        )
 
         except (AttributeError, KeyError) as e:
             print(f"Error resetting turns state: {e}")
@@ -151,49 +119,7 @@ class TurnsWidget(QWidget):
     def _connect_signals(self):
         self.state.turns_changed.connect(self._notify_external_components)
 
-
-    def _handle_direct_set(self):
-        current = self.state.current
-        options = [TurnsValue(v) for v in [0, 0.5, 1, 1.5, 2, 2.5, 3, "fl"]]
-        value = self.direct_set_dialog.get_value(options, current)
-        if value:
-            self.adjustment_manager.direct_set(value)
-
     def _notify_external_components(self):
         self.turns_adjusted.emit()
-        
-        if (
-            hasattr(self.turns_box, "adjustment_panel")
-            and hasattr(self.turns_box.adjustment_panel, "graph_editor")
-            and hasattr(self.turns_box.adjustment_panel.graph_editor, "main_widget")
-            and hasattr(
-                self.turns_box.adjustment_panel.graph_editor.main_widget,
-                "settings_dialog",
-            )
-            and hasattr(
-                self.turns_box.adjustment_panel.graph_editor.main_widget.settings_dialog,
-                "ui",
-            )
-            and hasattr(
-                self.turns_box.adjustment_panel.graph_editor.main_widget.settings_dialog.ui,
-                "image_export_tab",
-            )
-        ):
-            self.turns_box.adjustment_panel.graph_editor.main_widget.settings_dialog.ui.image_export_tab.update_preview()
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        if hasattr(self, "display_frame"):
-            self.display_frame.resizeEvent(event)
-        if hasattr(self, "turns_text"):
-            self.turns_text.resizeEvent(event)
-        if hasattr(self, "motion_type_label"):
-            self.motion_type_label.resizeEvent(event)
-        if hasattr(self, "direct_set_dialog"):
-            self.direct_set_dialog.resizeEvent(event)
-
-    
-    def showEvent(self, event):
-        super().showEvent(event)
-        
-        self.reset_state_for_new_pictograph()
+        self.turns_box.adjustment_panel.graph_editor.main_widget.settings_dialog.ui.image_export_tab.update_preview()
