@@ -1,4 +1,3 @@
-
 # === turns_box/ui/turns_box.py ===
 from typing import TYPE_CHECKING, Dict
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
@@ -38,6 +37,12 @@ class TurnsBox(QFrame):
         # Setup
         self._setup_widgets()
         self._setup_layout()
+
+    # In turns_box.py, add this property to the TurnsBox class
+    @property
+    def prop_rot_dir_btn_state(self):
+        """Compatibility property to access rotation state"""
+        return self.prop_rot_dir_manager.state.current
 
     def _setup_widgets(self) -> None:
         """Initialize and connect widgets"""
@@ -99,5 +104,3 @@ class TurnsBox(QFrame):
         self.turns_widget.resizeEvent(event)
         self.header.resizeEvent(event)
         super().resizeEvent(event)
-
-

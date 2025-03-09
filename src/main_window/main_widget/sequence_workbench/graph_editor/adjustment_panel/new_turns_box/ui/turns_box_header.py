@@ -4,10 +4,10 @@ from PyQt6.QtWidgets import QHBoxLayout, QFrame, QLabel, QVBoxLayout
 from PyQt6.QtGui import QFont
 from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, ICON_DIR, NO_ROT
 from utils.path_helpers import get_image_path
-from .turns_box import TurnsBox
 from .buttons.prop_rot_dir_button import PropRotDirButton
 
 if TYPE_CHECKING:
+    from .turns_box import TurnsBox
     from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.base_adjustment_box_header_widget import (
         BaseAdjustmentBoxHeaderWidget,
     )
@@ -113,13 +113,12 @@ class TurnsBoxHeader(QFrame):  # Replace with actual base class
         else:
             self.show_prop_rot_dir_buttons()
 
-            # Update button selection
-            if motion.state.prop_rot_dir == CLOCKWISE:
-                self.cw_button.set_selected(True)
-                self.ccw_button.set_selected(False)
-            elif motion.state.prop_rot_dir == COUNTER_CLOCKWISE:
-                self.cw_button.set_selected(True)
-                self.ccw_button.set_selected(False)
+        if motion.state.prop_rot_dir == CLOCKWISE:
+            self.cw_button.set_selected(True)
+            self.ccw_button.set_selected(False)
+        elif motion.state.prop_rot_dir == COUNTER_CLOCKWISE:
+            self.cw_button.set_selected(False)  # Currently uses incorrect True value
+            self.ccw_button.set_selected(True)  # Currently uses incorrect False value
 
     def show_prop_rot_dir_buttons(self) -> None:
         """Show rotation direction buttons"""
@@ -132,7 +131,7 @@ class TurnsBoxHeader(QFrame):  # Replace with actual base class
         self.ccw_button.hide()
 
     def unpress_prop_rot_dir_buttons(self) -> None:
-        """Unselect all buttons"""
+        # Should set both to False, not True
         self.cw_button.set_selected(False)
         self.ccw_button.set_selected(False)
 

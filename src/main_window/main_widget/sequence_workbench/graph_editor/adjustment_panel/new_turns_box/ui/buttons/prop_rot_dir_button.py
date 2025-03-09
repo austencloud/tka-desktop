@@ -31,7 +31,7 @@ class PropRotDirButton(StyledButton):
         self.setToolTip(f"Set {direction_name} Rotation")
 
     def _on_clicked(self) -> None:
-        """Handle button clicks"""
+        print(f"Button clicked: {self.prop_rot_dir}")
         self.turns_box.prop_rot_dir_manager.set_prop_rot_dir(self.prop_rot_dir)
 
     def resizeEvent(self, event) -> None:

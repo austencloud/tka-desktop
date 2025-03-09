@@ -9,6 +9,7 @@ from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.tu
 from settings_manager.global_settings.app_context import AppContext
 from main_window.main_widget.json_manager.json_manager import JsonManager
 
+
 class JsonTurnsRepository(TurnsRepository):
     def __init__(self, json_manager: "JsonManager"):
         self._manager = json_manager
@@ -20,7 +21,7 @@ class JsonTurnsRepository(TurnsRepository):
         )
         try:
             pictograph_index = self._get_pictograph_index()
-            self._manager.updater.turns_updater.update_turns_in_json_at_index(
+            self._manager.updater.turns_updater.update_turns_in_json(
                 pictograph_index,
                 color,
                 value.raw_value,

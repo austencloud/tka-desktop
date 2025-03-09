@@ -1,9 +1,19 @@
 from typing import TYPE_CHECKING, Union
 
-from data.constants import CLOCKWISE, DASH, END_ORI, NO_ROT, STATIC, TURNS, MOTION_TYPE, PROP_ROT_DIR
+from data.constants import (
+    CLOCKWISE,
+    DASH,
+    END_ORI,
+    NO_ROT,
+    STATIC,
+    TURNS,
+    MOTION_TYPE,
+    PROP_ROT_DIR,
+)
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )
+from settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
@@ -20,21 +30,24 @@ class JsonTurnsUpdater:
         self.json_updater = json_updater
         self.json_manager = json_updater.json_manager
 
-    def update_turns_in_json_at_index(
+    def update_turns_in_json(
         self,
         index: int,
         color: str,
         turns: Union[int, float],
-        beat_frame: "SequenceBeatFrame",
     ) -> None:
+        beat_frame = AppContext.sequence_beat_frame()
         sequence = self.json_manager.loader_saver.load_current_sequence()
         pictograph_data = sequence[index]
         motion_data = pictograph_data[f"{color}_attributes"]
         motion_data[TURNS] = turns
-        
-        if motion_data[PROP_ROT_DIR] == NO_ROT and motion_data[MOTION_TYPE] in [DASH, STATIC]:
+
+        if motion_data[PROP_ROT_DIR] == NO_ROT and motion_data[MOTION_TYPE] in [
+            DASH,
+            STATIC,
+        ]:
             motion_data[PROP_ROT_DIR] = CLOCKWISE
-            
+
         end_ori = self.json_manager.ori_calculator.calculate_end_ori(
             pictograph_data, color
         )

@@ -140,7 +140,7 @@ class TurnsDisplayFrame(QFrame):
         self.turns_box.matching_motion = motion
 
         # Update label text
-        self.turns_label.setText(display_value)
+        self.turns_label.setText(str(display_value))
 
         # Update button states
         is_float_or_zero = display_value == "fl" or display_value == "0"

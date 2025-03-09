@@ -17,17 +17,15 @@ class RotationState(QObject):
         self._state: Dict[str, bool] = {CLOCKWISE: False, COUNTER_CLOCKWISE: False}
 
     def update_state(self, direction: str, value: bool) -> None:
-        """Update state with validation to ensure only one direction is active"""
         if direction not in self._state and direction != NO_ROT:
             return
 
         if direction == NO_ROT:
-            # Reset all states to false for NO_ROT
             self._state = {k: False for k in self._state}
         else:
-            # Set the specified direction and ensure others are opposite
+            # Use old code's approach that was working
             self._state = {
-                k: (value if k == direction else False) for k, v in self._state.items()
+                k: (value if k == direction else not v) for k, v in self._state.items()
             }
 
         self.state_changed.emit(self._state)

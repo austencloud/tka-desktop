@@ -4,15 +4,12 @@ from PyQt6.QtCore import QObject, pyqtSignal, Qt
 from PyQt6.QtWidgets import QApplication
 
 from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, NO_ROT
-
-from ..domain.rotation_state import RotationState, str
+from ..domain.rotation_state import RotationState
 
 if TYPE_CHECKING:
     from ..ui.turns_box import TurnsBox
     from objects.motion.motion import Motion
-    from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import (
-        TurnsValue,
-    )
+    from ...turns_adjustment_manager.turns_value import TurnsValue
     from base_widgets.pictograph.pictograph import Pictograph
 
 
@@ -26,13 +23,15 @@ class PropRotDirManager(QObject):
         self.turns_box = turns_box
         self.state = RotationState()
         self.current_motion: Optional["Motion"] = None
-
+        # self.logic_handler = PropRotDirLogicHandler(self.turns_box, self.state)
         # Connect signals
         self.state.state_changed.connect(self.turns_box.header.update_turns_box_header)
 
     def set_prop_rot_dir(self, prop_rot_dir: str) -> None:
         """Set the prop rotation direction and update related components"""
         # Skip if already in this state
+        print(f"Setting prop rotation direction to: {prop_rot_dir}")
+        print(f"Current state: {self.state.current}")
         if self.state.current.get(prop_rot_dir, False):
             return
 
@@ -52,6 +51,8 @@ class PropRotDirManager(QObject):
             self.turns_box.graph_editor.sequence_workbench.main_widget.construct_tab.option_picker.updater.refresh_options()
         finally:
             QApplication.restoreOverrideCursor()
+
+    
 
     def update_for_motion_change(self, motion: "Motion") -> None:
         """Update manager when motion changes"""
