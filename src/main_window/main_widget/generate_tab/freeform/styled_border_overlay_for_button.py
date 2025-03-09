@@ -6,12 +6,12 @@ from PyQt6.QtGui import QPainter, QColor, QPen
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.button_styled_border_overlay import (
-        LetterTypeButtonWidget,
+        LetterTypeButton,
     )
 
 
 class StyledBorderOverlayForButton(QWidget):
-    def __init__(self, button: "LetterTypeButtonWidget"):
+    def __init__(self, button: "LetterTypeButton"):
         super().__init__(button)
         self.parent_button = button
         self.is_set = False

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QMainWindow, QApplication
 from PyQt6.QtCore import Qt
 
-from palette_manager import PaletteManager
+from main_window.palette_manager import PaletteManager
 
 
 from .main_widget.main_widget import MainWidget

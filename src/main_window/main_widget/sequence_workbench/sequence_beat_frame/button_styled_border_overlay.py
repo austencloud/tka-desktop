@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
 
     from main_window.main_widget.generate_tab.freeform.letter_type_button_widget import (
-        LetterTypeButtonWidget,
+        LetterTypeButton,
     )
 
 
 class StyledBorderOverlayForButton(QWidget):
-    def __init__(self, parent: "LetterTypeButtonWidget"):
+    def __init__(self, parent: "LetterTypeButton"):
         super().__init__(parent)
         self.parent_button = parent
         self.is_set = False

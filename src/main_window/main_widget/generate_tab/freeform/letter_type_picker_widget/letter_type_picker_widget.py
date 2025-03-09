@@ -4,8 +4,9 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from enums.letter.letter_type import LetterType
 
-from main_window.main_widget.generate_tab.freeform.letter_type_button_widget import (
-    LetterTypeButtonWidget,
+
+from main_window.main_widget.generate_tab.freeform.letter_type_picker_widget.letter_type_button import (
+    LetterTypeButton,
 )
 from settings_manager.global_settings.app_context import AppContext
 
@@ -25,9 +26,9 @@ class LetterTypePickerWidget(QWidget):
         self.letter_types_layout = QHBoxLayout()
         self.letter_types_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.buttons: list[LetterTypeButtonWidget] = []
+        self.buttons: list[LetterTypeButton] = []
         for i, letter_type in enumerate(LetterType, start=1):
-            button = LetterTypeButtonWidget(self, letter_type, i)
+            button = LetterTypeButton(self, letter_type, i)
             button.clicked.connect(self._on_letter_type_clicked)
             self.letter_types_layout.addWidget(button)
             self.buttons.append(button)
