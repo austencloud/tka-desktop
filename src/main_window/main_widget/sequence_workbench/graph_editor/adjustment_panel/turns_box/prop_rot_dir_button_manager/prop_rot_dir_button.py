@@ -3,6 +3,7 @@
 # ==========================================
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt, QSize
+
 from styles.styled_button import StyledButton
 
 if TYPE_CHECKING:

@@ -5,10 +5,10 @@ from data.constants import END_ORI, LETTER, MOTION_TYPE, NO_ROT, PROP_ROT_DIR, T
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.new_turns_adjustment_manager.turns_value import (
     TurnsValue,
 )
-from objects.motion.motion import Motion
 from base_widgets.pictograph.pictograph import Pictograph
-from .prop_rot_dir_logic_handler import PropRotDirLogicHandler
-from .prop_rot_dir_btn_state import PropRotationState
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_btn_state import PropRotationState
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_logic_handler import PropRotDirLogicHandler
+from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
     from ..turns_box import TurnsBox
