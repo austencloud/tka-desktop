@@ -5,7 +5,9 @@
       "pro": [30, 85]
     },
     "(o, 0, 1)": {
-      "pro": [45, -40]
+      "pro": [45, -40],
+      "static": [-95, 0],
+      "static_rot_angle_override": true
     },
     "(o, fl, 0.5)": {
       "static_rot_angle_override": true,

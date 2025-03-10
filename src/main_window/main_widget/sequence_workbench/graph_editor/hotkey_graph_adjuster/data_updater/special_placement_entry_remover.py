@@ -111,6 +111,7 @@ class SpecialPlacementEntryRemover:
     ):
 
         other_ori_key = self.data_updater.get_other_layer3_ori_key(ori_key)
+
         other_file_path = self._generate_file_path(
             other_ori_key, letter, arrow.pictograph.state.grid_mode
         )

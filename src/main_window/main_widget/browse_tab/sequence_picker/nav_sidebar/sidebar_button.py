@@ -46,11 +46,14 @@ class SidebarButton(StyledButton):
 
     def resizeEvent(self, event: QEvent) -> None:
         """Adjust button width dynamically based on the global max width."""
+        self.resize_button()
+
+        super().resizeEvent(event)
+
+    def resize_button(self):
         if SidebarButton._max_button_width > 0:
             self.setFixedWidth(SidebarButton._max_button_width)
 
         # Adjust border-radius dynamically
         self._border_radius = min(self.height(), self.width()) // 2
         self.update_appearance()
-
-        super().resizeEvent(event)

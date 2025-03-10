@@ -60,3 +60,4 @@ class SequencePickerNavSidebar(QWidget):
             btn_font = button.font()
             btn_font.setPointSize(font_size)
             button.setFont(btn_font)
+            button.resize_button()

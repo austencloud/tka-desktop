@@ -274,6 +274,7 @@ class TurnsAdjustmentManager(QObject):
     def _sync_external_state(self):
         sequence = AppContext.json_manager().loader_saver.load_current_sequence()
         AppContext.sequence_beat_frame().updater.update_beats_from(sequence)
+        AppContext.main_widget().construct_tab.option_picker.updater.update_options()
 
     def _current_beat(self) -> Beat:
         selected_beat_view = (

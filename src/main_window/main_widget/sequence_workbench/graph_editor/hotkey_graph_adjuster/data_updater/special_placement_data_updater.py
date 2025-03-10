@@ -149,3 +149,5 @@ class SpecialPlacementDataUpdater:
             return "from_layer3_blue2_red1"
         elif ori_key == "from_layer3_blue2_red1":
             return "from_layer3_blue1_red2"
+        else:
+            return ori_key

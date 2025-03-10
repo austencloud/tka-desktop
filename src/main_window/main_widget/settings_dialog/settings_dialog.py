@@ -74,4 +74,5 @@ class SettingsDialog(QDialog):
     def resizeEvent(self, event: QEvent):
         """Handle window resizing more efficiently."""
         self.update_size(force=False)  # Only resize if it has changed
+        SettingsDialogStyler.apply_styles(self)
         super().resizeEvent(event)
