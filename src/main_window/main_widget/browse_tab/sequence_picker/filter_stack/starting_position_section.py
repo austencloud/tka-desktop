@@ -146,7 +146,7 @@ class StartingPositionSection(FilterSectionBase):
         if hasattr(self, "_all_sequences_with_positions"):
             return self._all_sequences_with_positions
 
-        dictionary_dir = get_data_path("generated_data\dictionary")
+        dictionary_dir = get_data_path("dictionary")
         base_words = [
             (
                 word,

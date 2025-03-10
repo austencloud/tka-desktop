@@ -8,7 +8,7 @@ from utils.path_helpers import get_data_path
 
 class VariationNumberFixer:
     def __init__(self) -> None:
-        self.base_folder = get_data_path("generated_data\dictionary")
+        self.base_folder = get_data_path("dictionary")
 
     def get_version_number(self, name):
         match = re.search(r"_ver(\d+)", name)

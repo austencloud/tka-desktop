@@ -1,9 +1,40 @@
-import sys
 import os
+import sys
 
-# Constants and paths defined first
-def main_without_imports():
-    # Import the modules now that paths are configured
+# Set up the Python path before ANY imports
+if getattr(sys, 'frozen', False):
+    # Running as executable
+    base_dir = sys._MEIPASS
+    print(f"Running from PyInstaller bundle at {base_dir}")
+    
+    # Add base_dir to path (critical for imports)
+    if base_dir not in sys.path:
+        sys.path.insert(0, base_dir)
+    
+    # Show directory contents for debugging
+    print(f"Contents of _internal: {os.listdir(base_dir)}")
+    
+    # Create a customized Python path for imports
+    custom_path = []
+    
+    # 1. Add the base directory itself
+    custom_path.append(base_dir)
+    
+    # 2. Add the src directory if it exists
+    src_dir = os.path.join(base_dir, "src")
+    if os.path.exists(src_dir):
+        custom_path.append(src_dir)
+    
+    # Replace sys.path with our custom path
+    sys.path = custom_path + sys.path
+    print(f"Modified sys.path: {sys.path}")
+
+# Now run the application by directly executing the code in main.py
+# This avoids import problems entirely
+
+# Define the main function inline (copied from your original main.py)
+def run_application():
+    # Import all required modules
     from PyQt6.QtCore import QTimer
     from PyQt6.QtWidgets import QApplication
     from main_window.main_widget.json_manager.json_manager import JsonManager
@@ -18,13 +49,14 @@ def main_without_imports():
     from settings_manager.global_settings.app_context import AppContext
     from utils.paint_event_supressor import PaintEventSuppressor
     
-    # Debug information
-    print("Python version:", sys.version)
-    print("Running main.py main_without_imports()")
-    print("Current working directory:", os.getcwd())
+    # Debug output
+    print("Successfully imported all modules!")
     
-    # Define project directory and log file now that imports are available
-    PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+    # Set up project directory and log file
+    PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+    if getattr(sys, 'frozen', False):
+        PROJECT_DIR = sys._MEIPASS
+    
     LOG_FILE_PATH = get_data_path("trace_log.txt")
     log_file = open(LOG_FILE_PATH, "w")
     
@@ -48,7 +80,7 @@ def main_without_imports():
         special_placement_loader=special_placement_loader,
     )
     
-    # Create and show main window
+    # Create main window
     main_window = MainWindow(profiler, splash_screen)
     AppContext._main_window = main_window
     
@@ -57,30 +89,15 @@ def main_without_imports():
     
     QTimer.singleShot(0, lambda: splash_screen.close())
     
-    # Install handlers and tracers
+    # Set up event handlers
     PaintEventSuppressor.install_message_handler()
     tracer = CallTracer(PROJECT_DIR, log_file)
     sys.settrace(tracer.trace_calls)
     
-    # Start the application event loop
+    # Run application
     exit_code = main_window.exec(app)
     sys.exit(exit_code)
 
-
-# This is kept for running directly in development
+# Run the application
 if __name__ == "__main__":
-    # Configure the import paths
-    if getattr(sys, 'frozen', False):
-        # Running as frozen application
-        base_dir = sys._MEIPASS
-        src_dir = os.path.join(base_dir, "src")
-        if os.path.exists(src_dir) and src_dir not in sys.path:
-            sys.path.insert(0, src_dir)
-    else:
-        # In development, add project root to path
-        project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        if project_dir not in sys.path:
-            sys.path.insert(0, project_dir)
-    
-    # Now call the function with imports
-    main_without_imports()
+    run_application()

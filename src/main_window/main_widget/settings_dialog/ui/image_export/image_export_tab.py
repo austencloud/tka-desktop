@@ -50,9 +50,12 @@ class ImageExportTab(QWidget):
             self.preview_panel.preview_label.clear()
             return
 
+        # In ImageExportTab.update_preview()
         options = self.settings_manager.image_export.get_all_image_export_options()
         options["user_name"] = self.control_panel.user_combo_box.currentText()
-        options["notes"] = self.control_panel.notes_combo_box.currentText()
+        options["notes"] = (
+            self.control_panel.note_input.text()
+        )  # Use text field instead of combo box
         options["export_date"] = datetime.now().strftime("%m-%d-%Y")
 
         sequence = self._get_current_sequence()
@@ -99,7 +102,7 @@ class ImageExportTab(QWidget):
             button = self.control_panel.buttons[button_text]
             button.update_is_toggled()
         self.control_panel._load_user_profiles()
-        self.control_panel._load_saved_notes()
+        self.control_panel._load_saved_note()  # Load note instead of notes
 
     def showEvent(self, event: "QShowEvent"):
         self.update_image_export_tab_from_settings()

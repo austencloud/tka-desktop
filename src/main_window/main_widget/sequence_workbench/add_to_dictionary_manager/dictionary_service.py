@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class DictionaryService:
     """Service for managing dictionary entries including adding variations, checking for duplicates, and managing thumbnails."""
 
-    dictionary_dir = get_data_path("generated_data/dictionary")
+    dictionary_dir = get_data_path("dictionary")
 
     def __init__(self, beat_frame: "SequenceBeatFrame"):
         """Initialize the dictionary service."""

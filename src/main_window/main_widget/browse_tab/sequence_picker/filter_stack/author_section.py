@@ -109,7 +109,7 @@ class AuthorSection(FilterSectionBase):
         if hasattr(self, "_all_sequences_with_authors"):
             return self._all_sequences_with_authors
 
-        dictionary_dir = get_data_path("generated_data\dictionary")
+        dictionary_dir = get_data_path("dictionary")
         base_words = [
             (
                 word,

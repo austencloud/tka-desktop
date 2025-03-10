@@ -37,7 +37,7 @@ class FilterSectionBase(QWidget):
         )
         self.go_back_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.go_back_button.clicked.connect(
-            self.filter_selector.show_filter_choice_widget
+            self.filter_selector.show_filter_selection_widget
         )
         top_bar_layout.addWidget(
             self.go_back_button, alignment=Qt.AlignmentFlag.AlignLeft
@@ -56,7 +56,7 @@ class FilterSectionBase(QWidget):
         self.header_label.hide()
 
     def get_sorted_base_words(self, sort_order) -> list[tuple[str, list[str], None]]:
-        dictionary_dir = get_data_path("generated_data\dictionary")
+        dictionary_dir = get_data_path("dictionary")
         base_words = [
             (
                 d,

@@ -8,7 +8,7 @@ from utils.path_helpers import get_data_path
 
 class TurnPatternVariationChecker:
     def __init__(self):
-        self.directory = get_data_path("generated_data\dictionary")
+        self.directory = get_data_path("dictionary")
 
     def check_for_turn_pattern_variation(self, sequence):
         # Iterate recursively through all files in the directory and subdirectories

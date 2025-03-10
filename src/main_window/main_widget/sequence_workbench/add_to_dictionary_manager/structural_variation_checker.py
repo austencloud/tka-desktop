@@ -18,7 +18,7 @@ def hash_sequence(sequence):
 
 class StructuralVariationChecker:
     def __init__(self):
-        self.dictionary_dir = get_data_path("generated_data\dictionary")
+        self.dictionary_dir = get_data_path("dictionary")
         self.metadata_extractor = MetaDataExtractor()
 
     def check_for_structural_variation(self, current_sequence, base_word):

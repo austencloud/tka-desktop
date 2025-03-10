@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from ..thumbnail_box.thumbnail_box import ThumbnailBox
     from ..browse_tab import BrowseTab
 
-DICTIONARY_PATH = "generated_data\\dictionary"
+DICTIONARY_PATH = "dictionary"
 
 
 class BrowseTabDeletionHandler:

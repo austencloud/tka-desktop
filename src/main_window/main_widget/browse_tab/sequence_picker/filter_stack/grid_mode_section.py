@@ -172,7 +172,7 @@ class GridModeSection(FilterSectionBase):
         if hasattr(self, "_all_sequences_with_grid_modes"):
             return self._all_sequences_with_grid_modes
 
-        dictionary_dir = get_data_path("generated_data\dictionary")
+        dictionary_dir = get_data_path("dictionary")
         base_words = [
             (
                 word,

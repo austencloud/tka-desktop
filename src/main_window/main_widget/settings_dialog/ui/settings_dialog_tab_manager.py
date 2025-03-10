@@ -48,7 +48,7 @@ class SettingsDialogTabManager:
         if isinstance(selected_tab, PropTypeTab):
             selected_tab.update_active_prop_type_from_settings()
         elif isinstance(selected_tab, UserProfileTab):
-            selected_tab.ui_manager.update_active_user_from_settings()
+            selected_tab.update_active_user_from_settings()
         elif isinstance(selected_tab, VisibilityTab):
             selected_tab.buttons_widget.update_visibility_buttons_from_settings()
         elif isinstance(selected_tab, BeatLayoutTab):

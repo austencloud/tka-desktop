@@ -75,20 +75,25 @@ class SequencePickerFilterStack(QStackedWidget):
 
     def show_section(self, filter_section_str: str):
         # convert the str to an enum
-        filter_section_enum = BrowseTabSection.from_str(filter_section_str)
-        index = self.section_indexes.get(filter_section_enum)
-        if index is not None:
-            self.sequence_picker.main_widget.fade_manager.stack_fader.fade_stack(
-                self.sequence_picker.filter_stack, index
-            )
-            self.browse_tab.browse_settings.set_current_section(
-                filter_section_enum.value
-            )
-            self.current_filter_section = filter_section_enum
-        else:
-            print(
-                f"Section '{filter_section_str}' not found. Did you spell it correctly?"
-            )
+        try:
+            filter_section_enum = BrowseTabSection.from_str(filter_section_str)
+            index = self.section_indexes.get(filter_section_enum)
+            if index is not None:
+                self.sequence_picker.main_widget.fade_manager.stack_fader.fade_stack(
+                    self.sequence_picker.filter_stack, index
+                )
+                self.browse_tab.browse_settings.set_current_section(
+                    filter_section_enum.value
+                )
+                self.current_filter_section = filter_section_enum
+            else:
+                print(
+                    f"Section '{filter_section_str}' not found. Did you spell it correctly?"
+                )
+        except ValueError as e:
+            print(e)
+            # Optionally, you can show a default section or keep the current section
+            self.show_filter_selection_widget()
 
-    def show_filter_choice_widget(self):
+    def show_filter_selection_widget(self):
         self.show_section(BrowseTabSection.FILTER_SELECTOR.value)

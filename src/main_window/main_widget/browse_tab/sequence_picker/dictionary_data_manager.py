@@ -30,7 +30,7 @@ class DictionaryDataManager:
     def load_all_sequences(self) -> None:
         if self._has_loaded:
             return
-        dictionary_dir = get_data_path("generated_data\\dictionary")
+        dictionary_dir = get_data_path("dictionary")
 
         for entry in os.listdir(dictionary_dir):
             full_path = os.path.join(dictionary_dir, entry)

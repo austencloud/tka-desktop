@@ -102,7 +102,6 @@ class SettingsDialogStyler(BaseDialogStyler):
                 padding: {max(5, int(dialog.width() * 0.01))}px {max(10, int(dialog.width() * 0.02))}px;
                 font-size: {max(10, int(dialog.width() * 0.014))}px;
                 min-width: {max(80, int(dialog.width() * 0.1))}px;
-                transition: background-color 0.2s ease;
             }}
             
             QPushButton:hover {{

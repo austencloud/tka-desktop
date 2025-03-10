@@ -12,24 +12,10 @@ if TYPE_CHECKING:
 class GenerateTabSettings:
     SHARED_DEFAULTS = {
         "sequence_length": 16,
-        "max_turn_intensity": 1,
+        "turn_intensity": 1,
         "level": 1,
-        "prop_continuity": False,
-        "overwrite_sequence": False,
-    }
-
-    MODE_SPECIFIC_DEFAULTS = {
-        "freeform": {
-            "selected_letter_types": [
-                "Dual-Shift",
-                "Shift",
-                "Cross-Shift",
-                "Dash",
-                "Dual-Dash",
-                "Static",
-            ]
-        },
-        "circular": {"rotation_type": "quartered", "CAP_type": "rotated"},
+        "prop_continuity": "continuous",
+        "CAP_type": "strict_rotated",
     }
 
     def __init__(self, settings: QSettings):

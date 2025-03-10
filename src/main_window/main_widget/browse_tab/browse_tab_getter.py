@@ -32,7 +32,7 @@ class BrowseTabGetter:
 
     def base_words(self) -> Generator[tuple[str, list[str]], Any, None]:
         """Generator version of base_words() to optimize performance."""
-        dictionary_dir = get_data_path("generated_data/dictionary")
+        dictionary_dir = get_data_path("dictionary")
 
         for word in os.listdir(dictionary_dir):
             if (

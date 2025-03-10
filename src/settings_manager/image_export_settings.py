@@ -4,7 +4,6 @@ if TYPE_CHECKING:
     from settings_manager.settings_manager import SettingsManager
 
 
-
 class ImageExportSettings:
     DEFAULT_IMAGE_EXPORT_SETTINGS = {
         "include_start_position": False,
@@ -37,3 +36,11 @@ class ImageExportSettings:
             key: self.get_image_export_setting(key)
             for key in self.DEFAULT_IMAGE_EXPORT_SETTINGS.keys()
         }
+
+    def get_custom_note(self) -> str:
+        """Get the current custom note."""
+        return self.settings.value("image_export/custom_note", "", type=str)
+
+    def set_custom_note(self, note: str) -> None:
+        """Set the custom note."""
+        self.settings.setValue("image_export/custom_note", note)

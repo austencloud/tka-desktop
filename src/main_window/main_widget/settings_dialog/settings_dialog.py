@@ -43,8 +43,8 @@ class SettingsDialog(QDialog):
         self.ui.content_area.setCurrentIndex(tab_index)
 
         if last_tab == "User Profile":
-            self.ui.user_profile_tab.tab_controller.populate_user_buttons()
-            self.ui.user_profile_tab.ui_manager.update_active_user_from_settings()
+            self.ui.user_profile_tab.populate_users()
+            self.ui.user_profile_tab.update_active_user_from_settings()
 
         elif last_tab == "Prop Type":
             self.ui.prop_type_tab.update_active_prop_type_from_settings()

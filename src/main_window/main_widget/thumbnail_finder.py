@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class ThumbnailFinder:
     def __init__(self) -> None:
-        self.dictionary_dir = get_data_path("generated_data\dictionary")
+        self.dictionary_dir = get_data_path("dictionary")
 
     def find_thumbnails(self, word_dir: str) -> list[str]:
         thumbnails = []

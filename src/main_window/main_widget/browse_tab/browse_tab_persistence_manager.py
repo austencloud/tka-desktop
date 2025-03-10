@@ -27,7 +27,7 @@ class BrowseTabPersistenceManager:
 
         section_name = state.get_current_section()
         if not section_name:
-            sequence_picker.filter_stack.show_filter_choice_widget()
+            sequence_picker.filter_stack.show_filter_selection_widget()
         else:
             sequence_picker.filter_stack.show_section(section_name)
 

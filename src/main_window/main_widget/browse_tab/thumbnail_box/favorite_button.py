@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox
 
 
-class ThumbnailBoxFavoriteSequenceButton(QPushButton):
+class FavoriteButton(QPushButton):
     def __init__(self, thumbnail_box: "ThumbnailBox"):
         super().__init__()
         self.thumbnail_box = thumbnail_box
@@ -70,12 +70,16 @@ class ThumbnailBoxFavoriteSequenceButton(QPushButton):
         return f"{color}_star_outline.png" if color in ["black", "white"] else None
 
     def resizeEvent(self, event):
+        self.resize_favorite_icon()
+        super().resizeEvent(event)
+
+    def resize_favorite_icon(self):
         font_size = self.thumbnail_box.width() // 18
         icon_size = QSize(font_size + 10, font_size + 10)
         self.setIconSize(icon_size)
         self.setFixedSize(icon_size.width(), icon_size.height())
-        super().resizeEvent(event)
 
     def showEvent(self, event):
         self.reload_favorite_icon()
+        self.resize_favorite_icon()
         super().showEvent(event)

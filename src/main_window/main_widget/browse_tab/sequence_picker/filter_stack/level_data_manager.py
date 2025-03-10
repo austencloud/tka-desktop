@@ -25,7 +25,7 @@ class LevelDataManager:
         return self._all_sequences_with_levels
 
     def _load_sequences(self) -> None:
-        dictionary_dir = get_data_path("generated_data/dictionary")
+        dictionary_dir = get_data_path("dictionary")
         base_words = [
             (
                 d,

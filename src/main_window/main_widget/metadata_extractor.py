@@ -104,10 +104,11 @@ class MetaDataExtractor:
                 if metadata["sequence"][0]["level"] != 0:
                     return metadata["sequence"][0]["level"]
                 else:
-                    
 
                     evaluator = SequenceLevelEvaluator()
-                    level = evaluator.get_sequence_difficulty_level(metadata["sequence"])
+                    level = evaluator.get_sequence_difficulty_level(
+                        metadata["sequence"]
+                    )
                     metadata["sequence"][0]["level"] = level
 
                     # Save the updated metadata back to the image
@@ -139,7 +140,7 @@ class MetaDataExtractor:
 
     def get_metadata_and_thumbnail_dict(self) -> list[dict[str, str]]:
         """Collect all sequences and their metadata along with the associated thumbnail paths."""
-        dictionary_dir = get_data_path("generated_data\dictionary")
+        dictionary_dir = get_data_path("dictionary")
         metadata_and_thumbnail_dict = []
 
         for word in os.listdir(dictionary_dir):

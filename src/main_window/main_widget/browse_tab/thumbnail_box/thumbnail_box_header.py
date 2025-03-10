@@ -2,8 +2,8 @@ from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtWidgets import QWidget, QHBoxLayout
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_favorite_sequence_button import (
-    ThumbnailBoxFavoriteSequenceButton,
+from main_window.main_widget.browse_tab.thumbnail_box.favorite_button import (
+    FavoriteButton,
 )
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_word_label import (
     ThumbnailBoxWordLabel,
@@ -27,7 +27,7 @@ class ThumbnailBoxHeader(QWidget):
         self.word_label = ThumbnailBoxWordLabel(
             thumbnail_box.word, self, self.settings_manager
         )
-        self.favorite_button = ThumbnailBoxFavoriteSequenceButton(thumbnail_box)
+        self.favorite_button = FavoriteButton(thumbnail_box)
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(5, 0, 5, 0)
@@ -43,3 +43,11 @@ class ThumbnailBoxHeader(QWidget):
     def resizeEvent(self, event: QEvent) -> None:
         self.difficulty_label.setFixedSize(self.favorite_button.size())
         super().resizeEvent(event)
+
+    def hide_favorite_button(self):
+        """Hide the favorite button when no thumbnail is shown."""
+        self.favorite_button.hide()
+
+    def show_favorite_button(self):
+        """Show the favorite button when a thumbnail is shown."""
+        self.favorite_button.show()

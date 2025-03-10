@@ -40,6 +40,7 @@ class SettingsDialogUI(QWidget):
         self.user_profile_tab: UserProfileTab = self.tab_selection_manager.tabs[
             "User Profile"
         ]
+        
         self.prop_type_tab: PropTypeTab = self.tab_selection_manager.tabs["Prop Type"]
         self.visibility_tab: VisibilityTab = self.tab_selection_manager.tabs[
             "Visibility"

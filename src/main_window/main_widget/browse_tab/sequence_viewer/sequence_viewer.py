@@ -27,6 +27,7 @@ class SequenceViewer(QWidget):
 
         # Now SequenceViewer just holds the action panel and delegates everything else
         self.action_button_panel = SequenceViewerActionButtonPanel(self)
+        self.thumbnail_box.header.hide_favorite_button()
 
         self._setup_layout()
 
@@ -59,15 +60,19 @@ class SequenceViewer(QWidget):
             pixmap = QPixmap(current_thumbnail)
             if not pixmap.isNull():
                 self.thumbnail_box.image_label.update_thumbnail(index)
+                self.thumbnail_box.header.show_favorite_button()
+                self.thumbnail_box.header.difficulty_label.show()
 
                 if self.state.matching_thumbnail_box:
                     metadata_extractor = MetaDataExtractor()
                     self.state.sequence_json = (
                         metadata_extractor.extract_metadata_from_file(current_thumbnail)
                     )
-
         else:
             self.thumbnail_box.variation_number_label.clear()
+            self.thumbnail_box.header.hide_favorite_button()
+            self.thumbnail_box.header.difficulty_label.hide()
+
         self.thumbnail_box.variation_number_label.update_index(index)
 
     def update_nav_buttons(self):
@@ -79,6 +84,8 @@ class SequenceViewer(QWidget):
         self.thumbnail_box.header.word_label.clear()
         self.thumbnail_box.nav_buttons_widget.hide()
         self.thumbnail_box.variation_number_label.hide()
+        self.thumbnail_box.header.hide_favorite_button()
+        self.thumbnail_box.header.difficulty_label.hide()
         self.state.matching_thumbnail_box = None
 
     def get_thumbnail_at_current_index(self) -> Optional[str]:
