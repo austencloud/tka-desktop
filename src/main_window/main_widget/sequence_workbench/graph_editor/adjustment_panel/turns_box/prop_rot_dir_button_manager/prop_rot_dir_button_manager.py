@@ -36,31 +36,35 @@ class PropRotDirButtonManager:
         self.state.state_changed.connect(self.turns_box.header.update_turns_box_header)
 
     def update_buttons_for_prop_rot_dir(self, prop_rot_dir: str) -> None:
+        """Update the button UI to reflect the given prop rotation direction."""
         if prop_rot_dir == NO_ROT:
-
-            self.state.update_state(CLOCKWISE, False)
+            # Handle the NO_ROT case - unselect all buttons
+            self.state.update_state(CLOCKWISE, False)  # Clear all selections
             if hasattr(self.turns_box.header, "unpress_prop_rot_dir_buttons"):
                 self.turns_box.header.unpress_prop_rot_dir_buttons()
         else:
-
+            # Set the state for the given direction
             self.state.update_state(prop_rot_dir, True)
 
+            # Update header buttons visually
             header = self.turns_box.header
             if prop_rot_dir == CLOCKWISE:
                 if hasattr(header, "cw_button"):
                     header.cw_button.set_selected(True)
                 if hasattr(header, "ccw_button"):
                     header.ccw_button.set_selected(False)
-            else:
+            else:  # COUNTER_CLOCKWISE
                 if hasattr(header, "cw_button"):
                     header.cw_button.set_selected(False)
                 if hasattr(header, "ccw_button"):
                     header.ccw_button.set_selected(True)
 
+            # Make sure buttons are visible
             if hasattr(header, "show_prop_rot_dir_buttons"):
                 header.show_prop_rot_dir_buttons()
 
     def set_prop_rot_dir(self, prop_rot_dir: str) -> None:
+        """Set the prop rotation direction and update the motion and letter."""
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         if self.turns_box.prop_rot_dir_btn_state[prop_rot_dir]:
@@ -74,6 +78,7 @@ class PropRotDirButtonManager:
         QApplication.restoreOverrideCursor()
 
     def update_for_motion_change(self, motion: "Motion") -> None:
+        """Update buttons when motion changes."""
         self.logic_handler.current_motion = motion
 
         self.turns_box.header.update_turns_box_header()
@@ -82,26 +87,34 @@ class PropRotDirButtonManager:
             self.set_prop_rot_dir(self.logic_handler._get_default_prop_rot_dir())
 
     def update_for_turns_change(self, value: "TurnsValue") -> None:
+        """Update buttons when turns change."""
 
+        # Ensure valid motion reference
         if not self.logic_handler.current_motion:
             return
 
         motion = self.logic_handler.current_motion
 
+        # If turns are zero or float, reset rotation direction
         if value.raw_value == 0 or value.raw_value == "fl":
-            self.set_prop_rot_dir(NO_ROT)
+            self.set_prop_rot_dir(NO_ROT)  # Reset to default if no turns
 
+        # If turns are non-zero, ensure a valid rotation direction is set
         elif motion.state.prop_rot_dir == NO_ROT:
             default_dir = self.logic_handler._get_default_prop_rot_dir()
             self.set_prop_rot_dir(default_dir)
 
+        # Sync button states
         self.state.update_state(motion.state.prop_rot_dir, True)
 
+        # Update pictograph and JSON
         self._update_pictograph_and_json(motion)
 
+        # Refresh UI to reflect changes
         self.turns_box.header.update_turns_box_header()
 
     def set_motion(self, motion: "Motion") -> None:
+        """Called when motion changes to update UI and logic states."""
         self.update_for_motion_change(motion)
 
     def update_pictograph_letter(self, pictograph: "Pictograph") -> None:
@@ -132,6 +145,7 @@ class PropRotDirButtonManager:
             )
 
     def _update_pictograph_and_json(self, motion: "Motion") -> None:
+        """Update the pictograph and JSON with the new letter and motion attributes."""
         self.beat_frame = self.turns_box.graph_editor.sequence_workbench.beat_frame
         pictograph_index = self.beat_frame.get.index_of_currently_selected_beat()
         self.graph_editor = self.turns_box.graph_editor

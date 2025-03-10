@@ -40,6 +40,8 @@ class JsonTurnsUpdater:
         sequence = self.json_manager.loader_saver.load_current_sequence()
         pictograph_data = sequence[index]
         motion_data = pictograph_data[f"{color}_attributes"]
+        if turns in [0.0, 1.0, 2.0, 3.0]:
+            turns = int(turns)
         motion_data[TURNS] = turns
 
         if motion_data[PROP_ROT_DIR] == NO_ROT and motion_data[MOTION_TYPE] in [

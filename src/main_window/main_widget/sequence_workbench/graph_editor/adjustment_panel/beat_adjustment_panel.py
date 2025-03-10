@@ -1,12 +1,8 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QStackedWidget, QWidget, QSizePolicy
 from data.constants import BLUE, RED, IN
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.turns_box import (
-    TurnsBox,
-)
 from .ori_picker_box.ori_picker_box import OriPickerBox
-
-# from .turns_box.turns_box import TurnsBox
+from .turns_box.turns_box import TurnsBox
 
 if TYPE_CHECKING:
     from ..graph_editor import GraphEditor
@@ -82,7 +78,7 @@ class BeatAdjustmentPanel(QFrame):
 
         if widget_index == TURNS_WIDGET_INDEX:
             self.update_turns_displays()
-            self.update_prop_rot_dir_buttons()
+            self.update_rot_dir_buttons()
 
         elif widget_index == ORI_WIDGET_INDEX:
             self.update_ori_displays()
@@ -104,7 +100,7 @@ class BeatAdjustmentPanel(QFrame):
                 motion.state.end_ori
             )
 
-    def update_prop_rot_dir_buttons(self) -> None:
+    def update_rot_dir_buttons(self) -> None:
         """Update the rotation direction buttons based on the current pictograph state."""
         reference_beat = self.beat_frame.get.currently_selected_beat_view()
         if reference_beat:

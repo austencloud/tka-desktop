@@ -16,7 +16,6 @@ class JsonTurnsRepository(TurnsRepository):
 
     def save(self, value: TurnsValue, color: str):  # ✅ Accept color
         """Saves turns value to JSON through the existing JSON manager"""
-        self._color = color  # ✅ Store the color for later retrieval
         self.beat_frame = (
             AppContext.main_window().main_widget.sequence_workbench.beat_frame
         )

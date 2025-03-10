@@ -38,7 +38,7 @@ class GraphEditorPictographContainer(QWidget):
 
         view = self.GE_view
         pictograph = view.pictograph
-        pictograph.elements.view = view
+
         pictograph.is_blank = False
         view.reference_beat = reference_beat
         view.is_start_pos = reference_beat.view.is_start_pos

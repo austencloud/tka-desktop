@@ -1,4 +1,3 @@
-# graph_editor.py (modification)
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import (
     QFrame,
@@ -14,9 +13,6 @@ from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_animat
 )
 from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_toggle_tab import (
     GraphEditorToggleTab,
-)
-from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_state import (
-    GraphEditorState,
 )
 from settings_manager.settings_manager import pyqtSignal
 
@@ -45,18 +41,11 @@ class GraphEditor(QFrame):
         self.sequence_workbench = sequence_workbench
         self.main_widget = sequence_workbench.main_widget
 
-        # Initialize state before components
-        self.state = GraphEditorState()
-
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
         self._setup_components()
         self.layout_manager.setup_layout()
-
-        # Connect state change signals
-        self._connect_state_signals()
-
         self.hide()
 
     def _setup_components(self) -> None:
@@ -67,74 +56,6 @@ class GraphEditor(QFrame):
         self.toggle_tab = GraphEditorToggleTab(self)
         self.placeholder = QFrame(self)
         self.animator = GraphEditorAnimator(self)
-
-    def _connect_state_signals(self) -> None:
-        """Connect state change signals to component handlers"""
-        # Connect turns changes
-        self.state.turns_changed.connect(self._handle_turns_changed)
-        self.state.orientation_changed.connect(self._handle_orientation_changed)
-        self.state.prop_rot_dir_changed.connect(self._handle_prop_rot_dir_changed)
-        self.state.motion_type_changed.connect(self._handle_motion_type_changed)
-        self.state.letter_changed.connect(self._handle_letter_changed)
-        self.state.selected_arrow_changed.connect(self._handle_arrow_selection_changed)
-
-        # Connect back from selection manager
-        self.selection_manager.selection_changed.connect(self.state.set_selected_arrow)
-
-    def _handle_turns_changed(self, color, value):
-        """Handle turns changes in state"""
-        # Update the turns box display
-        if color == "blue":
-            self.adjustment_panel.blue_turns_box.turns_widget.display_frame.update_turns_display(
-                self.pictograph_container.GE_pictograph.elements.blue_motion, value
-            )
-        else:
-            self.adjustment_panel.red_turns_box.turns_widget.display_frame.update_turns_display(
-                self.pictograph_container.GE_pictograph.elements.red_motion, value
-            )
-
-    def _handle_orientation_changed(self, color, orientation):
-        """Handle orientation changes in state"""
-        if color == "blue":
-            self.adjustment_panel.blue_ori_picker.ori_picker_widget.clickable_ori_label.set_orientation(
-                orientation
-            )
-        else:
-            self.adjustment_panel.red_ori_picker.ori_picker_widget.clickable_ori_label.set_orientation(
-                orientation
-            )
-
-    def _handle_prop_rot_dir_changed(self, color, direction):
-        """Handle prop rotation direction changes in state"""
-        if color == "blue":
-            self.adjustment_panel.blue_turns_box.prop_rot_dir_button_manager.update_buttons_for_prop_rot_dir(
-                direction
-            )
-        else:
-            self.adjustment_panel.red_turns_box.prop_rot_dir_button_manager.update_buttons_for_prop_rot_dir(
-                direction
-            )
-
-    def _handle_motion_type_changed(self, color, motion_type):
-        """Handle motion type changes in state"""
-        if color == "blue":
-            self.adjustment_panel.blue_turns_box.turns_widget.motion_type_label.update_display(
-                motion_type
-            )
-        else:
-            self.adjustment_panel.red_turns_box.turns_widget.motion_type_label.update_display(
-                motion_type
-            )
-
-    def _handle_letter_changed(self, letter):
-        """Handle letter changes in state"""
-        # Update any letter-dependent components
-        self.pictograph_container.GE_view.pictograph.state.letter = letter
-
-    def _handle_arrow_selection_changed(self, arrow):
-        """Handle arrow selection changes in state"""
-        # Update UI to reflect selected arrow
-        self.pictograph_container.GE_view.update()
 
     def get_graph_editor_height(self):
         return min(int(self.main_widget.height() // 3.5), self.width() // 4)
@@ -154,10 +75,6 @@ class GraphEditor(QFrame):
         self.toggle_tab.reposition_toggle_tab()
 
     def update_graph_editor(self) -> None:
-        # Update state from current pictograph first
-        self.state.sync_from_pictograph(self.pictograph_container.GE_view.pictograph)
-
-        # Then update UI components
         self.adjustment_panel.update_adjustment_panel()
         self.pictograph_container.update_pictograph()
 
