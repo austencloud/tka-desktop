@@ -49,7 +49,8 @@ class LetterDeterminer:
                 if letter is not None:
                     return letter
 
-        return self._fallback_search(pictograph_data, swap_prop_rot_dir)
+        letter = self._fallback_search(pictograph_data, swap_prop_rot_dir)
+        return letter
 
     def _fallback_search(
         self, pictograph_data: dict, swap_prop_rot_dir: bool

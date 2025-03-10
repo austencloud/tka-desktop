@@ -1,8 +1,6 @@
-# src/main_window/main_widget/sequence_workbench/graph_editor/hotkey_graph_adjuster/arrow_rot_angle_override_manager.py
+# rot_angle_override_validator.py (modifications)
 from typing import TYPE_CHECKING
 from data.constants import STATIC, DASH
-
-from settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .rot_angle_override_manager import RotAngleOverrideManager
@@ -13,9 +11,10 @@ class RotAngleOverrideValidator:
 
     def __init__(self, manager: "RotAngleOverrideManager"):
         self.manager = manager
+        self.state = manager.state  # Reference to centralized state
 
     def is_valid_override_condition(self) -> bool:
-        selected_arrow = AppContext.get_selected_arrow()
+        selected_arrow = self.state.get_selected_arrow()
         return (
             selected_arrow is not None
             and selected_arrow.motion.state.motion_type in [STATIC, DASH]

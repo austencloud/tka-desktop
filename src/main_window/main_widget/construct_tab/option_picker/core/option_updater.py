@@ -5,12 +5,12 @@ from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
-    from ..widgets.option_picker_widget import OptionPickerWidget
+    from ..widgets.option_picker import OptionPicker
 
 
 class OptionUpdater:
     def __init__(
-        self, option_picker: "OptionPickerWidget", fade_manager: FadeManager
+        self, option_picker: "OptionPicker", fade_manager: FadeManager
     ) -> None:
         self.option_picker = option_picker
         self.scroll_area = option_picker.option_scroll

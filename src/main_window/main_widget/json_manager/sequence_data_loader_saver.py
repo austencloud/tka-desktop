@@ -165,3 +165,9 @@ class SequenceDataLoaderSaver:
         if sequence:
             return sequence[-1]
         return {}
+
+    def get_json_turns(self, index: int, color: str) -> int:
+        sequence = self.load_current_sequence()
+        if sequence:
+            return sequence[index][f"{color}_attributes"].get("turns", 0)
+        return 0

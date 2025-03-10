@@ -9,22 +9,23 @@ from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.tu
 from settings_manager.global_settings.app_context import AppContext
 from main_window.main_widget.json_manager.json_manager import JsonManager
 
+
 class JsonTurnsRepository(TurnsRepository):
     def __init__(self, json_manager: "JsonManager"):
         self._manager = json_manager
 
     def save(self, value: TurnsValue, color: str):  # ✅ Accept color
         """Saves turns value to JSON through the existing JSON manager"""
+        self._color = color  # ✅ Store the color for later retrieval
         self.beat_frame = (
             AppContext.main_window().main_widget.sequence_workbench.beat_frame
         )
         try:
             pictograph_index = self._get_pictograph_index()
-            self._manager.updater.turns_updater.update_turns_in_json_at_index(
+            self._manager.updater.turns_updater.update_turns_in_json(
                 pictograph_index,
                 color,
                 value.raw_value,
-                self.beat_frame,  # ✅ Use passed color
             )
         except Exception as e:
             raise RuntimeError(f"JSON save failed: {str(e)}") from e

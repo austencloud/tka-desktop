@@ -10,8 +10,8 @@ from .clickable_ori_label import ClickableOriLabel
 from .rotate_buttons_widget import RotateButtonsWidget
 
 if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker_widget import (
-        OptionPickerWidget,
+    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker import (
+        OptionPicker,
     )
     from ..ori_picker_box import OriPickerBox
 
@@ -22,7 +22,7 @@ class OriPickerWidget(QWidget):
     ori_adjusted = pyqtSignal(str)
     current_orientation_index = 0
     orientations = [IN, COUNTER, OUT, CLOCK]
-    option_picker: "OptionPickerWidget" = None
+    option_picker: "OptionPicker" = None
 
     def __init__(self, ori_picker_box: "OriPickerBox") -> None:
         super().__init__(ori_picker_box)

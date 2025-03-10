@@ -3,13 +3,13 @@ from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker_widget import (
-        OptionPickerWidget,
+    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker import (
+        OptionPicker,
     )
 
 
 class OptionPickerLayoutManager:
-    def __init__(self, op: "OptionPickerWidget"):
+    def __init__(self, op: "OptionPicker"):
         self.op = op
         self.setup_layout()
 

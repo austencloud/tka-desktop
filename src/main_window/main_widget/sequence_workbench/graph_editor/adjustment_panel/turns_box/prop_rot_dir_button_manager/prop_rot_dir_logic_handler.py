@@ -148,7 +148,7 @@ class PropRotDirLogicHandler(QObject):
         self.turns_box.prop_rot_dir_button_manager.state.update_state(CLOCKWISE, True)
         return CLOCKWISE
 
-    def update_related_components(self) -> None:
+    def  update_related_components(self) -> None:
         """Updates JSON, detects reversals, updates UI labels, and ensures UI consistency."""
         pictograph_index = (
             self.turns_box.graph_editor.sequence_workbench.beat_frame.get.index_of_currently_selected_beat()

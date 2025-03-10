@@ -6,7 +6,9 @@ from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.construct_tab.add_to_sequence_manager.add_to_sequence_manager import (
     AddToSequenceManager,
 )
-from main_window.main_widget.construct_tab.option_picker.widgets.scroll.option_scroll import OptionScroll
+from main_window.main_widget.construct_tab.option_picker.widgets.scroll.option_scroll import (
+    OptionScroll,
+)
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from .choose_your_next_pictograph_label import ChooseYourNextPictographLabel
 from ..core.option_factory import OptionFactory
@@ -20,7 +22,7 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_bea
 )
 
 
-class OptionPickerWidget(QWidget):
+class OptionPicker(QWidget):
     option_selected = pyqtSignal(str)
     COLUMN_COUNT = 8
 

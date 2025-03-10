@@ -14,7 +14,7 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_bea
 from .start_pos_picker.start_pos_picker import StartPosPicker
 from .advanced_start_pos_picker.advanced_start_pos_picker import AdvancedStartPosPicker
 from .add_to_sequence_manager.add_to_sequence_manager import AddToSequenceManager
-from .option_picker.widgets.option_picker_widget import OptionPickerWidget
+from .option_picker.widgets.option_picker import OptionPicker
 
 if TYPE_CHECKING:
     pass
@@ -58,7 +58,7 @@ class ConstructTab(QFrame):
             last_beat=lambda: self.last_beat,  # Use a getter function
         )
 
-        self.option_picker = OptionPickerWidget(
+        self.option_picker = OptionPicker(
             add_to_sequence_manager=self.add_to_sequence_manager,
             pictograph_dataset=self.pictograph_dataset,
             beat_frame=self.beat_frame,

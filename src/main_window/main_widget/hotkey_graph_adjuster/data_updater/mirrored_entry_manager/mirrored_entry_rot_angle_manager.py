@@ -1,5 +1,5 @@
 from typing import Optional
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
+from main_window.main_widget.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
     ArrowRotAngleOverrideKeyGenerator,
 )
 from settings_manager.global_settings.app_context import AppContext
@@ -33,7 +33,9 @@ class MirroredEntryRotAngleManager:
         letter = arrow.pictograph.state.letter
         grid_mode = arrow.pictograph.state.grid_mode
         other_ori_key, other_letter_data = (
-            self.manager.data_prep.get_keys_for_mixed_start_ori(grid_mode, letter, ori_key)
+            self.manager.data_prep.get_keys_for_mixed_start_ori(
+                grid_mode, letter, ori_key
+            )
         )
 
         mirrored_turns_tuple = (
@@ -59,9 +61,11 @@ class MirroredEntryRotAngleManager:
         )
         grid_mode = arrow.pictograph.state.grid_mode
         other_ori_key, other_letter_data = (
-            self.manager.data_prep.get_keys_for_mixed_start_ori(grid_mode, letter, ori_key)
+            self.manager.data_prep.get_keys_for_mixed_start_ori(
+                grid_mode, letter, ori_key
+            )
         )
-        
+
         mirrored_turns_tuple = (
             self.manager.turns_tuple_generator.generate_mirrored_tuple(arrow)
         )

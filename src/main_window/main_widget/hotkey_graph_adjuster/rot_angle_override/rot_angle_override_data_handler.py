@@ -1,9 +1,9 @@
 # src/main_window/main_widget/sequence_workbench/graph_editor/hotkey_graph_adjuster/arrow_rot_angle_override_manager.py
 from typing import TYPE_CHECKING
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rot_angle_override.types import (
+from main_window.main_widget.hotkey_graph_adjuster.rot_angle_override.types import (
     OverrideData,
 )
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
+from main_window.main_widget.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
     ArrowRotAngleOverrideKeyGenerator,
 )
 from settings_manager.global_settings.app_context import AppContext

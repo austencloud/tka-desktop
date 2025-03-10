@@ -1,63 +1,85 @@
-from typing import TYPE_CHECKING
+# GE_pictograph_view.py (modifications)
+from typing import TYPE_CHECKING, Optional
+from PyQt6.QtWidgets import QGraphicsView
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPainter, QPen, QColor, QMouseEvent, QKeyEvent, QCursor
+from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtWidgets import QApplication
-from base_widgets.pictograph.elements.views.base_pictograph_view import (
-    BasePictographView,
-)
+from PyQt6.QtGui import QPainter, QPen, QColor, QCursor
+
 from data.constants import GOLD
-from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.hotkey_graph_adjuster import (
-    HotkeyGraphAdjuster,
-)
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph_view_mouse_event_handler import (
     GE_PictographViewMouseEventHandler,
 )
 from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_view_key_event_handler import (
     GraphEditorViewKeyEventHandler,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
-from base_widgets.pictograph.pictograph import Pictograph
+from main_window.main_widget.hotkey_graph_adjuster.hotkey_graph_adjuster import (
+    HotkeyGraphAdjuster,
+)
 from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph import (
     GE_Pictograph,
 )
 
 if TYPE_CHECKING:
-    from .....main_window.main_widget.sequence_workbench.graph_editor.pictograph_container.GE_pictograph_container import (
+    from main_window.main_widget.sequence_workbench.graph_editor.pictograph_container.GE_pictograph_container import (
         GraphEditorPictographContainer,
     )
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
 
 
-class GE_PictographView(BasePictographView):
-    reference_beat: "Beat" = None
-    is_start_pos = False
+class GE_PictographView(QGraphicsView):
+    """GraphicsView for GE_Pictograph in the Graph Editor."""
 
     def __init__(
         self,
-        container: "GraphEditorPictographContainer",
+        pictograph_container: "GraphEditorPictographContainer",
         pictograph: "GE_Pictograph",
     ) -> None:
-        super().__init__(pictograph)
-        self.graph_editor = container.graph_editor
+        super().__init__(pictograph_container)
+        self.pictograph_container = pictograph_container
         self.pictograph = pictograph
+        self.graph_editor = pictograph_container.graph_editor
         self.main_widget = self.graph_editor.main_widget
-        self.setScene(pictograph)
-        self.setFrameShape(BasePictographView.Shape.Box)
+        self.reference_beat: Optional["Beat"] = None
+        self.is_start_pos = False
+
+        # Connect to state signals
+        self.state = self.graph_editor.state
+        self._connect_state_signals()
+
+        # Set up event handlers
         self.mouse_event_handler = GE_PictographViewMouseEventHandler(self)
         self.key_event_handler = GraphEditorViewKeyEventHandler(self)
-        self.graph_editor.selection_manager.selection_changed.connect(
-            self.on_selection_changed
-        )
         self.hotkey_graph_adjuster = HotkeyGraphAdjuster(self)
 
-    def on_selection_changed(self):
-        self.scene().update()
+        # Set up view properties
+        self.setScene(pictograph)
+        self.setRenderHint(QPainter.RenderHint.Antialiasing)
+        self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorViewCenter)
+        self.setResizeAnchor(QGraphicsView.ViewportAnchor.AnchorViewCenter)
+
+    def _connect_state_signals(self) -> None:
+        """Connect to centralized state signals."""
+        self.state.selected_arrow_changed.connect(self._handle_arrow_selection_changed)
 
     def set_to_blank_grid(self) -> None:
         self.pictograph = GE_Pictograph(self)
         self.setScene(self.pictograph)
         self.pictograph.elements.view = self
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def _handle_arrow_selection_changed(self, arrow) -> None:
+        self.update()
+
+    def mousePressEvent(self, event) -> None:
+        """Handle mouse press events."""
+        self.mouse_event_handler.handle_mouse_press(event)
+        super().mousePressEvent(event)
+
+    def keyPressEvent(self, event) -> None:
+        """Handle key press events."""
         if not self.key_event_handler.handle_key_press(event):
             super().keyPressEvent(event)
 
