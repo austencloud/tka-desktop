@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 
 from data.constants import *
-from main_window.main_widget.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
+from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
     ArrowRotAngleOverrideKeyGenerator,
 )
 from main_window.main_widget.grid_mode_checker import GridModeChecker

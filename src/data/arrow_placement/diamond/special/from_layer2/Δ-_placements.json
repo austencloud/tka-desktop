@@ -40,6 +40,9 @@
       "dash": [10, -170],
       "dash_rot_angle_override": true,
       "anti": [-70, 65]
+    },
+    "(o, 2.5, 1)": {
+      "anti": [-85, 70]
     }
   }
 }
