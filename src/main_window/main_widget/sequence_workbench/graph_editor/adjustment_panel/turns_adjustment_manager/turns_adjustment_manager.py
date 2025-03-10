@@ -272,6 +272,7 @@ class TurnsAdjustmentManager(QObject):
         return "standard"
 
     def _sync_external_state(self):
+        AppContext.main_widget().json_manager.ori_validation_engine.run(True)
         sequence = AppContext.json_manager().loader_saver.load_current_sequence()
         AppContext.sequence_beat_frame().updater.update_beats_from(sequence)
         AppContext.main_widget().construct_tab.option_picker.updater.update_options()

@@ -106,9 +106,10 @@
     },
     "(o, 1, 0.5)": {
       "static_from_layer2_rot_angle_override": true,
-      "blue": [40, -180],
+      "blue": [-10, -100],
       "swap_beta_s_nonradial_blue_static_s_red_static_s": true,
-      "swap_beta_w_nonradial_blue_static_w_red_static_w": true
+      "swap_beta_w_nonradial_blue_static_w_red_static_w": true,
+      "blue_rot_angle_override": true
     },
     "(o, 1, 1)": {
       "red": [90, 0],

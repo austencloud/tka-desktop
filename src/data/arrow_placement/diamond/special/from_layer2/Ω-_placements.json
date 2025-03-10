@@ -147,6 +147,9 @@
     },
     "(0, 0)": {
       "dash": [0, 0]
+    },
+    "(o, 0, 1)": {
+      "dash_rot_angle_override": true
     }
   }
 }
