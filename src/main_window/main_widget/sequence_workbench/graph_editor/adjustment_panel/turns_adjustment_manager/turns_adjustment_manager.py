@@ -7,7 +7,7 @@ from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.tu
     MotionTypeSetter,
 )
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
-from data.constants import FLOAT, NO_ROT
+from data.constants import CLOCKWISE, DASH, DASH, FLOAT, NO_ROT, STATIC
 from objects.motion.motion import Motion
 
 from .turns_value import TurnsValue
@@ -188,11 +188,58 @@ class TurnsAdjustmentManager(QObject):
                         current_motion.pictograph.state.pictograph_data[
                             f"{self._color}_attributes"
                         ]["prop_rot_dir"] = self._prefloat_prop_rot_dir
+                elif current_motion.state.motion_type in [STATIC, DASH]:
+                    if (
+                        previous_value.raw_value == 0
+                        and self._state.current.raw_value != 0
+                    ):
+                        beat_index = self._get_beat_index()
+                        previous_beat_index = beat_index - 1
+                        if previous_beat_index >= 0:
+                            previous_beat_view = AppContext.sequence_beat_frame().get.beat_view_by_number(
+                                previous_beat_index
+                            )
+                            previous_motion = (
+                                previous_beat_view.beat.elements.motion_set.get(
+                                    self._color
+                                )
+                            )
+                            if previous_motion:
+                                last_prop_rot_dir = self._get_previous_prop_rot_dir(
+                                    previous_beat_index - 1
+                                )
+
+                                current_motion.state.prop_rot_dir = last_prop_rot_dir
+                                json_manager = AppContext.json_manager()
+                                json_manager.updater.prop_rot_dir_updater.update_prop_rot_dir_in_json(
+                                    beat_index,
+                                    self._color,
+                                    current_motion.state.prop_rot_dir,
+                                )
+                                current_motion.pictograph.state.pictograph_data[
+                                    f"{self._color}_attributes"
+                                ]["prop_rot_dir"] = current_motion.state.prop_rot_dir
 
             self._repo.save(self._state.current, self._color)
             self._sync_external_state()
         except Exception as e:
             self._presenter.show_error(str(e))
+
+    def _get_previous_prop_rot_dir(self, previous_beat_index):
+        previous_beat_view = AppContext.sequence_beat_frame().get.beat_view_by_number(
+            previous_beat_index
+        )
+        if not previous_beat_view:
+            return CLOCKWISE
+        previous_motion = previous_beat_view.beat.elements.motion_set.get(self._color)
+
+        if previous_motion:
+            if previous_motion.state.prop_rot_dir:
+                previous_rot_dir = previous_motion.state.prop_rot_dir
+                return previous_rot_dir if previous_rot_dir != NO_ROT else CLOCKWISE
+            else:
+                return self._get_previous_prop_rot_dir(previous_beat_index - 1)
+        return CLOCKWISE
 
     def _on_turns_changed(self, new_value: TurnsValue):
         motion_type = self._determine_motion_type(new_value)
