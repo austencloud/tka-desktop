@@ -8,14 +8,18 @@
   "Z": {
     "(s, 0, 0.5)": {
       "static_to_layer2_rot_angle_override": true,
-      "static": [-100.0, -80.0]
+      "static": [-100, -80]
     },
     "(s, 1, 3)": {
       "static_rot_angle_override": true,
-      "static": [-20.0, 0.0]
+      "static": [-20, 0]
     },
     "(s, 0.5, 1)": {
-      "static": [90.0, 20.0]
+      "static": [90, 20]
+    },
+    "(s, 0, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-100, 0]
     }
   }
 }
