@@ -28,7 +28,7 @@ from .main_widget_state import MainWidgetState
 
 if TYPE_CHECKING:
     from main_window.main_widget.codex.codex import Codex
-    from main_window.main_widget.pictograph_data_loader import PictographDataLoader 
+    from main_window.main_widget.pictograph_data_loader import PictographDataLoader
     from main_window.menu_bar.menu_bar import MenuBarWidget
     from splash_screen.splash_screen import SplashScreen
     from ..main_window import MainWindow
@@ -71,7 +71,7 @@ class MainWidget(QWidget):
     # Handlers
     tab_switcher: "MainWidgetTabSwitcher"
     manager: "MainWidgetManagers"
-    ui_handler: "MainWidgetUI"
+    ui: "MainWidgetUI"
     state_handler: "MainWidgetState"
 
     # Managers and Helpers
@@ -113,7 +113,7 @@ class MainWidget(QWidget):
         self.tab_switcher = MainWidgetTabSwitcher(self)
         self.manager = MainWidgetManagers(self)
         self.state_handler = MainWidgetState(self)
-        self.ui_handler = MainWidgetUI(self)
+        self.ui = MainWidgetUI(self)
         self._already_initialized_once = False
 
     def ensure_user_exists(self):
@@ -130,6 +130,11 @@ class MainWidget(QWidget):
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self.background_widget.resize_background()
+        self.right_stack.resizeEvent(event)
+        self.left_stack.resizeEvent(event)
+        # self.construct_tab.option_picker.setFixedWidth(
+        #     int(self.main_window.width() * 0.5)
+        # )
 
     def showEvent(self, event):
         super().showEvent(event)

@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Callable
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QHBoxLayout
 from PyQt6.QtCore import Qt
+
 from .group_widget import (
     OptionPickerSectionGroupWidget,
 )
@@ -10,7 +11,9 @@ from enums.letter.letter_type import LetterType
 from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
-    from ..widgets.option_picker_widget import OptionPickerWidget
+    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker import (
+        OptionPicker,
+    )
 
 
 class OptionScroll(QScrollArea):
@@ -20,7 +23,7 @@ class OptionScroll(QScrollArea):
     sections: dict["LetterType", "OptionPickerSectionWidget"] = {}
 
     def __init__(
-        self, option_picker: "OptionPickerWidget", mw_size_provider: Callable[[], QSize]
+        self, option_picker: "OptionPicker", mw_size_provider: Callable[[], QSize]
     ):
         super().__init__(option_picker)
         self.option_picker = option_picker
