@@ -93,7 +93,7 @@ class SwapBetaHandler:
         blue_direction = self.dir_calculator.get_dir(
             self.pictograph.elements.blue_motion
         )
-        if self.pictograph.elements.red_motion.prop.prop_type_str != PropType.Hand:
+        if self.pictograph.elements.red_motion.prop.prop_type_str != "Hand":
             self._swap_props(
                 self.pictograph.elements.red_prop,
                 self.pictograph.elements.blue_prop,

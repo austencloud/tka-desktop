@@ -56,7 +56,6 @@ class ImageExportManager:
         options = settings_manager.image_export.get_all_image_export_options()
 
         options["user_name"] = settings_manager.users.get_current_user()
-        options["notes"] = settings_manager.users.get_current_note()
         options["export_date"] = datetime.now().strftime("%m-%d-%Y")
 
         # Generate the image

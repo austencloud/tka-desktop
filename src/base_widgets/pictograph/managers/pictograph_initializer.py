@@ -68,7 +68,7 @@ class PictographInitializer:
         self.set_nonradial_points_visibility(
             self.settings.value("global/show_non_radial_points", False)
         )
-
+        
     def set_nonradial_points_visibility(self, visible: bool) -> None:
         self.pictograph.elements.grid.toggle_non_radial_points(visible)
 

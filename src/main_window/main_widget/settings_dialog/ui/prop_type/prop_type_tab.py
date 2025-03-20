@@ -45,6 +45,9 @@ class PropTypeTab(QWidget):
             "Triquetra": "props/triquetra.svg",
             "Sword": "props/sword.svg",
             "Chicken": "props/chicken.png",
+            "Hand": "props/hand.svg",
+            "Guitar": "props/guitar.svg",
+            "Ukulele": "props/ukulele.svg",
         }
 
         row, col = 0, 0
