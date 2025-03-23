@@ -8,14 +8,13 @@ from styles.metallic_blue_button_theme import MetallicBlueButtonTheme
 class StyledButton(QPushButton):
     """A base QPushButton with shared metallic blue styling and state handling."""
 
-    clicked_signal = pyqtSignal(str)  # Custom signal for button clicks
+    clicked_signal = pyqtSignal(str)
 
     def __init__(self, label: str, icon_path: str = None):
         super().__init__(label)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self._state = ButtonState.NORMAL
         self._border_radius = 5
-        # If you pass an icon path, I'm gonna use it!
         if icon_path:
             self.setIcon(QIcon(icon_path))
         self.update_appearance()
@@ -62,7 +61,7 @@ class StyledButton(QPushButton):
 
     def set_selected(self, selected: bool) -> None:
         """Update selection state and restyle the button."""
-        self.state = ButtonState.SELECTED if selected else ButtonState.NORMAL
+        self.state = ButtonState.ACTIVE if selected else ButtonState.NORMAL
 
     def setEnabled(self, enabled: bool) -> None:
         """Enable or disable the button and update its style dynamically."""
