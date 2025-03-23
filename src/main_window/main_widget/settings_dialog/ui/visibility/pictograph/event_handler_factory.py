@@ -52,7 +52,7 @@ class EventHandlerFactory:
                     "arrow",
                     "prop",
                 ]:
-                    visibility = self.manager.visibility_settings.get_glyph_visibility(
+                    visibility = self.manager.visibility_settings.get_real_glyph_visibility(
                         item.name
                     )
                     self.manager.visibility_controller.fade_and_toggle_visibility(

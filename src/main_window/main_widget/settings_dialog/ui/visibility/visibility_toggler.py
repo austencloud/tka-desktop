@@ -101,6 +101,10 @@ class VisibilityToggler:
                         visible=is_visible,
                         is_visibility_pictograph=is_visibility_pictograph,
                     )
-
+                elif glyph_type == "TKA":
+                    glyph.update_tka_glyph(visible=is_visible)
+                else:
+                    glyph.setVisible(is_visible)
+                    
         if pictograph.state.letter in ["α", "β", "Γ"]:
             pictograph.elements.start_to_end_pos_glyph.setVisible(False)
