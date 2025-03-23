@@ -33,8 +33,8 @@ class PropRotAngleManager:
             COUNTER: {NORTH: 180, SOUTH: 0, WEST: 90, EAST: 270},
         }
 
-        key = self.prop.ori
-        rotation_angle = angle_map.get(key, {}).get(self.prop.loc, 0)
+        key = self.prop.state.ori
+        rotation_angle = angle_map.get(key, {}).get(self.prop.state.loc, 0)
         return rotation_angle if self.prop.prop_type_str != "Hand" else 0
 
     def get_box_rotation_angle(self) -> int:
@@ -44,14 +44,14 @@ class PropRotAngleManager:
             CLOCK: {NORTHEAST: 45, NORTHWEST: 315, SOUTHWEST: 225, SOUTHEAST: 135},
             COUNTER: {NORTHEAST: 225, NORTHWEST: 135, SOUTHWEST: 45, SOUTHEAST: 315},
         }
-        key = self.prop.ori
-        rotation_angle = angle_map.get(key, {}).get(self.prop.loc, 0)
+        key = self.prop.state.ori
+        rotation_angle = angle_map.get(key, {}).get(self.prop.state.loc, 0)
         return rotation_angle if self.prop.prop_type_str != "Hand" else 0
 
     def update_prop_rot_angle(self) -> None:
-        if self.prop.loc in ["n", "e", "s", "w"]:
+        if self.prop.state.loc in ["n", "e", "s", "w"]:
             grid_mode = DIAMOND
-        elif self.prop.loc in ["ne", "nw", "se", "sw"]:
+        elif self.prop.state.loc in ["ne", "nw", "se", "sw"]:
             grid_mode = BOX
         if grid_mode == DIAMOND:
             prop_rotation_angle = self.get_diamond_rotation_angle()

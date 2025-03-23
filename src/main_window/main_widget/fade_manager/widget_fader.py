@@ -188,16 +188,14 @@ class WidgetFader:
     ) -> list[Union[Glyph, NonRadialPointsGroup]]:
         if element.name == "TKA":
             items = element.get_all_items()
-        elif element.name == "VTG":
-            items = [element]
-        elif element.name == "Elemental":
-            items = [element]
         elif element.name == "Positions":
             items = element.get_all_items()
         elif element.name == "Reversals":
             items = list(element.reversal_items.values())
         elif element.name == "non_radial_points":
             items = element.child_points
+        else:
+            items = [element]
         return items
 
     def fade_widgets_and_element(

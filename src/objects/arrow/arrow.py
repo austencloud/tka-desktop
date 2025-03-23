@@ -14,7 +14,8 @@ if TYPE_CHECKING:
 
 class Arrow(GraphicalObject):
     motion: "Motion"
-
+    name = "arrow"
+    
     def __init__(self, pictograph, arrow_data) -> None:
         super().__init__(pictograph)
         self.arrow_data = arrow_data

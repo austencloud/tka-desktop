@@ -47,6 +47,8 @@ class VisibilityToggler:
             if glyph:
                 if glyph_type == "Reversals":
                     glyph.update_reversal_symbols(visible=is_visible)
+                elif glyph_type == "TKA":
+                    glyph.update_tka_glyph(visible=is_visible)
                 else:
                     glyph.setVisible(is_visible)
 
@@ -65,3 +67,20 @@ class VisibilityToggler:
             pictograph.elements.grid.toggle_non_radial_points(state)
 
         self.settings.set_non_radial_visibility(state)
+
+    def toggle_prop_visibility(self, color: str, state: bool):
+        """Toggle visibility for props and arrows of a specific color."""
+        self.settings.set_motion_visibility(color, state)
+
+        pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
+        # Remove the visibility pictograph itself
+        if self.visibility_tab.pictograph in pictographs:
+            pictographs.pop(pictographs.index(self.visibility_tab.pictograph))
+
+        for pictograph in pictographs:
+            prop = pictograph.elements.props.get(color)
+            arrow = pictograph.elements.arrows.get(color)
+            if prop:
+                prop.setVisible(state)
+            if arrow:
+                arrow.setVisible(state)

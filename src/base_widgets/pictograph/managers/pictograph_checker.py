@@ -65,9 +65,9 @@ class PictographChecker:
             self.pictograph.elements.props[RED],
             self.pictograph.elements.props[BLUE],
         )
-        if red_prop.ori == IN and blue_prop.ori == OUT:
+        if red_prop.state.ori == IN and blue_prop.state.ori == OUT:
             return True
-        elif red_prop.ori == OUT and blue_prop.ori == IN:
+        elif red_prop.state.ori == OUT and blue_prop.state.ori == IN:
             return True
         return False
 
@@ -76,8 +76,8 @@ class PictographChecker:
             self.pictograph.elements.props[RED],
             self.pictograph.elements.props[BLUE],
         )
-        return (red_prop.ori in [CLOCK] and blue_prop.ori in [COUNTER]) or (
-            red_prop.ori in [COUNTER] and blue_prop.ori in [CLOCK]
+        return (red_prop.state.ori in [CLOCK] and blue_prop.state.ori in [COUNTER]) or (
+            red_prop.state.ori in [COUNTER] and blue_prop.state.ori in [CLOCK]
         )
 
     def ends_with_radial_ori(self) -> bool:

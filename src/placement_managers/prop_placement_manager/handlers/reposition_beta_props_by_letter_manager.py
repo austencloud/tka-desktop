@@ -32,7 +32,7 @@ class RepositionBetaByLetterHandler:
             if self.pictograph.elements.red_motion.state.motion_type == ANTI
             else self.pictograph.elements.blue_prop
         )
-        pro_motion = self.pictograph.elements.motion_set[pro_prop.color]
+        pro_motion = self.pictograph.elements.motion_set[pro_prop.state.color]
         pro_direction = self.dir_calculator.get_dir(pro_motion)
         anti_direction = self.dir_calculator.get_opposite_dir(pro_direction)
         self.move_prop(pro_prop, pro_direction)
@@ -66,7 +66,7 @@ class RepositionBetaByLetterHandler:
                 next(
                     prop
                     for prop in self.pictograph.elements.props.values()
-                    if prop.color == shift.state.color
+                    if prop.state.color == shift.state.color
                 ),
                 direction,
             )
@@ -74,7 +74,7 @@ class RepositionBetaByLetterHandler:
                 next(
                     prop
                     for prop in self.pictograph.elements.props.values()
-                    if prop.color == static_motion.state.color
+                    if prop.state.color == static_motion.state.color
                 ),
                 self.dir_calculator.get_opposite_dir(direction),
             )
@@ -97,7 +97,7 @@ class RepositionBetaByLetterHandler:
                 next(
                     prop
                     for prop in self.pictograph.elements.props.values()
-                    if prop.color == shift.state.color
+                    if prop.state.color == shift.state.color
                 ),
                 direction,
             )
@@ -105,7 +105,7 @@ class RepositionBetaByLetterHandler:
                 next(
                     prop
                     for prop in self.pictograph.elements.props.values()
-                    if prop.color == dash.state.color
+                    if prop.state.color == dash.state.color
                 ),
                 self.dir_calculator.get_opposite_dir(direction),
             )

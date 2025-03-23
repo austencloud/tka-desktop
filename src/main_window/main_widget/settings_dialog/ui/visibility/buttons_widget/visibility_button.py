@@ -26,23 +26,45 @@ class VisibilityButton(StyledButton):
         self.repaint()
 
     def update_is_toggled(self, name: str):
-        is_toggled = (
-            self.visibility_buttons_widget.visibility_tab.settings.get_glyph_visibility(
+        if name in ["Red Motion", "Blue Motion"]:
+            color = name.split(" ")[0].lower()
+            is_toggled = self.visibility_buttons_widget.visibility_tab.settings.get_motion_visibility(
+                color
+            )
+        else:
+            is_toggled = self.visibility_buttons_widget.visibility_tab.settings.get_glyph_visibility(
                 name
             )
-        )
         self.is_toggled = is_toggled
 
     def _toggle_state(self):
         self.is_toggled = not self.is_toggled
         view = self.visibility_buttons_widget.visibility_tab.pictograph_view
 
-        if self.name in self.visibility_buttons_widget.glyph_names:
+        if self.name in ["Red Motion", "Blue Motion"]:
+            color = self.name.split(" ")[0].lower()
+            motion = view.pictograph.managers.get.motion_by_color(color)
+            self.visibility_buttons_widget.visibility_tab.toggler.toggle_prop_visibility(
+                color, self.is_toggled
+            )
+            view.interaction_manager.fade_and_toggle_visibility(
+                motion.prop, self.is_toggled
+            )
+            view.interaction_manager.fade_and_toggle_visibility(
+                motion.arrow, self.is_toggled
+            )
+
+        elif self.name in self.visibility_buttons_widget.glyph_names:
             element = view.pictograph.managers.get.glyph(self.name)
+            view.interaction_manager.fade_and_toggle_visibility(
+                element, self.is_toggled
+            )
         else:
             element = view.pictograph.managers.get.non_radial_points()
+            view.interaction_manager.fade_and_toggle_visibility(
+                element, self.is_toggled
+            )
 
-        view.interaction_manager.fade_and_toggle_visibility(element, self.is_toggled)
         self.state = ButtonState.ACTIVE if self.is_toggled else ButtonState.NORMAL
         self.update_appearance()
 

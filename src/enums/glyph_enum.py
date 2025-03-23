@@ -17,6 +17,8 @@ if TYPE_CHECKING:
     from objects.glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
 
     from base_widgets.pictograph.pictograph import Pictograph
+    from objects.arrow.arrow import Arrow
+    from objects.prop.prop import Prop
 
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 
@@ -29,4 +31,6 @@ Glyph = Union[
     "StartToEndPosGlyph",
     "TKA_Glyph",
     "VTG_Glyph",
+    "Prop"  ,
+    "Arrow",
 ]

@@ -8,7 +8,6 @@ if TYPE_CHECKING:
 
 
 class GraphicalObject(QGraphicsSvgItem):
-    color: str
     renderer: QSvgRenderer
 
     def __init__(self, pictograph: "Pictograph") -> None:

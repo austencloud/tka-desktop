@@ -44,9 +44,9 @@ class QuadrantIndexHandler:
         return 0
 
     def _get_grid_mode(self, arrow: "Arrow") -> Literal[BOX] | Literal[DIAMOND]:
-        if arrow.motion.prop.loc in ["ne", "nw", "se", "sw"]:
+        if arrow.motion.prop.state.loc in ["ne", "nw", "se", "sw"]:
             grid_mode = BOX
-        elif arrow.motion.prop.loc in ["n", "s", "e", "w"]:
+        elif arrow.motion.prop.state.loc in ["n", "s", "e", "w"]:
             grid_mode = DIAMOND
         return grid_mode
 

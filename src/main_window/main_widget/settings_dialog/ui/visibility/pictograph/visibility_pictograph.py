@@ -44,21 +44,37 @@ class VisibilityPictograph(Pictograph):
         self.settings = self.main_widget.settings_manager.visibility
         self.managers.updater.update_pictograph(pictograph_data)
         self.glyphs = self.managers.get.glyphs()
+        self.motion_set = self.managers.get.motions()
         for glyph in self.glyphs:
             glyph.setVisible(True)
         self.elements.grid.toggle_non_radial_points(True)
+        for motion in self.motion_set.values():
+            motion.prop.setVisible(True)
+            motion.arrow.setVisible(True)
 
-    def update_opacity(self, glyph_name: str, state: bool):
-        """Animate the opacity of the corresponding glyph."""
-
+    def update_opacity(self, element_name: str, state: bool):
+        """Animate the opacity of the corresponding element."""
         target_opacity = 1.0 if state else 0.1
-        for glyph in self.glyphs:
-            if glyph.name == glyph_name:
-                self.main_widget.fade_manager.widget_fader.fade_visibility_items_to_opacity(
-                    glyph, target_opacity
-                )
 
-        if glyph_name == "non_radial_points":
+        # Handle props by color
+        if element_name in [RED, BLUE]:
+            prop = self.elements.props.get(element_name)
+            arrow = self.elements.arrows.get(element_name)
+            self.main_widget.fade_manager.widget_fader.fade_visibility_items_to_opacity(
+                prop, target_opacity
+            )
+            self.main_widget.fade_manager.widget_fader.fade_visibility_items_to_opacity(
+                arrow, target_opacity
+            )
+        # Handle existing glyph case
+        elif element_name in ["TKA", "Reversals", "VTG", "Elemental", "Positions"]:
+            for glyph in self.glyphs:
+                if glyph.name == element_name:
+                    self.main_widget.fade_manager.widget_fader.fade_visibility_items_to_opacity(
+                        glyph, target_opacity
+                    )
+        # Handle non-radial points
+        elif element_name == "non_radial_points":
             non_radial_points = self.elements.grid.items.get(
                 f"{self.elements.grid.grid_mode}_nonradial"
             )

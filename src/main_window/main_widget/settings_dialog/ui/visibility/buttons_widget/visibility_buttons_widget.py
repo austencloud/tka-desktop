@@ -11,7 +11,15 @@ class VisibilityButtonsWidget(QWidget):
 
     glyph_buttons: dict[str, VisibilityButton] = {}
     non_radial_button: VisibilityButton = None
-    glyph_names = ["TKA", "Reversals", "VTG", "Elemental", "Positions"]
+    glyph_names = [
+        "TKA",
+        "Reversals",
+        "VTG",
+        "Elemental",
+        "Positions",
+        "Red Motion",
+        "Blue Motion",
+    ]
     grid_name = "Non-radial_points"
 
     def __init__(self, visibility_tab: "VisibilityTab"):
@@ -48,7 +56,11 @@ class VisibilityButtonsWidget(QWidget):
         settings = self.visibility_tab.main_widget.settings_manager.visibility
 
         for name, button in self.glyph_buttons.items():
-            is_active = settings.get_glyph_visibility(name)
+            if name in ["Red Motion", "Blue Motion"]:
+                color = name.split(" ")[0].lower()
+                is_active = settings.get_motion_visibility(color)
+            else:
+                is_active = settings.get_glyph_visibility(name)
             button.set_active(is_active)
 
         if self.non_radial_button:
@@ -58,7 +70,13 @@ class VisibilityButtonsWidget(QWidget):
     def update_visibility_buttons_from_settings(self):
         """Update all visibility buttons based on saved settings."""
         for button in self.glyph_buttons.values():
-            button.update_is_toggled(button.name)
+            if button.name in ["Red Motion", "Blue Motion"]:
+                color = button.name.split(" ")[0].lower()
+                button.is_toggled = self.visibility_tab.main_widget.settings_manager.visibility.get_motion_visibility(
+                    color
+                )
+            else:
+                button.update_is_toggled(button.name)
 
         if self.non_radial_button:
             self.non_radial_button.update_is_toggled(self.grid_name)

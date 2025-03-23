@@ -165,7 +165,7 @@ class SwapBetaHandler:
             )
 
             turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
-            prop_loc = self.pictograph.elements.blue_prop.loc
+            prop_loc = self.pictograph.elements.blue_prop.state.loc
             if self.pictograph.managers.check.ends_with_radial_ori():
                 beta_ori = "radial"
             elif self.pictograph.managers.check.ends_with_nonradial_ori():

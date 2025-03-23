@@ -119,7 +119,40 @@ class ImageCreator:
         return options
 
     def _process_sequence(self, sequence: list[dict]) -> list[BeatView]:
-        return self.beat_factory.process_sequence_to_beats(sequence)
+        filled_beats = self.beat_factory.process_sequence_to_beats(sequence)
+        # Apply visibility settings to beats
+        self._apply_visibility_settings(filled_beats)
+        return filled_beats
+
+    def _apply_visibility_settings(self, beats: list[BeatView]) -> None:
+        """Apply visibility settings to all beats before exporting."""
+        visibility_settings = self.export_manager.settings_manager.visibility
+
+        # Get visibility settings for red and blue props
+        red_visible = visibility_settings.get_motion_visibility("red")
+        blue_visible = visibility_settings.get_motion_visibility("blue")
+
+        # Apply visibility settings to each beat
+        for beat_view in beats:
+            # Apply to props
+            if hasattr(beat_view.beat.elements, "props"):
+                red_prop = beat_view.beat.elements.props.get("red")
+                blue_prop = beat_view.beat.elements.props.get("blue")
+
+                if red_prop:
+                    red_prop.setVisible(red_visible)
+                if blue_prop:
+                    blue_prop.setVisible(blue_visible)
+
+            # Apply to arrows
+            if hasattr(beat_view.beat.elements, "arrows"):
+                red_arrow = beat_view.beat.elements.arrows.get("red")
+                blue_arrow = beat_view.beat.elements.arrows.get("blue")
+
+                if red_arrow:
+                    red_arrow.setVisible(red_visible)
+                if blue_arrow:
+                    blue_arrow.setVisible(blue_visible)
 
     def _determine_additional_heights(
         self, options: dict, num_filled_beats: int

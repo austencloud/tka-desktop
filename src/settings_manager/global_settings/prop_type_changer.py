@@ -31,8 +31,8 @@ class PropTypeChanger:
             old_prop.prop_data = {
                 "color": color,
                 "prop_type": new_prop.prop_type_str,
-                "loc": old_prop.loc,
-                "ori": old_prop.ori,
+                "loc": old_prop.state.loc,
+                "ori": old_prop.state.ori,
             }
             old_prop_data = old_prop.prop_data
             pictograph.elements.props[color] = new_prop

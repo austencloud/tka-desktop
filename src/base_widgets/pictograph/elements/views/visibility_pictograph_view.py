@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from base_widgets.pictograph.elements.views.base_pictograph_view import (
     BasePictographView,
 )
+from data.constants import BLUE, RED
 from main_window.main_widget.settings_dialog.ui.visibility.pictograph.visibility_pictograph_interaction_manager import (
     VisibilityPictographInteractionManager,
 )
@@ -42,4 +43,9 @@ class VisibilityPictographView(BasePictographView):
         self.pictograph.update_opacity(
             "non_radial_points", self.pictograph.settings.get_non_radial_visibility()
         )
+        for color in [RED, BLUE]:
+            self.pictograph.update_opacity(
+                color, 
+                self.pictograph.settings.get_motion_visibility(color),
+            )
         return super().showEvent(event)
