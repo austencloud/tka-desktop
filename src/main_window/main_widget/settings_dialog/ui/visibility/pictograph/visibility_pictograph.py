@@ -56,7 +56,7 @@ class VisibilityPictograph(Pictograph):
         """Animate the opacity of the corresponding element."""
         target_opacity = 1.0 if state else 0.1
 
-        # Handle props by color
+        # Handle props and arrows by color
         if element_name in [RED, BLUE]:
             prop = self.elements.props.get(element_name)
             arrow = self.elements.arrows.get(element_name)
@@ -66,6 +66,23 @@ class VisibilityPictograph(Pictograph):
             self.main_widget.fade_manager.widget_fader.fade_visibility_items_to_opacity(
                 arrow, target_opacity
             )
+
+            # Also update the reversal if this is a prop color
+            # This ensures the reversal opacity is updated when motion visibility changes
+            if self.elements.reversal_glyph:
+                reversal_item = self.elements.reversal_glyph.reversal_items.get(
+                    element_name
+                )
+                if reversal_item:
+                    self.main_widget.fade_manager.widget_fader.fade_visibility_items_to_opacity(
+                        reversal_item, target_opacity
+                    )
+
+                # Always update the whole reversal glyph positioning
+                self.elements.reversal_glyph.update_reversal_symbols(
+                    is_visibility_pictograph=True
+                )
+
         # Handle existing glyph case
         elif element_name in ["TKA", "Reversals", "VTG", "Elemental", "Positions"]:
             for glyph in self.glyphs:

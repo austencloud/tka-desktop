@@ -25,16 +25,13 @@ class PropTypeTab(QWidget):
         card = CardFrame(self)
         main_layout = QVBoxLayout(card)
 
-        # Title
         self.header = QLabel("Prop Type:")
         self.header.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(self.header)
 
-        # Grid layout for prop "cells"
         grid_layout = QGridLayout()
         main_layout.addLayout(grid_layout)
 
-        # Define props and corresponding SVG icons
         props = {
             "Staff": "props/staff.svg",
             "Club": "props/club.svg",
@@ -52,7 +49,7 @@ class PropTypeTab(QWidget):
 
         row, col = 0, 0
         for prop, icon_path in props.items():
-            # Create the icon‐only button
+
             button = PropButton(
                 prop,
                 get_image_path(icon_path),
@@ -61,13 +58,9 @@ class PropTypeTab(QWidget):
             )
             self.buttons[prop] = button
 
-            # Create a label for the prop name
             label = QLabel(prop, self)
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            # Optionally style the label text color/size:
-            # label.setStyleSheet("color: #FFFFFF; margin-top: 5px;")
 
-            # Put the button + label in a vertical layout
             cell_widget = QWidget(self)
             v_layout = QVBoxLayout(cell_widget)
             v_layout.setContentsMargins(0, 0, 0, 0)
@@ -75,11 +68,10 @@ class PropTypeTab(QWidget):
             v_layout.addWidget(button, alignment=Qt.AlignmentFlag.AlignCenter)
             v_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
 
-            # Add that widget to the grid
             grid_layout.addWidget(cell_widget, row, col)
 
             col += 1
-            if col >= 3:  # 3 columns per row
+            if col >= 3:
                 col = 0
                 row += 1
 

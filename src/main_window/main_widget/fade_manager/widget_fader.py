@@ -184,14 +184,18 @@ class WidgetFader:
         anim_group.start()
 
     def _get_corresponding_items(
-        self, element: Union[Glyph, NonRadialPointsGroup]
-    ) -> list[Union[Glyph, NonRadialPointsGroup]]:
+        self, element: Union[Glyph, NonRadialPointsGroup, QGraphicsItem]
+    ) -> list[Union[Glyph, NonRadialPointsGroup, QGraphicsItem]]:
+        if not hasattr(element, "name"):
+            return [element]
+
+        # Original logic for objects with a name attribute
         if element.name == "TKA":
             items = element.get_all_items()
         elif element.name == "Positions":
             items = element.get_all_items()
         elif element.name == "Reversals":
-            items = list(element.reversal_items.values())
+            items = element.reversal_items.values()
         elif element.name == "non_radial_points":
             items = element.child_points
         else:

@@ -70,7 +70,6 @@ class GlobalSettings:
         self, prop_type: PropType, pictographs: list["Pictograph"]
     ) -> None:
         self.settings.setValue("global/prop_type", prop_type.name)
-
         self.prop_type_changer.apply_prop_type(pictographs)
 
     def set_background_type(self, background_type: str) -> None:

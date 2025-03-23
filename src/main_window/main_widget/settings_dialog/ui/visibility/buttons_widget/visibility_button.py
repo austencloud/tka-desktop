@@ -20,53 +20,64 @@ class VisibilityButton(StyledButton):
         self.is_toggled = False
 
         self.clicked.connect(self._toggle_state)
+        self._initialize_state()
 
     def _initialize_state(self):
         self.update_is_toggled(self.name)
         self.repaint()
 
     def update_is_toggled(self, name: str):
+        settings = self.visibility_buttons_widget.visibility_tab.settings
+        
         if name in ["Red Motion", "Blue Motion"]:
             color = name.split(" ")[0].lower()
-            is_toggled = self.visibility_buttons_widget.visibility_tab.settings.get_motion_visibility(
-                color
-            )
+            is_toggled = settings.get_motion_visibility(color)
+        elif name in self.visibility_buttons_widget.glyph_names:
+            # Use real state for glyph buttons to show user's intent
+            is_toggled = settings.get_real_glyph_visibility(name)
         else:
-            is_toggled = self.visibility_buttons_widget.visibility_tab.settings.get_glyph_visibility(
-                name
-            )
+            # Non-radial points
+            is_toggled = settings.get_non_radial_visibility()
+        
         self.is_toggled = is_toggled
+        self.state = ButtonState.ACTIVE if is_toggled else ButtonState.NORMAL
+        self.update_appearance()
 
     def _toggle_state(self):
         self.is_toggled = not self.is_toggled
         view = self.visibility_buttons_widget.visibility_tab.pictograph_view
+        settings = self.visibility_buttons_widget.visibility_tab.settings
+        toggler = self.visibility_buttons_widget.visibility_tab.toggler
 
         if self.name in ["Red Motion", "Blue Motion"]:
             color = self.name.split(" ")[0].lower()
-            motion = view.pictograph.managers.get.motion_by_color(color)
-            self.visibility_buttons_widget.visibility_tab.toggler.toggle_prop_visibility(
-                color, self.is_toggled
-            )
-            view.interaction_manager.fade_and_toggle_visibility(
-                motion.prop, self.is_toggled
-            )
-            view.interaction_manager.fade_and_toggle_visibility(
-                motion.arrow, self.is_toggled
-            )
-
+            # Toggle motion visibility and update dependent elements
+            toggler.toggle_prop_visibility(color, self.is_toggled)
+            # No need to call fade_and_toggle_visibility here as it's done in toggle_prop_visibility
+        
+        elif self.name in ["TKA", "VTG", "Elemental"]:
+            # For elements that depend on motion visibility:
+            # 1. Update the real state (user's intent)
+            settings.set_real_glyph_visibility(self.name, self.is_toggled)
+            
+            # 2. Calculate the actual visible state based on motion visibility
+            actual_visibility = self.is_toggled and settings.are_all_motions_visible()
+            
+            # 3. Update the actual visibility
+            toggler.toggle_glyph_visibility(self.name, self.is_toggled)
+            
+            # 4. Update button appearance based on actual visibility
+            self.set_active(actual_visibility)
+        
         elif self.name in self.visibility_buttons_widget.glyph_names:
-            element = view.pictograph.managers.get.glyph(self.name)
-            view.interaction_manager.fade_and_toggle_visibility(
-                element, self.is_toggled
-            )
+            # For non-dependent glyphs
+            toggler.toggle_glyph_visibility(self.name, self.is_toggled)
+            self.set_active(self.is_toggled)
+        
         else:
-            element = view.pictograph.managers.get.non_radial_points()
-            view.interaction_manager.fade_and_toggle_visibility(
-                element, self.is_toggled
-            )
-
-        self.state = ButtonState.ACTIVE if self.is_toggled else ButtonState.NORMAL
-        self.update_appearance()
+            # For non-radial points
+            toggler.toggle_non_radial_points(self.is_toggled)
+            self.set_active(self.is_toggled)
 
     def set_active(self, is_active: bool):
         self.is_toggled = is_active

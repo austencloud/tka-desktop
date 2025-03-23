@@ -20,10 +20,11 @@ class PropUpdater:
 
         from base_widgets.base_beat_frame import AppContext
 
-        self.prop.setVisible(
-            (
-                AppContext()
-                .settings_manager()
-                .visibility.get_motion_visibility(self.prop.state.color)
+        if not hasattr(self.prop.pictograph, "example_data"):
+            self.prop.setVisible(
+                (
+                    AppContext()
+                    .settings_manager()
+                    .visibility.get_motion_visibility(self.prop.state.color)
+                )
             )
-        )
