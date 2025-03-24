@@ -67,3 +67,5 @@ class VisibilityController:
         else:
             # For other glyphs
             self.manager.toggler.toggle_glyph_visibility(item.name, new_visibility)
+
+    

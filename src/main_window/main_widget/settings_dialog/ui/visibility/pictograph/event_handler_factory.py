@@ -52,8 +52,10 @@ class EventHandlerFactory:
                     "arrow",
                     "prop",
                 ]:
-                    visibility = self.manager.visibility_settings.get_real_glyph_visibility(
-                        item.name
+                    visibility = (
+                        self.manager.visibility_settings.get_real_glyph_visibility(
+                            item.name
+                        )
                     )
                     self.manager.visibility_controller.fade_and_toggle_visibility(
                         item, visibility
@@ -165,24 +167,25 @@ class EventHandlerFactory:
             )
             new_visibility = not current_visibility
 
-            # Update settings
-            self.manager.visibility_settings.set_motion_visibility(
+            # Update state manager
+            self.manager.view.tab.state_manager.set_motion_visibility(
                 color, new_visibility
             )
+
+            # Update local UI
             self.manager.view.tab.buttons_widget.update_button_flags()
 
-            # Update prop and arrow UI
+            # Update all pictographs via toggler
+            self.manager.toggler.toggle_prop_visibility(color, new_visibility)
+
+            # Ensure local pictograph updates properly
             prop = self.manager.pictograph.elements.props.get(color)
             arrow = self.manager.pictograph.elements.arrows.get(color)
 
             if prop:
-                self.manager.visibility_controller.fade_and_toggle_visibility(
-                    prop, new_visibility
-                )
+                prop.setOpacity(1.0 if new_visibility else 0.1)
             if arrow:
-                self.manager.visibility_controller.fade_and_toggle_visibility(
-                    arrow, new_visibility
-                )
+                arrow.setOpacity(1.0 if new_visibility else 0.1)
 
             # Update reversal UI
             reversal_glyph = self.manager.pictograph.elements.reversal_glyph
@@ -190,9 +193,6 @@ class EventHandlerFactory:
                 reversal_item = reversal_glyph.reversal_items[color]
                 reversal_item.setOpacity(1.0 if new_visibility else 0.1)
                 reversal_glyph.update_reversal_symbols(is_visibility_pictograph=True)
-
-            # Update dependent glyphs
-            self.manager.toggler.update_dependent_glyphs_visibility()
 
         return prop_click_event
 

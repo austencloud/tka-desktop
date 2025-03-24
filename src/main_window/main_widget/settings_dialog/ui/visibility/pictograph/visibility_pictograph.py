@@ -52,6 +52,62 @@ class VisibilityPictograph(Pictograph):
             motion.prop.setVisible(True)
             motion.arrow.setVisible(True)
 
+        # Register for state updates
+        tab.state_manager.register_observer(
+            self._update_from_state_manager, ["glyph", "motion", "non_radial"]
+        )
+
+    def _update_from_state_manager(self):
+        """Update pictograph display based on the current state."""
+        state_manager = self.tab.state_manager
+
+        # Update glyphs
+        for glyph_type in ["TKA", "VTG", "Elemental", "Positions", "Reversals"]:
+            visibility = state_manager.get_effective_visibility(glyph_type)
+            target_opacity = 1.0 if visibility else 0.1
+
+            for glyph in self.glyphs:
+                if glyph.name == glyph_type:
+                    glyph.setVisible(
+                        True
+                    )  # Always visible in the visibility pictograph
+                    glyph.setOpacity(target_opacity)
+
+        # Update motions
+        for color in ["red", "blue"]:
+            visibility = state_manager.get_motion_visibility(color)
+            target_opacity = 1.0 if visibility else 0.1
+
+            prop = self.elements.props.get(color)
+            arrow = self.elements.arrows.get(color)
+
+            if prop:
+                prop.setVisible(True)
+                prop.setOpacity(target_opacity)
+            if arrow:
+                arrow.setVisible(True)
+                arrow.setOpacity(target_opacity)
+
+            # Update reversal items for this color
+            if (
+                self.elements.reversal_glyph
+                and color in self.elements.reversal_glyph.reversal_items
+            ):
+                reversal_item = self.elements.reversal_glyph.reversal_items[color]
+                reversal_item.setVisible(True)
+                reversal_item.setOpacity(target_opacity)
+
+        # Update non-radial points
+        non_radial_visibility = state_manager.get_non_radial_visibility()
+        target_opacity = 1.0 if non_radial_visibility else 0.1
+
+        non_radial_points = self.elements.grid.items.get(
+            f"{self.elements.grid.grid_mode}_nonradial"
+        )
+        if non_radial_points:
+            non_radial_points.setVisible(True)
+            non_radial_points.setOpacity(target_opacity)
+
     def update_opacity(self, element_name: str, state: bool):
         """Animate the opacity of the corresponding element."""
         target_opacity = 1.0 if state else 0.1

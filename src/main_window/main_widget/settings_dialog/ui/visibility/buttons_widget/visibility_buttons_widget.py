@@ -29,6 +29,11 @@ class VisibilityButtonsWidget(QWidget):
         self._setup_layout()
         self.update_button_flags()
 
+        # Register for state updates
+        self.visibility_tab.state_manager.register_observer(
+            self.update_button_flags, ["buttons", "motion", "glyph"]
+        )
+
     def _create_buttons(self):
         """Creates all buttons for toggling visibility."""
         for name in self.glyph_names:
