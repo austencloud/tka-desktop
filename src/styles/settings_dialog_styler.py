@@ -49,7 +49,6 @@ class SettingsDialogStyler(BaseDialogStyler):
                 padding-left: {max(10, int(dialog.width() * 0.02))}px;
                 border-radius: 6px;
                 margin-bottom: 5px;
-                transition: background-color 0.2s ease, color 0.2s ease;
             }}
             
             QListWidget::item:hover {{

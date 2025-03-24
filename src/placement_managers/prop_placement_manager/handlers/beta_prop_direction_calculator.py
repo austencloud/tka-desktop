@@ -76,7 +76,7 @@ class BetaPropDirectionCalculator:
             (NORTHWEST, RED): DOWNRIGHT,
             (NORTHWEST, BLUE): UPLEFT,
         }
-        return direction_map.get((motion.state.end_loc, motion.prop.color))
+        return direction_map.get((motion.state.end_loc, motion.prop.state.color))
 
     def get_direction_for_radial_I(self, motion: Motion) -> str:
         direction_map = {
@@ -97,7 +97,7 @@ class BetaPropDirectionCalculator:
             (NORTHWEST, RED): UPRIGHT,
             (NORTHWEST, BLUE): DOWNLEFT,
         }
-        return direction_map.get((motion.state.end_loc, motion.prop.color))
+        return direction_map.get((motion.state.end_loc, motion.prop.state.color))
 
     def get_dir_for_radial(self, motion: Motion) -> str:
         direction_map = {
@@ -186,17 +186,25 @@ class BetaPropDirectionCalculator:
                 (NORTHWEST, BLUE): UPLEFT,
             },
         }
-        grid_mode = DIAMOND if prop.loc in [NORTH, SOUTH, EAST, WEST] else BOX
+        grid_mode = DIAMOND if prop.state.loc in [NORTH, SOUTH, EAST, WEST] else BOX
         if grid_mode == DIAMOND:
             if prop.check.is_radial():
-                return diamond_layer_reposition_map[RADIAL][(prop.loc, prop.color)]
+                return diamond_layer_reposition_map[RADIAL][
+                    (prop.state.loc, prop.state.color)
+                ]
             elif prop.check.is_nonradial():
-                return diamond_layer_reposition_map[NONRADIAL][(prop.loc, prop.color)]
+                return diamond_layer_reposition_map[NONRADIAL][
+                    (prop.state.loc, prop.state.color)
+                ]
         elif grid_mode == BOX:
             if prop.check.is_radial():
-                return box_layer_reposition_map[RADIAL][(prop.loc, prop.color)]
+                return box_layer_reposition_map[RADIAL][
+                    (prop.state.loc, prop.state.color)
+                ]
             elif prop.check.is_nonradial():
-                return box_layer_reposition_map[NONRADIAL][(prop.loc, prop.color)]
+                return box_layer_reposition_map[NONRADIAL][
+                    (prop.state.loc, prop.state.color)
+                ]
 
     def get_opposite_dir(self, movement: str) -> str:
         opposite_directions = {

@@ -9,7 +9,7 @@ from .dot_handler.dot_handler import DotHandler
 from .turns_number_group.turns_number import TurnsNumber
 from .tka_letter import TKALetter
 from .dash import Dash
-from .turns_number_group.turns_number_group import TurnsNumberGroup
+from .turns_number_group.turns_column import TurnsColumn
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
@@ -38,25 +38,24 @@ class TKA_Glyph(QGraphicsItemGroup):
         self.letter_item = TKALetter(self)
         self.dash = Dash(self)
         self.dot_handler = DotHandler(self)
-        self.turns_column = TurnsNumberGroup(self)
+        self.turns_column = TurnsColumn(self)
 
-    def update_tka_glyph(self, visibility=True) -> None:
+    def update_tka_glyph(self, visible=True) -> None:
         self.letter = self.pictograph.state.letter
         if not self.letter or self.pictograph.state.hide_tka_glyph:
             self.setVisible(False)
             return
+        self.setVisible(
+            AppContext.settings_manager().visibility.get_glyph_visibility("TKA")
+            if visible
+            else False
+        )
 
         self.letter_item.set_letter()
         turns_tuple = self.pictograph.managers.get.turns_tuple()
         self.dot_handler.update_dots(turns_tuple)
         self.dash.update_dash()
-        self.turns_column.update_turns(turns_tuple)
-
-        self.setVisible(
-            AppContext.settings_manager().visibility.get_glyph_visibility("TKA")
-            if visibility
-            else False
-        )
+        self.turns_column.update_turns_column(turns_tuple)
 
     def get_all_items(self):
         return [

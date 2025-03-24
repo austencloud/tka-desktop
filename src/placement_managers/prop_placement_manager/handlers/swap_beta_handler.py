@@ -93,7 +93,7 @@ class SwapBetaHandler:
         blue_direction = self.dir_calculator.get_dir(
             self.pictograph.elements.blue_motion
         )
-        if self.pictograph.elements.red_motion.prop.prop_type_str != PropType.Hand:
+        if self.pictograph.elements.red_motion.prop.prop_type_str != "Hand":
             self._swap_props(
                 self.pictograph.elements.red_prop,
                 self.pictograph.elements.blue_prop,
@@ -165,7 +165,7 @@ class SwapBetaHandler:
             )
 
             turns_tuple = TurnsTupleGenerator().generate_turns_tuple(self.pictograph)
-            prop_loc = self.pictograph.elements.blue_prop.loc
+            prop_loc = self.pictograph.elements.blue_prop.state.loc
             if self.pictograph.managers.check.ends_with_radial_ori():
                 beta_ori = "radial"
             elif self.pictograph.managers.check.ends_with_nonradial_ori():

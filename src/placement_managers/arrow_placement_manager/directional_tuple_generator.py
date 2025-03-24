@@ -122,7 +122,8 @@ class DirectionalTupleGenerator:
         """Determines the grid mode based on motion location."""
         return (
             BOX
-            if self.motion.prop.loc in [NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST]
+            if self.motion.prop.state.loc
+            in [NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST]
             else DIAMOND
         )
 

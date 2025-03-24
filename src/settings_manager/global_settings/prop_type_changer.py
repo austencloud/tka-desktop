@@ -25,20 +25,21 @@ class PropTypeChanger:
         self, pictograph: "Pictograph", color, new_prop: "Prop"
     ):
         old_prop = pictograph.elements.props[color]
-        if hasattr(old_prop, "loc"):
+        if hasattr(old_prop.state, "loc"):
+            if not old_prop.state.loc:
+                return
             old_prop.deleteLater()
             old_prop.hide()
             old_prop.prop_data = {
                 "color": color,
                 "prop_type": new_prop.prop_type_str,
-                "loc": old_prop.loc,
-                "ori": old_prop.ori,
+                "loc": old_prop.state.loc,
+                "ori": old_prop.state.ori,
             }
             old_prop_data = old_prop.prop_data
             pictograph.elements.props[color] = new_prop
             pictograph.addItem(new_prop)
             pictograph.elements.motion_set[color].prop = new_prop
-
             new_prop.updater.update_prop(old_prop_data)
 
     def _finalize_pictograph_update(self, pictograph: "Pictograph"):

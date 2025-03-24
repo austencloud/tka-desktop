@@ -84,7 +84,7 @@ class PropPlacementOverrideManager:
 
     def _generate_override_key(self, beta_state) -> str:
         return (
-            f"swap_beta_{self.view.scene().elements.blue_prop.loc}_{beta_state}_"
+            f"swap_beta_{self.view.scene().elements.blue_prop.state.loc}_{beta_state}_"
             f"blue_{self.view.scene().elements.blue_motion.state.motion_type}_{self.view.scene().elements.blue_arrow.state.loc}_"
             f"red_{self.view.scene().elements.red_motion.state.motion_type}_{self.view.scene().elements.red_arrow.state.loc}"
         )

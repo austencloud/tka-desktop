@@ -46,7 +46,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='KineticConstructor',
+    name='TheKineticConstructor v0.2',
     debug=True,
     bootloader_ignore_signals=False,
     strip=False,

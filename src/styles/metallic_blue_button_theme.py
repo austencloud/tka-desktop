@@ -76,7 +76,7 @@ class MetallicBlueButtonTheme:
         Returns:
             A themed button style that won't make your eyes bleed
         """
-        if state == ButtonState.SELECTED:
+        if state == ButtonState.ACTIVE:
             # Selected state - Shiny blue like a peacock trying to impress
             return cls(
                 background=METALLIC_BLUE_GRADIENT,

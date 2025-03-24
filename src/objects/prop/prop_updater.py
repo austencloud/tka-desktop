@@ -17,3 +17,14 @@ class PropUpdater:
             self.prop
         )
         self.prop.rot_angle_manager.update_prop_rot_angle()
+
+        from base_widgets.base_beat_frame import AppContext
+
+        if not hasattr(self.prop.pictograph, "example_data"):
+            self.prop.setVisible(
+                (
+                    AppContext()
+                    .settings_manager()
+                    .visibility.get_motion_visibility(self.prop.state.color)
+                )
+            )

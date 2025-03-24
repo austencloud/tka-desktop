@@ -19,7 +19,7 @@ from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
-
+    from objects.prop.prop import Prop
 
 class PictographGetter:
     def __init__(self, pictograph: "Pictograph") -> None:
@@ -38,6 +38,10 @@ class PictographGetter:
 
     def motion_by_color(self, color: str) -> Motion:
         return self.pictograph.elements.motion_set.get(color)
+
+    def prop_by_color(self, color: str) -> "Prop":
+        """Get a prop by its color."""
+        return self.pictograph.elements.props.get(color)
 
     def letter_type(self, letter: Letter) -> Optional[str]:
         letter_type_map = {
@@ -167,3 +171,6 @@ class PictographGetter:
             "Reversals": self.pictograph.elements.reversal_glyph,
         }
         return glyph_map.get(name)
+
+    def motions(self) -> dict[str, Motion]:
+        return self.pictograph.elements.motion_set

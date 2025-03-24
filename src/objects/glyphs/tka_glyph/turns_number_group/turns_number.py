@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING, Union
 from utils.path_helpers import get_data_path, get_image_path
 
 if TYPE_CHECKING:
-    from objects.glyphs.tka_glyph.turns_number_group.turns_number_group import (
-        TurnsNumberGroup,
+    from objects.glyphs.tka_glyph.turns_number_group.turns_column import (
+        TurnsColumn,
     )
 
 
 class TurnsNumber(QGraphicsSvgItem):
-    def __init__(self, turns_column: "TurnsNumberGroup"):
+    def __init__(self, turns_column: "TurnsColumn"):
         super().__init__()
         self.turns_column = turns_column
         self.svg_path_prefix = turns_column.svg_path_prefix

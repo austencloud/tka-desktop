@@ -6,6 +6,7 @@ from data.constants import BLUE, HEX_BLUE, HEX_RED, RED
 from main_window.main_widget.json_manager.current_sequence_loader import (
     CurrentSequenceLoader,
 )
+from settings_manager.global_settings.app_context import AppContext
 from utils.reversal_detector import ReversalDetector
 
 if TYPE_CHECKING:
@@ -39,7 +40,32 @@ class ReversalGlyph(QGraphicsItemGroup):
 
         self.setVisible(False)
 
-    def update_reversal_symbols(self, visible: bool = True):
+    def update_reversal_symbols(
+        self, visible: bool = True, is_visibility_pictograph: bool = False
+    ):
+
+        if is_visibility_pictograph:
+
+            self.reversal_items[BLUE].setVisible(True)
+            self.reversal_items[RED].setVisible(True)
+
+            center_y = self.pictograph.height() / 2
+            red_R = self.reversal_items[RED]
+            blue_R = self.reversal_items[BLUE]
+            total_height = (
+                red_R.boundingRect().height() + blue_R.boundingRect().height()
+            )
+            red_R_y = -total_height / 2
+            blue_R_y = red_R_y + red_R.boundingRect().height()
+            red_R.setPos(0, red_R_y)
+            blue_R.setPos(0, blue_R_y)
+
+            self.setVisible(visible)
+
+            x_position = 40
+            self.setPos(x_position, center_y)
+            return
+
         if visible:
             if self.pictograph.elements.view.__class__.__name__ == "OptionView":
                 sequence_so_far = CurrentSequenceLoader().load_current_sequence_json()
@@ -48,17 +74,24 @@ class ReversalGlyph(QGraphicsItemGroup):
                 reversal_dict = ReversalDetector.detect_reversal(
                     sequence_so_far, self.pictograph.state.pictograph_data
                 )
-                blue_visible = reversal_dict.get("blue_reversal", False)
-                red_visible = reversal_dict.get("red_reversal", False)
+                blue_reversal = reversal_dict.get("blue_reversal", False)
+                red_reversal = reversal_dict.get("red_reversal", False)
             elif self.pictograph.elements.view.__class__.__name__ == "BeatView":
-                blue_visible = self.pictograph.state.blue_reversal
-                red_visible = self.pictograph.state.red_reversal
+                blue_reversal = self.pictograph.state.blue_reversal
+                red_reversal = self.pictograph.state.red_reversal
             else:
-                blue_visible = self.pictograph.state.blue_reversal
-                red_visible = self.pictograph.state.red_reversal
+                blue_reversal = self.pictograph.state.blue_reversal
+                red_reversal = self.pictograph.state.red_reversal
         else:
-            blue_visible = False
-            red_visible = False
+            blue_reversal = False
+            red_reversal = False
+
+        settings_manager = AppContext.settings_manager()
+        blue_motion_visible = settings_manager.visibility.get_motion_visibility(BLUE)
+        red_motion_visible = settings_manager.visibility.get_motion_visibility(RED)
+
+        blue_visible = blue_reversal and blue_motion_visible
+        red_visible = red_reversal and red_motion_visible
 
         self.reversal_items[BLUE].setVisible(blue_visible)
         self.reversal_items[RED].setVisible(red_visible)
@@ -66,6 +99,7 @@ class ReversalGlyph(QGraphicsItemGroup):
         center_y = self.pictograph.height() / 2
 
         if blue_visible and red_visible:
+
             red_R = self.reversal_items[RED]
             blue_R = self.reversal_items[BLUE]
             total_height = (
@@ -76,10 +110,12 @@ class ReversalGlyph(QGraphicsItemGroup):
             red_R.setPos(0, red_R_y)
             blue_R.setPos(0, blue_R_y)
         elif blue_visible:
+
             blue_R = self.reversal_items[BLUE]
             blue_R_y = -blue_R.boundingRect().height() / 2
             blue_R.setPos(0, blue_R_y)
         elif red_visible:
+
             red_R = self.reversal_items[RED]
             red_R_y = -red_R.boundingRect().height() / 2
             red_R.setPos(0, red_R_y)

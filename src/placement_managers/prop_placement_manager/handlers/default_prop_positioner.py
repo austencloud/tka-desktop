@@ -27,9 +27,7 @@ class DefaultPropPositioner:
 
         point_suffix = "_strict" if strict else ""
 
-        point_name = (
-            f"{prop.loc}_{prop.pictograph.state.grid_mode}_hand_point{point_suffix}"
-        )
+        point_name = f"{prop.state.loc}_{prop.pictograph.state.grid_mode}_hand_point{point_suffix}"
 
         grid_point = self.get_grid_point(point_name, strict)
 
@@ -65,9 +63,9 @@ class DefaultPropPositioner:
         prop.setPos(new_position)
 
     def _get_grid_mode_from_prop_loc(self, prop: "Prop") -> str:
-        if prop.loc in ["ne", "nw", "se", "sw"]:
+        if prop.state.loc in ["ne", "nw", "se", "sw"]:
             grid_mode = BOX
-        elif prop.loc in ["n", "s", "e", "w"]:
+        elif prop.state.loc in ["n", "s", "e", "w"]:
             grid_mode = DIAMOND
         return grid_mode
 

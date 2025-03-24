@@ -23,7 +23,7 @@ class PropSvgManager:
         svg_data = self.manager.load_svg_file(image_file)
         if prop.prop_type_str != "Hand":
             colored_svg_data = self.manager.color_manager.apply_color_transformations(
-                svg_data, prop.color
+                svg_data, prop.state.color
             )
         else:
             colored_svg_data = svg_data
@@ -38,7 +38,7 @@ class PropSvgManager:
             return f"{PROP_DIR}{prop.prop_type_str}.svg"
 
     def _get_hand_svg_file(self, prop: "Prop") -> str:
-        hand_color = "left" if prop.color == BLUE else "right"
+        hand_color = "left" if prop.state.color == BLUE else "right"
         return get_image_path(f"hands/{hand_color}_hand.svg")
 
     def _setup_prop_svg_renderer(self, prop: "Prop", svg_data: str) -> None:
@@ -53,6 +53,7 @@ class PropSvgManager:
             prop.renderer = None
         if not hasattr(prop, "pixmap_item") or not prop.pixmap_item:
             from PyQt6.QtWidgets import QGraphicsPixmapItem
+
             prop.pixmap_item = QGraphicsPixmapItem(pixmap, parent=prop)
         else:
             prop.pixmap_item.setPixmap(pixmap)

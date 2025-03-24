@@ -49,7 +49,7 @@ class ElementalGlyph(QGraphicsSvgItem):
         svg_path: str = SVG_PATHS.get(vtg_mode, "")
         if not svg_path:
             return
-        self.renderer = QSvgRenderer(svg_path)
+        self.renderer: QSvgRenderer = QSvgRenderer(svg_path)
         if self.renderer.isValid():
             self.setSharedRenderer(self.renderer)
             if not self.scene():
