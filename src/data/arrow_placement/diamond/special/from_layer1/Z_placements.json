@@ -20,6 +20,10 @@
     "(s, 0, 1)": {
       "static_rot_angle_override": true,
       "static": [-100, 0]
+    },
+    "(s, 1, 0.5)": {
+      "static_to_layer2_rot_angle_override": true,
+      "static": [-100, -80]
     }
   }
 }
