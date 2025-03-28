@@ -10,16 +10,16 @@ if TYPE_CHECKING:
 
 
 class VisibilityToggler:
+    """Handles toggling visibility of pictograph elements across the application."""
+
     def __init__(self, visibility_tab: "VisibilityTab"):
         self.visibility_tab = visibility_tab
         self.main_widget = visibility_tab.main_widget
         self.settings = self.main_widget.settings_manager.visibility
-
         self.dependent_glyphs = ["TKA", "VTG", "Elemental", "Positions"]
 
     def toggle_glyph_visibility(self, name: str, state: bool):
         """Toggle visibility for all glyphs of a specific type in all other pictographs."""
-        # State is already handled by the state manager
         pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
 
         # Skip the visibility pictograph
@@ -28,46 +28,48 @@ class VisibilityToggler:
         elif self.visibility_tab.pictograph_view.pictograph in pictographs:
             pictographs.remove(self.visibility_tab.pictograph_view.pictograph)
 
-        # Apply visibility to other pictographs
+        # For dependent glyphs, check if both motions are visible
         actual_state = state
-        if name in ["TKA", "VTG", "Elemental", "Positions"]:
-            actual_state = (
-                state and self.visibility_tab.state_manager.are_all_motions_visible()
-            )
+        if name in self.dependent_glyphs:
+            all_motions_visible = self.settings.are_all_motions_visible()
+            actual_state = state and all_motions_visible
 
+        # Apply visibility to other pictographs
         for pictograph in pictographs:
             self._apply_glyph_visibility_to_pictograph(pictograph, name, actual_state)
 
     def toggle_non_radial_points(self, state: bool):
-        """Toggle visibility for non-radial points."""
+        """Toggle visibility for non-radial points in all pictographs."""
         pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
-        pictographs.pop(
-            pictographs.index(self.visibility_tab.pictograph_view.pictograph)
-        )
+
+        # Skip the visibility pictograph
+        if self.visibility_tab.pictograph_view.pictograph in pictographs:
+            pictographs.remove(self.visibility_tab.pictograph_view.pictograph)
+
         for pictograph in pictographs:
             pictograph.elements.grid.toggle_non_radial_points(state)
+
+        # Update settings
         self.settings.set_non_radial_visibility(state)
-        # self._update_visibility_pictograph()
 
     def toggle_prop_visibility(self, color: str, state: bool):
-        """Toggle visibility for props and arrows of a specific color."""
+        """Toggle visibility for props and arrows of a specific color in all pictographs."""
+        # Update settings
         self.settings.set_motion_visibility(color, state)
 
-        # Update buttons to reflect new state
-        if color.lower() == "red":
-            self.visibility_tab.buttons_widget.glyph_buttons["Red Motion"].set_active(
-                state
-            )
-        elif color.lower() == "blue":
-            self.visibility_tab.buttons_widget.glyph_buttons["Blue Motion"].set_active(
-                state
-            )
-
+        # Get all pictographs and update them
         pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
-        if self.visibility_tab.pictograph in pictographs:
-            pictographs.pop(pictographs.index(self.visibility_tab.pictograph))
 
-        # Update all pictographs
+        # Skip the visibility pictograph for settings update
+        if self.visibility_tab.pictograph in pictographs:
+            pictographs.remove(self.visibility_tab.pictograph)
+
+        # Make sure at least one motion remains visible
+        other_color = "blue" if color == "red" else "red"
+        if not state and not self.settings.get_motion_visibility(other_color):
+            self.settings.set_motion_visibility(other_color, True)
+
+        # Update prop visibility
         for pictograph in pictographs:
             prop = pictograph.elements.props.get(color)
             arrow = pictograph.elements.arrows.get(color)
@@ -78,43 +80,48 @@ class VisibilityToggler:
             if pictograph.elements.reversal_glyph:
                 pictograph.elements.reversal_glyph.update_reversal_symbols()
 
-        # Update dependent elements
+            # Update placement for props and arrows after visibility change
+            # This ensures elements reposition themselves based on the new visibility state
+            self._update_placements(pictograph)
+
+        # Update dependent elements when motion visibility changes
         self.update_dependent_glyphs_visibility()
-        # self._update_visibility_pictograph()
+
+    def _update_placements(self, pictograph: "Pictograph"):
+        """Update arrow and prop placements for a pictograph."""
+        if hasattr(pictograph.managers, "updater") and hasattr(
+            pictograph.managers.updater, "placement_updater"
+        ):
+            # Use the pictograph's placement updater if available
+            if pictograph.state.letter:
+                pictograph.managers.updater.placement_updater.update()
+        else:
+            # Fall back to calling placement managers directly
+            if pictograph.state.letter:
+                if hasattr(pictograph.managers, "prop_placement_manager"):
+                    pictograph.managers.prop_placement_manager.update_prop_positions()
+                if hasattr(pictograph.managers, "arrow_placement_manager"):
+                    pictograph.managers.arrow_placement_manager.update_arrow_placements()
+                pictograph.update()
 
     def update_dependent_glyphs_visibility(self):
         """Update the visibility of glyphs that depend on motion visibility."""
         all_motions_visible = self.settings.are_all_motions_visible()
-        any_motion_visible = self.settings.get_motion_visibility(
-            RED
-        ) or self.settings.get_motion_visibility(BLUE)
 
-        # When only one motion is visible, handle specially
-        if any_motion_visible and not all_motions_visible:
-            # Keep only reversals and non-radial points
-            for glyph_name in ["TKA", "VTG", "Elemental", "Positions"]:
-                # Force these to invisible
-                self.settings.set_glyph_visibility(glyph_name, False)
+        # Update visibility of dependent glyphs
+        for glyph_name in self.dependent_glyphs:
+            # Get base visibility setting (user's preference)
+            base_visibility = self.settings.settings.value(
+                f"visibility/{glyph_name}",
+                glyph_name == "TKA",  # TKA is visible by default
+                type=bool,
+            )
 
-                # Update buttons to show them as disabled
-                if glyph_name in self.visibility_tab.buttons_widget.glyph_buttons:
-                    button = self.visibility_tab.buttons_widget.glyph_buttons[
-                        glyph_name
-                    ]
-                    button.set_active(False)
-        else:
-            # Normal behavior when both motions visible or none visible
-            for glyph_name in self.dependent_glyphs:
-                user_intent = self.settings.get_user_intent_visibility(glyph_name)
-                actual_state = user_intent and all_motions_visible
-                self.settings.set_effective_visibility(glyph_name, actual_state)
+            # Calculate actual visibility based on motion visibility
+            actual_visibility = base_visibility and all_motions_visible
 
-                # Update buttons
-                if glyph_name in self.visibility_tab.buttons_widget.glyph_buttons:
-                    button = self.visibility_tab.buttons_widget.glyph_buttons[
-                        glyph_name
-                    ]
-                    button.set_active(actual_state)
+            # Apply to all pictographs
+            self.toggle_glyph_visibility(glyph_name, actual_visibility)
 
         # Update all pictographs
         self._update_all_pictographs()
@@ -123,38 +130,38 @@ class VisibilityToggler:
         self, pictograph: "Pictograph", glyph_type: str, is_visible: bool
     ):
         """Apply glyph visibility to a specific pictograph."""
-        glyph_mapping: dict[str, Glyph] = {
+        # Mapping of glyph types to pictograph elements
+        glyph_mapping = {
             "VTG": pictograph.elements.vtg_glyph,
             "TKA": pictograph.elements.tka_glyph,
             "Elemental": pictograph.elements.elemental_glyph,
             "Positions": pictograph.elements.start_to_end_pos_glyph,
             "Reversals": pictograph.elements.reversal_glyph,
         }
-        glyphs = glyph_mapping.get(glyph_type, [])
-        if not isinstance(glyphs, list):
-            glyphs = [glyphs]
 
-        for glyph in glyphs:
-            if glyph:
-                is_visibility_pictograph = hasattr(pictograph, "example_data")
+        glyph: Glyph = glyph_mapping.get(glyph_type)
+        if not glyph:
+            return
 
-                if glyph_type == "Reversals":
-                    glyph.update_reversal_symbols(
-                        visible=is_visible,
-                        is_visibility_pictograph=is_visibility_pictograph,
-                    )
-                elif glyph_type == "TKA":
-                    glyph.update_tka_glyph(visible=is_visible)
-                else:
-                    glyph.setVisible(is_visible)
+        # Handle different glyph types appropriately
+        is_visibility_pictograph = hasattr(pictograph, "example_data")
 
+        if glyph_type == "Reversals":
+            glyph.update_reversal_symbols(
+                visible=is_visible,
+                is_visibility_pictograph=is_visibility_pictograph,
+            )
+        elif glyph_type == "TKA":
+            glyph.update_tka_glyph(visible=is_visible)
+        else:
+            glyph.setVisible(is_visible)
+
+        # Special case for Greek letters
         if pictograph.state.letter in ["α", "β", "Γ"]:
             pictograph.elements.start_to_end_pos_glyph.setVisible(False)
 
     def _update_all_pictographs(self):
-        """
-        Update all pictographs (except the visibility pictograph) based on current settings.
-        """
+        """Update all pictographs (except the visibility pictograph) based on current settings."""
         pictographs = self.main_widget.pictograph_collector.collect_all_pictographs()
 
         # Skip the visibility pictograph
@@ -166,7 +173,22 @@ class VisibilityToggler:
         for pictograph in pictographs:
             # Update each glyph type
             for glyph_type in ["TKA", "VTG", "Elemental", "Positions", "Reversals"]:
-                visibility = self.settings.get_effective_visibility(glyph_type)
+                # For dependent glyphs, check if both motions are visible
+                if glyph_type in self.dependent_glyphs:
+                    base_visibility = self.settings.settings.value(
+                        f"visibility/{glyph_type}",
+                        glyph_type == "TKA",  # TKA is visible by default
+                        type=bool,
+                    )
+                    all_motions_visible = self.settings.are_all_motions_visible()
+                    visibility = base_visibility and all_motions_visible
+                else:
+                    visibility = self.settings.settings.value(
+                        f"visibility/{glyph_type}",
+                        glyph_type == "Reversals",  # Reversals is visible by default
+                        type=bool,
+                    )
+
                 self._apply_glyph_visibility_to_pictograph(
                     pictograph, glyph_type, visibility
                 )
@@ -182,68 +204,10 @@ class VisibilityToggler:
                 if arrow:
                     arrow.setVisible(visibility)
 
-                # Update reversal symbols if color visibility changed
-                if pictograph.elements.reversal_glyph:
-                    pictograph.elements.reversal_glyph.update_reversal_symbols()
-
             # Update non-radial points
             non_radial_visibility = self.settings.get_non_radial_visibility()
-            pictograph.elements.grid.toggle_non_radial_points(non_radial_visibility)
+            if pictograph.state.letter:
+                pictograph.elements.grid.toggle_non_radial_points(non_radial_visibility)
 
-    def _update_visibility_pictograph(self):
-        """Update the visibility pictograph based on current settings."""
-        pictograph = self.visibility_tab.pictograph
-
-        # Update all glyphs
-        for glyph_type in ["TKA", "VTG", "Elemental", "Positions", "Reversals"]:
-            visibility = self.settings.get_effective_visibility(glyph_type)
-            target_opacity = 1.0 if visibility else 0.1
-
-            # For glyphs that exist in the visibility pictograph
-            for glyph in pictograph.glyphs:
-                if glyph.name == glyph_type:
-                    # Always keep visible, just change opacity
-                    glyph.setVisible(True)
-                    glyph.setOpacity(target_opacity)
-
-                    # Special handling for reversal glyph
-                    if glyph_type == "Reversals":
-                        # Make sure reversal symbols are visible but at proper opacity
-                        for color in ["red", "blue"]:
-                            if color in glyph.reversal_items:
-                                color_visibility = self.settings.get_motion_visibility(
-                                    color
-                                )
-                                color_opacity = 1.0 if color_visibility else 0.1
-                                glyph.reversal_items[color].setVisible(True)
-                                glyph.reversal_items[color].setOpacity(color_opacity)
-
-                        # Ensure the whole glyph remains visible
-                        glyph.setVisible(True)
-
-        # Update motion visibility
-        for color in ["red", "blue"]:
-            visibility = self.settings.get_motion_visibility(color)
-            target_opacity = 1.0 if visibility else 0.1
-
-            prop = pictograph.elements.props.get(color)
-            arrow = pictograph.elements.arrows.get(color)
-
-            if prop:
-                prop.setVisible(True)  # Always visible in visibility pictograph
-                prop.setOpacity(target_opacity)
-            if arrow:
-                arrow.setVisible(True)  # Always visible in visibility pictograph
-                arrow.setOpacity(target_opacity)
-
-        # Update non-radial points
-        non_radial_visibility = self.settings.get_non_radial_visibility()
-        target_opacity = 1.0 if non_radial_visibility else 0.1
-
-        # Get non-radial points and update them
-        non_radial_points = pictograph.elements.grid.items.get(
-            f"{pictograph.elements.grid.grid_mode}_nonradial"
-        )
-        if non_radial_points:
-            non_radial_points.setVisible(True)  # Always visible
-            non_radial_points.setOpacity(target_opacity)
+            # Update placements after all visibility changes
+            self._update_placements(pictograph)

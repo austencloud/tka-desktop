@@ -40,10 +40,12 @@ class BeatFrameResizer:
         return width, available_height
 
     def calculate_beat_size(self, width: int, height: int) -> int:
-        num_cols = max(1, self.beat_frame.layout.columnCount() - 1)
+        num_cols = self.beat_frame.layout_manager.get_cols()
+
         if num_cols == 0:
             return 0
-        return min(int(width // 5), int(height // 6))
+        else:
+            return min(int(width // num_cols), int(height // 6))
 
     def resize_beats(self, beat_size: int) -> None:
         for beat in self.beat_frame.beat_views:

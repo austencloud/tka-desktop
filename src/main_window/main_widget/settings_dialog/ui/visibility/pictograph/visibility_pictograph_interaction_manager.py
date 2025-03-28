@@ -1,10 +1,4 @@
-from typing import Union, TYPE_CHECKING
-from PyQt6.QtCore import Qt
-from base_widgets.pictograph.elements.grid.non_radial_points_group import (
-    NonRadialPointsGroup,
-)
-from data.constants import BLUE, RED
-from enums.glyph_enum import Glyph
+from typing import TYPE_CHECKING
 from .event_assigner import EventAssigner
 from .event_handler_factory import EventHandlerFactory
 from .visibility_controller import VisibilityController

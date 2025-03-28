@@ -54,6 +54,10 @@ class Grid:
             self.items[f"{self.grid_mode}_nonradial"] = non_radial_points
 
     def toggle_non_radial_points(self, visible: bool):
+        if not self.grid_mode:
+            self.grid_mode = GridModeChecker.get_grid_mode(
+                self.pictograph.state.pictograph_data
+            )
         non_radial_key = f"{self.grid_mode}_nonradial"
         self.items[non_radial_key].setVisible(visible)
 

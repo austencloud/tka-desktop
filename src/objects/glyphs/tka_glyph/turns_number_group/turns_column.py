@@ -78,7 +78,7 @@ class TurnsColumn(QGraphicsItemGroup):
             bool(float(top_val_str) if not top_val_str == "fl" else True)
         )
         self.glyph.bottom_number.setVisible(
-            bool(float(bottom_val_str if not top_val_str == "fl" else True))
+            bool(float(bottom_val_str if not bottom_val_str == "fl" else True))
         )
 
         self.set_number(top_val_str, True, color_map.get(top_key))

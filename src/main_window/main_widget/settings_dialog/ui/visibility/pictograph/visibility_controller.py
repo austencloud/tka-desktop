@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Union, Optional, Callable
+from typing import TYPE_CHECKING, Union
 from base_widgets.pictograph.elements.grid.non_radial_points_group import (
     NonRadialPointsGroup,
 )

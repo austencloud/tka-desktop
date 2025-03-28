@@ -31,7 +31,7 @@ class VisibilityPictographView(BasePictographView):
 
     def resizeEvent(self, event: QEvent):
         available_height = self.tab.dialog.height()
-        size = int(available_height * 0.65)
+        size = int(available_height * 0.55)
         self.setFixedSize(size, size)
         super().resizeEvent(event)
 
@@ -45,7 +45,7 @@ class VisibilityPictographView(BasePictographView):
         )
         for color in [RED, BLUE]:
             self.pictograph.update_opacity(
-                color, 
+                color,
                 self.pictograph.settings.get_motion_visibility(color),
             )
         return super().showEvent(event)

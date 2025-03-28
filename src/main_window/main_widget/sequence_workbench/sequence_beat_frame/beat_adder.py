@@ -71,7 +71,7 @@ class BeatAdder:
             self.beat_frame.emit_update_image_export_preview()
         if next_beat_number and update_level == True:
             self.sequence_workbench.difficulty_label.update_difficulty_label()
-
+        self.sequence_workbench.beat_frame.resizer.resize_beat_frame()
     def _adjust_layout_and_update_sequence_builder(self, index: int) -> None:
         self.beat_frame.layout_manager.adjust_layout_to_sequence_length()
         self._update_sequence_builder(index)

@@ -52,10 +52,8 @@ class EventHandlerFactory:
                     "arrow",
                     "prop",
                 ]:
-                    visibility = (
-                        self.manager.visibility_settings.get_real_glyph_visibility(
-                            item.name
-                        )
+                    visibility = self.manager.visibility_settings.get_glyph_visibility(
+                        item.name
                     )
                     self.manager.visibility_controller.fade_and_toggle_visibility(
                         item, visibility
@@ -101,9 +99,7 @@ class EventHandlerFactory:
         self.manager.visibility_settings.set_glyph_visibility(
             glyph.name, new_visibility
         )
-        self.manager.visibility_settings.set_real_glyph_visibility(
-            glyph.name, new_visibility
-        )
+
         self.manager.view.tab.buttons_widget.update_button_flags()
 
         # Update UI
@@ -112,15 +108,12 @@ class EventHandlerFactory:
 
     def _handle_dependent_glyph_click(self, glyph: Glyph):
         """Handle a click on a motion-dependent glyph."""
-        current_visibility = self.manager.visibility_settings.get_real_glyph_visibility(
+        current_visibility = self.manager.visibility_settings.get_glyph_visibility(
             glyph.name
         )
         new_visibility = not current_visibility
 
         # Update real state (user's intent)
-        self.manager.visibility_settings.set_real_glyph_visibility(
-            glyph.name, new_visibility
-        )
 
         # Calculate actual visibility based on motion visibility
         actual_visibility = (
@@ -148,9 +141,7 @@ class EventHandlerFactory:
         self.manager.visibility_settings.set_glyph_visibility(
             glyph.name, new_visibility
         )
-        self.manager.visibility_settings.set_real_glyph_visibility(
-            glyph.name, new_visibility
-        )
+
 
         # Update UI
         self.manager.view.tab.buttons_widget.update_button_flags()

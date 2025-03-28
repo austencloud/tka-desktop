@@ -40,7 +40,7 @@ class BeatFrameLayoutManager:
         # print the layout
         return layout
 
-    def get_cols(self):
+    def get_cols(self) -> int:
         layout = self.beat_frame.layout
         cols = 0
         for i in range(layout.columnCount()):
