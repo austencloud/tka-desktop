@@ -2,6 +2,7 @@ from email.policy import default
 from typing import TYPE_CHECKING
 from venv import logger
 
+from enums.letter.letter import Letter
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.data_updater.special_placement_data_updater import (
     SpecialPlacementDataUpdater,
 )
@@ -51,21 +52,13 @@ class ArrowPlacementManager:
             self.update_arrow_position(arrow)
 
     def update_arrow_position(self, arrow: "Arrow") -> None:
-        """Updates the position of a single arrow using initial position, special adjustments, and directional strategy."""
         initial_pos = self.initial_strategy.compute_initial_position(arrow)
-
         adjustment = self.adjustment_calculator.get_adjustment(arrow)
-        dir_x, dir_y = (
-            adjustment.x(),
-            adjustment.y(),
-        )
+        dir_x, dir_y = (adjustment.x(), adjustment.y())
         final_x = initial_pos.x() + dir_x - arrow.boundingRect().center().x()
         final_y = initial_pos.y() + dir_y - arrow.boundingRect().center().y()
+        
         arrow.setPos(final_x, final_y)
-        logger.debug(
-            f"Final position calculation -> Initial: ({initial_pos.x()}, {initial_pos.y()}), "
-            f"Adjustment: ({dir_x}, {dir_y}), Offset: ({arrow.boundingRect().center().x()}, {arrow.boundingRect().center().y()})"
-        )
 
     def _build_context(self, arrow: "Arrow") -> ArrowPlacementContext:
         """Builds the ArrowPlacementContext object with relevant motion data."""
@@ -78,13 +71,3 @@ class ArrowPlacementManager:
             start_ori=arrow.motion.state.start_ori,
         )
 
-    def _has_special_placement(self, context: ArrowPlacementContext) -> bool:
-        """Checks if a special placement exists for this arrow's context."""
-        special_placements = self.special_strategy.get_special_placements()
-        ori_key = self.data_updater.ori_key_generator.generate_ori_key_from_context(
-            context
-        )
-
-        return context.letter.value in special_placements.get(
-            context.grid_mode, {}
-        ).get(ori_key, {})

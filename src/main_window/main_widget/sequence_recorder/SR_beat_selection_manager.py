@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional
 from base_widgets.pictograph.elements.views.beat_view import (
     BeatView,
 )
+from data.constants import GOLD
 from utils.path_helpers import get_data_path
 from PyQt6.QtMultimedia import QAudioOutput, QSoundEffect
 

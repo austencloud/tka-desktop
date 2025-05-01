@@ -55,5 +55,5 @@ class OptionPicker(QWidget):
             for pictograph in section.pictographs.values():
                 if pictograph.elements.view.isVisible():
                     pictograph.elements.view.resize_option_view()
-                    
+
         self.option_scroll.setFixedWidth(self.parent().parent().width() // 2)
