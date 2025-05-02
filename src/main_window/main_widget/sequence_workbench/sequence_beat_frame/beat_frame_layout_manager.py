@@ -46,7 +46,7 @@ class BeatFrameLayoutManager:
         for i in range(layout.columnCount()):
             if layout.itemAtPosition(0, i):
                 cols += 1
-        return cols - 1
+        return cols
 
     def get_rows(self):
         layout = self.beat_frame.layout

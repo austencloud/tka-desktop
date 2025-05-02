@@ -32,7 +32,6 @@ if TYPE_CHECKING:
 
 class SequenceBeatFrame(BaseBeatFrame):
     beat_views: list[BeatView] = []
-    start_pos_view: StartPositionBeatView = None
     layout: "QGridLayout" = None
     updateImageExportPreview = pyqtSignal()  # Signal to notify when sequence changes
 
