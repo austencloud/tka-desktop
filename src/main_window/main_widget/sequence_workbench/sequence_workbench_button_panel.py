@@ -27,6 +27,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..
 
 class SequenceWorkbenchButtonPanel(QFrame):
     swap_colors_button: QPushButton
+    copy_sequence_button: QPushButton
     colors_swapped = False
     spacers: list[QSpacerItem] = []
 
@@ -80,6 +81,13 @@ class SequenceWorkbenchButtonPanel(QFrame):
                 "callback": lambda: self.sequence_workbench.rotation_manager.rotate_current_sequence(),
                 "tooltip": "Rotate Sequence",
             },
+            "copy_sequence": {
+                "icon": None,  # No icon path, will use emoji text instead
+                "callback": self._copy_sequence_json,
+                "tooltip": "Copy Sequence JSON",
+                "text": "📋",  # Emoji text to use instead of icon
+                "font_size_multiplier": 1.5,  # For adjusting the emoji size
+            },
             "delete_beat": {
                 "icon": "delete.svg",
                 "callback": lambda: self.sequence_workbench.beat_deleter.delete_selected_beat(),
@@ -93,30 +101,31 @@ class SequenceWorkbenchButtonPanel(QFrame):
         }
 
         for button_name, button_data in button_dict.items():
-            icon_path = get_image_path(
-                f"icons/sequence_workbench_icons/{button_data['icon']}"
-            )
+            # Handle icon path (None for copy_sequence button)
+            icon_path = None
+            if button_data["icon"]:
+                icon_path = get_image_path(
+                    f"icons/sequence_workbench_icons/{button_data['icon']}"
+                )
+
+            # Create the button
             button = self._create_button(
                 icon_path, button_data["callback"], button_data["tooltip"]
             )
+
+            # Special handling for emoji button (copy_sequence)
+            if button_name == "copy_sequence":
+                button.setText(button_data["text"])  # Set emoji text
+                # Adjust font size for emoji visibility
+                font = button.font()
+                font.setPointSize(
+                    int(self.font_size * button_data["font_size_multiplier"])
+                )
+                button.setFont(font)
+
+            # Store the button
             setattr(self, f"{button_name}_button", button)
             self.buttons[button_name] = button
-
-        # Add the copy button definition using an emoji
-        # Note: _create_button might need adjustment if it strictly requires a file path.
-        # Assuming WorkbenchButton can display text/emoji set via setText or similar.
-        self.copy_sequence_button = self._create_button(
-            None,  # Pass None for icon path initially
-            self._copy_sequence_json,
-            "Copy Sequence JSON",
-        )
-        self.copy_sequence_button.setText("📋")  # Set emoji text
-        # Adjust font size if needed for emoji visibility
-        font = self.copy_sequence_button.font()
-        font.setPointSize(int(self.font_size * 1.5))  # Make emoji larger
-        self.copy_sequence_button.setFont(font)
-
-        self.buttons["copy_sequence"] = self.copy_sequence_button  # Add to buttons dict
 
     def _copy_sequence_json(self):
         """Copies the content of current_sequence.json to the clipboard and updates indicator."""
@@ -213,8 +222,8 @@ class SequenceWorkbenchButtonPanel(QFrame):
         self.spacers.append(self.spacer2)  # Keep track of spacers
 
         # Group 3 (Sequence Management)
-        # Add the new button to this group
-        for name in ["delete_beat", "clear_sequence", "copy_sequence"]:
+        # Order: delete_beat, copy_sequence, clear_sequence (copy_sequence is third-to-last)
+        for name in ["delete_beat", "copy_sequence", "clear_sequence"]:
             if name in self.buttons:  # Check if button exists before adding
                 self.layout.addWidget(self.buttons[name])
 
@@ -238,19 +247,19 @@ class SequenceWorkbenchButtonPanel(QFrame):
 
     def resize_button_panel(self):
         button_size = self.sequence_workbench.main_widget.height() // 20
-        # Ensure the new button is included in resizing
-        for button in self.buttons.values():
-            # Special handling for emoji button text size if needed during resize
-            if button == self.copy_sequence_button:
+        # Resize all buttons
+        for button_name, button in self.buttons.items():
+            # Special handling for emoji button text size during resize
+            if button_name == "copy_sequence":
                 font = button.font()
-                # Adjust point size relative to button size or keep fixed larger size
+                # Use the same multiplier as defined in the button_dict
                 font.setPointSize(
-                    int(button_size * 0.5)
-                )  # Example: half the button height
+                    int(button_size * 0.5)  # Use a consistent scaling factor
+                )
                 button.setFont(font)
-                button.update_size(button_size)  # Call existing update_size
-            else:
-                button.update_size(button_size)
+
+            # Update size for all buttons
+            button.update_size(button_size)
 
         self.layout.setSpacing(
             self.sequence_workbench.beat_frame.main_widget.height() // 120
