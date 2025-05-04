@@ -63,8 +63,15 @@ class WordDrawer:
         if not text_width:
             text_width = metrics.horizontalAdvance(text)
 
+        # Get the border width from the image creator
+        border_width = 3  # Same as in ImageCreator._create_image
+
         # Calculate the vertical position to center the text in the additional height on top
-        y = (additional_height_top // 2 + text_height // 2) - (text_height // 10)
+        y = (
+            (additional_height_top // 2 + text_height // 2)
+            - (text_height // 10)
+            + border_width
+        )
 
         x = (image.width() - text_width - self.kerning * (len(text) - 1)) // 2
 

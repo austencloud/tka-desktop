@@ -34,6 +34,8 @@ class PropSvgManager:
             return self._get_hand_svg_file(prop)
         elif prop.prop_type_str == "Chicken":
             return f"{PROP_DIR}{prop.prop_type_str.lower()}.png"
+        elif prop.prop_type_str == "Simplestaff":
+            return f"{PROP_DIR}simple_staff.svg"
         else:
             return f"{PROP_DIR}{prop.prop_type_str}.svg"
 

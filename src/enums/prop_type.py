@@ -5,6 +5,7 @@ from enum import Enum
 class PropType(Enum):
     Hand = auto()
     Staff = auto()
+    Simplestaff = auto()  # Added Simplestaff
     Bigstaff = auto()
     Club = auto()
     Buugeng = auto()
@@ -54,6 +55,7 @@ big_bilateral_prop_types = [
 ]
 small_bilateral_prop_types = [
     PropType.Staff,
+    PropType.Simplestaff,  # Added Simplestaff
     PropType.Buugeng,
     PropType.Doublestar,
     PropType.Quiad,
@@ -63,6 +65,7 @@ small_bilateral_prop_types = [
 ]
 non_strict_placed_props = [
     PropType.Staff,
+    PropType.Simplestaff,  # Added Simplestaff
     PropType.Fan,
     PropType.Club,
     PropType.Buugeng,
@@ -87,6 +90,7 @@ strict_placed_props = [
 
 PropTypesList = [
     PropType.Staff,
+    PropType.Simplestaff,  # Added Simplestaff
     PropType.Bigstaff,
     PropType.Club,
     PropType.Buugeng,

@@ -65,7 +65,7 @@ class RotatedComplementaryCAPExecutor(CAPExecutor):
 
         new_entries = []
         next_beat_number = last_entry[BEAT] + 1
-        halved_or_quartered = self.get_halved_or_quartered()
+        slice_size = self.get_slice_size()
 
         sequence_workbench = (
             self.circular_sequence_generator.main_widget.sequence_workbench
@@ -77,7 +77,7 @@ class RotatedComplementaryCAPExecutor(CAPExecutor):
                 last_entry,
                 next_beat_number,
                 sequence_length + entries_to_add,
-                halved_or_quartered,
+                slice_size,
             )
             new_entries.append(next_pictograph)
             sequence.append(next_pictograph)
@@ -122,7 +122,7 @@ class RotatedComplementaryCAPExecutor(CAPExecutor):
         end_pos = sequence[-1][END_POS]
         return (start_pos, end_pos) in halved_CAPs
 
-    def get_halved_or_quartered(self) -> str:
+    def get_slice_size(self) -> str:
         if self.is_halved_CAP():
             return "halved"
         elif self.is_quartered_CAP():
@@ -148,13 +148,13 @@ class RotatedComplementaryCAPExecutor(CAPExecutor):
         previous_entry,
         beat_number: int,
         final_intended_sequence_length: int,
-        halved_or_quartered: str,
+        slice_size: str,
     ) -> dict:
         previous_matching_beat = self.get_previous_matching_beat(
             sequence,
             beat_number,
             final_intended_sequence_length,
-            halved_or_quartered,
+            slice_size,
         )
 
         new_entry = {
@@ -238,22 +238,22 @@ class RotatedComplementaryCAPExecutor(CAPExecutor):
         sequence: list[dict],
         beat_number: int,
         final_length: int,
-        halved_or_quartered: str,
+        slice_size: str,
     ) -> dict:
-        index_map = self.get_index_map(halved_or_quartered, final_length)
+        index_map = self.get_index_map(slice_size, final_length)
         return sequence[index_map[beat_number]]
 
-    def get_index_map(self, halved_or_quartered: str, length: int) -> dict[int, int]:
-        if length < 4 and halved_or_quartered == "quartered":
+    def get_index_map(self, slice_size: str, length: int) -> dict[int, int]:
+        if length < 4 and slice_size == "quartered":
             return {i: max(i - 1, 0) for i in range(1, length + 1)}
-        elif length < 2 and halved_or_quartered == "halved":
+        elif length < 2 and slice_size == "halved":
             return {i: max(i - 1, 0) for i in range(1, length + 1)}
 
-        if halved_or_quartered == "quartered":
+        if slice_size == "quartered":
             return {
                 i: i - (length // 4) + 1 for i in range((length // 4) + 1, length + 1)
             }
-        elif halved_or_quartered == "halved":
+        elif slice_size == "halved":
             return {
                 i: i - (length // 2) + 1 for i in range((length // 2) + 1, length + 1)
             }

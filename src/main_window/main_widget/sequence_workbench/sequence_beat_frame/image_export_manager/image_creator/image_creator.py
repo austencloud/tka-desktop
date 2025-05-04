@@ -1,5 +1,5 @@
 from datetime import datetime
-from PyQt6.QtGui import QImage
+from PyQt6.QtGui import QImage, QPainter, QPen
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
@@ -57,6 +57,15 @@ class ImageCreator:
         filled_beats = self._process_sequence(sequence)
         num_filled_beats = len(filled_beats)
 
+        # Special case: If there are no filled beats but we should include the start position,
+        # we still need to create an image with just the start position
+        include_start_pos = options.get("include_start_position", False)
+        if num_filled_beats == 0 and include_start_pos:
+            # Force at least a 1x1 layout for the start position
+            num_filled_beats = (
+                0  # Explicitly set to 0 to ensure proper height calculation
+            )
+
         if not fullscreen_preview:
             options.update(self._update_options(options, num_filled_beats))
 
@@ -67,6 +76,7 @@ class ImageCreator:
         )
         if dictionary or fullscreen_preview:
             options = self._parse_options_for_dictionary_or_fullscreen_preview(options)
+        # Get the layout based on the current beat frame layout
         column_count, row_count = self.layout_manager.calculate_layout(
             num_filled_beats,
             options["include_start_position"],
@@ -112,6 +122,9 @@ class ImageCreator:
             "add_word": False,
             "add_difficulty_level": False,
             "include_start_position": False,
+            "combined_grids": options.get(
+                "combined_grids", False
+            ),  # Preserve combined grids setting
             "additional_height_top": 0,
             "additional_height_bottom": 0,
         }
