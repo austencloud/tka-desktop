@@ -18,8 +18,17 @@ class ImageExportLayoutHandler:
         """
         Get the current layout from the beat frame's layout manager.
         This ensures the exported image matches the current beat frame layout.
+
+        Returns a tuple of (rows, columns) to match the format used in the beat frame layout.
         """
-        # Use the beat frame's layout manager to get the layout for the given beat count
+        # First try to get the actual current layout from the beat frame
+        if hasattr(self.beat_frame, "layout_manager") and hasattr(
+            self.beat_frame.layout_manager, "calculate_current_layout"
+        ):
+            # Use the current layout if available
+            return self.beat_frame.layout_manager.calculate_current_layout()
+
+        # If we can't get the current layout, fall back to calculating it based on beat count
         if hasattr(self.beat_frame, "layout_manager") and hasattr(
             self.beat_frame.layout_manager, "calculate_layout"
         ):
@@ -49,6 +58,8 @@ class ImageExportLayoutHandler:
     ) -> tuple[int, int]:
         """
         Determine the layout based on the current beat frame layout and adjust for start position if needed.
+
+        Returns a tuple of (columns, rows) for the image layout.
         """
         # Get the current layout from the beat frame
         # Note: beat_frame_layout_manager.calculate_layout returns (rows, columns)
@@ -58,8 +69,10 @@ class ImageExportLayoutHandler:
         # adjust the layout to accommodate it
         if include_start_pos:
             # Add an extra column for the start position if needed
+            # Return in (columns, rows) format for the image creator
             return (columns + 1, rows) if filled_beat_count > 0 else (1, 1)
 
+        # Return in (columns, rows) format for the image creator
         return (columns, rows)
 
     def calculate_layout_with_start(self, filled_beat_count: int) -> tuple[int, int]:

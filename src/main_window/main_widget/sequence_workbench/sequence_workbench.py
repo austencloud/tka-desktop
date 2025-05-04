@@ -18,6 +18,9 @@ from main_window.main_widget.sequence_workbench.beat_deleter.beat_deleter import
 from main_window.main_widget.sequence_workbench.labels.workbench_difficulty_label import (
     WorkbenchDifficultyLabel,
 )
+from main_window.main_widget.sequence_workbench.labels.circular_sequence_indicator import (
+    CircularSequenceIndicator,
+)
 from main_window.main_widget.sequence_workbench.labels.sequence_workbench_indicator_label import (
     SequenceWorkbenchIndicatorLabel,
 )
@@ -42,6 +45,7 @@ class SequenceWorkbench(QWidget):
     beat_frame_layout: QHBoxLayout
     indicator_label_layout: QHBoxLayout
     difficulty_label: WorkbenchDifficultyLabel
+    circular_indicator: CircularSequenceIndicator
     current_word_label: CurrentWordLabel
 
     def __init__(self, main_widget: "MainWidget") -> None:
@@ -69,6 +73,7 @@ class SequenceWorkbench(QWidget):
         self.indicator_label = SequenceWorkbenchIndicatorLabel(self)
         self.current_word_label = CurrentWordLabel(self)
         self.difficulty_label = WorkbenchDifficultyLabel(self)
+        self.circular_indicator = CircularSequenceIndicator(self)
 
         # Sections
         self.button_panel = SequenceWorkbenchButtonPanel(self)

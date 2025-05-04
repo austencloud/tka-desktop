@@ -24,12 +24,19 @@ class BeatDrawer:
         self,
         image: QImage,
         filled_beats: list["BeatView"],
-        column_count: int,
-        row_count: int,
+        column_count: int,  # Number of columns in the image layout
+        row_count: int,  # Number of rows in the image layout
         include_start_pos: bool,
         additional_height_top: int,
         add_beat_numbers: bool,
     ) -> None:
+        """
+        Draw beats onto the image using the specified layout.
+
+        Parameters:
+            column_count: Number of columns in the image layout
+            row_count: Number of rows in the image layout
+        """
 
         for beat_view in filled_beats:
             if add_beat_numbers:
@@ -52,9 +59,7 @@ class BeatDrawer:
             start_pos_pixmap = self._grab_pixmap(
                 self.beat_frame.start_pos_view, beat_size, beat_size, use_combined_grids
             )
-            painter.drawPixmap(
-                0, additional_height_top, start_pos_pixmap
-            )
+            painter.drawPixmap(0, additional_height_top, start_pos_pixmap)
             start_col = 1
         else:
             start_col = 0
@@ -68,8 +73,8 @@ class BeatDrawer:
                         beat_view, beat_size, beat_size, use_combined_grids
                     )
                     # Add border_width to position to account for the border
-                    target_x = (col * beat_size)
-                    target_y = (row * beat_size + additional_height_top)
+                    target_x = col * beat_size
+                    target_y = row * beat_size + additional_height_top
                     painter.drawPixmap(target_x, target_y, beat_pixmap)
                     beat_number += 1
 

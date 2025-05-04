@@ -4,7 +4,7 @@ from PIL import Image, PngImagePlugin
 from PyQt6.QtWidgets import QMessageBox
 import json
 
-from data.constants import GRID_MODE, SEQUENCE_START_POSITION
+from data.constants import GRID_MODE, SEQUENCE_START_POSITION, END_POS
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.thumbnail_finder import ThumbnailFinder
 from utils.path_helpers import get_data_path
@@ -133,10 +133,31 @@ class MetaDataExtractor:
         return 0  # Default to 0 if no valid sequence length is found
 
     def get_start_pos(self, file_path):
+        """
+        Get the start position type (alpha, beta, gamma) from the metadata.
+
+        If the sequence_start_position field is missing, it attempts to derive it
+        from the end_pos field of the start position entry.
+        """
         metadata = self.extract_metadata_from_file(file_path)
-        if metadata and "sequence" in metadata:
-            return metadata["sequence"][1][SEQUENCE_START_POSITION]
-        return
+        if metadata and "sequence" in metadata and len(metadata["sequence"]) > 1:
+            start_pos_entry = metadata["sequence"][1]
+
+            # First try to get the sequence_start_position directly
+            if SEQUENCE_START_POSITION in start_pos_entry:
+                return start_pos_entry[SEQUENCE_START_POSITION]
+
+            # If not available, try to derive it from the end_pos
+            if END_POS in start_pos_entry:
+                end_pos = start_pos_entry[END_POS]
+                if end_pos.startswith("alpha"):
+                    return "alpha"
+                elif end_pos.startswith("beta"):
+                    return "beta"
+                elif end_pos.startswith("gamma"):
+                    return "gamma"
+
+        return None
 
     def get_metadata_and_thumbnail_dict(self) -> list[dict[str, str]]:
         """Collect all sequences and their metadata along with the associated thumbnail paths."""
@@ -165,3 +186,75 @@ class MetaDataExtractor:
     def get_full_metadata(self, file_path: str) -> dict:
         """Extract all available metadata for a given file."""
         return self.extract_metadata_from_file(file_path) or {}
+
+    def fix_start_position_in_metadata(self, file_path: str) -> bool:
+        """
+        Fix the start position in the metadata of an image file.
+
+        This function checks if the sequence_start_position field is correctly set
+        (alpha, beta, or gamma) and fixes it if necessary.
+
+        Returns:
+            bool: True if the metadata was fixed, False otherwise.
+        """
+        try:
+            with Image.open(file_path) as img:
+                metadata = img.info.get("metadata")
+                if not metadata:
+                    return False
+
+                metadata_dict = json.loads(metadata)
+                if not metadata_dict or "sequence" not in metadata_dict:
+                    return False
+
+                sequence = metadata_dict["sequence"]
+                if len(sequence) < 2:
+                    return False
+
+                # Get the second entry (index 1) which should be the start position
+                start_pos_entry = sequence[1]
+
+                # Check if the entry has an end_pos field (which it should if it's a start position)
+                if END_POS not in start_pos_entry:
+                    return False
+
+                end_pos = start_pos_entry.get(END_POS, "")
+
+                # Determine the correct start position
+                correct_start_pos = None
+                if end_pos.startswith("alpha"):
+                    correct_start_pos = "alpha"
+                elif end_pos.startswith("beta"):
+                    correct_start_pos = "beta"
+                elif end_pos.startswith("gamma"):
+                    correct_start_pos = "gamma"
+
+                if not correct_start_pos:
+                    return False
+
+                needs_update = False
+
+                # If sequence_start_position is missing, add it
+                if SEQUENCE_START_POSITION not in start_pos_entry:
+                    start_pos_entry[SEQUENCE_START_POSITION] = correct_start_pos
+                    needs_update = True
+                # If sequence_start_position is incorrect, fix it
+                elif start_pos_entry[SEQUENCE_START_POSITION] != correct_start_pos:
+                    start_pos_entry[SEQUENCE_START_POSITION] = correct_start_pos
+                    needs_update = True
+
+                # Save the updated metadata back to the image if needed
+                if needs_update:
+                    pnginfo = PngImagePlugin.PngInfo()
+                    pnginfo.add_text("metadata", json.dumps(metadata_dict))
+                    img.save(file_path, pnginfo=pnginfo)
+                    return True
+
+                return False
+        except Exception as e:
+            QMessageBox.critical(
+                None,
+                "Error",
+                f"Error fixing start position in metadata: {e}",
+            )
+            return False
