@@ -267,7 +267,7 @@ class ImageExportControlPanel(QWidget):
 
     def _show_codex_turns_dialog(self):
         """Show the dialog for exporting pictographs with turns."""
-        from .codex_exporter import CodexDialog
+        from .codex_exporter.codex_dialog import CodexDialog
 
         dialog = CodexDialog(self.image_export_tab)
         dialog.exec()

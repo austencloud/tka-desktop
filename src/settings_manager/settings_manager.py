@@ -12,6 +12,7 @@ from .sequence_layout_settings import SequenceLayoutSettings
 from .user_profile_settings.user_profile_settings import UserProfileSettings
 from .global_settings.global_settings import GlobalSettings
 from .visibility_settings.visibility_settings import VisibilitySettings
+from .codex_exporter_settings import CodexExporterSettings
 
 if TYPE_CHECKING:
     pass
@@ -39,6 +40,7 @@ class SettingsManager(QObject):
         self.visibility = VisibilitySettings(self)
         self.sequence_layout = SequenceLayoutSettings(self)
         self.sequence_share_settings = SequenceShareSettings(self)
+        self.codex_exporter = CodexExporterSettings(self)
 
         # Tabs
         self.construct_tab_settings = ConstructTabSettings(self.settings)
@@ -53,9 +55,7 @@ class SettingsManager(QObject):
         """
         settings_path = get_settings_path()
         default_settings_path = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__), "..", "..", "default_settings.ini"
-            )
+            os.path.join(os.path.dirname(__file__), "..", "..", "default_settings.ini")
         )
 
         # Ensure the settings directory exists

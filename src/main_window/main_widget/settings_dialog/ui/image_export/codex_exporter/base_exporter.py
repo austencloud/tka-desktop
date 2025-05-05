@@ -1,6 +1,7 @@
 """
 Base class for the codex pictograph exporter.
 """
+
 from typing import TYPE_CHECKING, Dict, Any, Optional, List, Tuple
 import os
 from datetime import datetime
@@ -14,7 +15,9 @@ from main_window.main_widget.grid_mode_checker import GridModeChecker
 from enums.letter.letter import Letter
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import ImageExportTab
+    from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (
+        ImageExportTab,
+    )
 
 
 class BaseCodexExporter:
@@ -22,40 +25,44 @@ class BaseCodexExporter:
 
     def __init__(self, image_export_tab: "ImageExportTab"):
         """Initialize the exporter.
-        
+
         Args:
             image_export_tab: The parent image export tab
         """
         self.image_export_tab = image_export_tab
         self.main_widget = image_export_tab.main_widget
-        
-    def _create_pictograph_from_data(self, pictograph_data: Dict[str, Any], grid_mode: str) -> Pictograph:
+
+    def _create_pictograph_from_data(
+        self, pictograph_data: Dict[str, Any], grid_mode: str
+    ) -> Pictograph:
         """Create a pictograph from the given data.
-        
+
         Args:
             pictograph_data: The pictograph data
             grid_mode: The grid mode to use
-            
+
         Returns:
             The created pictograph
         """
         raise NotImplementedError("Subclasses must implement this method")
-    
-    def _create_pictograph_image(self, pictograph: Pictograph, add_border: bool = False) -> QImage:
+
+    def _create_pictograph_image(
+        self, pictograph: Pictograph, add_border: bool = False
+    ) -> QImage:
         """Create a QImage from a pictograph.
-        
+
         Args:
             pictograph: The pictograph to convert to an image
             add_border: Whether to add a border
-            
+
         Returns:
             The created image
         """
         raise NotImplementedError("Subclasses must implement this method")
-    
+
     def _get_export_directory(self) -> Optional[str]:
         """Ask the user for a directory to save the exported images.
-        
+
         Returns:
             The selected directory, or None if the user canceled
         """
@@ -66,15 +73,15 @@ class BaseCodexExporter:
             QFileDialog.Option.ShowDirsOnly,
         )
         return directory if directory else None
-    
+
     def _apply_turns_to_pictograph(
         self,
         pictograph: Pictograph,
-        red_turns: int = 0,
-        blue_turns: int = 0,
+        red_turns: float = 0.0,
+        blue_turns: float = 0.0,
     ) -> None:
         """Apply the specified turns to a pictograph.
-        
+
         Args:
             pictograph: The pictograph to update
             red_turns: The number of turns for the red hand

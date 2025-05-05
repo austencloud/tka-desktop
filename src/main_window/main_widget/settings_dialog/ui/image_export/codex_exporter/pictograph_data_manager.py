@@ -63,9 +63,9 @@ class PictographDataManager:
 
         return None
 
-    def get_hybrid_pictograph_versions(
+    def fetch_matching_pictographs(
         self, letter: str, start_pos: str, end_pos: str
-    ) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
+    ) -> list[dict[str, Any]]:
         """Get pro and anti versions of a hybrid pictograph.
 
         Args:
@@ -74,46 +74,59 @@ class PictographDataManager:
             end_pos: The end position
 
         Returns:
-            A tuple of (pro_version, anti_version), either of which may be None
+            A list of matching pictographs
         """
         # Try to convert string letter to enum
         try:
             letter_enum = Letter(letter)
         except ValueError:
-            # If letter is not in enum, return None, None
-            return None, None
+            # If letter is not in enum, return empty list
+            return []
 
         # Check if we have access to the dataset
         if (
             not hasattr(self.main_widget, "pictograph_dataset")
             or not self.main_widget.pictograph_dataset
         ):
-            return None, None
+            return []
 
         # Get all pictographs for this letter
         letter_pictographs = self.main_widget.pictograph_dataset.get(letter_enum, [])
 
         # Find ones that match the start and end positions
         matching_pictographs = []
+        print(f"Looking for pictographs with start_pos={start_pos}, end_pos={end_pos}")
+        print(f"Found {len(letter_pictographs)} pictographs for letter {letter}")
+
         for pic_data in letter_pictographs:
-            if (
-                pic_data.get("start_pos") == start_pos
-                and pic_data.get("end_pos") == end_pos
-            ):
+            pic_start_pos = pic_data.get("start_pos")
+            pic_end_pos = pic_data.get("end_pos")
+
+            print(
+                f"Checking pictograph with start_pos={pic_start_pos}, end_pos={pic_end_pos}"
+            )
+
+            if pic_start_pos == start_pos and pic_end_pos == end_pos:
+                red_motion_type = pic_data.get("red_attributes", {}).get(
+                    "motion_type", ""
+                )
+                blue_motion_type = pic_data.get("blue_attributes", {}).get(
+                    "motion_type", ""
+                )
+                print(
+                    f"Found matching pictograph with red={red_motion_type}, blue={blue_motion_type}"
+                )
                 matching_pictographs.append(pic_data)
 
-        # Sort by motion type
-        pro_version = None
-        anti_version = None
+        print(f"Found {len(matching_pictographs)} matching pictographs")
 
-        for pic_data in matching_pictographs:
-            red_attrs = pic_data.get("red_attributes", {})
-            if red_attrs.get("motion_type") == "pro":
-                pro_version = pic_data
-            elif red_attrs.get("motion_type") == "anti":
-                anti_version = pic_data
+        # Print details of each matching pictograph
+        for i, pic in enumerate(matching_pictographs):
+            red_motion = pic.get("red_attributes", {}).get("motion_type", "")
+            blue_motion = pic.get("blue_attributes", {}).get("motion_type", "")
+            print(f"Matching pictograph {i}: red={red_motion}, blue={blue_motion}")
 
-        return pro_version, anti_version
+        return matching_pictographs
 
     def create_minimal_data_for_letter(self, letter: str) -> Dict[str, Any]:
         """Create minimal data for a letter.

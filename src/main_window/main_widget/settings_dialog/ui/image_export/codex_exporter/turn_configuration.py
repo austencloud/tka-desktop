@@ -1,20 +1,28 @@
-from typing import TYPE_CHECKING, Dict, Any, Optional, List, Tuple
 from typing import Dict, List, Optional, Set, Tuple
 
 
 class TurnConfiguration:
 
     @staticmethod
-    def get_turn_combinations() -> List[Tuple[int, int]]:
-        return [(red, blue) for red in range(4) for blue in range(4)]
+    def get_turn_combinations() -> List[Tuple[float, float]]:
+        """Get all possible turn combinations.
+
+        Returns:
+            A list of (red_turns, blue_turns) tuples
+        """
+        turn_values = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
+        return [(red, blue) for red in turn_values for blue in turn_values]
 
     @staticmethod
-    def get_turn_directory_name(red_turns: int, blue_turns: int) -> str:
+    def get_turn_directory_name(red_turns: float, blue_turns: float) -> str:
         return f"red{red_turns}_blue{blue_turns}"
 
     @staticmethod
     def get_hybrid_filename(
-        letter: str, red_turns: int, blue_turns: int, motion_type: Optional[str] = None
+        letter: str,
+        red_turns: float,
+        blue_turns: float,
+        motion_type: Optional[str] = None,
     ) -> str:
         """Get the filename for a hybrid pictograph.
 
@@ -23,8 +31,12 @@ class TurnConfiguration:
             red_turns: The number of turns for the red hand
             blue_turns: The number of turns for the blue hand
             motion_type: The motion type, which can be:
-                - "pro_turns" (pro hand has turns, anti hand has 0 turns)
-                - "anti_turns" (pro hand has 0 turns, anti hand has turns)
+                - "pro_red" (red=pro, blue=anti)
+                - "pro_blue" (red=anti, blue=pro)
+                - "normal" (for S, T, U, V: red=red_turns, blue=blue_turns)
+                - "swapped" (for S, T, U, V: red=blue_turns, blue=red_turns)
+                - "pro_turns" (legacy: pro hand has turns, anti hand has 0 turns)
+                - "anti_turns" (legacy: pro hand has 0 turns, anti hand has turns)
 
         Returns:
             The filename
@@ -33,10 +45,22 @@ class TurnConfiguration:
             # If turns are the same, we only need one version
             return f"{letter}.png"
         else:
-            # If turns are different, we need to specify which hand has turns
-            if motion_type == "pro_turns":
+            # If turns are different, we need to specify which variation
+            if motion_type == "pro_red":
+                return f"{letter}_red_pro_blue_anti.png"
+            elif motion_type == "pro_blue":
+                return f"{letter}_red_anti_blue_pro.png"
+            elif motion_type == "normal":
+                # For S, T, U, V: normal turn order
+                return f"{letter}_red{red_turns}_blue{blue_turns}.png"
+            elif motion_type == "swapped":
+                # For S, T, U, V: swapped turn order
+                return f"{letter}_red{blue_turns}_blue{red_turns}_swapped.png"
+            elif motion_type == "pro_turns":
+                # Legacy support
                 return f"{letter}_pro_turns.png"
             elif motion_type == "anti_turns":
+                # Legacy support
                 return f"{letter}_anti_turns.png"
             else:
                 # Fallback for backward compatibility
@@ -66,7 +90,7 @@ class TurnConfiguration:
     }
 
     # Define hybrid letters using a set for efficient O(1) average time complexity lookup
-    _HYBRID_LETTERS: Set[str] = {"C", "F", "I", "L", "O", "R", "U", "V"}
+    _HYBRID_LETTERS: Set[str] = {"C", "F", "I", "L", "O", "R", "S", "T", "U", "V"}
 
     @staticmethod
     def is_hybrid_letter(letter: str) -> bool:

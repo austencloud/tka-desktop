@@ -73,9 +73,10 @@ class CodexExporter:
     def export_pictographs(
         self,
         selected_types: List[str],
-        red_turns: int,
-        blue_turns: int,
+        red_turns: float,
+        blue_turns: float,
         generate_all: bool = False,
+        grid_mode: str = "diamond",
     ) -> int:
         """Export pictographs with the specified turns.
 
@@ -84,10 +85,11 @@ class CodexExporter:
             red_turns: The number of turns for the red hand
             blue_turns: The number of turns for the blue hand
             generate_all: Whether to generate all turn combinations
+            grid_mode: The grid mode to use ('diamond' or 'box')
 
         Returns:
             The number of exported pictographs
         """
         return self.main_exporter.export_pictographs(
-            selected_types, red_turns, blue_turns, generate_all
+            selected_types, red_turns, blue_turns, generate_all, grid_mode
         )

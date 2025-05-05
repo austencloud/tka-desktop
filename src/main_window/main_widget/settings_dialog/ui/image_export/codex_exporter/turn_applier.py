@@ -1,8 +1,11 @@
 """
 Applies turns to pictographs.
 """
+
 from typing import TYPE_CHECKING
 from data.constants import RED, BLUE
+from objects.motion.motion import MotionOriCalculator
+from settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
@@ -10,15 +13,15 @@ if TYPE_CHECKING:
 
 class TurnApplier:
     """Applies turns to pictographs."""
-    
+
     @staticmethod
     def apply_turns_to_pictograph(
         pictograph: "Pictograph",
-        red_turns: int = 0,
-        blue_turns: int = 0,
+        red_turns: float = 0.0,
+        blue_turns: float = 0.0,
     ) -> None:
         """Apply the specified turns to a pictograph.
-        
+
         Args:
             pictograph: The pictograph to update
             red_turns: The number of turns for the red hand
@@ -31,15 +34,31 @@ class TurnApplier:
         # Update the pictograph data directly
         pictograph_data = pictograph.state.pictograph_data.copy()
 
+        if blue_turns in [0.0, 1.0, 2.0, 3.0]:
+            blue_turns = int(blue_turns)
+        if red_turns in [0.0, 1.0, 2.0, 3.0]:
+            red_turns = int(red_turns)
         # Update blue motion data
         if blue_motion and BLUE + "_attributes" in pictograph_data:
             # Only update the turns value, preserve everything else
             pictograph_data[BLUE + "_attributes"]["turns"] = blue_turns
+            pictograph_data[BLUE + "_attributes"]["end_ori"] = MotionOriCalculator(
+                pictograph.elements.motion_set.get(BLUE)
+            ).get_end_ori()
+            blue_motion.state.turns = blue_turns
 
         # Update red motion data
         if red_motion and RED + "_attributes" in pictograph_data:
             # Only update the turns value, preserve everything else
             pictograph_data[RED + "_attributes"]["turns"] = red_turns
+            pictograph_data[RED + "_attributes"]["end_ori"] = MotionOriCalculator(
+                pictograph.elements.motion_set.get(RED)
+            ).get_end_ori()
+            #  clean up the turns - if it's a float that could be an int like 1.0, 2.0, 0.0, 3.0, turn it into an int. Otherwise keep it a float.
+            red_motion.state.turns = red_turns
+
+        pictograph.elements.motion_set.get(RED).updater.update_motion()
+        pictograph.elements.motion_set.get(BLUE).updater.update_motion()
 
         # Apply the updated data to the pictograph
         pictograph.managers.updater.update_pictograph(pictograph_data)
