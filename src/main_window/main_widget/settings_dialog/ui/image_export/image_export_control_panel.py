@@ -23,6 +23,9 @@ from main_window.main_widget.settings_dialog.ui.image_export.pictograph_dataset_
 from main_window.main_widget.settings_dialog.ui.image_export.codex_pictograph_exporter import (
     CodexPictographExporter,
 )
+from main_window.main_widget.settings_dialog.ui.image_export.codex_pictograph_exporter_dialog import (
+    CodexPictographExporterDialog,
+)
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (
@@ -70,6 +73,13 @@ class ImageExportControlPanel(QWidget):
         self.export_codex_button.clicked.connect(
             self.codex_exporter.export_codex_pictographs
         )
+
+        # Create the export codex pictographs with turns button
+        self.export_codex_turns_button = QPushButton("Export Pictographs with Turns")
+        self.export_codex_turns_button.setToolTip(
+            "Export pictographs with specific turn patterns applied"
+        )
+        self.export_codex_turns_button.clicked.connect(self._show_codex_turns_dialog)
 
         # Connect the stateChanged signal to our handler
         self.save_dir_checkbox.stateChanged.connect(self._save_directory_preference)
@@ -127,6 +137,8 @@ class ImageExportControlPanel(QWidget):
         h_layout.addWidget(self.export_all_pictographs_button)
         h_layout.addSpacing(20)  # Add space between buttons
         h_layout.addWidget(self.export_codex_button)
+        h_layout.addSpacing(20)  # Add space between buttons
+        h_layout.addWidget(self.export_codex_turns_button)
         h_layout.addStretch(1)  # Add stretch after buttons
 
         v_layout.addLayout(h_layout)
@@ -255,3 +267,8 @@ class ImageExportControlPanel(QWidget):
     def emit_setting_changed(self):
         """Emits a signal when a setting is changed."""
         self.settingChanged.emit()
+
+    def _show_codex_turns_dialog(self):
+        """Show the dialog for exporting pictographs with turns."""
+        dialog = CodexPictographExporterDialog(self.image_export_tab)
+        dialog.exec()
