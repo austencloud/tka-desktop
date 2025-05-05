@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
     QFrame,
     QPushButton,
 )
-from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtCore import pyqtSignal
 
 from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab_button import (
     ImageExportTabButton,
@@ -22,9 +22,6 @@ from main_window.main_widget.settings_dialog.ui.image_export.pictograph_dataset_
 )
 from main_window.main_widget.settings_dialog.ui.image_export.codex_pictograph_exporter import (
     CodexPictographExporter,
-)
-from main_window.main_widget.settings_dialog.ui.image_export.codex_pictograph_exporter_dialog import (
-    CodexPictographExporterDialog,
 )
 
 if TYPE_CHECKING:
@@ -270,5 +267,7 @@ class ImageExportControlPanel(QWidget):
 
     def _show_codex_turns_dialog(self):
         """Show the dialog for exporting pictographs with turns."""
-        dialog = CodexPictographExporterDialog(self.image_export_tab)
+        from .codex_exporter import CodexDialog
+
+        dialog = CodexDialog(self.image_export_tab)
         dialog.exec()
