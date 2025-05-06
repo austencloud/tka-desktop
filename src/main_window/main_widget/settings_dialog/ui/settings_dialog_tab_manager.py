@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget
 
+from main_window.main_widget.settings_dialog.ui.codex_exporter.codex_exporter_tab import (
+    CodexExporterTab,
+)
 from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (
     ImageExportTab,
 )
@@ -55,6 +58,8 @@ class SettingsDialogTabManager:
             selected_tab.update_beat_layout_tab()
         elif isinstance(selected_tab, ImageExportTab):
             selected_tab.update_image_export_tab_from_settings()
+        elif isinstance(selected_tab, CodexExporterTab):
+            selected_tab.update_codex_exporter_tab_from_settings()
 
     def get_tab_index(self, tab_name: str) -> int:
         return list(self.tabs.keys()).index(tab_name) if tab_name in self.tabs else 0

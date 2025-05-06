@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QStackedWidget, QWidget, QVBoxLayout
 
 from .beat_layout.beat_layout_tab import BeatLayoutTab
+from .codex_exporter.codex_exporter_tab import CodexExporterTab
 from .image_export.image_export_tab import ImageExportTab
 from .prop_type.prop_type_tab import PropTypeTab
 from .user_profile.user_profile_tab import UserProfileTab
@@ -28,19 +29,19 @@ class SettingsDialogUI(QWidget):
         self.main_vertical_layout = QVBoxLayout(self)
         horizontal_main_layout = QHBoxLayout()
 
-
         self.tab_selection_manager.tabs = {
             "User Profile": UserProfileTab(self.dialog),
             "Prop Type": PropTypeTab(self.dialog),
             "Visibility": VisibilityTab(self.dialog),
             "Beat Layout": BeatLayoutTab(self.dialog),
-            "Image Export": ImageExportTab(self.dialog),  # New tab
+            "Image Export": ImageExportTab(self.dialog),
+            "Codex Exporter": CodexExporterTab(self.dialog),
         }
 
         self.user_profile_tab: UserProfileTab = self.tab_selection_manager.tabs[
             "User Profile"
         ]
-        
+
         self.prop_type_tab: PropTypeTab = self.tab_selection_manager.tabs["Prop Type"]
         self.visibility_tab: VisibilityTab = self.tab_selection_manager.tabs[
             "Visibility"
@@ -50,6 +51,9 @@ class SettingsDialogUI(QWidget):
         ]
         self.image_export_tab: ImageExportTab = self.tab_selection_manager.tabs[
             "Image Export"
+        ]
+        self.codex_exporter_tab: CodexExporterTab = self.tab_selection_manager.tabs[
+            "Codex Exporter"
         ]
         for name, widget in self.tab_selection_manager.tabs.items():
             self.tab_selection_manager.add_tab(name, widget)
