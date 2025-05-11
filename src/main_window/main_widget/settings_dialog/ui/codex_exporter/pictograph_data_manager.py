@@ -141,8 +141,9 @@ class PictographDataManager:
             The minimal data
         """
         # Determine the correct start and end positions based on the letter
-        # Type 1 letters that start from alpha1 and end at alpha3
+        # Define position groups for all letter types
         _POSITION_GROUPS: Dict[Tuple[str, str], List[str]] = {
+            # Type 1 letters
             ("alpha1", "alpha3"): ["A", "B", "C"],
             ("beta1", "alpha3"): ["D", "E", "F"],
             ("beta3", "beta5"): ["G", "H", "I"],
@@ -150,6 +151,16 @@ class PictographDataManager:
             ("gamma11", "gamma1"): ["M", "N", "O"],
             ("gamma1", "gamma15"): ["P", "Q", "R"],
             ("gamma13", "gamma11"): ["S", "T", "U", "V"],
+            # Type 2 letters
+            ("gamma13", "alpha3"): ["W", "X"],
+            ("gamma11", "beta5"): ["Y", "Z"],
+            ("alpha3", "gamma13"): ["Σ", "Δ"],
+            ("beta7", "gamma13"): ["θ", "Ω"],
+            # Type 3 letters
+            ("gamma11", "alpha3"): ["W-", "X-"],
+            ("gamma3", "beta5"): ["Y-", "Z-"],
+            ("beta3", "gamma13"): ["Σ-", "Δ-"],
+            ("alpha8", "gamma13"): ["θ-", "Ω-"],
         }
 
         start_pos = "alpha1"  # Default start position

@@ -188,10 +188,33 @@ class CodexExporterTab(QWidget):
         button_layout.addWidget(self.export_button)
         main_layout.addLayout(button_layout)
 
+    def get_selected_letters(self):
+        """Get the selected letters to export.
+
+        Returns:
+            A list of letters to export
+        """
+        # Include all letters (A-V, W, X, Y, Z, Σ, Δ, θ, Ω)
+        all_letters = (
+            list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+            + ["Σ", "Δ", "θ", "Ω"]
+            + [
+                "W-",
+                "X-",
+                "Y-",
+                "Z-",
+                "Σ-",
+                "Δ-",
+                "θ-",
+                "Ω-",
+            ]
+        )
+        return all_letters
+
     def _export_pictographs(self):
         """Export all pictographs with the configured turns."""
-        # Always export all letters (A-V)
-        all_letters = list("ABCDEFGHIJKLMNOPQRSTUV")
+        # Get all letters to export
+        all_letters = self.get_selected_letters()
 
         # Get the turn configuration
         turn_config = self.turn_configuration.get_turn_values()

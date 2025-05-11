@@ -8,6 +8,7 @@ import os
 from .base_exporter import BaseExporter
 from .non_hybrid_exporter import NonHybridExporter
 from .hybrid_exporter import HybridExporter
+from .type2_exporter import Type23Exporter
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (
@@ -53,6 +54,9 @@ class MainExporter(BaseExporter):
             data_manager, factory, renderer, turn_configuration
         )
         self.hybrid_exporter = HybridExporter(
+            data_manager, factory, renderer, turn_configuration
+        )
+        self.type23_exporter = Type23Exporter(
             data_manager, factory, renderer, turn_configuration
         )
 
@@ -108,13 +112,21 @@ class MainExporter(BaseExporter):
 
                     # Create a subdirectory for this turn combination
                     turn_dir_name = self.turn_configuration.get_turn_directory_name(
-                        red_turns, blue_turns
+                        red_turns, blue_turns, letter
                     )
                     turn_directory = os.path.join(main_directory, turn_dir_name)
                     os.makedirs(turn_directory, exist_ok=True)
 
                     # Handle different pictograph types
-                    if self.turn_configuration.is_hybrid_letter(letter):
+                    if self.turn_configuration.is_type2_letter(
+                        letter
+                    ) or self.turn_configuration.is_type3_letter(letter):
+                        # Type 2 letters: special handling with same/opp variations
+                        exported = self.type23_exporter.export_pictograph(
+                            letter, turn_directory, red_turns, blue_turns, grid_mode
+                        )
+                        exported_count += exported
+                    elif self.turn_configuration.is_hybrid_letter(letter):
                         # Hybrid types: one or two versions depending on turns
                         exported = self.hybrid_exporter.export_pictograph(
                             letter, turn_directory, red_turns, blue_turns, grid_mode
@@ -151,21 +163,49 @@ class MainExporter(BaseExporter):
         """
         total_count = len(selected_types) * len(turn_combinations)
 
-        # Add extra for hybrid letters which need two versions for some combinations
-        # Count how many hybrid letters are selected
-        hybrid_letter_count = sum(
+        # Count Type 1 hybrid letters (excluding Type 2)
+        type1_hybrid_letter_count = sum(
             1
             for letter in selected_types
             if self.turn_configuration.is_hybrid_letter(letter)
+            and not self.turn_configuration.is_type2_letter(letter)
         )
 
-        # Count how many combinations need two versions
+        # Count Type 2 letters
+        type2_letter_count = sum(
+            1
+            for letter in selected_types
+            if self.turn_configuration.is_type2_letter(letter)
+        )
+
+        # Count combinations for Type 1 hybrid letters
         # Only combinations where red_turns != blue_turns need two versions
         extra_versions_per_letter = sum(
             1 for red, blue in turn_combinations if red != blue
         )
 
-        # Add the extra versions to the total count
-        total_count += hybrid_letter_count * extra_versions_per_letter
+        # Add the extra versions for Type 1 hybrid letters
+        total_count += type1_hybrid_letter_count * extra_versions_per_letter
+
+        # For Type 2 letters:
+        # 1. When one turn value is 0, we'll have 12 variations total
+        # 2. When both turn values are non-zero, we'll have 16 variations total
+
+        # Count combinations with one zero turn value
+        one_zero_combinations = [
+            (red, blue) for red, blue in turn_combinations if red == 0 or blue == 0
+        ]
+        # Count combinations with both non-zero turn values
+        both_non_zero_combinations = [
+            (red, blue) for red, blue in turn_combinations if red > 0 and blue > 0
+        ]
+
+        # Calculate total variations for Type 2 letters
+        type2_variations = (len(one_zero_combinations) * 12) + (
+            len(both_non_zero_combinations) * 16
+        )
+
+        # Add the variations for Type 2 letters
+        total_count += type2_letter_count * type2_variations
 
         return total_count

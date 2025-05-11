@@ -76,8 +76,19 @@ class BaseExporter:
                 first_turn = turn_combinations[0]
                 from ..turn_configuration import TurnConfiguration
 
+                # Use the first letter from selected_types to determine the type directory
+
+                # Get the first letter if available
+                first_letter = None
+                if hasattr(self, "parent") and hasattr(
+                    self.parent, "get_selected_letters"
+                ):
+                    selected_letters = self.parent.get_selected_letters()
+                    if selected_letters:
+                        first_letter = selected_letters[0]
+
                 first_dir_name = TurnConfiguration.get_turn_directory_name(
-                    first_turn[0], first_turn[1]
+                    first_turn[0], first_turn[1], first_letter
                 )
                 first_dir_path = os.path.join(directory, first_dir_name)
 
