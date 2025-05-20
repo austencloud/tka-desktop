@@ -12,6 +12,7 @@ from .browse_tab.browse_tab import BrowseTab
 from .learn_tab.learn_tab import LearnTab
 from .main_background_widget.main_background_widget import MainBackgroundWidget
 from .font_color_updater.font_color_updater import FontColorUpdater
+from .sequence_card_tab.sequence_card_tab import SequenceCardTab
 from ..menu_bar.menu_bar import MenuBarWidget
 from .sequence_workbench.sequence_workbench import SequenceWorkbench
 from PyQt6.QtWidgets import (
@@ -65,6 +66,7 @@ class MainWidgetUI:
         mw.generate_tab = GenerateTab(mw)
         mw.browse_tab = BrowseTab(mw)
         mw.learn_tab = LearnTab(mw)
+        mw.sequence_card_tab = SequenceCardTab(mw)
         # mw.write_tab = WriteTab(mw)
 
         mw.background_widget = MainBackgroundWidget(mw)
@@ -89,6 +91,7 @@ class MainWidgetUI:
         mw.right_stack.addWidget(mw.generate_tab)  # 3
         mw.right_stack.addWidget(mw.learn_tab)  # 4
         mw.right_stack.addWidget(mw.browse_tab.sequence_viewer)  # 5
+        mw.right_stack.addWidget(mw.sequence_card_tab)  # 6
 
     def _initialize_layout(self):
         mw = self.mw

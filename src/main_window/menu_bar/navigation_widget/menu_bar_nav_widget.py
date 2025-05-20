@@ -4,6 +4,7 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtCore import pyqtSignal
 
 from main_window.main_widget.tab_index import TAB_INDEX
+from main_window.main_widget.tab_name import TabName
 from styles.styled_button import StyledButton
 
 
@@ -19,7 +20,13 @@ class MenuBarNavWidget(QWidget):
         self.mw = menu_bar.main_widget
 
         self.tab_buttons: list[StyledButton] = []
-        self.tab_names = ["Construct ⚒️", "Generate 🤖", "Browse 🔍", "Learn 🧠"]
+        self.tab_names = [
+            "Construct ⚒️",
+            "Generate 🤖",
+            "Browse 🔍",
+            "Learn 🧠",
+            "Sequence Card 📋",
+        ]
 
         self.current_index = 0
 
@@ -43,20 +50,45 @@ class MenuBarNavWidget(QWidget):
         main_layout = QVBoxLayout(self)
         main_layout.addWidget(self.container_frame)
 
-        self.tab_changed.connect(
-            lambda: self.mw.tab_switcher.on_tab_changed(
-                list(TAB_INDEX.keys())[self.current_index]
-            )
-        )
+        def on_tab_changed_handler(index):
+            print(f"DEBUG: on_tab_changed_handler called with index={index}")
+
+            # Create a direct mapping from button index to TabName
+            tab_mapping = {
+                0: TabName.CONSTRUCT,
+                1: TabName.GENERATE,
+                2: TabName.BROWSE,
+                3: TabName.LEARN,
+                4: TabName.SEQUENCE_CARD,
+            }
+
+            if index in tab_mapping:
+                tab_name = tab_mapping[index]
+                print(f"DEBUG: tab_name={tab_name}")
+                self.mw.tab_switcher.on_tab_changed(tab_name)
+            else:
+                print(f"DEBUG: ERROR - index {index} not found in tab_mapping")
+
+        self.tab_changed.connect(on_tab_changed_handler)
 
         self.set_active_tab(self.current_index)
 
     def set_active_tab(self, index: int):
+        print(f"DEBUG: MenuBarNavWidget.set_active_tab called with index={index}")
         if index == self.current_index:
+            print(
+                f"DEBUG: MenuBarNavWidget - No change needed, current_index={self.current_index}"
+            )
             return  # No need to reapply the same state
 
         self.current_index = index
+        print(
+            f"DEBUG: MenuBarNavWidget - Updated current_index to {self.current_index}"
+        )
         self.update_buttons()
+        print(
+            f"DEBUG: MenuBarNavWidget - Emitting tab_changed signal with index={index}"
+        )
         self.tab_changed.emit(index)
 
     def update_buttons(self):

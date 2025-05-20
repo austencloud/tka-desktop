@@ -13,5 +13,6 @@ class RightStackIndex(IntEnum):
     ADVANCED_START_POS_PICKER = 1
     OPTION_PICKER = 2
     GENERATE_TAB = 3
-    LEARN_TAB= 4
+    LEARN_TAB = 4
     SEQUENCE_VIEWER = 5
+    SEQUENCE_CARD_TAB = 6
