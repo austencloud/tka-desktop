@@ -8,6 +8,9 @@ from .image_saver import ImageSaver
 
 
 if TYPE_CHECKING:
+    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
     from base_widgets.base_beat_frame import BaseBeatFrame
 
 
@@ -20,7 +23,7 @@ class ImageExportManager:
 
     def __init__(
         self,
-        beat_frame: "BaseBeatFrame",
+        beat_frame: "SequenceBeatFrame",
         beat_frame_class: type,
     ) -> None:
         self.beat_frame = beat_frame

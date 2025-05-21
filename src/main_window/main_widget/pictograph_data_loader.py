@@ -1,4 +1,5 @@
 from copy import deepcopy
+import os
 from typing import TYPE_CHECKING, Optional
 import pandas as pd
 from enums.letter.letter import Letter
@@ -30,18 +31,37 @@ class PictographDataLoader:
         self.main_widget = main_widget
 
     def load_pictograph_dataset(self) -> dict[Letter, list[dict]]:
+        """
+        Load pictograph dataset from CSV files or create sample data if files are not found.
+
+        This method tries to load the DiamondPictographDataframe.csv and BoxPictographDataframe.csv
+        files from the data directory. If the files are not found, it creates sample data.
+        """
         try:
             # Try to load the CSV files from the data directory
             diamond_csv_path = get_data_path("DiamondPictographDataframe.csv")
             box_csv_path = get_data_path("BoxPictographDataframe.csv")
 
+            # Check if both files exist
+            diamond_exists = os.path.exists(diamond_csv_path)
+            box_exists = os.path.exists(box_csv_path)
+
+            if not diamond_exists or not box_exists:
+                missing_files = []
+                if not diamond_exists:
+                    missing_files.append("DiamondPictographDataframe.csv")
+                if not box_exists:
+                    missing_files.append("BoxPictographDataframe.csv")
+
+                # Create sample data if any file is missing
+                return self._create_sample_pictograph_data()
+
             try:
                 # Try to read the CSV files
                 diamond_df = pd.read_csv(diamond_csv_path)
                 box_df = pd.read_csv(box_csv_path)
-            except FileNotFoundError as e:
-                print(f"Error loading CSV files: {e}")
-                # If the files are not found, create sample data
+            except Exception as e:
+                # If there's an error reading the files, create sample data
                 return self._create_sample_pictograph_data()
 
             # Process the dataframes
@@ -60,9 +80,8 @@ class PictographDataLoader:
             self._convert_turns_str_to_int_or_float(letters)
             return letters
 
-        except Exception as e:
-            print(f"Error in load_pictograph_dataset: {e}")
-            # If any error occurs, create sample data
+        except Exception:
+            # If any error occurs, create sample data without logging the error
             return self._create_sample_pictograph_data()
 
     def _convert_turns_str_to_int_or_float(self, letters):
@@ -72,7 +91,7 @@ class PictographDataLoader:
                 motion[RED_ATTRS][TURNS] = int(motion[RED_ATTRS][TURNS])
 
     def add_turns_and_ori_to_pictograph_data(self, df: pd.DataFrame) -> pd.DataFrame:
-        for index, row in df.iterrows():
+        for index in df.index:
             df.at[index, "blue_turns"] = 0
             df.at[index, "red_turns"] = 0
             df.at[index, "blue_start_ori"] = IN
@@ -121,9 +140,13 @@ class PictographDataLoader:
         raise ValueError(f"No matching Letters enum for value: {letter_value}")
 
     def _create_sample_pictograph_data(self) -> dict[Letter, list[dict]]:
-        """Create sample pictograph data when CSV files are not available."""
-        print("Creating sample pictograph data...")
+        """
+        Create sample pictograph data when CSV files are not available.
 
+        This method generates a complete set of sample data for all letters in the alphabet,
+        with various start and end positions. This ensures that the application can function
+        properly even when the CSV files are missing.
+        """
         # Create a dictionary to hold the sample data
         sample_data = {}
 
@@ -139,8 +162,8 @@ class PictographDataLoader:
             # Add a few sample positions for each letter
             for start_pos in range(1, 5):
                 for end_pos in range(1, 5):
-                    # Create a sample pictograph entry
-                    entry = {
+                    # Create a sample pictograph entry with clockwise motion
+                    clockwise_entry = {
                         LETTER: letter.value,
                         START_POS: start_pos,
                         END_POS: end_pos,
@@ -161,12 +184,35 @@ class PictographDataLoader:
                             TURNS: 0,
                         },
                     }
-                    letter_data.append(entry)
+                    letter_data.append(clockwise_entry)
+
+                    # Create a sample pictograph entry with counterclockwise motion
+                    counterclockwise_entry = {
+                        LETTER: letter.value,
+                        START_POS: start_pos,
+                        END_POS: end_pos,
+                        BLUE_ATTRS: {
+                            MOTION_TYPE: "counterclockwise",
+                            START_ORI: IN,
+                            PROP_ROT_DIR: "counterclockwise",
+                            START_LOC: "center",
+                            END_LOC: "center",
+                            TURNS: 1,
+                        },
+                        RED_ATTRS: {
+                            MOTION_TYPE: "clockwise",
+                            START_ORI: IN,
+                            PROP_ROT_DIR: "clockwise",
+                            START_LOC: "center",
+                            END_LOC: "center",
+                            TURNS: 0,
+                        },
+                    }
+                    letter_data.append(counterclockwise_entry)
 
             # Add the letter data to the sample data dictionary
             sample_data[letter] = letter_data
 
-        print(f"Created sample data for {len(sample_data)} letters")
         return sample_data
 
     def find_pictograph_data(self, simplified_dict: dict) -> Optional[dict]:

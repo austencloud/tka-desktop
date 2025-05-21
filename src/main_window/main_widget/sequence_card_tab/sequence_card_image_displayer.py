@@ -1,14 +1,10 @@
 import os
-import random
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QLabel, QGridLayout
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPixmap, QImage, QPainter, QColor, QFont
-from PIL import Image, ImageDraw, ImageFont
-import numpy as np
+from PyQt6.QtGui import QPixmap
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from utils.path_helpers import get_sequence_card_image_exporter_path
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_card_tab.sequence_card_tab import (
@@ -24,73 +20,88 @@ class SequenceCardImageDisplayer:
         self.current_page_index = -1
         self.current_row = 0
         self.current_col = 0
-        self.max_images_per_row = 2  # Assuming two images per row
+        self.max_images_per_row = (
+            3  # Increased from 2 to 3 images per row for better space usage
+        )
 
-    def display_images(self, images: list[str]):
-        """Display sequence card images filtered by the selected length."""
+    def display_sequences(self, sequences: list[dict]):
+        """
+        Display sequence card images filtered by the selected length.
+
+        Args:
+            sequences: A list of dictionaries containing sequence information:
+                - path: The path to the sequence file
+                - word: The word associated with the sequence
+                - metadata: The metadata extracted from the sequence file
+        """
         self.pages = self.sequence_card_tab.pages
         self.pages_cache = self.sequence_card_tab.pages_cache
 
-        print(f"Found {len(images)} total images in the export directory")
+        print(f"Displaying {len(sequences)} sequences")
 
-        # If no images are found, create sample images for testing
-        if not images:
-            print("No images found. Creating sample images for testing.")
-            self._create_sample_images()
-            # Get the images again after creating samples
-            export_path = get_sequence_card_image_exporter_path()
-            images = [
-                os.path.join(export_path, f)
-                for f in os.listdir(export_path)
-                if f.endswith(".png")
-            ]
-            print(f"Created {len(images)} sample images")
+        # If no sequences are found, show a message
+        if not sequences:
+            print("No sequences found for the selected length.")
+            self._show_no_sequences_message()
+            return
 
-        # Filter images by sequence length
-        filtered_images = []
-        for img_path in images:
-            try:
-                # For testing purposes, assume all images have the selected length
-                # This ensures we display something even if metadata extraction fails
-                filtered_images.append(img_path)
-                print(f"Added image {os.path.basename(img_path)} to filtered list")
-            except Exception as e:
-                print(f"Error processing image {img_path}: {e}")
-
-        print(f"Filtered to {len(filtered_images)} images")
-
-        # Sort images by filename
-        sorted_images = sorted(
-            filtered_images, key=lambda img_path: os.path.basename(img_path)
+        # Sort sequences by word and then by filename
+        sorted_sequences = sorted(
+            sequences, key=lambda seq: (seq["word"], os.path.basename(seq["path"]))
         )
 
-        total_width = 8000
-        self.margin = total_width // 30
-        self.page_width = (
-            (total_width // 2) - (2 * self.margin) - (self.nav_sidebar.width() // 2)
-        )
-        self.page_height = int(self.page_width * 11 / 8.5)
+        # Calculate the available width for two pages side by side
+        scroll_area_width = self.sequence_card_tab.scroll_area.width()
+        nav_sidebar_width = self.nav_sidebar.width()
+        available_width = (
+            scroll_area_width - nav_sidebar_width - 40
+        )  # Account for margins
+
+        # Set up page dimensions (A4 aspect ratio: 8.5:11)
+        self.margin = 25  # Fixed margin between pages
+        self.page_width = (available_width - self.margin) // 2
+        self.page_height = int(self.page_width * 11 / 8.5)  # Maintain A4 aspect ratio
         self.image_card_margin = self.page_width // 40
 
         self.current_page_index = -1
+        current_word = None
 
-        for image_path in sorted_images:
+        # Group sequences by word
+        for sequence in sorted_sequences:
+            # If this is a new word, add a word header
+
+
+            # Load the sequence image
+            image_path = sequence["path"]
             pixmap = QPixmap(image_path)
 
-            max_image_width = self.page_width // 2 - self.image_card_margin
-            scale_factor = max_image_width / pixmap.width()
+            if pixmap.isNull():
+                print(f"Error loading image: {image_path}")
+                continue
+
+            # Calculate scaling for smaller images (3 per row instead of 2)
+            max_image_width = self.page_width // 3 - self.image_card_margin
+            scale_factor = max_image_width / pixmap.width() if pixmap.width() > 0 else 1
             scaled_height = int(pixmap.height() * scale_factor)
 
-            if scaled_height + self.margin * 2 > self.page_height // 3:
+            # Optimize for more rows per page
+            if (
+                scaled_height + self.margin * 2 > self.page_height // 4
+            ):  # Increased from 3 to 4 divisions
                 num_rows = self.get_num_rows_based_on_sequence_length(
                     self.nav_sidebar.selected_length
                 )
-                scaled_height = int(self.page_height // num_rows - self.margin * 2)
-                scale_factor = scaled_height / pixmap.height()
+                # Increase number of rows by 25% to fit more images
+                num_rows = int(num_rows * 1.25)
+                scaled_height = int(self.page_height // num_rows - self.margin)
+                scale_factor = (
+                    scaled_height / pixmap.height() if pixmap.height() > 0 else 1
+                )
                 max_image_width = int(
                     pixmap.width() * scale_factor - self.image_card_margin
                 )
 
+            # Scale the image
             scaled_pixmap = pixmap.scaled(
                 max_image_width,
                 scaled_height,
@@ -98,18 +109,80 @@ class SequenceCardImageDisplayer:
                 Qt.TransformationMode.SmoothTransformation,
             )
 
+            # Create a label to display the image
             label = QLabel(self.sequence_card_tab)
             label.setPixmap(scaled_pixmap)
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+            # Add tooltip with sequence information
+            if "metadata" in sequence and "sequence" in sequence["metadata"]:
+                seq_data = sequence["metadata"]["sequence"][0]
+                tooltip = f"Word: {seq_data.get('word', 'Unknown')}\n"
+                tooltip += f"Author: {seq_data.get('author', 'Unknown')}\n"
+                tooltip += f"Level: {seq_data.get('level', 'Unknown')}\n"
+
+                if "date_added" in sequence["metadata"]:
+                    tooltip += (
+                        f"Date: {sequence['metadata']['date_added'].split('T')[0]}\n"
+                    )
+
+                label.setToolTip(tooltip)
+
+            # Add the image to the page with 3 columns instead of 2
             self.add_image_to_page(
                 label,
                 self.nav_sidebar.selected_length,
                 scaled_pixmap,
-                max_images_per_row=2,
+                max_images_per_row=3,  # Increased from 2 to 3
             )
 
+        # Cache the pages for future use
         self.pages_cache[self.nav_sidebar.selected_length] = self.pages.copy()
+
+
+
+    def _show_no_sequences_message(self):
+        """Show a message when no sequences are found."""
+        # Initialize margin if not already set
+        if not hasattr(self, "margin"):
+            self.margin = 20
+            self.page_width = 800
+            self.page_height = 600
+            self.image_card_margin = 10
+
+        # Clear any existing pages
+        self.sequence_card_tab.pages.clear()
+        self.current_page_index = -1
+
+        # Create a new page
+        self.create_new_page()
+
+        # Get the current page layout
+        if self.current_page_index >= 0 and self.current_page_index < len(
+            self.sequence_card_tab.pages
+        ):
+            page_layout = self.sequence_card_tab.pages[self.current_page_index].layout()
+
+            # Create a message label with transparent background
+            message = QLabel("No sequences found for the selected length.")
+            message.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            message.setStyleSheet(
+                """
+                font-size: 16px;
+                color: #333333;
+                background-color: transparent;
+                border: 1px solid #dddddd;
+                border-radius: 4px;
+                padding: 20px;
+                margin: 20px;
+            """
+            )
+
+            # Add the message to the page (span 3 columns instead of 2)
+            page_layout.addWidget(message, 1, 0, 1, 3)
+
+            # Cache the page
+            self.pages_cache[self.nav_sidebar.selected_length] = self.pages.copy()
 
     def get_sequence_length(self, image_path: str) -> int:
         """Get the sequence length from the image metadata.
@@ -173,9 +246,22 @@ class SequenceCardImageDisplayer:
         return total_used_height + image_height > max_height
 
     def create_new_page(self):
+        """Create a new page and add it to the pages list."""
         self.current_page_index += 1
-        new_page_layout = self.sequence_card_tab.page_factory.create_page()
-        self.sequence_card_tab.pages.append(new_page_layout)
+        new_page = self.sequence_card_tab.page_factory.create_page()
+
+        # Apply enhanced styling with shadow effect
+        new_page.setStyleSheet(
+            """
+            background-color: white;
+            border: 1px solid #aaaaaa;
+            border-radius: 4px;
+            margin: 5px;
+        """
+        )
+
+        # Add the page to the list
+        self.sequence_card_tab.pages.append(new_page)
         self.current_row = 0
         self.current_col = 0
 
@@ -190,16 +276,20 @@ class SequenceCardImageDisplayer:
 
     def add_top_spacer(self, page_layout: QGridLayout):
         """Adds a top spacer row to ensure the first row of images aligns with the top."""
-        self.top_spacer = QLabel(self.sequence_card_tab)
-        self.top_spacer.setFixedHeight(self.margin // 3)
-        self.top_spacer.setStyleSheet("background-color: transparent;")
-        page_layout.addWidget(self.top_spacer, 0, 0, 1, self.max_images_per_row)
+        top_spacer = QLabel(self.sequence_card_tab)
+        top_spacer.setFixedHeight(self.margin // 3)
+        top_spacer.setStyleSheet("background-color: transparent;")
+        page_layout.addWidget(top_spacer, 0, 0, 1, self.max_images_per_row)
 
     def add_bottom_spacer(self, page_layout: QGridLayout, pixmap_height: int):
         """Adds a bottom spacer row to ensure the last row of images aligns with the top."""
         # Calculate the remaining space
         total_height = self.sequence_card_tab.image_displayer.page_height
-        used_height = self.current_row * pixmap_height + self.top_spacer.height()
+
+        # Calculate used height without relying on top_spacer
+        # Use a fixed value for the top margin instead
+        top_margin = self.margin // 3
+        used_height = self.current_row * pixmap_height + top_margin
 
         remaining_height = (
             total_height - used_height - self.sequence_card_tab.image_displayer.margin
@@ -215,63 +305,10 @@ class SequenceCardImageDisplayer:
             )
 
     def _create_sample_images(self):
-        """Create sample sequence card images for testing when no real images are available."""
-        print("Creating sample sequence card images...")
-
-        # Get the export path
-        export_path = get_sequence_card_image_exporter_path()
-        os.makedirs(export_path, exist_ok=True)
-
-        # Create sample images for different sequence lengths
-        for length in [4, 8, 16]:
-            # Create multiple sample images for each length
-            for i in range(5):
-                # Create a sample image
-                img = Image.new("RGB", (800, 600), color=(255, 255, 255))
-                draw = ImageDraw.Draw(img)
-
-                # Draw a border
-                draw.rectangle([(10, 10), (790, 590)], outline=(0, 0, 0), width=2)
-
-                # Draw a title
-                try:
-                    font = ImageFont.truetype("arial.ttf", 36)
-                except:
-                    font = ImageFont.load_default()
-
-                draw.text(
-                    (400, 50),
-                    f"Sample Sequence Card",
-                    fill=(0, 0, 0),
-                    font=font,
-                    anchor="mm",
-                )
-                draw.text(
-                    (400, 100),
-                    f"Length: {length}",
-                    fill=(0, 0, 0),
-                    font=font,
-                    anchor="mm",
-                )
-                draw.text(
-                    (400, 150), f"Sample #{i+1}", fill=(0, 0, 0), font=font, anchor="mm"
-                )
-
-                # Draw some random shapes to simulate sequence content
-                for j in range(length):
-                    x = 100 + (j % 4) * 150
-                    y = 200 + (j // 4) * 100
-
-                    # Draw a circle
-                    draw.ellipse([(x, y), (x + 80, y + 80)], outline=(0, 0, 0), width=2)
-
-                    # Draw a letter in the circle
-                    letter = chr(65 + j % 26)  # A-Z
-                    draw.text(
-                        (x + 40, y + 40), letter, fill=(0, 0, 0), font=font, anchor="mm"
-                    )
-
-                # Save the image
-                filename = f"sample_sequence_length_{length}_{i+1}.png"
-                img.save(os.path.join(export_path, filename))
-                print(f"Created sample image: {filename}")
+        """
+        This method is no longer used as we now load sequences directly from the dictionary.
+        It's kept as a stub for backward compatibility.
+        """
+        print(
+            "Sample image generation is disabled. Loading sequences directly from dictionary."
+        )

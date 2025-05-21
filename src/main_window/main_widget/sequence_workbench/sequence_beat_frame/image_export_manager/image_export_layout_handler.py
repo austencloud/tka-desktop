@@ -63,17 +63,17 @@ class ImageExportLayoutHandler:
         """
         # Get the current layout from the beat frame
         # Note: beat_frame_layout_manager.calculate_layout returns (rows, columns)
-        rows, columns = self.get_current_beat_frame_layout(filled_beat_count)
+        columns, rows = self.get_current_beat_frame_layout(filled_beat_count)
 
         # If including start position and it's not already accounted for in the layout,
         # adjust the layout to accommodate it
         if include_start_pos:
             # Add an extra column for the start position if needed
             # Return in (columns, rows) format for the image creator
-            return (columns + 1, rows) if filled_beat_count > 0 else (1, 1)
+            return (rows + 1, columns) if filled_beat_count > 0 else (1, 1)
 
         # Return in (columns, rows) format for the image creator
-        return (columns, rows)
+        return (rows, columns)
 
     def calculate_layout_with_start(self, filled_beat_count: int) -> tuple[int, int]:
         """

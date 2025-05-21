@@ -34,7 +34,15 @@ class SequenceCardImageExporter:
         # self.export_all_images()
 
     def export_all_images(self):
-        """Exports all images with headers and footers to a temporary directory."""
+        """
+        Dynamically renders sequences from the dictionary with consistent export settings.
+
+        This method:
+        1. Loads sequences directly from the dictionary
+        2. Applies consistent export settings to all sequences
+        3. Organizes sequences by word
+        4. Renders them on-demand rather than pre-exporting
+        """
         dictionary_path = get_dictionary_path()
         export_path = get_sequence_card_image_exporter_path()
 
@@ -42,60 +50,91 @@ class SequenceCardImageExporter:
         if not os.path.exists(export_path):
             os.makedirs(export_path)
 
-        print(f"Exporting sequence card images to: {export_path}")
-        print(f"Loading images from dictionary: {dictionary_path}")
+        print(f"Loading sequences from dictionary: {dictionary_path}")
 
-        # Count total images for progress reporting
-        images = self.get_all_images(dictionary_path)
-        total_images = len(images)
-        processed_images = 0
-        exported_images = 0
+        # Get all word folders in the dictionary
+        word_folders = []
+        for item in os.listdir(dictionary_path):
+            item_path = os.path.join(dictionary_path, item)
+            if os.path.isdir(item_path) and not item.startswith("__"):
+                word_folders.append(item)
 
-        print(f"Found {total_images} images to process")
+        print(f"Found {len(word_folders)} word folders in dictionary")
 
-        for image_path in images:
-            processed_images += 1
-            if processed_images % 10 == 0:
-                print(f"Processing image {processed_images} of {total_images}")
+        # Process each word folder
+        total_sequences = 0
+        processed_sequences = 0
 
-            # Extract metadata and create a temporary beat frame
-            metadata = MetaDataExtractor().extract_metadata_from_file(image_path)
-            if metadata and "sequence" in metadata:
-                sequence = metadata["sequence"]
+        for word in word_folders:
+            word_path = os.path.join(dictionary_path, word)
 
-                # Get sequence length for organization
-                sequence_length = len(sequence) - 1  # Subtract 1 for metadata entry
+            # Get all PNG files in the word folder
+            sequences = [
+                f
+                for f in os.listdir(word_path)
+                if f.endswith(".png") and not f.startswith("__")
+            ]
 
-                # Set export options
-                options = {
-                    "add_word": True,
-                    "add_user_info": True,
-                    "add_difficulty_level": True,
-                }
+            total_sequences += len(sequences)
 
-                try:
-                    # Generate the image
-                    self.temp_beat_frame.populate_beat_frame_from_json(sequence)
-                    qimage = self.export_manager.image_creator.create_sequence_image(
-                        sequence, include_start_pos=False, options=options
-                    )
+            # Create a word-specific folder in the export directory
+            word_export_path = os.path.join(export_path, word)
+            os.makedirs(word_export_path, exist_ok=True)
 
-                    # Convert to PIL image and add metadata
-                    pil_image = self.qimage_to_pil(qimage)
-                    metadata["date_added"] = datetime.now().isoformat()
-                    info = self._create_png_info(metadata)
+            # Process each sequence in the word folder
+            for sequence_file in sequences:
+                sequence_path = os.path.join(word_path, sequence_file)
 
-                    # Save the image with the original filename
-                    image_filename = os.path.basename(image_path)
-                    output_path = os.path.join(export_path, image_filename)
-                    pil_image.save(output_path, "PNG", pnginfo=info)
+                # Extract metadata
+                metadata = MetaDataExtractor().extract_metadata_from_file(sequence_path)
+                if metadata and "sequence" in metadata:
+                    sequence = metadata["sequence"]
 
-                    exported_images += 1
-                except Exception as e:
-                    print(f"Error exporting {image_path}: {e}")
+                    # Set export options with all required metadata visible
+                    # Use consistent settings for all images
+                    options = {
+                        "add_word": True,  # Show the word
+                        "add_user_info": True,  # Show author info
+                        "add_difficulty_level": True,  # Show difficulty level
+                        "add_date": True,  # Show date
+                        "add_note": True,  # Show any notes
+                        "add_beat_numbers": True,  # Show beat numbers
+                        "add_reversal_symbols": True,  # Show reversal symbols
+                        "combined_grids": False,  # Don't use combined grids
+                        "include_start_position": False,  # Include start position
+                    }
+
+                    try:
+                        # Generate the image with 50% size reduction
+                        self.temp_beat_frame.populate_beat_frame_from_json(sequence)
+                        qimage = (
+                            self.export_manager.image_creator.create_sequence_image(
+                                sequence,
+                                options=options,
+                                dictionary=False,
+                                output_scale=0.5,
+                            )
+                        )
+
+                        # Convert to PIL image and add metadata
+                        pil_image = self.qimage_to_pil(qimage)
+
+                        # Update the date if needed
+                        if "date_added" not in metadata:
+                            metadata["date_added"] = datetime.now().isoformat()
+
+                        info = self._create_png_info(metadata)
+
+                        # Save the image with the original filename in the word folder
+                        output_path = os.path.join(word_export_path, sequence_file)
+                        pil_image.save(output_path, "PNG", pnginfo=info)
+
+                        processed_sequences += 1
+                    except Exception as e:
+                        print(f"Error processing {sequence_path}: {e}")
 
         print(
-            f"Export complete. Processed {processed_images} images, exported {exported_images} images."
+            f"Processed {processed_sequences} of {total_sequences} sequences from dictionary"
         )
 
     def get_all_images(self, path: str) -> list[str]:

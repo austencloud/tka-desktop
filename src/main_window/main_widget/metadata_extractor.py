@@ -4,7 +4,13 @@ from PIL import Image, PngImagePlugin
 from PyQt6.QtWidgets import QMessageBox
 import json
 
-from data.constants import GRID_MODE, SEQUENCE_START_POSITION, END_POS
+from data.constants import (
+    GRID_MODE,
+    SEQUENCE_START_POSITION,
+    END_POS,
+    DIAMOND,
+    BOX,  # Import grid mode constants
+)
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.thumbnail_finder import ThumbnailFinder
 from utils.path_helpers import get_data_path
@@ -178,10 +184,20 @@ class MetaDataExtractor:
         return metadata_and_thumbnail_dict
 
     def get_grid_mode(self, file_path):
+        """
+        Get the grid mode from the metadata.
+
+        If the grid_mode field is missing, it defaults to 'diamond'.
+        """
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata:
-            return metadata["sequence"][0][GRID_MODE]
-        return
+            # Check if grid_mode exists in the metadata
+            if GRID_MODE in metadata["sequence"][0]:
+                return metadata["sequence"][0][GRID_MODE]
+            else:
+                # Default to 'diamond' if grid_mode is not specified
+                return DIAMOND
+        return DIAMOND  # Default to 'diamond' if no metadata is found
 
     def get_full_metadata(self, file_path: str) -> dict:
         """Extract all available metadata for a given file."""
