@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph
     from objects.prop.prop import Prop
 
+
 class PictographGetter:
     def __init__(self, pictograph: "Pictograph") -> None:
         self.pictograph = pictograph
@@ -123,7 +124,11 @@ class PictographGetter:
 
     def pictograph_data(self) -> dict:
         return {
-            LETTER: self.pictograph.state.letter.value,
+            LETTER: (
+                self.pictograph.state.pictograph_data[LETTER]
+                if not self.pictograph.state.letter
+                else self.pictograph.state.letter.value
+            ),
             START_POS: self.pictograph.state.start_pos,
             END_POS: self.pictograph.state.end_pos,
             TIMING: self.pictograph.state.timing,

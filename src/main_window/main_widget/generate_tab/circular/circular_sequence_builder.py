@@ -226,7 +226,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 "CAP type not implemented yet. Please implement the CAP type."
             )
 
-    def _apply_CAPs(self, sequence, cap_type: CAPType, rotation_type):
+    def _apply_CAPs(self, sequence, cap_type: CAPType, slice_size):
         executor = self.executors.get(cap_type)
         if executor and CAPType(cap_type) in [
             CAPType.MIRRORED_ROTATED,
@@ -236,13 +236,17 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
                 CAPType.STRICT_ROTATED
             )
             sequence = strict_rotated_executor.create_CAPs(
-                sequence, halved_or_quartered="halved", end_mirrored=True
+                sequence, slice_size="halved", end_mirrored=True
             )
             if cap_type == CAPType.MIRRORED_COMPLEMENTARY_ROTATED:
                 self.executors.get(CAPType.MIRRORED_COMPLEMENTARY).create_CAPs(sequence)
             elif cap_type == CAPType.MIRRORED_ROTATED:
                 self.executors.get(CAPType.STRICT_MIRRORED).create_CAPs(sequence)
-            
+
+        elif executor and CAPType(cap_type) in [
+            CAPType.STRICT_ROTATED,
+        ]:
+            sequence = executor.create_CAPs(sequence, slice_size=slice_size)
         elif executor:
             executor.create_CAPs(sequence)
         else:

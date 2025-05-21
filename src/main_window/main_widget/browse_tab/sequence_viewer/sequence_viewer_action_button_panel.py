@@ -123,7 +123,7 @@ class SequenceViewerActionButtonPanel(QWidget):
     def save_image(self):
         sequence_json = self.sequence_viewer.state.sequence_json
         current_thumbnail = self.sequence_viewer.thumbnail_box.state.thumbnails[
-            self.sequence_viewer.state.current_index
+            self.sequence_viewer.thumbnail_box.state.current_index
         ]
         if not current_thumbnail:
             QMessageBox.warning(

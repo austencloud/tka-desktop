@@ -21,7 +21,9 @@ class ImageExportDifficultyLevelDrawer:
     def __init__(self):
         self.gradients = DifficultyLevelGradients()
 
-    def draw_difficulty_level(self, image: QImage, difficulty_level: int, additional_height_top: int):
+    def draw_difficulty_level(
+        self, image: QImage, difficulty_level: int, additional_height_top: int
+    ):
         painter = QPainter(image)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -34,9 +36,12 @@ class ImageExportDifficultyLevelDrawer:
         painter.end()
 
     def _calculate_rect(self, additional_height_top: int) -> QRect:
+        # Get the border width from the image creator
+        border_width = 3  # Same as in ImageCreator._create_image
+
         shape_size = int(additional_height_top * 0.75)
         inset = additional_height_top // 8
-        return QRect(inset, inset, shape_size, shape_size)
+        return QRect(inset + border_width, inset + border_width, shape_size, shape_size)
 
     def _setup_painter(self, painter: QPainter, rect: QRect, difficulty_level: int):
         pen = QPen(Qt.GlobalColor.black, max(1, rect.height() // 50))
@@ -63,7 +68,9 @@ class ImageExportDifficultyLevelDrawer:
         font_size = int(rect.height() // 1.75)
         return QFont("Georgia", font_size, QFont.Weight.Bold)
 
-    def _calculate_text_rect(self, metrics: QFontMetrics, text: str, rect: QRect, difficulty_level: int) -> QRect:
+    def _calculate_text_rect(
+        self, metrics: QFontMetrics, text: str, rect: QRect, difficulty_level: int
+    ) -> QRect:
         bounding_rect = metrics.boundingRect(text)
         text_x = rect.center().x() - bounding_rect.width() // 2
         text_y = rect.center().y() - bounding_rect.height() // 2

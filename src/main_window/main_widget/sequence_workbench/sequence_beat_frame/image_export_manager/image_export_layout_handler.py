@@ -14,32 +14,80 @@ class ImageExportLayoutHandler:
         # Dynamically fetch the current setting from the export manager
         return self.image_export_manager.include_start_pos
 
+    def get_current_beat_frame_layout(self, beat_count: int) -> tuple[int, int]:
+        """
+        Get the current layout from the beat frame's layout manager.
+        This ensures the exported image matches the current beat frame layout.
+
+        Returns a tuple of (rows, columns) to match the format used in the beat frame layout.
+        """
+        # First try to get the actual current layout from the beat frame
+        if hasattr(self.beat_frame, "layout_manager") and hasattr(
+            self.beat_frame.layout_manager, "calculate_current_layout"
+        ):
+            # Use the current layout if available
+            return self.beat_frame.layout_manager.calculate_current_layout()
+
+        # If we can't get the current layout, fall back to calculating it based on beat count
+        if hasattr(self.beat_frame, "layout_manager") and hasattr(
+            self.beat_frame.layout_manager, "calculate_layout"
+        ):
+            return self.beat_frame.layout_manager.calculate_layout(beat_count)
+
+        # Fallback to default layouts if we can't get the layout from the beat frame
+        return self.get_fallback_layout(beat_count)
+
+    def get_fallback_layout(self, beat_count: int) -> tuple[int, int]:
+        """
+        Fallback to default layouts if we can't get the layout from the beat frame.
+        Returns (rows, columns) to match the format of beat_frame_layout_manager.calculate_layout
+        """
+        # Default to a reasonable layout based on beat count
+        if beat_count <= 4:
+            return (1, beat_count)  # 1 row, beat_count columns
+        elif beat_count <= 8:
+            return (2, 4)  # 2 rows, 4 columns
+        elif beat_count <= 16:
+            return (4, 4)  # 4 rows, 4 columns
+        else:
+            rows = (beat_count + 3) // 4  # Round up division by 4
+            return (rows, 4)  # rows rows, 4 columns
+
     def calculate_layout(
         self, filled_beat_count: int, include_start_pos: bool
     ) -> tuple[int, int]:
         """
-        Determine the layout by delegating to the specific method based on whether the start position is included.
+        Determine the layout based on the current beat frame layout and adjust for start position if needed.
+
+        Returns a tuple of (columns, rows) for the image layout.
         """
+        # Get the current layout from the beat frame
+        # Note: beat_frame_layout_manager.calculate_layout returns (rows, columns)
+        rows, columns = self.get_current_beat_frame_layout(filled_beat_count)
+
+        # If including start position and it's not already accounted for in the layout,
+        # adjust the layout to accommodate it
         if include_start_pos:
-            return self.calculate_layout_with_start(filled_beat_count)
-        else:
-            return self.calculate_layout_without_start(filled_beat_count)
+            # Add an extra column for the start position if needed
+            # Return in (columns, rows) format for the image creator
+            return (columns + 1, rows) if filled_beat_count > 0 else (1, 1)
+
+        # Return in (columns, rows) format for the image creator
+        return (columns, rows)
 
     def calculate_layout_with_start(self, filled_beat_count: int) -> tuple[int, int]:
         """
         Calculate layout considering an additional column for the start position.
         """
-        return self.calculate_optimal_layout(
-            filled_beat_count, self.get_layout_options_with_start()
-        )
+        # For backward compatibility, keep this method but use the new approach
+        return self.calculate_layout(filled_beat_count, True)
 
     def calculate_layout_without_start(self, filled_beat_count: int) -> tuple[int, int]:
         """
         Calculate layout without the start position affecting the column count.
         """
-        return self.calculate_optimal_layout(
-            filled_beat_count, self.get_layout_options_without_start()
-        )
+        # For backward compatibility, keep this method but use the new approach
+        return self.calculate_layout(filled_beat_count, False)
 
     def calculate_optimal_layout(
         self, beat_count: int, layout_options: dict
@@ -47,8 +95,10 @@ class ImageExportLayoutHandler:
         """
         Shared logic for calculating layout which can be customized further using provided layout options.
         """
+        # For backward compatibility, keep this method
         if beat_count in layout_options:
             return layout_options[beat_count]
+        return self.get_fallback_layout(beat_count)
 
     def get_layout_options_with_start(self) -> dict[int, tuple[int, int]]:
         """

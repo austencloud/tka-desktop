@@ -25,9 +25,7 @@ class SequenceCardTab(QWidget):
     def __init__(self, main_widget: "MainWidget"):
         super().__init__(main_widget)
         self.main_widget = main_widget
-        self.global_settings = (
-            self.main_widget.main_window.settings_manager.global_settings
-        )
+        self.global_settings = main_widget.settings_manager.global_settings
         self.pages: list[QWidget] = []
         self.pages_cache: dict[int, list[QWidget]] = {}
         self.initialized = False
@@ -77,5 +75,5 @@ class SequenceCardTab(QWidget):
         if not self.initialized:
             self.setCursor(Qt.CursorShape.WaitCursor)
             self.initialized = True
+            self.refresher.refresh_sequence_cards()
             self.setCursor(Qt.CursorShape.ArrowCursor)
-

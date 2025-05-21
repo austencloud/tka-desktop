@@ -7,6 +7,7 @@ class TabName(str, Enum):
     BROWSE = "browse"
     LEARN = "learn"
     WRITE = "write"
+    SEQUENCE_CARD = "sequence_card"
 
     @classmethod
     def from_string(cls, value: str) -> "TabName":

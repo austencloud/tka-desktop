@@ -99,15 +99,18 @@ class UserInfoDrawer:
         else:
             metrics = QFontMetrics(font)
 
+        # Get the border width from the image creator
+        border_width = 3  # Same as in ImageCreator._create_image
+
         if position == "bottom-left":
-            x = margin
-            y = image.height() - margin
+            x = margin + border_width
+            y = image.height() - margin - border_width
         elif position == "bottom-center":
             x = (image.width() - text_width) // 2
-            y = image.height() - margin
+            y = image.height() - margin - border_width
         elif position == "bottom-right":
-            x = image.width() - text_width - margin
-            y = image.height() - margin
+            x = image.width() - text_width - margin - border_width
+            y = image.height() - margin - border_width
 
         painter.drawText(x, y, text)
 

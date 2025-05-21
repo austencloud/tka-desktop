@@ -103,6 +103,7 @@ class ImageExportTab(QWidget):
             button.update_is_toggled()
         self.control_panel._load_user_profiles()
         self.control_panel._load_saved_note()  # Load note instead of notes
+        self.control_panel._load_directory_preference()  # Load directory preference
 
     def showEvent(self, event: "QShowEvent"):
         self.update_image_export_tab_from_settings()

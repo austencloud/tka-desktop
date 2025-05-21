@@ -34,6 +34,7 @@ class PropTypeTab(QWidget):
 
         props = {
             "Staff": "props/staff.svg",
+            "Simplestaff": "props/simple_staff.svg",  # Added Simplestaff
             "Club": "props/club.svg",
             "Fan": "props/fan.svg",
             "Triad": "props/triad.svg",

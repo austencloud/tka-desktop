@@ -12,6 +12,8 @@ class ImageExportSettings:
         "add_difficulty_level": True,
         "add_beat_numbers": True,
         "add_reversal_symbols": True,
+        "use_last_save_directory": False,
+        "combined_grids": False,
     }
 
     def __init__(self, settings_manager: "SettingsManager") -> None:
@@ -21,14 +23,23 @@ class ImageExportSettings:
     def get_image_export_setting(self, key: str):
         """Get a specific image export setting."""
         value = self.settings.value(f"image_export/{key}")
+        print(f"Getting setting {key}, raw value: {value}")
         if value is None:
-            return self.DEFAULT_IMAGE_EXPORT_SETTINGS.get(key, False)
-        return value.lower() == "true"
+            default_value = self.DEFAULT_IMAGE_EXPORT_SETTINGS.get(key, False)
+            print(f"Value is None, using default: {default_value}")
+            return default_value
+        result = value.lower() == "true"
+        print(f"Value is {value}, returning: {result}")
+        return result
 
     def set_image_export_setting(self, key: str, value: bool):
         """Set a specific image export setting."""
+        print(f"Setting {key} to {value}")
         self.settings.setValue(f"image_export/{key}", str(value).lower())
         self.settings.sync()
+        # Verify the setting was saved
+        saved_value = self.settings.value(f"image_export/{key}")
+        print(f"After setting, raw value is: {saved_value}")
 
     def get_all_image_export_options(self) -> dict:
         """Get all image export settings as a dictionary."""
@@ -44,3 +55,21 @@ class ImageExportSettings:
     def set_custom_note(self, note: str) -> None:
         """Set the custom note."""
         self.settings.setValue("image_export/custom_note", note)
+
+    def get_last_save_directory(self) -> str:
+        """Get the last directory used for saving images."""
+        # Force sync the settings before reading
+        self.settings.sync()
+
+        last_dir = self.settings.value("image_export/last_save_directory", "", type=str)
+        print(f"Getting last save directory: {last_dir}")
+        return last_dir
+
+    def set_last_save_directory(self, directory: str) -> None:
+        """Set the last directory used for saving images."""
+        print(f"Setting last save directory to: {directory}")
+        self.settings.setValue("image_export/last_save_directory", directory)
+        self.settings.sync()
+        # Verify the setting was saved
+        saved_value = self.settings.value("image_export/last_save_directory", "")
+        print(f"After setting, last save directory is: {saved_value}")

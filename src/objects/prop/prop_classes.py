@@ -6,6 +6,7 @@ from objects.prop.prop import Prop
 prop_types = [
     "Hand",
     "Staff",
+    "Simplestaff",  # Added Simplestaff
     "BigStaff",
     "Triad",
     "Minihoop",

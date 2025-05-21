@@ -17,6 +17,7 @@ class PropFactory:
         self.prop_classes = {
             PropType.Hand.name.lower(): "Hand",
             PropType.Staff.name.lower(): "Staff",
+            PropType.Simplestaff.name.lower(): "Simplestaff",  # Added Simplestaff
             PropType.Bigstaff.name.lower(): "BigStaff",
             PropType.Triad.name.lower(): "Triad",
             PropType.Minihoop.name.lower(): "Minihoop",

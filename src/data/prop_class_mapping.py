@@ -1,11 +1,10 @@
-
-
 from enums.prop_type import PropType
 
 
 prop_class_mapping = {
     "Hand": PropType.Hand,
     "Staff": PropType.Staff,
+    "Simplestaff": PropType.Simplestaff,  # Added Simplestaff
     "BigStaff": PropType.Bigstaff,
     "Club": PropType.Club,
     "Fan": PropType.Fan,

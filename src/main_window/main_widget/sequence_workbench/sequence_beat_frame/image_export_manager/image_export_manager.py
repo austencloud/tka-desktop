@@ -31,25 +31,44 @@ class ImageExportManager:
             self.sequence_workbench = beat_frame.sequence_workbench
         elif beat_frame_class.__name__ == "TempBeatFrame":
             self.dictionary_widget = beat_frame.browse_tab
+        # Get the include_start_position setting from image export settings
         self.include_start_pos = (
             AppContext.settings_manager().image_export.get_image_export_setting(
                 "include_start_position"
             )
         )
+        # Initialize components
         self.layout_handler = ImageExportLayoutHandler(self)
         self.beat_factory = ImageExportBeatFactory(self, beat_frame_class)
         self.image_creator = ImageCreator(self)
         self.image_saver = ImageSaver(self)
 
-    def export_image_directly(self, sequence = None):
+    def export_image_directly(self, sequence=None):
         """Immediately exports the image using current settings and opens the save dialog."""
-        sequence = sequence or self.main_widget.json_manager.loader_saver.load_current_sequence()
+        sequence = (
+            sequence
+            or self.main_widget.json_manager.loader_saver.load_current_sequence()
+        )
 
-        if len(sequence) < 3:
+        # Check if the sequence is empty (no beats and no start position)
+        include_start_pos = self.settings_manager.image_export.get_image_export_setting(
+            "include_start_position"
+        )
+
+        # Check if the sequence has any beats (excluding the start position)
+        has_beats = len(sequence) >= 3
+
+        if not has_beats and not include_start_pos:
+            # If there's no start position to show, inform the user and return
             self.main_widget.sequence_workbench.indicator_label.show_message(
-                "The sequence is empty."
+                "The sequence is empty and 'Show Start Position' is disabled."
             )
             return
+        elif not has_beats and include_start_pos:
+            # If there's only a start position and it's enabled, we'll export just that
+            self.main_widget.sequence_workbench.indicator_label.show_message(
+                "Exporting only the start position."
+            )
 
         # Retrieve the export settings
         settings_manager = self.main_widget.settings_manager

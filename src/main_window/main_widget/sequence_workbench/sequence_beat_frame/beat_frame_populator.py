@@ -63,8 +63,12 @@ class BeatFramePopulator:
     def _update_difficulty_level(self):
         if len(self.current_sequence_json) > 2:
             self.sequence_workbench.difficulty_label.update_difficulty_label()
+            # Update the circular indicator
+            self.sequence_workbench.circular_indicator.update_indicator()
         else:
             self.sequence_workbench.difficulty_label.set_difficulty_level("")
+            # Hide the circular indicator for sequences with only start position
+            self.sequence_workbench.circular_indicator.hide()
 
     def _update_sequence_word(self):
         self.current_word = "".join(
@@ -97,6 +101,8 @@ class BeatFramePopulator:
         self.construct_tab.last_beat = last_beat
         self.construct_tab.option_picker.updater.update_options()
         self.sequence_workbench.difficulty_label.update_difficulty_label()
+        # Update the circular indicator
+        self.sequence_workbench.circular_indicator.update_indicator()
         if initial_state_load:
             target_tab = AppContext.settings_manager().global_settings.get_current_tab()
             toggle_animation = target_tab == "construct"

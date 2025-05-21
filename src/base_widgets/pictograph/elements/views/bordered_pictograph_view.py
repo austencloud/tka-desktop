@@ -69,8 +69,17 @@ class BorderedPictographView(BasePictographView):
         """Draw the pictograph and borders."""
         super().paintEvent(event)
         painter = QPainter(self.viewport())
-        if self.primary_color and self.secondary_color:
+
+        # Check if borders should be disabled
+        if (
+            hasattr(self.pictograph.state, "disable_borders")
+            and self.pictograph.state.disable_borders
+        ):
+            # Skip drawing borders
+            pass
+        elif self.primary_color and self.secondary_color:
             self._draw_borders(painter)
+
         painter.end()
 
     def _draw_borders(self, painter: QPainter):

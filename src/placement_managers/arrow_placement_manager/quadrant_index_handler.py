@@ -43,11 +43,24 @@ class QuadrantIndexHandler:
 
         return 0
 
-    def _get_grid_mode(self, arrow: "Arrow") -> Literal[BOX] | Literal[DIAMOND]:
-        if arrow.motion.prop.state.loc in ["ne", "nw", "se", "sw"]:
-            grid_mode = BOX
-        elif arrow.motion.prop.state.loc in ["n", "s", "e", "w"]:
-            grid_mode = DIAMOND
+    def _get_grid_mode(self, arrow: "Arrow") -> Literal["box"] | Literal["diamond"]:
+        # Default to DIAMOND grid mode if loc is None
+        grid_mode = DIAMOND
+
+        # Check if prop state and loc exist
+        if (
+            hasattr(arrow, "motion")
+            and hasattr(arrow.motion, "prop")
+            and hasattr(arrow.motion.prop, "state")
+        ):
+            loc = arrow.motion.prop.state.loc
+
+            # Determine grid mode based on location
+            if loc in ["ne", "nw", "se", "sw"]:
+                grid_mode = BOX
+            elif loc in ["n", "s", "e", "w"]:
+                grid_mode = DIAMOND
+
         return grid_mode
 
     def _diamond_shift_quadrant_index(self, location: str) -> Literal[0, 1, 2, 3]:

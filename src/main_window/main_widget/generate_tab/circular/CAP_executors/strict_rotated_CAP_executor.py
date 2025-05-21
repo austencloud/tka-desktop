@@ -61,7 +61,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
     def create_CAPs(
         self,
         sequence: list[dict],
-        halved_or_quartered: str = None,
+        slice_size: str = None,
         end_mirrored: bool = False,
     ):
         start_position_entry = (
@@ -72,15 +72,15 @@ class StrictRotatedCAPExecutor(CAPExecutor):
 
         new_entries = []
         next_beat_number = last_entry[BEAT] + 1
-        if not halved_or_quartered:
-            halved_or_quartered = self.get_halved_or_quartered()
+        if not slice_size:
+            slice_size = self.get_slice_size()
 
         sequence_workbench = (
             self.circular_sequence_generator.main_widget.sequence_workbench
         )
-        if halved_or_quartered == "halved":
+        if slice_size == "halved":
             entries_to_add = sequence_length
-        elif halved_or_quartered == "quartered":
+        elif slice_size == "quartered":
             entries_to_add = sequence_length * 3
 
         for _ in range(entries_to_add):
@@ -91,7 +91,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
                 last_entry,
                 next_beat_number,
                 final_intended_sequence_length,
-                halved_or_quartered,
+                slice_size,
                 is_end_of_sequence,
                 end_mirrored,
             )
@@ -139,7 +139,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
         end_pos = sequence[-1][END_POS]
         return (start_pos, end_pos) in halved_CAPs
 
-    def get_halved_or_quartered(self) -> str:
+    def get_slice_size(self) -> str:
         if self.is_halved_CAP():
             return "halved"
         elif self.is_quartered_CAP():
@@ -165,7 +165,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
         previous_entry,
         beat_number: int,
         final_intended_sequence_length: int,
-        halved_or_quartered: str,
+        slice_size: str,
         is_end_of_sequence: bool,
         end_mirrored: bool,
     ) -> dict:
@@ -173,14 +173,14 @@ class StrictRotatedCAPExecutor(CAPExecutor):
             sequence,
             beat_number,
             final_intended_sequence_length,
-            halved_or_quartered,
+            slice_size,
         )
         if end_mirrored and is_end_of_sequence:
             new_end_pos = self.calculate_new_end_pos(
                 previous_matching_beat,
                 is_end_of_sequence,
                 end_mirrored,
-                halved_or_quartered,
+                slice_size,
             )
             current_end_pos = sequence[-1][END_POS]
             #  use the letters data stored in the main widget to find a letter that can get you from the current end pos to the new end pos
@@ -221,7 +221,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
                         )
                 else:
                     new_entry[BLUE_ATTRS][PROP_ROT_DIR] = NO_ROT
-                    
+
                 red_turns = new_entry[RED_ATTRS][TURNS]
                 if not red_turns == "fl":
                     if float(red_turns) > 0 and new_entry[RED_ATTRS][MOTION_TYPE] in [
@@ -235,7 +235,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
                         )
                 else:
                     new_entry[RED_ATTRS][PROP_ROT_DIR] = NO_ROT
-                    
+
                 new_entry[BLUE_ATTRS][START_ORI] = previous_entry[BLUE_ATTRS][END_ORI]
                 new_entry[RED_ATTRS][START_ORI] = previous_entry[RED_ATTRS][END_ORI]
                 new_entry[BLUE_ATTRS][END_ORI] = (
@@ -279,7 +279,7 @@ class StrictRotatedCAPExecutor(CAPExecutor):
                     previous_matching_beat,
                     is_end_of_sequence,
                     end_mirrored,
-                    halved_or_quartered,
+                    slice_size,
                 ),
                 TIMING: previous_matching_beat[TIMING],
                 DIRECTION: previous_matching_beat[DIRECTION],
@@ -380,11 +380,11 @@ class StrictRotatedCAPExecutor(CAPExecutor):
         previous_matching_beat: dict,
         is_last_in_word: bool,
         end_mirrored: bool,
-        halved_or_quartered: str,
+        slice_size: str,
     ) -> str:
-        if halved_or_quartered == "quartered":
+        if slice_size == "quartered":
             map = quartered_CAPs
-        elif halved_or_quartered == "halved":
+        elif slice_size == "halved":
             map = halved_CAPs
         calculated_end_position = [
             end_pos
@@ -412,22 +412,22 @@ class StrictRotatedCAPExecutor(CAPExecutor):
         sequence: list[dict],
         beat_number: int,
         final_length: int,
-        halved_or_quartered: str,
+        slice_size: str,
     ) -> dict:
-        index_map = self.get_index_map(halved_or_quartered, final_length)
+        index_map = self.get_index_map(slice_size, final_length)
         return sequence[index_map[beat_number]]
 
-    def get_index_map(self, halved_or_quartered: str, length: int) -> dict[int, int]:
-        if length < 4 and halved_or_quartered == "quartered":
+    def get_index_map(self, slice_size: str, length: int) -> dict[int, int]:
+        if length < 4 and slice_size == "quartered":
             return {i: max(i - 1, 0) for i in range(1, length + 1)}
-        elif length < 2 and halved_or_quartered == "halved":
+        elif length < 2 and slice_size == "halved":
             return {i: max(i - 1, 0) for i in range(1, length + 1)}
 
-        if halved_or_quartered == "quartered":
+        if slice_size == "quartered":
             return {
                 i: i - (length // 4) + 1 for i in range((length // 4) + 1, length + 1)
             }
-        elif halved_or_quartered == "halved":
+        elif slice_size == "halved":
             return {
                 i: i - (length // 2) + 1 for i in range((length // 2) + 1, length + 1)
             }

@@ -61,6 +61,8 @@ class SettingsDialog(QDialog):
             )
         elif last_tab == "Image Export":
             self.ui.image_export_tab.update_image_export_tab_from_settings()
+        elif last_tab == "Codex Exporter":
+            self.ui.codex_exporter_tab.update_codex_exporter_tab_from_settings()
         self.update_size(force=True)
 
     def update_size(self, force: bool = False):

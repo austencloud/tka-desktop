@@ -29,6 +29,7 @@ class SequenceWorkbenchLayoutManager:
         self.dummy_widget.setFixedSize(self.sw.difficulty_label.size())
 
         word_layout.addStretch(2)
+        word_layout.addWidget(self.sw.circular_indicator)
         word_layout.addWidget(self.sw.difficulty_label)
         word_layout.addStretch(1)
         word_layout.addWidget(self.sw.current_word_label)

@@ -10,6 +10,7 @@ from main_window.main_widget.settings_dialog.settings_dialog import SettingsDial
 from main_window.main_widget.startup_dialog import StartupDialog
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_name import TabName
+from main_window.main_widget.sequence_card_tab.sequence_card_tab import SequenceCardTab
 from settings_manager.global_settings.app_context import AppContext
 from .browse_tab.browse_tab import BrowseTab
 from .fade_manager.fade_manager import FadeManager
@@ -61,6 +62,7 @@ class MainWidget(QWidget):
     browse_tab: "BrowseTab"
     learn_tab: "LearnTab"
     write_tab: "WriteTab"
+    sequence_card_tab: "SequenceCardTab"
 
     # Widgets
     sequence_workbench: "SequenceWorkbench"

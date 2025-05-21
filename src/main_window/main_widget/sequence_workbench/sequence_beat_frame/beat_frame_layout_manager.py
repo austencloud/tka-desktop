@@ -3,11 +3,9 @@ from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QGridLayout
 from settings_manager.global_settings.app_context import AppContext
+from base_widgets.pictograph.elements.views.beat_view import BeatView
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.elements.views.beat_view import (
-        BeatView,
-    )
     from .sequence_beat_frame import SequenceBeatFrame
 
 
@@ -46,7 +44,7 @@ class BeatFrameLayoutManager:
         for i in range(layout.columnCount()):
             if layout.itemAtPosition(0, i):
                 cols += 1
-        return cols - 1
+        return cols
 
     def get_rows(self):
         layout = self.beat_frame.layout
@@ -111,7 +109,12 @@ class BeatFrameLayoutManager:
         last_filled_index = self.beat_frame.get.next_available_beat()
         self.configure_beat_frame(last_filled_index)
 
-    def calculate_current_layout(self) -> tuple:
+    def calculate_current_layout(self) -> tuple[int, int]:
+        """
+        Calculate the current layout by examining the beat frame's grid layout.
+
+        Returns a tuple of (rows, columns) to match the format used in calculate_layout.
+        """
         layout = self.beat_frame.layout
 
         max_row = 0
@@ -124,4 +127,5 @@ class BeatFrameLayoutManager:
                 max_row = max(max_row, position[0])
                 max_col = max(max_col, position[1])
 
+        # Return (rows, columns) to match the format used in calculate_layout
         return max_row + 1, max_col  # Add 1 to max_row to get the count

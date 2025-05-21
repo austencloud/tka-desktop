@@ -82,4 +82,21 @@ class JsonStartPositionHandler:
             self.manager.loader_saver.save_current_sequence(sequence)
 
     def get_sequence_start_position(self, start_pos_pictograph: Pictograph) -> str:
-        return start_pos_pictograph.state.end_pos.rstrip("0123456789")
+        """
+        Extract the start position type (alpha, beta, gamma) from the end position.
+
+        For example:
+        - "alpha1" -> "alpha"
+        - "beta5" -> "beta"
+        - "gamma11" -> "gamma"
+        """
+        end_pos = start_pos_pictograph.state.end_pos
+        if end_pos.startswith("alpha"):
+            return "alpha"
+        elif end_pos.startswith("beta"):
+            return "beta"
+        elif end_pos.startswith("gamma"):
+            return "gamma"
+        else:
+            # Fallback to the old method if the position doesn't match expected format
+            return end_pos.rstrip("0123456789")

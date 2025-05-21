@@ -13,6 +13,7 @@ class PictographState:
     pictograph_data: dict[str, Union[str, dict[str, str]]] = field(default_factory=dict)
     is_blank: bool = False
     disable_gold_overlay: bool = False
+    disable_borders: bool = False  # Added flag to disable borders
     blue_reversal: bool = False
     red_reversal: bool = False
     hide_tka_glyph: bool = False
@@ -60,6 +61,7 @@ class PictographState:
             else:
                 setattr(self, key, value)
                 self.pictograph_data[key] = value
+
 
 def deep_merge_dict(dest: dict, src: dict) -> dict:
     merged = deepcopy(dest)  # Ensure we don't modify the original dictionary
