@@ -37,7 +37,8 @@ class PropSvgManager:
         elif prop.prop_type_str == "Simplestaff":
             return f"{PROP_DIR}simple_staff.svg"
         else:
-            return f"{PROP_DIR}{prop.prop_type_str}.svg"
+            # Always use lowercase for file names to avoid case sensitivity issues
+            return f"{PROP_DIR}{prop.prop_type_str.lower()}.svg"
 
     def _get_hand_svg_file(self, prop: "Prop") -> str:
         hand_color = "left" if prop.state.color == BLUE else "right"

@@ -60,7 +60,16 @@ class MainWidgetTabSwitcher:
         AppContext.settings_manager().global_settings.set_current_tab(new_tab.value)
         print(f"DEBUG: Set current tab to {new_tab.value}")
 
-        width_ratio = (2 / 3, 1 / 3) if new_tab == TabName.BROWSE else (1 / 2, 1 / 2)
+        # Set width ratio based on tab type
+        if new_tab == TabName.BROWSE:
+            width_ratio = (
+                2 / 3,
+                1 / 3,
+            )  # Browse tab uses 2/3 for left panel, 1/3 for right
+        elif new_tab == TabName.SEQUENCE_CARD:
+            width_ratio = (0, 1)  # Sequence card tab uses full width for right panel
+        else:
+            width_ratio = (1 / 2, 1 / 2)  # Default is equal split
 
         if (current_tab_str == "construct" and new_tab == TabName.GENERATE) or (
             current_tab_str == "generate" and new_tab == TabName.CONSTRUCT
@@ -89,7 +98,18 @@ class MainWidgetTabSwitcher:
 
     def set_stacks_silently(self, left_index, right_index):
         tab_name_str = AppContext.settings_manager().global_settings.get_current_tab()
-        width_ratio = (2 / 3, 1 / 3) if tab_name_str == "browse" else (1 / 2, 1 / 2)
+
+        # Set width ratio based on tab type
+        if tab_name_str == "browse":
+            width_ratio = (
+                2 / 3,
+                1 / 3,
+            )  # Browse tab uses 2/3 for left panel, 1/3 for right
+        elif tab_name_str == "sequence_card":
+            width_ratio = (0, 1)  # Sequence card tab uses full width for right panel
+        else:
+            width_ratio = (1 / 2, 1 / 2)  # Default is equal split
+
         total_width = self.mw.width()
         left_width = int(total_width * width_ratio[0])
         right_width = total_width - left_width
@@ -107,12 +127,8 @@ class MainWidgetTabSwitcher:
     def get_stack_indices_for_tab(
         self, tab_name: TabName
     ) -> tuple[LeftStackIndex, RightStackIndex]:
-        print(f"DEBUG: get_stack_indices_for_tab called with tab_name={tab_name}")
         index = TAB_INDEX[tab_name]
-        print(f"DEBUG: index={index}")
-        print(f"DEBUG: tab_to_left_stack={self.tab_to_left_stack}")
         left_index = self.tab_to_left_stack.get(index, LeftStackIndex.WORKBENCH)
-        print(f"DEBUG: left_index={left_index}")
         if tab_name == TabName.CONSTRUCT:
             current_sequence = self.mw.json_manager.loader_saver.load_current_sequence()
             right_index = (
@@ -133,16 +149,11 @@ class MainWidgetTabSwitcher:
                     left_index = LeftStackIndex.SEQUENCE_PICKER
             right_index = RightStackIndex.SEQUENCE_VIEWER
         elif tab_name == TabName.SEQUENCE_CARD:
-            print(f"DEBUG: Processing TabName.SEQUENCE_CARD case")
-            # For Sequence Card Tab, we use the workbench on the left and the sequence card tab on the right
-            left_index = LeftStackIndex.WORKBENCH
+            # For Sequence Card Tab, we use the sequence card tab on both left and right panels
+            # This gives us a full-screen experience for the sequence cards
+            left_index = LeftStackIndex.WORKBENCH  # We'll hide this panel
             right_index = RightStackIndex.SEQUENCE_CARD_TAB
-            print(f"DEBUG: Set left_index={left_index}, right_index={right_index}")
         else:
-            print(f"DEBUG: Processing default case")
-            print(f"DEBUG: tab_to_right_stack={self.tab_to_right_stack}")
             right_index = self.tab_to_right_stack.get(index, index)
-            print(f"DEBUG: Set right_index={right_index}")
 
-        print(f"DEBUG: Returning left_index={left_index}, right_index={right_index}")
         return left_index, right_index
