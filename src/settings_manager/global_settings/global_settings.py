@@ -3,6 +3,7 @@ from enums.prop_type import PropType
 from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import DIAMOND
 from .prop_type_changer import PropTypeChanger
+from settings_manager.settings_logger import log_setting_get, log_setting_set
 
 if TYPE_CHECKING:
     from ..settings_manager import SettingsManager
@@ -26,17 +27,21 @@ class GlobalSettings:
     # GETTERS
     def get_current_settings_dialog_tab(self) -> str:
         """Retrieve the last opened tab from settings."""
-        return self.settings.value(
+        value = self.settings.value(
             "global/current_settings_dialog_tab", "User Profile", type=str
         )
+        log_setting_get("global/current_settings_dialog_tab", value)
+        return value
 
     def set_current_settings_dialog_tab(self, tab: str) -> None:
         """Store the currently active tab."""
-        print(f"[DEBUG] Storing last opened tab: {tab}")
+        log_setting_set("global/current_settings_dialog_tab", tab)
         self.settings.setValue("global/current_settings_dialog_tab", str(tab))
 
     def get_grow_sequence(self) -> bool:
-        return self.settings.value("global/grow_sequence", True, type=bool)
+        value = self.settings.value("global/grow_sequence", True, type=bool)
+        log_setting_get("global/grow_sequence", value)
+        return value
 
     def get_prop_type(self) -> PropType:
         prop_type_key: str = self.settings.value("global/prop_type", "Staff")
@@ -64,6 +69,7 @@ class GlobalSettings:
     # SETTERS
 
     def set_grow_sequence(self, grow_sequence: bool) -> None:
+        log_setting_set("global/grow_sequence", grow_sequence)
         self.settings.setValue("global/grow_sequence", grow_sequence)
 
     def set_prop_type(

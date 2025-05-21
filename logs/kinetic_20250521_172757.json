@@ -1,0 +1,2 @@
+{"timestamp": "2025-05-21 17:27:57,084", "level": "INFO", "module": "file_only", "message": "Logging system initialized", "line": 269, "function": "configure_logging"}
+{"timestamp": "2025-05-21 17:27:57,086", "level": "INFO", "module": "__main__", "message": "Trace log initialized at: F:\\CODE\\the-kinetic-constructor-desktop\\trace_log.txt", "line": 31, "function": "initialize_logging"}

@@ -23,23 +23,18 @@ class ImageExportSettings:
     def get_image_export_setting(self, key: str):
         """Get a specific image export setting."""
         value = self.settings.value(f"image_export/{key}")
-        print(f"Getting setting {key}, raw value: {value}")
         if value is None:
             default_value = self.DEFAULT_IMAGE_EXPORT_SETTINGS.get(key, False)
-            print(f"Value is None, using default: {default_value}")
             return default_value
         result = value.lower() == "true"
-        print(f"Value is {value}, returning: {result}")
         return result
 
     def set_image_export_setting(self, key: str, value: bool):
         """Set a specific image export setting."""
-        print(f"Setting {key} to {value}")
         self.settings.setValue(f"image_export/{key}", str(value).lower())
         self.settings.sync()
         # Verify the setting was saved
         saved_value = self.settings.value(f"image_export/{key}")
-        print(f"After setting, raw value is: {saved_value}")
 
     def get_all_image_export_options(self) -> dict:
         """Get all image export settings as a dictionary."""

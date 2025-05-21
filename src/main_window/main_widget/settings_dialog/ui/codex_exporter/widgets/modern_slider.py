@@ -13,9 +13,7 @@ class ModernSlider(QSlider):
         self.setObjectName("modernSlider")
         self.setStyleSheet(
             """
-            QSlider {
-                cursor: pointer;
-            }
+
 
             QSlider::groove:horizontal {
                 height: 8px;

@@ -33,27 +33,20 @@ class SequenceCardRefresher:
         selected_length = self.nav_sidebar.selected_length
         self.currently_displayed_length = selected_length
 
-        print(f"Loading sequences for length: {selected_length}")
 
         # If we have cached pages for this length, use them
         if selected_length in self.pages_cache:
-            print(f"Using cached pages for length {selected_length}")
             self.cached_page_displayer.display_cached_pages(selected_length)
         else:
             # Otherwise, load sequences directly from the dictionary
             dictionary_path = get_dictionary_path()
-            print(f"Loading sequences from dictionary: {dictionary_path}")
 
             # Get all sequences from the dictionary
             sequences = self.get_all_sequences(dictionary_path)
-            print(f"Found {len(sequences)} total sequences in dictionary")
 
             # Filter sequences by the selected length
             filtered_sequences = self.filter_sequences_by_length(
                 sequences, selected_length
-            )
-            print(
-                f"Filtered to {len(filtered_sequences)} sequences with length {selected_length}"
             )
 
             # Display the filtered sequences
@@ -61,7 +54,6 @@ class SequenceCardRefresher:
 
             # Cache the pages for future use
             self.pages_cache[selected_length] = self.pages.copy()
-            print(f"Cached {len(self.pages)} pages for length {selected_length}")
 
     def get_all_sequences(self, dictionary_path: str) -> list[dict]:
         """

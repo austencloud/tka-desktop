@@ -37,7 +37,6 @@ class SequenceCardImageDisplayer:
         self.pages = self.sequence_card_tab.pages
         self.pages_cache = self.sequence_card_tab.pages_cache
 
-        print(f"Displaying {len(sequences)} sequences")
 
         # If no sequences are found, show a message
         if not sequences:

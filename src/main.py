@@ -1,5 +1,6 @@
 import sys
 import os
+import logging
 
 
 def configure_import_paths():
@@ -15,12 +16,20 @@ def configure_import_paths():
 
 
 def initialize_logging():
-    import os
+    from utils.logging_config import configure_logging, get_logger
 
-    # Create a simple log file in the current directory
-    log_file_path = os.path.join(os.getcwd(), "trace_log.txt")
-    os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
-    return open(log_file_path, "w")
+    # Configure the logging system with INFO level by default
+    configure_logging(logging.INFO)
+
+    # Get a logger for the main module
+    main_logger = get_logger(__name__)
+
+    # Create a simple trace log file for compatibility with existing code
+    trace_log_path = os.path.join(os.getcwd(), "trace_log.txt")
+    os.makedirs(os.path.dirname(trace_log_path), exist_ok=True)
+
+    main_logger.debug("Trace log initialized at: %s", trace_log_path)
+    return open(trace_log_path, "w")
 
 
 def initialize_application():
@@ -75,10 +84,32 @@ def main():
     from splash_screen.splash_screen import SplashScreen
     from profiler import Profiler
     from settings_manager.settings_manager import SettingsManager
+    from utils.logging_config import get_logger
+    from utils.startup_silencer import silence_startup_logs
 
-    print("Python version:", sys.version)
-    print("Running main.py main()")
-    print("Current working directory:", os.getcwd())
+    # Get a logger for the main module
+    logger = get_logger(__name__)
+
+    # Log minimal startup information
+    logger.info(f"Kinetic Constructor v1.0.0")
+    logger.info(f"Python {sys.version.split()[0]}")
+
+    # Use the startup silencer to reduce noise during initialization
+    with silence_startup_logs():
+        # These detailed logs will only go to the log file, not the console
+        detailed_logger = get_logger("startup_details")
+        detailed_logger.info(f"Full Python version: {sys.version}")
+        detailed_logger.info(f"Current working directory: {os.getcwd()}")
+
+        # Log system information to the log file
+        import platform
+
+        detailed_logger.info(f"Platform: {platform.platform()}")
+        detailed_logger.info(f"Processor: {platform.processor()}")
+        detailed_logger.info(
+            f"Python implementation: {platform.python_implementation()}"
+        )
+        detailed_logger.info(f"Python compiler: {platform.python_compiler()}")
 
     project_dir = os.path.abspath(os.path.dirname(__file__))
     log_file = initialize_logging()

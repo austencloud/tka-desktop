@@ -67,7 +67,6 @@ class TurnsWidget(QWidget):
             current_motion = self._get_current_motion()
             if current_motion:
                 turns_value = current_motion.state.turns
-                print(f"Initial turns value: {turns_value}")
                 return TurnsValue(turns_value)
         except (AttributeError, KeyError) as e:
             print(f"Error getting initial turns value: {e}")

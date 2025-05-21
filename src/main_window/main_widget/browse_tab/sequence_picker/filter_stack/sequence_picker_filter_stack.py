@@ -76,6 +76,12 @@ class SequencePickerFilterStack(QStackedWidget):
     def show_section(self, filter_section_str: str):
         # convert the str to an enum
         try:
+            # Handle special case for 'sequence_picker' which isn't a valid section
+            if filter_section_str == "sequence_picker":
+                # Show the filter selection widget instead
+                self.show_filter_selection_widget()
+                return
+
             filter_section_enum = BrowseTabSection.from_str(filter_section_str)
             index = self.section_indexes.get(filter_section_enum)
             if index is not None:
@@ -87,12 +93,18 @@ class SequencePickerFilterStack(QStackedWidget):
                 )
                 self.current_filter_section = filter_section_enum
             else:
-                print(
-                    f"Section '{filter_section_str}' not found. Did you spell it correctly?"
+                # Use logging instead of print for better control
+                import logging
+
+                logging.warning(
+                    f"Section '{filter_section_str}' not found. Showing default section."
                 )
+                self.show_filter_selection_widget()
         except ValueError as e:
-            print(e)
-            # Optionally, you can show a default section or keep the current section
+            import logging
+
+            logging.warning(f"Invalid section: {e}. Showing default section.")
+            # Show a default section when there's an error
             self.show_filter_selection_widget()
 
     def show_filter_selection_widget(self):

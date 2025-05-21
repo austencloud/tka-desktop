@@ -112,7 +112,6 @@ class SequenceCardImageExporter:
                                 sequence,
                                 options=options,
                                 dictionary=False,
-                                output_scale=0.5,
                             )
                         )
 

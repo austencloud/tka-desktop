@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget  # Import QWidget
+from utils.ui_utils import ensure_positive_size
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
@@ -48,9 +49,20 @@ class BeatFrameResizer:
             return min(int(width // num_cols), int(height // 6))
 
     def resize_beats(self, beat_size: int) -> None:
+        # Ensure beat_size is positive to avoid Qt warnings
+        safe_size = ensure_positive_size(beat_size)
         for beat in self.beat_frame.beat_views:
-            beat.setFixedSize(beat_size, beat_size)
-        self.start_pos_view.setFixedSize(beat_size, beat_size)
+            beat.setFixedSize(safe_size, safe_size)
+            # If the view has a setMinimumSize method, ensure it's also positive
+            if hasattr(beat, "setMinimumSize"):
+                min_size = ensure_positive_size(safe_size - 48)
+                beat.setMinimumSize(min_size, min_size)
+
+        # Also apply to start position view
+        self.start_pos_view.setFixedSize(safe_size, safe_size)
+        if hasattr(self.start_pos_view, "setMinimumSize"):
+            min_size = ensure_positive_size(safe_size - 48)
+            self.start_pos_view.setMinimumSize(min_size, min_size)
 
     def update_views(self, beat_size: int) -> None:
         self.selection_overlay.update_overlay_position()

@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QGraphicsTextItem
 from PyQt6.QtCore import QPointF
 from PyQt6.QtGui import QFont
@@ -10,6 +9,7 @@ from base_widgets.pictograph.elements.views.beat_view import (
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
+from utils.ui_utils import ensure_positive_size
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (

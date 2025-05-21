@@ -4,11 +4,12 @@ from base_widgets.pictograph.elements.views.base_pictograph_view import (
     BasePictographView,
 )
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+from utils.ui_utils import ensure_positive_size
+
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
-
 
 
 class BeatView(BasePictographView):
@@ -29,7 +30,9 @@ class BeatView(BasePictographView):
     def _setup_blank_beat(self):
         self.blank_beat = Beat(self.beat_frame)
         self.beat = self.blank_beat
-        self.pictograph = self.beat  # Pictograph is now synonymous with beat. Aren't I clever?
+        self.pictograph = (
+            self.beat
+        )  # Pictograph is now synonymous with beat. Aren't I clever?
         self.setScene(self.beat)
         self.blank_beat.elements.grid.hide()
         self.blank_beat.beat_number_item.update_beat_number()

@@ -14,7 +14,6 @@ class SequenceCardPageFactory:
 
     def create_page(self) -> QFrame:
         """Create a new page frame for displaying sequence card images."""
-        print("Creating new sequence card page")
 
         # Get references to needed components
         self.image_displayer = self.sequence_card_tab.image_displayer
@@ -43,7 +42,6 @@ class SequenceCardPageFactory:
             or scroll_layout.itemAt(scroll_layout.count() - 1).layout().count() >= 2
         ):
             # Create a new row layout
-            print("Creating new row layout")
             current_row_layout = QHBoxLayout()
             current_row_layout.setSpacing(margin)
             current_row_layout.setContentsMargins(0, 0, 0, 0)
@@ -51,7 +49,6 @@ class SequenceCardPageFactory:
             scroll_layout.addLayout(current_row_layout)
         else:
             # Use the existing row layout
-            print("Using existing row layout")
             current_row_layout = scroll_layout.itemAt(
                 scroll_layout.count() - 1
             ).layout()
@@ -68,15 +65,24 @@ class SequenceCardPageFactory:
         # Set the size of the page
         page_frame.setFixedSize(page_width, page_height)
 
-        # Style the page frame with a border and shadow
+        # Style the page frame with a border
         page_frame.setStyleSheet(
             """
             background-color: white;
             border: 1px solid #aaaaaa;
             border-radius: 4px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         """
         )
+
+        # Add shadow effect using QGraphicsDropShadowEffect
+        from PyQt6.QtWidgets import QGraphicsDropShadowEffect
+        from PyQt6.QtGui import QColor
+
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(8)
+        shadow.setColor(QColor(0, 0, 0, 25))  # 0.1 opacity = 25/255
+        shadow.setOffset(0, 4)
+        page_frame.setGraphicsEffect(shadow)
 
         # Create the layout for the page
         page_layout = QGridLayout(page_frame)
@@ -86,6 +92,5 @@ class SequenceCardPageFactory:
         # Add the page to the row layout
         current_row_layout.addWidget(page_frame)
 
-        print(f"Created page with size: {page_frame.width()}x{page_frame.height()}")
 
         return page_frame  # Return the frame instead of the layout

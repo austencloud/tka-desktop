@@ -61,7 +61,6 @@ class ImageExportControlPanel(QWidget):
 
         # Connect the stateChanged signal to our handler
         self.save_dir_checkbox.stateChanged.connect(self._save_directory_preference)
-        print("Connected checkbox stateChanged signal")
         self.buttons = {}
         self.button_settings_keys = {
             "Start Position": "include_start_position",
@@ -163,10 +162,6 @@ class ImageExportControlPanel(QWidget):
         # Create a horizontal layout for the checkbox with some padding
         h_layout = QHBoxLayout()
 
-        # Make sure we're not adding the checkbox twice
-        print(
-            f"Adding checkbox to layout, current parent: {self.save_dir_checkbox.parent()}"
-        )
         if self.save_dir_checkbox.parent() is None:
             h_layout.addWidget(self.save_dir_checkbox)
         else:
@@ -182,7 +177,6 @@ class ImageExportControlPanel(QWidget):
     def _save_directory_preference(self, state):
         """Save the directory preference setting."""
         is_checked = state == 2
-        print(f"Saving directory preference: {is_checked}")
 
         # Force the checkbox to be checked/unchecked based on the state
         self.save_dir_checkbox.setChecked(is_checked)
@@ -196,7 +190,6 @@ class ImageExportControlPanel(QWidget):
         saved_value = self.settings_manager.image_export.get_image_export_setting(
             "use_last_save_directory"
         )
-        print(f"After saving, preference is: {saved_value}")
 
         # Force sync the settings
         self.settings_manager.settings.sync()
@@ -209,7 +202,6 @@ class ImageExportControlPanel(QWidget):
         use_last_dir = self.settings_manager.image_export.get_image_export_setting(
             "use_last_save_directory"
         )
-        print(f"Loading directory preference: {use_last_dir}")
         self.save_dir_checkbox.setChecked(use_last_dir)
 
     def _load_user_profiles(self):

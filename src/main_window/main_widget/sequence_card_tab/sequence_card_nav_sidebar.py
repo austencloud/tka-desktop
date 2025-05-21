@@ -190,7 +190,7 @@ class SequenceCardNavSidebar(QWidget):
             frame = label.parent().parent()
 
             if length == self.selected_length:
-                # Selected label style with enhanced gradient and shadow effect
+                # Selected label style with enhanced gradient
                 frame.setStyleSheet(
                     f"""
                     #lengthFrame_{length} {{
@@ -199,10 +199,19 @@ class SequenceCardNavSidebar(QWidget):
                         border-radius: 8px;
                         border: none;
                         margin: 4px 2px;
-                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
                     }}
                 """
                 )
+
+                # Add shadow effect using QGraphicsDropShadowEffect instead of CSS
+                from PyQt6.QtWidgets import QGraphicsDropShadowEffect
+                from PyQt6.QtGui import QColor
+
+                shadow = QGraphicsDropShadowEffect()
+                shadow.setBlurRadius(4)
+                shadow.setColor(QColor(0, 0, 0, 76))  # 0.3 opacity = 76/255
+                shadow.setOffset(0, 2)
+                frame.setGraphicsEffect(shadow)
 
                 # Selected label text style
                 label.setStyleSheet(
