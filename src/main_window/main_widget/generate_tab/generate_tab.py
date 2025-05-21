@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING
 from main_window.main_widget.generate_tab.circular.CAP_type_picker.CAP_picker import (
     CAPPicker,
 )
-from settings_manager.global_settings.app_context import AppContext
+from interfaces.settings_manager_interface import ISettingsManager
+from interfaces.json_manager_interface import IJsonManager
 
 from .generate_tab_layout_manager import GenerateTabLayoutManager
 from .generate_tab_controller import GenerateTabController
@@ -32,11 +33,18 @@ if TYPE_CHECKING:
 
 
 class GenerateTab(QWidget):
-    def __init__(self, main_widget: "MainWidget"):
+    def __init__(
+        self,
+        main_widget: "MainWidget",
+        settings_manager: ISettingsManager,
+        json_manager: IJsonManager,
+    ):
         super().__init__(main_widget)
         self.main_widget = main_widget
         self.main_widget.splash.updater.update_progress("GenerateTab")
-        self.settings = AppContext.settings_manager().generate_tab_settings
+        self.settings_manager = settings_manager
+        self.json_manager = json_manager
+        self.settings = settings_manager.get_generate_tab_settings()
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
 

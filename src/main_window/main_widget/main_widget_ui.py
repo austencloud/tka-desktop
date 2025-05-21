@@ -7,7 +7,7 @@ from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 from settings_manager.global_settings.app_context import AppContext
 from .construct_tab.construct_tab_factory import ConstructTabFactory
-from .generate_tab.generate_tab import GenerateTab
+from .generate_tab.generate_tab_factory import GenerateTabFactory
 from .browse_tab.browse_tab import BrowseTab
 from .learn_tab.learn_tab import LearnTab
 from .main_background_widget.main_background_widget import MainBackgroundWidget
@@ -57,12 +57,15 @@ class MainWidgetUI:
         settings_manager = AppContext.settings_manager()
         json_manager = AppContext.json_manager()
 
-        # Use factory to create ConstructTab with explicit dependencies
+        # Use factories to create tabs with explicit dependencies
         mw.construct_tab = ConstructTabFactory.create(
             main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
         )
 
-        mw.generate_tab = GenerateTab(mw)
+        mw.generate_tab = GenerateTabFactory.create(
+            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
+        )
+
         mw.browse_tab = BrowseTab(mw)
         mw.learn_tab = LearnTab(mw)
         mw.sequence_card_tab = SequenceCardTab(mw)

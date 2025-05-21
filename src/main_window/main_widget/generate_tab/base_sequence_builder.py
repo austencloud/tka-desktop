@@ -30,7 +30,7 @@ from .sequence_builder_start_position_manager import SequenceBuilderStartPosMana
 from main_window.main_widget.sequence_workbench.sequence_workbench import (
     SequenceWorkbench,
 )
-from settings_manager.global_settings.app_context import AppContext
+from interfaces.json_manager_interface import IJsonManager
 
 if TYPE_CHECKING:
     from .generate_tab import GenerateTab
@@ -48,9 +48,9 @@ class BaseSequenceBuilder:
         self.sequence_workbench: SequenceWorkbench = None
 
         self.main_widget = generate_tab.main_widget
-        self.validation_engine = self.main_widget.json_manager.ori_validation_engine
-        self.json_manager = AppContext.json_manager()
-        self.ori_calculator = self.main_widget.json_manager.ori_calculator
+        self.json_manager = generate_tab.json_manager
+        self.validation_engine = self.json_manager.ori_validation_engine
+        self.ori_calculator = self.json_manager.ori_calculator
         self.start_pos_manager = SequenceBuilderStartPosManager(self.main_widget)
 
     def initialize_sequence(self, length: int, CAP_type: str = "") -> None:

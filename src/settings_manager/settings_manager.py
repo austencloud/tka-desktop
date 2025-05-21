@@ -89,3 +89,7 @@ class SettingsManager(QObject):  # ISettingsManager is a Protocol, no need to in
     def get_construct_tab_settings(self):
         """Get the construct tab settings object."""
         return self.construct_tab_settings
+
+    def get_generate_tab_settings(self):
+        """Get the generate tab settings object."""
+        return self.generate_tab_settings

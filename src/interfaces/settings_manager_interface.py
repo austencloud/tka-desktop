@@ -23,3 +23,7 @@ class ISettingsManager(Protocol):
     def get_construct_tab_settings(self):
         """Get the construct tab settings object."""
         ...
+
+    def get_generate_tab_settings(self):
+        """Get the generate tab settings object."""
+        ...
