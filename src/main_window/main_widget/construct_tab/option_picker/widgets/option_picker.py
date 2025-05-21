@@ -39,11 +39,16 @@ class OptionPicker(QWidget):
         self.option_pool: list[Pictograph] = []
         self.choose_next_label = ChooseYourNextPictographLabel(mw_size_provider)
         self.option_scroll = OptionScroll(self, mw_size_provider)
-        self.option_getter = OptionGetter(pictograph_dataset)
+
+        # Get dependencies from add_to_sequence_manager
+        json_manager = add_to_sequence_manager.json_manager
+        settings_manager = add_to_sequence_manager.settings_manager
+
+        self.option_getter = OptionGetter(pictograph_dataset, json_manager)
         self.option_click_handler = OptionClickHandler(self, beat_frame)
-        self.updater = OptionUpdater(self, fade_manager)
+        self.updater = OptionUpdater(self, fade_manager, json_manager)
         self.reversal_filter = OptionPickerReversalFilter(
-            mw_size_provider, self.updater.update_options
+            mw_size_provider, self.updater.update_options, settings_manager
         )
         self.option_factory = OptionFactory(self, mw_size_provider)
         self.layout_manager = OptionPickerLayoutManager(self)

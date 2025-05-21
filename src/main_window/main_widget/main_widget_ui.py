@@ -6,7 +6,7 @@ from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 from settings_manager.global_settings.app_context import AppContext
-from .construct_tab.construct_tab import ConstructTab
+from .construct_tab.construct_tab_factory import ConstructTabFactory
 from .generate_tab.generate_tab import GenerateTab
 from .browse_tab.browse_tab import BrowseTab
 from .learn_tab.learn_tab import LearnTab
@@ -53,14 +53,13 @@ class MainWidgetUI:
 
         AppContext.set_sequence_beat_frame(mw.sequence_workbench.beat_frame)
 
-        mw.construct_tab = ConstructTab(
-            beat_frame=mw.sequence_workbench.beat_frame,
-            pictograph_dataset=mw.pictograph_dataset,
-            size_provider=lambda: mw.size(),
-            fade_to_stack_index=lambda index: mw.fade_manager.stack_fader.fade_stack(
-                mw.right_stack, index
-            ),
-            fade_manager=mw.fade_manager,
+        # Get dependencies from AppContext during transition period
+        settings_manager = AppContext.settings_manager()
+        json_manager = AppContext.json_manager()
+
+        # Use factory to create ConstructTab with explicit dependencies
+        mw.construct_tab = ConstructTabFactory.create(
+            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
         )
 
         mw.generate_tab = GenerateTab(mw)

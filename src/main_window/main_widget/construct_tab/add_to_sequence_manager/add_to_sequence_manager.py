@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING
 
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+from interfaces.settings_manager_interface import ISettingsManager
+from interfaces.json_manager_interface import IJsonManager
 
 if TYPE_CHECKING:
-    from main_window.main_widget.json_manager.json_manager import JsonManager
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
@@ -13,13 +14,15 @@ if TYPE_CHECKING:
 class AddToSequenceManager:
     def __init__(
         self,
-        json_manager: "JsonManager",
+        json_manager: IJsonManager,
         beat_frame: "SequenceBeatFrame",
         last_beat: "Beat",
+        settings_manager: ISettingsManager = None,
     ):
         self.json_manager = json_manager
         self.beat_frame = beat_frame
         self.last_beat = last_beat
+        self.settings_manager = settings_manager
 
     def create_new_beat(self, clicked_option: "Pictograph") -> "Beat":
         sequence = self.json_manager.loader_saver.load_current_sequence()

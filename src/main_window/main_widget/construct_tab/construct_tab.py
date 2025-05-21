@@ -2,14 +2,14 @@ from PyQt6.QtWidgets import QFrame
 from PyQt6.QtCore import pyqtSignal, QSize
 from typing import TYPE_CHECKING, Callable
 
-from base_widgets.base_beat_frame import AppContext
 from enums.glyph_enum import Letter
 from base_widgets.pictograph.pictograph import Pictograph
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
     SequenceBeatFrame,
 )
-
+from interfaces.settings_manager_interface import ISettingsManager
+from interfaces.json_manager_interface import IJsonManager
 
 from .start_pos_picker.start_pos_picker import StartPosPicker
 from .advanced_start_pos_picker.advanced_start_pos_picker import AdvancedStartPosPicker
@@ -34,11 +34,13 @@ class ConstructTab(QFrame):
         size_provider: Callable[[], QSize],
         fade_to_stack_index: Callable[[int], None],
         fade_manager: "FadeManager",
+        settings_manager: ISettingsManager,
+        json_manager: IJsonManager,
     ) -> None:
         super().__init__()
 
-        self.settings_manager = AppContext.settings_manager()
-        self.json_manager = AppContext.json_manager()
+        self.settings_manager = settings_manager
+        self.json_manager = json_manager
         self.beat_frame = beat_frame
         self.pictograph_dataset = pictograph_dataset
         self.mw_size_provider = size_provider
@@ -56,6 +58,7 @@ class ConstructTab(QFrame):
             json_manager=self.json_manager,
             beat_frame=self.beat_frame,
             last_beat=lambda: self.last_beat,  # Use a getter function
+            settings_manager=self.settings_manager,
         )
 
         self.option_picker = OptionPicker(

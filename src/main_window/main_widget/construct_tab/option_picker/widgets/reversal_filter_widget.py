@@ -1,16 +1,19 @@
 from typing import Callable
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PyQt6.QtCore import Qt, QSize
-from settings_manager.global_settings.app_context import AppContext
+from interfaces.settings_manager_interface import ISettingsManager
 from .reversal_combobox import ReversalCombobox
 
 
 class OptionPickerReversalFilter(QWidget):
     def __init__(
-        self, mw_size_provider: Callable[[], QSize], update_options_callback: Callable
+        self,
+        mw_size_provider: Callable[[], QSize],
+        update_options_callback: Callable,
+        settings_manager: ISettingsManager,
     ) -> None:
         super().__init__()
-        self.settings = AppContext.settings_manager().construct_tab_settings
+        self.settings = settings_manager.get_construct_tab_settings()
         self.size_provider = mw_size_provider
         self.update_options_callback = update_options_callback
         self.reversal_combobox = ReversalCombobox(self, mw_size_provider)

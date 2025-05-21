@@ -57,7 +57,11 @@ class SequenceBeatFrame(BaseBeatFrame):
         self.image_export_manager = ImageExportManager(self, SequenceBeatFrame)
         self.populator = BeatFramePopulator(self)
         self.beat_adder = BeatAdder(self)
-        self.start_position_adder = StartPositionAdder(self)
+
+        # Get json_manager from main_widget
+        json_manager = self.main_widget.json_manager
+        self.start_position_adder = StartPositionAdder(self, json_manager)
+
         self.duration_manager = BeatDurationManager(self)
         self.updater = BeatFrameUpdater(self)
         self.key_event_handler = BeatFrameKeyEventHandler(self)

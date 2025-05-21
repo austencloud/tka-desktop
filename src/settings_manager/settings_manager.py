@@ -1,7 +1,9 @@
 import shutil
-from typing import TYPE_CHECKING
+import os
+from typing import TYPE_CHECKING, Any
 from PyQt6.QtCore import QSettings, QObject, pyqtSignal
 from utils.path_helpers import get_settings_path
+from interfaces.settings_manager_interface import ISettingsManager
 from .construct_tab_settings import ConstructTabSettings
 from .generate_tab_settings import GenerateTabSettings
 from .sequence_sharing_settings import SequenceShareSettings
@@ -18,11 +20,7 @@ if TYPE_CHECKING:
     pass
 
 
-import os
-from PyQt6.QtCore import QSettings, QObject, pyqtSignal
-
-
-class SettingsManager(QObject):
+class SettingsManager(QObject):  # ISettingsManager is a Protocol, no need to inherit
     background_changed = pyqtSignal(str)
 
     def __init__(self) -> None:
@@ -74,3 +72,20 @@ class SettingsManager(QObject):
                 print(
                     "[ERROR] Default settings.ini is missing. Please ensure it's included in the installation package."
                 )
+
+    # ISettingsManager interface implementation
+    def get_setting(self, section: str, key: str, default_value: Any = None) -> Any:
+        """Get a setting value from the specified section."""
+        return self.settings.value(f"{section}/{key}", default_value)
+
+    def set_setting(self, section: str, key: str, value: Any) -> None:
+        """Set a setting value in the specified section."""
+        self.settings.setValue(f"{section}/{key}", value)
+
+    def get_global_settings(self):
+        """Get the global settings object."""
+        return self.global_settings
+
+    def get_construct_tab_settings(self):
+        """Get the construct tab settings object."""
+        return self.construct_tab_settings

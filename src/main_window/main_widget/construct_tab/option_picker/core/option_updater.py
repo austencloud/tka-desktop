@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 import os
 from enums.letter.letter_type import LetterType
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
-from settings_manager.global_settings.app_context import AppContext
+from interfaces.json_manager_interface import IJsonManager
 
 if TYPE_CHECKING:
     from ..widgets.option_picker import OptionPicker
@@ -10,12 +10,15 @@ if TYPE_CHECKING:
 
 class OptionUpdater:
     def __init__(
-        self, option_picker: "OptionPicker", fade_manager: FadeManager
+        self,
+        option_picker: "OptionPicker",
+        fade_manager: FadeManager,
+        json_manager: IJsonManager,
     ) -> None:
         self.option_picker = option_picker
         self.scroll_area = option_picker.option_scroll
         self.fade_manager = fade_manager
-        self.json_loader = AppContext.json_manager().loader_saver
+        self.json_loader = json_manager.loader_saver
         self.app_root = self._get_app_root()
 
     def _get_app_root(self) -> str:
@@ -34,9 +37,14 @@ class OptionUpdater:
     def update_options(self) -> None:
         sequence = self.json_loader.load_current_sequence()
         sequence_without_metdata = sequence[1:]
-        selected_filter = (
-            self.option_picker.reversal_filter.reversal_combobox.currentData()
-        )
+
+        # Get the selected filter if the reversal_filter is available
+        selected_filter = None
+        if hasattr(self.option_picker, "reversal_filter"):
+            selected_filter = (
+                self.option_picker.reversal_filter.reversal_combobox.currentData()
+            )
+
         next_options = self.option_picker.option_getter.get_next_options(
             sequence_without_metdata, selected_filter
         )

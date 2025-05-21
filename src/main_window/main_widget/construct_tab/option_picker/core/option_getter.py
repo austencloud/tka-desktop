@@ -11,13 +11,16 @@ from data.constants import (
     START_ORI,
     START_POS,
 )
-from settings_manager.global_settings.app_context import AppContext
+from interfaces.json_manager_interface import IJsonManager
 
 
 class OptionGetter:
-    def __init__(self, pictograph_dataset: dict[Any, list[dict[str, Any]]]) -> None:
+    def __init__(
+        self,
+        pictograph_dataset: dict[Any, list[dict[str, Any]]],
+        json_manager: IJsonManager,
+    ) -> None:
         self.pictograph_dataset = pictograph_dataset
-        json_manager = AppContext.json_manager()
         self.ori_calculator = json_manager.ori_calculator
         self.ori_validation_engine = json_manager.ori_validation_engine
 
