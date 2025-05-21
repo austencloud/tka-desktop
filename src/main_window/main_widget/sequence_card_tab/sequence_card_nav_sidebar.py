@@ -1,10 +1,20 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QLabel, QSizePolicy
+from PyQt6.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QScrollArea,
+    QLabel,
+    QSizePolicy,
+    QFrame,
+    QHBoxLayout,
+)
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QCursor
+from PyQt6.QtGui import QCursor, QFont
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from widgets.main_widget.sequence_card_tab.sequence_card_tab import SequenceCardTab
+    from main_window.main_widget.sequence_card_tab.sequence_card_tab import (
+        SequenceCardTab,
+    )
 
 DEFAULT_SEQUENCE_LENGTH = 16
 
@@ -41,18 +51,59 @@ class SequenceCardNavSidebar(QWidget):
         self.scroll_area.setStyleSheet("background: transparent;")
 
     def _create_labels(self):
+        # Add a header label with improved styling
+        header_label = QLabel("Sequence Length")
+        header_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        header_font = QFont()
+        header_font.setBold(True)
+        header_font.setPointSize(10)
+        header_label.setFont(header_font)
+        header_label.setStyleSheet(
+            """
+            color: white;
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #444444, stop:1 #333333);
+            padding: 12px 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #555555;
+        """
+        )
+        self.layout.addWidget(header_label)
+
+        # Add length option labels
         for length in [4, 8, 16]:
+            # Create a frame for each label for better styling
+            label_frame = QFrame()
+            label_frame.setObjectName(f"lengthFrame_{length}")
+            label_frame.setStyleSheet(
+                """
+                border-radius: 4px;
+                margin: 2px 0;
+            """
+            )
+
+            label_layout = QHBoxLayout(label_frame)
+            label_layout.setContentsMargins(5, 5, 5, 5)
+
             label = QLabel(f"{length}")
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             label.mousePressEvent = self.create_label_click_handler(length)
-            self.layout.addWidget(label)
+
+            label_layout.addWidget(label)
+            self.layout.addWidget(label_frame)
             self.labels[length] = label
+
+        # Add spacer at the bottom
+        self.layout.addStretch()
+
+        # Initialize styles
         self._update_label_styles()
 
     def create_label_click_handler(self, length):
-        def handler(event):
+        def handler(_):  # Use underscore to indicate unused parameter
             self.selected_length = length
             self._update_label_styles()
             self.sequence_card_tab.refresher.refresh_sequence_cards()
@@ -60,36 +111,65 @@ class SequenceCardNavSidebar(QWidget):
         return handler
 
     def _update_label_styles(self):
-        font_size = self.width() // 5
+        """Update the styles of the sidebar labels based on selection state."""
+        font_size = max(14, self.width() // 6)  # Ensure minimum font size
 
         for length, label in self.labels.items():
+            # Get the parent frame
+            frame = label.parent().parent()
+
             if length == self.selected_length:
+                # Selected label style with modern gradient and shadow effect
+                frame.setStyleSheet(
+                    f"""
+                    #lengthFrame_{length} {{
+                        background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                                  stop:0 #3a92ea, stop:1 #2a82da);
+                        border-radius: 8px;
+                        border: none;
+                        margin: 4px;
+                    }}
+                """
+                )
+
                 label.setStyleSheet(
                     f"""
                     QLabel {{
                         font-size: {font_size}px;
                         font-weight: bold;
-                        padding: 5px;
-                        background-color: #333;
                         color: white;
-                        border-radius: 5px;
+                        padding: 8px;
                     }}
-                    """
+                """
                 )
             else:
+                # Unselected label style with hover and active states
+                frame.setStyleSheet(
+                    f"""
+                    #lengthFrame_{length} {{
+                        background-color: rgba(60, 60, 60, 0.3);
+                        border-radius: 8px;
+                        border: none;
+                        margin: 4px;
+                    }}
+                    #lengthFrame_{length}:hover {{
+                        background-color: rgba(80, 80, 80, 0.5);
+                    }}
+                """
+                )
+
                 label.setStyleSheet(
                     f"""
                     QLabel {{
                         font-size: {font_size}px;
-                        background-color: transparent;
-                        padding: 5px;
-                        color: #333;
+                        color: #dddddd;
                         font-weight: bold;
+                        padding: 8px;
                     }}
                     QLabel:hover {{
-                        background-color: #f0f0f0;
+                        color: white;
                     }}
-                    """
+                """
                 )
 
     def resizeEvent(self, event):
@@ -97,17 +177,5 @@ class SequenceCardNavSidebar(QWidget):
         super().resizeEvent(event)
 
     def _set_styles(self):
-        font_size = self.width() // 5
-        for label in self.labels.values():
-            label.setStyleSheet(
-                f"""
-                QLabel {{
-                    font-size: {font_size}px;
-                    padding: 5px;
-                    font-weight: bold;
-                }}
-                QLabel:hover {{
-                    background-color: #f0f0f0;
-                }}
-                """
-            )
+        # Just call update_label_styles which now handles all styling
+        self._update_label_styles()

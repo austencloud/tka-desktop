@@ -42,31 +42,61 @@ class SequenceCardImageExporter:
         if not os.path.exists(export_path):
             os.makedirs(export_path)
 
+        print(f"Exporting sequence card images to: {export_path}")
+        print(f"Loading images from dictionary: {dictionary_path}")
+
+        # Count total images for progress reporting
         images = self.get_all_images(dictionary_path)
+        total_images = len(images)
+        processed_images = 0
+        exported_images = 0
+
+        print(f"Found {total_images} images to process")
+
         for image_path in images:
+            processed_images += 1
+            if processed_images % 10 == 0:
+                print(f"Processing image {processed_images} of {total_images}")
+
             # Extract metadata and create a temporary beat frame
             metadata = MetaDataExtractor().extract_metadata_from_file(image_path)
             if metadata and "sequence" in metadata:
                 sequence = metadata["sequence"]
+
+                # Get sequence length for organization
+                sequence_length = len(sequence) - 1  # Subtract 1 for metadata entry
+
+                # Set export options
                 options = {
                     "add_word": True,
                     "add_user_info": True,
                     "add_difficulty_level": True,
                 }
-                self.temp_beat_frame.populate_beat_frame_from_json(sequence)
-                qimage = self.export_manager.image_creator.create_sequence_image(
-                    sequence, include_start_pos=False, options=options
-                )
 
-                pil_image = self.qimage_to_pil(qimage)
-                metadata["date_added"] = datetime.now().isoformat()
-                info = self._create_png_info(metadata)
+                try:
+                    # Generate the image
+                    self.temp_beat_frame.populate_beat_frame_from_json(sequence)
+                    qimage = self.export_manager.image_creator.create_sequence_image(
+                        sequence, include_start_pos=False, options=options
+                    )
 
-                image_filename = os.path.basename(image_path)
-                pil_image.save(
-                    os.path.join(export_path, image_filename), "PNG", pnginfo=info
-                )
-                print(f"Exported: {image_filename}")
+                    # Convert to PIL image and add metadata
+                    pil_image = self.qimage_to_pil(qimage)
+                    metadata["date_added"] = datetime.now().isoformat()
+                    info = self._create_png_info(metadata)
+
+                    # Save the image with the original filename
+                    image_filename = os.path.basename(image_path)
+                    output_path = os.path.join(export_path, image_filename)
+                    pil_image.save(output_path, "PNG", pnginfo=info)
+
+                    exported_images += 1
+                except Exception as e:
+                    print(f"Error exporting {image_path}: {e}")
+
+        print(
+            f"Export complete. Processed {processed_images} images, exported {exported_images} images."
+        )
 
     def get_all_images(self, path: str) -> list[str]:
         images = []

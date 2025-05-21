@@ -25,11 +25,24 @@ class TurnsDisplayFrame(QFrame):
         self._setup_layout()
 
     def _setup_components(self) -> None:
-        plus_path = get_image_path("icons/plus.svg")
-        minus_path = get_image_path("icons/minus.svg")
-        self.increment_button = AdjustTurnsButton(plus_path, self)
-        self.decrement_button = AdjustTurnsButton(minus_path, self)
-        self.turns_label = GE_TurnsLabel(self)
+        # Use get_image_path to resolve the paths to the SVG files
+        try:
+            plus_path = get_image_path("icons/plus.svg")
+            minus_path = get_image_path("icons/minus.svg")
+
+            # Create the buttons with the resolved paths
+            self.increment_button = AdjustTurnsButton(plus_path, self)
+            self.decrement_button = AdjustTurnsButton(minus_path, self)
+
+            # Create the turns label
+            self.turns_label = GE_TurnsLabel(self)
+
+        except Exception as e:
+            print(f"Error setting up turns display components: {e}")
+            # Create empty buttons as fallback
+            self.increment_button = AdjustTurnsButton("", self)
+            self.decrement_button = AdjustTurnsButton("", self)
+            self.turns_label = GE_TurnsLabel(self)
 
     def _setup_layout(self) -> None:
         layout = QHBoxLayout(self)

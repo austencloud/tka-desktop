@@ -8,7 +8,24 @@ def get_data_path(filename) -> str:
     if hasattr(sys, "_MEIPASS"):  # PyInstaller uses _MEIPASS for the temp folder
         base_dir = os.path.join(sys._MEIPASS, "src", "data")
     else:
-        base_dir = os.path.abspath(os.path.join(os.getcwd(), "src", "data"))
+        # Try multiple possible locations for the data directory
+        possible_paths = [
+            os.path.abspath(os.path.join(os.getcwd(), "data")),
+            os.path.abspath(os.path.join(os.getcwd(), "src", "data")),
+            os.path.abspath(os.path.join(os.path.dirname(os.getcwd()), "data")),
+        ]
+
+        # Use the first path that exists
+        base_dir = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                base_dir = path
+                break
+
+        # If no existing path is found, use the default
+        if base_dir is None:
+            base_dir = os.path.abspath(os.path.join(os.getcwd(), "data"))
+            os.makedirs(base_dir, exist_ok=True)
 
     return os.path.join(base_dir, filename)
 
@@ -18,7 +35,24 @@ def get_image_path(filename) -> str:
     if hasattr(sys, "_MEIPASS"):  # PyInstaller uses _MEIPASS for the temp folder
         base_dir = os.path.join(sys._MEIPASS, "src", "images")
     else:
-        base_dir = os.path.abspath(os.path.join(os.getcwd(), "src", "images"))
+        # Try multiple possible locations for the images directory
+        possible_paths = [
+            os.path.abspath(os.path.join(os.getcwd(), "images")),
+            os.path.abspath(os.path.join(os.getcwd(), "src", "images")),
+            os.path.abspath(os.path.join(os.path.dirname(os.getcwd()), "images")),
+        ]
+
+        # Use the first path that exists
+        base_dir = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                base_dir = path
+                break
+
+        # If no existing path is found, use the default
+        if base_dir is None:
+            base_dir = os.path.abspath(os.path.join(os.getcwd(), "images"))
+            os.makedirs(base_dir, exist_ok=True)
 
     return os.path.join(base_dir, filename)
 
@@ -89,20 +123,21 @@ def get_win32_special_folder_path(folder_name) -> str:
     Returns the path to the user's custom folder on Windows.
     This folder is set by the user via the Explorer.
     """
-    if sys.platform == "win32":
-        try:
-            with winreg.OpenKey(
-                winreg.HKEY_CURRENT_USER,
-                r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders",
-            ) as key:
-                folder_dir, _ = winreg.QueryValueEx(key, folder_name)
-                folder_dir = os.path.expandvars(folder_dir)
-        except FileNotFoundError as e:
-            raise FileNotFoundError(
-                f"Could not find the {folder_name} path in the registry."
-            ) from e
-    else:
-        raise NotImplementedError("This function is implemented for Windows only.")
+    try:
+        with winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders",
+        ) as key:
+            folder_dir, _ = winreg.QueryValueEx(key, folder_name)
+            folder_dir = os.path.expandvars(folder_dir)
+    except FileNotFoundError:
+        # Fallback to default locations if registry key not found
+        if folder_name == "My Video":
+            folder_dir = os.path.join(os.path.expanduser("~"), "Videos")
+        elif folder_name == "My Pictures":
+            folder_dir = os.path.join(os.path.expanduser("~"), "Pictures")
+        else:
+            folder_dir = os.path.expanduser("~")
 
     os.makedirs(folder_dir, exist_ok=True)
     return folder_dir

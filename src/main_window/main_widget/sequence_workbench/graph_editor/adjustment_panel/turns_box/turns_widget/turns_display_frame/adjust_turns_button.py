@@ -1,3 +1,4 @@
+import os
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt, QRectF, QByteArray
 from PyQt6.QtGui import (
@@ -10,6 +11,7 @@ from PyQt6.QtSvg import QSvgRenderer
 
 from data.constants import BLUE, RED
 from styles.styled_button import StyledButton
+from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
     from ..turns_widget import TurnsWidget
@@ -21,7 +23,30 @@ class AdjustTurnsButton(StyledButton):
         self.svg_path = svg_path
         self.turns_widget = turns_widget
         self.turns_box = self.turns_widget.turns_box
-        self.svg_renderer = QSvgRenderer(svg_path)
+
+        # Try to load the SVG file
+        try:
+            # First try to load directly from the provided path
+            if os.path.exists(svg_path):
+                self.svg_renderer = QSvgRenderer(svg_path)
+            else:
+                # If that fails, try using get_image_path to resolve the path
+                resolved_path = get_image_path(os.path.basename(svg_path))
+                if os.path.exists(resolved_path):
+                    self.svg_renderer = QSvgRenderer(resolved_path)
+                    # Update the svg_path to the resolved path for future use
+                    self.svg_path = resolved_path
+                else:
+                    print(
+                        f"Warning: SVG file not found at {svg_path} or {resolved_path}"
+                    )
+                    # Create an empty renderer as a fallback
+                    self.svg_renderer = QSvgRenderer()
+        except Exception as e:
+            print(f"Error loading SVG file {svg_path}: {e}")
+            # Create an empty renderer as a fallback
+            self.svg_renderer = QSvgRenderer()
+
         self.hovered = False
         self.pressed = False
         self.setMouseTracking(True)
@@ -82,14 +107,36 @@ class AdjustTurnsButton(StyledButton):
     def setEnabled(self, enabled) -> None:
         super().setEnabled(enabled)
         svgData = QByteArray()
-        with open(self.svg_path, "r") as file:
-            svgData = QByteArray(file.read().encode("utf-8"))
 
-        if not enabled:
-            svgData.replace(b"black", b"gray")
+        try:
+            # Check if the file exists
+            if os.path.exists(self.svg_path):
+                # Try to open the file directly
+                with open(self.svg_path, "r") as file:
+                    svgData = QByteArray(file.read().encode("utf-8"))
+            else:
+                # If the file doesn't exist at the direct path, try using get_image_path
+                resolved_path = get_image_path(os.path.basename(self.svg_path))
+                if os.path.exists(resolved_path):
+                    with open(resolved_path, "r") as file:
+                        svgData = QByteArray(file.read().encode("utf-8"))
+                else:
+                    print(
+                        f"Warning: SVG file not found at {self.svg_path} or {resolved_path}"
+                    )
+                    return
 
-        self.svg_renderer.load(svgData)
-        self.update()
+            # Modify the SVG data if the button is disabled
+            if not enabled:
+                svgData.replace(b"black", b"gray")
+
+            # Load the SVG data into the renderer
+            self.svg_renderer.load(svgData)
+            self.update()
+
+        except Exception as e:
+            print(f"Error loading SVG file {self.svg_path}: {e}")
+            # Continue without updating the SVG renderer
 
     def resizeEvent(self, event) -> None:
         size = int(self.turns_box.graph_editor.height() * 0.3)

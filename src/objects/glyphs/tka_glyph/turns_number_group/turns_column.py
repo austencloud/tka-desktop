@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QGraphicsItemGroup
 from typing import TYPE_CHECKING
 from .turns_tuple_interpretor import TurnsTupleInterpreter
 from .turns_number import TurnsNumber
-from utils.path_helpers import get_data_path, get_image_path
+from utils.path_helpers import get_image_path
 from ..turns_parser import parse_turns_tuple_string
 
 if TYPE_CHECKING:
@@ -13,8 +13,41 @@ class TurnsColumn(QGraphicsItemGroup):
     def __init__(self, glyph: "TKA_Glyph") -> None:
         super().__init__()
         self.glyph = glyph
+
+        # Get the path to the numbers directory
         self.svg_path_prefix = get_image_path("numbers/")
-        self.blank_svg_path = get_image_path("blank.svg")
+
+        # Try to get the blank.svg path, with fallback options
+        try:
+            import os
+
+            # First try the standard path
+            self.blank_svg_path = get_image_path("blank.svg")
+
+            # Check if the file exists
+            if not os.path.exists(self.blank_svg_path):
+                # Try alternate locations
+                possible_paths = [
+                    os.path.join(os.path.dirname(self.svg_path_prefix), "blank.svg"),
+                    os.path.abspath(
+                        os.path.join(os.getcwd(), "src", "images", "blank.svg")
+                    ),
+                    os.path.abspath(os.path.join(os.getcwd(), "images", "blank.svg")),
+                ]
+
+                for path in possible_paths:
+                    if os.path.exists(path):
+                        self.blank_svg_path = path
+                        break
+                else:
+                    # If still not found, use a path that will trigger the fallback in TurnsNumber
+                    self.blank_svg_path = (
+                        "blank.svg"  # This will trigger the fallback mechanism
+                    )
+        except Exception:
+            self.blank_svg_path = (
+                "blank.svg"  # This will trigger the fallback mechanism
+            )
 
         self.glyph.top_number = TurnsNumber(self)
         self.glyph.bottom_number = TurnsNumber(self)
