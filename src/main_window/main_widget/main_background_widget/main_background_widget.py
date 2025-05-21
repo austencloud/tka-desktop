@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Optional
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPainter, QPixmap
 from PyQt6.QtCore import Qt
+from interfaces.settings_manager_interface import ISettingsManager
 from .backgrounds.aurora.aurora_background import AuroraBackground
 from .backgrounds.aurora_borealis_background import AuroraBorealisBackground
 from .backgrounds.base_background import BaseBackground
@@ -31,9 +32,10 @@ def use_painter(paint_device):
 class MainBackgroundWidget(QWidget):
     background: Optional[BaseBackground] = None
 
-    def __init__(self, main_widget: "MainWidget"):
+    def __init__(self, main_widget: "MainWidget", settings_manager: ISettingsManager):
         super().__init__(main_widget)
         self.main_widget = main_widget
+        self.settings_manager = settings_manager
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground)
         self.setGeometry(main_widget.rect())
@@ -78,11 +80,8 @@ class MainBackgroundWidget(QWidget):
         finally:
             self._painting_active = False  # Unlock painting
 
-
     def _setup_background(self):
-        bg_type = (
-            self.main_widget.settings_manager.global_settings.get_background_type()
-        )
+        bg_type = self.settings_manager.get_global_settings().get_background_type()
         self.background = self._get_background(bg_type)
         self.main_widget.background = self.background
 

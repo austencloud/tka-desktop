@@ -27,3 +27,8 @@ class ISettingsManager(Protocol):
     def get_generate_tab_settings(self):
         """Get the generate tab settings object."""
         ...
+
+    @property
+    def browse_settings(self):
+        """Get the browse tab settings object."""
+        ...

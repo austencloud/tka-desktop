@@ -2,6 +2,8 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QScrollArea
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
+from interfaces.settings_manager_interface import ISettingsManager
+from interfaces.json_manager_interface import IJsonManager
 from main_window.main_widget.sequence_card_tab.sequence_card_page_exporter import (
     SequenceCardPageExporter,
 )
@@ -22,10 +24,17 @@ from PyQt6.QtWidgets import QPushButton
 
 
 class SequenceCardTab(QWidget):
-    def __init__(self, main_widget: "MainWidget"):
+    def __init__(
+        self,
+        main_widget: "MainWidget",
+        settings_manager: ISettingsManager,
+        json_manager: IJsonManager,
+    ):
         super().__init__(main_widget)
         self.main_widget = main_widget
-        self.global_settings = main_widget.settings_manager.global_settings
+        self.settings_manager = settings_manager
+        self.json_manager = json_manager
+        self.global_settings = settings_manager.get_global_settings()
         self.pages: list[QWidget] = []
         self.pages_cache: dict[int, list[QWidget]] = {}
         self.initialized = False

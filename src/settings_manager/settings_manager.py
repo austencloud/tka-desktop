@@ -43,7 +43,7 @@ class SettingsManager(QObject):  # ISettingsManager is a Protocol, no need to in
         # Tabs
         self.construct_tab_settings = ConstructTabSettings(self.settings)
         self.generate_tab_settings = GenerateTabSettings(self.settings)
-        self.browse_settings = BrowseTabSettings(self)
+        self.browse_tab_settings = BrowseTabSettings(self)
         self.write_tab_settings = WriteTabSettings(self)
 
     def _ensure_settings_file_exists(self):
@@ -93,3 +93,8 @@ class SettingsManager(QObject):  # ISettingsManager is a Protocol, no need to in
     def get_generate_tab_settings(self):
         """Get the generate tab settings object."""
         return self.generate_tab_settings
+
+    @property
+    def browse_settings(self):
+        """Get the browse tab settings object."""
+        return self.browse_tab_settings

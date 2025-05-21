@@ -8,11 +8,13 @@ from main_window.main_widget.settings_dialog.settings_dialog import SettingsDial
 from settings_manager.global_settings.app_context import AppContext
 from .construct_tab.construct_tab_factory import ConstructTabFactory
 from .generate_tab.generate_tab_factory import GenerateTabFactory
-from .browse_tab.browse_tab import BrowseTab
-from .learn_tab.learn_tab import LearnTab
-from .main_background_widget.main_background_widget import MainBackgroundWidget
+from .learn_tab.learn_tab_factory import LearnTabFactory
+from .browse_tab.browse_tab_factory import BrowseTabFactory
+from .main_background_widget.main_background_widget_factory import (
+    MainBackgroundWidgetFactory,
+)
 from .font_color_updater.font_color_updater import FontColorUpdater
-from .sequence_card_tab.sequence_card_tab import SequenceCardTab
+from .sequence_card_tab.sequence_card_tab_factory import SequenceCardTabFactory
 from ..menu_bar.menu_bar import MenuBarWidget
 from .sequence_workbench.sequence_workbench import SequenceWorkbench
 from PyQt6.QtWidgets import (
@@ -66,17 +68,27 @@ class MainWidgetUI:
             main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
         )
 
-        mw.browse_tab = BrowseTab(mw)
-        mw.learn_tab = LearnTab(mw)
-        mw.sequence_card_tab = SequenceCardTab(mw)
+        mw.learn_tab = LearnTabFactory.create(
+            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
+        )
+
+        mw.browse_tab = BrowseTabFactory.create(
+            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
+        )
+
+        mw.sequence_card_tab = SequenceCardTabFactory.create(
+            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
+        )
         # mw.write_tab = WriteTab(mw)
 
-        mw.background_widget = MainBackgroundWidget(mw)
+        mw.background_widget = MainBackgroundWidgetFactory.create(
+            main_widget=mw, settings_manager=settings_manager
+        )
         mw.background_widget.lower()
         mw.state_handler.load_state(mw.sequence_workbench.beat_frame)
         self.splash_screen.updater.update_progress("Finalizing")
         mw.font_color_updater.update_main_widget_font_colors(
-            mw.settings_manager.global_settings.get_background_type()
+            settings_manager.get_global_settings().get_background_type()
         )
 
     def _populate_stacks(self):

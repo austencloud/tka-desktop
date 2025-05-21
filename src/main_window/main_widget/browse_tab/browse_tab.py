@@ -9,7 +9,8 @@ from main_window.main_widget.browse_tab.browse_tab_persistence_manager import (
     BrowseTabPersistenceManager,
 )
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from settings_manager.global_settings.app_context import AppContext
+from interfaces.settings_manager_interface import ISettingsManager
+from interfaces.json_manager_interface import IJsonManager
 
 from .sequence_picker.sequence_picker import SequencePicker
 from .browse_tab_filter_manager import BrowseTabFilterManager
@@ -25,12 +26,19 @@ if TYPE_CHECKING:
 
 
 class BrowseTab(QWidget):
-    def __init__(self, main_widget: "MainWidget") -> None:
+    def __init__(
+        self,
+        main_widget: "MainWidget",
+        settings_manager: ISettingsManager,
+        json_manager: IJsonManager,
+    ) -> None:
         super().__init__()
         self.main_widget = main_widget
         self.main_widget.splash.updater.update_progress("BrowseTab")
 
-        self.browse_settings = AppContext.settings_manager().browse_settings
+        self.settings_manager = settings_manager
+        self.json_manager = json_manager
+        self.browse_settings = settings_manager.browse_settings
         self.state = BrowseTabState(self.browse_settings)
         self.metadata_extractor = MetaDataExtractor()
 
