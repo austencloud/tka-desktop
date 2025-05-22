@@ -30,7 +30,6 @@ from .components.pages.printable_factory import PrintablePageFactory
 from .components.pages.printable_layout import PaperSize, PaperOrientation
 from .export.image_exporter import SequenceCardImageExporter
 from .export.page_exporter import SequenceCardPageExporter
-from .components.display.simple_displayer import SimpleSequenceCardDisplayer
 from .components.display.printable_displayer import PrintableDisplayer
 
 # Use printable displayer for optimized print layout
@@ -61,6 +60,9 @@ class SequenceCardTab(QWidget):
         self.pages = []
         self.initialized = False
         self.currently_displayed_length = 16
+        self.is_initializing = (
+            False  # Flag to prevent double loading during initialization
+        )
 
         # Performance tracking
         self.load_start_time = 0
@@ -80,8 +82,16 @@ class SequenceCardTab(QWidget):
 
     def _create_components(self):
         """Create all components with proper initialization order."""
+        # Load settings first to ensure they're available throughout initialization
+        self._load_saved_settings()
+
         # Core components that other components depend on
         self.nav_sidebar = SequenceCardNavSidebar(self)
+
+        # Set the selected length in the sidebar immediately
+        if hasattr(self, "saved_length"):
+            self.nav_sidebar.selected_length = self.saved_length
+            print(f"DEBUG: Set nav_sidebar.selected_length to {self.saved_length}")
 
         # Create appropriate page factory based on layout mode
         if USE_PRINTABLE_LAYOUT:
@@ -95,11 +105,16 @@ class SequenceCardTab(QWidget):
             # Set default paper size and orientation
             self.printable_displayer.set_paper_size(PaperSize.A4)
             self.printable_displayer.set_orientation(PaperOrientation.PORTRAIT)
-            # Set default columns per row (page previews side-by-side)
-            self.printable_displayer.set_columns_per_row(2)
 
-        # Always create simple displayer as fallback
-        self.simple_displayer = SimpleSequenceCardDisplayer(self)
+            # Set columns per row based on saved settings - DIRECT ASSIGNMENT
+            if hasattr(self, "saved_column_count"):
+                print(
+                    f"DEBUG: Setting printable_displayer.columns_per_row to {self.saved_column_count}"
+                )
+                # Set the column count directly on the instance variable
+                self.printable_displayer.columns_per_row = self.saved_column_count
+            else:
+                print("DEBUG: No saved_column_count found, using default")
 
         # Export functionality
         self.image_exporter = SequenceCardImageExporter(self)
@@ -107,6 +122,54 @@ class SequenceCardTab(QWidget):
 
         # Initialize empty pages list
         self.pages = []
+
+    def _load_saved_settings(self):
+        """Load saved settings and store them as instance variables for consistent access."""
+        if hasattr(self, "settings_manager"):
+            # Get saved column count and length using the generic get_setting method
+            self.saved_column_count = int(
+                self.settings_manager.get_setting(
+                    "sequence_card_tab", "column_count", 3
+                )
+            )
+            self.saved_length = int(
+                self.settings_manager.get_setting(
+                    "sequence_card_tab", "last_length", 16
+                )
+            )
+
+            # Set the current length
+            self.currently_displayed_length = self.saved_length
+
+            print(
+                f"DEBUG: Loaded saved settings: column_count={self.saved_column_count}, length={self.saved_length}"
+            )
+        else:
+            # Use defaults if settings manager is not available
+            self.saved_column_count = 2
+            self.saved_length = 16
+            self.currently_displayed_length = 16
+            print("DEBUG: Using default settings (no settings manager available)")
+
+        # Force settings to be integers
+        self.saved_column_count = int(self.saved_column_count)
+        self.saved_length = int(self.saved_length)
+
+    def update_column_count(self, column_count: int):
+        """
+        Update the number of columns for page previews in the UI.
+
+        This method ONLY affects how many page previews are displayed side-by-side in the UI.
+        It does NOT change the internal grid layout of each page, which is determined by sequence length.
+
+        Args:
+            column_count: Number of page previews to display per row in the UI
+        """
+        if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
+            self.printable_displayer.set_columns_per_row(column_count)
+        elif hasattr(self, "image_displayer"):
+            self.image_displayer.max_images_per_row = column_count
+            self.load_sequences()
 
     def init_ui(self):
         """Initialize UI with optimized layout and styling."""
@@ -129,18 +192,6 @@ class SequenceCardTab(QWidget):
         self.nav_sidebar.setFixedWidth(sidebar_width)
         self.nav_sidebar.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding
-        )
-        self.nav_sidebar.setStyleSheet(
-            """
-            SequenceCardNavSidebar {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #2c3e50, stop:1 #34495e);
-                border-radius: 10px;
-                border: 1px solid #4a5568;
-                padding: 8px;
-                margin-right: 10px;
-            }
-        """
         )
 
         # Main content area (scroll area or virtualized view)
@@ -310,10 +361,19 @@ class SequenceCardTab(QWidget):
         self.currently_displayed_length = length
 
         # Save the selected length in settings for persistence
-        if hasattr(self, "settings_manager") and hasattr(
-            self.settings_manager, "sequence_card_tab_settings"
-        ):
-            self.settings_manager.sequence_card_tab_settings.set_last_length(length)
+        if hasattr(self, "settings_manager"):
+            # Use the generic set_setting method which is part of the ISettingsManager interface
+            self.settings_manager.set_setting(
+                "sequence_card_tab", "last_length", length
+            )
+
+        # Skip loading if we're in the initialization process
+        # This prevents double loading during startup
+        if self.is_initializing:
+            print(
+                f"DEBUG: Skipping display_sequences during initialization for length {length}"
+            )
+            return
 
         # Clear any instruction labels
         self._clear_scroll_layout()
@@ -328,9 +388,6 @@ class SequenceCardTab(QWidget):
         if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
             # Use printable displayer for optimized print layout
             self.printable_displayer.display_sequences(length)
-        elif hasattr(self, "simple_displayer"):
-            # Fall back to simple displayer
-            self.simple_displayer.display_sequences(length)
         else:
             print("Error: No displayer available")
 
@@ -345,9 +402,19 @@ class SequenceCardTab(QWidget):
             QTimer.singleShot(50, self._initialize_content)
 
     def _initialize_content(self):
-        """Initialize content without loading sequences automatically."""
+        """
+        Initialize content with saved settings.
+
+        This method:
+        1. Checks if sequence images need to be generated
+        2. Ensures saved settings are properly applied to UI components
+        3. Loads sequences with the saved settings
+        """
+        # Set initializing flag to prevent double loading
+        self.is_initializing = True
+
         try:
-            # Check if we need to generate images, but don't load them yet
+            # Check if we need to generate images
             images_path = get_sequence_card_image_exporter_path()
             images_exist = self._has_sequence_images(images_path)
 
@@ -360,17 +427,76 @@ class SequenceCardTab(QWidget):
                 if hasattr(self.image_exporter, "export_all_images"):
                     self.image_exporter.export_all_images()
 
-            # Show instruction to select a length from the sidebar
-            self._show_selection_instructions()
+            # Settings should already be loaded in _create_components
+            # This is a double-check to ensure they're applied correctly
+            if hasattr(self, "saved_column_count") and hasattr(self, "saved_length"):
+                print(
+                    f"DEBUG: Applying saved settings in _initialize_content: column_count={self.saved_column_count}, length={self.saved_length}"
+                )
 
-            # Highlight the sidebar to draw attention to it
-            self._highlight_sidebar()
+                # CRITICAL: Force direct assignment of column count
+                if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
+                    # DIRECT ASSIGNMENT - bypass the set_columns_per_row method
+                    print(
+                        f"DEBUG: DIRECT ASSIGNMENT - Setting columns_per_row to {self.saved_column_count}"
+                    )
+                    self.printable_displayer.columns_per_row = self.saved_column_count
+
+                    # Update the dropdown in the sidebar to reflect the saved column count
+                    if hasattr(self.nav_sidebar, "column_dropdown"):
+                        index = self.nav_sidebar.column_dropdown.findText(
+                            str(self.saved_column_count)
+                        )
+                        if index >= 0:
+                            print(f"DEBUG: Setting column dropdown index to {index}")
+                            self.nav_sidebar.column_dropdown.setCurrentIndex(index)
+                            # Force a UI update
+                            QApplication.processEvents()
+
+                # Update the sidebar to reflect the saved length WITHOUT triggering signal
+                # We need to update the UI state but avoid the double-loading
+                print(f"DEBUG: Setting selected_length directly to {self.saved_length}")
+                self.nav_sidebar.selected_length = self.saved_length
+
+                # Update the UI to reflect the selection
+                if hasattr(self.nav_sidebar, "update_selection_styles"):
+                    self.nav_sidebar.update_selection_styles()
+
+                # Load sequences with the saved length
+                self.description_label.setText(f"Loading saved sequence view...")
+                QApplication.processEvents()
+
+                # CRITICAL: Force a complete refresh of the layout
+                if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
+                    print(f"DEBUG: Forcing refresh_layout before display_sequences")
+                    # Force a layout refresh to ensure column count is applied
+                    # self.printable_displayer.refresh_layout()
+                    QApplication.processEvents()
+
+                    # Now display sequences with the saved length
+                    print(
+                        f"DEBUG: Displaying sequences with length {self.saved_length}"
+                    )
+                    self.printable_displayer.display_sequences(self.saved_length)
+
+            else:
+                print("DEBUG: No saved settings found, showing selection instructions")
+                # Show instruction to select a length from the sidebar
+                self._show_selection_instructions()
+
+                # Highlight the sidebar to draw attention to it
+                self._highlight_sidebar()
 
         except Exception as e:
-            print(f"Error initializing content: {e}")
+            print(f"ERROR in _initialize_content: {e}")
+            import traceback
+
+            traceback.print_exc()
             self.description_label.setText(f"Error: {str(e)}")
         finally:
+            # Reset cursor and initialization flag
             self.setCursor(Qt.CursorShape.ArrowCursor)
+            self.is_initializing = False
 
     def _show_selection_instructions(self):
         """Show instructions to select a length from the sidebar."""
@@ -474,14 +600,8 @@ class SequenceCardTab(QWidget):
         # Use appropriate displayer based on layout mode
         if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
             # Use printable displayer for optimized print layout
-            self.printable_displayer.display_sequences(
-                selected_length, show_progress_dialog=False
-            )
-        elif hasattr(self, "simple_displayer"):
-            # Fall back to simple displayer
-            self.simple_displayer.display_sequences(
-                selected_length, show_progress_dialog=False
-            )
+            self.printable_displayer.display_sequences(selected_length)
+
         else:
             print("Error: No displayer available")
 
@@ -503,14 +623,7 @@ class SequenceCardTab(QWidget):
             # Use appropriate displayer based on layout mode
             if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
                 # Use printable displayer for optimized print layout
-                self.printable_displayer.display_sequences(
-                    selected_length, show_progress_dialog=False
-                )
-            elif hasattr(self, "simple_displayer"):
-                # Fall back to simple displayer
-                self.simple_displayer.display_sequences(
-                    selected_length, show_progress_dialog=False
-                )
+                self.printable_displayer.display_sequences(selected_length)
 
             self.description_label.setText("Images regenerated successfully!")
             QTimer.singleShot(

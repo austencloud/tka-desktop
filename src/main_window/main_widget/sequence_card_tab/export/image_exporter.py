@@ -26,7 +26,6 @@ from utils.path_helpers import (
     get_dictionary_path,
     get_sequence_card_image_exporter_path,
 )
-from ..loading.progress_dialog import SequenceCardProgressDialog
 
 if TYPE_CHECKING:
     from ..tab import SequenceCardTab
@@ -69,10 +68,7 @@ class SequenceCardImageExporter:
         dictionary_path = get_dictionary_path()
         export_path = get_sequence_card_image_exporter_path()
 
-        # Create the progress dialog
-        self.progress_dialog = SequenceCardProgressDialog(self.sequence_card_tab)
-        self.progress_dialog.canceled.connect(self._on_cancel_requested)
-        self.cancel_requested = False
+
 
         # Create the export directory if it doesn't exist
         if not os.path.exists(export_path):
@@ -103,10 +99,6 @@ class SequenceCardImageExporter:
         skipped_count = 0
         failed_count = 0
 
-        # Show the progress dialog
-        self.progress_dialog.set_progress(0, total_sequences)
-        self.progress_dialog.update_memory_usage()
-        self.progress_dialog.show()
 
         try:
             # Count total sequences for batch processing
@@ -163,9 +155,7 @@ class SequenceCardImageExporter:
             traceback.print_exc()
         finally:
             # Close the progress dialog
-            if self.progress_dialog:
-                self.progress_dialog.close()
-                self.progress_dialog = None
+
 
             # Print detailed summary with metrics
             print(f"Processed {processed_sequences} of {total_sequences} sequences:")
@@ -184,14 +174,7 @@ class SequenceCardImageExporter:
                 efficiency = skipped_count / processed_sequences * 100
                 print(f"Cache efficiency: {efficiency:.1f}% (higher is better)")
 
-                # Update progress dialog with final statistics
-                if self.progress_dialog:
-                    self.progress_dialog.set_statistics(
-                        regenerated_count,
-                        skipped_count,
-                        failed_count,
-                        efficiency=efficiency,
-                    )
+
 
             # Final memory cleanup
             final_memory = self._check_and_manage_memory(force_cleanup=True)
@@ -372,9 +355,6 @@ class SequenceCardImageExporter:
             memory_info = process.memory_info()
             memory_mb = memory_info.rss / (1024 * 1024)
 
-            # Update progress dialog with memory usage
-            if self.progress_dialog:
-                self.progress_dialog.update_memory_usage()
 
             # Check if we need to clean up
             if force_cleanup or memory_mb > self.max_memory_usage_mb:
@@ -388,9 +368,6 @@ class SequenceCardImageExporter:
                 memory_mb = memory_info.rss / (1024 * 1024)
                 print(f"Memory usage after cleanup: {memory_mb:.1f} MB")
 
-                # Update progress dialog with new memory usage
-                if self.progress_dialog:
-                    self.progress_dialog.update_memory_usage()
 
                 # Add a small delay to allow the system to stabilize
                 time.sleep(0.1)
@@ -513,12 +490,7 @@ class SequenceCardImageExporter:
 
             output_path = os.path.join(word_export_path, sequence_file)
 
-            # Update progress dialog
-            self.progress_dialog.set_current_file(f"{word}/{sequence_file}")
-            self.progress_dialog.set_progress(processed_sequences, total_sequences)
-            self.progress_dialog.set_statistics(
-                regenerated_count, skipped_count, failed_count
-            )
+
 
             # Check memory usage every few images
             if processed_sequences % self.memory_check_interval == 0:

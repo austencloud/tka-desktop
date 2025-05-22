@@ -8,7 +8,6 @@ from PyQt6.QtGui import QPixmap, QPainter
 from PyQt6.QtCore import Qt, QSize, QRect, QPoint
 
 from utils.path_helpers import get_app_data_path
-from ..loading.progress_dialog import SequenceCardProgressDialog
 
 if TYPE_CHECKING:
     from ..tab import SequenceCardTab
@@ -61,24 +60,13 @@ class SequenceCardPageExporter:
         if not export_dir:
             return  # User cancelled
 
-        # Create progress dialog
-        self.progress_dialog = SequenceCardProgressDialog(self.sequence_card_tab)
-        self.progress_dialog.canceled.connect(self._on_cancel_requested)
-        self.cancel_requested = False
 
-        # Show the progress dialog
-        self.progress_dialog.set_progress(0, len(pages))
-        self.progress_dialog.set_operation("Preparing to export pages...")
-        self.progress_dialog.show()
+
+
 
         # Export the pages
-        try:
-            self._export_pages(pages, export_dir)
-        finally:
-            # Close the progress dialog
-            if self.progress_dialog:
-                self.progress_dialog.close()
-                self.progress_dialog = None
+        self._export_pages(pages, export_dir)
+
 
     def _get_export_directory(self) -> Optional[str]:
         """
@@ -139,11 +127,7 @@ class SequenceCardPageExporter:
             if self.cancel_requested:
                 break
 
-            # Update progress
-            self.progress_dialog.set_progress(i, len(pages))
-            self.progress_dialog.set_operation(
-                f"Exporting page {i+1} of {len(pages)}..."
-            )
+
             QApplication.processEvents()
 
             try:
@@ -166,10 +150,7 @@ class SequenceCardPageExporter:
 
         # Show completion message
         if not self.cancel_requested:
-            self.progress_dialog.set_progress(len(pages), len(pages))
-            self.progress_dialog.set_operation(
-                f"Export complete! Saved to {export_subdir}"
-            )
+
             QApplication.processEvents()
 
             # Show success message
