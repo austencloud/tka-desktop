@@ -1,27 +1,23 @@
-from .virtualized_view import VirtualizedCardView
 from .scroll_area import SequenceCardScrollArea
 from .printable_displayer import PrintableDisplayer
 
-# Import new components
-from .page_layout_manager import PageLayoutManager
+# Core components
+from .sequence_display_manager import SequenceDisplayManager
 from .image_processor import ImageProcessor
 from .sequence_loader import SequenceLoader
-from .grid_layout_manager import GridLayoutManager
-from .page_factory import PageFactory
-from .ui_layout_manager import UILayoutManager
-from .image_label_factory import ImageLabelFactory
-from .printable_displayer_coordinator import PrintableDisplayerCoordinator
+from .layout_calculator import LayoutCalculator
+from .page_renderer import PageRenderer
+from .scroll_view import ScrollView
 
 __all__ = [
-    "VirtualizedCardView",
+    # Public components
     "SequenceCardScrollArea",
     "PrintableDisplayer",
-    "PageLayoutManager",
+    # Core components
+    "SequenceDisplayManager",
     "ImageProcessor",
     "SequenceLoader",
-    "GridLayoutManager",
-    "PageFactory",
-    "UILayoutManager",
-    "ImageLabelFactory",
-    "PrintableDisplayerCoordinator",
+    "LayoutCalculator",
+    "PageRenderer",
+    "ScrollView",
 ]

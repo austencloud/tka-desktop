@@ -1,5 +1,4 @@
 from .navigation.sidebar import SequenceCardNavSidebar
-from .display.virtualized_view import VirtualizedCardView
 from .display.scroll_area import SequenceCardScrollArea
 from .display.printable_displayer import PrintableDisplayer
 from .pages.factory import SequenceCardPageFactory
@@ -8,7 +7,6 @@ from .pages.printable_layout import PrintablePageLayout, PaperSize, PaperOrienta
 
 __all__ = [
     "SequenceCardNavSidebar",
-    "VirtualizedCardView",
     "SequenceCardScrollArea",
     "SequenceCardPageFactory",
     "PrintableDisplayer",

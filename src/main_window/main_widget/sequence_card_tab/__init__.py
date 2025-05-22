@@ -1,5 +1,5 @@
 from .tab import SequenceCardTab
-from .tab_factory import SequenceCardTabFactory
+from .utils.tab_factory import SequenceCardTabFactory
 
 # Core components
 from .core import (

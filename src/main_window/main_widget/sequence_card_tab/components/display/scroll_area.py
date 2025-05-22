@@ -85,8 +85,8 @@ class SequenceCardScrollArea(QScrollArea):
         
         # Apply optimizations to the widget
         if widget:
-            # Set content margins for better appearance
-            widget.setContentsMargins(10, 20, 10, 20)
+            # REDUCED MARGINS: Significantly reduced from (10, 20, 10, 20) to minimal margins
+            widget.setContentsMargins(2, 5, 2, 5)  # left, top, right, bottom
             
             # Enable attribute to improve scrolling performance
             widget.setAttribute(Qt.WidgetAttribute.WA_OpaquePaintEvent, True)

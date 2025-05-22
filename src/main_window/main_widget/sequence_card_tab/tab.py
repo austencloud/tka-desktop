@@ -1,6 +1,7 @@
 # src/main_window/main_widget/sequence_card_tab/tab.py
 import os
 import gc
+import logging
 import psutil
 from PyQt6.QtWidgets import (
     QWidget,
@@ -328,14 +329,16 @@ class SequenceCardTab(QWidget):
         self.scroll_layout.setAlignment(
             Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop
         )
-        self.scroll_layout.setSpacing(20)
-        self.scroll_layout.setContentsMargins(10, 20, 10, 20)
+        self.scroll_layout.setSpacing(10)  # Reduced from 20
+        self.scroll_layout.setContentsMargins(
+            2, 10, 2, 10
+        )  # Reduced horizontal margins from 10 to 2
 
         # Styling
         self.scroll_area.setStyleSheet(
             """
             QScrollArea {
-                background-color: #f8f9fa;
+                background-color: transparent;
                 border: none;
             }
             QScrollBar:vertical {
@@ -382,10 +385,20 @@ class SequenceCardTab(QWidget):
         self.description_label.setText(
             f"Loading {length if length > 0 else 'all'}-step sequences..."
         )
-        QApplication.processEvents()
 
         # Use appropriate displayer based on layout mode
         if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
+            # Check if the printable_displayer's manager is currently loading
+            if (
+                hasattr(self.printable_displayer, "manager")
+                and self.printable_displayer.manager.is_loading
+            ):
+                # Cancel any in-progress loading operations
+                logging.debug(
+                    f"Cancelling in-progress loading operation before loading length {length}"
+                )
+                self.printable_displayer.manager.cancel_loading()
+
             # Use printable displayer for optimized print layout
             self.printable_displayer.display_sequences(length)
         else:

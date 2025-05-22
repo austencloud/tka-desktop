@@ -127,6 +127,9 @@ class SequenceCardNavSidebar(QWidget):
         frame.setMinimumHeight(45)
         frame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
+        # Set initial selection state property for proper styling
+        frame.setProperty("selected", length == self.selected_length)
+
         # Add shadow effect for depth
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(10)
@@ -155,23 +158,45 @@ class SequenceCardNavSidebar(QWidget):
         # Enhanced mouse events with visual feedback
         def on_mouse_press(_):
             # Visual feedback - darken the frame slightly
-            frame.setStyleSheet("background-color: rgba(0, 0, 0, 0.2);")
+            if not frame.property("selected"):
+                frame.setStyleSheet(
+                    """
+                    background-color: rgba(100, 116, 139, 0.5);
+                    border: 1px solid rgba(148, 163, 184, 0.6);
+                    border-radius: 10px;
+                """
+                )
             self.on_length_selected(length)
 
         def on_mouse_enter(_):
-            # Scale up the shadow slightly on hover for a subtle "lift" effect
+            # Apply hover style with immediate visual feedback
+            if not frame.property("selected"):
+                # Apply hover style
+                frame.setStyleSheet(
+                    """
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 rgba(100, 116, 139, 0.4), stop:1 rgba(71, 85, 105, 0.6));
+                    border: 1px solid rgba(148, 163, 184, 0.5);
+                    border-radius: 10px;
+                """
+                )
+
+            # Scale up the shadow for a subtle "lift" effect
             shadow = frame.graphicsEffect()
             if shadow:
                 shadow.setBlurRadius(15)
                 shadow.setOffset(0, 3)
 
         def on_mouse_leave(_):
-            # Reset the shadow when mouse leaves
+            # Reset style on mouse leave if not selected
+            if not frame.property("selected"):
+                frame.setStyleSheet("")
+
+            # Reset shadow
             shadow = frame.graphicsEffect()
             if shadow:
                 shadow.setBlurRadius(10)
                 shadow.setOffset(0, 2)
-            frame.setStyleSheet("")
 
         # Connect the enhanced mouse events
         frame.mousePressEvent = on_mouse_press
@@ -181,7 +206,29 @@ class SequenceCardNavSidebar(QWidget):
         # Store references
         self.labels[length] = label
 
+        # Add to layout
         layout.addWidget(frame)
+
+        # Apply initial styling based on selection state
+        if length == self.selected_length:
+            self._apply_selected_style(frame)
+
+    def _apply_selected_style(self, frame):
+        """Apply selected style to a frame."""
+        frame.setProperty("selected", True)
+        frame.setStyleSheet(
+            """
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #3b82f6, stop:1 #2563eb);
+            border: 1px solid #60a5fa;
+            border-radius: 10px;
+        """
+        )
+
+    def _apply_unselected_style(self, frame):
+        """Apply unselected style to a frame."""
+        frame.setProperty("selected", False)
+        frame.setStyleSheet("")
 
     def create_column_selector(self) -> QFrame:
         """Create column selector with better styling and real-time updates."""
@@ -397,8 +444,12 @@ class SequenceCardNavSidebar(QWidget):
         for length, label in self.labels.items():
             frame = label.parent()
             if length == self.selected_length:
+                # Apply selected style
+                self._apply_selected_style(frame)
                 frame.setObjectName(f"lengthFrame_{length}_selected")
             else:
+                # Apply unselected style
+                self._apply_unselected_style(frame)
                 frame.setObjectName(f"lengthFrame_{length}")
 
         # Force style update
@@ -412,18 +463,18 @@ class SequenceCardNavSidebar(QWidget):
             /* Main container */
             SequenceCardNavSidebar {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #1e293b, stop:1 #0f172a);
+                    stop:0 rgba(71, 85, 105, 0.4), stop:1 rgba(51, 65, 85, 0.6));
                 border-radius: 12px;
-                border: 1px solid #334155;
+                border: 1px solid rgba(100, 116, 139, 0.3);
                 padding: 10px;
             }
 
             /* Header styling */
             QFrame#headerFrame {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #334155, stop:1 #1e293b);
+                    stop:0 rgba(71, 85, 105, 0.5), stop:1 rgba(51, 65, 85, 0.7));
                 border-radius: 10px;
-                border: 1px solid #475569;
+                border: 1px solid rgba(100, 116, 139, 0.4);
             }
 
             QLabel#headerTitle {
@@ -476,16 +527,16 @@ class SequenceCardNavSidebar(QWidget):
             /* Length option frames - unselected */
             QFrame[objectName^="lengthFrame_"]:!QFrame[objectName$="_selected"] {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #334155, stop:1 #1e293b);
-                border: 1px solid #475569;
+                    stop:0 rgba(71, 85, 105, 0.3), stop:1 rgba(51, 65, 85, 0.5));
+                border: 1px solid rgba(100, 116, 139, 0.4);
                 border-radius: 10px;
                 margin: 3px;
             }
 
             QFrame[objectName^="lengthFrame_"]:hover:!QFrame[objectName$="_selected"] {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #475569, stop:1 #334155);
-                border: 1px solid #64748b;
+                    stop:0 rgba(100, 116, 139, 0.4), stop:1 rgba(71, 85, 105, 0.6));
+                border: 1px solid rgba(148, 163, 184, 0.5);
             }
 
             /* Length option frames - selected */
@@ -521,9 +572,9 @@ class SequenceCardNavSidebar(QWidget):
             /* Column selector frame */
             QFrame#columnFrame {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #334155, stop:1 #1e293b);
+                    stop:0 rgba(71, 85, 105, 0.3), stop:1 rgba(51, 65, 85, 0.5));
                 border-radius: 10px;
-                border: 1px solid #475569;
+                border: 1px solid rgba(100, 116, 139, 0.4);
                 margin-top: 8px;
             }
 

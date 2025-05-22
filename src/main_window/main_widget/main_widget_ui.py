@@ -14,7 +14,7 @@ from .main_background_widget.main_background_widget_factory import (
     MainBackgroundWidgetFactory,
 )
 from .font_color_updater.font_color_updater import FontColorUpdater
-from .sequence_card_tab.tab_factory import SequenceCardTabFactory
+from .sequence_card_tab.utils.tab_factory import SequenceCardTabFactory
 from ..menu_bar.menu_bar import MenuBarWidget
 from .sequence_workbench.sequence_workbench import SequenceWorkbench
 from PyQt6.QtWidgets import (
