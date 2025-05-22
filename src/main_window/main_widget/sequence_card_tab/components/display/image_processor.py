@@ -8,8 +8,8 @@ from typing import (
     TYPE_CHECKING,
     OrderedDict as OrderedDictType,
 )  # For type hinting
-from PyQt6.QtGui import QPixmap, QImage
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QPixmap, QImage, QPainter, QColor, QFont
+from PyQt6.QtCore import Qt, QSize, QRect
 from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
@@ -276,8 +276,50 @@ class ImageProcessor:
         except Exception as e:
             import traceback
 
+            logging.error(f"Error loading image {image_path}: {e}")
             traceback.print_exc()
-            return QPixmap()  # Return an empty QPixmap on error
+
+            # Create an error indicator pixmap
+            return self._create_error_pixmap()
+
+    def _create_error_pixmap(self, size: QSize = None) -> QPixmap:
+        """
+        Create a pixmap indicating an error loading the image.
+
+        Args:
+            size: Size of the error pixmap. If None, uses a default size.
+
+        Returns:
+            QPixmap: An error indicator pixmap
+        """
+        # Use a default size if none provided
+        if size is None:
+            size = QSize(100, 100)
+
+        # Create a pixmap with a red background
+        pixmap = QPixmap(size)
+        pixmap.fill(QColor(220, 50, 50))  # Red background
+
+        # Create a painter to draw on the pixmap
+        painter = QPainter(pixmap)
+
+        # Set up font and text color
+        font = QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        painter.setFont(font)
+        painter.setPen(QColor(255, 255, 255))  # White text
+
+        # Draw error message
+        text_rect = QRect(5, 5, size.width() - 10, size.height() - 10)
+        painter.drawText(
+            text_rect, Qt.AlignmentFlag.AlignCenter, "Error\nLoading\nImage"
+        )
+
+        # Finish painting
+        painter.end()
+
+        return pixmap
 
     def load_image(
         self,

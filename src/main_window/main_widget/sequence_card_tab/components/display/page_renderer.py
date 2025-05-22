@@ -1,7 +1,7 @@
 # src/main_window/main_widget/sequence_card_tab/components/display/page_renderer.py
 import logging
 from typing import List, Dict, Any, Optional, TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QLabel, QSizePolicy, QGridLayout
+from PyQt6.QtWidgets import QWidget, QLabel, QSizePolicy, QGridLayout, QVBoxLayout
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QFont, QPixmap
 
@@ -144,13 +144,63 @@ class PageRenderer:
         # Update page number label if it exists
         page_number_label = new_page.findChild(QLabel, "pageNumberLabel")
         if page_number_label:
-            page_number_label.setText(f"Page {len(self.pages)}")
-            font = page_number_label.font()
-            font.setPointSize(max(8, int(10 * scale_factor)))
-            page_number_label.setFont(font)
-            # Consider anchoring page number label better if page content resizes
-            page_number_label.setGeometry(0, new_height - 20, new_width, 20)
-            page_number_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            # Remove the page number label from its current parent
+            page_number_label.setParent(None)
+
+            # Get the page's layout
+            page_layout = new_page.layout()
+
+            # Create a proper layout for the page that includes the page number at the bottom
+            if isinstance(page_layout, QGridLayout):
+                # Create a new vertical layout to contain both the grid and the page number
+
+                # Take all widgets from the grid layout
+                grid_items = []
+                while page_layout.count():
+                    item = page_layout.takeAt(0)
+                    grid_items.append(item)
+
+                # Create a new grid layout for the content
+                content_grid = QGridLayout()
+                content_grid.setSpacing(page_layout.spacing())
+                content_grid.setContentsMargins(page_layout.contentsMargins())
+
+                # Add the items back to the content grid
+                for item in grid_items:
+                    if item.widget():
+                        row, column, rowSpan, columnSpan = page_layout.getItemPosition(
+                            page_layout.indexOf(item.widget())
+                        )
+                        content_grid.addWidget(
+                            item.widget(), row, column, rowSpan, columnSpan
+                        )
+
+                # Create a new vertical layout
+                vbox = QVBoxLayout(new_page)
+                vbox.setContentsMargins(page_layout.contentsMargins())
+                vbox.setSpacing(5)
+
+                # Add the content grid and page number to the vertical layout
+                vbox.addLayout(content_grid, 1)  # Content grid takes most of the space
+
+                # Update the page number label
+                page_number_label.setText(f"Page {len(self.pages)}")
+                font = page_number_label.font()
+                font.setPointSize(max(8, int(10 * scale_factor)))
+                page_number_label.setFont(font)
+                page_number_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+                # Add the page number label to the bottom of the vertical layout
+                vbox.addWidget(page_number_label, 0, Qt.AlignmentFlag.AlignCenter)
+            else:
+                # Fallback to the old method if the layout is not a QGridLayout
+                page_number_label.setText(f"Page {len(self.pages)}")
+                font = page_number_label.font()
+                font.setPointSize(max(8, int(10 * scale_factor)))
+                page_number_label.setFont(font)
+                page_number_label.setParent(new_page)
+                page_number_label.setGeometry(0, new_height - 20, new_width, 20)
+                page_number_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Final validation before returning
         if new_page.layout() is None:

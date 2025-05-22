@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
     QFrame,
     QSizePolicy,
     QApplication,
+    QProgressBar,
 )
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont
@@ -76,6 +77,11 @@ class SequenceCardTab(QWidget):
         self.dictionary_check_timer.timeout.connect(self.check_dictionary_changes)
         self.dictionary_check_timer.start(10000)  # Check every 10 seconds
         self.last_dictionary_mod_time = self.get_dictionary_mod_time()
+
+        # Resize debouncing
+        self.resize_timer = QTimer(self)
+        self.resize_timer.setSingleShot(True)
+        self.resize_timer.timeout.connect(self.refresh_layout_after_resize)
 
         # Initialize components
         self._create_components()
@@ -249,6 +255,46 @@ class SequenceCardTab(QWidget):
         """
         )
 
+        # Create a container for the progress bar with fixed height
+        self.progress_container = QFrame()
+        self.progress_container.setFixedHeight(
+            20
+        )  # Fixed height to prevent layout shifting
+        self.progress_container.setStyleSheet("background: transparent;")
+        progress_container_layout = QVBoxLayout(self.progress_container)
+        progress_container_layout.setContentsMargins(0, 0, 0, 0)
+        progress_container_layout.setSpacing(0)
+
+        # Progress bar for loading feedback
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(0)
+        self.progress_bar.setTextVisible(True)
+        self.progress_bar.setFormat("%p% (%v/%m)")
+        self.progress_bar.setFixedHeight(12)
+        self.progress_bar.setStyleSheet(
+            """
+            QProgressBar {
+                border: none;
+                border-radius: 6px;
+                text-align: center;
+                background-color: rgba(0, 0, 0, 0.15);
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 10px;
+                font-weight: bold;
+            }
+            QProgressBar::chunk {
+                background-color: #3498db;
+                border-radius: 6px;
+            }
+            """
+        )
+
+        # Add progress bar to container
+        progress_container_layout.addWidget(self.progress_bar)
+        self.progress_bar.hide()  # Initially hidden
+        self.progress_container.setVisible(False)  # Initially hide the container too
+
         # Button layout with better spacing
         button_layout = QHBoxLayout()
         button_layout.setSpacing(12)
@@ -271,6 +317,7 @@ class SequenceCardTab(QWidget):
         # Add to header
         header_layout.addWidget(self.title_label)
         header_layout.addWidget(self.description_label)
+        header_layout.addWidget(self.progress_container)
         header_layout.addLayout(button_layout)
 
         return header_frame
@@ -684,6 +731,31 @@ class SequenceCardTab(QWidget):
         if self.initialized and hasattr(self.nav_sidebar, "selected_length"):
             # Reload after a short delay to avoid multiple reloads during resize
             QTimer.singleShot(300, self.load_sequences)
+
+    def on_scroll_area_resize(self):
+        """
+        Handle scroll area resize events with debouncing.
+        This method is called by SequenceCardScrollArea when it's resized.
+        """
+        # Cancel any pending resize timer
+        if self.resize_timer.isActive():
+            self.resize_timer.stop()
+
+        # Start a new timer to debounce resize events
+        self.resize_timer.start(250)  # 250ms debounce time
+
+    def refresh_layout_after_resize(self):
+        """
+        Refresh the layout after resize events have settled.
+        This is called by the debounce timer to avoid excessive layout updates.
+        """
+        if not self.initialized or not hasattr(self.nav_sidebar, "selected_length"):
+            return
+
+        # Only refresh if we have a printable displayer
+        if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
+            logging.debug("Refreshing layout after resize")
+            self.printable_displayer.refresh_layout()
 
     def _check_memory_usage(self):
         """Monitor and manage memory usage."""

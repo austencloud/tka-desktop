@@ -12,10 +12,7 @@ from .core import (
 
 # UI components
 from .components.navigation import SequenceCardNavSidebar
-from .components.display import (
-    VirtualizedCardView,
-    SequenceCardScrollArea,
-)
+from .components.display import SequenceCardScrollArea
 from .components.pages import SequenceCardPageFactory
 
 # Export functionality
