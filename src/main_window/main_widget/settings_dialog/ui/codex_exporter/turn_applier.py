@@ -5,7 +5,7 @@ Applies turns to pictographs.
 from typing import TYPE_CHECKING
 from data.constants import RED, BLUE
 from objects.motion.motion import MotionOriCalculator
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph

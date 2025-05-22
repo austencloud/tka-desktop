@@ -259,3 +259,16 @@ def get_sequence_card_image_exporter_path() -> str:
         export_path = get_dev_path("images\\sequence_card_images")
     os.makedirs(export_path, exist_ok=True)
     return export_path
+
+
+def get_sequence_card_cache_path() -> str:
+    """
+    Returns the path to the directory where sequence card cache data is stored.
+
+    This is always in the AppData directory to ensure persistence between sessions.
+    """
+    cache_dir = os.path.join(
+        os.getenv("LOCALAPPDATA"), "The Kinetic Alphabet", "cache", "sequence_cards"
+    )
+    os.makedirs(cache_dir, exist_ok=True)
+    return cache_dir

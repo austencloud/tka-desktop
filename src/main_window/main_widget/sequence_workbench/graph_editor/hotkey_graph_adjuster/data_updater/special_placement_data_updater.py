@@ -10,7 +10,7 @@ from .ori_key_generator import OriKeyGenerator
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from placement_managers.attr_key_generator import (
     AttrKeyGenerator,
 )

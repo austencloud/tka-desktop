@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QLabel
 
 from typing import TYPE_CHECKING, Union
 
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:

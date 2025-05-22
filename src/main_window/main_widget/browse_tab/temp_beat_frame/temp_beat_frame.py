@@ -32,7 +32,7 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_be
 from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
@@ -132,29 +132,77 @@ class TempBeatFrame(BaseBeatFrame):
     def populate_beat_frame_from_json(
         self, current_sequence_json: list[dict[str, str]]
     ) -> None:
-
-        self.construct_tab = self.main_widget.construct_tab
+        # Check if there's any sequence data to process
         if not current_sequence_json:
             return
-        self.clear_sequence(
-            show_indicator=False, should_reset_to_start_pos_picker=False
-        )
 
+        # Try to get the construct_tab, but handle the case where it might not be available
+        try:
+            self.construct_tab = self.main_widget.construct_tab
+        except AttributeError:
+            # If we're being called from the sequence card tab image exporter,
+            # the construct_tab might not be available
+            print(
+                "Warning: construct_tab not available, using simplified sequence loading"
+            )
+            self._simplified_populate_from_json(current_sequence_json)
+            return
+
+        # Clear the current sequence without resetting to start pos picker
+        self.clear_sequence(should_reset_to_start_pos_picker=False)
+
+        # Convert the start position entry to a start position pictograph
         start_pos_beat = self.construct_tab.start_pos_picker.convert_current_sequence_json_entry_to_start_pos_pictograph(
             current_sequence_json
         )
         self.json_manager.start_pos_handler.set_start_position_data(start_pos_beat)
         self.start_pos_view.set_start_pos(start_pos_beat)
+
+        # Populate the sequence with the remaining pictographs
         for pictograph_data in current_sequence_json[1:]:
             if pictograph_data.get(SEQUENCE_START_POSITION):
                 continue
             self.populate_sequence(pictograph_data)
 
+        # Update the last beat
         last_beat = self.get_last_filled_beat().beat
         self.construct_tab.last_beat = last_beat
 
+        # Update the UI if needed
         if self.construct_tab.start_pos_picker.isVisible():
             self.construct_tab.transition_to_option_picker()
+
+    def _simplified_populate_from_json(
+        self, current_sequence_json: list[dict[str, str]]
+    ) -> None:
+        """
+        A simplified version of populate_beat_frame_from_json that doesn't require the construct_tab.
+        This is used when loading sequences for image export.
+
+        Args:
+            current_sequence_json: The sequence data to load
+        """
+        # Reset the beat frame
+        self._reset_beat_frame()
+
+        # Find the start position entry (usually the second entry)
+        start_pos_entry = None
+        for entry in current_sequence_json:
+            if entry.get(SEQUENCE_START_POSITION):
+                start_pos_entry = entry
+                break
+
+        # If we found a start position entry, set it
+        if start_pos_entry:
+            start_pos = StartPositionBeat(self)
+            start_pos.managers.updater.update_pictograph(start_pos_entry)
+            self.start_pos_view.set_start_pos(start_pos)
+
+        # Populate the sequence with the remaining pictographs
+        for pictograph_data in current_sequence_json:
+            if pictograph_data.get(SEQUENCE_START_POSITION):
+                continue
+            self.populate_sequence(pictograph_data)
 
     def populate_sequence(self, pictograph_data: dict) -> None:
         pictograph = Beat(self)
@@ -165,16 +213,40 @@ class TempBeatFrame(BaseBeatFrame):
     def update_current_word(self):
         self.current_word = self.get.current_word()
 
+    def load_sequence(self, sequence: list[dict]) -> None:
+        """
+        Load a sequence into the beat frame.
+
+        This method is used by the image exporter to load a sequence for image generation.
+        It clears the current sequence and populates the beat frame with the provided sequence data.
+
+        Args:
+            sequence: A list of dictionaries containing the sequence data
+        """
+        if not sequence:
+            return
+
+        # Clear the current sequence
+        self.clear_sequence(should_reset_to_start_pos_picker=False)
+
+        # Populate the beat frame with the sequence data
+        self.populate_beat_frame_from_json(sequence)
+
     def clear_sequence(
-        self, show_indicator=True, should_reset_to_start_pos_picker=True
+        self, should_reset_to_start_pos_picker=True
     ) -> None:
         self._reset_beat_frame()
 
-        if should_reset_to_start_pos_picker:
-            self.construct_tab.transition_to_start_pos_picker()
-        self.construct_tab.last_beat = self.start_pos
+        # Check if construct_tab attribute exists before using it
+        if hasattr(self, "construct_tab"):
+            if should_reset_to_start_pos_picker:
+                self.construct_tab.transition_to_start_pos_picker()
+            self.construct_tab.last_beat = self.start_pos
+
+        # Clear the current sequence file
         self.json_manager.loader_saver.clear_current_sequence_file()
 
+        # Configure the beat frame if needed
         if self.settings_manager.global_settings.get_grow_sequence():
             self.layout_manager.configure_beat_frame(0)
 

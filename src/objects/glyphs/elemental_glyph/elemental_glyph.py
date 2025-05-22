@@ -12,7 +12,7 @@ from data.constants import (
     TOG_SAME,
 )
 from enums.letter.letter_type import LetterType
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_data_path, get_image_path
 
 

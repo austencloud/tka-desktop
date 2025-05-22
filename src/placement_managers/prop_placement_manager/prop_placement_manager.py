@@ -34,7 +34,7 @@ class PropPlacementManager:
         Check if all motions are currently visible based on visibility settings.
         Returns True if all motions are visible, False otherwise.
         """
-        from settings_manager.global_settings.app_context import AppContext
+        from src.settings_manager.global_settings.app_context import AppContext
 
         try:
             settings = AppContext().settings_manager().visibility

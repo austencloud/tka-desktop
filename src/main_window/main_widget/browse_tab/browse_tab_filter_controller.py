@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QApplication
 
 from data.constants import GRID_MODE
 from main_window.main_widget.tab_indices import LeftStackIndex
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab

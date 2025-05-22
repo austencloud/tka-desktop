@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from data.constants import BLUE, LEADING, RED, TRAILING
 from main_window.main_widget.grid_mode_checker import GridModeChecker
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from .arrow_data_updater import ArrowDataUpdater
 from .glyph_updater import GlyphUpdater
 from .motion_data_updater import MotionDataUpdater

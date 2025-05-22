@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from letter_determination.core import LetterDeterminer
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.pictograph_data_loader import PictographDataLoader
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 from .sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,

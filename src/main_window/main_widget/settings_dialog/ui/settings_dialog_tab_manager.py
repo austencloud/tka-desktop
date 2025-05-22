@@ -11,7 +11,7 @@ from .beat_layout.beat_layout_tab import BeatLayoutTab
 from .prop_type.prop_type_tab import PropTypeTab
 from .user_profile.user_profile_tab import UserProfileTab
 from .visibility.visibility_tab import VisibilityTab
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from ..settings_dialog import SettingsDialog

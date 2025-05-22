@@ -3,7 +3,7 @@ import re
 import logging
 from typing import Union, Optional, TYPE_CHECKING
 
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from .structural_variation_checker import StructuralVariationChecker
 from .thumbnail_generator import ThumbnailGenerator
 from ....main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox

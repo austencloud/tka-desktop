@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QGridLayout
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from base_widgets.pictograph.elements.views.beat_view import BeatView
 
 if TYPE_CHECKING:

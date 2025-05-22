@@ -18,7 +18,7 @@ from data.locations import vertical_loc_mirror_map
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
     BaseSequenceModifier,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (

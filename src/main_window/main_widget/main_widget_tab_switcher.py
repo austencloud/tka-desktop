@@ -6,7 +6,7 @@ from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_pi
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_indices import LeftStackIndex, RightStackIndex
 from main_window.main_widget.tab_name import TabName
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget

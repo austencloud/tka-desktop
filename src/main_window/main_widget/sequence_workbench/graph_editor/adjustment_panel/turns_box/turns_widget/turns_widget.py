@@ -17,7 +17,7 @@ from .turns_text_label import TurnsTextLabel
 from ...turns_adjustment_manager.motion_type_setter import MotionTypeSetter
 from .direct_set_dialog.direct_set_turns_dialog import DirectSetTurnsDialog
 from .motion_type_label import MotionTypeLabel
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from ..turns_box import TurnsBox

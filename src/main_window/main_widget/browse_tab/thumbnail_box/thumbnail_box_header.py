@@ -8,7 +8,7 @@ from main_window.main_widget.browse_tab.thumbnail_box.favorite_button import (
 from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_word_label import (
     ThumbnailBoxWordLabel,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from .thumbnail_box_difficulty_label import ThumbnailBoxDifficultyLabel
 
 if TYPE_CHECKING:

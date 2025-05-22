@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QApplication, QMessageBox
 from main_window.main_widget.full_screen_image_overlay import (
     FullScreenImageOverlay,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:

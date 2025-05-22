@@ -4,7 +4,7 @@ from PyQt6.QtCore import QObject
 from main_window.main_widget.fade_manager.widget_and_stack_fader import (
     WidgetAndStackFader,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from .graphics_effect_remover import GraphicsEffectRemover
 from .widget_fader import WidgetFader
 from .stack_fader import StackFader

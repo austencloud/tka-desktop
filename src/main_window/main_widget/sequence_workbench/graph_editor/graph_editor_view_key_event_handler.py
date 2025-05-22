@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtCore import Qt
 
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:

@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from PyQt6.QtCore import QObject
 
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_button_manager import (
@@ -11,9 +12,8 @@ from data.constants import CLOCKWISE, DASH, DASH, FLOAT, NO_ROT, STATIC
 from objects.motion.motion import Motion
 
 from .turns_value import TurnsValue
-from main_window.main_window import TYPE_CHECKING
 from .turns_command import AdjustTurnsCommand, SetTurnsCommand, TurnsCommand
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .turns_state import TurnsState

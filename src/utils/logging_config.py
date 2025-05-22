@@ -10,12 +10,8 @@ Features:
 """
 
 import logging
-import logging.handlers
 import os
 import sys
-import json
-import atexit
-from datetime import datetime
 
 
 # Define log levels with color codes for console output
@@ -128,28 +124,7 @@ class ColorizedFormatter(logging.Formatter):
         return result
 
 
-class JsonFormatter(logging.Formatter):
-    """Formatter that outputs JSON formatted logs."""
-
-    def format(self, record):
-        log_data = {
-            "timestamp": self.formatTime(record, self.datefmt),
-            "level": record.levelname,
-            "module": record.name,
-            "message": record.getMessage(),
-            "line": record.lineno,
-            "function": record.funcName,
-        }
-
-        # Add exception info if present
-        if record.exc_info:
-            log_data["exception"] = self.formatException(record.exc_info)
-
-        # Add custom fields if present
-        if hasattr(record, "data") and isinstance(record.data, dict):
-            log_data.update(record.data)
-
-        return json.dumps(log_data)
+# JsonFormatter removed since we're not using JSON logging anymore
 
 
 def get_log_level_from_env() -> int:
@@ -171,15 +146,6 @@ def configure_logging(default_level: int = None) -> logging.Logger:
     # Determine log level from environment or parameter
     log_level = default_level if default_level is not None else get_log_level_from_env()
 
-    # Create logs directory if it doesn't exist
-    logs_dir = os.path.join(os.getcwd(), "logs")
-    os.makedirs(logs_dir, exist_ok=True)
-
-    # Generate a timestamp for the log file
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = os.path.join(logs_dir, f"kinetic_{timestamp}.log")
-    json_log_file = os.path.join(logs_dir, f"kinetic_{timestamp}.json")
-
     # Configure root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(log_level)
@@ -188,43 +154,16 @@ def configure_logging(default_level: int = None) -> logging.Logger:
     for handler in root_logger.handlers[:]:
         root_logger.removeHandler(handler)
 
-    # Create file handler for human-readable logging to a file
-    file_handler = logging.handlers.RotatingFileHandler(
-        log_file, maxBytes=10 * 1024 * 1024, backupCount=5
-    )
-    file_handler.setLevel(log_level)
-
-    # Create file handler for JSON structured logging
-    json_handler = logging.handlers.RotatingFileHandler(
-        json_log_file, maxBytes=10 * 1024 * 1024, backupCount=5
-    )
-    json_handler.setLevel(log_level)
-
-    # Create console handler for logging to console with a higher threshold
-    # to reduce console noise (file logs will still have all details)
+    # Create console handler for logging to console
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(max(log_level, logging.INFO))  # At least INFO for console
 
-    # Create formatters and add them to the handlers
-    standard_formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
     # Use colorized formatter for console
     console_formatter = ColorizedFormatter()
-
-    # Use JSON formatter for structured logging
-    json_formatter = JsonFormatter()
-
-    file_handler.setFormatter(standard_formatter)
     console_handler.setFormatter(console_formatter)
-    json_handler.setFormatter(json_formatter)
 
-    # Add the handlers to the root logger
-    root_logger.addHandler(file_handler)
+    # Add the handler to the root logger
     root_logger.addHandler(console_handler)
-    root_logger.addHandler(json_handler)
 
     # Create a filter to reduce noise from certain modules
     class ModuleFilter(logging.Filter):
@@ -235,14 +174,11 @@ def configure_logging(default_level: int = None) -> logging.Logger:
                     return False
             return True
 
-    # Apply the module filter to all handlers
+    # Apply the module filter to the console handler
     module_filter = ModuleFilter()
-    file_handler.addFilter(module_filter)
     console_handler.addFilter(module_filter)
-    json_handler.addFilter(module_filter)
 
-    # Apply the application-wide filter to the console handler only
-    # (we still want complete logs in the log files)
+    # Apply the application-wide filter to the console handler
     try:
         from utils.app_log_filter import AppLogFilter
 
@@ -254,19 +190,6 @@ def configure_logging(default_level: int = None) -> logging.Logger:
 
     # Configure module-specific loggers
     configure_module_loggers()
-
-    # Set up log cleanup on exit
-    def cleanup_old_logs():
-        try:
-            cleanup_logs(logs_dir, max_age_days=7)
-        except Exception as e:
-            root_logger.error(f"Failed to clean up old logs: {e}")
-
-    atexit.register(cleanup_old_logs)
-
-    # Log the start of the application (only to file, not console)
-    file_logger = logging.getLogger("file_only")
-    file_logger.info("Logging system initialized")
 
     return root_logger
 
@@ -319,19 +242,7 @@ def configure_module_loggers():
     browse_logger.setLevel(logging.WARNING)  # Only show warnings and above
 
 
-def cleanup_logs(logs_dir: str, max_age_days: int = 7):
-    """Clean up old log files."""
-    import time
-
-    now = time.time()
-    max_age_seconds = max_age_days * 24 * 60 * 60
-
-    for filename in os.listdir(logs_dir):
-        file_path = os.path.join(logs_dir, filename)
-        if os.path.isfile(file_path):
-            file_age = now - os.path.getmtime(file_path)
-            if file_age > max_age_seconds:
-                os.remove(file_path)
+# No longer needed since we're not creating log files
 
 
 def get_logger(name: str) -> logging.Logger:

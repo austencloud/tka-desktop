@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QApplication
 
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (

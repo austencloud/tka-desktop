@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from data.constants import BEAT
+from src.data.constants import BEAT
 
 
 from .json_duration_updater import JsonDurationUpdater
@@ -12,11 +12,13 @@ from .json_turns_updater import JsonTurnsUpdater
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
+    from src.main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import (
+        Beat,
+    )
+    from src.main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
-    from main_window.main_widget.json_manager.json_manager import JsonManager
+    from src.main_window.main_widget.json_manager.json_manager import JsonManager
 
 
 class JsonSequenceUpdater:

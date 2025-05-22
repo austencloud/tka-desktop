@@ -15,6 +15,7 @@ from .user_profile_settings.user_profile_settings import UserProfileSettings
 from .global_settings.global_settings import GlobalSettings
 from .visibility_settings.visibility_settings import VisibilitySettings
 from .codex_exporter_settings import CodexExporterSettings
+from .sequence_card_tab_settings import SequenceCardTabSettings
 
 if TYPE_CHECKING:
     pass
@@ -39,6 +40,7 @@ class SettingsManager(QObject):  # ISettingsManager is a Protocol, no need to in
         self.sequence_layout = SequenceLayoutSettings(self)
         self.sequence_share_settings = SequenceShareSettings(self)
         self.codex_exporter = CodexExporterSettings(self)
+        self.sequence_card_tab = SequenceCardTabSettings(self)
 
         # Tabs
         self.construct_tab_settings = ConstructTabSettings(self.settings)

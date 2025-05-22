@@ -5,7 +5,7 @@ from data.constants import DASH, STATIC
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import ArrowRotAngleOverrideKeyGenerator
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import TurnsTupleGenerator
 from objects.arrow.arrow import Arrow
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 from .mirrored_entry_factory import MirroredEntryFactory
 from .mirrored_entry_utils import MirroredEntryUtils

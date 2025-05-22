@@ -5,7 +5,7 @@ from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvalua
 from main_window.main_widget.sequence_properties_manager.strict_swapped_CAP_checker import (
     StrictSwappedCAPChecker,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 from .mirrored_swapped_CAP_checker import (
     MirroredSwappedCAPChecker,

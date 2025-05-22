@@ -6,7 +6,7 @@ from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.tu
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import (
     TurnsValue,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from main_window.main_widget.json_manager.json_manager import JsonManager
 
 

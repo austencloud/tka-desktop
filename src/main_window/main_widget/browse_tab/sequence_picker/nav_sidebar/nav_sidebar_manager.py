@@ -9,7 +9,7 @@ from .base_sidebar_section import BaseSidebarSection
 from .sidebar_date_added_section import SidebarDateAddedSection
 from .sidebar_generic_section import SidebarGenericSection
 from .sidebar_letter_section import SidebarLetterSection
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from ..sequence_picker import SequencePickerNavSidebar

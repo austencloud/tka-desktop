@@ -6,7 +6,7 @@ from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjust
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.rotation_angle_override_key_generator import (
     ArrowRotAngleOverrideKeyGenerator,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 from typing import cast
 

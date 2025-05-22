@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSignal
 
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_data_path
 
 from .layout_dropdown import LayoutDropdown

@@ -6,7 +6,7 @@ from PyQt6.QtCore import pyqtSignal
 from .layout_length_button import LayoutLengthButton
 from .num_beats_spinbox import NumBeatsSpinbox
 from .sequence_length_label import SequenceLengthLabel
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from ..layout_controls.layout_controls import LayoutControls

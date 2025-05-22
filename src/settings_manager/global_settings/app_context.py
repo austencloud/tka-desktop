@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 
 
 class AppContext:
+    # Class variables to store singleton instances
     _settings_manager = None
     _json_manager = None
     _special_placement_handler = None
@@ -30,6 +31,7 @@ class AppContext:
     _selected_arrow: Optional["Arrow"] = None
     _dict_data_manager = DictionaryDataManager()
     _main_window = None  # Will be resolved dynamically
+    _initialized = False  # Flag to track initialization status
 
     @classmethod
     def init(
@@ -40,10 +42,27 @@ class AppContext:
         special_placement_loader,
     ):
         """Initialize AppContext with required services."""
+        # Check if already initialized to prevent duplicate initialization
+        if cls._initialized:
+            import logging
+
+            logging.getLogger(__name__).warning(
+                "AppContext already initialized, skipping"
+            )
+            return
+
         cls._settings_manager = settings_manager
         cls._json_manager = json_manager
         cls._special_placement_handler = special_placement_handler
         cls._special_placement_loader = special_placement_loader
+        cls._initialized = True
+
+        # Log the module path to help diagnose import issues
+        import logging
+
+        logging.getLogger(__name__).info(
+            f"AppContext initialized from module: {cls.__module__}"
+        )
 
     @classmethod
     def set_selected_arrow(cls, arrow: Optional["Arrow"]) -> None:
@@ -69,13 +88,31 @@ class AppContext:
     @classmethod
     def settings_manager(cls) -> "SettingsManager":
         if cls._settings_manager is None:
-            raise RuntimeError("AppContext.settings_manager() accessed before init()")
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.error(
+                f"AppContext.settings_manager() accessed before init() from module {cls.__module__}"
+            )
+            logger.error(f"Initialization status: {cls._initialized}")
+            raise RuntimeError(
+                f"AppContext.settings_manager() accessed before init() from module {cls.__module__}"
+            )
         return cls._settings_manager
 
     @classmethod
     def json_manager(cls) -> "JsonManager":
         if cls._json_manager is None:
-            raise RuntimeError("AppContext.json_manager() accessed before init()")
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.error(
+                f"AppContext.json_manager() accessed before init() from module {cls.__module__}"
+            )
+            logger.error(f"Initialization status: {cls._initialized}")
+            raise RuntimeError(
+                f"AppContext.json_manager() accessed before init() from module {cls.__module__}"
+            )
         return cls._json_manager
 
     @classmethod

@@ -2,7 +2,7 @@ from enums.letter.letter import Letter
 
 from typing import TYPE_CHECKING
 
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 
 if TYPE_CHECKING:

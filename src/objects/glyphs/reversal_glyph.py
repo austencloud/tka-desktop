@@ -6,7 +6,7 @@ from data.constants import BLUE, HEX_BLUE, HEX_RED, RED
 from main_window.main_widget.json_manager.current_sequence_loader import (
     CurrentSequenceLoader,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from utils.reversal_detector import ReversalDetector
 
 if TYPE_CHECKING:

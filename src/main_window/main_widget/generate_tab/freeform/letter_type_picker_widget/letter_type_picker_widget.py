@@ -8,7 +8,7 @@ from enums.letter.letter_type import LetterType
 from main_window.main_widget.generate_tab.freeform.letter_type_picker_widget.letter_type_button import (
     LetterTypeButton,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.generate_tab.generate_tab import GenerateTab

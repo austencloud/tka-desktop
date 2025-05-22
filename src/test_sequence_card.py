@@ -7,7 +7,7 @@ from PyQt6.QtCore import Qt
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 # Import the sequence card tab
-from main_window.main_widget.sequence_card_tab.sequence_card_tab import SequenceCardTab
+from main_window.main_widget.sequence_card_tab.tab import SequenceCardTab
 
 
 class TestWindow(QMainWindow):

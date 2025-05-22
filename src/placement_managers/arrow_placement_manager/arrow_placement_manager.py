@@ -1,8 +1,4 @@
-from email.policy import default
 from typing import TYPE_CHECKING
-from venv import logger
-
-from enums.letter.letter import Letter
 from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.data_updater.special_placement_data_updater import (
     SpecialPlacementDataUpdater,
 )
@@ -11,7 +7,7 @@ from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjust
 from .arrow_placement_context import ArrowPlacementContext
 from .quadrant_index_handler import QuadrantIndexHandler
 from .arrow_adjustment_calculator import ArrowAdjustmentCalculator
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from .strategies.default_placement_strategy import DefaultPlacementStrategy
 from .strategies.initial_placement_strategy import InitialPlacementStrategy
 from .strategies.quadrant_adjustment_strategy import QuadrantAdjustmentStrategy
@@ -57,7 +53,7 @@ class ArrowPlacementManager:
         dir_x, dir_y = (adjustment.x(), adjustment.y())
         final_x = initial_pos.x() + dir_x - arrow.boundingRect().center().x()
         final_y = initial_pos.y() + dir_y - arrow.boundingRect().center().y()
-        
+
         arrow.setPos(final_x, final_y)
 
     def _build_context(self, arrow: "Arrow") -> ArrowPlacementContext:
@@ -70,4 +66,3 @@ class ArrowPlacementManager:
             turns=arrow.motion.state.turns,
             start_ori=arrow.motion.state.start_ori,
         )
-

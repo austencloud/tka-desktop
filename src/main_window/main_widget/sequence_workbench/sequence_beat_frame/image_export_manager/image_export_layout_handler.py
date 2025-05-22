@@ -21,37 +21,7 @@ class ImageExportLayoutHandler:
 
         Returns a tuple of (rows, columns) to match the format used in the beat frame layout.
         """
-        # First try to get the actual current layout from the beat frame
-        if hasattr(self.beat_frame, "layout_manager") and hasattr(
-            self.beat_frame.layout_manager, "calculate_current_layout"
-        ):
-            # Use the current layout if available
-            return self.beat_frame.layout_manager.calculate_current_layout()
-
-        # If we can't get the current layout, fall back to calculating it based on beat count
-        if hasattr(self.beat_frame, "layout_manager") and hasattr(
-            self.beat_frame.layout_manager, "calculate_layout"
-        ):
-            return self.beat_frame.layout_manager.calculate_layout(beat_count)
-
-        # Fallback to default layouts if we can't get the layout from the beat frame
-        return self.get_fallback_layout(beat_count)
-
-    def get_fallback_layout(self, beat_count: int) -> tuple[int, int]:
-        """
-        Fallback to default layouts if we can't get the layout from the beat frame.
-        Returns (rows, columns) to match the format of beat_frame_layout_manager.calculate_layout
-        """
-        # Default to a reasonable layout based on beat count
-        if beat_count <= 4:
-            return (1, beat_count)  # 1 row, beat_count columns
-        elif beat_count <= 8:
-            return (2, 4)  # 2 rows, 4 columns
-        elif beat_count <= 16:
-            return (4, 4)  # 4 rows, 4 columns
-        else:
-            rows = (beat_count + 3) // 4  # Round up division by 4
-            return (rows, 4)  # rows rows, 4 columns
+        return self.beat_frame.layout_manager.calculate_layout(beat_count)
 
     def calculate_layout(
         self, filled_beat_count: int, include_start_pos: bool
@@ -70,10 +40,10 @@ class ImageExportLayoutHandler:
         if include_start_pos:
             # Add an extra column for the start position if needed
             # Return in (columns, rows) format for the image creator
-            return (rows + 1, columns) if filled_beat_count > 0 else (1, 1)
+            return (columns + 1, rows) if filled_beat_count > 0 else (1, 1)
 
         # Return in (columns, rows) format for the image creator
-        return (rows, columns)
+        return (columns, rows)
 
     def calculate_layout_with_start(self, filled_beat_count: int) -> tuple[int, int]:
         """

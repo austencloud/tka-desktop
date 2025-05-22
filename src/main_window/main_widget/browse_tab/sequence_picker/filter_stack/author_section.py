@@ -17,7 +17,7 @@ from styles.styled_button import StyledButton
 from utils.path_helpers import get_data_path
 
 from .filter_section_base import FilterSectionBase
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .sequence_picker_filter_stack import SequencePickerFilterStack

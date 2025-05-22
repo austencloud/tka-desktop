@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from .image_export_layout_handler import ImageExportLayoutHandler
 from .image_creator.image_creator import ImageCreator
 from .image_export_beat_factory import ImageExportBeatFactory
@@ -11,10 +11,6 @@ if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
-    from base_widgets.base_beat_frame import BaseBeatFrame
-
-
-from typing import TYPE_CHECKING
 
 
 class ImageExportManager:
@@ -46,7 +42,7 @@ class ImageExportManager:
         self.image_creator = ImageCreator(self)
         self.image_saver = ImageSaver(self)
 
-    def export_image_directly(self, sequence=None):
+    def export_image_directly(self, sequence=None) -> None:
         """Immediately exports the image using current settings and opens the save dialog."""
         sequence = (
             sequence

@@ -7,7 +7,7 @@ from main_window.main_widget.json_manager.special_placement_saver import (
     SpecialPlacementSaver,
 )
 
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from objects.arrow.arrow import Arrow
 from placement_managers.attr_key_generator import (
     AttrKeyGenerator,

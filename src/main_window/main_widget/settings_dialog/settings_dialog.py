@@ -5,7 +5,7 @@ from PyQt6.QtCore import QEvent
 from styles.settings_dialog_styler import SettingsDialogStyler
 
 from .ui.settings_dialog_ui import SettingsDialogUI
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget

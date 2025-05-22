@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QGridLayout
 from data.act_beat_frame_layouts import ACT_BEAT_FRAME_LAYOUTS
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.write_tab.act_sheet.act_splitter.act_beat_scroll.act_beat_frame.act_beat_frame import (

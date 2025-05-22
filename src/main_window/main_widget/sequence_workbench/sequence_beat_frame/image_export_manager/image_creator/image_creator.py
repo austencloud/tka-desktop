@@ -76,9 +76,9 @@ class ImageCreator:
         )
         if dictionary or fullscreen_preview:
             options = self._parse_options_for_dictionary_or_fullscreen_preview(options)
-        # Get the layout based on the current beat frame layout
+        # Get the layout based on tFuckhe current beat frame layout
         # Note: layout_manager.calculate_layout returns (columns, rows) for the image
-        row_count, column_count = self.layout_manager.calculate_layout(
+        column_count, row_count = self.layout_manager.calculate_layout(
             num_filled_beats,
             options["include_start_position"],
         )

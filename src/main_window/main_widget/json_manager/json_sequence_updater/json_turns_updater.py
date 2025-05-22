@@ -13,7 +13,7 @@ from data.constants import (
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:

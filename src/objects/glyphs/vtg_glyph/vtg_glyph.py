@@ -22,7 +22,7 @@ from data.constants import (
     TOG_SAME,
 )
 from main_window.main_widget.grid_mode_checker import GridModeChecker
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_data_path, get_image_path
 
 

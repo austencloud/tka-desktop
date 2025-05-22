@@ -4,14 +4,12 @@ from typing import TYPE_CHECKING
 from enums.letter.letter import Letter
 from enums.prop_type import PropType
 
-from main_window.main_widget.generate_tab.generate_tab import GenerateTab
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
 from main_window.main_widget.startup_dialog import StartupDialog
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_name import TabName
-from main_window.main_widget.sequence_card_tab.sequence_card_tab import SequenceCardTab
-from settings_manager.global_settings.app_context import AppContext
+from main_window.main_widget.sequence_card_tab.tab import SequenceCardTab
 from .browse_tab.browse_tab import BrowseTab
 from .fade_manager.fade_manager import FadeManager
 from .full_screen_image_overlay import FullScreenImageOverlay
@@ -28,6 +26,7 @@ from .main_widget_ui import MainWidgetUI
 from .main_widget_state import MainWidgetState
 
 if TYPE_CHECKING:
+    from main_window.main_widget.generate_tab.generate_tab import GenerateTab
     from main_window.main_widget.codex.codex import Codex
     from main_window.main_widget.pictograph_data_loader import PictographDataLoader
     from main_window.menu_bar.menu_bar import MenuBarWidget
@@ -110,8 +109,37 @@ class MainWidget(QWidget):
         self.main_window = main_window
         self.main_window.main_widget = self
         self.splash = splash_screen
-        self.settings_manager = AppContext.settings_manager()
-        self.json_manager = AppContext.json_manager()
+
+        # Get dependencies from AppContext safely
+        try:
+            # Use a consistent import path - always use the src-prefixed version
+            from src.settings_manager.global_settings.app_context import AppContext
+            from src.utils.logging_config import get_logger
+
+            logger = get_logger(__name__)
+            logger.info("MainWidget: Accessing AppContext...")
+
+            # Check if AppContext is initialized
+            if AppContext._settings_manager is None:
+                logger.error(
+                    "AppContext._settings_manager is None in MainWidget.__init__"
+                )
+                raise RuntimeError(
+                    "AppContext not initialized before MainWidget creation"
+                )
+
+            self.settings_manager = AppContext.settings_manager()
+            self.json_manager = AppContext.json_manager()
+            logger.info(
+                "MainWidget: Successfully retrieved dependencies from AppContext"
+            )
+        except Exception as e:
+            from src.utils.logging_config import get_logger
+
+            logger = get_logger(__name__)
+            logger.error(f"MainWidget: Failed to access AppContext: {e}")
+            raise
+
         self.tab_switcher = MainWidgetTabSwitcher(self)
         self.manager = MainWidgetManagers(self)
         self.state_handler = MainWidgetState(self)

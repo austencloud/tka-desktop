@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any
 from PyQt6.QtCore import QPointF
-from settings_manager.global_settings.app_context import AppContext
+from src.settings_manager.global_settings.app_context import AppContext
 from placement_managers.arrow_placement_manager.arrow_placement_context import (
     ArrowPlacementContext,
 )
