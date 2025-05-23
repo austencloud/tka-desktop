@@ -1,12 +1,17 @@
 # src/main_window/main_widget/sequence_card_tab/export/export_page_renderer.py
-import os
 import logging
-from typing import List, Dict, Any, Optional, Tuple
+from typing import Dict, Any
 from PyQt6.QtWidgets import QWidget
-from PyQt6.QtGui import QPixmap, QPainter, QImage, QImageReader, QFont, QColor
-from PyQt6.QtCore import Qt, QRect, QPoint, QSize
-from PIL import Image, ImageEnhance
-import io
+from PyQt6.QtGui import QPixmap, QPainter, QImage, QImageReader, QFont
+from PyQt6.QtCore import Qt, QRect
+
+# Try to import PIL for image enhancement, but make it optional
+try:
+    from PIL import Image, ImageEnhance
+
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
 
 from .export_config import ExportConfig
 from .export_grid_calculator import ExportGridCalculator
@@ -48,9 +53,19 @@ class ExportPageRenderer:
             "maintain_larger_dimensions", True
         )
         self.upscale_factor = self.image_processing.get("upscale_factor", 1.2)
-        self.sharpen_after_scaling = self.image_processing.get(
-            "sharpen_after_scaling", True
+
+        # Only enable sharpening if PIL is available
+        self.sharpen_after_scaling = (
+            self.image_processing.get("sharpen_after_scaling", True) and PIL_AVAILABLE
         )
+
+        if (
+            self.image_processing.get("sharpen_after_scaling", True)
+            and not PIL_AVAILABLE
+        ):
+            self.logger.warning(
+                "PIL is not available. Image sharpening will be disabled."
+            )
 
     def render_page_to_image(self, page: QWidget, filepath: str) -> bool:
         """
@@ -303,22 +318,56 @@ class ExportPageRenderer:
 
         # Apply sharpening if enabled (helps maintain detail after scaling)
         if self.sharpen_after_scaling:
-            # Convert to PIL for sharpening
-            buffer = io.BytesIO()
-            enhanced_image.save(buffer, format="PNG")
-            buffer.seek(0)
-            pil_image = Image.open(buffer)
+            try:
+                import tempfile
+                import os
 
-            # Apply sharpening
-            sharpened = ImageEnhance.Sharpness(pil_image).enhance(
-                1.3
-            )  # Moderate sharpening
+                # Create a temporary file for the conversion
+                with tempfile.NamedTemporaryFile(
+                    suffix=".png", delete=False
+                ) as temp_file:
+                    temp_path = temp_file.name
 
-            # Convert back to QImage
-            buffer = io.BytesIO()
-            sharpened.save(buffer, format="PNG")
-            buffer.seek(0)
-            enhanced_image = QImage.fromData(buffer.data())
+                try:
+                    # Save QImage to temporary file
+                    self.logger.debug(
+                        f"Saving image to temporary file for sharpening: {temp_path}"
+                    )
+                    enhanced_image.save(temp_path, "PNG")
+
+                    # Open with PIL
+                    pil_image = Image.open(temp_path)
+
+                    # Apply sharpening
+                    self.logger.debug("Applying sharpening with PIL")
+                    sharpened = ImageEnhance.Sharpness(pil_image).enhance(
+                        1.3
+                    )  # Moderate sharpening
+
+                    # Save sharpened image back to temporary file
+                    sharpened.save(temp_path, "PNG")
+
+                    # Load back into QImage
+                    enhanced_image = QImage(temp_path)
+
+                    if enhanced_image.isNull():
+                        self.logger.warning(
+                            "Failed to load sharpened image. Using original image."
+                        )
+                finally:
+                    # Clean up the temporary file
+                    try:
+                        if os.path.exists(temp_path):
+                            os.unlink(temp_path)
+                    except Exception as cleanup_error:
+                        self.logger.warning(
+                            f"Error cleaning up temporary file: {cleanup_error}"
+                        )
+            except Exception as e:
+                # If PIL processing fails, continue with the unsharpened image
+                self.logger.warning(
+                    f"Error applying sharpening: {e}. Using unsharpened image."
+                )
 
         # Draw the image with high-quality scaling
         painter.drawImage(
