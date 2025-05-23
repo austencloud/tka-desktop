@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QApplication
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from typing import TYPE_CHECKING
-from .column_selector import ColumnSelector
+from .page_preview_column_selector import PagePreviewColumnSelector
 from .length_scroll_area import LengthScrollArea
 from .sidebar_header import SidebarHeader
 from .sidebar_styler import SidebarStyler
@@ -35,7 +35,9 @@ class SequenceCardNavSidebar(QWidget):
         self.scroll_area.length_selected.connect(self.on_length_selected)
         main_layout.addWidget(self.scroll_area, 1)
 
-        self.column_selector = ColumnSelector(self.settings_manager, self.width())
+        self.column_selector = PagePreviewColumnSelector(
+            self.settings_manager, self.width()
+        )
         self.column_selector.column_count_changed.connect(self.on_column_count_changed)
         main_layout.addWidget(self.column_selector)
 
@@ -51,11 +53,11 @@ class SequenceCardNavSidebar(QWidget):
     def on_column_count_changed(self, column_count: int):
         try:
             scroll_position = (
-                self.sequence_card_tab.scroll_area.verticalScrollBar().value()
+                self.sequence_card_tab.content_area.scroll_area.verticalScrollBar().value()
             )
 
             self.sequence_card_tab.setCursor(Qt.CursorShape.WaitCursor)
-            self.sequence_card_tab.description_label.setText(
+            self.sequence_card_tab.header.description_label.setText(
                 f"Updating display to show {column_count} preview columns..."
             )
             QApplication.processEvents()
@@ -76,7 +78,7 @@ class SequenceCardNavSidebar(QWidget):
 
         except Exception as e:
             print(f"Error updating column count: {e}")
-            self.sequence_card_tab.description_label.setText(f"Error: {str(e)}")
+            self.sequence_card_tab.header.description_label.setText(f"Error: {str(e)}")
             self.sequence_card_tab.setCursor(Qt.CursorShape.ArrowCursor)
 
     def _update_description_label(self, column_count: int):
@@ -89,17 +91,19 @@ class SequenceCardNavSidebar(QWidget):
         )
 
         if total_pages > 0:
-            self.sequence_card_tab.description_label.setText(
+            self.sequence_card_tab.header.description_label.setText(
                 f"Showing {length_text} sequences across {total_pages} pages with {column_count} preview columns"
             )
         else:
-            self.sequence_card_tab.description_label.setText(
+            self.sequence_card_tab.header.description_label.setText(
                 f"Updated display to show {column_count} preview columns"
             )
 
     def _restore_scroll_position(self, position):
-        if hasattr(self.sequence_card_tab, "scroll_area"):
-            self.sequence_card_tab.scroll_area.verticalScrollBar().setValue(position)
+        if hasattr(self.sequence_card_tab.content_area, "scroll_area"):
+            self.sequence_card_tab.content_area.scroll_area.verticalScrollBar().setValue(
+                position
+            )
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

@@ -91,7 +91,7 @@ class SequenceDisplayManager:
 
     @columns_per_row.setter
     def columns_per_row(self, value: int) -> None:
-        if 1 <= value <= 4 and value != self.config.columns_per_row:
+        if 1 <= value <= 6 and value != self.config.columns_per_row:
             self.config.columns_per_row = value
             self.image_processor.set_columns_per_row(value)  # Update image processor
             if self.pages:  # Refresh layout if pages are currently displayed
@@ -182,17 +182,17 @@ class SequenceDisplayManager:
         # Update UI to show loading state
         self.sequence_card_tab.setCursor(Qt.CursorShape.WaitCursor)
         length_text = f"{selected_length}-step" if selected_length > 0 else "all"
-        self.sequence_card_tab.description_label.setText(
+        self.sequence_card_tab.header.description_label.setText(
             f"Loading {length_text} sequences..."
         )
 
         # Show progress bar and reset it
-        if hasattr(self.sequence_card_tab, "progress_bar"):
-            self.sequence_card_tab.progress_bar.setValue(0)
-            self.sequence_card_tab.progress_bar.show()
+        if hasattr(self.sequence_card_tab.header, "progress_bar"):
+            self.sequence_card_tab.header.progress_bar.setValue(0)
+            self.sequence_card_tab.header.progress_bar.show()
             # Make sure the progress container is visible too
-            if hasattr(self.sequence_card_tab, "progress_container"):
-                self.sequence_card_tab.progress_container.setVisible(True)
+            if hasattr(self.sequence_card_tab.header, "progress_container"):
+                self.sequence_card_tab.header.progress_container.setVisible(True)
             QApplication.processEvents()  # Ensure UI updates are visible
 
         try:
@@ -204,20 +204,22 @@ class SequenceDisplayManager:
 
             total_sequences = len(filtered_sequences)
             if total_sequences == 0:
-                self.sequence_card_tab.description_label.setText(
+                self.sequence_card_tab.header.description_label.setText(
                     f"No {length_text} sequences found"
                 )
                 # Hide progress bar and container when no sequences found
-                if hasattr(self.sequence_card_tab, "progress_bar"):
-                    self.sequence_card_tab.progress_bar.hide()
-                    if hasattr(self.sequence_card_tab, "progress_container"):
-                        self.sequence_card_tab.progress_container.setVisible(False)
+                if hasattr(self.sequence_card_tab.header, "progress_bar"):
+                    self.sequence_card_tab.header.progress_bar.hide()
+                    if hasattr(self.sequence_card_tab.header, "progress_container"):
+                        self.sequence_card_tab.header.progress_container.setVisible(
+                            False
+                        )
                 return
 
             # Set up progress bar with total count
-            if hasattr(self.sequence_card_tab, "progress_bar"):
-                self.sequence_card_tab.progress_bar.setRange(0, total_sequences)
-                self.sequence_card_tab.progress_bar.setValue(0)
+            if hasattr(self.sequence_card_tab.header, "progress_bar"):
+                self.sequence_card_tab.header.progress_bar.setRange(0, total_sequences)
+                self.sequence_card_tab.header.progress_bar.setValue(0)
 
             self.layout_calculator.set_optimal_grid_dimensions(selected_length)
 
@@ -239,7 +241,7 @@ class SequenceDisplayManager:
 
             # Update UI to show if we're using cached content
             if self.using_cached_content:
-                self.sequence_card_tab.description_label.setText(
+                self.sequence_card_tab.header.description_label.setText(
                     f"Loading {length_text} sequences from cache..."
                 )
 
@@ -251,8 +253,8 @@ class SequenceDisplayManager:
 
                 if i % 10 == 0:  # Periodic UI update
                     # Update progress bar
-                    if hasattr(self.sequence_card_tab, "progress_bar"):
-                        self.sequence_card_tab.progress_bar.setValue(i + 1)
+                    if hasattr(self.sequence_card_tab.header, "progress_bar"):
+                        self.sequence_card_tab.header.progress_bar.setValue(i + 1)
 
                     # Calculate cache hit ratio for debugging
                     if self.cache_hits + self.cache_misses > 0:
@@ -261,7 +263,7 @@ class SequenceDisplayManager:
                         )
                         logging.debug(f"Cache hit ratio: {cache_ratio:.2f}")
 
-                    self.sequence_card_tab.description_label.setText(
+                    self.sequence_card_tab.header.description_label.setText(
                         f"Loading {length_text} sequences... ({i+1}/{total_sequences})"
                     )
 
@@ -292,6 +294,7 @@ class SequenceDisplayManager:
                                 sequence_data, pixmap
                             )
                             self._add_image_to_page(label)
+                        QApplication.processEvents()
                 except Exception as e:
                     logging.error(
                         f"Error processing image {sequence_data.get('path', 'unknown')}: {e}"
@@ -302,13 +305,13 @@ class SequenceDisplayManager:
                 ):  # Less frequent UI responsiveness check for long lists
                     QApplication.processEvents()
 
-            self.sequence_card_tab.description_label.setText(
+            self.sequence_card_tab.header.description_label.setText(
                 f"Showing {len(filtered_sequences)} {length_text} sequences across {len(self.pages)} pages in {self.config.columns_per_row} columns"
             )
 
         except Exception as e:
             logging.error(f"Error displaying sequences: {e}", exc_info=True)
-            self.sequence_card_tab.description_label.setText(f"Error: {str(e)}")
+            self.sequence_card_tab.header.description_label.setText(f"Error: {str(e)}")
         finally:
             # Reset loading state
             self.is_loading = False
@@ -316,11 +319,11 @@ class SequenceDisplayManager:
             self.sequence_card_tab.setCursor(Qt.CursorShape.ArrowCursor)
 
             # Hide progress bar and its container
-            if hasattr(self.sequence_card_tab, "progress_bar"):
-                self.sequence_card_tab.progress_bar.hide()
+            if hasattr(self.sequence_card_tab.header, "progress_bar"):
+                self.sequence_card_tab.header.progress_bar.hide()
                 # Also hide the container to ensure consistent layout
-                if hasattr(self.sequence_card_tab, "progress_container"):
-                    self.sequence_card_tab.progress_container.setVisible(False)
+                if hasattr(self.sequence_card_tab.header, "progress_container"):
+                    self.sequence_card_tab.header.progress_container.setVisible(False)
 
     def _check_cache_availability(self, sequences: List[Dict[str, Any]]) -> float:
         """
@@ -496,3 +499,4 @@ class SequenceDisplayManager:
             logging.error(
                 f"Invalid position {self.current_position} for page's internal grid, max positions: {len(positions)}"
             )
+

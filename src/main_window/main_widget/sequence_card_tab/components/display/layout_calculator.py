@@ -1,7 +1,6 @@
 # src/main_window/main_widget/sequence_card_tab/components/display/layout_calculator.py
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QSize
 
 
 if TYPE_CHECKING:
@@ -50,12 +49,14 @@ class LayoutCalculator:
             QSize: The optimal size for each page preview
         """
         # Get the available width of the scroll area
-        scroll_area_width = self.sequence_card_tab.scroll_area.width()
+        scroll_area_width = self.sequence_card_tab.content_area.scroll_area.width()
 
         # Account for scroll bar width if vertical scrollbar is visible
-        if self.sequence_card_tab.scroll_area.verticalScrollBar().isVisible():
+        if (
+            self.sequence_card_tab.content_area.scroll_area.verticalScrollBar().isVisible()
+        ):
             scroll_bar_width = (
-                self.sequence_card_tab.scroll_area.verticalScrollBar().width()
+                self.sequence_card_tab.content_area.scroll_area.verticalScrollBar().width()
             )
             scroll_area_width -= scroll_bar_width
 
@@ -110,13 +111,13 @@ class LayoutCalculator:
         grid_map = {
             2: (3, 2),
             3: (3, 2),
-            4: (10, 3),
+            4: (10, 2),
             5: (2, 3),
             6: (2, 3),
-            8: (7, 3),
+            8: (5, 2),
             10: (4, 3),
             12: (4, 3),
-            16: (4, 3),
+            16: (3, 2),
         }
 
         if sequence_length in grid_map:

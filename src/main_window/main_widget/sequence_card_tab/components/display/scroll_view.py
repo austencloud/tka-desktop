@@ -1,6 +1,6 @@
 # src/main_window/main_widget/sequence_card_tab/components/display/scroll_view.py
 import logging
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QGridLayout, QApplication
 from PyQt6.QtCore import Qt
 
@@ -36,10 +36,14 @@ class ScrollView:
         """
         # Only clear the scroll layout if it exists
         if (
-            hasattr(self.sequence_card_tab, "scroll_layout")
-            and self.sequence_card_tab.scroll_layout is not None
+            hasattr(self.sequence_card_tab.content_area, "scroll_layout")
+            and self.sequence_card_tab.content_area.scroll_layout is not None
         ):
             self._clear_scroll_layout()
+            self.sequence_card_tab.content_area.scroll_layout.addLayout(
+                self.preview_grid
+            )
+
         else:
             logging.debug("Skipping _clear_scroll_layout - scroll_layout not ready yet")
 
@@ -54,13 +58,17 @@ class ScrollView:
 
         # Add the grid layout to the scroll layout
         if (
-            hasattr(self.sequence_card_tab, "scroll_layout")
-            and self.sequence_card_tab.scroll_layout is not None
+            hasattr(self.sequence_card_tab.content_area, "scroll_layout")
+            and self.sequence_card_tab.content_area.scroll_layout is not None
         ):
-            self.sequence_card_tab.scroll_layout.addLayout(self.preview_grid)
+            self.sequence_card_tab.content_area.scroll_layout.addLayout(
+                self.preview_grid
+            )
 
             # MINIMAL MARGINS: Set zero horizontal margins on the parent scroll layout
-            self.sequence_card_tab.scroll_layout.setContentsMargins(0, 5, 0, 5)
+            self.sequence_card_tab.content_area.scroll_layout.setContentsMargins(
+                0, 5, 0, 5
+            )
 
             logging.debug("Added preview_grid to scroll_layout with reduced margins")
         else:
@@ -72,7 +80,7 @@ class ScrollView:
 
         return self.preview_grid
 
-    def clear_existing_pages(self, pages: List[QWidget]) -> None:
+    def clear_existing_pages(self, pages: list[QWidget]) -> None:
         """
         Clear all existing pages and remove them from the layout.
 
@@ -81,7 +89,7 @@ class ScrollView:
         2. Forces a UI update to ensure the layout is properly cleared
 
         Args:
-            pages: List of page widgets to clear
+            pages: list of page widgets to clear
         """
         # First check if there are any pages to clear
         if not pages:
@@ -119,16 +127,18 @@ class ScrollView:
         # This method should only be called after we've verified scroll_layout exists
         # But we'll add an extra check just to be safe
         if (
-            hasattr(self.sequence_card_tab, "scroll_layout")
-            and self.sequence_card_tab.scroll_layout is not None
+            hasattr(self.sequence_card_tab.content_area, "scroll_layout")
+            and self.sequence_card_tab.content_area.scroll_layout is not None
         ):
             try:
                 # Get the count before we start removing items
-                initial_count = self.sequence_card_tab.scroll_layout.count()
+                initial_count = (
+                    self.sequence_card_tab.content_area.scroll_layout.count()
+                )
                 logging.debug(f"Clearing scroll layout with {initial_count} items")
 
-                while self.sequence_card_tab.scroll_layout.count():
-                    item = self.sequence_card_tab.scroll_layout.takeAt(0)
+                while self.sequence_card_tab.content_area.scroll_layout.count():
+                    item = self.sequence_card_tab.content_area.scroll_layout.takeAt(0)
                     if item is None:
                         break
 
@@ -154,10 +164,12 @@ class ScrollView:
                                     widget.deleteLater()
 
                         # Remove the layout itself
-                        self.sequence_card_tab.scroll_layout.removeItem(item)
+                        self.sequence_card_tab.content_area.scroll_layout.removeItem(
+                            item
+                        )
 
                 logging.debug(
-                    f"Scroll layout cleared, now has {self.sequence_card_tab.scroll_layout.count()} items"
+                    f"Scroll layout cleared, now has {self.sequence_card_tab.content_area.scroll_layout.count()} items"
                 )
             except Exception as e:
                 logging.debug(f"Error clearing scroll layout: {e}")

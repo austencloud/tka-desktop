@@ -11,12 +11,12 @@ if TYPE_CHECKING:
 
 
 class TransitionOverlay(QLabel):
-    def __init__(self, parent_widget: "SequenceCardTab"):
-        super().__init__(parent_widget)
-        self.setup_ui(parent_widget)
+    def __init__(self, sequence_card_tab: "SequenceCardTab"):
+        super().__init__(sequence_card_tab)
+        self.setup_ui(sequence_card_tab)
 
-    def setup_ui(self, parent_widget: "SequenceCardTab"):
-        self.setGeometry(parent_widget.scroll_area.geometry())
+    def setup_ui(self, sequence_card_tab: "SequenceCardTab"):
+        self.setGeometry(sequence_card_tab.content_area.scroll_area.geometry())
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setText("Updating layout...")
         self.setStyleSheet(

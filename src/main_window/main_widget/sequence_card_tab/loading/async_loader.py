@@ -1,10 +1,9 @@
 # src/main_window/main_widget/sequence_card_tab/loading/async_loader.py
 import os
-import time
 import queue
 import threading
-from typing import Dict, List, Optional, Callable, Any
-from PyQt6.QtCore import QObject, pyqtSignal, QSize
+from typing import Dict, List, Optional
+from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtGui import QImage, QPixmap
 
 from ..core.models import ImageLoadRequest

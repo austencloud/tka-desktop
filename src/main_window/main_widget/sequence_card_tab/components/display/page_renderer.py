@@ -1,9 +1,9 @@
 # src/main_window/main_widget/sequence_card_tab/components/display/page_renderer.py
 import logging
-from typing import List, Dict, Any, Optional, TYPE_CHECKING
+from typing import List, Dict, Any, TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QLabel, QSizePolicy, QGridLayout, QVBoxLayout
-from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QFont, QPixmap
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPixmap
 
 
 if TYPE_CHECKING:

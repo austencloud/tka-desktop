@@ -1,31 +1,14 @@
 # src/main_window/main_widget/sequence_card_tab/tab.py
-import os
-import gc
 import logging
-import psutil
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QScrollArea,
-    QPushButton,
-    QLabel,
-    QFrame,
-    QSizePolicy,
-    QApplication,
-    QProgressBar,
-)
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy, QApplication
 from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QFont
-
 from interfaces.settings_manager_interface import ISettingsManager
 from interfaces.json_manager_interface import IJsonManager
-from utils.path_helpers import (
-    get_sequence_card_image_exporter_path,
-    get_dictionary_path,
-)
-
-# Import components using new structure
+from .content_area import SequenceCardContentArea
+from .header import SequenceCardHeader
+from .initializer import USE_PRINTABLE_LAYOUT, SequenceCardInitializer
+from .resource_manager import SequenceCardResourceManager
+from .settings_handler import SequenceCardSettingsHandler
 from .components.navigation.sidebar import SequenceCardNavSidebar
 from .components.pages.factory import SequenceCardPageFactory
 from .components.pages.printable_factory import PrintablePageFactory
@@ -33,10 +16,6 @@ from .components.pages.printable_layout import PaperSize, PaperOrientation
 from .export.image_exporter import SequenceCardImageExporter
 from .export.page_exporter import SequenceCardPageExporter
 from .components.display.printable_displayer import PrintableDisplayer
-
-# Use printable displayer for optimized print layout
-USE_PRINTABLE_LAYOUT = True
-
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -44,8 +23,6 @@ if TYPE_CHECKING:
 
 
 class SequenceCardTab(QWidget):
-    """Optimized sequence card tab with smooth performance and no UI blocking."""
-
     def __init__(
         self,
         main_widget: "MainWidget",
@@ -58,752 +35,181 @@ class SequenceCardTab(QWidget):
         self.json_manager = json_manager
         self.global_settings = settings_manager.get_global_settings()
 
-        # State management
         self.pages = []
         self.initialized = False
         self.currently_displayed_length = 16
-        self.is_initializing = (
-            False  # Flag to prevent double loading during initialization
-        )
-
-        # Performance tracking
+        self.is_initializing = False
         self.load_start_time = 0
-        self.memory_check_timer = QTimer(self)
-        self.memory_check_timer.timeout.connect(self._check_memory_usage)
-        self.memory_check_timer.start(30000)  # Check every 30 seconds
 
-        # Dictionary change monitoring
-        self.dictionary_check_timer = QTimer(self)
-        self.dictionary_check_timer.timeout.connect(self.check_dictionary_changes)
-        self.dictionary_check_timer.start(10000)  # Check every 10 seconds
-        self.last_dictionary_mod_time = self.get_dictionary_mod_time()
+        self.settings_manager_obj = SequenceCardSettingsHandler(settings_manager)
+        self.resource_manager = SequenceCardResourceManager(self)
+        self.initializer = SequenceCardInitializer(self)
+        self.content_area = SequenceCardContentArea(self)
 
-        # Resize debouncing
-        self.resize_timer = QTimer(self)
-        self.resize_timer.setSingleShot(True)
-        self.resize_timer.timeout.connect(self.refresh_layout_after_resize)
-
-        # Initialize components
         self._create_components()
         self.init_ui()
 
     def _create_components(self):
-        """Create all components with proper initialization order."""
-        # Load settings first to ensure they're available throughout initialization
-        self._load_saved_settings()
-
-        # Core components that other components depend on
         self.nav_sidebar = SequenceCardNavSidebar(self)
 
-        # Set the selected length in the sidebar immediately
-        if hasattr(self, "saved_length"):
-            self.nav_sidebar.selected_length = self.saved_length
-            print(f"DEBUG: Set nav_sidebar.selected_length to {self.saved_length}")
+        if hasattr(self.settings_manager_obj, "saved_length"):
+            self.nav_sidebar.selected_length = self.settings_manager_obj.saved_length
 
-        # Create appropriate page factory based on layout mode
         if USE_PRINTABLE_LAYOUT:
             self.page_factory = PrintablePageFactory(self)
         else:
             self.page_factory = SequenceCardPageFactory(self)
 
-        # Create appropriate displayer based on layout mode
         if USE_PRINTABLE_LAYOUT:
             self.printable_displayer = PrintableDisplayer(self)
-            # Set default paper size and orientation
             self.printable_displayer.set_paper_size(PaperSize.A4)
             self.printable_displayer.set_orientation(PaperOrientation.PORTRAIT)
 
-            # Set columns per row based on saved settings - DIRECT ASSIGNMENT
-            if hasattr(self, "saved_column_count"):
-                print(
-                    f"DEBUG: Setting printable_displayer.columns_per_row to {self.saved_column_count}"
+            if hasattr(self.settings_manager_obj, "saved_column_count"):
+                self.printable_displayer.columns_per_row = (
+                    self.settings_manager_obj.saved_column_count
                 )
-                # Set the column count directly on the instance variable
-                self.printable_displayer.columns_per_row = self.saved_column_count
-            else:
-                print("DEBUG: No saved_column_count found, using default")
 
-        # Export functionality
         self.image_exporter = SequenceCardImageExporter(self)
         self.page_exporter = SequenceCardPageExporter(self)
-
-        # Initialize empty pages list
         self.pages = []
 
-    def _load_saved_settings(self):
-        """Load saved settings and store them as instance variables for consistent access."""
-        if hasattr(self, "settings_manager"):
-            # Get saved column count and length using the generic get_setting method
-            self.saved_column_count = int(
-                self.settings_manager.get_setting(
-                    "sequence_card_tab", "column_count", 3
-                )
-            )
-            self.saved_length = int(
-                self.settings_manager.get_setting(
-                    "sequence_card_tab", "last_length", 16
-                )
-            )
-
-            # Set the current length
-            self.currently_displayed_length = self.saved_length
-
-            print(
-                f"DEBUG: Loaded saved settings: column_count={self.saved_column_count}, length={self.saved_length}"
-            )
-        else:
-            # Use defaults if settings manager is not available
-            self.saved_column_count = 2
-            self.saved_length = 16
-            self.currently_displayed_length = 16
-            print("DEBUG: Using default settings (no settings manager available)")
-
-        # Force settings to be integers
-        self.saved_column_count = int(self.saved_column_count)
-        self.saved_length = int(self.saved_length)
-
-    def update_column_count(self, column_count: int):
-        """
-        Update the number of columns for page previews in the UI.
-
-        This method ONLY affects how many page previews are displayed side-by-side in the UI.
-        It does NOT change the internal grid layout of each page, which is determined by sequence length.
-
-        Args:
-            column_count: Number of page previews to display per row in the UI
-        """
-        if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
-            self.printable_displayer.set_columns_per_row(column_count)
-        elif hasattr(self, "image_displayer"):
-            self.image_displayer.max_images_per_row = column_count
-            self.load_sequences()
-
     def init_ui(self):
-        """Initialize UI with optimized layout and styling."""
-        # Main layout
         self.layout: QVBoxLayout = QVBoxLayout(self)
         self.layout.setContentsMargins(10, 10, 10, 10)
         self.layout.setSpacing(10)
 
-        # Header section with modern styling
-        self.header_frame = self._create_header()
-        self.layout.addWidget(self.header_frame)
+        self.header = SequenceCardHeader(self)
+        self.layout.addWidget(self.header)
 
-        # Content section
         self.content_layout = QHBoxLayout()
         self.content_layout.setContentsMargins(0, 0, 0, 0)
         self.content_layout.setSpacing(15)
 
-        # Navigation sidebar with optimized width
         sidebar_width = 200
         self.nav_sidebar.setFixedWidth(sidebar_width)
         self.nav_sidebar.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding
         )
 
-        # Main content area (scroll area or virtualized view)
-        self._create_main_content_area()
-
-        # Add to content layout
         self.content_layout.addWidget(self.nav_sidebar, 0)
-        self.content_layout.addWidget(self.scroll_area, 1)
+        self.content_layout.addWidget(self.content_area.scroll_area, 1)
 
-        # Add content to main layout
         self.layout.addLayout(self.content_layout, 1)
 
-        # Connect navigation signals
         if hasattr(self.nav_sidebar, "length_selected"):
             self.nav_sidebar.length_selected.connect(self._on_length_selected)
 
-    def _create_header(self) -> QFrame:
-        """Create optimized header with better styling."""
-        header_frame = QFrame()
-        header_frame.setObjectName("sequenceCardHeader")
-        header_frame.setStyleSheet(
-            """
-            #sequenceCardHeader {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #34495e, stop:1 #2c3e50);
-                border-radius: 10px;
-                border: 1px solid #4a5568;
-            }
-        """
-        )
-
-        header_layout = QVBoxLayout(header_frame)
-        header_layout.setContentsMargins(20, 15, 20, 15)
-        header_layout.setSpacing(8)
-
-        # Title with better typography
-        self.title_label = QLabel("Sequence Card Manager")
-        self.title_label.setObjectName("sequenceCardTitle")
-        self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_font = QFont()
-        title_font.setPointSize(18)
-        title_font.setWeight(QFont.Weight.Bold)
-        self.title_label.setFont(title_font)
-        self.title_label.setStyleSheet("color: #ffffff; letter-spacing: 0.5px;")
-
-        # Status/description label
-        self.description_label = QLabel("Select a sequence length to view cards")
-        self.description_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.description_label.setStyleSheet(
-            """
-            color: #bdc3c7;
-            font-size: 13px;
-            font-style: italic;
-        """
-        )
-
-        # Create a container for the progress bar with fixed height
-        self.progress_container = QFrame()
-        self.progress_container.setFixedHeight(
-            20
-        )  # Fixed height to prevent layout shifting
-        self.progress_container.setStyleSheet("background: transparent;")
-        progress_container_layout = QVBoxLayout(self.progress_container)
-        progress_container_layout.setContentsMargins(0, 0, 0, 0)
-        progress_container_layout.setSpacing(0)
-
-        # Progress bar for loading feedback
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setRange(0, 100)
-        self.progress_bar.setValue(0)
-        self.progress_bar.setTextVisible(True)
-        self.progress_bar.setFormat("%p% (%v/%m)")
-        self.progress_bar.setFixedHeight(12)
-        self.progress_bar.setStyleSheet(
-            """
-            QProgressBar {
-                border: none;
-                border-radius: 6px;
-                text-align: center;
-                background-color: rgba(0, 0, 0, 0.15);
-                color: rgba(255, 255, 255, 0.9);
-                font-size: 10px;
-                font-weight: bold;
-            }
-            QProgressBar::chunk {
-                background-color: #3498db;
-                border-radius: 6px;
-            }
-            """
-        )
-
-        # Add progress bar to container
-        progress_container_layout.addWidget(self.progress_bar)
-        self.progress_bar.hide()  # Initially hidden
-        self.progress_container.setVisible(False)  # Initially hide the container too
-
-        # Button layout with better spacing
-        button_layout = QHBoxLayout()
-        button_layout.setSpacing(12)
-
-        # Styled buttons
-        self.export_button = self._create_action_button(
-            "Export Pages", self.page_exporter.export_all_pages_as_images
-        )
-        self.refresh_button = self._create_action_button("Refresh", self.load_sequences)
-        self.regenerate_button = self._create_action_button(
-            "Regenerate Images", self.regenerate_all_images
-        )
-
-        button_layout.addStretch()
-        button_layout.addWidget(self.export_button)
-        button_layout.addWidget(self.refresh_button)
-        button_layout.addWidget(self.regenerate_button)
-        button_layout.addStretch()
-
-        # Add to header
-        header_layout.addWidget(self.title_label)
-        header_layout.addWidget(self.description_label)
-        header_layout.addWidget(self.progress_container)
-        header_layout.addLayout(button_layout)
-
-        return header_frame
-
-    def _create_action_button(self, text: str, callback) -> QPushButton:
-        """Create consistently styled action button."""
-        button = QPushButton(text)
-        button.setCursor(Qt.CursorShape.PointingHandCursor)
-        button.clicked.connect(callback)
-        button.setStyleSheet(
-            """
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #3498db, stop:1 #2980b9);
-                color: white;
-                border: 1px solid #5dade2;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: 600;
-                font-size: 12px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #5dade2, stop:1 #3498db);
-                border: 1px solid #85c1e9;
-            }
-            QPushButton:pressed {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #2980b9, stop:1 #1f618d);
-                border: 1px solid #3498db;
-            }
-        """
-        )
-        return button
-
-    def _create_main_content_area(self):
-        """Create main content area with scroll area."""
-        # Traditional scroll area (always available)
-        self.scroll_area = QScrollArea()
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
-        self.scroll_area.setHorizontalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
-        )
-        self.scroll_area.setVerticalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAsNeeded
-        )
-
-        # Scroll content
-        self.scroll_content = QWidget()
-        self.scroll_layout = QVBoxLayout(self.scroll_content)
-        self.scroll_area.setWidget(self.scroll_content)
-
-        # Configure scroll layout
-        self.scroll_layout.setAlignment(
-            Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop
-        )
-        self.scroll_layout.setSpacing(10)  # Reduced from 20
-        self.scroll_layout.setContentsMargins(
-            2, 10, 2, 10
-        )  # Reduced horizontal margins from 10 to 2
-
-        # Styling
-        self.scroll_area.setStyleSheet(
-            """
-            QScrollArea {
-                background-color: transparent;
-                border: none;
-            }
-            QScrollBar:vertical {
-                background: rgba(0,0,0,0.1);
-                width: 8px;
-                border-radius: 4px;
-                margin: 2px;
-            }
-            QScrollBar::handle:vertical {
-                background: rgba(0,0,0,0.3);
-                border-radius: 4px;
-                min-height: 20px;
-            }
-            QScrollBar::handle:vertical:hover {
-                background: rgba(0,0,0,0.5);
-            }
-        """
-        )
+    def update_column_count(self, column_count: int):
+        if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
+            self.printable_displayer.set_columns_per_row(column_count)
 
     def _on_length_selected(self, length: int):
-        """Handle length selection with appropriate displayer based on layout mode."""
-        # Store the selected length
         self.currently_displayed_length = length
+        self.settings_manager_obj.save_length(length)
 
-        # Save the selected length in settings for persistence
-        if hasattr(self, "settings_manager"):
-            # Use the generic set_setting method which is part of the ISettingsManager interface
-            self.settings_manager.set_setting(
-                "sequence_card_tab", "last_length", length
-            )
-
-        # Skip loading if we're in the initialization process
-        # This prevents double loading during startup
         if self.is_initializing:
-            print(
-                f"DEBUG: Skipping display_sequences during initialization for length {length}"
-            )
             return
 
-        # Clear any instruction labels
-        self._clear_scroll_layout()
-
-        # Show loading indicator in the description label
-        self.description_label.setText(
+        self.content_area.clear_layout()
+        self.header.description_label.setText(
             f"Loading {length if length > 0 else 'all'}-step sequences..."
         )
 
-        # Use appropriate displayer based on layout mode
         if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
-            # Check if the printable_displayer's manager is currently loading
             if (
                 hasattr(self.printable_displayer, "manager")
                 and self.printable_displayer.manager.is_loading
             ):
-                # Cancel any in-progress loading operations
                 logging.debug(
                     f"Cancelling in-progress loading operation before loading length {length}"
                 )
                 self.printable_displayer.manager.cancel_loading()
 
-            # Use printable displayer for optimized print layout
             self.printable_displayer.display_sequences(length)
+            self._sync_pages_from_displayer()
         else:
             print("Error: No displayer available")
 
     def showEvent(self, event):
-        """Optimized show event with deferred initialization."""
         super().showEvent(event)
         if not self.initialized:
             self.initialized = True
-
-            # Initialize the UI without loading sequences
             self.setCursor(Qt.CursorShape.WaitCursor)
-            QTimer.singleShot(50, self._initialize_content)
-
-    def _initialize_content(self):
-        """
-        Initialize content with saved settings.
-
-        This method:
-        1. Checks if sequence images need to be generated
-        2. Ensures saved settings are properly applied to UI components
-        3. Loads sequences with the saved settings
-        """
-        # Set initializing flag to prevent double loading
-        self.is_initializing = True
-
-        try:
-            # Check if we need to generate images
-            images_path = get_sequence_card_image_exporter_path()
-            images_exist = self._has_sequence_images(images_path)
-
-            if not images_exist:
-                # We need to generate images first
-                self.description_label.setText("Generating sequence images...")
-                QApplication.processEvents()
-
-                # Generate images
-                if hasattr(self.image_exporter, "export_all_images"):
-                    self.image_exporter.export_all_images()
-
-            # Settings should already be loaded in _create_components
-            # This is a double-check to ensure they're applied correctly
-            if hasattr(self, "saved_column_count") and hasattr(self, "saved_length"):
-                print(
-                    f"DEBUG: Applying saved settings in _initialize_content: column_count={self.saved_column_count}, length={self.saved_length}"
-                )
-
-                # CRITICAL: Force direct assignment of column count
-                if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
-                    # DIRECT ASSIGNMENT - bypass the set_columns_per_row method
-                    print(
-                        f"DEBUG: DIRECT ASSIGNMENT - Setting columns_per_row to {self.saved_column_count}"
-                    )
-                    self.printable_displayer.columns_per_row = self.saved_column_count
-
-                    # Update the dropdown in the sidebar to reflect the saved column count
-                    if hasattr(self.nav_sidebar, "column_dropdown"):
-                        index = self.nav_sidebar.column_dropdown.findText(
-                            str(self.saved_column_count)
-                        )
-                        if index >= 0:
-                            print(f"DEBUG: Setting column dropdown index to {index}")
-                            self.nav_sidebar.column_dropdown.setCurrentIndex(index)
-                            # Force a UI update
-                            QApplication.processEvents()
-
-                # Update the sidebar to reflect the saved length WITHOUT triggering signal
-                # We need to update the UI state but avoid the double-loading
-                print(f"DEBUG: Setting selected_length directly to {self.saved_length}")
-                self.nav_sidebar.selected_length = self.saved_length
-
-                # Update the UI to reflect the selection
-                if hasattr(self.nav_sidebar, "update_selection_styles"):
-                    self.nav_sidebar.update_selection_styles()
-
-                # Load sequences with the saved length
-                self.description_label.setText(f"Loading saved sequence view...")
-                QApplication.processEvents()
-
-                # CRITICAL: Force a complete refresh of the layout
-                if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
-                    print(f"DEBUG: Forcing refresh_layout before display_sequences")
-                    # Force a layout refresh to ensure column count is applied
-                    # self.printable_displayer.refresh_layout()
-                    QApplication.processEvents()
-
-                    # Now display sequences with the saved length
-                    print(
-                        f"DEBUG: Displaying sequences with length {self.saved_length}"
-                    )
-                    self.printable_displayer.display_sequences(self.saved_length)
-
-            else:
-                print("DEBUG: No saved settings found, showing selection instructions")
-                # Show instruction to select a length from the sidebar
-                self._show_selection_instructions()
-
-                # Highlight the sidebar to draw attention to it
-                self._highlight_sidebar()
-
-        except Exception as e:
-            print(f"ERROR in _initialize_content: {e}")
-            import traceback
-
-            traceback.print_exc()
-            self.description_label.setText(f"Error: {str(e)}")
-        finally:
-            # Reset cursor and initialization flag
-            self.setCursor(Qt.CursorShape.ArrowCursor)
-            self.is_initializing = False
-
-    def _show_selection_instructions(self):
-        """Show instructions to select a length from the sidebar."""
-        # Create a label with instructions
-        instruction_label = QLabel(
-            "Select a sequence length from the sidebar to view cards"
-        )
-        instruction_label.setObjectName("instructionLabel")
-        instruction_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        instruction_label.setWordWrap(True)
-
-        # Apply modern styling
-        instruction_label.setStyleSheet(
-            """
-            QLabel#instructionLabel {
-                color: #bdc3c7;
-                font-size: 16px;
-                padding: 20px;
-                background-color: rgba(44, 62, 80, 0.7);
-                border-radius: 10px;
-                margin: 40px;
-            }
-        """
-        )
-
-        # Add to scroll layout
-        if hasattr(self, "scroll_layout") and self.scroll_layout:
-            # Clear any existing content
-            self._clear_scroll_layout()
-
-            # Add the instruction label
-            self.scroll_layout.addWidget(
-                instruction_label, 0, Qt.AlignmentFlag.AlignCenter
-            )
-
-        # Update description label
-        self.description_label.setText("Ready - select a sequence length to begin")
-
-    def _highlight_sidebar(self):
-        """Temporarily highlight the sidebar to draw attention to it."""
-        if hasattr(self, "nav_sidebar"):
-            # Save original style
-            original_style = self.nav_sidebar.styleSheet()
-
-            # Apply highlight style
-            highlight_style = """
-                SequenceCardNavSidebar {
-                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 #3498db, stop:1 #2980b9);
-                    border-radius: 10px;
-                    border: 2px solid #5dade2;
-                    padding: 8px;
-                    margin-right: 10px;
-                }
-            """
-            self.nav_sidebar.setStyleSheet(highlight_style)
-
-            # Restore original style after a delay
-            QTimer.singleShot(
-                2000, lambda: self.nav_sidebar.setStyleSheet(original_style)
-            )
-
-    def _clear_scroll_layout(self):
-        """Clear all widgets from the scroll layout."""
-        if hasattr(self, "scroll_layout") and self.scroll_layout:
-            while self.scroll_layout.count():
-                item = self.scroll_layout.takeAt(0)
-                if item.widget():
-                    item.widget().setParent(None)
-                elif item.layout():
-                    # Remove sublayouts
-                    while item.layout().count():
-                        subitem = item.layout().takeAt(0)
-                        if subitem.widget():
-                            subitem.widget().setParent(None)
-
-    def _has_sequence_images(self, images_path: str) -> bool:
-        """Check if sequence images exist."""
-        if not os.path.exists(images_path):
-            return False
-
-        # Check for at least one image
-        for item in os.listdir(images_path):
-            item_path = os.path.join(images_path, item)
-            if os.path.isdir(item_path) and not item.startswith("__"):
-                for file in os.listdir(item_path):
-                    if file.endswith(".png") and not file.startswith("__"):
-                        return True
-        return False
+            QTimer.singleShot(50, self.initializer.initialize_content)
 
     def load_sequences(self):
-        """Load sequences with appropriate displayer based on layout mode."""
-        # Get the selected length from the sidebar
         selected_length = self.nav_sidebar.selected_length
-
-        # Update UI with more specific message
         length_text = f"{selected_length}-step" if selected_length > 0 else "all"
-        self.description_label.setText(f"Loading {length_text} sequences...")
+        self.header.description_label.setText(f"Loading {length_text} sequences...")
         QApplication.processEvents()
 
-        # Use appropriate displayer based on layout mode
         if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
-            # Use printable displayer for optimized print layout
             self.printable_displayer.display_sequences(selected_length)
-
+            self._sync_pages_from_displayer()
         else:
             print("Error: No displayer available")
 
     def regenerate_all_images(self):
-        """Regenerate all images with progress feedback."""
         self.setCursor(Qt.CursorShape.WaitCursor)
-        original_text = self.description_label.text()
-        self.description_label.setText("Regenerating images... Please wait")
+        original_text = self.header.description_label.text()
+        self.header.description_label.setText("Regenerating images... Please wait")
         QApplication.processEvents()
 
         try:
             if hasattr(self.image_exporter, "export_all_images"):
                 self.image_exporter.export_all_images()
 
-            # Get the selected length from the sidebar
             selected_length = self.nav_sidebar.selected_length
 
-            # Reload sequences without showing additional loading dialog
-            # Use appropriate displayer based on layout mode
             if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
-                # Use printable displayer for optimized print layout
                 self.printable_displayer.display_sequences(selected_length)
+                self._sync_pages_from_displayer()
 
-            self.description_label.setText("Images regenerated successfully!")
+            self.header.description_label.setText("Images regenerated successfully!")
             QTimer.singleShot(
-                3000, lambda: self.description_label.setText(original_text)
+                3000, lambda: self.header.description_label.setText(original_text)
             )
 
         except Exception as e:
-            self.description_label.setText(f"Error regenerating: {str(e)}")
+            self.header.description_label.setText(f"Error regenerating: {str(e)}")
             QTimer.singleShot(
-                5000, lambda: self.description_label.setText(original_text)
+                5000, lambda: self.header.description_label.setText(original_text)
             )
         finally:
             self.setCursor(Qt.CursorShape.ArrowCursor)
 
-    def get_dictionary_mod_time(self) -> float:
-        """Get latest modification time of sequence images."""
-        images_path = get_sequence_card_image_exporter_path()
-        latest_mod_time = 0
-
-        if os.path.exists(images_path):
-            for root, _, files in os.walk(images_path):
-                for file in files:
-                    if file.endswith(".png") and not file.startswith("__"):
-                        file_path = os.path.join(root, file)
-                        mod_time = os.path.getmtime(file_path)
-                        if mod_time > latest_mod_time:
-                            latest_mod_time = mod_time
-
-        return latest_mod_time
-
-    def check_dictionary_changes(self):
-        """Check for changes and reload if necessary."""
-        current_mod_time = self.get_dictionary_mod_time()
-
-        if current_mod_time > self.last_dictionary_mod_time:
-            print("Sequence images changed. Reloading...")
-            self.last_dictionary_mod_time = current_mod_time
-            QTimer.singleShot(100, self.load_sequences)
+    def _sync_pages_from_displayer(self):
+        if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
+            if hasattr(self.printable_displayer, "pages"):
+                self.pages = self.printable_displayer.pages
+            elif hasattr(self.printable_displayer, "manager") and hasattr(
+                self.printable_displayer.manager, "pages"
+            ):
+                self.pages = self.printable_displayer.manager.pages
 
     def resizeEvent(self, event):
-        """Handle resize with simple reload."""
         super().resizeEvent(event)
-
-        # Only reload if we're initialized
         if self.initialized and hasattr(self.nav_sidebar, "selected_length"):
-            # Reload after a short delay to avoid multiple reloads during resize
             QTimer.singleShot(300, self.load_sequences)
 
     def on_scroll_area_resize(self):
-        """
-        Handle scroll area resize events with debouncing.
-        This method is called by SequenceCardScrollArea when it's resized.
-        """
-        # Cancel any pending resize timer
-        if self.resize_timer.isActive():
-            self.resize_timer.stop()
-
-        # Start a new timer to debounce resize events
-        self.resize_timer.start(250)  # 250ms debounce time
+        if self.resource_manager.resize_timer.isActive():
+            self.resource_manager.resize_timer.stop()
+        self.resource_manager.resize_timer.start(250)
 
     def refresh_layout_after_resize(self):
-        """
-        Refresh the layout after resize events have settled.
-        This is called by the debounce timer to avoid excessive layout updates.
-        """
         if not self.initialized or not hasattr(self.nav_sidebar, "selected_length"):
             return
 
-        # Only refresh if we have a printable displayer
         if USE_PRINTABLE_LAYOUT and hasattr(self, "printable_displayer"):
             logging.debug("Refreshing layout after resize")
             self.printable_displayer.refresh_layout()
-
-    def _check_memory_usage(self):
-        """Monitor and manage memory usage."""
-        try:
-            process = psutil.Process()
-            memory_mb = process.memory_info().rss / (1024 * 1024)
-
-            if memory_mb > 800:  # 800MB threshold
-                print(f"High memory usage: {memory_mb:.1f}MB. Cleaning up...")
-
-                # Clear image cache in simple_displayer
-                if hasattr(self, "simple_displayer") and hasattr(
-                    self.simple_displayer, "image_cache"
-                ):
-                    self.simple_displayer.image_cache.clear()
-                    print("Cleared simple_displayer image cache")
-
-                # Force garbage collection
-                gc.collect()
-
-                # Log results
-                new_memory_mb = psutil.Process().memory_info().rss / (1024 * 1024)
-                print(f"Memory after cleanup: {new_memory_mb:.1f}MB")
-
-        except ImportError:
-            pass  # psutil not available
-        except Exception as e:
-            print(f"Error checking memory: {e}")
+            self._sync_pages_from_displayer()
 
     def cleanup(self):
-        """Clean up resources."""
-        # Stop timers
-        if hasattr(self, "memory_check_timer"):
-            self.memory_check_timer.stop()
-        if hasattr(self, "dictionary_check_timer"):
-            self.dictionary_check_timer.stop()
-
-        # Clear image cache in simple_displayer
-        if hasattr(self, "simple_displayer") and hasattr(
-            self.simple_displayer, "image_cache"
-        ):
-            self.simple_displayer.image_cache.clear()
-            print("Cleared simple_displayer image cache")
-
-        # Force garbage collection
-        gc.collect()
+        self.resource_manager.cleanup()
 
     def closeEvent(self, event):
-        """Handle close event."""
         self.cleanup()
         super().closeEvent(event)

@@ -1,10 +1,9 @@
 # src/main_window/main_widget/sequence_card_tab/utils/image_utils.py
-import os
 import io
-from typing import Optional, Tuple, Dict, Any
-from PyQt6.QtGui import QImage, QPixmap
+from typing import Optional
+from PyQt6.QtGui import QImage
 from PyQt6.QtCore import Qt, QSize, QBuffer
-from PIL import Image, ImageFilter, ImageEnhance
+from PIL import Image, ImageEnhance
 
 
 class ImageProcessor:

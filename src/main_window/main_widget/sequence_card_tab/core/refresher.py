@@ -369,7 +369,7 @@ class SequenceCardRefresher:
             # Update the description label
             selected_length = self.nav_sidebar.selected_length
             length_text = f"{selected_length}-step" if selected_length > 0 else "all"
-            self.sequence_card_tab.description_label.setText(
+            self.sequence_card_tab.header.description_label.setText(
                 f"Showing {length_text} sequences"
             )
 
@@ -380,7 +380,7 @@ class SequenceCardRefresher:
             traceback.print_exc()
 
             # Update the description label with error
-            self.sequence_card_tab.description_label.setText(f"Error: {str(e)}")
+            self.sequence_card_tab.header.description_label.setText(f"Error: {str(e)}")
 
         finally:
             # Reset cursor

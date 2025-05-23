@@ -5,7 +5,6 @@ import os
 import gc
 import time
 import psutil
-import hashlib
 import io
 from PyQt6.QtGui import QImage
 from PyQt6.QtCore import QBuffer, Qt
@@ -180,13 +179,7 @@ class SequenceCardImageExporter:
             final_memory = self._check_and_manage_memory(force_cleanup=True)
             print(f"Final memory usage: {final_memory:.1f} MB")
 
-            # After exporting, refresh the sequence card tab to display the new images
-            if (
-                not self.cancel_requested
-                and hasattr(self.sequence_card_tab, "refresher")
-                and self.sequence_card_tab.refresher
-            ):
-                self.sequence_card_tab.refresher.refresh_sequence_cards()
+
 
     def get_all_images(self, path: str) -> list[str]:
         images = []

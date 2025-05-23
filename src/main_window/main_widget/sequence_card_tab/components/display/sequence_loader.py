@@ -1,6 +1,6 @@
 # src/main_window/main_widget/sequence_card_tab/components/display/sequence_loader.py
 import os
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
 
