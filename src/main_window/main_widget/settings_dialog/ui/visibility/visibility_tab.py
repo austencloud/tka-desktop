@@ -29,11 +29,24 @@ class VisibilityTab(QWidget):
     def __init__(self, settings_dialog: "SettingsDialog"):
         super().__init__()
         self.main_widget = settings_dialog.main_widget
-        self.settings = self.main_widget.settings_manager.visibility
         self.dialog = settings_dialog
 
-        # Create the visibility state manager
-        self.state_manager = VisibilityStateManager(self.main_widget.settings_manager)
+        # Get settings_manager from dependency injection system
+        try:
+            settings_manager = self.main_widget.app_context.settings_manager
+            self.settings = settings_manager.visibility
+            # Create the visibility state manager
+            self.state_manager = VisibilityStateManager(settings_manager)
+        except AttributeError:
+            # Fallback for cases where app_context is not available during initialization
+            self.settings = None
+            self.state_manager = None
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "settings_manager not available during VisibilityTab initialization"
+            )
 
         # Setup components with the state manager
         self._setup_components()

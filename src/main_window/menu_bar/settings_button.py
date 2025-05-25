@@ -17,7 +17,9 @@ class SettingsButton(QPushButton):
         self.main_widget = menu_bar.main_widget
 
         # Load icon and set defaults
-        self.setIcon(QIcon(get_image_path("icons/sequence_workbench_icons/settings.png")))
+        self.setIcon(
+            QIcon(get_image_path("icons/sequence_workbench_icons/settings.png"))
+        )
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self._update_style()
@@ -25,8 +27,16 @@ class SettingsButton(QPushButton):
 
     def show_settings_dialog(self):
         """Opens the settings dialog."""
-        dialog = self.main_widget.settings_dialog
-        dialog.show()
+        try:
+            dialog = self.main_widget.widget_manager.get_widget("settings_dialog")
+            if dialog:
+                dialog.show()
+        except AttributeError:
+            # Fallback when settings_dialog not available
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning("settings_dialog not available")
 
     def enterEvent(self, event):
         """Change style on hover."""

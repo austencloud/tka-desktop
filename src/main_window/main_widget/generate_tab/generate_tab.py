@@ -41,7 +41,7 @@ class GenerateTab(QWidget):
     ):
         super().__init__(main_widget)
         self.main_widget = main_widget
-        self.main_widget.splash.updater.update_progress("GenerateTab")
+        self.main_widget.splash_screen.updater.update_progress("GenerateTab")
         self.settings_manager = settings_manager
         self.json_manager = json_manager
         self.settings = settings_manager.get_generate_tab_settings()

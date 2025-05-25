@@ -1,25 +1,60 @@
-from typing import TYPE_CHECKING
+"""
+Factory for creating SequenceCardTab instances with proper dependency injection.
+"""
 
-from interfaces.settings_manager_interface import ISettingsManager
-from interfaces.json_manager_interface import IJsonManager
-from main_window.main_widget.sequence_card_tab.tab import SequenceCardTab
+from typing import TYPE_CHECKING
+from PyQt6.QtWidgets import QWidget
+import logging
+
+from core.application_context import ApplicationContext
+from main_window.main_widget.core.widget_manager import WidgetFactory
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
+    from main_window.main_widget.sequence_card_tab.tab import SequenceCardTab
+
+logger = logging.getLogger(__name__)
 
 
-class SequenceCardTabFactory:
-    """Factory for creating SequenceCardTab instances with proper dependencies."""
+class SequenceCardTabFactory(WidgetFactory):
+    """Factory for creating SequenceCardTab instances with dependency injection."""
 
     @staticmethod
-    def create(
-        main_widget: "MainWidget",
-        settings_manager: ISettingsManager,
-        json_manager: IJsonManager,
-    ) -> SequenceCardTab:
-        """Create a SequenceCardTab with all required dependencies."""
-        return SequenceCardTab(
-            main_widget=main_widget,
-            settings_manager=settings_manager,
-            json_manager=json_manager,
-        )
+    def create(parent: QWidget, app_context: ApplicationContext) -> "SequenceCardTab":
+        """
+        Create a SequenceCardTab instance with proper dependency injection.
+
+        Args:
+            parent: Parent widget (MainWidgetCoordinator)
+            app_context: Application context with dependencies
+
+        Returns:
+            A new SequenceCardTab instance
+        """
+        try:
+            # Import here to avoid circular dependencies
+            from main_window.main_widget.sequence_card_tab.tab import SequenceCardTab
+
+            # Get required services from app context
+            settings_manager = app_context.settings_manager
+            json_manager = app_context.json_manager
+
+            # Create the sequence card tab with dependencies
+            sequence_card_tab = SequenceCardTab(
+                main_widget=parent,  # Pass coordinator as main_widget for compatibility
+                settings_manager=settings_manager,
+                json_manager=json_manager,
+            )
+
+            # Store references for backward compatibility
+            sequence_card_tab.app_context = app_context
+
+            logger.info("Created SequenceCardTab with dependency injection")
+            return sequence_card_tab
+
+        except ImportError as e:
+            logger.error(f"Failed to import SequenceCardTab: {e}")
+            # Create a placeholder widget if the real tab can't be imported
+            return QWidget(parent)
+        except Exception as e:
+            logger.error(f"Failed to create SequenceCardTab: {e}")
+            raise

@@ -17,7 +17,20 @@ class BeatLayoutTab(QWidget):
         super().__init__(settings_dialog)
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget
-        self.layout_settings = self.main_widget.settings_manager.sequence_layout
+
+        # Get layout_settings from dependency injection system
+        try:
+            settings_manager = self.main_widget.app_context.settings_manager
+            self.layout_settings = settings_manager.sequence_layout
+        except AttributeError:
+            # Fallback for cases where app_context is not available during initialization
+            self.layout_settings = None
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "settings_manager not available during BeatLayoutTab initialization"
+            )
 
         self.beat_frame = LayoutBeatFrame(self)
         self.controls = LayoutControls(self)

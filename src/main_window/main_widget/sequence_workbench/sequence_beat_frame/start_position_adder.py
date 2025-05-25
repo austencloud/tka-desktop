@@ -40,8 +40,18 @@ class StartPositionAdder:
             start_pos_beat.managers.updater.update_pictograph(deepcopy(start_pos_dict))
             clicked_start_option.managers.updater.update_dict_from_attributes()
 
-            # Use the injected json_manager if available, otherwise get it from the main_widget
-            json_manager = self.json_manager or self.main_widget.json_manager
+            # Use the injected json_manager if available, otherwise get it from dependency injection
+            json_manager = self.json_manager
+            if not json_manager:
+                try:
+                    json_manager = self.main_widget.app_context.json_manager
+                except AttributeError:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.warning("json_manager not available in StartPositionAdder")
+                    return
+
             json_manager.start_pos_handler.set_start_position_data(start_pos_beat)
             self.beat_frame.start_pos_view.set_start_pos(start_pos_beat)
             self.beat_frame.selection_overlay.select_beat_view(start_pos_view, False)

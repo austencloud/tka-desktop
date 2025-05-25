@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from PyQt6.QtWidgets import QWidget
 
 from main_window.main_widget.settings_dialog.ui.codex_exporter.codex_exporter_tab import (
@@ -11,16 +11,39 @@ from .beat_layout.beat_layout_tab import BeatLayoutTab
 from .prop_type.prop_type_tab import PropTypeTab
 from .user_profile.user_profile_tab import UserProfileTab
 from .visibility.visibility_tab import VisibilityTab
-from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from ..settings_dialog import SettingsDialog
+    from core.application_context import ApplicationContext
+    from interfaces.settings_manager_interface import ISettingsManager
 
 
 class SettingsDialogTabManager:
-    def __init__(self, dialog: "SettingsDialog"):
+    def __init__(
+        self,
+        dialog: "SettingsDialog",
+        app_context: Optional["ApplicationContext"] = None,
+    ):
+        """
+        Initialize the SettingsDialogTabManager with dependency injection.
+
+        Args:
+            dialog: The settings dialog instance
+            app_context: Application context with dependencies. If None, uses legacy adapter.
+        """
         self.dialog = dialog
         self.tabs = {}
+
+        # Set up dependencies
+        if app_context:
+            self.app_context = app_context
+            self.settings_manager = app_context.settings_manager
+        else:
+            # Legacy compatibility - use adapter
+            from core.migration_adapters import AppContextAdapter
+
+            self.app_context = None
+            self.settings_manager = AppContextAdapter.settings_manager()
 
     def add_tab(self, name: str, widget: QWidget):
         self.dialog.ui.sidebar.add_item(name)
@@ -34,7 +57,7 @@ class SettingsDialogTabManager:
         if not selected_tab_name:
             return
 
-        AppContext.settings_manager().global_settings.set_current_settings_dialog_tab(
+        self.settings_manager.global_settings.set_current_settings_dialog_tab(
             selected_tab_name
         )
 

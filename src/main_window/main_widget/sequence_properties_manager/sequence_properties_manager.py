@@ -1,11 +1,15 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from data.constants import DIAMOND, END_POS, GRID_MODE, LETTER
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
 from main_window.main_widget.sequence_properties_manager.strict_swapped_CAP_checker import (
     StrictSwappedCAPChecker,
 )
-from src.settings_manager.global_settings.app_context import AppContext
+
+if TYPE_CHECKING:
+    from core.application_context import ApplicationContext
+    from interfaces.settings_manager_interface import ISettingsManager
+    from interfaces.json_manager_interface import IJsonManager
 
 from .mirrored_swapped_CAP_checker import (
     MirroredSwappedCAPChecker,
@@ -18,8 +22,34 @@ from .strict_rotated_CAP_checker import StrictRotatedCAPChecker
 
 
 class SequencePropertiesManager:
-    def __init__(self):
+    def __init__(self, app_context: Optional["ApplicationContext"] = None):
+        """
+        Initialize the SequencePropertiesManager with dependency injection.
+
+        Args:
+            app_context: Application context with dependencies. If None, uses legacy adapter.
+        """
         self.sequence: list[dict] = []
+
+        # Set up dependencies
+        if app_context:
+            self.app_context = app_context
+            self.settings_manager = app_context.settings_manager
+            self.json_manager = app_context.json_manager
+        else:
+            # Legacy compatibility - use adapter with fallback
+            try:
+                from core.migration_adapters import AppContextAdapter
+
+                self.app_context = None
+                self.settings_manager = AppContextAdapter.settings_manager()
+                self.json_manager = AppContextAdapter.json_manager()
+            except RuntimeError:
+                # AppContextAdapter not initialized yet - use None for now
+                # This will be set up later when the adapter is available
+                self.app_context = None
+                self.settings_manager = None
+                self.json_manager = None
 
         # Default properties
         self.properties = {
@@ -45,7 +75,10 @@ class SequencePropertiesManager:
         self.sequence = sequence[1:]
 
     def update_sequence_properties(self):
-        sequence = AppContext.json_manager().loader_saver.load_current_sequence()
+        if not self.json_manager:
+            return  # Can't update without json_manager
+
+        sequence = self.json_manager.loader_saver.load_current_sequence()
         if len(sequence) <= 1:
             return
 
@@ -53,11 +86,13 @@ class SequencePropertiesManager:
         properties = self.check_all_properties()
         sequence[0].update(properties)
 
-        AppContext.json_manager().loader_saver.save_current_sequence(sequence)
+        self.json_manager.loader_saver.save_current_sequence(sequence)
 
     def calculate_word(self, sequence):
         if sequence is None or not isinstance(sequence, list):
-            sequence = AppContext.json_manager().loader_saver.load_current_sequence()
+            if not self.json_manager:
+                return ""  # Can't load without json_manager
+            sequence = self.json_manager.loader_saver.load_current_sequence()
 
         if len(sequence) < 2:
             return ""
@@ -97,11 +132,19 @@ class SequencePropertiesManager:
         return self._gather_properties()
 
     def _gather_properties(self):
+        # Get current sequence for word calculation
+        current_sequence = None
+        if self.json_manager:
+            current_sequence = self.json_manager.loader_saver.load_current_sequence()
+
+        # Get current user
+        current_user = ""
+        if self.settings_manager:
+            current_user = self.settings_manager.users.user_manager.get_current_user()
+
         return {
-            "word": self.calculate_word(
-                AppContext.json_manager().loader_saver.load_current_sequence()
-            ),
-            "author": AppContext.settings_manager().users.user_manager.get_current_user(),
+            "word": self.calculate_word(current_sequence),
+            "author": current_user,
             "level": SequenceLevelEvaluator().get_sequence_difficulty_level(
                 self.sequence
             ),
@@ -115,9 +158,14 @@ class SequencePropertiesManager:
         }
 
     def _default_properties(self):
+        # Get current user safely
+        current_user = ""
+        if self.settings_manager:
+            current_user = self.settings_manager.users.user_manager.get_current_user()
+
         return {
             "word": "",
-            "author": AppContext.settings_manager().users.user_manager.get_current_user(),
+            "author": current_user,
             "level": 0,
             "is_circular": False,
             "can_be_CAP": False,

@@ -13,7 +13,7 @@ class MenuBarWidget(QWidget):
     def __init__(self, main_widget: "MainWidget") -> None:
         super().__init__(main_widget)
         self.main_widget = main_widget
-        self.main_widget.splash.updater.update_progress("MenuBarWidget")
+        self.main_widget.splash_screen.updater.update_progress("MenuBarWidget")
 
         self.social_media_widget = SocialMediaWidget(self)
         self.navigation_widget = MenuBarNavWidget(self)

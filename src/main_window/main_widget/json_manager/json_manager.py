@@ -11,13 +11,22 @@ from .json_ori_validation_engine import JsonOriValidationEngine
 from .json_start_position_handler import JsonStartPositionHandler
 from .sequence_data_loader_saver import SequenceDataLoaderSaver
 
+if TYPE_CHECKING:
+    from core.application_context import ApplicationContext
+
 
 class JsonManager:  # IJsonManager is a Protocol, no need to inherit
-    def __init__(self) -> None:
+    def __init__(self, app_context: Optional["ApplicationContext"] = None) -> None:
+        """
+        Initialize JsonManager with optional dependency injection.
+
+        Args:
+            app_context: Application context with dependencies. If None, uses legacy approach.
+        """
         self.logger = logging.getLogger(__name__)
 
-        # current sequence
-        self.loader_saver = SequenceDataLoaderSaver()
+        # current sequence - pass app_context to break circular dependency
+        self.loader_saver = SequenceDataLoaderSaver(app_context)
         self.updater = JsonSequenceUpdater(self)
         self.start_pos_handler = JsonStartPositionHandler(self)
         self.ori_calculator = JsonOriCalculator()

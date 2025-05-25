@@ -22,7 +22,7 @@ class LearnTab(QWidget):
     ) -> None:
         super().__init__(main_widget)
         self.main_widget = main_widget
-        self.main_widget.splash.updater.update_progress("LearnTab")
+        self.main_widget.splash_screen.updater.update_progress("LearnTab")
         self.settings_manager = settings_manager
         self.json_manager = json_manager
         self.lessons: dict[str, LessonWidget] = {}

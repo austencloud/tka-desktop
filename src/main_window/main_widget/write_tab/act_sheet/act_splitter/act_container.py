@@ -35,17 +35,29 @@ class ActContainer(QFrame):
         return cue_text, timestamp_text
 
     def save_scrollbar_state(self):
-        settings = self.write_tab.main_widget.settings_manager.settings
-        settings.setValue("act_sheet/scrollbar_state", self.sender().value())
+        try:
+            settings_manager = self.write_tab.main_widget.app_context.settings_manager
+            settings = settings_manager.settings
+            settings.setValue("act_sheet/scrollbar_state", self.sender().value())
+        except AttributeError:
+            # Fallback when settings not available
+            pass
 
     def restore_scrollbar_state(self):
-        settings = self.write_tab.main_widget.settings_manager.settings
-        beat_scrollbar_state = settings.value("act_sheet/scrollbar_state")
-        if beat_scrollbar_state:
-            self.beat_scroll.verticalScrollBar().setValue(int(beat_scrollbar_state))
-        timestamp_scrollbar_state = settings.value("act_sheet/scrollbar_state")
-        if timestamp_scrollbar_state:
-            self.cue_scroll.verticalScrollBar().setValue(int(timestamp_scrollbar_state))
+        try:
+            settings_manager = self.write_tab.main_widget.app_context.settings_manager
+            settings = settings_manager.settings
+            beat_scrollbar_state = settings.value("act_sheet/scrollbar_state")
+            if beat_scrollbar_state:
+                self.beat_scroll.verticalScrollBar().setValue(int(beat_scrollbar_state))
+            timestamp_scrollbar_state = settings.value("act_sheet/scrollbar_state")
+            if timestamp_scrollbar_state:
+                self.cue_scroll.verticalScrollBar().setValue(
+                    int(timestamp_scrollbar_state)
+                )
+        except AttributeError:
+            # Fallback when settings not available
+            pass
 
     def connect_scroll_sync(self):
         """Synchronize the scrollbars of the timestamp and beat scroll areas."""

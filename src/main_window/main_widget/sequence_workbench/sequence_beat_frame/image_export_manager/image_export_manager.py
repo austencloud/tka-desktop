@@ -44,10 +44,13 @@ class ImageExportManager:
 
     def export_image_directly(self, sequence=None) -> None:
         """Immediately exports the image using current settings and opens the save dialog."""
-        sequence = (
-            sequence
-            or self.main_widget.json_manager.loader_saver.load_current_sequence()
-        )
+        if sequence is None:
+            try:
+                json_manager = self.main_widget.app_context.json_manager
+                sequence = json_manager.loader_saver.load_current_sequence()
+            except AttributeError:
+                # Fallback when json_manager not available
+                sequence = []
 
         # Check if the sequence is empty (no beats and no start position)
         include_start_pos = self.settings_manager.image_export.get_image_export_setting(
@@ -70,11 +73,17 @@ class ImageExportManager:
             )
 
         # Retrieve the export settings
-        settings_manager = self.main_widget.settings_manager
-        options = settings_manager.image_export.get_all_image_export_options()
-
-        options["user_name"] = settings_manager.users.get_current_user()
-        options["export_date"] = datetime.now().strftime("%m-%d-%Y")
+        try:
+            settings_manager = self.main_widget.app_context.settings_manager
+            options = settings_manager.image_export.get_all_image_export_options()
+            options["user_name"] = settings_manager.users.get_current_user()
+            options["export_date"] = datetime.now().strftime("%m-%d-%Y")
+        except AttributeError:
+            # Fallback when settings_manager not available
+            options = {
+                "user_name": "Unknown",
+                "export_date": datetime.now().strftime("%m-%d-%Y"),
+            }
 
         # Generate the image
         image_creator = self.image_creator
@@ -86,6 +95,14 @@ class ImageExportManager:
         self.image_saver.save_image(sequence_image)
         # open the folder containing the image
 
-        self.main_widget.sequence_workbench.indicator_label.show_message(
-            "Image saved successfully!"
-        )
+        try:
+            sequence_workbench = self.main_widget.widget_manager.get_widget(
+                "sequence_workbench"
+            )
+            if sequence_workbench and hasattr(sequence_workbench, "indicator_label"):
+                sequence_workbench.indicator_label.show_message(
+                    "Image saved successfully!"
+                )
+        except AttributeError:
+            # Fallback when sequence_workbench not available
+            pass

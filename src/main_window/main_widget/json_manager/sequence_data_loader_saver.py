@@ -1,5 +1,5 @@
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from data.constants import (
     BEAT,
     BLUE_ATTRS,
@@ -15,21 +15,38 @@ from data.constants import (
     SEQUENCE_START_POSITION,
 )
 from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvaluator
-from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
-    SequencePropertiesManager,
+from main_window.main_widget.sequence_properties_manager.sequence_properties_manager_factory import (
+    SequencePropertiesManagerFactory,
 )
 from src.settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_user_editable_resource_path
 from utils.word_simplifier import WordSimplifier
 
+if TYPE_CHECKING:
+    from core.application_context import ApplicationContext
+
 
 class SequenceDataLoaderSaver:
-    def __init__(self) -> None:
+    def __init__(self, app_context: Optional["ApplicationContext"] = None) -> None:
+        """
+        Initialize SequenceDataLoaderSaver with optional dependency injection.
+
+        Args:
+            app_context: Application context with dependencies. If None, uses legacy approach.
+        """
         self.current_sequence_json = get_user_editable_resource_path(
             "current_sequence.json"
         )
 
-        self.sequence_properties_manager = SequencePropertiesManager()
+        # Create sequence properties manager with dependency injection
+        if app_context:
+            self.sequence_properties_manager = SequencePropertiesManagerFactory.create(
+                app_context
+            )
+        else:
+            self.sequence_properties_manager = (
+                SequencePropertiesManagerFactory.create_legacy()
+            )
 
     def load_current_sequence(self) -> list[dict]:
         try:

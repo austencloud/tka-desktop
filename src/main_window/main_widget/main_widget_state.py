@@ -13,8 +13,16 @@ class MainWidgetState:
         self.main_widget = main_widget
 
     def load_state(self, beat_frame: "SequenceBeatFrame"):
-        current_sequence = (
-            self.main_widget.json_manager.loader_saver.load_current_sequence()
-        )
-        if len(current_sequence) > 1:
-            beat_frame.populator.populate_beat_frame_from_json(current_sequence, initial_state_load=True)
+        try:
+            json_manager = self.main_widget.app_context.json_manager
+            current_sequence = json_manager.loader_saver.load_current_sequence()
+            if len(current_sequence) > 1:
+                beat_frame.populator.populate_beat_frame_from_json(
+                    current_sequence, initial_state_load=True
+                )
+        except AttributeError:
+            # Fallback for cases where app_context is not available
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning("json_manager not available during state loading")

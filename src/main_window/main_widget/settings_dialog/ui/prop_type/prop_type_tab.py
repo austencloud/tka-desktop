@@ -81,7 +81,17 @@ class PropTypeTab(QWidget):
         self.setLayout(outer_layout)
 
     def _set_current_prop_type(self, prop_type: str):
-        settings_manager = self.main_widget.settings_manager
+        try:
+            settings_manager = self.main_widget.app_context.settings_manager
+        except AttributeError:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "settings_manager not available in PropTypeTab._set_current_prop_type"
+            )
+            return
+
         self._update_active_button(prop_type)
         QApplication.processEvents()
 
@@ -102,8 +112,17 @@ class PropTypeTab(QWidget):
             button.set_active(prop == active_prop_name)
 
     def update_active_prop_type_from_settings(self):
-        current_prop = self.main_widget.settings_manager.global_settings.get_prop_type()
-        self._update_active_button(current_prop)
+        try:
+            settings_manager = self.main_widget.app_context.settings_manager
+            current_prop = settings_manager.global_settings.get_prop_type()
+            self._update_active_button(current_prop)
+        except AttributeError:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "settings_manager not available in PropTypeTab.update_active_prop_type_from_settings"
+            )
 
     def resizeEvent(self, event):
         self.update_size()

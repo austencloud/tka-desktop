@@ -34,7 +34,7 @@ class BrowseTab(QWidget):
     ) -> None:
         super().__init__()
         self.main_widget = main_widget
-        self.main_widget.splash.updater.update_progress("BrowseTab")
+        self.main_widget.splash_screen.updater.update_progress("BrowseTab")
 
         self.settings_manager = settings_manager
         self.json_manager = json_manager

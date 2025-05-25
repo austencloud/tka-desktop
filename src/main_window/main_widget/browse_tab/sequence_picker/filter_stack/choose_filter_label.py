@@ -4,7 +4,9 @@ from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from .initial_filter_choice_widget.initial_filter_choice_widget import InitialFilterChoiceWidget
+    from .initial_filter_choice_widget.initial_filter_choice_widget import (
+        InitialFilterChoiceWidget,
+    )
 
 
 class ChooseFilterLabel(QLabel):
@@ -14,7 +16,14 @@ class ChooseFilterLabel(QLabel):
         super().__init__("Choose a filter:")
         self.main_widget = filter_choice_widget.main_widget
         self.filter_choice_widget = filter_choice_widget
-        self.settings_manager = self.main_widget.settings_manager
+
+        # Get settings_manager from dependency injection system
+        try:
+            self.settings_manager = self.main_widget.app_context.settings_manager
+        except AttributeError:
+            # Fallback when settings not available
+            self.settings_manager = None
+
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def resizeEvent(self, event: QResizeEvent) -> None:

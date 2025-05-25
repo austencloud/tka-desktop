@@ -58,9 +58,19 @@ class SequenceBeatFrame(BaseBeatFrame):
         self.populator = BeatFramePopulator(self)
         self.beat_adder = BeatAdder(self)
 
-        # Get json_manager from main_widget
-        json_manager = self.main_widget.json_manager
-        self.start_position_adder = StartPositionAdder(self, json_manager)
+        # Get json_manager from dependency injection system
+        try:
+            json_manager = self.main_widget.app_context.json_manager
+            self.start_position_adder = StartPositionAdder(self, json_manager)
+        except AttributeError:
+            # Fallback for cases where app_context is not available during initialization
+            self.start_position_adder = None
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "json_manager not available during SequenceBeatFrame initialization"
+            )
 
         self.duration_manager = BeatDurationManager(self)
         self.updater = BeatFrameUpdater(self)

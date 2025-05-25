@@ -45,7 +45,20 @@ class CodexExporterTab(QWidget):
         super().__init__(settings_dialog)
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget
-        self.settings_manager = self.main_widget.settings_manager
+
+        # Get settings_manager from dependency injection system
+        try:
+            self.settings_manager = self.main_widget.app_context.settings_manager
+        except AttributeError:
+            # Fallback for cases where app_context is not available during initialization
+            self.settings_manager = None
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "settings_manager not available during CodexExporterTab initialization"
+            )
+
         self.codex_exporter = CodexExporter(self)
 
         # Create components

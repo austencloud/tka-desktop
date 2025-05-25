@@ -27,7 +27,14 @@ class SequenceSharerDialog(QDialog):
         self.image_path = image_path
         self.word = word
         self.main_widget = main_widget
-        self.settings_manager = main_widget.settings_manager
+
+        # Get settings_manager from dependency injection system
+        try:
+            self.settings_manager = main_widget.app_context.settings_manager
+        except AttributeError:
+            # Fallback when settings not available
+            self.settings_manager = None
+
         self.checkbox_email_map = {}
 
         self.setWindowTitle("Share Sequence Image")

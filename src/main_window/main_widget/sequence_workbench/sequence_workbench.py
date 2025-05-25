@@ -51,7 +51,7 @@ class SequenceWorkbench(QWidget):
     def __init__(self, main_widget: "MainWidget") -> None:
         super().__init__()
         self.main_widget = main_widget
-        self.main_widget.splash.updater.update_progress("SequenceWorkbench")
+        self.main_widget.splash_screen.updater.update_progress("SequenceWorkbench")
         self.setObjectName("SequenceWorkbench")
 
         # Initialize UI components

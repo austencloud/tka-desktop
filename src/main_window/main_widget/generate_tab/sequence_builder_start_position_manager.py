@@ -66,9 +66,19 @@ class SequenceBuilderStartPosManager:
                     start_pos_beat.managers.updater.update_pictograph(
                         deepcopy(pictograph_data)
                     )
-                    self.main_widget.json_manager.start_pos_handler.set_start_position_data(
-                        start_pos_beat
-                    )
+                    try:
+                        json_manager = self.main_widget.app_context.json_manager
+                        json_manager.start_pos_handler.set_start_position_data(
+                            start_pos_beat
+                        )
+                    except AttributeError:
+                        # Fallback for cases where app_context is not available
+                        import logging
+
+                        logger = logging.getLogger(__name__)
+                        logger.warning(
+                            "json_manager not available in SequenceBuilderStartPositionManager"
+                        )
                     self.main_widget.sequence_workbench.beat_frame.start_pos_view.set_start_pos(
                         start_pos_beat
                     )

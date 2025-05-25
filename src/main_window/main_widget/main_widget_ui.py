@@ -5,7 +5,7 @@ from main_window.main_widget.codex.codex import Codex
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.pictograph_collector import PictographCollector
 from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
-from src.settings_manager.global_settings.app_context import AppContext
+from core.migration_adapters import AppContextAdapter
 from .construct_tab.construct_tab_factory import ConstructTabFactory
 from .generate_tab.generate_tab_factory import GenerateTabFactory
 from .learn_tab.learn_tab_factory import LearnTabFactory
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 class MainWidgetUI:
     def __init__(self, main_widget: "MainWidget"):
         self.mw = main_widget
-        self.splash_screen = main_widget.splash
+        self.splash_screen = main_widget.splash_screen
         self._create_components()
         self._populate_stacks()
         self._initialize_layout()
@@ -53,32 +53,68 @@ class MainWidgetUI:
         mw.menu_bar = MenuBarWidget(mw)
         mw.codex = Codex(mw)
 
-        AppContext.set_sequence_beat_frame(mw.sequence_workbench.beat_frame)
+        # Use legacy compatibility during transition
+        # This will be replaced when MainWidget is fully migrated to MainWidgetCoordinator
 
-        # Get dependencies from AppContext during transition period
-        settings_manager = AppContext.settings_manager()
-        json_manager = AppContext.json_manager()
+        # Get dependencies from legacy adapter during transition period
+        settings_manager = AppContextAdapter.settings_manager()
+        json_manager = AppContextAdapter.json_manager()
 
-        # Use factories to create tabs with explicit dependencies
-        mw.construct_tab = ConstructTabFactory.create(
-            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
-        )
+        # Create a temporary app context for the transition period
+        from core.application_context import ApplicationContext
+        from core.dependency_container import get_container
 
-        mw.generate_tab = GenerateTabFactory.create(
-            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
-        )
+        # Get the global container that was set up in main.py
+        container = get_container()
+        temp_app_context = ApplicationContext(container)
 
-        mw.learn_tab = LearnTabFactory.create(
-            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
-        )
+        # Use factories with the new dependency injection pattern
+        # The factories will handle the transition gracefully
+        try:
+            mw.construct_tab = ConstructTabFactory.create(mw, temp_app_context)
+        except TypeError:
+            # Fallback to old pattern if factory hasn't been updated yet
+            from .construct_tab.construct_tab import ConstructTab
 
-        mw.browse_tab = BrowseTabFactory.create(
-            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
-        )
+            mw.construct_tab = ConstructTab(
+                beat_frame=mw.sequence_workbench.beat_frame,
+                pictograph_dataset={},
+                size_provider=lambda: mw.size(),
+                fade_to_stack_index=lambda index: mw.fade_manager.stack_fader.fade_stack(
+                    mw.right_stack, index
+                ),
+                fade_manager=mw.fade_manager,
+                settings_manager=settings_manager,
+                json_manager=json_manager,
+            )
 
-        mw.sequence_card_tab = SequenceCardTabFactory.create(
-            main_widget=mw, settings_manager=settings_manager, json_manager=json_manager
-        )
+        try:
+            mw.generate_tab = GenerateTabFactory.create(mw, temp_app_context)
+        except TypeError:
+            from .generate_tab.generate_tab import GenerateTab
+
+            mw.generate_tab = GenerateTab(mw, settings_manager, json_manager)
+
+        try:
+            mw.browse_tab = BrowseTabFactory.create(mw, temp_app_context)
+        except TypeError:
+            from .browse_tab.browse_tab import BrowseTab
+
+            mw.browse_tab = BrowseTab(mw, settings_manager, json_manager)
+
+        try:
+            mw.learn_tab = LearnTabFactory.create(mw, temp_app_context)
+        except TypeError:
+            from .learn_tab.learn_tab import LearnTab
+
+            mw.learn_tab = LearnTab(mw, settings_manager, json_manager)
+
+        try:
+            mw.sequence_card_tab = SequenceCardTabFactory.create(mw, temp_app_context)
+        except TypeError:
+            from .sequence_card_tab.tab import SequenceCardTab
+
+            mw.sequence_card_tab = SequenceCardTab(mw, settings_manager, json_manager)
         # mw.write_tab = WriteTab(mw)
 
         mw.background_widget = MainBackgroundWidgetFactory.create(

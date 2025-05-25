@@ -23,7 +23,19 @@ class ImageExportTab(QWidget):
         super().__init__(settings_dialog)
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget
-        self.settings_manager = self.main_widget.settings_manager
+
+        # Get settings_manager from dependency injection system
+        try:
+            self.settings_manager = self.main_widget.app_context.settings_manager
+        except AttributeError:
+            # Fallback for cases where app_context is not available during initialization
+            self.settings_manager = None
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "settings_manager not available during ImageExportTab initialization"
+            )
 
         self.control_panel = ImageExportControlPanel(self.settings_manager, self)
         self.preview_panel = ImageExportPreviewPanel(self)
@@ -32,9 +44,22 @@ class ImageExportTab(QWidget):
         self.control_panel.settingChanged.connect(self.update_preview)
 
         # CONNECT THE SEQUENCE UPDATE SIGNAL TO update_preview
-        self.main_widget.sequence_workbench.beat_frame.updateImageExportPreview.connect(
-            self.update_preview
-        )
+        try:
+            sequence_workbench = self.main_widget.widget_manager.get_widget(
+                "sequence_workbench"
+            )
+            if sequence_workbench and hasattr(sequence_workbench, "beat_frame"):
+                sequence_workbench.beat_frame.updateImageExportPreview.connect(
+                    self.update_preview
+                )
+        except AttributeError:
+            # Fallback when sequence_workbench not available
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "sequence_workbench not available during ImageExportTab initialization"
+            )
 
         self._setup_layout()
         self._connect_signals()
@@ -89,9 +114,20 @@ class ImageExportTab(QWidget):
         )
 
     def _get_current_sequence(self):
-        return (
-            self.main_widget.sequence_workbench.beat_frame.json_manager.loader_saver.load_current_sequence()
-        )
+        try:
+            sequence_workbench = self.main_widget.widget_manager.get_widget(
+                "sequence_workbench"
+            )
+            if sequence_workbench and hasattr(sequence_workbench, "beat_frame"):
+                return (
+                    sequence_workbench.beat_frame.json_manager.loader_saver.load_current_sequence()
+                )
+            else:
+                # Fallback: return empty sequence
+                return []
+        except AttributeError:
+            # Fallback when sequence_workbench not available
+            return []
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

@@ -50,48 +50,55 @@ class VisibilityButtonsWidget(QWidget):
         """Sets up the initial grid layout for the buttons."""
         self.grid_layout = QGridLayout(self)
         self.grid_layout.setSpacing(10)
-        
+
         # Initial setup of the grid - will be updated by _update_button_visibility
         self._update_button_visibility()
-        
+
         self.setLayout(self.grid_layout)
 
     def _update_button_visibility(self):
         """
-        Updates button visibility based on motion state and 
+        Updates button visibility based on motion state and
         arranges visible buttons in an appealing layout.
         """
         # Check if all motions are visible
-        settings = self.visibility_tab.main_widget.settings_manager.visibility
-        all_motions_visible = settings.are_all_motions_visible()
-        
+        try:
+            settings_manager = (
+                self.visibility_tab.main_widget.app_context.settings_manager
+            )
+            settings = settings_manager.visibility
+            all_motions_visible = settings.are_all_motions_visible()
+        except AttributeError:
+            # Fallback when settings not available
+            all_motions_visible = True
+
         # Set visibility for each button type
         # 1. Dependent glyphs: only visible when all motions are visible
         for name in self.dependent_glyphs:
             if name in self.glyph_buttons:
                 self.glyph_buttons[name].setVisible(all_motions_visible)
-                
+
         # 2. Always-visible buttons: Reversals and Non-radial points
         if "Reversals" in self.glyph_buttons:
             self.glyph_buttons["Reversals"].setVisible(True)
-            
+
         if self.non_radial_button:
             self.non_radial_button.setVisible(True)
-        
+
         # Clear the current grid layout without deleting widgets
         while self.grid_layout.count():
             self.grid_layout.takeAt(0)
-        
+
         # Get the list of all visible buttons (excluding motion buttons)
         visible_buttons = []
         for name, button in self.glyph_buttons.items():
             if name not in ["Red Motion", "Blue Motion"] and button.isVisible():
                 visible_buttons.append(button)
-        
+
         # Add the non-radial button
         if self.non_radial_button:
             visible_buttons.append(self.non_radial_button)
-        
+
         # Arrange visible buttons in the grid
         # If we have exactly 2 buttons (Reversals and Non-radial), place them side by side
         if len(visible_buttons) == 2:
@@ -103,13 +110,20 @@ class VisibilityButtonsWidget(QWidget):
                 row = i // 3
                 col = i % 3
                 self.grid_layout.addWidget(button, row, col)
-        
+
         # Update the widget
         self.update()
 
     def update_button_flags(self):
         """Ensure buttons correctly reflect saved settings."""
-        settings = self.visibility_tab.main_widget.settings_manager.visibility
+        try:
+            settings_manager = (
+                self.visibility_tab.main_widget.app_context.settings_manager
+            )
+            settings = settings_manager.visibility
+        except AttributeError:
+            # Fallback when settings not available
+            return
 
         for name, button in self.glyph_buttons.items():
             if name in ["Red Motion", "Blue Motion"]:
@@ -125,12 +139,19 @@ class VisibilityButtonsWidget(QWidget):
 
     def update_visibility_buttons_from_settings(self):
         """Update all visibility buttons based on saved settings."""
+        try:
+            settings_manager = (
+                self.visibility_tab.main_widget.app_context.settings_manager
+            )
+            visibility_settings = settings_manager.visibility
+        except AttributeError:
+            # Fallback when settings not available
+            return
+
         for button in self.glyph_buttons.values():
             if button.name in ["Red Motion", "Blue Motion"]:
                 color = button.name.split(" ")[0].lower()
-                button.is_toggled = self.visibility_tab.main_widget.settings_manager.visibility.get_motion_visibility(
-                    color
-                )
+                button.is_toggled = visibility_settings.get_motion_visibility(color)
             else:
                 button.update_is_toggled()
 

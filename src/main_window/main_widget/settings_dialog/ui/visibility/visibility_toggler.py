@@ -15,7 +15,21 @@ class VisibilityToggler:
     def __init__(self, visibility_tab: "VisibilityTab"):
         self.visibility_tab = visibility_tab
         self.main_widget = visibility_tab.main_widget
-        self.settings = self.main_widget.settings_manager.visibility
+
+        # Get settings from dependency injection system
+        try:
+            settings_manager = self.main_widget.app_context.settings_manager
+            self.settings = settings_manager.visibility
+        except AttributeError:
+            # Fallback for cases where app_context is not available
+            self.settings = None
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "settings_manager not available during VisibilityToggler initialization"
+            )
+
         self.dependent_glyphs = ["TKA", "VTG", "Elemental", "Positions"]
 
     def toggle_glyph_visibility(self, name: str, state: bool):

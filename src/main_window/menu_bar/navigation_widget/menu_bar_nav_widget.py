@@ -52,18 +52,29 @@ class MenuBarNavWidget(QWidget):
 
         def on_tab_changed_handler(index):
 
-            # Create a direct mapping from button index to TabName
+            # Create a direct mapping from button index to tab names
             tab_mapping = {
-                0: TabName.CONSTRUCT,
-                1: TabName.GENERATE,
-                2: TabName.BROWSE,
-                3: TabName.LEARN,
-                4: TabName.SEQUENCE_CARD,
+                0: "construct",
+                1: "generate",
+                2: "browse",
+                3: "learn",
+                4: "sequence_card",
             }
 
             if index in tab_mapping:
                 tab_name = tab_mapping[index]
-                self.mw.tab_switcher.on_tab_changed(tab_name)
+                # Always use the new coordinator interface - no fallback to old tab switcher
+                if hasattr(self.mw, "switch_to_tab"):
+                    print(f"DEBUG: Using new TabManager to switch to {tab_name}")
+                    self.mw.switch_to_tab(tab_name)
+                else:
+                    print(
+                        f"DEBUG: ERROR - MainWidget does not have switch_to_tab method!"
+                    )
+                    print(f"DEBUG: MainWidget type: {type(self.mw).__name__}")
+                    print(
+                        f"DEBUG: MainWidget attributes: {[attr for attr in dir(self.mw) if not attr.startswith('_')]}"
+                    )
             else:
                 print(f"DEBUG: ERROR - index {index} not found in tab_mapping")
 

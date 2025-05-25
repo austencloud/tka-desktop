@@ -32,8 +32,16 @@ class CodexDataManager:
         for letter in letters:
             data = self._get_pictograph_data(letter)
             if data:
-                current_data = (
-                    self.main_widget.pictograph_data_loader.find_pictograph_data(
+                try:
+                    # Get PictographDataLoader from dependency injection
+                    from main_window.main_widget.pictograph_data_loader import (
+                        PictographDataLoader,
+                    )
+
+                    pictograph_data_loader = self.main_widget.app_context.get_service(
+                        PictographDataLoader
+                    )
+                    current_data = pictograph_data_loader.find_pictograph_data(
                         {
                             LETTER: letter,
                             START_POS: data[START_POS],
@@ -42,7 +50,9 @@ class CodexDataManager:
                             f"{RED}_{MOTION_TYPE}": data[f"{RED}_{MOTION_TYPE}"],
                         }
                     )
-                )
+                except (AttributeError, KeyError):
+                    # Fallback if service not available
+                    current_data = None
                 pictograph_data[letter] = current_data
             else:
                 pictograph_data[letter] = None  # Or handle as needed

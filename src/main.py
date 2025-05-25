@@ -30,75 +30,115 @@ def initialize_application():
     return app
 
 
-def initialize_context(
-    settings_manager, json_manager, special_placement_handler, special_placement_loader
-):
-    """Initialize the AppContext with required dependencies.
+def initialize_dependency_injection():
+    """Initialize the modern dependency injection system.
 
-    This function ensures that the AppContext is properly initialized before
-    any components try to access it.
+    This replaces the old AppContext singleton with proper dependency injection.
     """
     try:
-        # Use a consistent import path - always use the src-prefixed version
-        from src.settings_manager.global_settings.app_context import AppContext
+        from src.core.dependency_container import configure_dependencies
+        from src.core.application_context import create_application_context
+        from src.core.migration_adapters import setup_legacy_compatibility
         from src.utils.logging_config import get_logger
 
         logger = get_logger(__name__)
-        logger.info("Initializing AppContext...")
+        logger.info("Initializing dependency injection container...")
 
-        # Initialize the AppContext
-        AppContext.init(
-            settings_manager,
-            json_manager,
-            special_placement_handler,
-            special_placement_loader=special_placement_loader,
-        )
+        # Configure the dependency injection container
+        container = configure_dependencies()
 
-        # Verify initialization worked
-        if AppContext._settings_manager is None:
-            logger.error(
-                "AppContext initialization failed! _settings_manager is still None"
-            )
-            raise RuntimeError("AppContext initialization failed")
-        else:
-            logger.info("AppContext initialized successfully")
+        # Create application context with the container
+        app_context = create_application_context(container)
+
+        # CRITICAL: Set up legacy compatibility IMMEDIATELY after creating app_context
+        # This must happen before any services are resolved to avoid circular dependency
+        logger.info("Setting up legacy compatibility immediately...")
+        setup_legacy_compatibility(app_context)
+        logger.info("Legacy compatibility established during initialization")
+
+        logger.info("Dependency injection system initialized successfully")
+        return app_context
 
     except ImportError as e:
         from src.utils.logging_config import get_logger
 
         logger = get_logger(__name__)
-        logger.error(f"Error importing AppContext: {e}")
+        logger.error(f"Error initializing dependency injection: {e}")
         raise
 
 
-def create_main_window(profiler, splash_screen):
-    """Create the main window after AppContext is initialized.
-
-    This function ensures that the AppContext is properly initialized before
-    creating the MainWindow.
+def initialize_legacy_appcontext(app_context):
+    """Initialize the legacy AppContext singleton with services from dependency injection.
+    
+    This bridges the gap between the new DI system and legacy code that still uses AppContext.
     """
     try:
-        # Use a consistent import path - always use the src-prefixed version
         from src.settings_manager.global_settings.app_context import AppContext
+        from src.utils.logging_config import get_logger
+        
+        logger = get_logger(__name__)
+        logger.info("Initializing legacy AppContext singleton...")
+        
+        # Get services from the new dependency injection system
+        settings_manager = app_context.settings_manager
+        json_manager = app_context.json_manager
+        
+        # Create special placement handler and loader directly
+        # (Skip the fancy interface checking since those don't exist yet)
+        logger.info("Creating special placement services...")
+        
+        try:
+            from main_window.main_widget.json_manager.special_placement_saver import SpecialPlacementSaver
+            special_placement_handler = SpecialPlacementSaver()
+            logger.info("Created SpecialPlacementSaver successfully")
+        except ImportError as e:
+            logger.warning(f"Could not import SpecialPlacementSaver: {e}")
+            special_placement_handler = None
+        
+        try:
+            from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
+            special_placement_loader = SpecialPlacementLoader()
+            logger.info("Created SpecialPlacementLoader successfully")
+        except ImportError as e:
+            logger.warning(f"Could not import SpecialPlacementLoader: {e}")
+            special_placement_loader = None
+        
+        # Initialize the legacy AppContext
+        AppContext.init(
+            settings_manager=settings_manager,
+            json_manager=json_manager,
+            special_placement_handler=special_placement_handler,
+            special_placement_loader=special_placement_loader
+        )
+        
+        logger.info("Legacy AppContext singleton initialized successfully")
+        
+    except Exception as e:
+        from src.utils.logging_config import get_logger
+        logger = get_logger(__name__)
+        logger.error(f"Failed to initialize legacy AppContext: {e}")
+        logger.error("This will cause issues with widgets that still use AppContext")
+        # Don't raise - let the app continue, some things might still work
+        
+
+def create_main_window(profiler, splash_screen, app_context):
+    """Create the main window with dependency injection.
+
+    This function creates the MainWindow using the new dependency injection system.
+    """
+    try:
         from src.main_window.main_window import MainWindow
         from src.utils.logging_config import get_logger
 
         logger = get_logger(__name__)
-        logger.info("Creating MainWindow...")
+        logger.info("Creating MainWindow with dependency injection...")
 
-        # Verify AppContext is initialized before creating MainWindow
-        if AppContext._settings_manager is None:
-            logger.error("AppContext not initialized before creating MainWindow!")
-            raise RuntimeError("AppContext not initialized before creating MainWindow")
+        # Create the main window with dependency injection
+        main_window = MainWindow(profiler, splash_screen, app_context)
 
-        # Create the main window
-        main_window = MainWindow(profiler, splash_screen)
-
-        # Set the main window in AppContext
-        AppContext._main_window = main_window
         logger.info("MainWindow created successfully")
-
         return main_window
+
     except ImportError as e:
         from src.utils.logging_config import get_logger
 
@@ -118,13 +158,6 @@ def main():
     configure_import_paths()
 
     from PyQt6.QtCore import QTimer
-    from src.main_window.main_widget.json_manager.json_manager import JsonManager
-    from src.main_window.main_widget.json_manager.special_placement_saver import (
-        SpecialPlacementSaver,
-    )
-    from src.main_window.main_widget.special_placement_loader import (
-        SpecialPlacementLoader,
-    )
     from src.splash_screen.splash_screen import SplashScreen
     from src.profiler import Profiler
     from src.settings_manager.settings_manager import SettingsManager
@@ -152,25 +185,28 @@ def main():
     app.processEvents()
 
     profiler = Profiler()
-    json_manager = JsonManager()
-    special_placement_handler = SpecialPlacementSaver()
-    special_placement_loader = SpecialPlacementLoader()
+    # Note: JsonManager and other services are now managed by dependency injection
 
-    # Initialize the AppContext before creating the main window
-    # This ensures that AppContext.settings_manager() is available when MainWindow is constructed
-    logger.info("Starting AppContext initialization...")
-    initialize_context(
-        settings_manager,
-        json_manager,
-        special_placement_handler,
-        special_placement_loader,
-    )
-    logger.info("AppContext initialization completed")
+    # Initialize the modern dependency injection system
+    # Note: Legacy compatibility is now set up automatically during initialization
+    logger.info("Starting dependency injection initialization...")
+    app_context = initialize_dependency_injection()
+    logger.info("Dependency injection initialization completed")
 
-    # Now create the main window after AppContext is initialized
+    # NEW: Initialize the legacy AppContext singleton before creating widgets
+    logger.info("Initializing legacy AppContext singleton...")
+    initialize_legacy_appcontext(app_context)
+    logger.info("Legacy AppContext initialization completed")
+
+    # Now create the main window with dependency injection (without widgets)
     logger.info("Starting MainWindow creation...")
-    main_window = create_main_window(profiler, splash_screen)
+    main_window = create_main_window(profiler, splash_screen, app_context)
     logger.info("MainWindow creation completed")
+
+    # Initialize widgets AFTER both dependency injection AND legacy AppContext are set up
+    logger.info("Starting widget initialization...")
+    main_window.initialize_widgets()
+    logger.info("Widget initialization completed")
 
     main_window.show()
     main_window.raise_()

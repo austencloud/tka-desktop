@@ -35,7 +35,21 @@ class UserProfileTab(QWidget):
         super().__init__()
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget
-        self.user_manager = self.main_widget.settings_manager.users.user_manager
+
+        # Get user_manager from dependency injection system
+        try:
+            settings_manager = self.main_widget.app_context.settings_manager
+            self.user_manager = settings_manager.users.user_manager
+        except AttributeError:
+            # Fallback for cases where app_context is not available during initialization
+            self.user_manager = None
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "settings_manager not available during UserProfileTab initialization"
+            )
+
         self.user_buttons: dict[str, UserButton] = {}
 
         self._setup_ui()
@@ -134,6 +148,10 @@ class UserProfileTab(QWidget):
 
     def _delete_selected_user(self):
         """Deletes the currently selected user after confirmation."""
+        if not self.user_manager:
+            self._show_warning("User manager not available.")
+            return
+
         current_user = self.user_manager.get_current_user()
 
         if not current_user:
@@ -157,6 +175,13 @@ class UserProfileTab(QWidget):
 
     def populate_users(self):
         """Populates the user buttons in the grid layout."""
+        if not self.user_manager:
+            # Show message when user manager is not available
+            empty_label = QLabel("User manager not available.")
+            empty_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.grid_layout.addWidget(empty_label, 0, 0, 1, 3)
+            return
+
         # Clear existing buttons
         for button in self.user_buttons.values():
             self.grid_layout.removeWidget(button)
@@ -197,12 +222,19 @@ class UserProfileTab(QWidget):
 
     def set_current_user(self, user_name: str):
         """Sets the current active user."""
+        if not self.user_manager:
+            return
+
         self.user_manager.set_current_user(user_name)
         for name, button in self.user_buttons.items():
             button.set_current(name == user_name)
 
     def add_user(self, user_name: str, profile_pixmap: Optional[QPixmap] = None):
         """Adds a new user with optional profile picture."""
+        if not self.user_manager:
+            self._show_warning("User manager not available.")
+            return
+
         if not user_name:
             self._show_warning("User name cannot be empty.")
             return
@@ -225,6 +257,10 @@ class UserProfileTab(QWidget):
 
     def remove_user(self, user_name: str):
         """Removes a user and updates the UI."""
+        if not self.user_manager:
+            self._show_warning("User manager not available.")
+            return
+
         if len(self.user_buttons) <= 1:
             self._show_warning("Cannot delete the last user.")
             return
@@ -250,6 +286,9 @@ class UserProfileTab(QWidget):
 
     def update_active_user_from_settings(self):
         """Updates the active user from settings."""
+        if not self.user_manager:
+            return
+
         current_user = self.user_manager.get_current_user()
         for name, button in self.user_buttons.items():
             button.set_current(name == current_user)

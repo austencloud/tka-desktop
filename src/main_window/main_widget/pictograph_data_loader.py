@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 class PictographDataLoader:
     def __init__(self, main_widget: "MainWidget") -> None:
         self.main_widget = main_widget
+        self._cached_dataset = None
 
     def load_pictograph_dataset(self) -> dict[Letter, list[dict]]:
         """
@@ -215,6 +216,29 @@ class PictographDataLoader:
 
         return sample_data
 
+    def get_pictograph_dataset(self) -> dict[Letter, list[dict]]:
+        """
+        Get the pictograph dataset, using cache or loading from main_widget if available.
+
+        Returns:
+            Dictionary mapping Letter enums to lists of pictograph data dictionaries
+        """
+        # Try to get from main_widget first (if available and has dataset)
+        if (
+            self.main_widget
+            and hasattr(self.main_widget, "pictograph_dataset")
+            and self.main_widget.pictograph_dataset
+        ):
+            return self.main_widget.pictograph_dataset
+
+        # Use cached dataset if available
+        if self._cached_dataset is not None:
+            return self._cached_dataset
+
+        # Load and cache the dataset
+        self._cached_dataset = self.load_pictograph_dataset()
+        return self._cached_dataset
+
     def find_pictograph_data(self, simplified_dict: dict) -> Optional[dict]:
         from enums.letter.letter import Letter
 
@@ -223,19 +247,31 @@ class PictographDataLoader:
         )
         if not target_letter:
             print(
-                f"Warning: Letter '{simplified_dict['letter']}' not found in Letter Enum."
+                f"Warning: Letter '{simplified_dict.get('letter', simplified_dict.get(LETTER, 'unknown'))}' not found in Letter Enum."
             )
             return None
 
-        letter_dicts = self.main_widget.pictograph_dataset.get(target_letter, [])
-        for pdict in letter_dicts:
-            if (
-                pdict.get(START_POS) == simplified_dict[START_POS]
-                and pdict.get(END_POS) == simplified_dict[END_POS]
-                and pdict.get(BLUE_ATTRS, {}).get(MOTION_TYPE)
-                == simplified_dict["blue_motion_type"]
-                and pdict.get(RED_ATTRS, {}).get(MOTION_TYPE)
-                == simplified_dict["red_motion_type"]
-            ):
-                return deepcopy(pdict)
-        return None
+        try:
+            # Use the new get_pictograph_dataset method that handles None main_widget
+            pictograph_dataset = self.get_pictograph_dataset()
+            letter_dicts = pictograph_dataset.get(target_letter, [])
+
+            for pdict in letter_dicts:
+                if (
+                    pdict.get(START_POS) == simplified_dict[START_POS]
+                    and pdict.get(END_POS) == simplified_dict[END_POS]
+                    and pdict.get(BLUE_ATTRS, {}).get(MOTION_TYPE)
+                    == simplified_dict["blue_motion_type"]
+                    and pdict.get(RED_ATTRS, {}).get(MOTION_TYPE)
+                    == simplified_dict["red_motion_type"]
+                ):
+                    return deepcopy(pdict)
+            return None
+
+        except Exception as e:
+            # Log the error and return None gracefully
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error finding pictograph data: {e}")
+            return None

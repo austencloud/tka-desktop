@@ -24,8 +24,15 @@ class SplashBackgroundWidget(QWidget):
         self.animation_timer.start(30)  # ~30 FPS, tweak as desired
 
     def _on_animation_tick(self):
-        if self.main_widget.background_widget:
-            self.main_widget.background.animate_background()
+        try:
+            background_widget = self.main_widget.widget_manager.get_widget(
+                "background_widget"
+            )
+            if background_widget and hasattr(self.main_widget, "background"):
+                self.main_widget.background.animate_background()
+        except AttributeError:
+            # Fallback when background_widget not available
+            pass
         self.update()
 
     def paintEvent(self, event):

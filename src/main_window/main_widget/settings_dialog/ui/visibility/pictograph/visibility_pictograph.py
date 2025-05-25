@@ -39,11 +39,38 @@ class VisibilityPictograph(Pictograph):
         self.state.blue_reversal = True
         self.tab = tab
         self.main_widget = tab.main_widget
-        pictograph_data = self.main_widget.pictograph_data_loader.find_pictograph_data(
-            self.example_data
-        )
-        self.settings = self.main_widget.settings_manager.visibility
-        self.managers.updater.update_pictograph(pictograph_data)
+
+        # Get services from dependency injection system
+        try:
+            # Get PictographDataLoader from dependency injection
+            from main_window.main_widget.pictograph_data_loader import (
+                PictographDataLoader,
+            )
+
+            pictograph_data_loader = self.main_widget.app_context.get_service(
+                PictographDataLoader
+            )
+            pictograph_data = pictograph_data_loader.find_pictograph_data(
+                self.example_data
+            )
+
+            # Get settings_manager from dependency injection
+            settings_manager = self.main_widget.app_context.settings_manager
+            self.settings = settings_manager.visibility
+
+            self.managers.updater.update_pictograph(pictograph_data)
+        except (AttributeError, KeyError) as e:
+            # Fallback for cases where services are not available during initialization
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                f"Services not available during VisibilityPictograph initialization: {e}"
+            )
+
+            # Create a minimal pictograph data for fallback
+            self.settings = None
+            # Don't update pictograph if services aren't available
         self.glyphs = self.managers.get.glyphs()
         self.motion_set = self.managers.get.motions()
 
