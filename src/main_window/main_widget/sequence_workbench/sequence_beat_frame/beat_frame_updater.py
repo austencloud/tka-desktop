@@ -96,7 +96,9 @@ class BeatFrameUpdater:
             else:
                 break
 
-        self.bf.main_widget.sequence_workbench.graph_editor.update_graph_editor()
+        sequence_workbench = self.bf.main_widget.get_widget("sequence_workbench")
+        if sequence_workbench:
+            sequence_workbench.graph_editor.update_graph_editor()
 
     def reset_beat_frame(self) -> None:
         for beat_view in self.bf.beat_views:

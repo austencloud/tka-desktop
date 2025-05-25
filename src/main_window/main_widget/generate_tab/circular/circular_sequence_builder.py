@@ -160,11 +160,45 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         return self.update_beat_number(next_beat, self.sequence)
 
     def _get_filtered_options(self, prop_continuity, blue_rot_dir, red_rot_dir):
-        options = deepcopy(
-            self.main_widget.construct_tab.option_picker.option_getter._load_all_next_option_dicts(
-                self.sequence
-            )
-        )
+        # Get construct tab through the new tab manager system
+        try:
+            construct_tab = self.main_widget.tab_manager.get_tab_widget("construct")
+            if construct_tab:
+                options = deepcopy(
+                    construct_tab.option_picker.option_getter._load_all_next_option_dicts(
+                        self.sequence
+                    )
+                )
+            else:
+                # Fallback: try direct access for backward compatibility
+                if hasattr(self.main_widget, "construct_tab"):
+                    options = deepcopy(
+                        self.main_widget.construct_tab.option_picker.option_getter._load_all_next_option_dicts(
+                            self.sequence
+                        )
+                    )
+                else:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        "construct_tab not available in CircularSequenceBuilder"
+                    )
+                    options = []
+        except AttributeError:
+            # Fallback: try direct access for backward compatibility
+            if hasattr(self.main_widget, "construct_tab"):
+                options = deepcopy(
+                    self.main_widget.construct_tab.option_picker.option_getter._load_all_next_option_dicts(
+                        self.sequence
+                    )
+                )
+            else:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning("construct_tab not available in CircularSequenceBuilder")
+                options = []
         if prop_continuity == "continuous":
             options = self.filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir

@@ -140,8 +140,10 @@ class MainWidget(QWidget):
             logger.error(f"MainWidget: Failed to access AppContext: {e}")
             raise
 
-        self.tab_switcher = MainWidgetTabSwitcher(self)
-        self.manager = MainWidgetManagers(self)
+        # Get app_context for dependency injection
+        app_context = getattr(self, "app_context", None)
+        self.tab_switcher = MainWidgetTabSwitcher(self, app_context)
+        self.manager = MainWidgetManagers(self, app_context)
         self.state_handler = MainWidgetState(self)
         self.ui = MainWidgetUI(self)
         self._already_initialized_once = False

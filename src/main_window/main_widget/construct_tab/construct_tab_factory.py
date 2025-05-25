@@ -45,12 +45,30 @@ class ConstructTabFactory(WidgetFactory):
             )
             fade_manager = coordinator.widget_manager.get_widget("fade_manager")
 
+            # Get pictograph dataset from the dependency injection system
+            try:
+                # Try to get PictographDataLoader from dependency injection
+                from main_window.main_widget.pictograph_data_loader import (
+                    PictographDataLoader,
+                )
+
+                pictograph_data_loader = app_context.get_service(PictographDataLoader)
+                pictograph_dataset = pictograph_data_loader.get_pictograph_dataset()
+            except (AttributeError, KeyError):
+                # Fallback: check if coordinator has pictograph_dataset
+                pictograph_dataset = getattr(coordinator, "pictograph_dataset", {})
+                if not pictograph_dataset:
+                    # Last resort: create a PictographDataLoader directly
+                    logger.warning("Creating PictographDataLoader directly as fallback")
+                    pictograph_data_loader = PictographDataLoader(coordinator)
+                    pictograph_dataset = pictograph_data_loader.get_pictograph_dataset()
+
             # Create the construct tab with dependencies
             construct_tab = ConstructTab(
                 beat_frame=(
                     sequence_workbench.beat_frame if sequence_workbench else None
                 ),
-                pictograph_dataset=getattr(coordinator, "pictograph_dataset", {}),
+                pictograph_dataset=pictograph_dataset,
                 size_provider=lambda: coordinator.size(),
                 fade_to_stack_index=lambda index: (
                     fade_manager.stack_fader.fade_stack(coordinator.right_stack, index)

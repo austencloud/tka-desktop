@@ -55,7 +55,35 @@ class BaseSequenceBuilder:
 
     def initialize_sequence(self, length: int, CAP_type: str = "") -> None:
         if not self.sequence_workbench:
-            self.sequence_workbench = self.main_widget.sequence_workbench
+            # Get sequence workbench through the new widget manager system
+            try:
+                self.sequence_workbench = self.main_widget.widget_manager.get_widget(
+                    "sequence_workbench"
+                )
+                if not self.sequence_workbench:
+                    # Fallback: try direct access for backward compatibility
+                    if hasattr(self.main_widget, "sequence_workbench"):
+                        self.sequence_workbench = self.main_widget.sequence_workbench
+                    else:
+                        import logging
+
+                        logger = logging.getLogger(__name__)
+                        logger.warning(
+                            "sequence_workbench not available in BaseSequenceBuilder"
+                        )
+                        return
+            except AttributeError:
+                # Fallback: try direct access for backward compatibility
+                if hasattr(self.main_widget, "sequence_workbench"):
+                    self.sequence_workbench = self.main_widget.sequence_workbench
+                else:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        "sequence_workbench not available in BaseSequenceBuilder"
+                    )
+                    return
         self.sequence = self.json_manager.loader_saver.load_current_sequence()
 
         if len(self.sequence) == 1:

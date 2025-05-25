@@ -85,9 +85,9 @@ class BeatDeleter:
             self.sequence_workbench.indicator_label.show_message("Sequence cleared")
         self.beat_frame.layout_manager.configure_beat_frame_for_filled_beats()
         self.sequence_workbench.graph_editor.pictograph_container.GE_view.set_to_blank_grid()
-        self.sequence_workbench.main_widget.construct_tab.last_beat = (
-            self.sequence_workbench.beat_frame.start_pos
-        )
+        construct_tab = self.sequence_workbench.main_widget.get_tab_widget("construct")
+        if construct_tab:
+            construct_tab.last_beat = self.sequence_workbench.beat_frame.start_pos
         self.sequence_workbench.graph_editor.update_graph_editor()
         self.sequence_workbench.difficulty_label.update_difficulty_label()
 

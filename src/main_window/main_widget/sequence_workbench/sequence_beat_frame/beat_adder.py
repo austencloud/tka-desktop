@@ -80,7 +80,29 @@ class BeatAdder:
         self._update_sequence_builder(index)
 
     def _update_sequence_builder(self, index: int) -> None:
-        self.main_widget.construct_tab.last_beat = self.beats[index].beat
+        # Get construct tab through the new tab manager system
+        try:
+            construct_tab = self.main_widget.tab_manager.get_tab_widget("construct")
+            if construct_tab:
+                construct_tab.last_beat = self.beats[index].beat
+            else:
+                # Fallback: try direct access for backward compatibility
+                if hasattr(self.main_widget, "construct_tab"):
+                    self.main_widget.construct_tab.last_beat = self.beats[index].beat
+                else:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.warning("construct_tab not available in BeatAdder")
+        except AttributeError:
+            # Fallback: try direct access for backward compatibility
+            if hasattr(self.main_widget, "construct_tab"):
+                self.main_widget.construct_tab.last_beat = self.beats[index].beat
+            else:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning("construct_tab not available in BeatAdder")
 
     def calculate_next_beat_number(self) -> int:
         """

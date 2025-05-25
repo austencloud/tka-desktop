@@ -147,17 +147,25 @@ class StartingPositionSection(FilterSectionBase):
             return self._all_sequences_with_positions
 
         dictionary_dir = get_data_path("dictionary")
-        base_words = [
-            (
-                word,
-                self.main_widget.thumbnail_finder.find_thumbnails(
-                    os.path.join(dictionary_dir, word)
-                ),
-            )
-            for word in os.listdir(dictionary_dir)
-            if os.path.isdir(os.path.join(dictionary_dir, word))
-            and "__pycache__" not in word
-        ]
+        thumbnail_finder = self.main_widget.get_widget("thumbnail_finder")
+        if not thumbnail_finder:
+            # Fallback: try direct access for backward compatibility
+            thumbnail_finder = getattr(self.main_widget, "thumbnail_finder", None)
+
+        if thumbnail_finder:
+            base_words = [
+                (
+                    word,
+                    thumbnail_finder.find_thumbnails(
+                        os.path.join(dictionary_dir, word)
+                    ),
+                )
+                for word in os.listdir(dictionary_dir)
+                if os.path.isdir(os.path.join(dictionary_dir, word))
+                and "__pycache__" not in word
+            ]
+        else:
+            base_words = []
 
         sequences_with_positions = []
         for word, thumbnails in base_words:

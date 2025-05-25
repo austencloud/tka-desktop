@@ -99,19 +99,29 @@ class SequenceViewerActionButtonPanel(QWidget):
         sequence_json = self.sequence_viewer.state.sequence_json
         if sequence_json:
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-            populator = (
-                self.browse_tab.main_widget.sequence_workbench.beat_frame.populator
+            sequence_workbench = self.browse_tab.main_widget.get_widget(
+                "sequence_workbench"
             )
-            if sequence_json:
-                populator.populate_beat_frame_from_json(sequence_json["sequence"])
-                self.sequence_viewer.main_widget.menu_bar.navigation_widget.set_active_tab(
-                    TAB_INDEX[TabName.CONSTRUCT]
-                )
+            if sequence_workbench and hasattr(sequence_workbench, "beat_frame"):
+                populator = sequence_workbench.beat_frame.populator
+                if sequence_json:
+                    populator.populate_beat_frame_from_json(sequence_json["sequence"])
+                    menu_bar = self.sequence_viewer.main_widget.get_widget("menu_bar")
+                    if menu_bar and hasattr(menu_bar, "navigation_widget"):
+                        menu_bar.navigation_widget.set_active_tab(
+                            TAB_INDEX[TabName.CONSTRUCT]
+                        )
+                else:
+                    QMessageBox.warning(
+                        self.browse_tab.main_widget,
+                        "Error",
+                        "No sequence metadata found in the thumbnail.",
+                    )
             else:
                 QMessageBox.warning(
                     self.browse_tab.main_widget,
                     "Error",
-                    "No sequence metadata found in the thumbnail.",
+                    "Sequence workbench not available.",
                 )
 
             QApplication.restoreOverrideCursor()

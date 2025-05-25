@@ -319,13 +319,24 @@ def _register_data_services(container: DependencyContainer) -> None:
     except ImportError as e:
         logger.warning(f"Failed to register Pictograph Data Loader: {e}")
 
-    # Letter Determiner - simplified registration
+    # Letter Determiner - with proper dependency injection
     try:
         from letter_determination.core import LetterDeterminer
+        from interfaces.json_manager_interface import IJsonManager
 
         def create_letter_determiner():
-            # Create with minimal parameters - will be configured later when needed
-            return LetterDeterminer({}, None)
+            # Resolve JsonManager from the container
+            try:
+                json_manager = container.resolve(IJsonManager)
+                # Create with empty pictograph dataset for now - will be populated when needed
+                return LetterDeterminer({}, json_manager)
+            except ValueError as e:
+                logger.error(f"Failed to resolve JsonManager for LetterDeterminer: {e}")
+                # Fallback: create with None and add proper error handling
+                logger.warning(
+                    "Creating LetterDeterminer with None json_manager as fallback"
+                )
+                return LetterDeterminer({}, None)
 
         container.register_factory(LetterDeterminer, create_letter_determiner)
         logger.info("Letter Determiner registered")

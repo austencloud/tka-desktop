@@ -6,7 +6,6 @@ if TYPE_CHECKING:
     from .beat_deleter import BeatDeleter
 
 
-
 class AllBeatsDeleter:
     def __init__(self, deleter: "BeatDeleter"):
         self.deleter = deleter
@@ -58,4 +57,17 @@ class AllBeatsDeleter:
             self._fade_and_reset(widgets, show_indicator)
         else:
             self._fade_widgets_and_stack(widgets, show_indicator)
-        self.main_widget.settings_dialog.ui.image_export_tab.update_preview()
+        # Update image export preview through the new dependency injection system
+        try:
+            settings_dialog = self.main_widget.widget_manager.get_widget(
+                "settings_dialog"
+            )
+            if (
+                settings_dialog
+                and hasattr(settings_dialog, "ui")
+                and hasattr(settings_dialog.ui, "image_export_tab")
+            ):
+                settings_dialog.ui.image_export_tab.update_preview()
+        except AttributeError:
+            # Fallback: settings dialog not available or not properly initialized
+            pass

@@ -92,7 +92,7 @@ class WidgetManager(QObject):
         essential_widgets = [
             "sequence_workbench",
             "settings_dialog",
-            "background_widget",
+            "background_widget",  # Re-enabled with fixed positioning
             "menu_bar",
             "fade_manager",
             "font_color_updater",
@@ -149,8 +149,10 @@ class WidgetManager(QObject):
     def _setup_widget(self, widget_name: str, widget: QWidget) -> None:
         """Perform post-creation setup for specific widgets."""
         if widget_name == "background_widget":
-            # Add background widget to the main layout
-            self.coordinator.main_layout.insertWidget(0, widget)
+            # DON'T add background widget to the layout - it should be a child widget with manual positioning
+            # The background widget sets its own geometry and should not be layout-managed
+            # Just ensure it's sent to the back of the stacking order
+            widget.lower()  # Send background widget to the back of the stacking order
 
         elif widget_name == "sequence_workbench":
             # Set up sequence workbench in app context if needed

@@ -39,8 +39,18 @@ class FullScreenViewer:
             current_thumbnail = self.create_thumbnail()
             if current_thumbnail:
                 pixmap = QPixmap(current_thumbnail)
-                mw.full_screen_overlay = FullScreenImageOverlay(mw)
-                mw.full_screen_overlay.show(pixmap)
+                full_screen_overlay = mw.get_widget("full_screen_overlay")
+                if not full_screen_overlay:
+                    # Create overlay if it doesn't exist
+                    full_screen_overlay = FullScreenImageOverlay(mw)
+                    # Store it for future use if the widget manager supports it
+                    if hasattr(mw, "widget_manager") and hasattr(
+                        mw.widget_manager, "_widgets"
+                    ):
+                        mw.widget_manager._widgets["full_screen_overlay"] = (
+                            full_screen_overlay
+                        )
+                full_screen_overlay.show(pixmap)
                 QApplication.restoreOverrideCursor()
             else:
                 QMessageBox.warning(None, "No Image", "Please select an image first.")

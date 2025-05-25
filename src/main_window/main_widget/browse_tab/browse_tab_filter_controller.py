@@ -17,7 +17,12 @@ class BrowseTabFilterController:
         self.browse_tab = browse_tab
         self.filter_manager = browse_tab.filter_manager
         self.ui_updater = browse_tab.ui_updater
-        self.fade_manager = browse_tab.main_widget.fade_manager
+        fade_manager = browse_tab.main_widget.get_widget("fade_manager")
+        if fade_manager:
+            self.fade_manager = fade_manager
+        else:
+            # Fallback: try direct access for backward compatibility
+            self.fade_manager = getattr(browse_tab.main_widget, "fade_manager", None)
         self.metadata_extractor = browse_tab.metadata_extractor
 
     def apply_filter(self, filter_criteria: Union[str, dict], fade=True):

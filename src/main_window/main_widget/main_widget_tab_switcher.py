@@ -6,15 +6,18 @@ from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_pi
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_indices import LeftStackIndex, RightStackIndex
 from main_window.main_widget.tab_name import TabName
-from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
+    from core.application_context import ApplicationContext
 
 
 class MainWidgetTabSwitcher:
-    def __init__(self, main_widget: "MainWidget"):
+    def __init__(
+        self, main_widget: "MainWidget", app_context: "ApplicationContext" = None
+    ):
         self.mw = main_widget
+        self.app_context = app_context or getattr(main_widget, "app_context", None)
 
         self.tab_to_right_stack = {
             TAB_INDEX[TabName.GENERATE]: RightStackIndex.GENERATE_TAB,
@@ -52,12 +55,10 @@ class MainWidgetTabSwitcher:
             f"DEBUG: original_new_tab={original_new_tab}, overridden new_tab={new_tab}"
         )
 
-        current_tab_str = (
-            AppContext.settings_manager().global_settings.get_current_tab()
-        )
+        current_tab_str = self._get_current_tab()
         print(f"DEBUG: current_tab_str={current_tab_str}")
 
-        AppContext.settings_manager().global_settings.set_current_tab(new_tab.value)
+        self._set_current_tab(new_tab.value)
         print(f"DEBUG: Set current tab to {new_tab.value}")
 
         # Set width ratio based on tab type
@@ -97,7 +98,7 @@ class MainWidgetTabSwitcher:
                 self.mw.sequence_card_tab.refresher.refresh_sequence_cards()
 
     def set_stacks_silently(self, left_index, right_index):
-        tab_name_str = AppContext.settings_manager().global_settings.get_current_tab()
+        tab_name_str = self._get_current_tab()
 
         # Set width ratio based on tab type
         if tab_name_str == "browse":
@@ -157,3 +158,42 @@ class MainWidgetTabSwitcher:
             right_index = self.tab_to_right_stack.get(index, index)
 
         return left_index, right_index
+
+    def _get_current_tab(self) -> str:
+        """Get current tab through dependency injection or fallback to legacy."""
+        try:
+            if self.app_context and hasattr(self.app_context, "settings_manager"):
+                return (
+                    self.app_context.settings_manager.global_settings.get_current_tab()
+                )
+        except (AttributeError, RuntimeError):
+            pass
+
+        # Fallback to legacy AppContext for backward compatibility
+        try:
+            from src.settings_manager.global_settings.app_context import AppContext
+
+            return AppContext.settings_manager().global_settings.get_current_tab()
+        except (AttributeError, RuntimeError):
+            # If all else fails, default to construct tab
+            return "construct"
+
+    def _set_current_tab(self, tab_name: str) -> None:
+        """Set current tab through dependency injection or fallback to legacy."""
+        try:
+            if self.app_context and hasattr(self.app_context, "settings_manager"):
+                self.app_context.settings_manager.global_settings.set_current_tab(
+                    tab_name
+                )
+                return
+        except (AttributeError, RuntimeError):
+            pass
+
+        # Fallback to legacy AppContext for backward compatibility
+        try:
+            from src.settings_manager.global_settings.app_context import AppContext
+
+            AppContext.settings_manager().global_settings.set_current_tab(tab_name)
+        except (AttributeError, RuntimeError):
+            # If all else fails, silently ignore
+            pass

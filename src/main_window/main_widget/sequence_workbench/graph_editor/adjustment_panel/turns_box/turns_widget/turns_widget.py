@@ -121,4 +121,16 @@ class TurnsWidget(QWidget):
     def _notify_external_components(self):
         self.turns_adjusted.emit()
 
-        self.turns_box.adjustment_panel.graph_editor.main_widget.settings_dialog.ui.image_export_tab.update_preview()
+        # Update image export preview through the new dependency injection system
+        try:
+            main_widget = self.turns_box.adjustment_panel.graph_editor.main_widget
+            settings_dialog = main_widget.widget_manager.get_widget("settings_dialog")
+            if (
+                settings_dialog
+                and hasattr(settings_dialog, "ui")
+                and hasattr(settings_dialog.ui, "image_export_tab")
+            ):
+                settings_dialog.ui.image_export_tab.update_preview()
+        except AttributeError:
+            # Fallback: settings dialog not available or not properly initialized
+            pass

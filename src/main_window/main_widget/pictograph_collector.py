@@ -69,19 +69,27 @@ class PictographCollector:
         return pictographs
 
     def _collect_from_option_picker(self) -> list["Pictograph"]:
-        option_picker = self.main_widget.construct_tab.option_picker
-        return [option for option in option_picker.option_pool if option]
+        construct_tab = self.main_widget.get_tab_widget("construct")
+        if construct_tab and hasattr(construct_tab, "option_picker"):
+            return [
+                option for option in construct_tab.option_picker.option_pool if option
+            ]
+        return []
 
     def _collect_from_graph_editor(self) -> list["Pictograph"]:
-        sequence_workbench = self.main_widget.sequence_workbench
-        graph_editor = sequence_workbench.graph_editor
-        ge_view = graph_editor.pictograph_container.GE_view
-        return [ge_view.pictograph]
+        sequence_workbench = self.main_widget.get_widget("sequence_workbench")
+        if sequence_workbench and hasattr(sequence_workbench, "graph_editor"):
+            graph_editor = sequence_workbench.graph_editor
+            ge_view = graph_editor.pictograph_container.GE_view
+            return [ge_view.pictograph]
+        return []
 
     def _collect_from_codex(self) -> list["Pictograph"]:
-        codex = self.main_widget.codex
-        codex_views = codex.section_manager.codex_views.values()
-        return [view.pictograph for view in codex_views]
+        codex = self.main_widget.get_widget("codex")
+        if codex and hasattr(codex, "section_manager"):
+            codex_views = codex.section_manager.codex_views.values()
+            return [view.pictograph for view in codex_views]
+        return []
 
     def _collect_from_settings_dialog(self) -> list["Pictograph"]:
         visibility_pictograph = (

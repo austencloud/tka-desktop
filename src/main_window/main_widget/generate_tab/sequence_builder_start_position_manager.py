@@ -52,7 +52,29 @@ class SequenceBuilderStartPosManager:
         except ValueError:
             raise ValueError(f"Invalid position key format: {chosen_key}")
 
-        dataset = deepcopy(self.main_widget.pictograph_dataset)
+        # Get pictograph dataset through the new dependency injection system
+        try:
+            # Try to get PictographDataLoader from dependency injection
+            from main_window.main_widget.pictograph_data_loader import (
+                PictographDataLoader,
+            )
+
+            pictograph_data_loader = self.main_widget.app_context.get_service(
+                PictographDataLoader
+            )
+            dataset = deepcopy(pictograph_data_loader.get_pictograph_dataset())
+        except (AttributeError, KeyError):
+            # Fallback: check if main_widget has pictograph_dataset
+            if hasattr(self.main_widget, "pictograph_dataset"):
+                dataset = deepcopy(self.main_widget.pictograph_dataset)
+            else:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    "pictograph_dataset not available in SequenceBuilderStartPositionManager"
+                )
+                dataset = {}
         for pictograph_list in dataset.values():
             for pictograph_data in pictograph_list:
                 if (
@@ -60,9 +82,42 @@ class SequenceBuilderStartPosManager:
                     and pictograph_data.get(END_POS) == end_pos
                 ):
                     self._set_orientation_in(pictograph_data)
-                    start_pos_beat = StartPositionBeat(
-                        self.main_widget.sequence_workbench.beat_frame
-                    )
+
+                    # Get sequence workbench through the new widget manager system
+                    try:
+                        sequence_workbench = self.main_widget.widget_manager.get_widget(
+                            "sequence_workbench"
+                        )
+                        if sequence_workbench:
+                            beat_frame = sequence_workbench.beat_frame
+                        else:
+                            # Fallback: try direct access for backward compatibility
+                            if hasattr(self.main_widget, "sequence_workbench"):
+                                beat_frame = (
+                                    self.main_widget.sequence_workbench.beat_frame
+                                )
+                            else:
+                                import logging
+
+                                logger = logging.getLogger(__name__)
+                                logger.warning(
+                                    "sequence_workbench not available in SequenceBuilderStartPositionManager"
+                                )
+                                return
+                    except AttributeError:
+                        # Fallback: try direct access for backward compatibility
+                        if hasattr(self.main_widget, "sequence_workbench"):
+                            beat_frame = self.main_widget.sequence_workbench.beat_frame
+                        else:
+                            import logging
+
+                            logger = logging.getLogger(__name__)
+                            logger.warning(
+                                "sequence_workbench not available in SequenceBuilderStartPositionManager"
+                            )
+                            return
+
+                    start_pos_beat = StartPositionBeat(beat_frame)
                     start_pos_beat.managers.updater.update_pictograph(
                         deepcopy(pictograph_data)
                     )
@@ -79,9 +134,7 @@ class SequenceBuilderStartPosManager:
                         logger.warning(
                             "json_manager not available in SequenceBuilderStartPositionManager"
                         )
-                    self.main_widget.sequence_workbench.beat_frame.start_pos_view.set_start_pos(
-                        start_pos_beat
-                    )
+                    beat_frame.start_pos_view.set_start_pos(start_pos_beat)
                     return
         raise LookupError(f"No matching start position found for key: {chosen_key}")
 

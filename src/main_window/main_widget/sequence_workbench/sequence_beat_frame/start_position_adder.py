@@ -29,8 +29,37 @@ class StartPositionAdder:
             start_pos_beat = StartPositionBeat(self.beat_frame)
 
             start_pos_view = self.beat_frame.start_pos_view
-            self.main_widget.construct_tab.last_beat = start_pos_beat
-            self.construct_tab = self.main_widget.construct_tab
+
+            # Get construct tab through the new tab manager system
+            try:
+                construct_tab = self.main_widget.tab_manager.get_tab_widget("construct")
+                if construct_tab:
+                    construct_tab.last_beat = start_pos_beat
+                    self.construct_tab = construct_tab
+                else:
+                    # Fallback: try direct access for backward compatibility
+                    if hasattr(self.main_widget, "construct_tab"):
+                        self.main_widget.construct_tab.last_beat = start_pos_beat
+                        self.construct_tab = self.main_widget.construct_tab
+                    else:
+                        import logging
+
+                        logger = logging.getLogger(__name__)
+                        logger.warning(
+                            "construct_tab not available in StartPositionAdder"
+                        )
+                        return
+            except AttributeError:
+                # Fallback: try direct access for backward compatibility
+                if hasattr(self.main_widget, "construct_tab"):
+                    self.main_widget.construct_tab.last_beat = start_pos_beat
+                    self.construct_tab = self.main_widget.construct_tab
+                else:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.warning("construct_tab not available in StartPositionAdder")
+                    return
             start_pos_dict = clicked_start_option.state.pictograph_data
             graph_editor = self.sequence_workbench.graph_editor
 

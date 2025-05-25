@@ -20,19 +20,23 @@ class GraphicsEffectRemover:
         widgets = default_widgets + widgets
 
         for widget in widgets:
-            # if widget and _is_widget_alive(widget):
-            self._remove_all_graphics_effects(widget)
+            # Check if widget is not None and is alive before processing
+            if widget and hasattr(widget, "setGraphicsEffect"):
+                self._remove_all_graphics_effects(widget)
 
     def _remove_all_graphics_effects(self, widget: QWidget):
         """Recursively remove effects with deletion safety."""
         try:
+            # Additional safety check
+            if widget is None or not hasattr(widget, "setGraphicsEffect"):
+                return
+
             widget.setGraphicsEffect(None)
 
             if hasattr(widget, "children"):
                 for child in widget.findChildren(QWidget):
-                    if child.graphicsEffect():
+                    if child and child.graphicsEffect():
                         if child.__class__.__base__ != BaseIndicatorLabel:
                             child.setGraphicsEffect(None)
-        except RuntimeError:
-            pass  # Silently ignore already-deleted widgets
-
+        except (RuntimeError, AttributeError):
+            pass  # Silently ignore already-deleted widgets or attribute errors

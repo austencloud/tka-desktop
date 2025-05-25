@@ -52,9 +52,38 @@ class BeatSelectionOverlay(QWidget):
 
     def _update_graph_editor(self, toggle_animation: bool = False):
         """Update graph editor components."""
-        graph_editor = (
-            self.selected_beat.beat_frame.main_widget.sequence_workbench.graph_editor
-        )
+        # Get sequence workbench through the new widget manager system
+        main_widget = self.selected_beat.beat_frame.main_widget
+        try:
+            sequence_workbench = main_widget.widget_manager.get_widget(
+                "sequence_workbench"
+            )
+            if sequence_workbench:
+                graph_editor = sequence_workbench.graph_editor
+            else:
+                # Fallback: try direct access for backward compatibility
+                if hasattr(main_widget, "sequence_workbench"):
+                    graph_editor = main_widget.sequence_workbench.graph_editor
+                else:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        "sequence_workbench not available in BeatSelectionOverlay"
+                    )
+                    return
+        except AttributeError:
+            # Fallback: try direct access for backward compatibility
+            if hasattr(main_widget, "sequence_workbench"):
+                graph_editor = main_widget.sequence_workbench.graph_editor
+            else:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    "sequence_workbench not available in BeatSelectionOverlay"
+                )
+                return
         graph_editor.pictograph_container.update_pictograph(self.selected_beat.beat)
         graph_editor.adjustment_panel.update_turns_panel()
         graph_editor.adjustment_panel.update_adjustment_panel()

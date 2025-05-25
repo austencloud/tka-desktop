@@ -38,7 +38,10 @@ class MainWidgetUI:
 
     def _create_components(self):
         mw = self.mw
-        mw.fade_manager = FadeManager(mw)
+
+        # Get app_context for dependency injection
+        app_context = getattr(mw, "app_context", None)
+        mw.fade_manager = FadeManager(mw, app_context)
 
         mw.sequence_workbench = SequenceWorkbench(mw)
         mw.settings_dialog = SettingsDialog(mw)

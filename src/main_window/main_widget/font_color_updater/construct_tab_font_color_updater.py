@@ -12,9 +12,10 @@ class ConstructTabFontColorUpdater(BaseFontColorUpdater):
 
     def update(self):
         """Apply font color to the ConstructTab-related widgets."""
-        construct_tab = self.main_widget.construct_tab
-        # For example, any labels in the construct tab:
-        construct_labels = [
-            construct_tab.option_picker.reversal_filter.combo_box_label,
-        ]
-        self._apply_font_colors(construct_labels)
+        construct_tab = self.main_widget.get_tab_widget("construct")
+        if construct_tab and hasattr(construct_tab, "option_picker"):
+            # For example, any labels in the construct tab:
+            construct_labels = [
+                construct_tab.option_picker.reversal_filter.combo_box_label,
+            ]
+            self._apply_font_colors(construct_labels)

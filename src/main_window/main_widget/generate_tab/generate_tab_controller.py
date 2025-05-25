@@ -35,9 +35,42 @@ class GenerateTabController:
 
     def handle_generate_sequence(self, overwrite: bool):
         if overwrite:
-            self.tab.main_widget.sequence_workbench.beat_frame.sequence_workbench.beat_deleter.reset_widgets(
-                False
-            )
+            # Get sequence workbench through the new widget manager system
+            main_widget = self.tab.main_widget
+            try:
+                sequence_workbench = main_widget.widget_manager.get_widget(
+                    "sequence_workbench"
+                )
+                if sequence_workbench:
+                    sequence_workbench.beat_frame.sequence_workbench.beat_deleter.reset_widgets(
+                        False
+                    )
+                else:
+                    # Fallback: try direct access for backward compatibility
+                    if hasattr(main_widget, "sequence_workbench"):
+                        main_widget.sequence_workbench.beat_frame.sequence_workbench.beat_deleter.reset_widgets(
+                            False
+                        )
+                    else:
+                        import logging
+
+                        logger = logging.getLogger(__name__)
+                        logger.warning(
+                            "sequence_workbench not available in GenerateTabController"
+                        )
+            except AttributeError:
+                # Fallback: try direct access for backward compatibility
+                if hasattr(main_widget, "sequence_workbench"):
+                    main_widget.sequence_workbench.beat_frame.sequence_workbench.beat_deleter.reset_widgets(
+                        False
+                    )
+                else:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        "sequence_workbench not available in GenerateTabController"
+                    )
 
         length = int(self.settings.get_setting("length") or 16)
         intensity = (
