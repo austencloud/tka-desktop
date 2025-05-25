@@ -11,7 +11,9 @@ class GenerateTabFontColorUpdater(BaseFontColorUpdater):
         self.main_widget = main_widget
 
     def update(self):
-        gen_tab = self.main_widget.generate_tab
+        gen_tab = self._get_generate_tab()
+        if not gen_tab:
+            return  # Graceful fallback if generate tab is not available
 
         labels = [
             gen_tab.length_adjuster.length_label,
@@ -21,3 +23,21 @@ class GenerateTabFontColorUpdater(BaseFontColorUpdater):
         ]
 
         self._apply_font_colors(labels)
+
+    def _get_generate_tab(self):
+        """Get the generate tab using the new MVVM architecture with graceful fallbacks."""
+        try:
+            # Try to get generate tab through the new coordinator pattern
+            return self.main_widget.get_tab_widget("generate")
+        except AttributeError:
+            # Fallback: try through tab_manager for backward compatibility
+            try:
+                return self.main_widget.tab_manager.get_tab_widget("generate")
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.main_widget, "generate_tab"):
+                        return self.main_widget.generate_tab
+                except AttributeError:
+                    pass
+        return None

@@ -78,10 +78,25 @@ class BeatFactory:
         )
         for motion in new_beat.elements.motion_set.values():
             if motion.state.motion_type == FLOAT:
-                letter = self.main_widget.letter_determiner.determine_letter(pictograph_data)
+                letter = self.main_widget.letter_determiner.determine_letter(
+                    pictograph_data
+                )
                 new_beat.state.letter = letter
                 new_beat.elements.tka_glyph.update_tka_glyph()
-        self.main_widget.sequence_properties_manager.update_sequence_properties()
+        # Update sequence properties with graceful fallback for MainWidgetCoordinator refactoring
+        if (
+            hasattr(self.main_widget, "sequence_properties_manager")
+            and self.main_widget.sequence_properties_manager
+        ):
+            self.main_widget.sequence_properties_manager.update_sequence_properties()
+        else:
+            # Graceful fallback if sequence_properties_manager is not available yet
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(
+                "sequence_properties_manager not available yet - this is normal during initialization"
+            )
         self.beat_frame.sequence_workbench.graph_editor.pictograph_container.update_pictograph(
             new_beat
         )

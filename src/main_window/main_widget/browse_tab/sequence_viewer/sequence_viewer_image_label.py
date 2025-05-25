@@ -60,7 +60,9 @@ class SequenceViewerImageLabel(QLabel):
             Qt.TransformationMode.SmoothTransformation,
         )
         self.setFixedHeight(target_height)
-        self.sequence_viewer.stacked_widget.setFixedHeight(target_height)
+        # CRITICAL FIX: Remove the problematic setFixedHeight call on non-existent stacked_widget
+        # This was causing layout regression by trying to set fixed height on undefined widget
+        # The image label's setFixedHeight is sufficient for proper scaling
         self.setPixmap(scaled_pixmap)
 
     def update_thumbnail(self, index: int):

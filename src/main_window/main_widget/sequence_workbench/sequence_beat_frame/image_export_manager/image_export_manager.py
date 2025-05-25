@@ -52,6 +52,22 @@ class ImageExportManager:
                 # Fallback when json_manager not available
                 sequence = []
 
+        # Validate sequence parameter - ensure it's a list/sequence, not a boolean or other type
+        if not isinstance(sequence, (list, tuple)):
+            print(
+                f"Warning: export_image_directly received invalid sequence type: {type(sequence)}, value: {sequence}"
+            )
+            # Try to extract sequence if it's a dict with 'sequence' key
+            if isinstance(sequence, dict) and "sequence" in sequence:
+                sequence = sequence["sequence"]
+            else:
+                # Fallback to empty sequence
+                sequence = []
+
+        # Ensure sequence is a list
+        if not isinstance(sequence, list):
+            sequence = []
+
         # Check if the sequence is empty (no beats and no start position)
         include_start_pos = self.settings_manager.image_export.get_image_export_setting(
             "include_start_position"

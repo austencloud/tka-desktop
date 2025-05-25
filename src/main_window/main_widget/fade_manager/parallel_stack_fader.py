@@ -30,7 +30,7 @@ class ParallelStackFader:
         self.right_old_widget = right_stack.currentWidget()
         self.left_old_widget = left_stack.currentWidget()
         self.right_new_widget = right_stack.widget(right_new_index)
-        self.left_new_widget = left_stack.widget(left_new_index) 
+        self.left_new_widget = left_stack.widget(left_new_index)
 
         if not (
             self.right_old_widget
@@ -41,10 +41,29 @@ class ParallelStackFader:
             return
 
         def switch_and_resize():
-            total_width = self.manager.main_widget.width()
-            left_width = int(total_width * width_ratio[0])
-            left_stack.setFixedWidth(left_width)
-            right_stack.setFixedWidth(total_width - left_width)
+            # Use layout stretch factors instead of fixed widths to prevent layout regression
+            main_widget = self.manager.main_widget
+            if hasattr(main_widget, "content_layout"):
+                # Calculate stretch factors from width ratios
+                left_stretch = int(width_ratio[0] * 10)  # Scale up for better precision
+                right_stretch = int(width_ratio[1] * 10)
+
+                # Apply stretch factors to the layout
+                main_widget.content_layout.setStretch(0, left_stretch)
+                main_widget.content_layout.setStretch(1, right_stretch)
+
+                # Clear any fixed widths that might interfere
+                left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+                right_stack.setMaximumWidth(16777215)
+                left_stack.setMinimumWidth(0)
+                right_stack.setMinimumWidth(0)
+            else:
+                # Fallback to old fixed width method if content_layout not available
+                total_width = main_widget.width()
+                left_width = int(total_width * width_ratio[0])
+                left_stack.setFixedWidth(left_width)
+                right_stack.setFixedWidth(total_width - left_width)
+
             right_stack.setCurrentIndex(right_new_index)
             left_stack.setCurrentIndex(left_new_index)
 

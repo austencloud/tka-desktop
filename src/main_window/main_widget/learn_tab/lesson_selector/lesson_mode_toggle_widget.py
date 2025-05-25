@@ -5,7 +5,9 @@ from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QSpacerItem, QWidg
 from base_widgets.pytoggle import PyToggle
 
 if TYPE_CHECKING:
-    from main_window.main_widget.learn_tab.lesson_selector.lesson_selector import LessonSelector
+    from main_window.main_widget.learn_tab.lesson_selector.lesson_selector import (
+        LessonSelector,
+    )
 
 
 class LessonModeToggleWidget(QWidget):
@@ -69,18 +71,62 @@ class LessonModeToggleWidget(QWidget):
         global_settings = (
             self.lesson_selector.main_widget.settings_manager.global_settings
         )
-        font_color_updater = self.lesson_selector.main_widget.font_color_updater
+        font_color = self._get_font_color(global_settings.get_background_type())
         if self.current_mode == "fixed_question":
             self.fixed_question_label.setStyleSheet(
-                f"font-weight: bold; color: {font_color_updater.get_font_color(global_settings.get_background_type())};"
+                f"font-weight: bold; color: {font_color};"
             )
             self.countdown_label.setStyleSheet("font-weight: normal; color: gray;")
         else:
             self.fixed_question_label.setStyleSheet("font-weight: normal; color: gray;")
             self.countdown_label.setStyleSheet(
-                f"font-weight: bold; color: {font_color_updater.get_font_color(global_settings.get_background_type())};"
+                f"font-weight: bold; color: {font_color};"
             )
 
     def get_selected_mode(self) -> str:
         """Return the currently selected mode."""
         return self.current_mode
+
+    def _get_font_color(self, bg_type: str) -> str:
+        """Get the appropriate font color using the new MVVM architecture with graceful fallbacks."""
+        try:
+            # Try to get font_color_updater through the new coordinator pattern
+            font_color_updater = self.lesson_selector.main_widget.get_widget(
+                "font_color_updater"
+            )
+            if font_color_updater and hasattr(font_color_updater, "get_font_color"):
+                return font_color_updater.get_font_color(bg_type)
+        except AttributeError:
+            # Fallback: try through widget_manager for backward compatibility
+            try:
+                font_color_updater = (
+                    self.lesson_selector.main_widget.widget_manager.get_widget(
+                        "font_color_updater"
+                    )
+                )
+                if font_color_updater and hasattr(font_color_updater, "get_font_color"):
+                    return font_color_updater.get_font_color(bg_type)
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.lesson_selector.main_widget, "font_color_updater"):
+                        return self.lesson_selector.main_widget.font_color_updater.get_font_color(
+                            bg_type
+                        )
+                except AttributeError:
+                    pass
+
+        # Ultimate fallback: use the static method directly from FontColorUpdater
+        try:
+            from main_window.main_widget.font_color_updater.font_color_updater import (
+                FontColorUpdater,
+            )
+
+            return FontColorUpdater.get_font_color(bg_type)
+        except ImportError:
+            # If all else fails, return a sensible default
+            return (
+                "black"
+                if bg_type in ["Rainbow", "AuroraBorealis", "Aurora"]
+                else "white"
+            )

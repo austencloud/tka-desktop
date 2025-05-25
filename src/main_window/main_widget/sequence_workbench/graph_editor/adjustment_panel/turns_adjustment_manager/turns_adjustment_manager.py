@@ -116,7 +116,9 @@ class TurnsAdjustmentManager(QObject):
             )
 
     def _get_beat_index(self) -> int:
-        beat_frame = AppContext.sequence_beat_frame()
+        beat_frame = self._get_sequence_beat_frame()
+        if not beat_frame:
+            return 0  # Graceful fallback
         current_beat = beat_frame.get.beat_number_of_currently_selected_beat()
         duration = beat_frame.get.duration_of_currently_selected_beat()
         return current_beat + duration
@@ -196,29 +198,35 @@ class TurnsAdjustmentManager(QObject):
                         beat_index = self._get_beat_index()
                         previous_beat_index = beat_index - 1
                         if previous_beat_index >= 0:
-                            previous_beat_view = AppContext.sequence_beat_frame().get.beat_view_by_number(
-                                previous_beat_index
-                            )
-                            previous_motion = (
-                                previous_beat_view.beat.elements.motion_set.get(
-                                    self._color
+                            beat_frame = self._get_sequence_beat_frame()
+                            if beat_frame:
+                                previous_beat_view = beat_frame.get.beat_view_by_number(
+                                    previous_beat_index
                                 )
-                            )
-                            if previous_motion:
-                                last_prop_rot_dir = self._get_previous_prop_rot_dir(
-                                    previous_beat_index - 1
+                                previous_motion = (
+                                    previous_beat_view.beat.elements.motion_set.get(
+                                        self._color
+                                    )
                                 )
+                                if previous_motion:
+                                    last_prop_rot_dir = self._get_previous_prop_rot_dir(
+                                        previous_beat_index - 1
+                                    )
 
-                                current_motion.state.prop_rot_dir = last_prop_rot_dir
-                                json_manager = AppContext.json_manager()
-                                json_manager.updater.prop_rot_dir_updater.update_prop_rot_dir_in_json(
-                                    beat_index,
-                                    self._color,
-                                    current_motion.state.prop_rot_dir,
-                                )
-                                current_motion.pictograph.state.pictograph_data[
-                                    f"{self._color}_attributes"
-                                ]["prop_rot_dir"] = current_motion.state.prop_rot_dir
+                                    current_motion.state.prop_rot_dir = (
+                                        last_prop_rot_dir
+                                    )
+                                    json_manager = AppContext.json_manager()
+                                    json_manager.updater.prop_rot_dir_updater.update_prop_rot_dir_in_json(
+                                        beat_index,
+                                        self._color,
+                                        current_motion.state.prop_rot_dir,
+                                    )
+                                    current_motion.pictograph.state.pictograph_data[
+                                        f"{self._color}_attributes"
+                                    ][
+                                        "prop_rot_dir"
+                                    ] = current_motion.state.prop_rot_dir
 
             self._repo.save(self._state.current, self._color)
             self._sync_external_state()
@@ -226,9 +234,11 @@ class TurnsAdjustmentManager(QObject):
             self._presenter.show_error(str(e))
 
     def _get_previous_prop_rot_dir(self, previous_beat_index):
-        previous_beat_view = AppContext.sequence_beat_frame().get.beat_view_by_number(
-            previous_beat_index
-        )
+        beat_frame = self._get_sequence_beat_frame()
+        if not beat_frame:
+            return CLOCKWISE  # Graceful fallback
+
+        previous_beat_view = beat_frame.get.beat_view_by_number(previous_beat_index)
         if not previous_beat_view:
             return CLOCKWISE
         previous_motion = previous_beat_view.beat.elements.motion_set.get(self._color)
@@ -274,13 +284,52 @@ class TurnsAdjustmentManager(QObject):
     def _sync_external_state(self):
         AppContext.main_widget().json_manager.ori_validation_engine.run(True)
         sequence = AppContext.json_manager().loader_saver.load_current_sequence()
-        AppContext.sequence_beat_frame().updater.update_beats_from(sequence)
-        AppContext.main_widget().construct_tab.option_picker.updater.update_options()
+
+        beat_frame = self._get_sequence_beat_frame()
+        if beat_frame:
+            beat_frame.updater.update_beats_from(sequence)
+
+        # Use the same pattern for construct_tab access
+        try:
+            AppContext.main_widget().construct_tab.option_picker.updater.update_options()
+        except AttributeError:
+            # Graceful fallback if construct_tab is not available
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "Could not update construct tab options - construct tab not available"
+            )
 
     def _current_beat(self) -> Beat:
-        selected_beat_view = (
-            AppContext.sequence_beat_frame().get.currently_selected_beat_view()
-        )
+        beat_frame = self._get_sequence_beat_frame()
+        if not beat_frame:
+            return None  # Graceful fallback
+
+        selected_beat_view = beat_frame.get.currently_selected_beat_view()
         if selected_beat_view:
             return selected_beat_view.beat
         return None
+
+    def _get_sequence_beat_frame(self):
+        """Get the sequence beat frame using graceful fallbacks for the MainWidgetCoordinator refactoring."""
+        try:
+            # Try to get sequence beat frame through AppContext
+            return AppContext.sequence_beat_frame()
+        except RuntimeError:
+            # AppContext.sequence_beat_frame() not initialized yet
+            # This can happen during MainWidgetCoordinator initialization
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(
+                "AppContext.sequence_beat_frame() not available yet - this is normal during initialization"
+            )
+            return None
+        except Exception as e:
+            # Other unexpected errors
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Unexpected error accessing sequence beat frame: {e}")
+            return None

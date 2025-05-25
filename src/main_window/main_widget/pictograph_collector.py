@@ -34,28 +34,69 @@ class PictographCollector:
             yield from collector()
 
     def _collect_from_advanced_start_pos_picker(self) -> list["Pictograph"]:
-        advanced_start_pos_picker = (
-            self.main_widget.construct_tab.advanced_start_pos_picker
-        )
+        # Use dynamic lookup instead of cached reference
+        construct_tab = self.main_widget.get_tab_widget("construct")
+        if not construct_tab or not hasattr(construct_tab, "advanced_start_pos_picker"):
+            return []
+
+        advanced_start_pos_picker = construct_tab.advanced_start_pos_picker
+        if not advanced_start_pos_picker or not hasattr(
+            advanced_start_pos_picker, "start_options"
+        ):
+            return []
+
         pictographs = []
         for pictograph in advanced_start_pos_picker.start_options.values():
-            pictographs.append(pictograph)
+            if pictograph:  # Additional null check
+                pictographs.append(pictograph)
         return pictographs
 
     def _collect_from_start_pos_picker(self) -> list["Pictograph"]:
-        start_pos_picker = self.main_widget.construct_tab.start_pos_picker
+        # Use dynamic lookup instead of cached reference
+        construct_tab = self.main_widget.get_tab_widget("construct")
+        if not construct_tab or not hasattr(construct_tab, "start_pos_picker"):
+            return []
+
+        start_pos_picker = construct_tab.start_pos_picker
+        if not start_pos_picker or not hasattr(start_pos_picker, "pictograph_frame"):
+            return []
+
+        pictograph_frame = start_pos_picker.pictograph_frame
+        if not pictograph_frame or not hasattr(pictograph_frame, "start_positions"):
+            return []
+
         pictographs = []
-        for pictograph in start_pos_picker.pictograph_frame.start_positions.values():
-            pictographs.append(pictograph)
+        for pictograph in pictograph_frame.start_positions.values():
+            if pictograph:  # Additional null check
+                pictographs.append(pictograph)
         return pictographs
 
     def _collect_from_sequence_beat_frame(self) -> list["Pictograph"]:
-        sequence_workbench = self.main_widget.sequence_workbench
+        # Use dynamic lookup instead of cached reference
+        sequence_workbench = self.main_widget.get_widget("sequence_workbench")
+        if not sequence_workbench or not hasattr(sequence_workbench, "beat_frame"):
+            return []
+
         beat_frame = sequence_workbench.beat_frame
-        beat_views = beat_frame.beat_views
+        if not beat_frame:
+            return []
+
         pictographs = []
-        pictographs.append(beat_frame.start_pos_view.beat)
-        pictographs.extend(beat_view.beat for beat_view in beat_views)
+
+        # Collect from start_pos_view if available
+        if hasattr(beat_frame, "start_pos_view") and beat_frame.start_pos_view:
+            if (
+                hasattr(beat_frame.start_pos_view, "beat")
+                and beat_frame.start_pos_view.beat
+            ):
+                pictographs.append(beat_frame.start_pos_view.beat)
+
+        # Collect from beat_views if available
+        if hasattr(beat_frame, "beat_views") and beat_frame.beat_views:
+            for beat_view in beat_frame.beat_views:
+                if beat_view and hasattr(beat_view, "beat") and beat_view.beat:
+                    pictographs.append(beat_view.beat)
+
         return pictographs
 
     def _collect_from_pictograph_cache(self) -> list["Pictograph"]:
@@ -92,36 +133,103 @@ class PictographCollector:
         return []
 
     def _collect_from_settings_dialog(self) -> list["Pictograph"]:
-        visibility_pictograph = (
-            self.main_widget.settings_dialog.ui.visibility_tab.pictograph
-        )
+        # Use dynamic lookup instead of cached reference
+        settings_dialog = self.main_widget.get_widget("settings_dialog")
+        if not settings_dialog or not hasattr(settings_dialog, "ui"):
+            return []
+
+        ui = settings_dialog.ui
+        if not ui or not hasattr(ui, "visibility_tab"):
+            return []
+
+        visibility_tab = ui.visibility_tab
+        if not visibility_tab or not hasattr(visibility_tab, "pictograph"):
+            return []
+
+        visibility_pictograph = visibility_tab.pictograph
         if visibility_pictograph:
             return [visibility_pictograph]
         return []
 
     def _collect_from_lessons(self) -> list["Pictograph"]:
-        lesson_widgets_dict = self.main_widget.learn_tab.lessons
+        # Use dynamic lookup instead of cached reference
+        learn_tab = self.main_widget.get_tab_widget("learn")
+        if not learn_tab or not hasattr(learn_tab, "lessons"):
+            return []
+
+        lesson_widgets_dict = learn_tab.lessons
+        if not lesson_widgets_dict:
+            return []
+
         pictographs = []
         views: list["LessonPictographView"] = []
+
+        # Safely get lessons
         lesson1 = lesson_widgets_dict.get("Lesson1")
         lesson2 = lesson_widgets_dict.get("Lesson2")
         lesson3 = lesson_widgets_dict.get("Lesson3")
 
-        pictographs.extend([lesson1.question_widget.renderer.view.pictograph])
-        views.extend(
-            [
-                answer_pictograph
-                for answer_pictograph in lesson2.answers_widget.renderer.pictograph_views.values()
-            ]
-        )
-        pictographs.extend([lesson3.question_widget.renderer.view.pictograph])
-        views.extend(
-            [
-                answer_pictograph
-                for answer_pictograph in lesson3.answers_widget.renderer.pictograph_views.values()
-            ]
-        )
+        # Collect from lesson1 if available
+        if lesson1 and hasattr(lesson1, "question_widget"):
+            question_widget = lesson1.question_widget
+            if (
+                question_widget
+                and hasattr(question_widget, "renderer")
+                and question_widget.renderer
+                and hasattr(question_widget.renderer, "view")
+                and question_widget.renderer.view
+                and hasattr(question_widget.renderer.view, "pictograph")
+            ):
+                pictograph = question_widget.renderer.view.pictograph
+                if pictograph:
+                    pictographs.append(pictograph)
+
+        # Collect from lesson2 answers if available
+        if lesson2 and hasattr(lesson2, "answers_widget"):
+            answers_widget = lesson2.answers_widget
+            if (
+                answers_widget
+                and hasattr(answers_widget, "renderer")
+                and answers_widget.renderer
+                and hasattr(answers_widget.renderer, "pictograph_views")
+            ):
+                pictograph_views = answers_widget.renderer.pictograph_views
+                if pictograph_views:
+                    views.extend([view for view in pictograph_views.values() if view])
+
+        # Collect from lesson3 if available
+        if lesson3 and hasattr(lesson3, "question_widget"):
+            question_widget = lesson3.question_widget
+            if (
+                question_widget
+                and hasattr(question_widget, "renderer")
+                and question_widget.renderer
+                and hasattr(question_widget.renderer, "view")
+                and question_widget.renderer.view
+                and hasattr(question_widget.renderer.view, "pictograph")
+            ):
+                pictograph = question_widget.renderer.view.pictograph
+                if pictograph:
+                    pictographs.append(pictograph)
+
+        # Collect from lesson3 answers if available
+        if lesson3 and hasattr(lesson3, "answers_widget"):
+            answers_widget = lesson3.answers_widget
+            if (
+                answers_widget
+                and hasattr(answers_widget, "renderer")
+                and answers_widget.renderer
+                and hasattr(answers_widget.renderer, "pictograph_views")
+            ):
+                pictograph_views = answers_widget.renderer.pictograph_views
+                if pictograph_views:
+                    views.extend([view for view in pictograph_views.values() if view])
+
+        # Extract pictographs from views
         for view in views:
-            pictographs.append(view.pictograph)
+            if view and hasattr(view, "pictograph") and view.pictograph:
+                pictographs.append(view.pictograph)
+
+        # Filter out None values
         pictographs = [pictograph for pictograph in pictographs if pictograph]
         return pictographs

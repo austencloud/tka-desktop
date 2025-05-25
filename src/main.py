@@ -69,57 +69,64 @@ def initialize_dependency_injection():
 
 def initialize_legacy_appcontext(app_context):
     """Initialize the legacy AppContext singleton with services from dependency injection.
-    
+
     This bridges the gap between the new DI system and legacy code that still uses AppContext.
     """
     try:
         from src.settings_manager.global_settings.app_context import AppContext
         from src.utils.logging_config import get_logger
-        
+
         logger = get_logger(__name__)
         logger.info("Initializing legacy AppContext singleton...")
-        
+
         # Get services from the new dependency injection system
         settings_manager = app_context.settings_manager
         json_manager = app_context.json_manager
-        
+
         # Create special placement handler and loader directly
         # (Skip the fancy interface checking since those don't exist yet)
         logger.info("Creating special placement services...")
-        
+
         try:
-            from main_window.main_widget.json_manager.special_placement_saver import SpecialPlacementSaver
+            from main_window.main_widget.json_manager.special_placement_saver import (
+                SpecialPlacementSaver,
+            )
+
             special_placement_handler = SpecialPlacementSaver()
             logger.info("Created SpecialPlacementSaver successfully")
         except ImportError as e:
             logger.warning(f"Could not import SpecialPlacementSaver: {e}")
             special_placement_handler = None
-        
+
         try:
-            from main_window.main_widget.special_placement_loader import SpecialPlacementLoader
+            from main_window.main_widget.special_placement_loader import (
+                SpecialPlacementLoader,
+            )
+
             special_placement_loader = SpecialPlacementLoader()
             logger.info("Created SpecialPlacementLoader successfully")
         except ImportError as e:
             logger.warning(f"Could not import SpecialPlacementLoader: {e}")
             special_placement_loader = None
-        
+
         # Initialize the legacy AppContext
         AppContext.init(
             settings_manager=settings_manager,
             json_manager=json_manager,
             special_placement_handler=special_placement_handler,
-            special_placement_loader=special_placement_loader
+            special_placement_loader=special_placement_loader,
         )
-        
+
         logger.info("Legacy AppContext singleton initialized successfully")
-        
+
     except Exception as e:
         from src.utils.logging_config import get_logger
+
         logger = get_logger(__name__)
         logger.error(f"Failed to initialize legacy AppContext: {e}")
         logger.error("This will cause issues with widgets that still use AppContext")
         # Don't raise - let the app continue, some things might still work
-        
+
 
 def create_main_window(profiler, splash_screen, app_context):
     """Create the main window with dependency injection.

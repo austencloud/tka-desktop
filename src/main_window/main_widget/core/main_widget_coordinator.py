@@ -125,6 +125,16 @@ class MainWidgetCoordinator(QWidget):
         self.fade_manager = None
         self.thumbnail_finder = None
         self.sequence_level_evaluator = None
+        self.sequence_properties_manager = None
+        self.sequence_workbench = None
+        self.pictograph_dataset = None
+        self.pictograph_collector = None
+        self.pictograph_cache = {}  # Initialize empty cache for backward compatibility
+
+        # Tab widgets for backward compatibility
+        self.construct_tab = None
+        self.learn_tab = None
+        self.settings_dialog = None
 
     def initialize_components(self) -> None:
         """
@@ -137,11 +147,9 @@ class MainWidgetCoordinator(QWidget):
 
         logger = logging.getLogger(__name__)
 
-        print("DEBUG: MainWidgetCoordinator.initialize_components() called")
         logger.info("MainWidgetCoordinator.initialize_components() called")
 
         if self._components_initialized:
-            print("DEBUG: Components already initialized, skipping")
             logger.info("Components already initialized, skipping")
             return  # Already initialized
 
@@ -151,12 +159,38 @@ class MainWidgetCoordinator(QWidget):
             self.widget_manager.initialize_widgets()
             logger.info("Widget manager initialization completed")
 
+            # Set sequence_properties_manager immediately after widgets are initialized
+            # This is needed early for sequence generation functionality
+            try:
+                from main_window.main_widget.sequence_properties_manager.sequence_properties_manager_factory import (
+                    SequencePropertiesManagerFactory,
+                )
+
+                self.sequence_properties_manager = (
+                    SequencePropertiesManagerFactory.create(self.app_context)
+                )
+                logger.info(
+                    "Sequence properties manager injected for backward compatibility"
+                )
+            except Exception as e:
+                logger.warning(f"Sequence properties manager not available: {e}")
+                self.sequence_properties_manager = None
+
             # Set additional services after widgets are initialized
             self.fade_manager = self.widget_manager.get_widget("fade_manager")
             if self.fade_manager:
                 logger.info("Fade manager injected for backward compatibility")
             else:
                 logger.warning("Fade manager not available")
+
+            # Set sequence_workbench for backward compatibility
+            self.sequence_workbench = self.widget_manager.get_widget(
+                "sequence_workbench"
+            )
+            if self.sequence_workbench:
+                logger.info("Sequence workbench injected for backward compatibility")
+            else:
+                logger.warning("Sequence workbench not available")
 
             # Create thumbnail_finder directly (it's not a widget)
             try:
@@ -192,12 +226,87 @@ class MainWidgetCoordinator(QWidget):
                 logger.warning(f"Letter determiner not available: {e}")
                 self.letter_determiner = None
 
+            # Set pictograph_dataset for backward compatibility
+            try:
+                from main_window.main_widget.pictograph_data_loader import (
+                    PictographDataLoader,
+                )
+
+                pictograph_data_loader = self.app_context.get_service(
+                    PictographDataLoader
+                )
+                if pictograph_data_loader and hasattr(
+                    pictograph_data_loader, "get_pictograph_dataset"
+                ):
+                    self.pictograph_dataset = (
+                        pictograph_data_loader.get_pictograph_dataset()
+                    )
+                    logger.info(
+                        "Pictograph dataset injected for backward compatibility"
+                    )
+                else:
+                    logger.warning("Pictograph dataset not available from data loader")
+                    self.pictograph_dataset = {}
+            except Exception as e:
+                logger.warning(f"Pictograph dataset not available: {e}")
+                self.pictograph_dataset = {}
+
+            # Set pictograph_collector for backward compatibility
+            try:
+                from main_window.main_widget.pictograph_collector_factory import (
+                    PictographCollectorFactory,
+                )
+
+                self.pictograph_collector = PictographCollectorFactory.create(
+                    parent=self, app_context=self.app_context
+                )
+                logger.info("Pictograph collector created for backward compatibility")
+
+            except ImportError as e:
+                logger.warning(f"Could not import PictographCollectorFactory: {e}")
+                # Fallback: create basic pictograph collector
+                try:
+                    from main_window.main_widget.pictograph_collector import (
+                        PictographCollector,
+                    )
+
+                    self.pictograph_collector = PictographCollector(self)
+                    logger.info(
+                        "Fallback pictograph collector created for backward compatibility"
+                    )
+                except ImportError as e2:
+                    logger.error(f"Could not create pictograph_collector: {e2}")
+                    self.pictograph_collector = None
+            except Exception as e:
+                logger.error(f"Failed to initialize pictograph_collector: {e}")
+                self.pictograph_collector = None
+
+            # Set tab widgets for backward compatibility (needed by pictograph_collector)
+            self.construct_tab = self.tab_manager.get_tab_widget("construct")
+            if self.construct_tab:
+                logger.info("Construct tab injected for backward compatibility")
+            else:
+                logger.warning("Construct tab not available")
+
+            self.learn_tab = self.tab_manager.get_tab_widget("learn")
+            if self.learn_tab:
+                logger.info("Learn tab injected for backward compatibility")
+            else:
+                logger.warning("Learn tab not available")
+
+            self.settings_dialog = self.widget_manager.get_widget("settings_dialog")
+            if self.settings_dialog:
+                logger.info("Settings dialog injected for backward compatibility")
+            else:
+                logger.warning("Settings dialog not available")
+
             # Set up the menu bar layout after widgets are created
             logger.info("Setting up menu bar layout...")
             self._setup_menu_bar_layout()
             logger.info("Menu bar layout setup completed")
 
-            # Then initialize tabs
+            # Initialize tabs (TabManager will populate stacks with essential widgets)
+            # Note: TabManager.initialize_tabs() handles stack population
             logger.info("Initializing tab manager...")
             self.tab_manager.initialize_tabs()
             logger.info("Tab manager initialization completed")
@@ -206,6 +315,11 @@ class MainWidgetCoordinator(QWidget):
             logger.info("Initializing state manager...")
             self.state_manager.initialize_state()
             logger.info("State manager initialization completed")
+
+            # Load saved sequence into beat frame after all widgets are initialized
+            logger.info("Loading saved sequence into beat frame...")
+            self._load_saved_sequence()
+            logger.info("Saved sequence loading completed")
 
             self._components_initialized = True
             logger.info(
@@ -252,6 +366,77 @@ class MainWidgetCoordinator(QWidget):
 
             logger = logging.getLogger(__name__)
             logger.error(f"Failed to set up menu bar layout: {e}")
+
+    def _load_saved_sequence(self) -> None:
+        """Load the saved sequence from current_sequence.json into the beat frame UI."""
+        try:
+            # Get the sequence workbench
+            sequence_workbench = self.widget_manager.get_widget("sequence_workbench")
+            if not sequence_workbench or not hasattr(sequence_workbench, "beat_frame"):
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    "Sequence workbench or beat frame not available for sequence loading"
+                )
+                return
+
+            beat_frame = sequence_workbench.beat_frame
+            if not beat_frame or not hasattr(beat_frame, "populator"):
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    "Beat frame populator not available for sequence loading"
+                )
+                return
+
+            # Check if construct tab is available (needed for start position picker)
+            construct_tab = self.tab_manager.get_tab_widget("construct")
+            if not construct_tab or not hasattr(construct_tab, "start_pos_picker"):
+                import logging
+                from PyQt6.QtCore import QTimer
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    "Construct tab or start position picker not available, deferring sequence loading"
+                )
+                # Defer the sequence loading until the construct tab is ready
+                QTimer.singleShot(1000, self._load_saved_sequence)
+                return
+
+            # Load the current sequence from JSON
+            json_manager = self.app_context.json_manager
+            current_sequence = json_manager.loader_saver.load_current_sequence()
+
+            # Only load if there's actual sequence data (more than just the default entry)
+            if len(current_sequence) > 1:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.info(
+                    f"Loading sequence with {len(current_sequence)} entries into beat frame"
+                )
+
+                # Use the beat frame populator to load the sequence
+                beat_frame.populator.populate_beat_frame_from_json(
+                    current_sequence, initial_state_load=True
+                )
+                logger.info("Sequence loaded successfully into beat frame UI")
+            else:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.info(
+                    "No saved sequence found or sequence is empty, starting with empty beat frame"
+                )
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to load saved sequence: {e}")
+            # Don't raise - let the application continue with an empty beat frame
 
     def _setup_image_drag_drop(self) -> None:
         """Set up image drag and drop functionality."""

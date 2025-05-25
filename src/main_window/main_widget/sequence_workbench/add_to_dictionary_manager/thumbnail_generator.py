@@ -27,12 +27,17 @@ class ThumbnailGenerator:
         fullscreen_preview=False,
     ):
         """Generate and save thumbnail for a sequence variation."""
-        beat_frame_image = self.image_creator.create_sequence_image(
-            sequence,
-            options=self.image_creator.export_manager.settings_manager.image_export.get_all_image_export_options(),
-            dictionary=dictionary,
-            fullscreen_preview=fullscreen_preview,
-        )
+        try:
+            beat_frame_image = self.image_creator.create_sequence_image(
+                sequence,
+                options=self.image_creator.export_manager.settings_manager.image_export.get_all_image_export_options(),
+                dictionary=dictionary,
+                fullscreen_preview=fullscreen_preview,
+            )
+        except Exception as e:
+            print(f"Warning: Failed to create sequence image: {e}")
+            beat_frame_image = None
+
         pil_image = self.qimage_to_pil(beat_frame_image)
         pil_image = self._resize_image(pil_image, 0.5)
         pil_image = self._sharpen_image(pil_image)
@@ -57,13 +62,40 @@ class ThumbnailGenerator:
         )  # 1.0 is original sharpness; >1.0 increases sharpness
 
     def qimage_to_pil(self, qimage: QImage) -> Image.Image:
+        """Convert QImage to PIL Image with proper error handling."""
+        # Check if QImage is valid
+        if qimage is None or qimage.isNull():
+            print("Warning: QImage is None or null, creating empty image")
+            # Return a small empty image as fallback
+            return Image.new("RGBA", (100, 100), (255, 255, 255, 0))
+
+        # Convert to proper format
         qimage = qimage.convertToFormat(QImage.Format.Format_ARGB32)
         width, height = qimage.width(), qimage.height()
+
+        # Check for valid dimensions
+        if width <= 0 or height <= 0:
+            print(
+                f"Warning: Invalid QImage dimensions {width}x{height}, creating empty image"
+            )
+            return Image.new("RGBA", (100, 100), (255, 255, 255, 0))
+
+        # Get image data pointer
         ptr = qimage.bits()
-        ptr.setsize(height * width * 4)
-        arr = np.array(ptr, copy=False).reshape((height, width, 4))
-        arr = arr[..., [2, 1, 0, 3]]  # Adjust for RGB
-        return Image.fromarray(arr, "RGBA")
+        if ptr is None:
+            print("Warning: QImage bits() returned None, creating empty image")
+            return Image.new("RGBA", (100, 100), (255, 255, 255, 0))
+
+        try:
+            ptr.setsize(height * width * 4)
+            arr = np.array(ptr, copy=False).reshape((height, width, 4))
+            arr = arr[..., [2, 1, 0, 3]]  # Adjust for RGB
+            return Image.fromarray(arr, "RGBA")
+        except Exception as e:
+            print(
+                f"Warning: Failed to convert QImage to PIL: {e}, creating empty image"
+            )
+            return Image.new("RGBA", (100, 100), (255, 255, 255, 0))
 
     def _create_png_info(self, metadata: str) -> PngImagePlugin.PngInfo:
         info = PngImagePlugin.PngInfo()
@@ -77,4 +109,22 @@ class ThumbnailGenerator:
     def _save_image(
         self, pil_image: Image.Image, image_path: str, info: PngImagePlugin.PngInfo
     ):
-        pil_image.save(image_path, "PNG", pnginfo=info)
+        """Save the PIL image to the specified path, creating directories if needed."""
+        try:
+            # Ensure the directory exists before saving
+            directory = os.path.dirname(image_path)
+            if directory:  # Only create directory if path has a directory component
+                os.makedirs(directory, exist_ok=True)
+
+            # Save the image
+            pil_image.save(image_path, "PNG", pnginfo=info)
+
+        except PermissionError as e:
+            print(f"Permission error saving thumbnail to {image_path}: {e}")
+            raise
+        except OSError as e:
+            print(f"OS error saving thumbnail to {image_path}: {e}")
+            raise
+        except Exception as e:
+            print(f"Unexpected error saving thumbnail to {image_path}: {e}")
+            raise

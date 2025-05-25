@@ -310,34 +310,145 @@ class TabManager(QObject):
         logger.info(f"Switched from {old_tab} to {tab_name}")
         return True
 
+    def _find_widget_index_in_stack(self, stack, target_widget_type: str) -> int:
+        """Find the index of a widget type in a stack."""
+        for i in range(stack.count()):
+            widget = stack.widget(i)
+            if widget and widget.__class__.__name__ == target_widget_type:
+                return i
+        return -1
+
+    def _find_widget_in_stack_by_attribute(
+        self, stack, tab_widget, attribute_name: str
+    ) -> int:
+        """Find the index of a widget by checking if tab_widget has the attribute."""
+        if hasattr(tab_widget, attribute_name):
+            target_widget = getattr(tab_widget, attribute_name)
+            for i in range(stack.count()):
+                if stack.widget(i) is target_widget:
+                    return i
+        return -1
+
     def _switch_stack_widgets(self, tab_name: str, tab_widget: QWidget) -> None:
         """Switch the stack widgets to show the correct tab."""
-        # Switch left stack based on tab
-        if tab_name == "construct":
-            # Show sequence_workbench (index 0) for construct tab
-            self.coordinator.left_stack.setCurrentIndex(0)
-            # Show construct tab's start_pos_picker (index 0) on right stack
-            self.coordinator.right_stack.setCurrentIndex(0)
-        elif tab_name == "generate":
-            # Show sequence_workbench (index 0) for generate tab
-            self.coordinator.left_stack.setCurrentIndex(0)
-            # Show generate tab (index 3) on right stack
-            self.coordinator.right_stack.setCurrentIndex(3)
-        elif tab_name == "learn":
-            # Show sequence_workbench (index 0) for learn tab
-            self.coordinator.left_stack.setCurrentIndex(0)
-            # Show learn tab (index 4) on right stack
-            self.coordinator.right_stack.setCurrentIndex(4)
-        elif tab_name == "browse":
-            # Show browse tab's filter_stack (index 2) on left stack
-            self.coordinator.left_stack.setCurrentIndex(2)
-            # Show browse tab's sequence_viewer (index 5) on right stack
-            self.coordinator.right_stack.setCurrentIndex(5)
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        # Set width ratios based on tab type (similar to old MainWidgetTabSwitcher)
+        if tab_name == "browse":
+            width_ratio = (2, 1)  # Browse tab uses 2/3 for left panel, 1/3 for right
         elif tab_name == "sequence_card":
-            # Show sequence_workbench (index 0) for sequence card tab
-            self.coordinator.left_stack.setCurrentIndex(0)
-            # Show sequence card tab (index 6) on right stack
-            self.coordinator.right_stack.setCurrentIndex(6)
+            width_ratio = (0, 1)  # Sequence card tab uses full width for right panel
+        else:
+            width_ratio = (1, 1)  # Default is equal split
+
+        # Apply width ratios to the content layout
+        # Handle both new coordinator and old main widget systems
+        if hasattr(self.coordinator, "content_layout"):
+            # New coordinator system
+            self.coordinator.content_layout.setStretch(0, width_ratio[0])
+            self.coordinator.content_layout.setStretch(1, width_ratio[1])
+        elif hasattr(self.coordinator, "main_widget") and hasattr(
+            self.coordinator.main_widget, "content_layout"
+        ):
+            # Old main widget system with stored content_layout reference
+            self.coordinator.main_widget.content_layout.setStretch(0, width_ratio[0])
+            self.coordinator.main_widget.content_layout.setStretch(1, width_ratio[1])
+
+        # Switch left and right stacks based on tab using dynamic widget lookup
+        if tab_name == "construct":
+            # Show sequence_workbench for construct tab (dynamic lookup)
+            left_index = self._find_widget_index_in_stack(
+                self.coordinator.left_stack, "SequenceWorkbench"
+            )
+            if left_index >= 0:
+                self.coordinator.left_stack.setCurrentIndex(left_index)
+
+            # Show construct tab's start_pos_picker on right stack (dynamic lookup)
+            right_index = self._find_widget_index_in_stack(
+                self.coordinator.right_stack, "StartPosPicker"
+            )
+            if right_index >= 0:
+                self.coordinator.right_stack.setCurrentIndex(right_index)
+            logger.info(
+                "Switched to construct tab: sequence_workbench (left), start_pos_picker (right)"
+            )
+        elif tab_name == "generate":
+            # Show sequence_workbench for generate tab (dynamic lookup)
+            left_index = self._find_widget_index_in_stack(
+                self.coordinator.left_stack, "SequenceWorkbench"
+            )
+            if left_index >= 0:
+                self.coordinator.left_stack.setCurrentIndex(left_index)
+
+            # Show generate tab on right stack (dynamic lookup)
+            right_index = self._find_widget_index_in_stack(
+                self.coordinator.right_stack, "GenerateTab"
+            )
+            if right_index >= 0:
+                self.coordinator.right_stack.setCurrentIndex(right_index)
+
+            logger.info(
+                "Switched to generate tab: sequence_workbench (left), generate_tab (right)"
+            )
+        elif tab_name == "learn":
+            # Show codex for learn tab (dynamic lookup)
+            left_index = self._find_widget_index_in_stack(
+                self.coordinator.left_stack, "Codex"
+            )
+            if left_index >= 0:
+                self.coordinator.left_stack.setCurrentIndex(left_index)
+
+            # Show learn tab on right stack (dynamic lookup)
+            right_index = self._find_widget_index_in_stack(
+                self.coordinator.right_stack, "LearnTab"
+            )
+            if right_index >= 0:
+                self.coordinator.right_stack.setCurrentIndex(right_index)
+
+            logger.info("Switched to learn tab: codex (left), learn_tab (right)")
+        elif tab_name == "browse":
+            # Show browse tab's filter_stack on left stack (dynamic lookup)
+            # Browse tab can have either FilterSelector or SequencePicker on left
+            left_index = self._find_widget_index_in_stack(
+                self.coordinator.left_stack, "FilterSelector"
+            )
+            if left_index < 0:
+                left_index = self._find_widget_index_in_stack(
+                    self.coordinator.left_stack, "SequencePicker"
+                )
+            if left_index >= 0:
+                self.coordinator.left_stack.setCurrentIndex(left_index)
+
+            # Show browse tab's sequence_viewer on right stack (dynamic lookup)
+            right_index = self._find_widget_index_in_stack(
+                self.coordinator.right_stack, "SequenceViewer"
+            )
+            if right_index >= 0:
+                self.coordinator.right_stack.setCurrentIndex(right_index)
+
+            logger.info(
+                "Switched to browse tab: filter_stack (left), sequence_viewer (right)"
+            )
+        elif tab_name == "sequence_card":
+            # Show sequence_workbench for sequence card tab (will be hidden by width ratio)
+            left_index = self._find_widget_index_in_stack(
+                self.coordinator.left_stack, "SequenceWorkbench"
+            )
+            if left_index >= 0:
+                self.coordinator.left_stack.setCurrentIndex(left_index)
+
+            # Show sequence card tab on right stack (dynamic lookup)
+            right_index = self._find_widget_index_in_stack(
+                self.coordinator.right_stack, "SequenceCardTab"
+            )
+            if right_index >= 0:
+                self.coordinator.right_stack.setCurrentIndex(right_index)
+
+            logger.info(
+                "Switched to sequence_card tab: sequence_workbench (hidden), sequence_card_tab (full width)"
+            )
         else:
             # Default: show sequence_workbench on left, tab widget on right
             self.coordinator.left_stack.setCurrentIndex(0)
@@ -346,6 +457,9 @@ class TabManager(QObject):
                 for i in range(self.coordinator.right_stack.count())
             ]:
                 self.coordinator.right_stack.setCurrentWidget(tab_widget)
+                logger.info(
+                    f"Switched to {tab_name} tab: sequence_workbench (left), {tab_name} (right)"
+                )
 
     def get_tab_widget(self, tab_name: str) -> Optional[QWidget]:
         """
@@ -376,7 +490,7 @@ class TabManager(QObject):
         # Update tabs that depend on specific widgets
         if widget_name == "sequence_workbench":
             # Some tabs might need the sequence workbench
-            for tab_name, tab_widget in self._tabs.items():
+            for tab_widget in self._tabs.values():
                 if hasattr(tab_widget, "on_sequence_workbench_ready"):
                     tab_widget.on_sequence_workbench_ready()
 

@@ -10,7 +10,7 @@ class ThumbnailBoxUIUpdater:
 
     def __init__(self, browse_tab: "BrowseTab"):
         self.browse_tab = browse_tab
-        self.font_color_updater = browse_tab.main_widget.font_color_updater
+        self.font_color_updater = self._get_font_color_updater()
 
     def update_thumbnail_image(self, thumbnail_box: "ThumbnailBox"):
         """Updates the thumbnail image of a given thumbnail box."""
@@ -38,3 +38,34 @@ class ThumbnailBoxUIUpdater:
             tb.favorites_manager.favorite_status
         )
         tb.variation_number_label.setStyleSheet(f"color: {font_color};")
+
+    def _get_font_color_updater(self):
+        """Get the font color updater using the new MVVM architecture with graceful fallbacks."""
+        try:
+            # Try to get font_color_updater through the new coordinator pattern
+            return self.browse_tab.main_widget.get_widget("font_color_updater")
+        except AttributeError:
+            # Fallback: try through widget_manager for backward compatibility
+            try:
+                return self.browse_tab.main_widget.widget_manager.get_widget(
+                    "font_color_updater"
+                )
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.browse_tab.main_widget, "font_color_updater"):
+                        return self.browse_tab.main_widget.font_color_updater
+                except AttributeError:
+                    pass
+
+        # Ultimate fallback: create a minimal font color updater with static method access
+        class FallbackFontColorUpdater:
+            @staticmethod
+            def get_font_color(bg_type: str) -> str:
+                return (
+                    "black"
+                    if bg_type in ["Rainbow", "AuroraBorealis", "Aurora"]
+                    else "white"
+                )
+
+        return FallbackFontColorUpdater()

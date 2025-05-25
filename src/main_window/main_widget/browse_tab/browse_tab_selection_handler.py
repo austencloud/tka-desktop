@@ -45,6 +45,12 @@ class BrowseTabSelectionHandler:
         self._update_labels_and_settings(image_label)
         QApplication.processEvents()
 
+        # CRITICAL FIX: Force layout constraints after thumbnail selection
+        self._enforce_browse_tab_layout_constraints()
+
+        # Monitor to verify the fix worked
+        self._monitor_right_stack_width("AFTER_LAYOUT_CONSTRAINT_ENFORCEMENT")
+
     def _update_sequence_data(
         self, image_label: "ThumbnailImageLabel", sequence_dict: dict
     ):
@@ -65,13 +71,33 @@ class BrowseTabSelectionHandler:
 
     def _update_labels_and_settings(self, image_label: "ThumbnailImageLabel"):
         """Updates labels and browse settings based on the selected thumbnail."""
+        from PyQt6.QtWidgets import QApplication
+
         thumbnails = image_label.thumbnail_box.state.thumbnails
+
+        # Monitor before sequence viewer update
+        self._monitor_right_stack_width("BEFORE_UPDATE_THUMBNAILS")
+        QApplication.processEvents()
+        self._monitor_right_stack_width("AFTER_PROCESS_EVENTS_1")
+
         self.sequence_viewer.update_thumbnails(thumbnails)
+
+        # Monitor after sequence viewer update
+        self._monitor_right_stack_width("AFTER_UPDATE_THUMBNAILS")
+        QApplication.processEvents()
+        self._monitor_right_stack_width("AFTER_PROCESS_EVENTS_2")
+
         self.select_viewer_thumbnail(
             image_label.thumbnail_box,
             image_label.thumbnail_box.state.current_index,
             image_label.thumbnail_box.word,
         )
+
+        # Monitor after select viewer thumbnail
+        self._monitor_right_stack_width("AFTER_SELECT_VIEWER_THUMBNAIL")
+        QApplication.processEvents()
+        self._monitor_right_stack_width("AFTER_PROCESS_EVENTS_3")
+
         self.sequence_viewer.thumbnail_box.variation_number_label.update_index(
             image_label.thumbnail_box.state.current_index
         )
@@ -88,6 +114,31 @@ class BrowseTabSelectionHandler:
             is_favorite
         )
         self.sequence_viewer.thumbnail_box.word = word
+
+    def _enforce_browse_tab_layout_constraints(self):
+        """Force the browse tab to maintain its 2:1 layout ratio."""
+        try:
+            main_widget = self.main_widget
+            if hasattr(main_widget, "content_layout"):
+                # Force the 2:1 ratio by setting stretch factors
+                main_widget.content_layout.setStretch(0, 2)  # Left stack: 2/3
+                main_widget.content_layout.setStretch(1, 1)  # Right stack: 1/3
+
+                # Clear any maximum width constraints that might interfere
+                if hasattr(main_widget, "right_stack"):
+                    main_widget.right_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+                    main_widget.right_stack.setMinimumWidth(0)
+
+                # Force immediate layout update
+                main_widget.content_layout.update()
+                main_widget.updateGeometry()
+
+                print("[LAYOUT_FIX] Enforced 2:1 ratio constraints")
+        except Exception as e:
+            print(f"[LAYOUT_FIX] Error enforcing constraints: {e}")
+
+        # Final monitor after all updates
+        self._monitor_right_stack_width("AFTER_ALL_UPDATES")
 
     def select_viewer_thumbnail(self, thumbnail_box, index, word):
         """Selects a thumbnail in the sequence viewer."""

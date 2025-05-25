@@ -41,8 +41,8 @@ class PropRotDirLogicHandler(QObject):
         self._detect_reversals()
         self.update_related_components()
 
-        # Refresh UI elements
-        self.turns_box.graph_editor.sequence_workbench.main_widget.construct_tab.option_picker.updater.refresh_options()
+        # Refresh UI elements with graceful fallbacks
+        self._refresh_construct_tab_options()
 
     def update_button_states(self, direction: str) -> None:
         """✅ Update button states in TurnsBoxHeader instead of missing `ui_handler`."""
@@ -197,3 +197,54 @@ class PropRotDirLogicHandler(QObject):
 
         # Also update the letter
         self.turns_box.prop_rot_dir_button_manager.update_pictograph_letter(pictograph)
+
+    def _refresh_construct_tab_options(self) -> None:
+        """Refresh construct tab options using the new MVVM architecture with graceful fallbacks."""
+        try:
+            # Try to get construct tab through the new coordinator pattern
+            main_widget = self.turns_box.graph_editor.sequence_workbench.main_widget
+            construct_tab = main_widget.get_tab_widget("construct")
+            if (
+                construct_tab
+                and hasattr(construct_tab, "option_picker")
+                and hasattr(construct_tab.option_picker, "updater")
+            ):
+                construct_tab.option_picker.updater.refresh_options()
+                return
+        except AttributeError:
+            pass
+
+        try:
+            # Fallback: try through tab_manager for backward compatibility
+            main_widget = self.turns_box.graph_editor.sequence_workbench.main_widget
+            construct_tab = main_widget.tab_manager.get_tab_widget("construct")
+            if (
+                construct_tab
+                and hasattr(construct_tab, "option_picker")
+                and hasattr(construct_tab.option_picker, "updater")
+            ):
+                construct_tab.option_picker.updater.refresh_options()
+                return
+        except AttributeError:
+            pass
+
+        try:
+            # Final fallback: try direct access for legacy compatibility
+            main_widget = self.turns_box.graph_editor.sequence_workbench.main_widget
+            if hasattr(main_widget, "construct_tab"):
+                construct_tab = main_widget.construct_tab
+                if hasattr(construct_tab, "option_picker") and hasattr(
+                    construct_tab.option_picker, "updater"
+                ):
+                    construct_tab.option_picker.updater.refresh_options()
+                    return
+        except AttributeError:
+            pass
+
+        # If all else fails, log a warning but don't crash
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            "Could not refresh construct tab options - construct tab not available"
+        )

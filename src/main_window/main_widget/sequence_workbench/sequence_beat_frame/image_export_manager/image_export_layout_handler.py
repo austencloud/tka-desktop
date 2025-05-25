@@ -33,7 +33,7 @@ class ImageExportLayoutHandler:
         """
         # Get the current layout from the beat frame
         # Note: beat_frame_layout_manager.calculate_layout returns (rows, columns)
-        columns, rows = self.get_current_beat_frame_layout(filled_beat_count)
+        rows, columns = self.get_current_beat_frame_layout(filled_beat_count)
 
         # If including start position and it's not already accounted for in the layout,
         # adjust the layout to accommodate it

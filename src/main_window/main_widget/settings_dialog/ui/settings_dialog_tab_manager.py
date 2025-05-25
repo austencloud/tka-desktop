@@ -57,9 +57,18 @@ class SettingsDialogTabManager:
         if not selected_tab_name:
             return
 
-        self.settings_manager.global_settings.set_current_settings_dialog_tab(
-            selected_tab_name
-        )
+        # Graceful fallback if settings_manager is None
+        if self.settings_manager and hasattr(self.settings_manager, "global_settings"):
+            try:
+                self.settings_manager.global_settings.set_current_settings_dialog_tab(
+                    selected_tab_name
+                )
+            except AttributeError as e:
+                print(f"[WARNING] Could not save settings dialog tab: {e}")
+        else:
+            print(
+                f"[WARNING] Settings manager not available, cannot save tab selection: {selected_tab_name}"
+            )
 
         self._update_tab(selected_tab)
         self.dialog.ui.content_area.setCurrentIndex(index)

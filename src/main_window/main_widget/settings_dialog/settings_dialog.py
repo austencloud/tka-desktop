@@ -30,12 +30,21 @@ class SettingsDialog(QDialog):
         super().showEvent(event)
         print("[DEBUG] Settings dialog shown - Restoring last tab")
 
-        last_tab = (
-            AppContext.settings_manager().global_settings.get_current_settings_dialog_tab()
-        )
+        # Graceful fallback if settings manager is not available
+        last_tab = None
+        try:
+            settings_manager = AppContext.settings_manager()
+            if settings_manager and hasattr(settings_manager, "global_settings"):
+                last_tab = (
+                    settings_manager.global_settings.get_current_settings_dialog_tab()
+                )
+        except (AttributeError, TypeError) as e:
+            print(f"[WARNING] Could not get last tab from settings: {e}")
 
-        if last_tab not in self.ui.tab_selection_manager.tabs:
-            print(f"[WARNING] Tab '{last_tab}' not found, defaulting to first tab.")
+        # Default to first tab if no last tab found
+        if not last_tab or last_tab not in self.ui.tab_selection_manager.tabs:
+            if last_tab:
+                print(f"[WARNING] Tab '{last_tab}' not found, defaulting to first tab.")
             last_tab = next(iter(self.ui.tab_selection_manager.tabs))
 
         tab_index = self.ui.tab_selection_manager.get_tab_index(last_tab)

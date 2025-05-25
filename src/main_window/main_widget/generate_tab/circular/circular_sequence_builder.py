@@ -88,8 +88,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         self._apply_CAPs(self.sequence, CAP_type, slice_size)
         # current_word_label = self.sequence_workbench.current_word_label
         # current_word_label.update_current_word_label()
-        construct_tab = self.main_widget.construct_tab
-        construct_tab.option_picker.updater.update_options()
+        self._update_construct_tab_options()
 
     def _generate_pictographs(
         self,
@@ -285,3 +284,51 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             executor.create_CAPs(sequence)
         else:
             raise ValueError(f"No executor found for CAP type: {cap_type.name}")
+
+    def _update_construct_tab_options(self):
+        """Update construct tab options using the new MVVM architecture with graceful fallbacks."""
+        try:
+            # Try to get construct tab through the new coordinator pattern
+            construct_tab = self.main_widget.get_tab_widget("construct")
+            if (
+                construct_tab
+                and hasattr(construct_tab, "option_picker")
+                and hasattr(construct_tab.option_picker, "updater")
+            ):
+                construct_tab.option_picker.updater.update_options()
+                return
+        except AttributeError:
+            pass
+
+        try:
+            # Fallback: try through tab_manager for backward compatibility
+            construct_tab = self.main_widget.tab_manager.get_tab_widget("construct")
+            if (
+                construct_tab
+                and hasattr(construct_tab, "option_picker")
+                and hasattr(construct_tab.option_picker, "updater")
+            ):
+                construct_tab.option_picker.updater.update_options()
+                return
+        except AttributeError:
+            pass
+
+        try:
+            # Final fallback: try direct access for legacy compatibility
+            if hasattr(self.main_widget, "construct_tab"):
+                construct_tab = self.main_widget.construct_tab
+                if hasattr(construct_tab, "option_picker") and hasattr(
+                    construct_tab.option_picker, "updater"
+                ):
+                    construct_tab.option_picker.updater.update_options()
+                    return
+        except AttributeError:
+            pass
+
+        # If all else fails, log a warning but don't crash
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            "Could not update construct tab options - construct tab not available"
+        )

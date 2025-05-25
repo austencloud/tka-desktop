@@ -161,6 +161,19 @@ class WidgetManager(QObject):
                 # Store reference for components that need it
                 self._sequence_beat_frame = widget.beat_frame
 
+                # Register the sequence beat frame in AppContext for legacy compatibility
+                try:
+                    from src.settings_manager.global_settings.app_context import (
+                        AppContext,
+                    )
+
+                    AppContext.set_sequence_beat_frame(widget.beat_frame)
+                    logger.info("Sequence beat frame registered in AppContext")
+                except Exception as e:
+                    logger.warning(
+                        f"Failed to register sequence beat frame in AppContext: {e}"
+                    )
+
     def get_widget(self, widget_name: str) -> Optional[QWidget]:
         """
         Get a widget by name, creating it if necessary.

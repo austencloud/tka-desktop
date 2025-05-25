@@ -84,13 +84,10 @@ class MenuBarNavWidget(QWidget):
 
     def set_active_tab(self, index: int):
         if index == self.current_index:
-
             return  # No need to reapply the same state
 
         self.current_index = index
-
         self.update_buttons()
-
         self.tab_changed.emit(index)
 
     def update_buttons(self):

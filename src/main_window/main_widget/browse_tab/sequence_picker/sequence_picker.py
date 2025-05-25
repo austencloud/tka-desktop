@@ -22,6 +22,22 @@ class SequencePicker(QWidget):
         self.sections: dict[str, list[tuple[str, list[str]]]] = {}
         self.currently_displayed_sequences = []
         self.selected_sequence_dict = None
+
+        # Set size policy to respect the layout stretch ratios and prevent excessive expansion
+        from PyQt6.QtWidgets import QSizePolicy
+
+        size_policy = QSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Preferred,  # Expanding allows growth but respects constraints
+        )
+        size_policy.setHorizontalStretch(
+            2
+        )  # This should match the stretch factor in TabManager
+        self.setSizePolicy(size_policy)
+
+        # TESTING: Temporarily disable width constraint to isolate window expansion issue
+        # self._enforce_width_constraint()
+
         self._setup_components()
         self._setup_layout()
 
@@ -52,3 +68,25 @@ class SequencePicker(QWidget):
 
         self.setLayout(self.main_layout)
 
+    def _enforce_width_constraint(self):
+        """Enforce the 2/3 width constraint for the sequence picker."""
+        try:
+            # Get the main widget's total width
+            main_widget_width = self.main_widget.width()
+            if main_widget_width > 0:
+                # Calculate the maximum allowed width (2/3 of total + small tolerance)
+                max_width = int(
+                    main_widget_width * 2 / 3 + 20
+                )  # Small tolerance for rounding
+                self.setMaximumWidth(max_width)
+
+                # CRITICAL: Also set size policy to prevent expansion
+                from PyQt6.QtWidgets import QSizePolicy
+
+                size_policy = self.sizePolicy()
+                size_policy.setHorizontalPolicy(QSizePolicy.Policy.Maximum)
+                size_policy.setHorizontalStretch(2)
+                self.setSizePolicy(size_policy)
+        except (AttributeError, TypeError):
+            # If we can't get the width, don't set a constraint
+            pass

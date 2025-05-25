@@ -11,7 +11,7 @@ class GeneratorTypeButton(QPushButton):
     def __init__(self, text: str, frame: "GenerateTab", key: str):
         super().__init__(text)
         self.frame = frame
-        self.tab = frame.generate_tab
+        self.tab = frame  # frame is already the GenerateTab instance
         self.key = key
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.clicked.connect(self.show_frame)

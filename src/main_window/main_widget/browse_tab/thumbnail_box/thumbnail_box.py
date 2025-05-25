@@ -37,6 +37,8 @@ class ThumbnailBox(QWidget):
         self.scroll_Area = self.sequence_picker.scroll_widget.scroll_area
         self.in_sequence_viewer = in_sequence_viewer
         self.state = ThumbnailBoxState(thumbnails)
+        self.margin = 10  # Default margin
+        self._preferred_width = 300  # Default preferred width
 
         self._setup_components()
         self._setup_layout()
@@ -58,13 +60,29 @@ class ThumbnailBox(QWidget):
         layout.addStretch()
         layout.setContentsMargins(self.margin, self.margin, self.margin, self.margin)
 
+    def sizeHint(self):
+        """Provide size hint to the layout system instead of forcing fixed width."""
+        from PyQt6.QtCore import QSize
+
+        return QSize(self._preferred_width, super().sizeHint().height())
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.resize_thumbnail_box()
 
     def resize_thumbnail_box(self):
         if self.in_sequence_viewer:
-            self.setFixedWidth(self.browse_tab.sequence_viewer.width())
+            # For sequence viewer, use the right stack's allocated width (1/3 ratio)
+            available_width = self._get_sequence_viewer_available_width()
+            # Use most of the available width, leaving some margin
+            width = int(available_width * 0.95)
+
+            # CRITICAL FIX: Don't call updateGeometry() for sequence viewer thumbnail boxes
+            # This prevents the layout system from expanding the right stack beyond 1/3 width
+            self._preferred_width = width
+            # Instead of updateGeometry(), just update the image label directly
+            if hasattr(self, "image_label"):
+                self.image_label.update_thumbnail(self.state.current_index)
         else:
             nav_bar = self.sequence_picker.nav_sidebar
             if nav_bar.width() < 20:
@@ -72,13 +90,54 @@ class ThumbnailBox(QWidget):
             scrollbar_width = (
                 self.sequence_picker.scroll_widget.calculate_scrollbar_width()
             )
+
+            # Get the actual available width for the left stack (Browse Tab's allocated space)
+            available_width = self._get_browse_tab_available_width()
+
             scroll_widget_width = (
-                self.main_widget.width() * 2 / 3
+                available_width
                 - scrollbar_width
                 - self.sequence_picker.nav_sidebar.width()
             )
             width = int(scroll_widget_width // 3)
-            self.setFixedWidth(width)
+
+            # SMART FIX: Use size hint instead of fixed width to avoid forcing parent expansion
+            self._preferred_width = width
+            self.updateGeometry()  # Notify layout system of size hint change
+
+    def _get_browse_tab_available_width(self) -> int:
+        """Get the actual available width for the Browse Tab's left panel."""
+        try:
+            # Try to get the left stack width (which is the Browse Tab's allocated space)
+            if hasattr(self.main_widget, "left_stack"):
+                return self.main_widget.left_stack.width()
+            # Fallback: use the sequence picker's parent width if available
+            elif hasattr(self.sequence_picker, "width"):
+                return self.sequence_picker.width()
+            # Final fallback: estimate based on main widget width and Browse Tab ratio (2/3)
+            else:
+                return int(self.main_widget.width() * 2 / 3)
+        except (AttributeError, TypeError):
+            # Emergency fallback
+            return int(self.main_widget.width() * 2 / 3)
+
+    def _get_sequence_viewer_available_width(self) -> int:
+        """Get the intended available width for the sequence viewer (right panel)."""
+        try:
+            # CRITICAL FIX: Always calculate based on intended 1/3 ratio, not current right stack width
+            # This prevents feedback loops where expanded right stack width reinforces incorrect layout
+            main_widget_width = self.main_widget.width()
+            if main_widget_width > 0:
+                # Use the intended 1/3 width allocation for browse tab
+                intended_width = int(main_widget_width / 3)
+
+                return intended_width
+            else:
+                # Fallback if main widget width is not available
+                return 400  # Reasonable default width
+        except (AttributeError, TypeError):
+            # Emergency fallback
+            return 400  # Reasonable default width
 
     def update_thumbnails(self, thumbnails=[]):
         self.state.update_thumbnails(thumbnails)
@@ -90,4 +149,3 @@ class ThumbnailBox(QWidget):
         # self.variation_number_label.update_index(self.state.current_index)
         self.header.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
         self.image_label.update_thumbnail(self.state.current_index)
-

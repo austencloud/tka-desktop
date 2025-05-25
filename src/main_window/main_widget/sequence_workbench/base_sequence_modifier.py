@@ -19,9 +19,63 @@ class BaseSequenceModifier:
 
     def _update_ui(self):
         """Update all UI components after a modification."""
-        self.sequence_workbench.main_widget.construct_tab.option_picker.updater.refresh_options()
+        self._refresh_construct_tab_options()
         self.sequence_workbench.graph_editor.update_graph_editor()
         self.sequence_workbench.indicator_label.show_message(self.success_message)
+
+    def _refresh_construct_tab_options(self):
+        """Refresh construct tab options using the new MVVM architecture with graceful fallbacks."""
+        try:
+            # Try to get construct tab through the new coordinator pattern
+            construct_tab = self.sequence_workbench.main_widget.get_tab_widget(
+                "construct"
+            )
+            if (
+                construct_tab
+                and hasattr(construct_tab, "option_picker")
+                and hasattr(construct_tab.option_picker, "updater")
+            ):
+                construct_tab.option_picker.updater.refresh_options()
+                return
+        except AttributeError:
+            pass
+
+        try:
+            # Fallback: try through tab_manager for backward compatibility
+            construct_tab = (
+                self.sequence_workbench.main_widget.tab_manager.get_tab_widget(
+                    "construct"
+                )
+            )
+            if (
+                construct_tab
+                and hasattr(construct_tab, "option_picker")
+                and hasattr(construct_tab.option_picker, "updater")
+            ):
+                construct_tab.option_picker.updater.refresh_options()
+                return
+        except AttributeError:
+            pass
+
+        try:
+            # Final fallback: try direct access for legacy compatibility
+            if hasattr(self.sequence_workbench.main_widget, "construct_tab"):
+                construct_tab = self.sequence_workbench.main_widget.construct_tab
+                if hasattr(construct_tab, "option_picker") and hasattr(
+                    construct_tab.option_picker, "updater"
+                ):
+                    construct_tab.option_picker.updater.refresh_options()
+                    return
+        except AttributeError:
+            pass
+
+        # If all else fails, log a warning but don't crash
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            "Could not refresh construct tab options - construct tab not available"
+        )
 
     def _check_length(self):
         """Check if the sequence is long enough to modify."""

@@ -35,6 +35,37 @@ class AllBeatsDeleter:
             lambda: self.deleter.reset_widgets(show_indicator),
         )
 
+    def _is_generate_tab_current(self) -> bool:
+        """Check if the generate tab is currently active using the new MVVM architecture."""
+        try:
+            # Try to get generate tab through the new coordinator pattern
+            generate_tab = self.main_widget.get_tab_widget("generate")
+            if (
+                generate_tab
+                and self.main_widget.right_stack.currentWidget() == generate_tab
+            ):
+                return True
+        except AttributeError:
+            # Fallback: try through tab_manager for backward compatibility
+            try:
+                generate_tab = self.main_widget.tab_manager.get_tab_widget("generate")
+                if (
+                    generate_tab
+                    and self.main_widget.right_stack.currentWidget() == generate_tab
+                ):
+                    return True
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.main_widget, "generate_tab"):
+                        return (
+                            self.main_widget.right_stack.currentWidget()
+                            == self.main_widget.generate_tab
+                        )
+                except AttributeError:
+                    pass
+        return False
+
     def delete_all_beats(self, show_indicator=True) -> None:
         """Deletes all beats based on certain conditions."""
         beats = self.beat_frame.beat_views
@@ -50,10 +81,7 @@ class AllBeatsDeleter:
             self._remove_adjustment_panel_items(widgets)
             self._fade_widgets_and_stack(widgets, show_indicator)
 
-        elif (
-            self.main_widget.right_stack.currentWidget()
-            == self.main_widget.generate_tab
-        ):
+        elif self._is_generate_tab_current():
             self._fade_and_reset(widgets, show_indicator)
         else:
             self._fade_widgets_and_stack(widgets, show_indicator)

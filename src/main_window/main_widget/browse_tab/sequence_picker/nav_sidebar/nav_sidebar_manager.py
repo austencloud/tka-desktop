@@ -109,7 +109,7 @@ class NavSidebarManager:
             scroll_area.verticalScrollBar().setValue(vertical_pos)
 
     def style_header_label(self, label: QLabel):
-        font_color = self.sequence_picker.main_widget.font_color_updater.get_font_color(
+        font_color = self._get_font_color(
             self.settings_manager.global_settings.get_background_type()
         )
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -134,3 +134,47 @@ class NavSidebarManager:
             font_size -= 1
             label_font.setPointSize(font_size)
             label.setFont(label_font)
+
+    def _get_font_color(self, bg_type: str) -> str:
+        """Get the appropriate font color using the new MVVM architecture with graceful fallbacks."""
+        try:
+            # Try to get font_color_updater through the new coordinator pattern
+            font_color_updater = self.sequence_picker.main_widget.get_widget(
+                "font_color_updater"
+            )
+            if font_color_updater and hasattr(font_color_updater, "get_font_color"):
+                return font_color_updater.get_font_color(bg_type)
+        except AttributeError:
+            # Fallback: try through widget_manager for backward compatibility
+            try:
+                font_color_updater = (
+                    self.sequence_picker.main_widget.widget_manager.get_widget(
+                        "font_color_updater"
+                    )
+                )
+                if font_color_updater and hasattr(font_color_updater, "get_font_color"):
+                    return font_color_updater.get_font_color(bg_type)
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.sequence_picker.main_widget, "font_color_updater"):
+                        return self.sequence_picker.main_widget.font_color_updater.get_font_color(
+                            bg_type
+                        )
+                except AttributeError:
+                    pass
+
+        # Ultimate fallback: use the static method directly from FontColorUpdater
+        try:
+            from main_window.main_widget.font_color_updater.font_color_updater import (
+                FontColorUpdater,
+            )
+
+            return FontColorUpdater.get_font_color(bg_type)
+        except ImportError:
+            # If all else fails, return a sensible default
+            return (
+                "black"
+                if bg_type in ["Rainbow", "AuroraBorealis", "Aurora"]
+                else "white"
+            )

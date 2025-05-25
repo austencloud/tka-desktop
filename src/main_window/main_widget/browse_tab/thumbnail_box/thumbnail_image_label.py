@@ -79,7 +79,22 @@ class ThumbnailImageLabel(QLabel):
     def _calculate_sequence_viewer_size(self) -> QSize:
         """Calculate available space in sequence viewer mode."""
         sequence_viewer = self.thumbnail_box.browse_tab.sequence_viewer
-        available_width = int(sequence_viewer.main_widget.width() * 1 / 3 * 0.95)
+
+        # Get the intended available width for the sequence viewer (right stack)
+        try:
+            main_widget = sequence_viewer.main_widget
+            main_widget_width = main_widget.width()
+            if main_widget_width > 0:
+                # CRITICAL FIX: Always calculate based on intended 1/3 ratio, not current right stack width
+                # This prevents feedback loops where expanded right stack width reinforces incorrect layout
+                available_width = int(main_widget_width / 3 * 0.95)
+            else:
+                # Fallback if main widget width is not available
+                available_width = int(400 * 0.95)  # Reasonable default
+        except (AttributeError, TypeError):
+            # Emergency fallback
+            available_width = int(400 * 0.95)  # Reasonable default
+
         available_height = int(sequence_viewer.main_widget.height() * 0.65)
         return QSize(available_width, available_height)
 
@@ -91,17 +106,34 @@ class ThumbnailImageLabel(QLabel):
 
         scroll_widget = self.thumbnail_box.sequence_picker.scroll_widget
         scrollbar_width = scroll_widget.calculate_scrollbar_width()
-        main_widget_width = self.thumbnail_box.main_widget.width()
 
-        scroll_widget_width = (
-            (main_widget_width * 2 / 3) - scrollbar_width - nav_bar.width()
-        )
+        # Get the actual available width for the Browse Tab's left panel
+        available_width = self._get_browse_tab_available_width()
+
+        scroll_widget_width = available_width - scrollbar_width - nav_bar.width()
         available_width = int(
             scroll_widget_width // 3 - (self.thumbnail_box.margin * 2)
         )
         available_height = int(available_width / self.aspect_ratio)
 
         return QSize(available_width, available_height)
+
+    def _get_browse_tab_available_width(self) -> int:
+        """Get the actual available width for the Browse Tab's left panel."""
+        try:
+            # Try to get the left stack width (which is the Browse Tab's allocated space)
+            main_widget = self.thumbnail_box.main_widget
+            if hasattr(main_widget, "left_stack"):
+                return main_widget.left_stack.width()
+            # Fallback: use the sequence picker's parent width if available
+            elif hasattr(self.thumbnail_box.sequence_picker, "width"):
+                return self.thumbnail_box.sequence_picker.width()
+            # Final fallback: estimate based on main widget width and Browse Tab ratio (2/3)
+            else:
+                return int(main_widget.width() * 2 / 3)
+        except (AttributeError, TypeError):
+            # Emergency fallback
+            return int(self.thumbnail_box.main_widget.width() * 2 / 3)
 
     def _calculate_scaled_pixmap_size(self, available_size: QSize) -> QSize:
         """Calculate the optimal size for the pixmap while maintaining aspect ratio."""

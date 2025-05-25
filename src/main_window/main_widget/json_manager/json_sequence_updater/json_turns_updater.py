@@ -36,7 +36,7 @@ class JsonTurnsUpdater:
         color: str,
         turns: Union[int, float],
     ) -> None:
-        beat_frame = AppContext.sequence_beat_frame()
+        beat_frame = self._get_sequence_beat_frame()
         sequence = self.json_manager.loader_saver.load_current_sequence()
         pictograph_data = sequence[index]
         motion_data = pictograph_data[f"{color}_attributes"]
@@ -54,18 +54,19 @@ class JsonTurnsUpdater:
             pictograph_data, color
         )
         motion_data[END_ORI] = end_ori
-        if motion_data[TURNS] != "fl":
-            if motion_data[TURNS] > 0:
+        if beat_frame:  # Only proceed if beat_frame is available
+            if motion_data[TURNS] != "fl":
+                if motion_data[TURNS] > 0:
+                    pictograph = beat_frame.beat_views[index - 2].beat
+                    if pictograph:
+                        motion = pictograph.managers.get.motion_by_color(color)
+                        prop_rot_dir = motion.state.prop_rot_dir
+                        motion_data[PROP_ROT_DIR] = prop_rot_dir
+
+            elif motion_data[TURNS] == "fl":
                 pictograph = beat_frame.beat_views[index - 2].beat
                 if pictograph:
                     motion = pictograph.managers.get.motion_by_color(color)
-                    prop_rot_dir = motion.state.prop_rot_dir
-                    motion_data[PROP_ROT_DIR] = prop_rot_dir
-
-        elif motion_data[TURNS] == "fl":
-            pictograph = beat_frame.beat_views[index - 2].beat
-            if pictograph:
-                motion = pictograph.managers.get.motion_by_color(color)
 
         if motion_data[MOTION_TYPE] in [DASH, STATIC]:
             if motion_data[TURNS] == 0:
@@ -75,5 +76,27 @@ class JsonTurnsUpdater:
         self.json_manager.loader_saver.save_current_sequence(sequence)
         SequencePropertiesManager().update_sequence_properties()
 
-        self.json_manager.loader_saver.save_current_sequence(sequence)
-        SequencePropertiesManager().update_sequence_properties()
+    def _get_sequence_beat_frame(self):
+        """Get the sequence beat frame using graceful fallbacks for the MainWidgetCoordinator refactoring."""
+        try:
+            # Try to get sequence beat frame through AppContext
+            from src.settings_manager.global_settings.app_context import AppContext
+
+            return AppContext.sequence_beat_frame()
+        except RuntimeError:
+            # AppContext.sequence_beat_frame() not initialized yet
+            # This can happen during MainWidgetCoordinator initialization
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(
+                "AppContext.sequence_beat_frame() not available yet - this is normal during initialization"
+            )
+            return None
+        except Exception as e:
+            # Other unexpected errors
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Unexpected error accessing sequence beat frame: {e}")
+            return None

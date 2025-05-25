@@ -160,8 +160,11 @@ class MainWidgetUI:
         top_layout.addWidget(mw.menu_bar.settings_button, 1)
 
         content_layout = QHBoxLayout()
-        content_layout.addWidget(mw.left_stack, 1)
-        content_layout.addWidget(mw.right_stack, 1)
+        content_layout.addWidget(mw.left_stack, 2)  # 2/3 width for left stack
+        content_layout.addWidget(mw.right_stack, 1)  # 1/3 width for right stack
+
+        # Store reference to content layout for dynamic ratio changes
+        mw.content_layout = content_layout
 
         mw.main_layout.addLayout(top_layout)
         mw.main_layout.addLayout(content_layout)

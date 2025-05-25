@@ -60,9 +60,61 @@ class FullScreenViewer:
         self.thumbnail_generator = (
             self.sequence_workbench.dictionary_service.thumbnail_generator
         )
-        current_sequence = self.json_loader.load_current_sequence()
+        # Get the current sequence from the UI state instead of the JSON file
+        # This ensures we're showing what's currently displayed in the beat frame
+        current_sequence = self._get_current_sequence_from_ui()
         temp_path = get_data_path("temp")
         image_path = self.thumbnail_generator.generate_and_save_thumbnail(
             current_sequence, 0, temp_path, fullscreen_preview=True
         )
         return image_path
+
+    def _get_current_sequence_from_ui(self) -> list[dict]:
+        """
+        Get the current sequence from the beat frame UI state.
+
+        This ensures the full-screen viewer shows exactly what's displayed
+        in the beat frame, not what's saved in the JSON file.
+        """
+        try:
+            # Get the sequence from the beat frame's current state
+            beat_frame = self.beat_frame
+            if not beat_frame:
+                # Fallback to JSON if beat frame not available
+                return self.json_loader.load_current_sequence()
+
+            # Build sequence from current UI state
+            sequence = []
+
+            # Add the word entry (first entry) - get current word from sequence workbench
+            current_word = ""
+            if hasattr(self.sequence_workbench, "current_word_label"):
+                current_word = getattr(
+                    self.sequence_workbench.current_word_label, "current_word", ""
+                )
+            word_entry = {"word": current_word}
+            sequence.append(word_entry)
+
+            # Add start position if available
+            if hasattr(beat_frame, "start_pos_view") and beat_frame.start_pos_view:
+                start_pos = beat_frame.start_pos_view.start_pos
+                if start_pos and hasattr(start_pos, "pictograph_dict"):
+                    sequence.append(start_pos.pictograph_dict)
+
+            # Add all filled beats from the UI
+            if hasattr(beat_frame, "beat_views"):
+                for beat_view in beat_frame.beat_views:
+                    if beat_view and beat_view.is_filled:
+                        if hasattr(beat_view, "beat") and hasattr(
+                            beat_view.beat, "pictograph_dict"
+                        ):
+                            sequence.append(beat_view.beat.pictograph_dict)
+
+            return sequence
+
+        except Exception as e:
+            # Fallback to JSON if there's any error reading from UI
+            print(
+                f"Warning: Failed to read sequence from UI, falling back to JSON: {e}"
+            )
+            return self.json_loader.load_current_sequence()

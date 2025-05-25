@@ -137,9 +137,8 @@ class TempBeatFrame(BaseBeatFrame):
             return
 
         # Try to get the construct_tab, but handle the case where it might not be available
-        try:
-            self.construct_tab = self.main_widget.construct_tab
-        except AttributeError:
+        self.construct_tab = self._get_construct_tab()
+        if not self.construct_tab:
             # If we're being called from the sequence card tab image exporter,
             # the construct_tab might not be available
             print(
@@ -232,9 +231,7 @@ class TempBeatFrame(BaseBeatFrame):
         # Populate the beat frame with the sequence data
         self.populate_beat_frame_from_json(sequence)
 
-    def clear_sequence(
-        self, should_reset_to_start_pos_picker=True
-    ) -> None:
+    def clear_sequence(self, should_reset_to_start_pos_picker=True) -> None:
         self._reset_beat_frame()
 
         # Check if construct_tab attribute exists before using it
@@ -256,3 +253,21 @@ class TempBeatFrame(BaseBeatFrame):
             beat_view.is_filled = False
         self.start_pos_view.setScene(self.start_pos_view.blank_beat)
         self.start_pos_view.is_filled = False
+
+    def _get_construct_tab(self):
+        """Get the construct tab using the new MVVM architecture with graceful fallbacks."""
+        try:
+            # Try to get construct tab through the new coordinator pattern
+            return self.main_widget.get_tab_widget("construct")
+        except AttributeError:
+            # Fallback: try through tab_manager for backward compatibility
+            try:
+                return self.main_widget.tab_manager.get_tab_widget("construct")
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.main_widget, "construct_tab"):
+                        return self.main_widget.construct_tab
+                except AttributeError:
+                    pass
+        return None
