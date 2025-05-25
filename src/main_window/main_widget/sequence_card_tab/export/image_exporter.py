@@ -81,14 +81,11 @@ class SequenceCardImageExporter:
             if os.path.isdir(item_path) and not item.startswith("__"):
                 word_folders.append(item)
 
-        print(f"Found {len(word_folders)} word folders in dictionary")
-
         # Count total sequences first for progress tracking
         total_sequences = self._count_total_sequences(dictionary_path, word_folders)
 
-        # Show initial memory usage
-        initial_memory = self._check_and_manage_memory()
-        print(f"Initial memory usage: {initial_memory:.1f} MB")
+        # Check initial memory usage
+        self._check_and_manage_memory()
 
         # Initialize statistics
         processed_sequences = 0

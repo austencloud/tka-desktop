@@ -90,4 +90,3 @@ class VariationNumberFixer:
 
     def main(self):
         self.ensure_sequential_versions()
-        print("Versioning and naming cleanup completed.")

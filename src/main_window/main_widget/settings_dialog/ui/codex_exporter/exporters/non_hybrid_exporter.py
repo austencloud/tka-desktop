@@ -86,8 +86,5 @@ class NonHybridExporter:
         # Create and save image
         image = self.renderer.create_pictograph_image(pictograph)
         image.save(filepath, "PNG", 100)
-        print(
-            f"Saved non-hybrid pictograph {letter} with turns (red:{red_turns}, blue:{blue_turns}) to {filepath}"
-        )
 
         return 1

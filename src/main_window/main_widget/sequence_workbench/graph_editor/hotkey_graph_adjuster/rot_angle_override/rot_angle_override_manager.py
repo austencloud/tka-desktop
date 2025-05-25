@@ -1,4 +1,3 @@
-# src/main_window/main_widget/sequence_workbench/graph_editor/hotkey_graph_adjuster/arrow_rot_angle_override_manager.py
 from typing import TYPE_CHECKING
 from enums.letter.letter import Letter
 from ..data_updater.special_placement_data_updater import SpecialPlacementDataUpdater
