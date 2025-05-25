@@ -1,2 +1,0 @@
-
-pyinstaller --add-data "settings.ini;." --add-data "src/data;data" --add-data "src/images;images" src/main.py

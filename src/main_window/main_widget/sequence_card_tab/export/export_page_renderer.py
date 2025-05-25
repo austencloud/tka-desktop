@@ -249,6 +249,8 @@ class ExportPageRenderer:
             cell_width: Width of the cell
             cell_height: Height of the cell
         """
+        import os  # Import os locally for path operations
+
         # Get the image path
         image_path = sequence_data.get("path")
         if not image_path or not os.path.exists(image_path):

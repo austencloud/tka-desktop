@@ -182,14 +182,9 @@ class SequenceCardRefresher:
 
         # Validate the images path
         if not os.path.exists(images_path):
-            print(
-                f"Warning: Sequence card images directory does not exist: {images_path}"
-            )
             try:
                 os.makedirs(images_path, exist_ok=True)
-                print(f"Created sequence card images directory: {images_path}")
-            except Exception as e:
-                print(f"Error creating sequence card images directory: {e}")
+            except Exception:
                 return sequences
 
         # First, count total files for progress reporting
@@ -212,20 +207,14 @@ class SequenceCardRefresher:
                     for file in os.listdir(word_path):
                         if file.endswith(".png") and not file.startswith("__"):
                             total_files += 1
-                except Exception as e:
-                    print(f"Error counting files in {word_path}: {e}")
-        except Exception as e:
-            print(f"Error listing directories in {images_path}: {e}")
+                except Exception:
+                    pass
+        except Exception:
             return sequences
 
         # If no files found, return empty list
         if total_files == 0:
-            print(f"No sequence card images found in {images_path}")
             return sequences
-
-        print(
-            f"Found {total_files} sequence card images in {len(word_folders)} word folders"
-        )
 
         # Update loading dialog
         if self.loading_dialog:

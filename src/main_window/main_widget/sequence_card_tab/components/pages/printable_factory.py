@@ -117,17 +117,11 @@ class PrintablePageFactory:
 
         # Verify the layout was properly set
         if page.layout() is None:
-            print(
-                f"WARNING: Page created without layout despite explicit setLayout call"
-            )
             # Try again with a different approach
             emergency_layout = QGridLayout()
             emergency_layout.setContentsMargins(10, 10, 10, 10)
             emergency_layout.setSpacing(5)
             page.setLayout(emergency_layout)
-
-            if page.layout() is None:
-                print(f"CRITICAL: Page still has no layout after emergency fix!")
 
         return page
 

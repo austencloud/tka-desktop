@@ -209,8 +209,6 @@ class SequenceCardCacheManager:
         Background thread for cleaning up old cache files.
         """
         try:
-            print("Starting cache cleanup")
-
             # Get all files in cache directory
             cache_files = list(self.cache_dir.glob("sequence_cache_*.json"))
 
@@ -230,13 +228,13 @@ class SequenceCardCacheManager:
                         os.remove(file_path)
                         deleted_count += 1
 
-                except Exception as e:
-                    print(f"Error cleaning cache file {file_path}: {e}")
+                except Exception:
+                    # Silently continue on cache file errors
+                    pass
 
-            print(f"Cache cleanup complete, deleted {deleted_count} files")
-
-        except Exception as e:
-            print(f"Error in cache cleanup thread: {e}")
+        except Exception:
+            # Silently handle cache cleanup errors
+            pass
 
     def clear_all_cache(self) -> None:
         """
@@ -246,10 +244,10 @@ class SequenceCardCacheManager:
             if os.path.exists(self.cache_dir):
                 shutil.rmtree(self.cache_dir)
                 os.makedirs(self.cache_dir, exist_ok=True)
-                print("All cache files cleared")
 
-        except Exception as e:
-            print(f"Error clearing cache: {e}")
+        except Exception:
+            # Silently handle cache clearing errors
+            pass
 
     def get_cache_stats(self) -> Dict[str, Any]:
         """

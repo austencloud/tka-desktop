@@ -128,8 +128,6 @@ class SequenceCardTab(QWidget):
 
             self.printable_displayer.display_sequences(length)
             self._sync_pages_from_displayer()
-        else:
-            print("Error: No displayer available")
 
     def showEvent(self, event):
         super().showEvent(event)

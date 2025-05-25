@@ -92,8 +92,6 @@ class CustomPrintDialog(QDialog):
     def update_preview(self) -> None:
         self.scene.clear()
         self.preview_pixmap_item = self.scene.addPixmap(self.pixmap)
-        for item in self.scene.items():
-            print(item)
         if not self.preview_pixmap_item.pixmap().isNull():
             self.sequence_viewer.fitInView(
                 self.preview_pixmap_item, Qt.AspectRatioMode.KeepAspectRatio

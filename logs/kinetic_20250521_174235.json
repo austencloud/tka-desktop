@@ -1,1 +1,0 @@
-{"timestamp": "2025-05-21 17:42:35,288", "level": "INFO", "module": "file_only", "message": "Logging system initialized", "line": 269, "function": "configure_logging"}

@@ -67,8 +67,6 @@ class SequenceCardImageExporter:
         dictionary_path = get_dictionary_path()
         export_path = get_sequence_card_image_exporter_path()
 
-
-
         # Create the export directory if it doesn't exist
         if not os.path.exists(export_path):
             os.makedirs(export_path)
@@ -97,7 +95,6 @@ class SequenceCardImageExporter:
         regenerated_count = 0
         skipped_count = 0
         failed_count = 0
-
 
         try:
             # Count total sequences for batch processing
@@ -155,7 +152,6 @@ class SequenceCardImageExporter:
         finally:
             # Close the progress dialog
 
-
             # Print detailed summary with metrics
             print(f"Processed {processed_sequences} of {total_sequences} sequences:")
             print(
@@ -173,13 +169,8 @@ class SequenceCardImageExporter:
                 efficiency = skipped_count / processed_sequences * 100
                 print(f"Cache efficiency: {efficiency:.1f}% (higher is better)")
 
-
-
             # Final memory cleanup
-            final_memory = self._check_and_manage_memory(force_cleanup=True)
-            print(f"Final memory usage: {final_memory:.1f} MB")
-
-
+            self._check_and_manage_memory(force_cleanup=True)
 
     def get_all_images(self, path: str) -> list[str]:
         images = []
@@ -348,7 +339,6 @@ class SequenceCardImageExporter:
             memory_info = process.memory_info()
             memory_mb = memory_info.rss / (1024 * 1024)
 
-
             # Check if we need to clean up
             if force_cleanup or memory_mb > self.max_memory_usage_mb:
                 print(f"Memory usage high ({memory_mb:.1f} MB). Performing cleanup...")
@@ -360,7 +350,6 @@ class SequenceCardImageExporter:
                 memory_info = process.memory_info()
                 memory_mb = memory_info.rss / (1024 * 1024)
                 print(f"Memory usage after cleanup: {memory_mb:.1f} MB")
-
 
                 # Add a small delay to allow the system to stabilize
                 time.sleep(0.1)
@@ -482,8 +471,6 @@ class SequenceCardImageExporter:
             os.makedirs(word_export_path, exist_ok=True)
 
             output_path = os.path.join(word_export_path, sequence_file)
-
-
 
             # Check memory usage every few images
             if processed_sequences % self.memory_check_interval == 0:

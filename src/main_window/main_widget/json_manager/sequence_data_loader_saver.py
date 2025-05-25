@@ -31,6 +31,7 @@ class SequenceDataLoaderSaver:
         self.current_sequence_json = get_user_editable_resource_path(
             "current_sequence.json"
         )
+
         self.sequence_properties_manager = SequencePropertiesManager()
 
     def load_current_sequence(self) -> list[dict]:
@@ -47,18 +48,47 @@ class SequenceDataLoaderSaver:
             return sequence
 
         except (FileNotFoundError, json.JSONDecodeError):
-            return self.get_default_sequence()
+            # Create the file with default data if it doesn't exist
+            default_sequence = self.get_default_sequence()
+            try:
+                # Ensure the directory exists before creating the file
+                import os
+
+                directory = os.path.dirname(self.current_sequence_json)
+                if directory:
+                    os.makedirs(directory, exist_ok=True)
+
+                # Create the file directly to avoid circular dependencies during initialization
+                with open(self.current_sequence_json, "w", encoding="utf-8") as file:
+                    json.dump(default_sequence, file, indent=4, ensure_ascii=False)
+            except Exception:
+                # If we can't create the file, just return the default sequence
+                pass
+            return default_sequence
 
     def get_default_sequence(self) -> list[dict]:
         """Return a default sequence if JSON is missing, empty, or invalid."""
+        # Use safe defaults that don't depend on AppContext during initialization
+        try:
+            author = AppContext.settings_manager().users.user_manager.get_current_user()
+        except:
+            author = "Unknown"
+
+        try:
+            prop_type = (
+                AppContext.settings_manager()
+                .global_settings.get_prop_type()
+                .name.lower()
+            )
+        except:
+            prop_type = "staff"
+
         return [
             {
                 "word": "",
-                "author": AppContext.settings_manager().users.user_manager.get_current_user(),
+                "author": author,
                 "level": 0,
-                "prop_type": AppContext.settings_manager()
-                .global_settings.get_prop_type()
-                .name.lower(),
+                "prop_type": prop_type,
                 GRID_MODE: DIAMOND,
                 "is_circular": False,
                 "can_be_CAP": False,
