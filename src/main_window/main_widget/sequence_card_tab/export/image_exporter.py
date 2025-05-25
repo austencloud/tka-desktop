@@ -135,36 +135,15 @@ class SequenceCardImageExporter:
                 )
 
                 # Force garbage collection between batches
-                current_memory = self._check_and_manage_memory(force_cleanup=True)
-                print(f"Memory usage after batch: {current_memory:.1f} MB")
+                self._check_and_manage_memory(force_cleanup=True)
 
                 # Process events to keep UI responsive
                 QApplication.processEvents()
 
-        except Exception as e:
-            print(f"Error during batch processing: {e}")
-            import traceback
-
-            traceback.print_exc()
+        except Exception:
+            pass
         finally:
-            # Close the progress dialog
-
-            # Print detailed summary with metrics
-            print(f"Processed {processed_sequences} of {total_sequences} sequences:")
-            print(
-                f"  - Regenerated: {regenerated_count} ({regenerated_count/processed_sequences*100:.1f}%)"
-            )
-            print(
-                f"  - Skipped: {skipped_count} ({skipped_count/processed_sequences*100:.1f}%)"
-            )
-            print(
-                f"  - Failed: {failed_count} ({failed_count/processed_sequences*100:.1f}%)"
-            )
-
-            # Display efficiency metrics
-            if processed_sequences > 0:
-                efficiency = skipped_count / processed_sequences * 100
-                print(f"Cache efficiency: {efficiency:.1f}% (higher is better)")
+            pass
 
             # Final memory cleanup
             self._check_and_manage_memory(force_cleanup=True)
@@ -338,23 +317,19 @@ class SequenceCardImageExporter:
 
             # Check if we need to clean up
             if force_cleanup or memory_mb > self.max_memory_usage_mb:
-                print(f"Memory usage high ({memory_mb:.1f} MB). Performing cleanup...")
-
                 # Force garbage collection
                 gc.collect()
 
                 # Update memory usage after cleanup
                 memory_info = process.memory_info()
                 memory_mb = memory_info.rss / (1024 * 1024)
-                print(f"Memory usage after cleanup: {memory_mb:.1f} MB")
 
                 # Add a small delay to allow the system to stabilize
                 time.sleep(0.1)
 
             return memory_mb
 
-        except Exception as e:
-            print(f"Error checking memory usage: {e}")
+        except Exception:
             return 0.0
 
     def _needs_regeneration(
@@ -503,9 +478,6 @@ class SequenceCardImageExporter:
                     }
 
                     try:
-                        # Log regeneration reason
-                        print(f"Regenerating {word}/{sequence_file}: {reason}")
-
                         # Generate the image
                         self.temp_beat_frame.load_sequence(sequence)
                         qimage = (

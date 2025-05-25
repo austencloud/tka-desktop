@@ -9,7 +9,6 @@ from utils.path_helpers import (
 )
 
 
-
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -64,17 +63,12 @@ class SequenceCardResourceManager:
             memory_mb = process.memory_info().rss / (1024 * 1024)
 
             if memory_mb > 800:
-                print(f"High memory usage: {memory_mb:.1f}MB. Cleaning up...")
-
                 gc.collect()
-
-                new_memory_mb = psutil.Process().memory_info().rss / (1024 * 1024)
-                print(f"Memory after cleanup: {new_memory_mb:.1f}MB")
 
         except ImportError:
             pass
-        except Exception as e:
-            print(f"Error checking memory: {e}")
+        except Exception:
+            pass
 
     def cleanup(self):
         self.memory_check_timer.stop()

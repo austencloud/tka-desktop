@@ -66,8 +66,7 @@ class BaseSequenceBuilder:
             self.sequence_workbench.beat_frame.populator.modify_layout_for_chosen_number_of_beats(
                 int(length)
             )
-        except Exception as e:
-            print(f"Error updating layout for {length} beats: {e}")
+        except Exception:
             raise
 
     def update_start_orientations(

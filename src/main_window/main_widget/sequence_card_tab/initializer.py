@@ -33,10 +33,6 @@ class SequenceCardInitializer:
             self._apply_saved_settings()
 
         except Exception as e:
-            print(f"ERROR in _initialize_content: {e}")
-            import traceback
-
-            traceback.print_exc()
             self.parent.header.description_label.setText(f"Error: {str(e)}")
         finally:
             self.parent.setCursor(Qt.CursorShape.ArrowCursor)
@@ -44,10 +40,6 @@ class SequenceCardInitializer:
 
     def _apply_saved_settings(self):
         settings = self.parent.settings_manager_obj
-
-        print(
-            f"DEBUG: Applying saved settings: column_count={settings.saved_column_count}, length={settings.saved_length}"
-        )
 
         if USE_PRINTABLE_LAYOUT and hasattr(self.parent, "printable_displayer"):
             self.parent.printable_displayer.columns_per_row = (

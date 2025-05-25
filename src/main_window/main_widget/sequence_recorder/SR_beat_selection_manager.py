@@ -45,8 +45,8 @@ class SR_BeatSelectionManager(QWidget):
         self.deselect_beat()
         self.move_selection()
 
-    def handle_media_error(self, error) -> None:
-        print(f"Error occurred: {error.errorString()}")
+    def handle_media_error(self, _error) -> None:
+        pass
 
     def set_bpm(self, bpm) -> None:
         milliseconds_per_beat = 60000 / bpm
@@ -155,7 +155,7 @@ class SR_BeatSelectionManager(QWidget):
         # Optionally, you might want to deselect the current beat when stopping
         self.deselect_beat()
 
-    def paintEvent(self, event) -> None:
+    def paintEvent(self, _event) -> None:
         if not self.selected_beat:
             return
 

@@ -7,9 +7,7 @@ from PyQt6.QtCore import QDir
 
 class JsonActSaver:
     def __init__(self):
-        self.current_act_json = os.path.join(
-            QDir.currentPath(), "current_act.json"
-        )
+        self.current_act_json = os.path.join(QDir.currentPath(), "current_act.json")
 
     def save_act(self, act_data: dict):
         """Save the act data to the current_act.json file."""
@@ -18,4 +16,3 @@ class JsonActSaver:
 
         with open(self.current_act_json, "w", encoding="utf-8") as f:
             json.dump(act_data, f, indent=4, ensure_ascii=False)
-        print(f"Act saved to {self.current_act_json}")

@@ -3,7 +3,6 @@ import os
 import logging
 import collections  # Import collections for OrderedDict
 from typing import (
-    Dict,
     Optional,
     TYPE_CHECKING,
     OrderedDict as OrderedDictType,
@@ -280,19 +279,13 @@ class ImageProcessor:
             self.scaled_image_cache.move_to_end(cache_key)
 
             if len(self.scaled_image_cache) > self.scaled_cache_size:
-                removed_item = self.scaled_image_cache.popitem(last=False)
-                logging.debug(
-                    f"L2 cache full. Removed: {os.path.basename(removed_item[0].split('_')[0])}"
-                )
+                self.scaled_image_cache.popitem(last=False)
 
             QApplication.processEvents()  # Keep UI responsive during multiple loads
             return pixmap
 
         except Exception as e:
-            import traceback
-
             logging.error(f"Error loading image for screen {image_path}: {e}")
-            traceback.print_exc()
             return self._create_error_pixmap(cell_size)
 
     def load_image_for_export(

@@ -11,6 +11,7 @@ from .resource_manager import SequenceCardResourceManager
 from .settings_handler import SequenceCardSettingsHandler
 from .components.navigation.sidebar import SequenceCardNavSidebar
 from .components.pages.factory import SequenceCardPageFactory
+from .core.refresher import SequenceCardRefresher
 from .components.pages.printable_factory import PrintablePageFactory
 from .components.pages.printable_layout import PaperSize, PaperOrientation
 from .export.image_exporter import SequenceCardImageExporter
@@ -72,6 +73,7 @@ class SequenceCardTab(QWidget):
 
         self.image_exporter = SequenceCardImageExporter(self)
         self.page_exporter = SequenceCardPageExporter(self)
+        self.refresher = SequenceCardRefresher(self)
         self.pages = []
 
     def init_ui(self):
@@ -146,7 +148,7 @@ class SequenceCardTab(QWidget):
             self.printable_displayer.display_sequences(selected_length)
             self._sync_pages_from_displayer()
         else:
-            print("Error: No displayer available")
+            pass
 
     def regenerate_all_images(self):
         self.setCursor(Qt.CursorShape.WaitCursor)

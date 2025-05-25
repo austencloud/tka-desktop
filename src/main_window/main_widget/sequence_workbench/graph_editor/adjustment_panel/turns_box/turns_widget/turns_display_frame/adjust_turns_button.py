@@ -37,13 +37,9 @@ class AdjustTurnsButton(StyledButton):
                     # Update the svg_path to the resolved path for future use
                     self.svg_path = resolved_path
                 else:
-                    print(
-                        f"Warning: SVG file not found at {svg_path} or {resolved_path}"
-                    )
                     # Create an empty renderer as a fallback
                     self.svg_renderer = QSvgRenderer()
-        except Exception as e:
-            print(f"Error loading SVG file {svg_path}: {e}")
+        except Exception:
             # Create an empty renderer as a fallback
             self.svg_renderer = QSvgRenderer()
 
@@ -131,9 +127,9 @@ class AdjustTurnsButton(StyledButton):
             self.svg_renderer.load(svgData)
             self.update()
 
-        except Exception as e:
-            print(f"Error loading SVG file {self.svg_path}: {e}")
+        except Exception:
             # Continue without updating the SVG renderer
+            pass
 
     def resizeEvent(self, event) -> None:
         size = int(self.turns_box.graph_editor.height() * 0.3)
