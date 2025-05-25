@@ -5,8 +5,6 @@ from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 
 logger = logging.getLogger(__name__)
 
-if TYPE_CHECKING:
-    pass
 
 GRID_DIR = "images/grid/"
 

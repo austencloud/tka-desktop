@@ -17,9 +17,6 @@ from .visibility_settings.visibility_settings import VisibilitySettings
 from .codex_exporter_settings import CodexExporterSettings
 from .sequence_card_tab_settings import SequenceCardTabSettings
 
-if TYPE_CHECKING:
-    pass
-
 
 class SettingsManager(QObject):  # ISettingsManager is a Protocol, no need to inherit
     background_changed = pyqtSignal(str)

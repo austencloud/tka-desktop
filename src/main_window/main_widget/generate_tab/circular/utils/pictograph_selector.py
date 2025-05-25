@@ -4,9 +4,6 @@ from data.constants import (
     END_POS,
 )
 
-if TYPE_CHECKING:
-    pass
-
 
 class PictographSelector:
     @staticmethod

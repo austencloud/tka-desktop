@@ -13,9 +13,6 @@ from data.constants import (
     TIMING,
 )
 
-if TYPE_CHECKING:
-    pass
-
 
 class PictographKeyGenerator:
     def generate_pictograph_key(self, pictograph_data: dict) -> str:

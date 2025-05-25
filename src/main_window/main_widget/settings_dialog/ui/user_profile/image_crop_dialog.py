@@ -15,10 +15,6 @@ from main_window.main_widget.settings_dialog.ui.user_profile.profile_picture_man
 )
 
 
-if TYPE_CHECKING:
-    pass
-
-
 class ImageCropDialog(QDialog):
     """Dialog for cropping an image to a square."""
 

@@ -11,9 +11,6 @@ from .json_ori_validation_engine import JsonOriValidationEngine
 from .json_start_position_handler import JsonStartPositionHandler
 from .sequence_data_loader_saver import SequenceDataLoaderSaver
 
-if TYPE_CHECKING:
-    pass
-
 
 class JsonManager:  # IJsonManager is a Protocol, no need to inherit
     def __init__(self) -> None:

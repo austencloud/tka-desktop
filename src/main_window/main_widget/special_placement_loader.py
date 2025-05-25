@@ -5,9 +5,6 @@ from typing import TYPE_CHECKING, Any
 from data.constants import BOX, DIAMOND
 from utils.path_helpers import get_data_path
 
-if TYPE_CHECKING:
-    pass
-
 
 class SpecialPlacementLoader:
     """Loads special placements for the arrow placement manager."""
@@ -52,9 +49,7 @@ class SpecialPlacementLoader:
         mode_data: dict[str, dict] = {}
         for subfolder in self.SUBFOLDERS:
             mode_data[subfolder] = {}
-            directory = get_data_path(
-                f"arrow_placement/{mode}/special/{subfolder}"
-            )
+            directory = get_data_path(f"arrow_placement/{mode}/special/{subfolder}")
             if not os.path.isdir(directory):
                 continue
             for file_name in os.listdir(directory):

@@ -121,9 +121,6 @@ class AdjustTurnsButton(StyledButton):
                     with open(resolved_path, "r") as file:
                         svgData = QByteArray(file.read().encode("utf-8"))
                 else:
-                    print(
-                        f"Warning: SVG file not found at {self.svg_path} or {resolved_path}"
-                    )
                     return
 
             # Modify the SVG data if the button is disabled

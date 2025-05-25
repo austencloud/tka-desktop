@@ -11,16 +11,14 @@ from PyQt6.QtWidgets import (
     QFrame,
 )
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import (
-    QPixmap
+from PyQt6.QtGui import QPixmap
+
+from main_window.main_widget.settings_dialog.ui.user_profile.image_crop_dialog import (
+    ImageCropDialog,
 )
-
-from main_window.main_widget.settings_dialog.ui.user_profile.image_crop_dialog import ImageCropDialog
-from main_window.main_widget.settings_dialog.ui.user_profile.profile_picture_manager import ProfilePictureManager
-
-
-if TYPE_CHECKING:
-    pass
+from main_window.main_widget.settings_dialog.ui.user_profile.profile_picture_manager import (
+    ProfilePictureManager,
+)
 
 
 class AddUserDialog(QDialog):

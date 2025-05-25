@@ -2,9 +2,6 @@ from typing import TYPE_CHECKING, Literal
 from data.constants import BOX, DIAMOND, END_POS, START_POS
 from data.positions_maps import box_positions, diamond_positions
 
-if TYPE_CHECKING:
-    pass
-
 
 class GridModeChecker:
     """Checks what grid a given pictograph is in by looking at its start and end positions"""

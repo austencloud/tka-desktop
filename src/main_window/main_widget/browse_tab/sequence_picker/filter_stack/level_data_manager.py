@@ -8,9 +8,6 @@ from main_window.main_widget.metadata_extractor import (
     ThumbnailFinder,
 )
 
-if TYPE_CHECKING:
-    pass
-
 
 class LevelDataManager:
     def __init__(self):

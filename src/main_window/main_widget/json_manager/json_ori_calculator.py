@@ -22,9 +22,6 @@ from data.constants import (
 )
 from objects.motion.managers.handpath_calculator import HandpathCalculator
 
-if TYPE_CHECKING:
-    pass
-
 
 class JsonOriCalculator:
     def __init__(self):

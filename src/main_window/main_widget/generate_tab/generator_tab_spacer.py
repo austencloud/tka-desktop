@@ -5,9 +5,6 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import pyqtSignal
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    pass
-
 
 class GeneratorTabSpacer(QSpacerItem):
     resized: pyqtSignal = pyqtSignal()

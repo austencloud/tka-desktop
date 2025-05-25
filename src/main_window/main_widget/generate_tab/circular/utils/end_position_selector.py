@@ -6,9 +6,6 @@ from data.positions_maps import (
     quarter_position_map_ccw,
 )
 
-if TYPE_CHECKING:
-    pass
-
 
 class RotatedEndPositionSelector:
     @staticmethod

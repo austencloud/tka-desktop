@@ -1,10 +1,6 @@
 import os
-from typing import TYPE_CHECKING
 
 from utils.path_helpers import get_data_path
-
-if TYPE_CHECKING:
-    pass
 
 
 class ThumbnailFinder:

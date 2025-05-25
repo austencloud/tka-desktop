@@ -16,16 +16,10 @@ def configure_import_paths():
 
 
 def initialize_logging():
-    from src.utils.logging_config import configure_logging, get_logger
+    from src.utils.logging_config import configure_logging
 
     # Configure the logging system with INFO level by default
     configure_logging(logging.INFO)
-
-    # Get a logger for the main module
-    main_logger = get_logger(__name__)
-
-    # No longer creating trace log files
-    return None
 
 
 def initialize_application():
@@ -146,7 +140,6 @@ def main():
 
     # Use the startup silencer to reduce noise during initialization
     with silence_startup_logs():
-        # Initialize components silently
         pass
 
     # Initialize logging without creating log files

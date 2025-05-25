@@ -1,14 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Dict
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import (
-    QPixmap,
-    QPainter,
-    QPainterPath
-)
-
-
-if TYPE_CHECKING:
-    pass
+from PyQt6.QtGui import QPixmap, QPainter, QPainterPath
 
 
 class ProfilePictureManager:

@@ -1,9 +1,6 @@
 from PyQt6.QtCore import QObject, pyqtSignal
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    pass
-
 
 class BaseBackground(QObject):
     update_required = pyqtSignal()
@@ -18,4 +15,3 @@ class BaseBackground(QObject):
 
     def paint_background(self, widget, painter):
         pass
-

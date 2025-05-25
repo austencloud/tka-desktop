@@ -9,9 +9,6 @@ from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import BOX, DIAMOND, END_POS, GRID_MODE, LETTER, START_POS
 from PyQt6.QtCore import QSize
 
-if TYPE_CHECKING:
-    pass
-
 
 class BaseStartPosPicker(QWidget):
     def __init__(

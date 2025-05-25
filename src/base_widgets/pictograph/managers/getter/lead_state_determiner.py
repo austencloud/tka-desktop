@@ -4,9 +4,6 @@ from data.constants import *
 from objects.motion.handpath_calculator import HandpathCalculator
 from objects.motion.motion import Motion
 
-if TYPE_CHECKING:
-    pass
-
 
 class LeadStateDeterminer:
     def __init__(self, red_motion: Motion, blue_motion: Motion) -> None:

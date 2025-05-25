@@ -4,9 +4,6 @@ from typing import TYPE_CHECKING, Dict
 
 from data.constants import CLOCKWISE, COUNTER_CLOCKWISE
 
-if TYPE_CHECKING:
-    pass
-
 
 class PropRotationState(QObject):
     """Manages the state machine for rotation directions"""

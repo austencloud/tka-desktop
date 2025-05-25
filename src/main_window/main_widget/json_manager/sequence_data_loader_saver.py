@@ -22,9 +22,6 @@ from src.settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_user_editable_resource_path
 from utils.word_simplifier import WordSimplifier
 
-if TYPE_CHECKING:
-    pass
-
 
 class SequenceDataLoaderSaver:
     def __init__(self) -> None:

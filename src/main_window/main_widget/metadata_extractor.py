@@ -15,9 +15,6 @@ from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvalua
 from main_window.main_widget.thumbnail_finder import ThumbnailFinder
 from utils.path_helpers import get_data_path
 
-if TYPE_CHECKING:
-    pass
-
 
 class MetaDataExtractor:
     def get_tags(self, file_path: str) -> list[str]:

@@ -537,20 +537,13 @@ class SequenceCardImageExporter:
                         )
 
                         regenerated_count += 1
-                        print(f"Successfully regenerated {word}/{sequence_file}")
 
-                    except Exception as e:
-                        print(f"Error regenerating {word}/{sequence_file}: {e}")
-                        import traceback
-
-                        traceback.print_exc()
+                    except Exception:
                         failed_count += 1
                 else:
-                    print(f"Invalid metadata in {word}/{sequence_file}")
                     failed_count += 1
             else:
                 # Skip regeneration
-                print(f"Skipping {word}/{sequence_file}: {reason}")
                 skipped_count += 1
 
             processed_sequences += 1

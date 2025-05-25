@@ -8,9 +8,6 @@ from base_widgets.pictograph.elements.views.lesson_pictograph_view import (
     LessonPictographView,
 )
 
-if TYPE_CHECKING:
-    pass
-
 
 class PictographQuestionRenderer:
     """

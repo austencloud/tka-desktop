@@ -13,9 +13,6 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export
     DifficultyLevelGradients,
 )
 
-if TYPE_CHECKING:
-    pass
-
 
 class ImageExportDifficultyLevelDrawer:
     def __init__(self):

@@ -3,14 +3,7 @@
 from interfaces.settings_manager_interface import ISettingsManager
 
 
-
 from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    pass
-
-
-
 
 
 class SequenceCardSettingsHandler:

@@ -16,9 +16,6 @@ from .advanced_start_pos_picker.advanced_start_pos_picker import AdvancedStartPo
 from .add_to_sequence_manager.add_to_sequence_manager import AddToSequenceManager
 from .option_picker.widgets.option_picker import OptionPicker
 
-if TYPE_CHECKING:
-    pass
-
 
 class ConstructTab(QFrame):
     start_position_selected = pyqtSignal(object)

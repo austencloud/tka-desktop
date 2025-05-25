@@ -7,9 +7,6 @@ from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjust
     PlacementDataCleaner,
 )
 
-if TYPE_CHECKING:
-    pass
-
 
 class SpecialPlacementSaver:
 

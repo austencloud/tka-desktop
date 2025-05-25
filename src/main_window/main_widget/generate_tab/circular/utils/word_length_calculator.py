@@ -1,9 +1,6 @@
 from typing import TYPE_CHECKING
 from ..CAP_type import CAPType
 
-if TYPE_CHECKING:
-    pass
-
 
 class WordLengthCalculator:
     @staticmethod

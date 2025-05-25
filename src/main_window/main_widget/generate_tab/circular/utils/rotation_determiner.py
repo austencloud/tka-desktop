@@ -5,9 +5,6 @@ from data.constants import (
     COUNTER_CLOCKWISE,
 )
 
-if TYPE_CHECKING:
-    pass
-
 
 class RotationDeterminer:
     @staticmethod

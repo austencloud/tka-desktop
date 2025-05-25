@@ -16,9 +16,6 @@ from .rotated_swapped_CAP_checker import (
 )
 from .strict_rotated_CAP_checker import StrictRotatedCAPChecker
 
-if TYPE_CHECKING:
-    pass
-
 
 class SequencePropertiesManager:
     def __init__(self):

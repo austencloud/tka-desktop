@@ -6,10 +6,6 @@ from PyQt6.QtGui import QFont, QCursor
 from styles.dark_theme_styler import DarkThemeStyler
 
 
-if TYPE_CHECKING:
-    pass
-
-
 class UserProfileButton(QWidget):
     """A widget containing a user button and a remove button."""
 

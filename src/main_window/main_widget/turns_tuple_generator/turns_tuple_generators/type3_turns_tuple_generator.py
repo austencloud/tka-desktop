@@ -4,9 +4,6 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generators.base_t
     BaseTurnsTupleGenerator,
 )
 
-if TYPE_CHECKING:
-    pass
-
 
 class Type3TurnsTupleGenerator(BaseTurnsTupleGenerator):
     def generate_turns_tuple(self, pictograph) -> str:
