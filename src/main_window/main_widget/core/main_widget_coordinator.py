@@ -70,12 +70,12 @@ class MainWidgetCoordinator(QWidget):
         # Call initialize_components() after dependency injection is fully set up
 
     def _setup_layout(self) -> None:
-        """Setup the main layout structure."""
+        """Setup the main layout structure with hybrid tab support."""
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(0)
 
-        # Create horizontal layout for main content
+        # Create horizontal layout for main content (stack-based tabs)
         self.content_layout = QHBoxLayout()
         self.content_layout.setContentsMargins(0, 0, 0, 0)
         self.content_layout.setSpacing(0)
@@ -84,15 +84,27 @@ class MainWidgetCoordinator(QWidget):
         self.left_stack = QStackedWidget()
         self.right_stack = QStackedWidget()
 
-        # Add widgets with initial 2:1 stretch ratio (browse tab default)
-        # This ensures consistent layout from startup
-        self.content_layout.addWidget(self.left_stack, 2)  # 2/3 width for left stack
-        self.content_layout.addWidget(self.right_stack, 1)  # 1/3 width for right stack
+        # Add widgets with initial equal stretch ratio
+        self.content_layout.addWidget(self.left_stack, 1)  # Left stack
+        self.content_layout.addWidget(self.right_stack, 1)  # Right stack
 
-        # Note: Menu bar will be added to the layout after widgets are initialized
-        # This is done in _setup_menu_bar_layout() called from initialize_components()
-        self.main_layout.addLayout(self.content_layout)
+        # Create a stacked widget to hold different layout modes
+        self.main_content_stack = QStackedWidget()
+
+        # Create container widget for stack-based layout
+        self.stack_container = QWidget()
+        self.stack_container.setLayout(self.content_layout)
+
+        # Add the stack container as the first widget (index 0)
+        self.main_content_stack.addWidget(self.stack_container)
+
+        # Note: Full-widget tabs will be added to main_content_stack at indices 1+
+        # Menu bar will be added to the layout after widgets are initialized
+        self.main_layout.addWidget(self.main_content_stack)
         self.setLayout(self.main_layout)
+
+        # Track current layout mode
+        self._current_layout_mode = "stack"  # "stack" or "full_widget"
 
     def _connect_signals(self) -> None:
         """Connect signals between managers."""
@@ -499,6 +511,58 @@ class MainWidgetCoordinator(QWidget):
     def get_tab_widget(self, tab_name: str) -> Optional[QWidget]:
         """Get a specific tab widget."""
         return self.tab_manager.get_tab_widget(tab_name)
+
+    def switch_to_stack_layout(
+        self, left_stretch: int = 1, right_stretch: int = 1
+    ) -> None:
+        """
+        Switch to stack-based layout mode for construct/generate/learn tabs.
+
+        Args:
+            left_stretch: Stretch factor for left stack
+            right_stretch: Stretch factor for right stack
+        """
+        if self._current_layout_mode != "stack":
+            self.main_content_stack.setCurrentIndex(0)  # Show stack container
+            self._current_layout_mode = "stack"
+
+        # Apply stretch factors to the content layout
+        self.content_layout.setStretch(0, left_stretch)
+        self.content_layout.setStretch(1, right_stretch)
+
+        # Clear any fixed width constraints
+        self.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+        self.left_stack.setMinimumWidth(0)
+        self.right_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+        self.right_stack.setMinimumWidth(0)
+
+    def switch_to_full_widget_layout(self, tab_widget: QWidget) -> None:
+        """
+        Switch to full-widget layout mode for browse/sequence_card tabs.
+
+        Args:
+            tab_widget: The tab widget that should take full control of the layout
+        """
+        # Check if this tab widget is already in the main content stack
+        tab_index = -1
+        for i in range(
+            1, self.main_content_stack.count()
+        ):  # Skip index 0 (stack container)
+            if self.main_content_stack.widget(i) is tab_widget:
+                tab_index = i
+                break
+
+        # If not found, add it to the stack
+        if tab_index == -1:
+            tab_index = self.main_content_stack.addWidget(tab_widget)
+
+        # Switch to the tab widget
+        self.main_content_stack.setCurrentIndex(tab_index)
+        self._current_layout_mode = "full_widget"
+
+    def get_current_layout_mode(self) -> str:
+        """Get the current layout mode ('stack' or 'full_widget')."""
+        return self._current_layout_mode
 
     def get_widget(self, widget_name: str) -> Optional[QWidget]:
         """Get a specific widget."""
