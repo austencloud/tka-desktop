@@ -5,7 +5,6 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
 from data.constants import GRID_MODE
-from main_window.main_widget.tab_indices import LeftStackIndex
 from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
@@ -34,6 +33,15 @@ class BrowseTabFilterController:
             self.browse_tab.sequence_picker,
         ]
         if current_tab == "browse" and fade:
+            # FILTER BUTTON DELAY FIX: Switch to sequence picker immediately for responsive UI
+            if hasattr(self.browse_tab, "internal_left_stack"):
+                sequence_picker_index = (
+                    1  # Sequence picker is at index 1 in internal stack
+                )
+                self.browse_tab.internal_left_stack.setCurrentIndex(
+                    sequence_picker_index
+                )
+
             self.fade_manager.widget_fader.fade_and_update(
                 widgets_to_fade,
                 (
@@ -69,11 +77,20 @@ class BrowseTabFilterController:
             self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
             == "browse"
         ):
-            # Use layout-preserving stack switching instead of direct setCurrentWidget
-            self._switch_to_sequence_picker_with_layout_preservation()
-        self.browse_tab.browse_settings.set_browse_left_stack_index(
-            LeftStackIndex.SEQUENCE_PICKER.value
-        )
+            # ARCHITECTURAL FIX: Switch to sequence picker in browse tab's internal stack
+            if hasattr(self.browse_tab, "internal_left_stack"):
+                sequence_picker_index = (
+                    1  # Sequence picker is at index 1 in internal stack
+                )
+                self.browse_tab.internal_left_stack.setCurrentIndex(
+                    sequence_picker_index
+                )
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.info(
+                    f"✅ Switched to sequence picker in internal stack (index {sequence_picker_index})"
+                )
 
     def _prepare_ui_for_filtering(self, description: str):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -241,40 +258,3 @@ class BrowseTabFilterController:
             "show_all": "all sequences",
         }
         return desc_map.get(key, "Unknown Filter")
-
-    def _switch_to_sequence_picker_with_layout_preservation(self):
-        """Switch to sequence picker while preserving the browse tab's 2:1 layout ratio."""
-        try:
-            main_widget = self.browse_tab.main_widget
-
-            # Ensure browse tab layout ratios are preserved during stack switching
-            if hasattr(main_widget, "content_layout"):
-                # Set browse tab's 2:1 stretch ratio
-                main_widget.content_layout.setStretch(0, 2)  # Left stack: 2 parts
-                main_widget.content_layout.setStretch(1, 1)  # Right stack: 1 part
-
-                # Clear any fixed width constraints that might interfere
-                if hasattr(main_widget, "left_stack"):
-                    main_widget.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
-                    main_widget.left_stack.setMinimumWidth(0)
-                if hasattr(main_widget, "right_stack"):
-                    main_widget.right_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
-                    main_widget.right_stack.setMinimumWidth(0)
-
-            # Now safely switch to sequence picker
-            main_widget.left_stack.setCurrentWidget(self.browse_tab.sequence_picker)
-
-            # Force layout update
-            if hasattr(main_widget, "content_layout"):
-                main_widget.content_layout.update()
-                main_widget.updateGeometry()
-
-        except Exception as e:
-            # Fallback to direct switching if layout preservation fails
-            import logging
-
-            logger = logging.getLogger(__name__)
-            logger.warning(f"Layout preservation failed, using direct switching: {e}")
-            self.browse_tab.main_widget.left_stack.setCurrentWidget(
-                self.browse_tab.sequence_picker
-            )

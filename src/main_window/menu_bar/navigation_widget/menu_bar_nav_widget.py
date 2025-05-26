@@ -3,8 +3,6 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QFrame, QVBoxLayout
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import pyqtSignal
 
-from main_window.main_widget.tab_index import TAB_INDEX
-from main_window.main_widget.tab_name import TabName
 from styles.styled_button import StyledButton
 
 
@@ -92,7 +90,6 @@ class MenuBarNavWidget(QWidget):
 
     def update_buttons(self):
         """Update button styles and resize based on main widget width."""
-        font_size = self.mw.width() // 130
         font = QFont("Georgia", self.mw.width() // 100)
 
         button_width = self.mw.width() // 8
@@ -105,6 +102,29 @@ class MenuBarNavWidget(QWidget):
             button.update_appearance()
             button.setFixedWidth(button_width)
             button.setFixedHeight(button_height)
+
+    def on_tab_changed_programmatically(self, tab_name: str):
+        """Handle tab changes that occur programmatically (not from button clicks)."""
+        # Map tab names to button indices
+        tab_name_to_index = {
+            "construct": 0,
+            "generate": 1,
+            "browse": 2,
+            "learn": 3,
+            "sequence_card": 4,
+        }
+
+        if tab_name in tab_name_to_index:
+            new_index = tab_name_to_index[tab_name]
+            if new_index != self.current_index:
+                # Update the current index without emitting the signal (to avoid circular calls)
+                self.current_index = new_index
+                self.update_buttons()
+                print(
+                    f"DEBUG: Navigation updated to highlight {tab_name} tab (index {new_index})"
+                )
+        else:
+            print(f"DEBUG: Unknown tab name for navigation update: {tab_name}")
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

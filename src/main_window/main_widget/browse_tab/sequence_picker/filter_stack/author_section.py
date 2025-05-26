@@ -36,7 +36,6 @@ class AuthorSection(FilterSectionBase):
 
     def add_buttons(self):
         """Initialize the UI components for the author selection."""
-        self.go_back_button.show()
         self.header_label.show()
 
         layout: QVBoxLayout = self.layout()

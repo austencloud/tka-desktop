@@ -14,5 +14,5 @@ class RightStackIndex(IntEnum):
     OPTION_PICKER = 2
     GENERATE_TAB = 3
     LEARN_TAB = 4
-    SEQUENCE_VIEWER = 5
-    SEQUENCE_CARD_TAB = 6
+    # 🔥 REMOVED: SEQUENCE_VIEWER = 5  # Now part of browse tab's internal layout!
+    SEQUENCE_CARD_TAB = 5  # Updated index from 6 to 5

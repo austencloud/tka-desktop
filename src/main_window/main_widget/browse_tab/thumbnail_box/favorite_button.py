@@ -74,10 +74,44 @@ class FavoriteButton(QPushButton):
         super().resizeEvent(event)
 
     def resize_favorite_icon(self):
-        font_size = self.thumbnail_box.width() // 18
+        # FAVORITES BUTTON SIZING FIX: Use intended final layout dimensions
+        # instead of current thumbnail box width to ensure consistent sizing
+        intended_width = self._get_intended_thumbnail_width()
+        font_size = intended_width // 18
         icon_size = QSize(font_size + 10, font_size + 10)
         self.setIconSize(icon_size)
         self.setFixedSize(icon_size.width(), icon_size.height())
+
+    def _get_intended_thumbnail_width(self):
+        """Calculate the intended final width for thumbnail boxes in the 3-column grid."""
+        try:
+            if self.thumbnail_box.in_sequence_viewer:
+                # For sequence viewer, use the current calculation
+                return self.thumbnail_box.width()
+
+            # For browse tab, calculate the intended width based on final layout
+            scroll_widget = self.thumbnail_box.sequence_picker.scroll_widget
+            scroll_widget_width = scroll_widget.width()
+
+            # Use the same calculation as thumbnail_box.resize_thumbnail_box()
+            scrollbar_width = scroll_widget.calculate_scrollbar_width()
+
+            # Account for ALL horizontal spacing elements (same as thumbnail_box)
+            total_margins = (
+                3 * self.thumbnail_box.margin * 2
+            ) + 10  # 3 boxes * 20px margins + 10px buffer
+
+            # Calculate usable width for thumbnails
+            usable_width = scroll_widget_width - scrollbar_width - total_margins
+
+            # Divide by 3 for 3 columns, ensuring minimum width
+            intended_width = max(150, int(usable_width // 3))
+
+            return intended_width
+
+        except (AttributeError, TypeError, ZeroDivisionError):
+            # Fallback to current width if calculation fails
+            return max(150, self.thumbnail_box.width())
 
     def showEvent(self, event):
         self.reload_favorite_icon()

@@ -29,14 +29,16 @@ class ThumbnailBoxWordLabel(QLabel):
         self.setFont(QFont("Georgia", 12, QFont.Weight.DemiBold))
 
     def resizeEvent(self, event: QEvent) -> None:
-        font_size = self.header.width() // 18
+        # WORD LABEL SIZING FIX: Use intended final layout dimensions
+        intended_header_width = self._get_intended_header_width()
+        font_size = intended_header_width // 18
         font = QFont("Georgia", font_size, QFont.Weight.DemiBold)
         self.setFont(font)
 
         color = self.settings_manager.global_settings.get_current_font_color()
         self.setStyleSheet(f"color: {color};")
 
-        available_width = self.header.width() * 0.8
+        available_width = intended_header_width * 0.8
         fm = self.fontMetrics()
         while fm.horizontalAdvance(self.text()) > available_width and font_size > 1:
             font_size -= 1
@@ -44,6 +46,43 @@ class ThumbnailBoxWordLabel(QLabel):
             self.setFont(font)
             fm = self.fontMetrics()
         super().resizeEvent(event)
+
+    def _get_intended_header_width(self):
+        """Calculate the intended final width for the header based on thumbnail box layout."""
+        try:
+            thumbnail_box = self.header.thumbnail_box
+            if thumbnail_box.in_sequence_viewer:
+                # For sequence viewer, use current header width
+                return self.header.width()
+
+            # For browse tab, calculate intended width based on final layout
+            scroll_widget = thumbnail_box.sequence_picker.scroll_widget
+            scroll_widget_width = scroll_widget.width()
+
+            # Use the same calculation as thumbnail_box.resize_thumbnail_box()
+            scrollbar_width = scroll_widget.calculate_scrollbar_width()
+
+            # Account for ALL horizontal spacing elements
+            total_margins = (
+                3 * thumbnail_box.margin * 2
+            ) + 10  # 3 boxes * 20px margins + 10px buffer
+
+            # Calculate usable width for thumbnails
+            usable_width = scroll_widget_width - scrollbar_width - total_margins
+
+            # Divide by 3 for 3 columns, ensuring minimum width
+            intended_thumbnail_width = max(150, int(usable_width // 3))
+
+            # Header width should match thumbnail box width (minus margins)
+            intended_header_width = intended_thumbnail_width - (
+                thumbnail_box.margin * 2
+            )
+
+            return max(100, intended_header_width)
+
+        except (AttributeError, TypeError, ZeroDivisionError):
+            # Fallback to current header width if calculation fails
+            return max(100, self.header.width())
 
     def set_current_word(self, word: str):
         self.simplified_word = WordSimplifier.simplify_repeated_word(word)

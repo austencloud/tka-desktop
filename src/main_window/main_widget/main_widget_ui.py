@@ -135,8 +135,9 @@ class MainWidgetUI:
 
         mw.left_stack.addWidget(mw.sequence_workbench)  # 0
         mw.left_stack.addWidget(mw.codex)  # 1
-        mw.left_stack.addWidget(mw.browse_tab.sequence_picker.filter_stack)  # 2
-        mw.left_stack.addWidget(mw.browse_tab.sequence_picker)  # 3
+        # ARCHITECTURAL FIX: Remove filter_stack from main widget - it should live inside browse_tab
+        # mw.left_stack.addWidget(mw.browse_tab.sequence_picker.filter_stack)  # 2 - REMOVED
+        mw.left_stack.addWidget(mw.browse_tab)  # 2 - Add entire browse_tab instead
 
         mw.right_stack.addWidget(mw.construct_tab.start_pos_picker)  # 0
         mw.right_stack.addWidget(mw.construct_tab.advanced_start_pos_picker)  # 1

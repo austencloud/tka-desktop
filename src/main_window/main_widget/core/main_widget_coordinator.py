@@ -491,8 +491,40 @@ class MainWidgetCoordinator(QWidget):
         # Update widget visibility
         self.widget_manager.update_for_tab(tab_name)
 
+        # Update navigation widget highlighting
+        self._update_navigation_highlighting(tab_name)
+
         # Emit signal for external listeners
         self.tab_changed.emit(tab_name)
+
+    def _update_navigation_highlighting(self, tab_name: str) -> None:
+        """Update the navigation widget to highlight the correct tab."""
+        try:
+            # Get the menu bar widget
+            menu_bar = self.widget_manager.get_widget("menu_bar")
+            if menu_bar and hasattr(menu_bar, "navigation_widget"):
+                navigation_widget = menu_bar.navigation_widget
+                if hasattr(navigation_widget, "on_tab_changed_programmatically"):
+                    navigation_widget.on_tab_changed_programmatically(tab_name)
+                else:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        "Navigation widget does not have on_tab_changed_programmatically method"
+                    )
+            else:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    "Menu bar or navigation widget not available for highlighting update"
+                )
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to update navigation highlighting: {e}")
 
     def _on_widget_ready(self, widget_name: str) -> None:
         """Handle widget ready events."""

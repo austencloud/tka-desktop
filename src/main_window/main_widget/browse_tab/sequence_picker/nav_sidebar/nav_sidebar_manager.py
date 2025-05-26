@@ -51,9 +51,14 @@ class NavSidebarManager:
         self.sidebar.resize_sidebar()
 
     def apply_button_widths(self):
-        """Apply uniform width to all sidebar buttons."""
-        for button in self.buttons:
-            button.setFixedWidth(SidebarButton._max_button_width)
+        """☢️ NUCLEAR ANNIHILATION: OBLITERATE FIXED WIDTH APPLICATION! ☢️"""
+        print("☢️☢️☢️ ANNIHILATION: OBLITERATING sidebar button fixed widths! ☢️☢️☢️")
+
+        # COMPLETELY OBLITERATED:
+        # for button in self.buttons:
+        #     button.setFixedWidth(SidebarButton._max_button_width)  # ☢️ OBLITERATED!
+
+        print("☢️ ANNIHILATION: Sidebar button fixed widths COMPLETELY OBLITERATED!")
 
     def resize_sidebar(self):
         """Handle sidebar resizing and reapply button widths."""

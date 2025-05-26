@@ -85,12 +85,19 @@ class SequencePickerFilterStack(QStackedWidget):
             filter_section_enum = BrowseTabSection.from_str(filter_section_str)
             index = self.section_indexes.get(filter_section_enum)
             if index is not None:
-                # Preserve browse tab layout before stack switching
-                self._preserve_browse_tab_layout()
+                # For self-contained browse tab, use internal filter stack switching
+                if hasattr(
+                    self.sequence_picker.main_widget, "fade_manager"
+                ) and hasattr(
+                    self.sequence_picker.main_widget.fade_manager, "stack_fader"
+                ):
+                    self.sequence_picker.main_widget.fade_manager.stack_fader.fade_stack(
+                        self.sequence_picker.filter_stack, index
+                    )
+                else:
+                    # Direct switching fallback
+                    self.setCurrentIndex(index)
 
-                self.sequence_picker.main_widget.fade_manager.stack_fader.fade_stack(
-                    self.sequence_picker.filter_stack, index
-                )
                 self.browse_tab.browse_settings.set_current_section(
                     filter_section_enum.value
                 )
@@ -112,29 +119,3 @@ class SequencePickerFilterStack(QStackedWidget):
 
     def show_filter_selection_widget(self):
         self.show_section(BrowseTabSection.FILTER_SELECTOR.value)
-
-    def _preserve_browse_tab_layout(self):
-        """Preserve the browse tab's 2:1 layout ratio during stack switching."""
-        try:
-            main_widget = self.sequence_picker.main_widget
-
-            # Ensure browse tab layout ratios are preserved during stack switching
-            if hasattr(main_widget, "content_layout"):
-                # Set browse tab's 2:1 stretch ratio
-                main_widget.content_layout.setStretch(0, 2)  # Left stack: 2 parts
-                main_widget.content_layout.setStretch(1, 1)  # Right stack: 1 part
-
-                # Clear any fixed width constraints that might interfere
-                if hasattr(main_widget, "left_stack"):
-                    main_widget.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
-                    main_widget.left_stack.setMinimumWidth(0)
-                if hasattr(main_widget, "right_stack"):
-                    main_widget.right_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
-                    main_widget.right_stack.setMinimumWidth(0)
-
-        except Exception as e:
-            # Log the error but don't fail the operation
-            import logging
-
-            logger = logging.getLogger(__name__)
-            logger.warning(f"Failed to preserve browse tab layout: {e}")

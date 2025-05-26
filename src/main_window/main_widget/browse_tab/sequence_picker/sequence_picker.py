@@ -39,23 +39,40 @@ class SequencePicker(QWidget):
         self._setup_layout()
 
     def _setup_components(self):
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.info("🔧 Setting up SequencePicker components")
 
         # Widgets
+        logger.info("📚 Creating filter stack...")
         self.filter_stack = SequencePickerFilterStack(self)
+        logger.info("🎛️ Creating control panel...")
         self.control_panel = SequencePickerControlPanel(self)
+        logger.info("📊 Creating progress bar...")
         self.progress_bar = SequencePickerProgressBar(self)
+        logger.info("📜 Creating scroll widget...")
         self.scroll_widget = SequencePickerScrollWidget(self)
+        logger.info("🧭 Creating nav sidebar...")
         self.nav_sidebar = SequencePickerNavSidebar(self)
 
         # Managers
+        logger.info("🔄 Creating sorter...")
         self.sorter = SequencePickerSorter(self)
+        logger.info("📋 Creating section manager...")
         self.section_manager = SequencePickerSectionManager(self)
+
+        logger.info("✅ All SequencePicker components created successfully")
 
     def _setup_layout(self):
         content_layout = QHBoxLayout()
         content_layout.setContentsMargins(0, 0, 0, 0)
-        content_layout.addWidget(self.nav_sidebar)
-        content_layout.addWidget(self.scroll_widget)
+        content_layout.setSpacing(0)
+
+        # RESPONSIVE LAYOUT FIX: Add proper stretch factors
+        # Nav sidebar gets minimal space, scroll widget gets the rest
+        content_layout.addWidget(self.nav_sidebar, 0)  # Fixed width, no stretch
+        content_layout.addWidget(self.scroll_widget, 1)  # Takes remaining space
 
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)

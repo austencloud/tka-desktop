@@ -30,6 +30,10 @@ class BrowseTabFactory(WidgetFactory):
         Returns:
             A new BrowseTab instance
         """
+        logger.info("🏭 BrowseTabFactory.create() called!")
+        logger.info(f"parent: {parent}")
+        logger.info(f"app_context: {app_context}")
+
         try:
             # Import here to avoid circular dependencies
             from main_window.main_widget.browse_tab.browse_tab import BrowseTab

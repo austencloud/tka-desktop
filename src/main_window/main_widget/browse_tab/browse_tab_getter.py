@@ -50,21 +50,11 @@ class BrowseTabGetter:
                 yield word, thumbnails
 
     def _get_thumbnail_finder(self):
-        """Get the thumbnail finder using the new dependency injection pattern with graceful fallbacks."""
+        """Get the thumbnail finder using direct access since it's not a widget."""
         try:
-            # Try to get thumbnail finder through the new coordinator pattern
-            return self.browse_tab.main_widget.get_widget("thumbnail_finder")
+            # ThumbnailFinder is not a widget, so access it directly from the coordinator
+            if hasattr(self.browse_tab.main_widget, "thumbnail_finder"):
+                return self.browse_tab.main_widget.thumbnail_finder
         except AttributeError:
-            # Fallback: try through widget_manager for backward compatibility
-            try:
-                return self.browse_tab.main_widget.widget_manager.get_widget(
-                    "thumbnail_finder"
-                )
-            except AttributeError:
-                # Final fallback: try direct access for legacy compatibility
-                try:
-                    if hasattr(self.browse_tab.main_widget, "thumbnail_finder"):
-                        return self.browse_tab.main_widget.thumbnail_finder
-                except AttributeError:
-                    pass
+            pass
         return None

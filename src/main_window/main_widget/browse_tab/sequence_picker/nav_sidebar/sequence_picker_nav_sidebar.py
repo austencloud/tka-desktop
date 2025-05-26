@@ -49,8 +49,30 @@ class SequencePickerNavSidebar(QWidget):
 
     def resize_sidebar(self):
         if self.sequence_picker and self.sequence_picker.main_widget:
-            fraction = 1 / 12.0
-            new_width = int(self.sequence_picker.main_widget.width() * fraction)
+            # RESPONSIVE LAYOUT FIX: Use more reasonable sidebar width calculation
+            # Consider the actual available space in the browse tab's internal stack
+            try:
+                # Get the browse tab's internal left stack width (which contains this sequence picker)
+                browse_tab = self.sequence_picker.browse_tab
+                if hasattr(browse_tab, "internal_left_stack"):
+                    available_width = browse_tab.internal_left_stack.width()
+                else:
+                    # Fallback: use sequence picker width
+                    available_width = self.sequence_picker.width()
+
+                # Use 15-20% of available width for sidebar, with reasonable min/max bounds
+                sidebar_fraction = 0.18  # 18% of available space
+                new_width = int(available_width * sidebar_fraction)
+
+                # Apply reasonable bounds: min 120px, max 250px
+                new_width = max(120, min(new_width, 250))
+
+            except (AttributeError, TypeError):
+                # Emergency fallback: use main widget width with smaller fraction
+                fraction = 1 / 15.0  # Reduced from 1/12 to 1/15 for more scroll space
+                new_width = int(self.sequence_picker.main_widget.width() * fraction)
+                new_width = max(120, min(new_width, 250))  # Apply bounds
+
             self.setFixedWidth(new_width)
         self.adjust_button_fonts()
 

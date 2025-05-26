@@ -52,7 +52,6 @@ class ContainsLettersSection(FilterSectionBase):
 
     def add_buttons(self):
         self.initialized = True
-        self.go_back_button.show()
         self.header_label.show()
 
         layout: QVBoxLayout = self.layout()

@@ -101,20 +101,33 @@ class ThumbnailImageLabel(QLabel):
 
     def _calculate_normal_view_size(self) -> QSize:
         """Calculate available space in normal view mode."""
-        nav_bar = self.thumbnail_box.sequence_picker.nav_sidebar
-        if nav_bar.width() < 20:
-            nav_bar.resize_sidebar()
-
+        # RESPONSIVE LAYOUT FIX: Use the same calculation as thumbnail_box for consistency
         scroll_widget = self.thumbnail_box.sequence_picker.scroll_widget
+        scroll_widget_width = scroll_widget.width()
+
+        # Account for scrollbar and margins
         scrollbar_width = scroll_widget.calculate_scrollbar_width()
 
-        # Get the actual available width for the Browse Tab's left panel
-        available_width = self._get_browse_tab_available_width()
+        # HORIZONTAL OVERFLOW FIX: Account for ALL horizontal spacing elements
+        # Each thumbnail box has 10px margin on left and right (20px total per box)
+        # With 3 columns, that's 3 * 20px = 60px total for margins
+        # Plus small buffer for any layout spacing
+        total_margins = (
+            3 * self.thumbnail_box.margin * 2
+        ) + 10  # 3 boxes * 20px margins + 10px buffer
 
-        scroll_widget_width = available_width - scrollbar_width - nav_bar.width()
-        available_width = int(
-            scroll_widget_width // 3 - (self.thumbnail_box.margin * 2)
-        )
+        # Calculate usable width for thumbnails (subtract scrollbar and all margins)
+        usable_width = scroll_widget_width - scrollbar_width - total_margins
+
+        # Divide by 3 for 3 columns, ensuring minimum width
+        thumbnail_width = max(
+            150, int(usable_width // 3)
+        )  # Minimum 150px per thumbnail
+
+        # Account for thumbnail box margins
+        available_width = int(thumbnail_width - (self.thumbnail_box.margin * 2))
+        available_width = max(100, available_width)  # Ensure minimum image size
+
         available_height = int(available_width / self.aspect_ratio)
 
         return QSize(available_width, available_height)

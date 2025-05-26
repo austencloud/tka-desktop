@@ -42,6 +42,10 @@ class TabManager(QObject):
         self._current_tab: Optional[str] = None
         self._tab_factories = {}
 
+        # Define which tabs use full-widget layout vs stack-based layout
+        self._full_widget_tabs = {"browse", "sequence_card"}
+        self._stack_based_tabs = {"construct", "generate", "learn", "write"}
+
         # Register tab factories
         self._register_tab_factories()
 
@@ -91,10 +95,13 @@ class TabManager(QObject):
 
             # Get the default tab from settings
             settings_manager = self.app_context.settings_manager
-            default_tab = getattr(
-                settings_manager.global_settings, "current_tab", "construct"
-            )
-            logger.info(f"Default tab from settings: {default_tab}")
+            try:
+                default_tab = settings_manager.global_settings.get_current_tab()
+                logger.info(f"Default tab from settings: {default_tab}")
+            except Exception as e:
+                logger.warning(f"Failed to get current tab from settings: {e}")
+                default_tab = "construct"  # Fallback to construct tab
+                logger.info(f"Using fallback default tab: {default_tab}")
 
             # Create the default tab first
             logger.info(f"Creating default tab: {default_tab}")
@@ -240,7 +247,16 @@ class TabManager(QObject):
             return None
 
     def _add_tab_to_stack(self, tab_name: str, tab_widget: QWidget) -> None:
-        """Add tab to the appropriate stack widget."""
+        """Add tab to the appropriate stack widget or main content stack."""
+        # Full-widget tabs don't get added to left/right stacks
+        # They will be added to main_content_stack when first switched to
+        if tab_name in self._full_widget_tabs:
+            logger.info(
+                f"Tab {tab_name} is a full-widget tab, will be added to main content stack when switched to"
+            )
+            return
+
+        # Stack-based tabs get added to left/right stacks
         # Note: Left stack indices 0 and 1 are reserved for sequence_workbench and codex
         # Tab-specific widgets start from index 2 onwards
 
@@ -262,22 +278,6 @@ class TabManager(QObject):
             self.coordinator.right_stack.addWidget(tab_widget)  # Index 3
         elif tab_name == "learn":
             self.coordinator.right_stack.addWidget(tab_widget)  # Index 4
-        elif tab_name == "browse":
-            # Browse tab has multiple components
-            if hasattr(tab_widget, "sequence_picker"):
-                if hasattr(tab_widget.sequence_picker, "filter_stack"):
-                    self.coordinator.left_stack.addWidget(
-                        tab_widget.sequence_picker.filter_stack
-                    )  # Index 2
-                self.coordinator.left_stack.addWidget(
-                    tab_widget.sequence_picker
-                )  # Index 3
-                if hasattr(tab_widget, "sequence_viewer"):
-                    self.coordinator.right_stack.addWidget(
-                        tab_widget.sequence_viewer
-                    )  # Index 5
-        elif tab_name == "sequence_card":
-            self.coordinator.right_stack.addWidget(tab_widget)  # Index 6
         else:
             # Default: add to right stack
             self.coordinator.right_stack.addWidget(tab_widget)
@@ -300,6 +300,18 @@ class TabManager(QObject):
         # Update current tab
         old_tab = self._current_tab
         self._current_tab = tab_name
+
+        # Save current tab to global settings for persistence
+        try:
+            if hasattr(self.app_context, "settings_manager") and hasattr(
+                self.app_context.settings_manager, "global_settings"
+            ):
+                self.app_context.settings_manager.global_settings.set_current_tab(
+                    tab_name
+                )
+                logger.debug(f"Saved current tab '{tab_name}' to global settings")
+        except Exception as e:
+            logger.warning(f"Failed to save current tab to settings: {e}")
 
         # Switch stack widgets
         self._switch_stack_widgets(tab_name, tab_widget)
@@ -330,51 +342,29 @@ class TabManager(QObject):
         return -1
 
     def _switch_stack_widgets(self, tab_name: str, tab_widget: QWidget) -> None:
-        """Switch the stack widgets to show the correct tab."""
+        """Switch the layout to show the correct tab using hybrid approach."""
         import logging
 
         logger = logging.getLogger(__name__)
 
-        # Set width ratios based on tab type (similar to old MainWidgetTabSwitcher)
-        if tab_name == "browse":
-            width_ratio = (2, 1)  # Browse tab uses 2/3 for left panel, 1/3 for right
-        elif tab_name == "sequence_card":
-            width_ratio = (0, 1)  # Sequence card tab uses full width for right panel
+        # Determine if this is a full-widget tab or stack-based tab
+        if tab_name in self._full_widget_tabs:
+            # Use full-widget layout for browse and sequence_card tabs
+            logger.info(f"Switching to full-widget layout for {tab_name} tab")
+            self.coordinator.switch_to_full_widget_layout(tab_widget)
+            return
+
+        # For stack-based tabs, use the traditional stack approach
+        logger.info(f"Switching to stack-based layout for {tab_name} tab")
+
+        # Set width ratios based on tab type
+        if tab_name == "learn":
+            width_ratio = (2, 1)  # Learn tab uses 2/3 for codex, 1/3 for lesson
         else:
-            width_ratio = (1, 1)  # Default is equal split
+            width_ratio = (1, 1)  # Default is equal split for construct/generate
 
-        # Apply width ratios to the content layout
-        # Handle both new coordinator and old main widget systems
-        if hasattr(self.coordinator, "content_layout"):
-            # New coordinator system
-            self.coordinator.content_layout.setStretch(0, width_ratio[0])
-            self.coordinator.content_layout.setStretch(1, width_ratio[1])
-
-            # Clear any fixed width constraints that might interfere with stretch factors
-            if hasattr(self.coordinator, "left_stack"):
-                self.coordinator.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
-                self.coordinator.left_stack.setMinimumWidth(0)
-            if hasattr(self.coordinator, "right_stack"):
-                self.coordinator.right_stack.setMaximumWidth(
-                    16777215
-                )  # QWIDGETSIZE_MAX
-                self.coordinator.right_stack.setMinimumWidth(0)
-
-        elif hasattr(self.coordinator, "main_widget") and hasattr(
-            self.coordinator.main_widget, "content_layout"
-        ):
-            # Old main widget system with stored content_layout reference
-            main_widget = self.coordinator.main_widget
-            main_widget.content_layout.setStretch(0, width_ratio[0])
-            main_widget.content_layout.setStretch(1, width_ratio[1])
-
-            # Clear any fixed width constraints that might interfere with stretch factors
-            if hasattr(main_widget, "left_stack"):
-                main_widget.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
-                main_widget.left_stack.setMinimumWidth(0)
-            if hasattr(main_widget, "right_stack"):
-                main_widget.right_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
-                main_widget.right_stack.setMinimumWidth(0)
+        # Switch to stack layout with appropriate ratios
+        self.coordinator.switch_to_stack_layout(width_ratio[0], width_ratio[1])
 
         # Switch left and right stacks based on tab using dynamic widget lookup
         if tab_name == "construct":
@@ -428,47 +418,6 @@ class TabManager(QObject):
                 self.coordinator.right_stack.setCurrentIndex(right_index)
 
             logger.info("Switched to learn tab: codex (left), learn_tab (right)")
-        elif tab_name == "browse":
-            # Show browse tab's filter_stack on left stack (dynamic lookup)
-            # Browse tab can have either FilterSelector or SequencePicker on left
-            left_index = self._find_widget_index_in_stack(
-                self.coordinator.left_stack, "FilterSelector"
-            )
-            if left_index < 0:
-                left_index = self._find_widget_index_in_stack(
-                    self.coordinator.left_stack, "SequencePicker"
-                )
-            if left_index >= 0:
-                self.coordinator.left_stack.setCurrentIndex(left_index)
-
-            # Show browse tab's sequence_viewer on right stack (dynamic lookup)
-            right_index = self._find_widget_index_in_stack(
-                self.coordinator.right_stack, "SequenceViewer"
-            )
-            if right_index >= 0:
-                self.coordinator.right_stack.setCurrentIndex(right_index)
-
-            logger.info(
-                "Switched to browse tab: filter_stack (left), sequence_viewer (right)"
-            )
-        elif tab_name == "sequence_card":
-            # Show sequence_workbench for sequence card tab (will be hidden by width ratio)
-            left_index = self._find_widget_index_in_stack(
-                self.coordinator.left_stack, "SequenceWorkbench"
-            )
-            if left_index >= 0:
-                self.coordinator.left_stack.setCurrentIndex(left_index)
-
-            # Show sequence card tab on right stack (dynamic lookup)
-            right_index = self._find_widget_index_in_stack(
-                self.coordinator.right_stack, "SequenceCardTab"
-            )
-            if right_index >= 0:
-                self.coordinator.right_stack.setCurrentIndex(right_index)
-
-            logger.info(
-                "Switched to sequence_card tab: sequence_workbench (hidden), sequence_card_tab (full width)"
-            )
         else:
             # Default: show sequence_workbench on left, tab widget on right
             self.coordinator.left_stack.setCurrentIndex(0)

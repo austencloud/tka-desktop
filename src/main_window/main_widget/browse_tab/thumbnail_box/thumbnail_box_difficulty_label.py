@@ -39,8 +39,10 @@ class ThumbnailBoxDifficultyLabel(QToolButton):
             self.hide()
             return
 
-        difficulty_level = self.main_widget.sequence_level_evaluator.get_sequence_difficulty_level(
-            sequence
+        difficulty_level = (
+            self.main_widget.sequence_level_evaluator.get_sequence_difficulty_level(
+                sequence
+            )
         )
 
         if difficulty_level in ("", None):
@@ -55,11 +57,44 @@ class ThumbnailBoxDifficultyLabel(QToolButton):
         self.update_icon()
 
     def update_icon(self):
-        """Updates the size of the icon dynamically based on thumbnail box size."""
-        size = max(24, self.thumbnail_box.width() // 12)  # Ensure min size
+        """Updates the size of the icon dynamically based on intended thumbnail box size."""
+        # DIFFICULTY LABEL SIZING FIX: Use intended final layout dimensions
+        intended_width = self._get_intended_thumbnail_width()
+        size = max(24, intended_width // 12)  # Ensure min size
         self.setIcon(QIcon(DifficultyLevelIcon.get_pixmap(self.difficulty_level, size)))
         self.setIconSize(QSize(size, size))
         self.setFixedSize(size, size)
+
+    def _get_intended_thumbnail_width(self):
+        """Calculate the intended final width for thumbnail boxes in the 3-column grid."""
+        try:
+            if self.thumbnail_box.in_sequence_viewer:
+                # For sequence viewer, use current thumbnail box width
+                return self.thumbnail_box.width()
+
+            # For browse tab, calculate intended width based on final layout
+            scroll_widget = self.thumbnail_box.sequence_picker.scroll_widget
+            scroll_widget_width = scroll_widget.width()
+
+            # Use the same calculation as thumbnail_box.resize_thumbnail_box()
+            scrollbar_width = scroll_widget.calculate_scrollbar_width()
+
+            # Account for ALL horizontal spacing elements
+            total_margins = (
+                3 * self.thumbnail_box.margin * 2
+            ) + 10  # 3 boxes * 20px margins + 10px buffer
+
+            # Calculate usable width for thumbnails
+            usable_width = scroll_widget_width - scrollbar_width - total_margins
+
+            # Divide by 3 for 3 columns, ensuring minimum width
+            intended_width = max(150, int(usable_width // 3))
+
+            return intended_width
+
+        except (AttributeError, TypeError, ZeroDivisionError):
+            # Fallback to current width if calculation fails
+            return max(150, self.thumbnail_box.width())
 
     def resizeEvent(self, event):
         """Resizes the difficulty label when the thumbnail box resizes."""

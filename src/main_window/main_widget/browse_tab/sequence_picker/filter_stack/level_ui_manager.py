@@ -41,7 +41,6 @@ class LevelUIManager:
         self.tally_labels: dict[int, QLabel] = {}
 
     def setup_ui(self) -> None:
-        self.filter_section.go_back_button.show()
         self.filter_section.header_label.show()
         layout: QVBoxLayout = self.filter_section.layout()
 

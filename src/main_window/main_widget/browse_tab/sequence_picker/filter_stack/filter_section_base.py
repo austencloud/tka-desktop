@@ -1,13 +1,11 @@
 from datetime import datetime
 import os
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
 from PyQt6.QtCore import Qt
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from utils.path_helpers import get_data_path
-
-from ..control_panel.sequence_picker_go_back_button import SequencePickerGoBackButton
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.sequence_picker.filter_stack.sequence_picker_filter_stack import (
@@ -31,20 +29,8 @@ class FilterSectionBase(QWidget):
     def _setup_ui(self, label_text: str):
         layout = QVBoxLayout(self)
 
-        top_bar_layout = QHBoxLayout()
-        self.go_back_button = SequencePickerGoBackButton(
-            self.filter_selector.sequence_picker
-        )
-        self.go_back_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.go_back_button.clicked.connect(
-            self.filter_selector.show_filter_selection_widget
-        )
-        top_bar_layout.addWidget(
-            self.go_back_button, alignment=Qt.AlignmentFlag.AlignLeft
-        )
-        top_bar_layout.addStretch(1)
-
-        layout.addLayout(top_bar_layout)
+        # Remove the go back button from filter sections - it's handled by the control panel
+        # The control panel go back button is the one that should be visible and functional
 
         self.header_label = QLabel(label_text)
         self.header_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -52,7 +38,6 @@ class FilterSectionBase(QWidget):
         layout.addStretch(1)
         self.setLayout(layout)
 
-        self.go_back_button.hide()
         self.header_label.hide()
 
     def get_sorted_base_words(self, sort_order) -> list[tuple[str, list[str], None]]:

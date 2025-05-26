@@ -41,7 +41,6 @@ class StartingPositionSection(FilterSectionBase):
 
     def add_buttons(self):
         """Initialize the UI components for the starting position selection."""
-        self.go_back_button.show()
         self.header_label.show()
         layout: QVBoxLayout = self.layout()
 

@@ -91,15 +91,27 @@ class ThumbnailBox(QWidget):
                 self.sequence_picker.scroll_widget.calculate_scrollbar_width()
             )
 
-            # Get the actual available width for the left stack (Browse Tab's allocated space)
-            available_width = self._get_browse_tab_available_width()
+            # RESPONSIVE LAYOUT FIX: Calculate available width more accurately
+            # Get the actual scroll widget width (which already excludes the nav sidebar)
+            scroll_widget = self.sequence_picker.scroll_widget
+            scroll_widget_width = scroll_widget.width()
 
-            scroll_widget_width = (
-                available_width
-                - scrollbar_width
-                - self.sequence_picker.nav_sidebar.width()
-            )
-            width = int(scroll_widget_width // 3)
+            # Account for scrollbar and margins
+            scrollbar_width = scroll_widget.calculate_scrollbar_width()
+
+            # HORIZONTAL OVERFLOW FIX: Account for ALL horizontal spacing elements
+            # Each thumbnail box has 10px margin on left and right (20px total per box)
+            # With 3 columns, that's 3 * 20px = 60px total for margins
+            # Plus small buffer for any layout spacing
+            total_margins = (
+                3 * self.margin * 2
+            ) + 10  # 3 boxes * 20px margins + 10px buffer
+
+            # Calculate usable width for thumbnails (subtract scrollbar and all margins)
+            usable_width = scroll_widget_width - scrollbar_width - total_margins
+
+            # Divide by 3 for 3 columns, ensuring minimum width
+            width = max(150, int(usable_width // 3))  # Minimum 150px per thumbnail
 
             # SMART FIX: Use size hint instead of fixed width to avoid forcing parent expansion
             self._preferred_width = width
