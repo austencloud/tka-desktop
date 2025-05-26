@@ -27,8 +27,8 @@ class PropButton(QPushButton):
 
     def _setup_initial_styling(self):
         """Setup initial modern glassmorphism styling."""
-        self.setFixedSize(QSize(80, 80))  # Fixed size for consistency
-        self.setIconSize(QSize(48, 48))  # Good icon size
+        self.setFixedSize(QSize(100, 100))  # Larger size for better visibility
+        self.setIconSize(QSize(64, 64))  # Larger icon size
         self.set_button_style(False)
 
     def set_active(self, is_active: bool):

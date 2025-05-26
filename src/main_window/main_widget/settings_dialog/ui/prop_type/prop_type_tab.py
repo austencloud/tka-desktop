@@ -32,37 +32,19 @@ class PropTypeTab(QWidget):
 
     def _setup_ui(self):
         """Setup modern glassmorphism UI for prop type selection."""
-        # Main layout with compact spacing
+        # Main layout with minimal spacing
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(20, 20, 20, 20)
-        main_layout.setSpacing(16)
+        main_layout.setContentsMargins(20, 12, 20, 12)
+        main_layout.setSpacing(8)
 
-        # Header section
-        header_layout = QVBoxLayout()
-        header_layout.setSpacing(8)
-
-        # Title
+        # Simple title only
         self.header = QLabel("Select Prop Type")
-        self.header.setFont(GlassmorphismStyler.get_font("heading_medium"))
+        self.header.setFont(GlassmorphismStyler.get_font("heading_small"))
         self.header.setStyleSheet(
             f"color: {GlassmorphismStyler.get_color('text_primary')};"
         )
         self.header.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        header_layout.addWidget(self.header)
-
-        # Description
-        description = QLabel(
-            "Choose the prop type for your sequences. This affects the visual representation and available movements."
-        )
-        description.setFont(GlassmorphismStyler.get_font("body_small"))
-        description.setStyleSheet(
-            f"color: {GlassmorphismStyler.get_color('text_muted')};"
-        )
-        description.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        description.setWordWrap(True)
-        header_layout.addWidget(description)
-
-        main_layout.addLayout(header_layout)
+        main_layout.addWidget(self.header)
 
         # Props grid in a modern container
         props_container = QWidget()
@@ -74,19 +56,18 @@ class PropTypeTab(QWidget):
                     stop:0 {GlassmorphismStyler.get_color('surface', 0.6)},
                     stop:1 {GlassmorphismStyler.get_color('surface_light', 0.4)});
                 border: 1px solid {GlassmorphismStyler.get_color('border', 0.4)};
-                border-radius: {GlassmorphismStyler.RADIUS['lg']}px;
-                padding: 20px;
+                border-radius: {GlassmorphismStyler.RADIUS['md']}px;
             }}
         """
         )
 
         container_layout = QVBoxLayout(props_container)
-        container_layout.setContentsMargins(20, 20, 20, 20)
-        container_layout.setSpacing(16)
+        container_layout.setContentsMargins(12, 12, 12, 12)
+        container_layout.setSpacing(8)
 
         # Create grid layout for prop buttons
         grid_layout = QGridLayout()
-        grid_layout.setSpacing(12)
+        grid_layout.setSpacing(8)  # Tighter spacing
         grid_layout.setContentsMargins(0, 0, 0, 0)
 
         # Define props with better organization
@@ -129,8 +110,8 @@ class PropTypeTab(QWidget):
             # Create cell container
             cell_widget = QWidget()
             cell_layout = QVBoxLayout(cell_widget)
-            cell_layout.setContentsMargins(8, 8, 8, 8)
-            cell_layout.setSpacing(6)
+            cell_layout.setContentsMargins(4, 4, 4, 4)
+            cell_layout.setSpacing(3)
             cell_layout.addWidget(button, alignment=Qt.AlignmentFlag.AlignCenter)
             cell_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
 
@@ -143,11 +124,6 @@ class PropTypeTab(QWidget):
 
         container_layout.addLayout(grid_layout)
         main_layout.addWidget(props_container)
-
-        # Add stretch to center content
-        main_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        )
 
     def _set_current_prop_type(self, prop_type: str):
         try:
