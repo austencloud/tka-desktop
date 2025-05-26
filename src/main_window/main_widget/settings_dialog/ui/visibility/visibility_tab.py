@@ -20,13 +20,15 @@ from .visibility_toggler import VisibilityToggler
 from .buttons_widget.visibility_buttons_widget import VisibilityButtonsWidget
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
+        ModernSettingsDialog,
+    )
 
 
 class VisibilityTab(QWidget):
     """Visibility tab with original layout structure and improved feedback."""
 
-    def __init__(self, settings_dialog: "SettingsDialog"):
+    def __init__(self, settings_dialog: "ModernSettingsDialog"):
         super().__init__()
         self.main_widget = settings_dialog.main_widget
         self.dialog = settings_dialog
@@ -76,9 +78,23 @@ class VisibilityTab(QWidget):
         self.help_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.help_label.setWordWrap(True)
         self.help_label.setStyleSheet(
-            "color: #FF9900; background-color: rgba(0, 0, 0, 0.1); border-radius: 5px; padding: 8px;"
+            """
+            QLabel {
+                color: rgba(245, 158, 11, 1);
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(245, 158, 11, 0.15),
+                    stop:1 rgba(217, 119, 6, 0.1));
+                border: 1px solid rgba(245, 158, 11, 0.3);
+                border-radius: 12px;
+                padding: 12px 16px;
+                font-size: 13px;
+                font-weight: 500;
+            }
+            """
         )
         font = QFont()
+        font.setPointSize(13)
+        font.setWeight(500)
         self.help_label.setFont(font)
 
         # Initialize visibility
@@ -86,30 +102,87 @@ class VisibilityTab(QWidget):
         self.help_label.setVisible(not all_motions_visible)
 
     def _setup_layout(self):
-        """Set up the tab layout preserving the original structure."""
-        # Main layout
+        """Set up the tab layout with modern glassmorphism styling."""
+        # Main layout with improved spacing
         main_layout = QVBoxLayout(self)
+        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(24, 24, 24, 24)
 
-        # Motion buttons at the top
-        motion_buttons_layout = QHBoxLayout()
+        # Motion buttons container with glassmorphism background
+        motion_container = QWidget()
+        motion_container.setObjectName("motion_container")
+        motion_container.setStyleSheet(
+            """
+            QWidget#motion_container {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(31, 41, 59, 0.1),
+                    stop:1 rgba(55, 65, 81, 0.08));
+                border: 1px solid rgba(75, 85, 99, 0.3);
+                border-radius: 12px;
+                padding: 16px;
+            }
+            """
+        )
+
+        motion_buttons_layout = QHBoxLayout(motion_container)
+        motion_buttons_layout.setSpacing(16)
+        motion_buttons_layout.setContentsMargins(16, 16, 16, 16)
         motion_buttons_layout.addWidget(
             self.buttons_widget.glyph_buttons["Blue Motion"]
         )
         motion_buttons_layout.addWidget(self.buttons_widget.glyph_buttons["Red Motion"])
 
-        # Add motion buttons at top
-        main_layout.addLayout(motion_buttons_layout, 1)
+        # Add motion buttons container
+        main_layout.addWidget(motion_container)
 
         # Add help text that appears when options are hidden
         main_layout.addWidget(self.help_label)
 
-        # Pictograph in middle
-        main_layout.addWidget(
-            self.pictograph_view, stretch=4, alignment=Qt.AlignmentFlag.AlignCenter
+        # Pictograph in middle with container
+        pictograph_container = QWidget()
+        pictograph_container.setObjectName("pictograph_container")
+        pictograph_container.setStyleSheet(
+            """
+            QWidget#pictograph_container {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(31, 41, 59, 0.05),
+                    stop:1 rgba(55, 65, 81, 0.03));
+                border: 1px solid rgba(75, 85, 99, 0.15);
+                border-radius: 16px;
+                padding: 20px;
+            }
+            """
         )
 
-        # Glyph buttons at the bottom (handled by the VisibilityButtonsWidget)
-        main_layout.addWidget(self.buttons_widget, 1)
+        pictograph_layout = QVBoxLayout(pictograph_container)
+        pictograph_layout.setContentsMargins(20, 20, 20, 20)
+        pictograph_layout.addWidget(
+            self.pictograph_view, alignment=Qt.AlignmentFlag.AlignCenter
+        )
+
+        main_layout.addWidget(pictograph_container, stretch=4)
+
+        # Glyph buttons at the bottom with container
+        buttons_container = QWidget()
+        buttons_container.setObjectName("buttons_container")
+        buttons_container.setStyleSheet(
+            """
+            QWidget#buttons_container {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(31, 41, 59, 0.1),
+                    stop:1 rgba(55, 65, 81, 0.08));
+                border: 1px solid rgba(75, 85, 99, 0.3);
+                border-radius: 12px;
+                padding: 16px;
+            }
+            """
+        )
+
+        buttons_layout = QVBoxLayout(buttons_container)
+        buttons_layout.setContentsMargins(16, 16, 16, 16)
+        buttons_layout.addWidget(self.buttons_widget)
+
+        main_layout.addWidget(buttons_container)
 
         self.setLayout(main_layout)
 

@@ -140,7 +140,7 @@ class SequencePropertiesManager:
         # Get current user
         current_user = ""
         if self.settings_manager:
-            current_user = self.settings_manager.users.user_manager.get_current_user()
+            current_user = self.settings_manager.users.get_current_user()
 
         return {
             "word": self.calculate_word(current_sequence),
@@ -161,7 +161,7 @@ class SequencePropertiesManager:
         # Get current user safely
         current_user = ""
         if self.settings_manager:
-            current_user = self.settings_manager.users.user_manager.get_current_user()
+            current_user = self.settings_manager.users.get_current_user()
 
         return {
             "word": "",

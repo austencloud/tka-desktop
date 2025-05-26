@@ -215,16 +215,26 @@ def main():
     main_window.initialize_widgets()
     logger.info("Widget initialization completed")
 
-    main_window.show()
-    main_window.raise_()
+    try:
+        logger.info("Showing main window...")
+        main_window.show()
+        main_window.raise_()
+        logger.info("Main window shown successfully")
 
-    QTimer.singleShot(0, lambda: splash_screen.close())
+        QTimer.singleShot(0, lambda: splash_screen.close())
 
-    # Install message handlers (no more tracing)
-    install_handlers()
+        # Install message handlers (no more tracing)
+        install_handlers()
 
-    exit_code = main_window.exec(app)
-    sys.exit(exit_code)
+        logger.info("Starting application event loop...")
+        exit_code = main_window.exec(app)
+        sys.exit(exit_code)
+    except Exception as e:
+        logger.error(f"Error showing main window: {e}")
+        import traceback
+
+        traceback.print_exc()
+        sys.exit(1)
 
 
 if __name__ == "__main__":

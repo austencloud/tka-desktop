@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QWidget, QGridLayout, QVBoxLayout
 from PyQt6.QtGui import QIcon, QDesktopServices
 from PyQt6.QtCore import Qt, QSize, QUrl
-from styles.styled_button import StyledButton
+from styles.styled_button import StyledButton, ButtonContext
 from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:
@@ -76,8 +76,8 @@ class SocialMediaWidget(QWidget):
         self.setLayout(root_layout)
 
     def _create_icon_button(self, icon_path, tooltip, click_handler):
-        """Creates a single icon button."""
-        button = StyledButton("", icon_path=icon_path)
+        """Creates a single compact icon button."""
+        button = StyledButton("", icon_path=icon_path, context=ButtonContext.COMPACT)
         button.setCursor(Qt.CursorShape.PointingHandCursor)
         icon = QIcon(icon_path)
         button.setIcon(icon)

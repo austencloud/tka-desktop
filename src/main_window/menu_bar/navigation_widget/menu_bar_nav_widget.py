@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QFrame, QVBoxLayout
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import pyqtSignal
 
-from styles.styled_button import StyledButton
+from styles.styled_button import StyledButton, ButtonContext
 
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class MenuBarNavWidget(QWidget):
         self.tab_layout.addStretch()  # Add stretch before the buttons
 
         for index, name in enumerate(self.tab_names):
-            button = StyledButton(name)
+            button = StyledButton(name, context=ButtonContext.NAVIGATION)
             button.clicked.connect(lambda _, idx=index: self.set_active_tab(idx))
             self.tab_buttons.append(button)
             self.tab_layout.addWidget(button)
@@ -89,11 +89,14 @@ class MenuBarNavWidget(QWidget):
         self.tab_changed.emit(index)
 
     def update_buttons(self):
-        """Update button styles and resize based on main widget width."""
-        font = QFont("Georgia", self.mw.width() // 100)
+        """Update button styles and resize based on main widget width with improved readability."""
+        # Improved font sizing for better readability
+        font_size = max(10, min(16, self.mw.width() // 80))  # Better scaling ratio
+        font = QFont("Segoe UI", font_size, QFont.Weight.Medium)
 
-        button_width = self.mw.width() // 8
-        button_height = int(button_width * 0.2)
+        # Better button proportions for text readability
+        button_width = max(120, self.mw.width() // 7)  # Minimum width for text
+        button_height = max(35, int(font_size * 2.5))  # Height based on font size
 
         for idx, button in enumerate(self.tab_buttons):
             is_active = idx == self.current_index

@@ -205,15 +205,17 @@ class ImageExportControlPanel(QWidget):
         self.save_dir_checkbox.setChecked(use_last_dir)
 
     def _load_user_profiles(self):
-        """Loads user profiles into the user combo box."""
+        """Loads the current user into the user combo box."""
         self.user_combo_box.clear()
-        user_profiles = self.settings_manager.users.get_user_profiles()
-        if user_profiles:
-            self.user_combo_box.addItems(user_profiles.keys())
-
         current_user = self.settings_manager.users.get_current_user()
-        if current_user and current_user in user_profiles:
+
+        # Add the current user or a default placeholder
+        if current_user:
+            self.user_combo_box.addItem(current_user)
             self.user_combo_box.setCurrentText(current_user)
+        else:
+            self.user_combo_box.addItem("No user set")
+            self.user_combo_box.setCurrentText("No user set")
 
     def _create_buttons_grid_layout(self) -> QGridLayout:
         """Creates the grid layout for the export option buttons."""

@@ -52,13 +52,12 @@ class NavSidebarManager:
 
     def apply_button_widths(self):
         """☢️ NUCLEAR ANNIHILATION: OBLITERATE FIXED WIDTH APPLICATION! ☢️"""
-        print("☢️☢️☢️ ANNIHILATION: OBLITERATING sidebar button fixed widths! ☢️☢️☢️")
 
         # COMPLETELY OBLITERATED:
         # for button in self.buttons:
         #     button.setFixedWidth(SidebarButton._max_button_width)  # ☢️ OBLITERATED!
 
-        print("☢️ ANNIHILATION: Sidebar button fixed widths COMPLETELY OBLITERATED!")
+        pass
 
     def resize_sidebar(self):
         """Handle sidebar resizing and reapply button widths."""
@@ -183,3 +182,4 @@ class NavSidebarManager:
                 if bg_type in ["Rainbow", "AuroraBorealis", "Aurora"]
                 else "white"
             )
+

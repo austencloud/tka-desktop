@@ -1,40 +1,98 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QApplication
+from PyQt6.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QGridLayout,
+    QApplication,
+    QHBoxLayout,
+    QSizePolicy,
+    QSpacerItem,
+)
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 from enums.prop_type import PropType
-from main_window.main_widget.settings_dialog.card_frame import CardFrame
 from main_window.main_widget.settings_dialog.ui.prop_type.prop_button import PropButton
 from utils.path_helpers import get_image_path
+from ...core.glassmorphism_styler import GlassmorphismStyler
 
 
 if TYPE_CHECKING:
-    from ...settings_dialog import SettingsDialog
+    from ...modern_settings_dialog import ModernSettingsDialog
 
 
 class PropTypeTab(QWidget):
     buttons: dict[str, PropButton] = {}
 
-    def __init__(self, settings_dialog: "SettingsDialog"):
+    def __init__(self, settings_dialog: "ModernSettingsDialog"):
         super().__init__()
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget
         self._setup_ui()
 
     def _setup_ui(self):
-        card = CardFrame(self)
-        main_layout = QVBoxLayout(card)
+        """Setup modern glassmorphism UI for prop type selection."""
+        # Main layout with compact spacing
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(16)
 
-        self.header = QLabel("Prop Type:")
+        # Header section
+        header_layout = QVBoxLayout()
+        header_layout.setSpacing(8)
+
+        # Title
+        self.header = QLabel("Select Prop Type")
+        self.header.setFont(GlassmorphismStyler.get_font("heading_medium"))
+        self.header.setStyleSheet(
+            f"color: {GlassmorphismStyler.get_color('text_primary')};"
+        )
         self.header.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(self.header)
+        header_layout.addWidget(self.header)
 
+        # Description
+        description = QLabel(
+            "Choose the prop type for your sequences. This affects the visual representation and available movements."
+        )
+        description.setFont(GlassmorphismStyler.get_font("body_small"))
+        description.setStyleSheet(
+            f"color: {GlassmorphismStyler.get_color('text_muted')};"
+        )
+        description.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        description.setWordWrap(True)
+        header_layout.addWidget(description)
+
+        main_layout.addLayout(header_layout)
+
+        # Props grid in a modern container
+        props_container = QWidget()
+        props_container.setObjectName("props_container")
+        props_container.setStyleSheet(
+            f"""
+            QWidget#props_container {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {GlassmorphismStyler.get_color('surface', 0.6)},
+                    stop:1 {GlassmorphismStyler.get_color('surface_light', 0.4)});
+                border: 1px solid {GlassmorphismStyler.get_color('border', 0.4)};
+                border-radius: {GlassmorphismStyler.RADIUS['lg']}px;
+                padding: 20px;
+            }}
+        """
+        )
+
+        container_layout = QVBoxLayout(props_container)
+        container_layout.setContentsMargins(20, 20, 20, 20)
+        container_layout.setSpacing(16)
+
+        # Create grid layout for prop buttons
         grid_layout = QGridLayout()
-        main_layout.addLayout(grid_layout)
+        grid_layout.setSpacing(12)
+        grid_layout.setContentsMargins(0, 0, 0, 0)
 
+        # Define props with better organization
         props = {
             "Staff": "props/staff.svg",
-            "Simplestaff": "props/simple_staff.svg",  # Added Simplestaff
+            "Simplestaff": "props/simple_staff.svg",
             "Club": "props/club.svg",
             "Fan": "props/fan.svg",
             "Triad": "props/triad.svg",
@@ -48,9 +106,10 @@ class PropTypeTab(QWidget):
             "Ukulele": "props/ukulele.svg",
         }
 
+        # Create prop buttons in a 4-column grid for better layout
         row, col = 0, 0
         for prop, icon_path in props.items():
-
+            # Create prop button
             button = PropButton(
                 prop,
                 get_image_path(icon_path),
@@ -59,26 +118,36 @@ class PropTypeTab(QWidget):
             )
             self.buttons[prop] = button
 
-            label = QLabel(prop, self)
+            # Create label
+            label = QLabel(prop)
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label.setFont(GlassmorphismStyler.get_font("body_small"))
+            label.setStyleSheet(
+                f"color: {GlassmorphismStyler.get_color('text_secondary')};"
+            )
 
-            cell_widget = QWidget(self)
-            v_layout = QVBoxLayout(cell_widget)
-            v_layout.setContentsMargins(0, 0, 0, 0)
-            v_layout.setSpacing(5)
-            v_layout.addWidget(button, alignment=Qt.AlignmentFlag.AlignCenter)
-            v_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
+            # Create cell container
+            cell_widget = QWidget()
+            cell_layout = QVBoxLayout(cell_widget)
+            cell_layout.setContentsMargins(8, 8, 8, 8)
+            cell_layout.setSpacing(6)
+            cell_layout.addWidget(button, alignment=Qt.AlignmentFlag.AlignCenter)
+            cell_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignCenter)
 
             grid_layout.addWidget(cell_widget, row, col)
 
             col += 1
-            if col >= 3:
+            if col >= 4:  # 4 columns for better layout
                 col = 0
                 row += 1
 
-        outer_layout = QVBoxLayout(self)
-        outer_layout.addWidget(card)
-        self.setLayout(outer_layout)
+        container_layout.addLayout(grid_layout)
+        main_layout.addWidget(props_container)
+
+        # Add stretch to center content
+        main_layout.addItem(
+            QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        )
 
     def _set_current_prop_type(self, prop_type: str):
         try:
@@ -125,14 +194,9 @@ class PropTypeTab(QWidget):
             )
 
     def resizeEvent(self, event):
-        self.update_size()
+        """Handle resize events - modern layout doesn't need dynamic sizing."""
         super().resizeEvent(event)
 
     def update_size(self):
-        font = QFont()
-        font_size = self.settings_dialog.width() // 30
-        font.setPointSize(font_size)
-        font.setBold(True)
-        self.header.setFont(font)
-        for prop, button in self.buttons.items():
-            button.update_size()
+        """Update size - no longer needed with fixed modern layout."""
+        pass  # Keep for compatibility

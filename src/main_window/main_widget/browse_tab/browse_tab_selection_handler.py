@@ -45,8 +45,6 @@ class BrowseTabSelectionHandler:
         self._update_labels_and_settings(image_label)
         QApplication.processEvents()
 
-        # CRITICAL FIX: Force layout constraints after thumbnail selection
-        self._enforce_browse_tab_layout_constraints()
 
     def _update_sequence_data(
         self, image_label: "ThumbnailImageLabel", sequence_dict: dict
@@ -98,39 +96,7 @@ class BrowseTabSelectionHandler:
         )
         self.sequence_viewer.thumbnail_box.word = word
 
-    def _enforce_browse_tab_layout_constraints(self):
-        """🔥 SCORCHED EARTH: OBLITERATE LAYOUT ENFORCEMENT! 🔥"""
-        print(
-            "🔥🔥🔥 SCORCHED EARTH: OBLITERATING BROWSE TAB LAYOUT ENFORCEMENT! 🔥🔥🔥"
-        )
 
-        # COMPLETELY OBLITERATED:
-        # try:
-        #     main_widget = self.main_widget
-        #     if hasattr(main_widget, "content_layout"):
-        #         # Force the 2:1 ratio by setting stretch factors
-        #         main_widget.content_layout.setStretch(0, 2)  # Left stack: 2 parts
-        #         main_widget.content_layout.setStretch(1, 1)  # Right stack: 1 part
-        #
-        #         # Clear any fixed width constraints that might interfere
-        #         if hasattr(main_widget, "left_stack"):
-        #             main_widget.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
-        #             main_widget.left_stack.setMinimumWidth(0)
-        #         if hasattr(main_widget, "right_stack"):
-        #             main_widget.right_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
-        #             main_widget.right_stack.setMinimumWidth(0)
-        #
-        #         # Force immediate layout update
-        #         main_widget.content_layout.update()
-        #         main_widget.updateGeometry()
-        #
-        #         print("[LAYOUT_FIX] Enforced 2:1 ratio constraints")
-        # except Exception as e:
-        #     print(f"[LAYOUT_FIX] Error enforcing constraints: {e}")
-
-        print(
-            "🔥 SCORCHED EARTH: Browse tab layout enforcement COMPLETELY OBLITERATED!"
-        )
 
     def select_viewer_thumbnail(self, thumbnail_box, index, word):
         """Selects a thumbnail in the sequence viewer."""

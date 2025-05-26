@@ -1,12 +1,11 @@
 from PyQt6.QtCore import Qt, QSize
 
-from styles.styled_button import StyledButton
-
+from styles.styled_button import StyledButton, ButtonContext
 
 
 class WorkbenchButton(StyledButton):
     def __init__(self, icon_path: str, tooltip: str, callback):
-        super().__init__("", icon_path=icon_path)
+        super().__init__("", icon_path=icon_path, context=ButtonContext.WORKBENCH)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setToolTip(tooltip)
         self.clicked.connect(callback)

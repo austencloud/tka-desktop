@@ -9,11 +9,13 @@ from main_window.main_widget.settings_dialog.ui.beat_layout.layout_controls.layo
 from .layout_beat_frame.layout_beat_frame import LayoutBeatFrame
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
+        ModernSettingsDialog,
+    )
 
 
 class BeatLayoutTab(QWidget):
-    def __init__(self, settings_dialog: "SettingsDialog"):
+    def __init__(self, settings_dialog: "ModernSettingsDialog"):
         super().__init__(settings_dialog)
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget
@@ -51,11 +53,54 @@ class BeatLayoutTab(QWidget):
         self.controls.sequence_length_changed.connect(self.on_sequence_length_changed)
 
     def _setup_layout(self):
+        """Set up the layout with modern glassmorphism styling."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-        layout.addWidget(self.controls)
-        layout.addWidget(self.beat_frame, stretch=1)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(20)
+
+        # Controls container with glassmorphism background
+        controls_container = QWidget()
+        controls_container.setObjectName("controls_container")
+        controls_container.setStyleSheet(
+            """
+            QWidget#controls_container {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(31, 41, 59, 0.1),
+                    stop:1 rgba(55, 65, 81, 0.08));
+                border: 1px solid rgba(75, 85, 99, 0.3);
+                border-radius: 12px;
+                padding: 16px;
+            }
+            """
+        )
+
+        controls_layout = QVBoxLayout(controls_container)
+        controls_layout.setContentsMargins(16, 16, 16, 16)
+        controls_layout.addWidget(self.controls)
+
+        layout.addWidget(controls_container)
+
+        # Beat frame container with glassmorphism background
+        beat_frame_container = QWidget()
+        beat_frame_container.setObjectName("beat_frame_container")
+        beat_frame_container.setStyleSheet(
+            """
+            QWidget#beat_frame_container {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(31, 41, 59, 0.05),
+                    stop:1 rgba(55, 65, 81, 0.03));
+                border: 1px solid rgba(75, 85, 99, 0.15);
+                border-radius: 16px;
+                padding: 20px;
+            }
+            """
+        )
+
+        beat_frame_layout = QVBoxLayout(beat_frame_container)
+        beat_frame_layout.setContentsMargins(20, 20, 20, 20)
+        beat_frame_layout.addWidget(self.beat_frame)
+
+        layout.addWidget(beat_frame_container, stretch=1)
         self.setLayout(layout)
 
     def _on_layout_selected(self, layout_text: str):

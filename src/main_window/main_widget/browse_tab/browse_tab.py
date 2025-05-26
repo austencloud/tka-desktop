@@ -81,7 +81,9 @@ class BrowseTab(QWidget):
         self.get = BrowseTabGetter(self)
 
         self.persistence_manager = BrowseTabPersistenceManager(self)
-        QTimer.singleShot(0, self.persistence_manager.apply_saved_browse_state)
+
+        # FILTER RESPONSIVENESS FIX: Simple deferred initialization
+        QTimer.singleShot(100, self._complete_initialization)
 
     def _setup_browse_tab_layout(self):
         from PyQt6.QtWidgets import QHBoxLayout, QStackedWidget
@@ -109,3 +111,307 @@ class BrowseTab(QWidget):
         layout.addWidget(self.sequence_viewer, 1)  # 1/3 width (33.3%)
 
         self.setLayout(layout)
+
+    def _ensure_filter_responsiveness(self):
+        """
+        Ensure filter buttons are responsive immediately upon tab display.
+
+        This fixes the issue where first clicks on filter buttons are ignored.
+        """
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.info("🔧 Ensuring filter button responsiveness...")
+
+        try:
+            # Force widget activation and focus
+            self.setEnabled(True)
+            self.activateWindow()
+
+            # Ensure filter stack is properly initialized
+            if hasattr(self, "sequence_picker") and hasattr(
+                self.sequence_picker, "filter_stack"
+            ):
+                filter_stack = self.sequence_picker.filter_stack
+                filter_stack.setEnabled(True)
+                filter_stack.activateWindow()
+
+                # Force update of all filter widgets
+                self._activate_filter_widgets(filter_stack)
+
+            # Ensure internal stack is properly set up
+            if hasattr(self, "internal_left_stack"):
+                self.internal_left_stack.setEnabled(True)
+                # Start with filter stack visible for immediate responsiveness
+                self.internal_left_stack.setCurrentIndex(0)
+
+            logger.info("✅ Filter button responsiveness ensured")
+
+        except Exception as e:
+            logger.warning(f"Error ensuring filter responsiveness: {e}")
+
+    def _activate_filter_widgets(self, parent_widget):
+        """
+        Recursively activate all filter widgets to ensure event handling works.
+        """
+        import logging
+        from PyQt6.QtWidgets import QWidget
+
+        logger = logging.getLogger(__name__)
+
+        try:
+            # Activate the parent widget
+            if isinstance(parent_widget, QWidget):
+                parent_widget.setEnabled(True)
+                parent_widget.update()
+
+                # Process any pending events
+                from PyQt6.QtWidgets import QApplication
+
+                QApplication.processEvents()
+
+            # Recursively activate child widgets
+            for child in parent_widget.findChildren(QWidget):
+                if hasattr(child, "clicked"):  # It's likely a button
+                    child.setEnabled(True)
+                    child.update()
+                    child.repaint()
+
+                    # Force focus capability
+                    child.setFocusPolicy(child.focusPolicy())
+
+                    logger.debug(f"Activated filter widget: {child.__class__.__name__}")
+
+        except Exception as e:
+            logger.debug(f"Error activating filter widgets: {e}")
+
+    def _complete_initialization(self):
+        """
+        Complete the browse tab initialization with simple responsiveness fix.
+        """
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        try:
+            # Apply saved browse state
+            self.persistence_manager.apply_saved_browse_state()
+
+            # Simple activation to ensure filter buttons work
+            self._simple_activation()
+
+            # CRITICAL FIX: Check if browse tab is the current tab and trigger thumbnail loading
+            try:
+                current_tab = self.settings_manager.global_settings.get_current_tab()
+                if current_tab == "browse":
+                    logger.info(
+                        "🎯 Browse tab is current tab during initialization - triggering thumbnail loading"
+                    )
+                    # Delay thumbnail loading to ensure UI is ready
+                    QTimer.singleShot(200, self._ensure_all_visible_thumbnails_loaded)
+            except Exception as e:
+                logger.debug(f"Error checking current tab during initialization: {e}")
+
+            logger.info("✅ Browse tab initialization completed")
+
+        except Exception as e:
+            logger.warning(f"Error completing initialization: {e}")
+            # Fallback: just apply saved state without activation
+            try:
+                self.persistence_manager.apply_saved_browse_state()
+            except:
+                pass
+
+    def _simple_activation(self):
+        """
+        Simple, safe activation to ensure filter buttons work.
+        """
+        try:
+            # Just ensure the browse tab is enabled and updated
+            self.setEnabled(True)
+            self.update()
+
+            # Process events to ensure everything is ready
+            from PyQt6.QtWidgets import QApplication
+
+            QApplication.processEvents()
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(f"Error in simple activation: {e}")
+
+    def showEvent(self, event):
+        """
+        Handle the show event with thumbnail initialization and responsiveness fix.
+        """
+        super().showEvent(event)
+
+        try:
+            # Simple activation when tab becomes visible
+            self._simple_activation()
+
+            # Fix thumbnail initialization race condition
+            from PyQt6.QtCore import QTimer
+
+            QTimer.singleShot(100, self._ensure_all_visible_thumbnails_loaded)
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(f"Error in browse tab showEvent: {e}")
+
+    def _ensure_all_visible_thumbnails_loaded(self):
+        """
+        Ensure all visible thumbnails are properly loaded to fix initialization race condition.
+        """
+        try:
+            scroll_widget = self.sequence_picker.scroll_widget
+
+            # Get all currently visible thumbnail boxes
+            visible_thumbnails = []
+            for word, thumbnail_box in scroll_widget.thumbnail_boxes.items():
+                if self._is_thumbnail_visible(thumbnail_box):
+                    visible_thumbnails.append(thumbnail_box)
+
+            # Trigger async loading for visible thumbnails
+            for thumbnail_box in visible_thumbnails:
+                # CRITICAL FIX: Ensure word and variation are properly set for cache key generation
+                if hasattr(thumbnail_box.image_label, "set_word_and_variation"):
+                    thumbnail_box.image_label.set_word_and_variation(
+                        thumbnail_box.word, thumbnail_box.state.current_index
+                    )
+
+                # CRITICAL FIX: Force cache initialization if not already done
+                if (
+                    hasattr(thumbnail_box.image_label, "_initialize_cache")
+                    and not thumbnail_box.image_label._cache
+                ):
+                    thumbnail_box.image_label._initialize_cache()
+
+                # Trigger async thumbnail update
+                self.ui_updater.thumbnail_updater.update_thumbnail_image_async(
+                    thumbnail_box
+                )
+
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(
+                f"Triggered loading for {len(visible_thumbnails)} visible thumbnails"
+            )
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(f"Error ensuring visible thumbnails loaded: {e}")
+
+    def _is_thumbnail_visible(self, thumbnail_box) -> bool:
+        """
+        Check if a thumbnail box is currently visible in the viewport.
+        """
+        try:
+            scroll_widget = self.sequence_picker.scroll_widget
+            scroll_area = scroll_widget.scroll_area
+
+            # Get the thumbnail's position relative to the scroll area
+            thumbnail_global_pos = thumbnail_box.mapToGlobal(
+                thumbnail_box.rect().topLeft()
+            )
+            scroll_area_global_pos = scroll_area.mapToGlobal(
+                scroll_area.rect().topLeft()
+            )
+
+            # Calculate relative position
+            relative_pos = thumbnail_global_pos - scroll_area_global_pos
+
+            # Check if thumbnail is within visible area
+            visible_rect = scroll_area.viewport().rect()
+            thumbnail_rect = thumbnail_box.rect()
+            thumbnail_rect.moveTopLeft(relative_pos)
+
+            return visible_rect.intersects(thumbnail_rect)
+
+        except Exception:
+            # If we can't determine visibility, assume it's visible
+            return True
+
+    def debug_cache_system(self):
+        """Debug method to test cache system functionality."""
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        try:
+            # Check cache settings
+            cache_enabled = self.browse_settings.get_enable_disk_cache()
+            cache_mode = self.browse_settings.get_cache_mode()
+            cache_size = self.browse_settings.get_cache_max_size_mb()
+            quality_mode = self.browse_settings.get_cache_quality_mode()
+
+            logger.info(
+                f"🔍 Cache Debug - Enabled: {cache_enabled}, Mode: {cache_mode}, Size: {cache_size}MB, Quality: {quality_mode}"
+            )
+
+            # Check thumbnail boxes and their cache status
+            scroll_widget = self.sequence_picker.scroll_widget
+            cache_initialized_count = 0
+            total_thumbnails = 0
+
+            for word, thumbnail_box in scroll_widget.thumbnail_boxes.items():
+                total_thumbnails += 1
+                if (
+                    hasattr(thumbnail_box.image_label, "_cache")
+                    and thumbnail_box.image_label._cache
+                ):
+                    cache_initialized_count += 1
+                    # Get cache stats if available
+                    if hasattr(thumbnail_box.image_label._cache, "get_cache_stats"):
+                        stats = thumbnail_box.image_label._cache.get_cache_stats()
+                        logger.info(f"📊 Cache stats for {word}: {stats}")
+                        break  # Only log stats once
+
+            logger.info(
+                f"📈 Cache Status - {cache_initialized_count}/{total_thumbnails} thumbnails have cache initialized"
+            )
+
+        except Exception as e:
+            logger.error(f"❌ Cache debug error: {e}")
+
+    def force_reload_all_thumbnails(self):
+        """Force reload all visible thumbnails with cache integration."""
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        try:
+            logger.info("🔄 Force reloading all visible thumbnails...")
+
+            scroll_widget = self.sequence_picker.scroll_widget
+            reloaded_count = 0
+
+            for word, thumbnail_box in scroll_widget.thumbnail_boxes.items():
+                if self._is_thumbnail_visible(thumbnail_box):
+                    # Set word and variation for cache
+                    if hasattr(thumbnail_box.image_label, "set_word_and_variation"):
+                        thumbnail_box.image_label.set_word_and_variation(
+                            thumbnail_box.word, thumbnail_box.state.current_index
+                        )
+
+                    # Force cache initialization
+                    if hasattr(thumbnail_box.image_label, "_initialize_cache"):
+                        thumbnail_box.image_label._initialize_cache()
+
+                    # Force thumbnail reload
+                    thumbnail_box.image_label.update_thumbnail_async(
+                        thumbnail_box.state.current_index
+                    )
+                    reloaded_count += 1
+
+            logger.info(f"✅ Force reloaded {reloaded_count} visible thumbnails")
+
+        except Exception as e:
+            logger.error(f"❌ Force reload error: {e}")

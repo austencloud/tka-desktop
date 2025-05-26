@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QLabel, QSizePolicy
 from typing import TYPE_CHECKING
@@ -53,11 +53,9 @@ class SequenceViewerImageLabel(QLabel):
         elif target_height == available_height - 1:
             target_width = int(target_height / aspect_ratio)
 
-        scaled_pixmap = self._original_pixmap.scaled(
-            target_width,
-            target_height,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation,
+        # ULTRA HIGH QUALITY SCALING: Use advanced multi-step scaling for sequence viewer
+        scaled_pixmap = self._create_ultra_high_quality_scaled_pixmap(
+            target_width, target_height
         )
         self.setFixedHeight(target_height)
         # CRITICAL FIX: Remove the problematic setFixedHeight call on non-existent stacked_widget
@@ -73,3 +71,50 @@ class SequenceViewerImageLabel(QLabel):
             QPixmap(self.sequence_viewer.state.thumbnails[index])
         )
         self.sequence_viewer.variation_number_label.update_index(index)
+
+    def _create_ultra_high_quality_scaled_pixmap(
+        self, target_width: int, target_height: int
+    ) -> QPixmap:
+        """Create ultra high-quality scaled pixmap for sequence viewer using advanced techniques."""
+        if not self._original_pixmap:
+            return QPixmap()
+
+        original_size = self._original_pixmap.size()
+        target_size = QSize(target_width, target_height)
+
+        # Calculate scale factor
+        scale_factor = min(
+            target_width / original_size.width(), target_height / original_size.height()
+        )
+
+        # SEQUENCE VIEWER ULTRA QUALITY: Use multi-step scaling for large images
+        if scale_factor < 0.6:
+            # Multi-step scaling for better quality when scaling down significantly
+            intermediate_factor = 0.75  # Scale to 75% first, then to target
+            intermediate_size = QSize(
+                int(original_size.width() * intermediate_factor),
+                int(original_size.height() * intermediate_factor),
+            )
+
+            # Step 1: Scale to intermediate size with high quality
+            intermediate_pixmap = self._original_pixmap.scaled(
+                intermediate_size,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
+            )
+
+            # Step 2: Scale to final size with high quality
+            final_pixmap = intermediate_pixmap.scaled(
+                target_size,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
+            )
+
+            return final_pixmap
+        else:
+            # Single-step high-quality scaling for smaller scale changes
+            return self._original_pixmap.scaled(
+                target_size,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
+            )

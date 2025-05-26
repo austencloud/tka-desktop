@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 from main_window.main_widget.codex.codex import Codex
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from main_window.main_widget.pictograph_collector import PictographCollector
-from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+
+# SettingsDialog import moved to conditional import in _create_components
 from core.migration_adapters import AppContextAdapter
 from .construct_tab.construct_tab_factory import ConstructTabFactory
 from .generate_tab.generate_tab_factory import GenerateTabFactory
@@ -38,13 +39,19 @@ class MainWidgetUI:
 
     def _create_components(self):
         mw = self.mw
+        print("[DEBUG] _create_components called - creating settings dialog...")
 
         # Get app_context for dependency injection
         app_context = getattr(mw, "app_context", None)
         mw.fade_manager = FadeManager(mw, app_context)
 
         mw.sequence_workbench = SequenceWorkbench(mw)
-        mw.settings_dialog = SettingsDialog(mw)
+
+        # Use the modern settings dialog
+        from .settings_dialog.modern_settings_dialog import ModernSettingsDialog
+
+        mw.settings_dialog = ModernSettingsDialog(mw)
+        print("[SUCCESS] Using modern settings dialog!")
 
         mw.left_stack = QStackedWidget()
         mw.right_stack = QStackedWidget()
