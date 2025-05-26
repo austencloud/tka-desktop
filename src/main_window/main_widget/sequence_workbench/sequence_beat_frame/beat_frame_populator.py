@@ -29,7 +29,12 @@ class BeatFramePopulator:
         indicator_label = self.sequence_workbench.indicator_label
         indicator_label.show_message(self.loading_text)
         AppContext.json_manager().loader_saver.clear_current_sequence_file()
-        self.construct_tab = self.main_widget.construct_tab
+
+        # Get construct tab through the new widget manager system
+        self.construct_tab = self.main_widget.get_tab_widget("construct")
+        if not self.construct_tab:
+            # Fallback: try direct access for backward compatibility
+            self.construct_tab = getattr(self.main_widget, "construct_tab", None)
 
         if not self.current_sequence_json:
             return
@@ -47,6 +52,16 @@ class BeatFramePopulator:
         )
 
     def _set_start_position(self):
+        if not self.construct_tab or not hasattr(
+            self.construct_tab, "start_pos_picker"
+        ):
+            # Handle case where construct tab is not available yet
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning("Construct tab not available during start position setup")
+            return
+
         start_pos_picker = self.construct_tab.start_pos_picker
         start_pos_beat = start_pos_picker.convert_current_sequence_json_entry_to_start_pos_pictograph(
             self.current_sequence_json
@@ -98,8 +113,21 @@ class BeatFramePopulator:
 
     def _finalize_sequence(self, initial_state_load):
         last_beat = self.sequence_workbench.beat_frame.get.last_filled_beat().beat
-        self.construct_tab.last_beat = last_beat
-        self.construct_tab.option_picker.updater.update_options()
+
+        # Update construct tab if available
+        if self.construct_tab and hasattr(self.construct_tab, "last_beat"):
+            self.construct_tab.last_beat = last_beat
+            if hasattr(self.construct_tab, "option_picker"):
+                self.construct_tab.option_picker.updater.update_options()
+
+            # Automatically switch construct tab view based on sequence state
+            self._auto_switch_construct_tab_view()
+        else:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning("Construct tab not available during sequence finalization")
+
         self.sequence_workbench.difficulty_label.update_difficulty_label()
         # Update the circular indicator
         self.sequence_workbench.circular_indicator.update_indicator()
@@ -112,6 +140,46 @@ class BeatFramePopulator:
                     last_beat.view, toggle_animation
                 ),
             )
+
+    def _auto_switch_construct_tab_view(self):
+        """
+        Automatically switch the construct tab view based on the current sequence state.
+
+        Logic:
+        - Empty sequence (no beats): Show start position picker
+        - Sequence with only start position: Show start position picker
+        - Sequence with multiple beats: Show option picker
+        """
+        if not self.construct_tab:
+            return
+
+        try:
+            # Get the current beat count (excluding start position)
+            beat_count = self.beat_frame.get.beat_count()
+
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.info(f"Auto-switching construct tab view: beat_count={beat_count}")
+
+            if beat_count == 0:
+                # Empty sequence or only start position - show start position picker
+                if hasattr(self.construct_tab, "transition_to_start_pos_picker"):
+                    self.construct_tab.transition_to_start_pos_picker()
+                    logger.info("Switched to start position picker (empty sequence)")
+            else:
+                # Sequence has beats - show option picker for editing existing beats
+                if hasattr(self.construct_tab, "transition_to_option_picker"):
+                    self.construct_tab.transition_to_option_picker()
+                    logger.info(
+                        f"Switched to option picker (sequence has {beat_count} beats)"
+                    )
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Failed to auto-switch construct tab view: {e}")
 
     def modify_layout_for_chosen_number_of_beats(self, beat_count):
         self.beat_frame.layout_manager.configure_beat_frame(

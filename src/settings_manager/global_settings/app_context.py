@@ -65,6 +65,14 @@ class AppContext:
         )
 
     @classmethod
+    def set_main_window(cls, main_window: "MainWindow") -> None:
+        """Explicitly set the MainWindow reference during initialization."""
+        cls._main_window = main_window
+        import logging
+
+        logging.getLogger(__name__).info("MainWindow reference set in AppContext")
+
+    @classmethod
     def set_selected_arrow(cls, arrow: Optional["Arrow"]) -> None:
         """Set the globally selected arrow."""
         if cls._selected_arrow:
@@ -146,6 +154,7 @@ class AppContext:
         if cls._main_window:  # First check if it's already set
             return cls._main_window
 
+        # If not set explicitly, try to find it among top-level widgets
         from main_window.main_window import MainWindow  # Lazy import
 
         app: QApplication = QApplication.instance()
@@ -158,8 +167,12 @@ class AppContext:
                 cls._main_window = widget
                 return cls._main_window
 
+        # If we still can't find it, provide a helpful error message
+        widget_types = [type(widget).__name__ for widget in app.topLevelWidgets()]
         raise RuntimeError(
-            f"MainWindow not found! Top-level widgets found: {app.topLevelWidgets()}"
+            f"MainWindow not found! This usually means MainWindow is being accessed "
+            f"before it's created or set_main_window() wasn't called. "
+            f"Top-level widget types found: {widget_types[:10]}..."  # Limit output
         )
 
     @classmethod

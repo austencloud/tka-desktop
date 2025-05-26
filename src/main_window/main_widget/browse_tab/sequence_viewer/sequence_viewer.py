@@ -25,15 +25,13 @@ class SequenceViewer(QWidget):
         from PyQt6.QtWidgets import QSizePolicy
 
         size_policy = QSizePolicy(
-            QSizePolicy.Policy.Maximum,
-            QSizePolicy.Policy.Preferred,  # Maximum prevents expansion
+            QSizePolicy.Policy.Preferred,
+            QSizePolicy.Policy.Preferred,
         )
         size_policy.setHorizontalStretch(
             1
-        )  # This should match the stretch factor in TabManager
+        )  # This should match the stretch factor in TabManager (1 for right stack)
         self.setSizePolicy(size_policy)
-
-        # Width constraint now handled by parent container layout
 
         # Embed a ThumbnailBox instead of duplicating its components
         self.thumbnail_box = ThumbnailBox(
@@ -58,42 +56,17 @@ class SequenceViewer(QWidget):
         self.setLayout(layout)
 
     def update_thumbnails(self, thumbnails: list[str]):
-        # Add monitoring to sequence viewer update
         from PyQt6.QtWidgets import QApplication
-
-        # Monitor before thumbnail box state update
-        if hasattr(self.browse_tab, "selection_handler"):
-            self.browse_tab.selection_handler._monitor_right_stack_width(
-                "SV_BEFORE_STATE_UPDATE"
-            )
 
         self.thumbnail_box.state.update_thumbnails(thumbnails)
         QApplication.processEvents()
-
-        # Monitor after state update
-        if hasattr(self.browse_tab, "selection_handler"):
-            self.browse_tab.selection_handler._monitor_right_stack_width(
-                "SV_AFTER_STATE_UPDATE"
-            )
 
         current_thumbnail = self.thumbnail_box.state.get_current_thumbnail()
         self.thumbnail_box.header.difficulty_label.update_difficulty_label()  # 🆕 Update difficulty!
 
         if current_thumbnail:
-            # Monitor before update preview
-            if hasattr(self.browse_tab, "selection_handler"):
-                self.browse_tab.selection_handler._monitor_right_stack_width(
-                    "SV_BEFORE_UPDATE_PREVIEW"
-                )
-
             self.update_preview(self.thumbnail_box.state.current_index)
             QApplication.processEvents()
-
-            # Monitor after update preview
-            if hasattr(self.browse_tab, "selection_handler"):
-                self.browse_tab.selection_handler._monitor_right_stack_width(
-                    "SV_AFTER_UPDATE_PREVIEW"
-                )
         else:
             self.clear()
 
@@ -200,30 +173,6 @@ class SequenceViewer(QWidget):
                 )
                 self.favorites_manager = box.favorites_manager
                 return
-
-    def _enforce_width_constraint(self):
-        """Enforce the 1/3 width constraint for the sequence viewer."""
-        try:
-            # Get the main widget's total width
-            main_widget_width = self.main_widget.width()
-            if main_widget_width > 0:
-                # Calculate the maximum allowed width (1/3 of total + small tolerance)
-                max_width = int(
-                    main_widget_width / 3 + 10
-                )  # Small tolerance for rounding
-
-                self.setMaximumWidth(max_width)
-
-                # CRITICAL: Also set size policy to prevent expansion
-                from PyQt6.QtWidgets import QSizePolicy
-
-                size_policy = self.sizePolicy()
-                size_policy.setHorizontalPolicy(QSizePolicy.Policy.Maximum)
-                size_policy.setHorizontalStretch(1)
-                self.setSizePolicy(size_policy)
-        except (AttributeError, TypeError):
-            # If we can't get the width, don't set a constraint
-            pass
 
     def resizeEvent(self, event):
         # Width constraint now handled by parent container layout

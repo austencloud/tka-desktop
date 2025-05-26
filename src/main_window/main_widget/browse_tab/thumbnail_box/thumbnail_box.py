@@ -108,33 +108,21 @@ class ThumbnailBox(QWidget):
     def _get_browse_tab_available_width(self) -> int:
         """Get the actual available width for the Browse Tab's left panel."""
         try:
-            # Try to get the left stack width (which is the Browse Tab's allocated space)
-            if hasattr(self.main_widget, "left_stack"):
-                return self.main_widget.left_stack.width()
-            # Fallback: use the sequence picker's parent width if available
-            elif hasattr(self.sequence_picker, "width"):
-                return self.sequence_picker.width()
-            # Final fallback: estimate based on main widget width and Browse Tab ratio (2/3)
-            else:
-                return int(self.main_widget.width() * 2 / 3)
+            # Use the actual sequence picker width instead of calculating ratios
+            # This respects the layout system's stretch factors
+            sequence_picker = self.browse_tab.sequence_picker
+            return sequence_picker.width()
         except (AttributeError, TypeError):
             # Emergency fallback
-            return int(self.main_widget.width() * 2 / 3)
+            return 800  # Reasonable default
 
     def _get_sequence_viewer_available_width(self) -> int:
-        """Get the intended available width for the sequence viewer (right panel)."""
+        """Get the actual available width for the sequence viewer (right panel)."""
         try:
-            # CRITICAL FIX: Always calculate based on intended 1/3 ratio, not current right stack width
-            # This prevents feedback loops where expanded right stack width reinforces incorrect layout
-            main_widget_width = self.main_widget.width()
-            if main_widget_width > 0:
-                # Use the intended 1/3 width allocation for browse tab
-                intended_width = int(main_widget_width / 3)
-
-                return intended_width
-            else:
-                # Fallback if main widget width is not available
-                return 400  # Reasonable default width
+            # Use the actual sequence viewer width instead of calculating ratios
+            # This respects the layout system's stretch factors
+            sequence_viewer = self.browse_tab.sequence_viewer
+            return sequence_viewer.width()
         except (AttributeError, TypeError):
             # Emergency fallback
             return 400  # Reasonable default width

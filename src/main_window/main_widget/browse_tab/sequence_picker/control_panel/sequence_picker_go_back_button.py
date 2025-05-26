@@ -18,7 +18,11 @@ class SequencePickerGoBackButton(StyledButton):
         self.clicked.connect(self.switch_to_initial_filter_selection)
 
     def switch_to_initial_filter_selection(self):
-        """Switch to the initial selection page in the stacked layout."""
+        """Switch to the initial selection page in the stacked layout with layout preservation."""
+        # Preserve browse tab layout ratios before stack switching
+        self._preserve_browse_tab_layout()
+
+        # Use fade stack switching with layout preservation
         self.main_widget.fade_manager.stack_fader.fade_stack(
             self.main_widget.left_stack, LeftStackIndex.FILTER_SELECTOR, 300
         )
@@ -45,3 +49,31 @@ class SequencePickerGoBackButton(StyledButton):
         self.setFont(font)
 
         super().resizeEvent(event)
+
+    def _preserve_browse_tab_layout(self):
+        """Preserve the browse tab's 2:1 layout ratio during stack switching."""
+        try:
+            # Ensure browse tab layout ratios are preserved during stack switching
+            if hasattr(self.main_widget, "content_layout"):
+                # Set browse tab's 2:1 stretch ratio
+                self.main_widget.content_layout.setStretch(0, 2)  # Left stack: 2 parts
+                self.main_widget.content_layout.setStretch(1, 1)  # Right stack: 1 part
+
+                # Clear any fixed width constraints that might interfere
+                if hasattr(self.main_widget, "left_stack"):
+                    self.main_widget.left_stack.setMaximumWidth(
+                        16777215
+                    )  # QWIDGETSIZE_MAX
+                    self.main_widget.left_stack.setMinimumWidth(0)
+                if hasattr(self.main_widget, "right_stack"):
+                    self.main_widget.right_stack.setMaximumWidth(
+                        16777215
+                    )  # QWIDGETSIZE_MAX
+                    self.main_widget.right_stack.setMinimumWidth(0)
+
+        except Exception as e:
+            # Log the error but don't fail the operation
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Failed to preserve browse tab layout: {e}")

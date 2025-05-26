@@ -44,13 +44,12 @@ class ParallelStackFader:
             # Use layout stretch factors instead of fixed widths to prevent layout regression
             main_widget = self.manager.main_widget
             if hasattr(main_widget, "content_layout"):
-                # Calculate stretch factors from width ratios
-                left_stretch = int(width_ratio[0] * 10)  # Scale up for better precision
-                right_stretch = int(width_ratio[1] * 10)
-
-                # Apply stretch factors to the layout
-                main_widget.content_layout.setStretch(0, left_stretch)
-                main_widget.content_layout.setStretch(1, right_stretch)
+                # Apply stretch factors directly (width_ratio should already be integers for stretch)
+                # For browse tab: width_ratio = (2, 1) for 2:1 ratio
+                # For sequence_card: width_ratio = (0, 1) for full right panel
+                # For others: width_ratio = (1, 1) for equal split
+                main_widget.content_layout.setStretch(0, width_ratio[0])
+                main_widget.content_layout.setStretch(1, width_ratio[1])
 
                 # Clear any fixed widths that might interfere
                 left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
@@ -58,11 +57,14 @@ class ParallelStackFader:
                 left_stack.setMinimumWidth(0)
                 right_stack.setMinimumWidth(0)
             else:
-                # Fallback to old fixed width method if content_layout not available
-                total_width = main_widget.width()
-                left_width = int(total_width * width_ratio[0])
-                left_stack.setFixedWidth(left_width)
-                right_stack.setFixedWidth(total_width - left_width)
+                # Fallback: convert stretch factors to proportional widths if needed
+                total_stretch = width_ratio[0] + width_ratio[1]
+                if total_stretch > 0:
+                    total_width = main_widget.width()
+                    left_width = int(total_width * width_ratio[0] / total_stretch)
+                    right_width = total_width - left_width
+                    left_stack.setFixedWidth(left_width)
+                    right_stack.setFixedWidth(right_width)
 
             right_stack.setCurrentIndex(right_new_index)
             left_stack.setCurrentIndex(left_new_index)

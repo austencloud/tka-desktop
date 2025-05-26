@@ -69,9 +69,8 @@ class BrowseTabFilterController:
             self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
             == "browse"
         ):
-            self.browse_tab.main_widget.left_stack.setCurrentWidget(
-                self.browse_tab.sequence_picker
-            )
+            # Use layout-preserving stack switching instead of direct setCurrentWidget
+            self._switch_to_sequence_picker_with_layout_preservation()
         self.browse_tab.browse_settings.set_browse_left_stack_index(
             LeftStackIndex.SEQUENCE_PICKER.value
         )
@@ -242,3 +241,40 @@ class BrowseTabFilterController:
             "show_all": "all sequences",
         }
         return desc_map.get(key, "Unknown Filter")
+
+    def _switch_to_sequence_picker_with_layout_preservation(self):
+        """Switch to sequence picker while preserving the browse tab's 2:1 layout ratio."""
+        try:
+            main_widget = self.browse_tab.main_widget
+
+            # Ensure browse tab layout ratios are preserved during stack switching
+            if hasattr(main_widget, "content_layout"):
+                # Set browse tab's 2:1 stretch ratio
+                main_widget.content_layout.setStretch(0, 2)  # Left stack: 2 parts
+                main_widget.content_layout.setStretch(1, 1)  # Right stack: 1 part
+
+                # Clear any fixed width constraints that might interfere
+                if hasattr(main_widget, "left_stack"):
+                    main_widget.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+                    main_widget.left_stack.setMinimumWidth(0)
+                if hasattr(main_widget, "right_stack"):
+                    main_widget.right_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+                    main_widget.right_stack.setMinimumWidth(0)
+
+            # Now safely switch to sequence picker
+            main_widget.left_stack.setCurrentWidget(self.browse_tab.sequence_picker)
+
+            # Force layout update
+            if hasattr(main_widget, "content_layout"):
+                main_widget.content_layout.update()
+                main_widget.updateGeometry()
+
+        except Exception as e:
+            # Fallback to direct switching if layout preservation fails
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Layout preservation failed, using direct switching: {e}")
+            self.browse_tab.main_widget.left_stack.setCurrentWidget(
+                self.browse_tab.sequence_picker
+            )

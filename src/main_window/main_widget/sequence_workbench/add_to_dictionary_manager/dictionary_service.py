@@ -147,11 +147,64 @@ class DictionaryService:
             thumbnail_box.update_thumbnails(thumbnails)
 
     def _find_thumbnail_box(self, base_word: str) -> Optional["ThumbnailBox"]:
-        """Find the thumbnail box for a given word."""
+        """Find the thumbnail box for a given word using the new dependency injection pattern."""
         try:
-            return self.sequence_workbench.main_widget.browse_tab.sequence_picker.scroll_widget.thumbnail_boxes.get(
-                base_word
-            )
-        except (AttributeError, KeyError):
-            logger.warning(f"Could not find thumbnail box for {base_word}")
+            # Get browse tab using the new dependency injection pattern
+            browse_tab = self._get_browse_tab()
+            if not browse_tab:
+                logger.warning(
+                    f"Browse tab not available when looking for thumbnail box for {base_word}"
+                )
+                return None
+
+            # Check if browse tab has sequence picker
+            if not hasattr(browse_tab, "sequence_picker"):
+                logger.warning(
+                    f"Browse tab has no sequence_picker when looking for thumbnail box for {base_word}"
+                )
+                return None
+
+            sequence_picker = browse_tab.sequence_picker
+
+            # Check if sequence picker has scroll widget
+            if not hasattr(sequence_picker, "scroll_widget"):
+                logger.warning(
+                    f"Sequence picker has no scroll_widget when looking for thumbnail box for {base_word}"
+                )
+                return None
+
+            scroll_widget = sequence_picker.scroll_widget
+
+            # Check if scroll widget has thumbnail boxes
+            if not hasattr(scroll_widget, "thumbnail_boxes"):
+                logger.warning(
+                    f"Scroll widget has no thumbnail_boxes when looking for thumbnail box for {base_word}"
+                )
+                return None
+
+            thumbnail_boxes = scroll_widget.thumbnail_boxes
+
+            # Get the specific thumbnail box for the base word
+            return thumbnail_boxes.get(base_word)
+
+        except (AttributeError, KeyError) as e:
+            logger.warning(f"Could not find thumbnail box for {base_word}: {e}")
             return None
+
+    def _get_browse_tab(self):
+        """Get the browse tab using the new dependency injection pattern with graceful fallbacks."""
+        try:
+            # Try to get browse tab through the new coordinator pattern
+            return self.main_widget.get_tab_widget("browse")
+        except AttributeError:
+            # Fallback: try through tab_manager for backward compatibility
+            try:
+                return self.main_widget.tab_manager.get_tab_widget("browse")
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.main_widget, "browse_tab"):
+                        return self.main_widget.browse_tab
+                except AttributeError:
+                    pass
+        return None

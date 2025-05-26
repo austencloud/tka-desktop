@@ -64,6 +64,11 @@ class BeatDeleter:
         self.beat_frame.emit_update_image_export_preview()
         self.sequence_workbench.difficulty_label.update_difficulty_label()
 
+        # Auto-switch construct tab view after individual beat deletion
+        construct_tab = self.sequence_workbench.main_widget.get_tab_widget("construct")
+        if construct_tab:
+            self._auto_switch_construct_tab_view_after_deletion(construct_tab)
+
     def _delete_beat_and_following(self, beat: BeatView) -> None:
         beats = self.beat_frame.beat_views
         start_index = beats.index(beat)
@@ -88,8 +93,52 @@ class BeatDeleter:
         construct_tab = self.sequence_workbench.main_widget.get_tab_widget("construct")
         if construct_tab:
             construct_tab.last_beat = self.sequence_workbench.beat_frame.start_pos
+            # Auto-switch to start position picker when sequence is cleared
+            self._auto_switch_construct_tab_view_after_deletion(construct_tab)
         self.sequence_workbench.graph_editor.update_graph_editor()
         self.sequence_workbench.difficulty_label.update_difficulty_label()
+
+    def _auto_switch_construct_tab_view_after_deletion(self, construct_tab):
+        """
+        Automatically switch the construct tab view after beat deletion based on remaining sequence state.
+
+        Logic:
+        - If no beats remain: Show start position picker
+        - If beats still exist: Show option picker
+        """
+        try:
+            # Get the current beat count after deletion
+            beat_count = self.beat_frame.get.beat_count()
+
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.info(
+                f"Auto-switching construct tab view after deletion: beat_count={beat_count}"
+            )
+
+            if beat_count == 0:
+                # No beats remain - show start position picker
+                if hasattr(construct_tab, "transition_to_start_pos_picker"):
+                    construct_tab.transition_to_start_pos_picker()
+                    logger.info(
+                        "Switched to start position picker (no beats remaining)"
+                    )
+            else:
+                # Beats still exist - show option picker
+                if hasattr(construct_tab, "transition_to_option_picker"):
+                    construct_tab.transition_to_option_picker()
+                    logger.info(
+                        f"Switched to option picker ({beat_count} beats remaining)"
+                    )
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                f"Failed to auto-switch construct tab view after deletion: {e}"
+            )
 
     def fade_and_reset_widgets(self, widgets, show_indicator):
         self.main_widget.fade_manager.widget_fader.fade_and_update(

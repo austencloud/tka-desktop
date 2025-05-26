@@ -29,7 +29,10 @@ class FullScreenViewer:
         """Display the current image in full screen mode."""
         mw = self.main_widget
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        sequence_length = len(self.json_loader.load_current_sequence())
+
+        # Get sequence length from UI state instead of JSON to ensure accuracy
+        current_sequence = self._get_current_sequence_from_ui()
+        sequence_length = len(current_sequence)
 
         if sequence_length <= 2:
             self.indicator_label.show_message("Please build a sequence first.")
@@ -39,17 +42,32 @@ class FullScreenViewer:
             current_thumbnail = self.create_thumbnail()
             if current_thumbnail:
                 pixmap = QPixmap(current_thumbnail)
-                full_screen_overlay = mw.get_widget("full_screen_overlay")
+
+                # Use MainWidgetCoordinator pattern for widget access
+                full_screen_overlay = None
+                try:
+                    # Try to get existing overlay using widget manager
+                    if hasattr(mw, "get_widget"):
+                        full_screen_overlay = mw.get_widget("full_screen_overlay")
+                except (AttributeError, KeyError):
+                    # Widget manager not available or overlay not found
+                    pass
+
                 if not full_screen_overlay:
                     # Create overlay if it doesn't exist
                     full_screen_overlay = FullScreenImageOverlay(mw)
                     # Store it for future use if the widget manager supports it
-                    if hasattr(mw, "widget_manager") and hasattr(
-                        mw.widget_manager, "_widgets"
-                    ):
-                        mw.widget_manager._widgets["full_screen_overlay"] = (
-                            full_screen_overlay
-                        )
+                    try:
+                        if hasattr(mw, "widget_manager") and hasattr(
+                            mw.widget_manager, "_widgets"
+                        ):
+                            mw.widget_manager._widgets["full_screen_overlay"] = (
+                                full_screen_overlay
+                            )
+                    except (AttributeError, TypeError):
+                        # Widget manager not available - overlay will still work
+                        pass
+
                 full_screen_overlay.show(pixmap)
                 QApplication.restoreOverrideCursor()
             else:
@@ -86,29 +104,49 @@ class FullScreenViewer:
             # Build sequence from current UI state
             sequence = []
 
-            # Add the word entry (first entry) - get current word from sequence workbench
+            # Add the word entry (first entry) - get current word from beat frame
             current_word = ""
-            if hasattr(self.sequence_workbench, "current_word_label"):
-                current_word = getattr(
-                    self.sequence_workbench.current_word_label, "current_word", ""
+            if hasattr(beat_frame, "get") and hasattr(beat_frame.get, "current_word"):
+                current_word = beat_frame.get.current_word()
+            elif hasattr(self.sequence_workbench, "current_word_label") and hasattr(
+                self.sequence_workbench.current_word_label, "current_word"
+            ):
+                current_word = (
+                    self.sequence_workbench.current_word_label.current_word or ""
                 )
+
             word_entry = {"word": current_word}
             sequence.append(word_entry)
 
             # Add start position if available
-            if hasattr(beat_frame, "start_pos_view") and beat_frame.start_pos_view:
+            if (
+                hasattr(beat_frame, "start_pos_view")
+                and beat_frame.start_pos_view
+                and beat_frame.start_pos_view.is_filled
+            ):
                 start_pos = beat_frame.start_pos_view.start_pos
-                if start_pos and hasattr(start_pos, "pictograph_dict"):
-                    sequence.append(start_pos.pictograph_dict)
+                if (
+                    start_pos
+                    and hasattr(start_pos, "state")
+                    and hasattr(start_pos.state, "pictograph_data")
+                ):
+                    # Get the pictograph data from the start position beat
+                    start_pos_data = start_pos.state.pictograph_data.copy()
+                    # Ensure it's marked as a start position
+                    start_pos_data["sequence_start_position"] = True
+                    sequence.append(start_pos_data)
 
             # Add all filled beats from the UI
             if hasattr(beat_frame, "beat_views"):
                 for beat_view in beat_frame.beat_views:
-                    if beat_view and beat_view.is_filled:
-                        if hasattr(beat_view, "beat") and hasattr(
-                            beat_view.beat, "pictograph_dict"
+                    if beat_view and beat_view.is_filled and hasattr(beat_view, "beat"):
+                        beat = beat_view.beat
+                        if hasattr(beat, "state") and hasattr(
+                            beat.state, "pictograph_data"
                         ):
-                            sequence.append(beat_view.beat.pictograph_dict)
+                            # Get the pictograph data from the beat
+                            beat_data = beat.state.pictograph_data.copy()
+                            sequence.append(beat_data)
 
             return sequence
 

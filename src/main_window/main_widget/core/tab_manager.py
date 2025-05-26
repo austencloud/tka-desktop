@@ -349,12 +349,32 @@ class TabManager(QObject):
             # New coordinator system
             self.coordinator.content_layout.setStretch(0, width_ratio[0])
             self.coordinator.content_layout.setStretch(1, width_ratio[1])
+
+            # Clear any fixed width constraints that might interfere with stretch factors
+            if hasattr(self.coordinator, "left_stack"):
+                self.coordinator.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+                self.coordinator.left_stack.setMinimumWidth(0)
+            if hasattr(self.coordinator, "right_stack"):
+                self.coordinator.right_stack.setMaximumWidth(
+                    16777215
+                )  # QWIDGETSIZE_MAX
+                self.coordinator.right_stack.setMinimumWidth(0)
+
         elif hasattr(self.coordinator, "main_widget") and hasattr(
             self.coordinator.main_widget, "content_layout"
         ):
             # Old main widget system with stored content_layout reference
-            self.coordinator.main_widget.content_layout.setStretch(0, width_ratio[0])
-            self.coordinator.main_widget.content_layout.setStretch(1, width_ratio[1])
+            main_widget = self.coordinator.main_widget
+            main_widget.content_layout.setStretch(0, width_ratio[0])
+            main_widget.content_layout.setStretch(1, width_ratio[1])
+
+            # Clear any fixed width constraints that might interfere with stretch factors
+            if hasattr(main_widget, "left_stack"):
+                main_widget.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+                main_widget.left_stack.setMinimumWidth(0)
+            if hasattr(main_widget, "right_stack"):
+                main_widget.right_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+                main_widget.right_stack.setMinimumWidth(0)
 
         # Switch left and right stacks based on tab using dynamic widget lookup
         if tab_name == "construct":

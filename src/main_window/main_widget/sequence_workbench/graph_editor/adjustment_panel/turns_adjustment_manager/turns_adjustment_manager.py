@@ -289,17 +289,8 @@ class TurnsAdjustmentManager(QObject):
         if beat_frame:
             beat_frame.updater.update_beats_from(sequence)
 
-        # Use the same pattern for construct_tab access
-        try:
-            AppContext.main_widget().construct_tab.option_picker.updater.update_options()
-        except AttributeError:
-            # Graceful fallback if construct_tab is not available
-            import logging
-
-            logger = logging.getLogger(__name__)
-            logger.warning(
-                "Could not update construct tab options - construct tab not available"
-            )
+        # Update construct tab options using the new MainWidgetCoordinator architecture
+        self._update_construct_tab_options()
 
     def _current_beat(self) -> Beat:
         beat_frame = self._get_sequence_beat_frame()
@@ -310,6 +301,57 @@ class TurnsAdjustmentManager(QObject):
         if selected_beat_view:
             return selected_beat_view.beat
         return None
+
+    def _update_construct_tab_options(self):
+        """Update construct tab options using the new MainWidgetCoordinator architecture with graceful fallbacks."""
+        try:
+            # Try to get main widget through AppContext
+            main_widget = AppContext.main_widget()
+            if not main_widget:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    "Main widget not available for construct tab options update"
+                )
+                return
+
+            # Get construct tab through the new widget manager system
+            construct_tab = main_widget.get_tab_widget("construct")
+            if not construct_tab:
+                # Fallback: try direct access for backward compatibility
+                construct_tab = getattr(main_widget, "construct_tab", None)
+
+            if construct_tab and hasattr(construct_tab, "option_picker"):
+                if hasattr(construct_tab.option_picker, "updater"):
+                    construct_tab.option_picker.updater.update_options()
+                else:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.debug("Construct tab option picker has no updater")
+            else:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.debug(
+                    "Construct tab not available for options update - this is normal during initialization or when tab hasn't been created yet"
+                )
+
+        except AttributeError as e:
+            # Handle cases where the MainWidgetCoordinator doesn't have the expected methods
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(
+                f"Could not update construct tab options due to architecture change: {e}"
+            )
+        except Exception as e:
+            # Handle any other unexpected errors
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Unexpected error updating construct tab options: {e}")
 
     def _get_sequence_beat_frame(self):
         """Get the sequence beat frame using graceful fallbacks for the MainWidgetCoordinator refactoring."""

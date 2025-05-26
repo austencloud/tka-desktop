@@ -29,6 +29,16 @@ class MainWindow(QMainWindow):
         self.splash_screen = splash_screen
         self.main_widget = None  # Initialize main_widget to None
 
+        # IMPORTANT: Set the MainWindow reference in AppContext immediately
+        # This prevents timing issues during widget initialization
+        try:
+            from src.settings_manager.global_settings.app_context import AppContext
+
+            AppContext.set_main_window(self)
+            logger.info("MainWindow reference set in AppContext")
+        except Exception as e:
+            logger.warning(f"Failed to set MainWindow reference in AppContext: {e}")
+
         # Initialize managers
         self.palette_manager = PaletteManager(self)
         self.geometry_manager = MainWindowGeometryManager(self)

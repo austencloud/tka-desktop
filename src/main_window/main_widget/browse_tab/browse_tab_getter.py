@@ -39,9 +39,32 @@ class BrowseTabGetter:
                 os.path.isdir(os.path.join(dictionary_dir, word))
                 and "__pycache__" not in word
             ):
-                thumbnails = (
-                    self.browse_tab.main_widget.thumbnail_finder.find_thumbnails(
+                # Get thumbnail finder using the new dependency injection pattern
+                thumbnail_finder = self._get_thumbnail_finder()
+                if thumbnail_finder:
+                    thumbnails = thumbnail_finder.find_thumbnails(
                         os.path.join(dictionary_dir, word)
                     )
-                )
+                else:
+                    thumbnails = []
                 yield word, thumbnails
+
+    def _get_thumbnail_finder(self):
+        """Get the thumbnail finder using the new dependency injection pattern with graceful fallbacks."""
+        try:
+            # Try to get thumbnail finder through the new coordinator pattern
+            return self.browse_tab.main_widget.get_widget("thumbnail_finder")
+        except AttributeError:
+            # Fallback: try through widget_manager for backward compatibility
+            try:
+                return self.browse_tab.main_widget.widget_manager.get_widget(
+                    "thumbnail_finder"
+                )
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.browse_tab.main_widget, "thumbnail_finder"):
+                        return self.browse_tab.main_widget.thumbnail_finder
+                except AttributeError:
+                    pass
+        return None

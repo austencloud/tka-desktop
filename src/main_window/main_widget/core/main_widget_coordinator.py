@@ -84,8 +84,10 @@ class MainWidgetCoordinator(QWidget):
         self.left_stack = QStackedWidget()
         self.right_stack = QStackedWidget()
 
-        self.content_layout.addWidget(self.left_stack)
-        self.content_layout.addWidget(self.right_stack)
+        # Add widgets with initial 2:1 stretch ratio (browse tab default)
+        # This ensures consistent layout from startup
+        self.content_layout.addWidget(self.left_stack, 2)  # 2/3 width for left stack
+        self.content_layout.addWidget(self.right_stack, 1)  # 1/3 width for right stack
 
         # Note: Menu bar will be added to the layout after widgets are initialized
         # This is done in _setup_menu_bar_layout() called from initialize_components()

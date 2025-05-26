@@ -61,16 +61,13 @@ class MainWidgetTabSwitcher:
         self._set_current_tab(new_tab.value)
         print(f"DEBUG: Set current tab to {new_tab.value}")
 
-        # Set width ratio based on tab type
+        # Set width ratio based on tab type using stretch factors
         if new_tab == TabName.BROWSE:
-            width_ratio = (
-                2 / 3,
-                1 / 3,
-            )  # Browse tab uses 2/3 for left panel, 1/3 for right
+            width_ratio = (2, 1)  # Browse tab uses 2:1 ratio (2/3 left, 1/3 right)
         elif new_tab == TabName.SEQUENCE_CARD:
             width_ratio = (0, 1)  # Sequence card tab uses full width for right panel
         else:
-            width_ratio = (1 / 2, 1 / 2)  # Default is equal split
+            width_ratio = (1, 1)  # Default is equal split
 
         if (current_tab_str == "construct" and new_tab == TabName.GENERATE) or (
             current_tab_str == "generate" and new_tab == TabName.CONSTRUCT
@@ -89,34 +86,46 @@ class MainWidgetTabSwitcher:
             )
         QApplication.processEvents()
         if new_tab == TabName.BROWSE:
-            self.mw.browse_tab.sequence_viewer.thumbnail_box.image_label._resize_pixmap_to_fit()
-            self.mw.browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
+            # Get browse tab using the new dependency injection pattern
+            browse_tab = self._get_browse_tab()
+            if browse_tab and hasattr(browse_tab, "sequence_viewer"):
+                sequence_viewer = browse_tab.sequence_viewer
+                if hasattr(sequence_viewer, "thumbnail_box") and hasattr(
+                    sequence_viewer.thumbnail_box, "image_label"
+                ):
+                    sequence_viewer.thumbnail_box.image_label._resize_pixmap_to_fit()
+            if browse_tab and hasattr(browse_tab, "ui_updater"):
+                browse_tab.ui_updater.resize_thumbnails_top_to_bottom()
         elif new_tab == TabName.SEQUENCE_CARD:
-            # Initialize the sequence card tab if needed
-            if not self.mw.sequence_card_tab.initialized:
-                self.mw.sequence_card_tab.initialized = True
-                self.mw.sequence_card_tab.refresher.refresh_sequence_cards()
+            # Initialize the sequence card tab if needed using dependency injection
+            sequence_card_tab = self._get_sequence_card_tab()
+            if sequence_card_tab and hasattr(sequence_card_tab, "initialized"):
+                if not sequence_card_tab.initialized:
+                    sequence_card_tab.initialized = True
+                    if hasattr(sequence_card_tab, "refresher"):
+                        sequence_card_tab.refresher.refresh_sequence_cards()
 
     def set_stacks_silently(self, left_index, right_index):
         tab_name_str = self._get_current_tab()
 
-        # Set width ratio based on tab type
+        # Set width ratio based on tab type using stretch factors instead of fixed widths
         if tab_name_str == "browse":
-            width_ratio = (
-                2 / 3,
-                1 / 3,
-            )  # Browse tab uses 2/3 for left panel, 1/3 for right
+            stretch_ratio = (2, 1)  # Browse tab uses 2:1 ratio (2/3 left, 1/3 right)
         elif tab_name_str == "sequence_card":
-            width_ratio = (0, 1)  # Sequence card tab uses full width for right panel
+            stretch_ratio = (0, 1)  # Sequence card tab uses full width for right panel
         else:
-            width_ratio = (1 / 2, 1 / 2)  # Default is equal split
+            stretch_ratio = (1, 1)  # Default is equal split
 
-        total_width = self.mw.width()
-        left_width = int(total_width * width_ratio[0])
-        right_width = total_width - left_width
+        # Apply stretch factors to maintain proper aspect ratio
+        if hasattr(self.mw, "content_layout"):
+            self.mw.content_layout.setStretch(0, stretch_ratio[0])
+            self.mw.content_layout.setStretch(1, stretch_ratio[1])
 
-        self.mw.left_stack.setFixedWidth(left_width)
-        self.mw.right_stack.setFixedWidth(right_width)
+            # Clear any fixed width constraints that might interfere
+            self.mw.left_stack.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX
+            self.mw.right_stack.setMaximumWidth(16777215)
+            self.mw.left_stack.setMinimumWidth(0)
+            self.mw.right_stack.setMinimumWidth(0)
 
         # Handle both enum values and integers
         left_idx = left_index.value if hasattr(left_index, "value") else left_index
@@ -197,3 +206,39 @@ class MainWidgetTabSwitcher:
         except (AttributeError, RuntimeError):
             # If all else fails, silently ignore
             pass
+
+    def _get_browse_tab(self):
+        """Get the browse tab using the new dependency injection pattern with graceful fallbacks."""
+        try:
+            # Try to get browse tab through the new coordinator pattern
+            return self.mw.get_tab_widget("browse")
+        except AttributeError:
+            # Fallback: try through tab_manager for backward compatibility
+            try:
+                return self.mw.tab_manager.get_tab_widget("browse")
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.mw, "browse_tab"):
+                        return self.mw.browse_tab
+                except AttributeError:
+                    pass
+        return None
+
+    def _get_sequence_card_tab(self):
+        """Get the sequence card tab using the new dependency injection pattern with graceful fallbacks."""
+        try:
+            # Try to get sequence card tab through the new coordinator pattern
+            return self.mw.get_tab_widget("sequence_card")
+        except AttributeError:
+            # Fallback: try through tab_manager for backward compatibility
+            try:
+                return self.mw.tab_manager.get_tab_widget("sequence_card")
+            except AttributeError:
+                # Final fallback: try direct access for legacy compatibility
+                try:
+                    if hasattr(self.mw, "sequence_card_tab"):
+                        return self.mw.sequence_card_tab
+                except AttributeError:
+                    pass
+        return None
