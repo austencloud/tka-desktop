@@ -107,8 +107,8 @@ class ImageSaver:
         if not file_name:
             return None
 
-        # Save the image
-        if sequence_image.save(file_name, "PNG"):
+        # Save the image with maximum quality
+        if sequence_image.save(file_name, "PNG", 100):  # Quality 100 = maximum quality
             # Store the directory for future use
             save_directory = os.path.dirname(file_name)
             print(f"Saving directory: {save_directory}")

@@ -66,7 +66,7 @@ class BeatDeleter:
 
         # Auto-switch construct tab view after individual beat deletion
         construct_tab = self.sequence_workbench.main_widget.get_tab_widget("construct")
-        if construct_tab:
+        if construct_tab and self._is_construct_tab_active():
             self._auto_switch_construct_tab_view_after_deletion(construct_tab)
 
     def _delete_beat_and_following(self, beat: BeatView) -> None:
@@ -93,8 +93,9 @@ class BeatDeleter:
         construct_tab = self.sequence_workbench.main_widget.get_tab_widget("construct")
         if construct_tab:
             construct_tab.last_beat = self.sequence_workbench.beat_frame.start_pos
-            # Auto-switch to start position picker when sequence is cleared
-            self._auto_switch_construct_tab_view_after_deletion(construct_tab)
+            # Only auto-switch picker if we're currently in the construct tab
+            if self._is_construct_tab_active():
+                self._auto_switch_construct_tab_view_after_deletion(construct_tab)
         self.sequence_workbench.graph_editor.update_graph_editor()
         self.sequence_workbench.difficulty_label.update_difficulty_label()
 
@@ -103,33 +104,28 @@ class BeatDeleter:
         Automatically switch the construct tab view after beat deletion based on remaining sequence state.
 
         Logic:
-        - If no beats remain: Show start position picker
-        - If beats still exist: Show option picker
+        - Show Start Position Picker when: Sequence is completely empty (no start position set AND no beats)
+        - Show Option Picker when: A start position has been selected (regardless of beat count), OR
+                                  there are any beats in the sequence (even if start position is somehow unset)
         """
         try:
-            # Get the current beat count after deletion
-            beat_count = self.beat_frame.get.beat_count()
+            picker_type = self._determine_appropriate_picker()
 
             import logging
 
             logger = logging.getLogger(__name__)
-            logger.info(
-                f"Auto-switching construct tab view after deletion: beat_count={beat_count}"
-            )
 
-            if beat_count == 0:
-                # No beats remain - show start position picker
+            if picker_type == "start_pos_picker":
                 if hasattr(construct_tab, "transition_to_start_pos_picker"):
                     construct_tab.transition_to_start_pos_picker()
                     logger.info(
-                        "Switched to start position picker (no beats remaining)"
+                        "Switched to start position picker (sequence completely empty)"
                     )
-            else:
-                # Beats still exist - show option picker
+            elif picker_type == "option_picker":
                 if hasattr(construct_tab, "transition_to_option_picker"):
                     construct_tab.transition_to_option_picker()
                     logger.info(
-                        f"Switched to option picker ({beat_count} beats remaining)"
+                        "Switched to option picker (start position set or beats exist)"
                     )
 
         except Exception as e:
@@ -139,6 +135,76 @@ class BeatDeleter:
             logger.warning(
                 f"Failed to auto-switch construct tab view after deletion: {e}"
             )
+
+    def _determine_appropriate_picker(self) -> str:
+        """
+        Centralized logic to determine which picker should be shown based on current sequence state.
+
+        Returns:
+            "start_pos_picker" if sequence is completely empty (no start position AND no beats)
+            "option_picker" if start position is set OR beats exist
+        """
+        try:
+            # Get current sequence state
+            beat_count = self.beat_frame.get.beat_count()
+            start_pos_is_filled = self.beat_frame.start_pos_view.is_filled
+
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(
+                f"Determining picker: beat_count={beat_count}, start_pos_filled={start_pos_is_filled}"
+            )
+
+            # Show Start Position Picker only when sequence is completely empty
+            if beat_count == 0 and not start_pos_is_filled:
+                return "start_pos_picker"
+
+            # Show Option Picker when start position is set OR beats exist
+            return "option_picker"
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error determining appropriate picker: {e}")
+            # Default to option picker on error
+            return "option_picker"
+
+    def _is_construct_tab_active(self) -> bool:
+        """
+        Check if the construct tab is currently the active tab.
+
+        Returns:
+            True if construct tab is active, False otherwise
+        """
+        try:
+            # Check if we have a tab manager and get the current tab
+            if hasattr(self.main_widget, "tab_manager"):
+                current_tab = self.main_widget.tab_manager.get_current_tab()
+                return current_tab == "construct"
+
+            # Fallback: check if construct tab is visible in the right stack
+            if hasattr(self.main_widget, "right_stack"):
+                current_widget = self.main_widget.right_stack.currentWidget()
+                if current_widget:
+                    # Check if the current widget is related to construct tab
+                    widget_name = current_widget.__class__.__name__
+                    return widget_name in [
+                        "StartPosPicker",
+                        "OptionPicker",
+                        "AdvancedStartPosPicker",
+                    ]
+
+            return False
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error checking if construct tab is active: {e}")
+            # Default to False to avoid unwanted picker switching
+            return False
 
     def fade_and_reset_widgets(self, widgets, show_indicator):
         self.main_widget.fade_manager.widget_fader.fade_and_update(

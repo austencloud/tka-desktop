@@ -1,10 +1,12 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QLabel, QVBoxLayout, QWidget
 from PyQt6.QtCore import Qt, pyqtSignal, QSize, QEvent
-from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor
+from PyQt6.QtGui import QPixmap, QPainter, QColor
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
+        ModernSettingsDialog,
+    )
 
 
 class SidebarItem(QWidget):
@@ -44,10 +46,10 @@ class SidebarItem(QWidget):
 class SettingsDialogSidebar(QListWidget):
     tab_selected = pyqtSignal(int)
 
-    def __init__(self, dialog: "SettingsDialog"):
+    def __init__(self, dialog: "ModernSettingsDialog"):
         super().__init__(dialog)
         self.setFixedWidth(240)  # Wider for better readability
-        self.setSpacing(8)
+        self.setSpacing(6)  # Slightly tighter spacing for modern look
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setIconSize(QSize(24, 24))  # For potential icons
         self.currentRowChanged.connect(self.tab_selected)
@@ -58,8 +60,11 @@ class SettingsDialogSidebar(QListWidget):
         # Remove focus outline for cleaner look
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
-        # Optional animations for item changes
+        # Enable smooth animations
         self.setProperty("animated", True)
+
+        # Set object name for styling
+        self.setObjectName("modernSidebar")
 
     def add_item(self, name: str, icon_name: str = None):
         """Adds an item to the sidebar only if it doesn't exist."""
@@ -76,17 +81,17 @@ class SettingsDialogSidebar(QListWidget):
         if icon_name:
             item.setData(Qt.ItemDataRole.UserRole, icon_name)
 
-        # Height for better touch targets and spacing
-        item.setSizeHint(QSize(0, 45))
+        # Height for better touch targets and modern spacing
+        item.setSizeHint(QSize(0, 48))  # Slightly taller for modern look
 
         self.addItem(item)
 
     def enterEvent(self, event: QEvent):
         """Custom hover effect when mouse enters the widget"""
         super().enterEvent(event)
-        self.setStyleSheet(self.styleSheet())  # Refresh styles
+        # Don't refresh stylesheet - this was causing style overrides!
 
     def leaveEvent(self, event: QEvent):
         """Custom hover effect when mouse leaves the widget"""
         super().leaveEvent(event)
-        self.setStyleSheet(self.styleSheet())  # Refresh styles
+        # Don't refresh stylesheet - this was causing style overrides!

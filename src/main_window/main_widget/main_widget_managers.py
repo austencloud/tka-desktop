@@ -105,19 +105,59 @@ class MainWidgetManagers:
             )
 
         self.main_widget.pictograph_dataset = pictograph_dataset
-        try:
-            json_manager = self.main_widget.app_context.json_manager
-            self.main_widget.letter_determiner = LetterDeterminer(
-                pictograph_dataset=pictograph_dataset,
-                json_manager=json_manager,
-            )
-        except AttributeError:
-            # Fallback for cases where app_context is not available
-            import logging
 
-            logger = logging.getLogger(__name__)
-            logger.warning("json_manager not available during letter determiner setup")
-            self.main_widget.letter_determiner = LetterDeterminer(
-                pictograph_dataset=pictograph_dataset,
-                json_manager=None,
-            )
+        # Check if letter_determiner already exists from dependency injection
+        if (
+            hasattr(self.main_widget, "letter_determiner")
+            and self.main_widget.letter_determiner
+        ):
+            # Update existing letter determiner with the loaded dataset
+            if hasattr(self.main_widget.letter_determiner, "update_pictograph_dataset"):
+                self.main_widget.letter_determiner.update_pictograph_dataset(
+                    pictograph_dataset
+                )
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.info(
+                    "Updated existing letter determiner with loaded pictograph dataset"
+                )
+            else:
+                # Fallback: create new letter determiner
+                try:
+                    json_manager = self.main_widget.app_context.json_manager
+                    self.main_widget.letter_determiner = LetterDeterminer(
+                        pictograph_dataset=pictograph_dataset,
+                        json_manager=json_manager,
+                    )
+                except AttributeError:
+                    import logging
+
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        "json_manager not available during letter determiner setup"
+                    )
+                    self.main_widget.letter_determiner = LetterDeterminer(
+                        pictograph_dataset=pictograph_dataset,
+                        json_manager=None,
+                    )
+        else:
+            # Create new letter determiner
+            try:
+                json_manager = self.main_widget.app_context.json_manager
+                self.main_widget.letter_determiner = LetterDeterminer(
+                    pictograph_dataset=pictograph_dataset,
+                    json_manager=json_manager,
+                )
+            except AttributeError:
+                # Fallback for cases where app_context is not available
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    "json_manager not available during letter determiner setup"
+                )
+                self.main_widget.letter_determiner = LetterDeterminer(
+                    pictograph_dataset=pictograph_dataset,
+                    json_manager=None,
+                )

@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from PyQt6.QtCore import QTimer
 from .thumbnail_box import ThumbnailBox
 
 if TYPE_CHECKING:
@@ -11,10 +12,48 @@ class ThumbnailBoxUIUpdater:
     def __init__(self, browse_tab: "BrowseTab"):
         self.browse_tab = browse_tab
         self.font_color_updater = self._get_font_color_updater()
+        self._pending_updates = []
+        self._update_timer = QTimer()
+        self._update_timer.setSingleShot(True)
+        self._update_timer.timeout.connect(self._process_pending_updates)
 
     def update_thumbnail_image(self, thumbnail_box: "ThumbnailBox"):
-        """Updates the thumbnail image of a given thumbnail box."""
+        """Updates the thumbnail image of a given thumbnail box (synchronous)."""
         thumbnail_box.image_label.update_thumbnail(thumbnail_box.state.current_index)
+
+    def update_thumbnail_image_async(self, thumbnail_box: "ThumbnailBox"):
+        """Updates the thumbnail image asynchronously to prevent UI blocking."""
+        # Add to pending updates queue
+        self._pending_updates.append((thumbnail_box, thumbnail_box.state.current_index))
+
+        # Start timer to process updates in batches (prevents overwhelming the UI)
+        if not self._update_timer.isActive():
+            self._update_timer.start(10)  # Process every 10ms
+
+    def _process_pending_updates(self):
+        """Process a batch of pending thumbnail updates with cache integration."""
+        if not self._pending_updates:
+            return
+
+        # Process up to 3 thumbnails per batch to maintain responsiveness
+        batch_size = min(3, len(self._pending_updates))
+
+        for _ in range(batch_size):
+            if self._pending_updates:
+                thumbnail_box, index = self._pending_updates.pop(0)
+
+                # Set word and variation for cache key generation
+                if hasattr(thumbnail_box.image_label, "set_word_and_variation"):
+                    thumbnail_box.image_label.set_word_and_variation(
+                        thumbnail_box.word, index
+                    )
+
+                # Update thumbnail asynchronously
+                thumbnail_box.image_label.update_thumbnail_async(index)
+
+        # If more updates pending, schedule next batch
+        if self._pending_updates:
+            self._update_timer.start(10)
 
     def apply_thumbnail_styling(self, background_type):
         """Applies styling (font color, star icon) to all thumbnails."""

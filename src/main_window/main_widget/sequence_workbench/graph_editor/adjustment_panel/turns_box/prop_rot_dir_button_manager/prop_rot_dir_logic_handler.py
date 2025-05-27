@@ -195,8 +195,11 @@ class PropRotDirLogicHandler(QObject):
             self.turns_box.graph_editor.sequence_workbench.beat_frame.get.current_word()
         )
 
-        # Also update the letter
-        self.turns_box.prop_rot_dir_button_manager.update_pictograph_letter(pictograph)
+        # Update the letter for all affected pictographs
+        for pictograph in self._get_affected_pictographs():
+            self.turns_box.prop_rot_dir_button_manager.update_pictograph_letter(
+                pictograph
+            )
 
     def _refresh_construct_tab_options(self) -> None:
         """Refresh construct tab options using the new MVVM architecture with graceful fallbacks."""

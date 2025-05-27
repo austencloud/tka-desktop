@@ -73,7 +73,8 @@ class PropRotDirButtonManager:
         self.logic_handler.update_rotation_states(prop_rot_dir)
         self.logic_handler.update_related_components()
 
-        self.turns_box.graph_editor.sequence_workbench.main_widget.construct_tab.option_picker.updater.refresh_options()
+        # Use the safe refresh method from logic_handler instead of direct access
+        self.logic_handler._refresh_construct_tab_options()
 
         QApplication.restoreOverrideCursor()
 
@@ -120,7 +121,7 @@ class PropRotDirButtonManager:
     def update_pictograph_letter(self, pictograph: "Pictograph") -> None:
         new_letter = (
             self.turns_box.graph_editor.main_widget.letter_determiner.determine_letter(
-                pictograph.state.pictograph_data, swap_prop_rot_dir=True
+                pictograph.state.pictograph_data, swap_prop_rot_dir=False
             )
         )
         self.json_manager = (

@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtGui import QShowEvent
 from main_window.main_widget.settings_dialog.ui.image_export.image_export_preview_panel import (
     ImageExportPreviewPanel,
@@ -14,12 +14,14 @@ from main_window.main_widget.settings_dialog.ui.image_export.loading_spinner imp
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
+        ModernSettingsDialog,
+    )
 
 
 class ImageExportTab(QWidget):
 
-    def __init__(self, settings_dialog: "SettingsDialog"):
+    def __init__(self, settings_dialog: "ModernSettingsDialog"):
         super().__init__(settings_dialog)
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget
@@ -90,14 +92,57 @@ class ImageExportTab(QWidget):
         self.preview_panel.preview_label.setPixmap(pixmap)
 
     def _setup_layout(self):
-        card = QWidget(self)
-        layout = QVBoxLayout(card)
-        layout.addWidget(self.control_panel, 1)
-        layout.addWidget(self.preview_panel, 3)
+        """Set up the layout with modern glassmorphism styling."""
+        # Main layout with improved spacing
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(24, 24, 24, 24)
+        main_layout.setSpacing(20)
 
-        control_layout = QHBoxLayout(self)
-        control_layout.addWidget(card)
-        self.setLayout(control_layout)
+        # Control panel container with glassmorphism background
+        control_container = QWidget()
+        control_container.setObjectName("control_container")
+        control_container.setStyleSheet(
+            """
+            QWidget#control_container {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(31, 41, 59, 0.1),
+                    stop:1 rgba(55, 65, 81, 0.08));
+                border: 1px solid rgba(75, 85, 99, 0.3);
+                border-radius: 12px;
+                padding: 16px;
+            }
+            """
+        )
+
+        control_layout = QVBoxLayout(control_container)
+        control_layout.setContentsMargins(16, 16, 16, 16)
+        control_layout.addWidget(self.control_panel)
+
+        main_layout.addWidget(control_container)
+
+        # Preview panel container with glassmorphism background
+        preview_container = QWidget()
+        preview_container.setObjectName("preview_container")
+        preview_container.setStyleSheet(
+            """
+            QWidget#preview_container {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(31, 41, 59, 0.05),
+                    stop:1 rgba(55, 65, 81, 0.03));
+                border: 1px solid rgba(75, 85, 99, 0.15);
+                border-radius: 16px;
+                padding: 20px;
+            }
+            """
+        )
+
+        preview_layout = QVBoxLayout(preview_container)
+        preview_layout.setContentsMargins(20, 20, 20, 20)
+        preview_layout.addWidget(self.preview_panel)
+
+        main_layout.addWidget(preview_container, stretch=3)
+
+        self.setLayout(main_layout)
 
         self.center_spinner()
         self.spinner.hide()

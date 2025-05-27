@@ -25,7 +25,8 @@ class BrowseTabFilterController:
         self.metadata_extractor = browse_tab.metadata_extractor
 
     def apply_filter(self, filter_criteria: Union[str, dict], fade=True):
-        current_tab = AppContext.settings_manager().global_settings.get_current_tab()
+        # FILTER RESPONSIVENESS FIX: Check actual current tab state, not just settings
+        current_tab = self._get_actual_current_tab()
         description = self._get_filter_description(filter_criteria)
         self.browse_tab.browse_settings.set_current_filter(filter_criteria)
         widgets_to_fade = [
@@ -57,6 +58,95 @@ class BrowseTabFilterController:
 
         self.browse_tab.browse_settings.set_current_section("sequence_picker")
 
+    def _get_actual_current_tab(self) -> str:
+        """
+        Get the actual current tab state, checking multiple sources for accuracy.
+
+        This fixes the issue where settings may not be updated yet but the browse tab
+        is actually the active tab.
+        """
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        try:
+            # Method 1: Check if browse tab is currently visible and active
+            if self._is_browse_tab_currently_active():
+                logger.debug("Browse tab detected as currently active")
+                return "browse"
+
+            # Method 2: Check main widget's current tab state
+            if hasattr(self.browse_tab, "main_widget"):
+                main_widget = self.browse_tab.main_widget
+
+                # Try to get current tab from tab manager
+                if hasattr(main_widget, "coordinator") and hasattr(
+                    main_widget.coordinator, "get_current_tab"
+                ):
+                    current_tab = main_widget.coordinator.get_current_tab()
+                    if current_tab:
+                        logger.debug(f"Current tab from coordinator: {current_tab}")
+                        return current_tab
+
+                # Try to get from tab switcher
+                if hasattr(main_widget, "tab_switcher"):
+                    current_tab = main_widget.tab_switcher._get_current_tab()
+                    if current_tab:
+                        logger.debug(f"Current tab from tab switcher: {current_tab}")
+                        return current_tab
+
+            # Method 3: Fallback to settings (original method)
+            from src.settings_manager.global_settings.app_context import AppContext
+
+            current_tab = (
+                AppContext.settings_manager().global_settings.get_current_tab()
+            )
+            logger.debug(f"Current tab from settings (fallback): {current_tab}")
+            return current_tab
+
+        except Exception as e:
+            logger.warning(f"Error determining current tab: {e}")
+            # Ultimate fallback
+            return (
+                "browse"  # Assume browse since this is the browse tab filter controller
+            )
+
+    def _is_browse_tab_currently_active(self) -> bool:
+        """
+        Check if the browse tab is currently the active/visible tab.
+        """
+        try:
+            # Check if browse tab widget is visible
+            if hasattr(self.browse_tab, "isVisible") and self.browse_tab.isVisible():
+                # Check if browse tab is the current widget in the stack
+                if hasattr(self.browse_tab, "main_widget"):
+                    main_widget = self.browse_tab.main_widget
+
+                    # Check left stack current widget
+                    if hasattr(main_widget, "left_stack"):
+                        current_widget = main_widget.left_stack.currentWidget()
+                        if current_widget == self.browse_tab:
+                            return True
+
+                        # Check if browse tab is a child of the current widget
+                        if hasattr(current_widget, "findChild"):
+                            browse_child = current_widget.findChild(
+                                type(self.browse_tab)
+                            )
+                            if browse_child == self.browse_tab:
+                                return True
+
+                return True  # If browse tab is visible, assume it's active
+
+            return False
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(f"Error checking browse tab active state: {e}")
+            return False
+
     def _apply_filter_after_fade(self, filter_criteria, description: str):
         self._prepare_ui_for_filtering(description)
         if isinstance(filter_criteria, str):
@@ -73,10 +163,8 @@ class BrowseTabFilterController:
         else:
             skip_scaling = True
         self.ui_updater.update_and_display_ui(len(results), skip_scaling)
-        if (
-            self.browse_tab.browse_settings.settings_manager.global_settings.get_current_tab()
-            == "browse"
-        ):
+        # FILTER RESPONSIVENESS FIX: Use actual current tab check here too
+        if self._get_actual_current_tab() == "browse":
             # ARCHITECTURAL FIX: Switch to sequence picker in browse tab's internal stack
             if hasattr(self.browse_tab, "internal_left_stack"):
                 sequence_picker_index = (

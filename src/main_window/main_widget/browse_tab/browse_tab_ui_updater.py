@@ -61,17 +61,17 @@ class BrowseTabUIUpdater:
             if section not in sections_copy:
                 return
             for word, _ in self.browse_tab.sequence_picker.sections.get(section, []):
-                if (
-                    word not in scroll_widget.thumbnail_boxes
-                    or AppContext.settings_manager().global_settings.get_current_tab()
-                    != "browse"
-                ):
+                if word not in scroll_widget.thumbnail_boxes:
                     return
+
+                # CRITICAL FIX: Remove tab check that was preventing thumbnail loading during startup
+                # The tab check was causing thumbnails to not load when the app starts in browse tab
+                # because the tab state might not be properly set during initialization
 
                 thumbnail_box = scroll_widget.thumbnail_boxes[word]
 
-                self.thumbnail_updater.update_thumbnail_image(thumbnail_box)
-                QApplication.processEvents()
+                # Use asynchronous thumbnail loading to prevent UI blocking
+                self.thumbnail_updater.update_thumbnail_image_async(thumbnail_box)
             if sort_method == "date_added":
                 month, day, _ = section.split("-")
                 day = day.lstrip("0")

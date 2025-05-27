@@ -30,13 +30,15 @@ from main_window.main_widget.settings_dialog.ui.codex_exporter.widgets import (
 from .theme import Colors, Sizing
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
+        ModernSettingsDialog,
+    )
 
 
 class CodexExporterTab(QWidget):
     """Tab for exporting pictographs with turns."""
 
-    def __init__(self, settings_dialog: "SettingsDialog"):
+    def __init__(self, settings_dialog: "ModernSettingsDialog"):
         """Initialize the tab.
 
         Args:
@@ -253,4 +255,3 @@ class CodexExporterTab(QWidget):
         The turn configuration components already load their settings when initialized,
         so we don't need to do anything here.
         """
-        pass

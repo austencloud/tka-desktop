@@ -12,6 +12,7 @@ class BrowseTabSettings:
         "sort_method": "sequence_length",
         "current_section": "starting_letter",
         "current_filter": {},
+        # Simplified settings - always high quality, no cache
     }
 
     def __init__(self, settings_manager: "SettingsManager") -> None:
@@ -114,3 +115,21 @@ class BrowseTabSettings:
 
     def set_browse_ratio(self, ratio: float) -> None:
         self.settings.setValue("browse/browse_ratio", ratio)
+
+    # Removed all cache settings - now using simplified high-quality only approach
+
+    def get_thumbnail_processing_settings(self) -> dict:
+        """Get thumbnail processing settings - always high quality, no cache."""
+        return {
+            "scaling_algorithm": "smooth",  # Always use smooth scaling
+            "multi_step_scaling": True,  # Always use multi-step for best quality
+            "intermediate_scale_factor": 0.7,
+            "sharpening_enabled": True,  # Always enable sharpening
+            "enhancement_enabled": True,  # Always enable enhancement
+            "ultra_quality_enabled": True,  # Always enable ultra quality
+            "quality_priority": "high",  # Always high quality
+            "max_source_resolution": 4096,  # Maximum source image resolution
+            "target_dpi": 96,  # Target DPI for display
+        }
+
+    # Removed individual quality settings - now always high quality

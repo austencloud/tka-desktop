@@ -120,8 +120,9 @@ class BeatFramePopulator:
             if hasattr(self.construct_tab, "option_picker"):
                 self.construct_tab.option_picker.updater.update_options()
 
-            # Automatically switch construct tab view based on sequence state
-            self._auto_switch_construct_tab_view()
+            # Automatically switch construct tab view based on sequence state (only if construct tab is active)
+            if self._is_construct_tab_active():
+                self._auto_switch_construct_tab_view()
         else:
             import logging
 
@@ -162,17 +163,20 @@ class BeatFramePopulator:
             logger = logging.getLogger(__name__)
             logger.info(f"Auto-switching construct tab view: beat_count={beat_count}")
 
-            if beat_count == 0:
-                # Empty sequence or only start position - show start position picker
+            # Use centralized picker determination logic
+            picker_type = self._determine_appropriate_picker()
+
+            if picker_type == "start_pos_picker":
                 if hasattr(self.construct_tab, "transition_to_start_pos_picker"):
                     self.construct_tab.transition_to_start_pos_picker()
-                    logger.info("Switched to start position picker (empty sequence)")
-            else:
-                # Sequence has beats - show option picker for editing existing beats
+                    logger.info(
+                        "Switched to start position picker (sequence completely empty)"
+                    )
+            elif picker_type == "option_picker":
                 if hasattr(self.construct_tab, "transition_to_option_picker"):
                     self.construct_tab.transition_to_option_picker()
                     logger.info(
-                        f"Switched to option picker (sequence has {beat_count} beats)"
+                        "Switched to option picker (start position set or beats exist)"
                     )
 
         except Exception as e:
@@ -180,6 +184,79 @@ class BeatFramePopulator:
 
             logger = logging.getLogger(__name__)
             logger.warning(f"Failed to auto-switch construct tab view: {e}")
+
+    def _determine_appropriate_picker(self) -> str:
+        """
+        Centralized logic to determine which picker should be shown based on current sequence state.
+
+        Returns:
+            "start_pos_picker" if sequence is completely empty (no start position AND no beats)
+            "option_picker" if start position is set OR beats exist
+        """
+        try:
+            # Get current sequence state
+            beat_count = self.beat_frame.get.beat_count()
+            start_pos_is_filled = self.beat_frame.start_pos_view.is_filled
+
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.debug(
+                f"Determining picker: beat_count={beat_count}, start_pos_filled={start_pos_is_filled}"
+            )
+
+            # Show Start Position Picker only when sequence is completely empty
+            if beat_count == 0 and not start_pos_is_filled:
+                return "start_pos_picker"
+
+            # Show Option Picker when start position is set OR beats exist
+            return "option_picker"
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error determining appropriate picker: {e}")
+            # Default to option picker on error
+            return "option_picker"
+
+    def _is_construct_tab_active(self) -> bool:
+        """
+        Check if the construct tab is currently the active tab.
+
+        Returns:
+            True if construct tab is active, False otherwise
+        """
+        try:
+            # Get main widget through beat frame
+            main_widget = self.beat_frame.main_widget
+
+            # Check if we have a tab manager and get the current tab
+            if hasattr(main_widget, "tab_manager"):
+                current_tab = main_widget.tab_manager.get_current_tab()
+                return current_tab == "construct"
+
+            # Fallback: check if construct tab is visible in the right stack
+            if hasattr(main_widget, "right_stack"):
+                current_widget = main_widget.right_stack.currentWidget()
+                if current_widget:
+                    # Check if the current widget is related to construct tab
+                    widget_name = current_widget.__class__.__name__
+                    return widget_name in [
+                        "StartPosPicker",
+                        "OptionPicker",
+                        "AdvancedStartPosPicker",
+                    ]
+
+            return False
+
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error checking if construct tab is active: {e}")
+            # Default to False to avoid unwanted picker switching
+            return False
 
     def modify_layout_for_chosen_number_of_beats(self, beat_count):
         self.beat_frame.layout_manager.configure_beat_frame(

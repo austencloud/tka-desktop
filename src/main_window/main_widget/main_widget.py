@@ -5,7 +5,9 @@ from enums.letter.letter import Letter
 from enums.prop_type import PropType
 
 from main_window.main_widget.pictograph_collector import PictographCollector
-from main_window.main_widget.settings_dialog.settings_dialog import SettingsDialog
+from main_window.main_widget.settings_dialog.modern_settings_dialog import (
+    ModernSettingsDialog,
+)
 from main_window.main_widget.startup_dialog import StartupDialog
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_name import TabName
@@ -53,7 +55,7 @@ class MainWidget(QWidget):
     main_window: "MainWindow"
     # settings_manager: "SettingsManager"
     splash: "SplashScreen"
-    settings_dialog: "SettingsDialog"
+    settings_dialog: "ModernSettingsDialog"
 
     # Tabs
     construct_tab: "ConstructTab"

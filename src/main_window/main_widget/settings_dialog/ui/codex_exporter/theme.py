@@ -6,7 +6,6 @@ style generation functions used throughout the application.
 """
 
 from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import Qt
 
 
 # Color Palette

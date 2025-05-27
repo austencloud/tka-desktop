@@ -43,7 +43,7 @@ class ImageProcessor:
         transform_mode = (
             Qt.TransformationMode.SmoothTransformation 
             if high_quality 
-            else Qt.TransformationMode.FastTransformation
+            else Qt.TransformationMode.SmoothTransformation
         )
         
         # Determine aspect ratio mode
