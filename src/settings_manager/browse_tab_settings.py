@@ -12,13 +12,7 @@ class BrowseTabSettings:
         "sort_method": "sequence_length",
         "current_section": "starting_letter",
         "current_filter": {},
-        # Cache settings
-        "cache_mode": "High Performance",  # "High Performance", "Balanced", "Storage Efficient"
-        "cache_max_size_mb": 5000,  # Default cache size in MB
-        "cache_location": "",  # Empty means use default AppData location
-        "preload_thumbnails": True,  # Preload thumbnails on startup
-        "enable_disk_cache": True,  # Enable persistent disk caching
-        "cache_quality_mode": "two_stage",  # "fast_only", "two_stage", "smooth_only"
+        # Simplified settings - always high quality, no cache
     }
 
     def __init__(self, settings_manager: "SettingsManager") -> None:
@@ -122,112 +116,20 @@ class BrowseTabSettings:
     def set_browse_ratio(self, ratio: float) -> None:
         self.settings.setValue("browse/browse_ratio", ratio)
 
-    # Cache settings getters and setters
-    def get_cache_mode(self) -> str:
-        """Get cache mode: 'High Performance', 'Balanced', or 'Storage Efficient'."""
-        return self.settings.value(
-            "browse/cache_mode", self.DEFAULT_BROWSE_SETTINGS["cache_mode"]
-        )
-
-    def set_cache_mode(self, mode: str):
-        """Set cache mode and update cache size accordingly."""
-        self.settings.setValue("browse/cache_mode", mode)
-        # Update cache size based on mode
-        size_map = {"High Performance": 1000, "Balanced": 500, "Storage Efficient": 100}
-        if mode in size_map:
-            self.set_cache_max_size_mb(size_map[mode])
-
-    def get_cache_max_size_mb(self) -> int:
-        """Get maximum cache size in MB."""
-        return int(
-            self.settings.value(
-                "browse/cache_max_size_mb",
-                self.DEFAULT_BROWSE_SETTINGS["cache_max_size_mb"],
-            )
-        )
-
-    def set_cache_max_size_mb(self, size_mb: int):
-        """Set maximum cache size in MB."""
-        self.settings.setValue("browse/cache_max_size_mb", size_mb)
-
-    def get_cache_location(self) -> str:
-        """Get cache directory location. Empty string means use default."""
-        return self.settings.value(
-            "browse/cache_location", self.DEFAULT_BROWSE_SETTINGS["cache_location"]
-        )
-
-    def set_cache_location(self, location: str):
-        """Set cache directory location."""
-        self.settings.setValue("browse/cache_location", location)
-
-    def get_preload_thumbnails(self) -> bool:
-        """Get whether to preload thumbnails on startup."""
-        return self.settings.value(
-            "browse/preload_thumbnails",
-            self.DEFAULT_BROWSE_SETTINGS["preload_thumbnails"],
-            type=bool,
-        )
-
-    def set_preload_thumbnails(self, enabled: bool):
-        """Set whether to preload thumbnails on startup."""
-        self.settings.setValue("browse/preload_thumbnails", enabled)
-
-    def get_enable_disk_cache(self) -> bool:
-        """Get whether disk caching is enabled."""
-        return self.settings.value(
-            "browse/enable_disk_cache",
-            self.DEFAULT_BROWSE_SETTINGS["enable_disk_cache"],
-            type=bool,
-        )
-
-    def set_enable_disk_cache(self, enabled: bool):
-        """Set whether disk caching is enabled."""
-        self.settings.setValue("browse/enable_disk_cache", enabled)
-
-    def get_cache_quality_mode(self) -> str:
-        """Get cache quality mode: 'fast_only', 'two_stage', or 'smooth_only'."""
-        return self.settings.value(
-            "browse/cache_quality_mode",
-            self.DEFAULT_BROWSE_SETTINGS["cache_quality_mode"],
-        )
-
-    def set_cache_quality_mode(self, mode: str):
-        """Set cache quality mode."""
-        self.settings.setValue("browse/cache_quality_mode", mode)
+    # Removed all cache settings - now using simplified high-quality only approach
 
     def get_thumbnail_processing_settings(self) -> dict:
-        """Get thumbnail processing settings for ultra-high quality rendering."""
+        """Get thumbnail processing settings - always high quality, no cache."""
         return {
-            "scaling_algorithm": "smooth",  # smooth, fast, or ultra
-            "multi_step_scaling": True,
+            "scaling_algorithm": "smooth",  # Always use smooth scaling
+            "multi_step_scaling": True,  # Always use multi-step for best quality
             "intermediate_scale_factor": 0.7,
-            "sharpening_enabled": self.get_sharpening_enabled(),  # Use actual user setting
-            "enhancement_enabled": self.get_enhancement_enabled(),  # Use actual user setting
-            "ultra_quality_enabled": self.get_ultra_quality_enabled(),  # Use actual user setting
-            "quality_priority": "high",  # high, balanced, or fast
-            "cache_high_quality": True,
-            "cache_quality_mode": self.get_cache_quality_mode(),  # Use actual user setting
-            "enable_disk_cache": self.get_enable_disk_cache(),  # Use actual user setting
+            "sharpening_enabled": True,  # Always enable sharpening
+            "enhancement_enabled": True,  # Always enable enhancement
+            "ultra_quality_enabled": True,  # Always enable ultra quality
+            "quality_priority": "high",  # Always high quality
             "max_source_resolution": 4096,  # Maximum source image resolution
             "target_dpi": 96,  # Target DPI for display
         }
 
-    # In browse_tab_settings.py
-
-    def get_ultra_quality_enabled(self) -> bool:
-        return self.settings.value("browse/ultra_quality_enabled", True, type=bool)
-
-    def set_ultra_quality_enabled(self, enabled: bool) -> None:
-        self.settings.setValue("browse/ultra_quality_enabled", enabled)
-
-    def get_sharpening_enabled(self) -> bool:
-        return self.settings.value("browse/sharpening_enabled", True, type=bool)
-
-    def set_sharpening_enabled(self, enabled: bool) -> None:
-        self.settings.setValue("browse/sharpening_enabled", enabled)
-
-    def get_enhancement_enabled(self) -> bool:
-        return self.settings.value("browse/enhancement_enabled", True, type=bool)
-
-    def set_enhancement_enabled(self, enabled: bool) -> None:
-        self.settings.setValue("browse/enhancement_enabled", enabled)
+    # Removed individual quality settings - now always high quality

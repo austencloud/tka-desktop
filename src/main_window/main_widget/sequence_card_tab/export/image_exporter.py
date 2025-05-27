@@ -47,7 +47,7 @@ class SequenceCardImageExporter:
         self.memory_check_interval = 5  # Check memory every 5 images
         self.max_memory_usage_mb = 2000  # Force GC if memory exceeds 2GB
         self.quality_settings = {
-            "png_compression": 6,  # 0-9, lower is faster but larger files, higher is slower but smaller files
+            "png_compression": 1,  # MAXIMUM QUALITY: 0-9, lower is better quality (changed from 6 to 1)
             "high_quality": True,  # Use high quality rendering
         }
 

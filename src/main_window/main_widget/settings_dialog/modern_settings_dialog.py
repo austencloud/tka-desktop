@@ -791,13 +791,14 @@ class ModernSettingsDialog(QDialog):
             # Apply the main dialog style
             self.setStyleSheet(dialog_style)
 
-            # Apply unified tab content styling to all tabs
+            # Apply unified tab content styling only to settings dialog tabs (not main app tabs)
+            # This prevents glassmorphism styling from affecting browse tab image quality
             tab_content_style = GlassmorphismStyler.create_unified_tab_content_style()
             for tab_name, tab_widget in self.tabs.items():
                 if tab_widget:
                     # Set object name for styling
                     tab_widget.setObjectName("tab_content")
-                    # Apply the unified styling
+                    # Apply the unified styling only to settings dialog tabs
                     current_style = tab_widget.styleSheet()
                     if current_style:
                         # Preserve existing styles and add new ones

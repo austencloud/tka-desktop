@@ -7,7 +7,6 @@ import os
 
 from data.constants import GOLD, BLUE
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from main_window.main_widget.browse_tab.cache import BrowseThumbnailCache
 
 # PIL/Pillow imports for superior image processing
 try:
@@ -346,17 +345,14 @@ class ThumbnailImageLabel(QLabel):
         self._quality_timer.timeout.connect(self._enhance_image_quality)
         self._needs_quality_enhancement = False
 
-        # Cache integration with ultra quality
-        self._cache: Optional[BrowseThumbnailCache] = None
-        self._word: Optional[str] = None
-        self._variation: int = 0
+        # Removed cache system - now using direct high-quality processing
 
         # Setup UI
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # Initialize cache
-        self._initialize_cache()
+        # Set object name to exclude from glassmorphism styling
+        self.setObjectName("thumbnail_image_label")
 
     @property
     def border_width(self) -> int:
@@ -400,25 +396,7 @@ class ThumbnailImageLabel(QLabel):
             self._pending_path = path
             self._pending_index = index
 
-            # Check ultra quality cache first
-            if self._cache and self._word is not None:
-                available_size = self._calculate_available_space()
-                cached_pixmap = self._cache.get_cached_thumbnail(
-                    path, available_size, self._word, index
-                )
-
-                if cached_pixmap and not cached_pixmap.isNull():
-                    # Use cached ultra quality image
-                    self.current_path = path
-                    self._original_pixmap = QPixmap(path)
-                    self._cached_available_size = None
-                    self.setFixedSize(available_size)
-                    self.setPixmap(cached_pixmap)
-
-                    logging.debug(f"⚡ ULTRA QUALITY cache hit: {self._word}_{index}")
-                    return
-
-            # Load with ultra quality processing
+            # Load with ultra quality processing (no cache)
             self._load_timer.start(1)
         else:
             self._resize_pixmap_to_ultra_quality()
@@ -427,43 +405,14 @@ class ThumbnailImageLabel(QLabel):
         """Load pending image with ultra quality processing."""
         if self._pending_path and self._pending_index is not None:
             try:
-                # Check cache first
-                cached_pixmap = None
-                if self._cache and self._word is not None:
-                    available_size = self._calculate_available_space()
-                    cached_pixmap = self._cache.get_cached_thumbnail(
-                        self._pending_path, available_size, self._word, self._variation
-                    )
-
-                if cached_pixmap and not cached_pixmap.isNull():
-                    # Use cached ultra quality image
+                # Process with ultra quality (no cache)
+                if os.path.exists(self._pending_path):
                     self.current_path = self._pending_path
                     self._original_pixmap = QPixmap(self._pending_path)
                     self._cached_available_size = None
 
-                    available_size = self._calculate_available_space()
-                    self.setFixedSize(available_size)
-                    self.setPixmap(cached_pixmap)
-
-                    logging.debug(
-                        f"✅ Using cached ULTRA QUALITY image for {self._word}_{self._variation}"
-                    )
-                else:
-                    # Process with ultra quality
-                    if os.path.exists(self._pending_path):
-                        self.current_path = self._pending_path
-                        self._original_pixmap = QPixmap(self._pending_path)
-                        self._cached_available_size = None
-
-                        # Get quality settings from browse settings
-                        quality_settings = self._get_quality_settings()
-
-                        if quality_settings["ultra_quality_enabled"]:
-                            # ULTRA QUALITY PROCESSING
-                            self._resize_pixmap_to_ultra_quality()
-                        else:
-                            # Standard quality processing
-                            self._resize_pixmap_to_fit_smooth()
+                    # Always use ultra quality processing
+                    self._resize_pixmap_to_ultra_quality()
 
             except Exception as e:
                 logging.error(f"Error in ultra quality loading: {e}")
@@ -537,14 +486,20 @@ class ThumbnailImageLabel(QLabel):
             return
 
         available_size = self._calculate_available_space()
-        quality_settings = self._get_quality_settings()
 
-        # ULTRA QUALITY PROCESSING with user preferences
+        # FORCE SMOOTH TRANSFORMATION: Always use Qt smooth scaling for debugging
+        logging.info(
+            f"🔍 DEBUG: Processing thumbnail with Qt SmoothTransformation: {os.path.basename(self.current_path)}"
+        )
+        self._resize_pixmap_to_fit_smooth()
+        return
+
+        # ULTRA QUALITY PROCESSING - always maximum quality (temporarily disabled for debugging)
         ultra_quality_pixmap = self.ultra_processor.process_image_to_ultra_quality(
             self.current_path,
             available_size,
-            enable_sharpening=quality_settings["sharpening_enabled"],
-            enable_enhancement=quality_settings["enhancement_enabled"],
+            enable_sharpening=True,  # Always enable sharpening
+            enable_enhancement=True,  # Always enable enhancement
         )
 
         # CRITICAL: Ensure pixmap is not null before proceeding
@@ -559,42 +514,11 @@ class ThumbnailImageLabel(QLabel):
         self.setFixedSize(available_size)
         self.setPixmap(ultra_quality_pixmap)
 
-        # Cache the ultra quality version with maximum quality preservation
-        if self._cache and self._word is not None:
-            success = self._cache.cache_thumbnail(
-                self.current_path,
-                ultra_quality_pixmap,
-                available_size,
-                self._word,
-                self._variation,
-            )
-            if success:
-                logging.debug(
-                    f"🔥 ULTRA QUALITY thumbnail cached: {os.path.basename(self.current_path)}"
-                )
-            else:
-                logging.debug(
-                    f"⚠️ Failed to cache ultra quality thumbnail: {os.path.basename(self.current_path)}"
-                )
-
         logging.debug(
             f"🔥 ULTRA QUALITY thumbnail processed: {os.path.basename(self.current_path)}"
         )
 
-    def _get_quality_settings(self) -> dict:
-        """Get quality settings from browse tab settings."""
-        try:
-            browse_settings = self.thumbnail_box.browse_tab.browse_settings
-            return browse_settings.get_thumbnail_processing_settings()
-        except Exception:
-            # Fallback to default settings if settings unavailable
-            return {
-                "ultra_quality_enabled": True,
-                "sharpening_enabled": True,
-                "enhancement_enabled": True,
-                "cache_quality_mode": "two_stage",
-                "enable_disk_cache": True,
-            }
+    # Removed _get_quality_settings - now always using maximum quality
 
     def _resize_pixmap_to_fit_smooth(self) -> None:
         """Enhanced smooth resizing with improved multi-step scaling."""
@@ -615,23 +539,10 @@ class ThumbnailImageLabel(QLabel):
         self.setFixedSize(available_size)
         self.setPixmap(scaled_pixmap)
 
-        # Cache the high-quality version with maximum quality preservation
-        if self._cache and self._word is not None:
-            success = self._cache.cache_thumbnail(
-                self.current_path,
-                scaled_pixmap,
-                scaled_size,
-                self._word,
-                self._variation,
-            )
-            if success:
-                logging.debug(
-                    f"✅ HIGH-QUALITY thumbnail cached: {os.path.basename(self.current_path)}"
-                )
-            else:
-                logging.debug(
-                    f"⚠️ Failed to cache high-quality thumbnail: {os.path.basename(self.current_path)}"
-                )
+        # Cache system removed - no longer needed
+        logging.debug(
+            f"✅ HIGH-QUALITY thumbnail processed: {os.path.basename(self.current_path)}"
+        )
 
     def _calculate_scaled_pixmap_size(self, available_size: QSize) -> QSize:
         """Calculate the optimal size for the pixmap while maintaining aspect ratio."""
@@ -801,23 +712,7 @@ class ThumbnailImageLabel(QLabel):
         self._border_width = max(1, int(self.width() * self.BORDER_WIDTH_RATIO))
         super().resizeEvent(event)
 
-    def _initialize_cache(self) -> None:
-        """Initialize cache for ultra quality thumbnails."""
-        try:
-            browse_settings = self.thumbnail_box.browse_tab.browse_settings
-            if browse_settings.get_enable_disk_cache():
-                cache_dir = browse_settings.get_cache_location()
-                if not cache_dir:
-                    cache_dir = None
-                max_size = browse_settings.get_cache_max_size_mb()
-                self._cache = BrowseThumbnailCache(cache_dir, max_size)
-        except Exception as e:
-            logging.debug(f"Failed to initialize ultra quality thumbnail cache: {e}")
-
-    def set_word_and_variation(self, word: str, variation: int) -> None:
-        """Set the word and variation for cache key generation."""
-        self._word = word
-        self._variation = variation
+    # Removed cache initialization and word/variation tracking - no longer needed
 
     def _enhance_image_quality(self) -> None:
         """Legacy method - now handled by ultra_processor."""

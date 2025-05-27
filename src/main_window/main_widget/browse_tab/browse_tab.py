@@ -278,20 +278,7 @@ class BrowseTab(QWidget):
 
             # Trigger async loading for visible thumbnails
             for thumbnail_box in visible_thumbnails:
-                # CRITICAL FIX: Ensure word and variation are properly set for cache key generation
-                if hasattr(thumbnail_box.image_label, "set_word_and_variation"):
-                    thumbnail_box.image_label.set_word_and_variation(
-                        thumbnail_box.word, thumbnail_box.state.current_index
-                    )
-
-                # CRITICAL FIX: Force cache initialization if not already done
-                if (
-                    hasattr(thumbnail_box.image_label, "_initialize_cache")
-                    and not thumbnail_box.image_label._cache
-                ):
-                    thumbnail_box.image_label._initialize_cache()
-
-                # Trigger async thumbnail update
+                # Trigger async thumbnail update (no cache)
                 self.ui_updater.thumbnail_updater.update_thumbnail_image_async(
                     thumbnail_box
                 )
@@ -339,50 +326,8 @@ class BrowseTab(QWidget):
             # If we can't determine visibility, assume it's visible
             return True
 
-    def debug_cache_system(self):
-        """Debug method to test cache system functionality."""
-        import logging
-
-        logger = logging.getLogger(__name__)
-
-        try:
-            # Check cache settings
-            cache_enabled = self.browse_settings.get_enable_disk_cache()
-            cache_mode = self.browse_settings.get_cache_mode()
-            cache_size = self.browse_settings.get_cache_max_size_mb()
-            quality_mode = self.browse_settings.get_cache_quality_mode()
-
-            logger.info(
-                f"🔍 Cache Debug - Enabled: {cache_enabled}, Mode: {cache_mode}, Size: {cache_size}MB, Quality: {quality_mode}"
-            )
-
-            # Check thumbnail boxes and their cache status
-            scroll_widget = self.sequence_picker.scroll_widget
-            cache_initialized_count = 0
-            total_thumbnails = 0
-
-            for word, thumbnail_box in scroll_widget.thumbnail_boxes.items():
-                total_thumbnails += 1
-                if (
-                    hasattr(thumbnail_box.image_label, "_cache")
-                    and thumbnail_box.image_label._cache
-                ):
-                    cache_initialized_count += 1
-                    # Get cache stats if available
-                    if hasattr(thumbnail_box.image_label._cache, "get_cache_stats"):
-                        stats = thumbnail_box.image_label._cache.get_cache_stats()
-                        logger.info(f"📊 Cache stats for {word}: {stats}")
-                        break  # Only log stats once
-
-            logger.info(
-                f"📈 Cache Status - {cache_initialized_count}/{total_thumbnails} thumbnails have cache initialized"
-            )
-
-        except Exception as e:
-            logger.error(f"❌ Cache debug error: {e}")
-
     def force_reload_all_thumbnails(self):
-        """Force reload all visible thumbnails with cache integration."""
+        """Force reload all visible thumbnails - simplified without cache."""
         import logging
 
         logger = logging.getLogger(__name__)
@@ -395,17 +340,7 @@ class BrowseTab(QWidget):
 
             for word, thumbnail_box in scroll_widget.thumbnail_boxes.items():
                 if self._is_thumbnail_visible(thumbnail_box):
-                    # Set word and variation for cache
-                    if hasattr(thumbnail_box.image_label, "set_word_and_variation"):
-                        thumbnail_box.image_label.set_word_and_variation(
-                            thumbnail_box.word, thumbnail_box.state.current_index
-                        )
-
-                    # Force cache initialization
-                    if hasattr(thumbnail_box.image_label, "_initialize_cache"):
-                        thumbnail_box.image_label._initialize_cache()
-
-                    # Force thumbnail reload
+                    # Force thumbnail reload (no cache)
                     thumbnail_box.image_label.update_thumbnail_async(
                         thumbnail_box.state.current_index
                     )

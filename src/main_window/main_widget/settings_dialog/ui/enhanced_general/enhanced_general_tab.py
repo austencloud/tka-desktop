@@ -199,111 +199,36 @@ class EnhancedGeneralTab(QWidget):
         )
         card.add_layout(sharpening_layout)
 
-        # Quality Priority
-        quality_layout = QVBoxLayout()
-        quality_label = QLabel("Quality Priority:")
-        quality_label.setFont(GlassmorphismStyler.get_font("body_medium"))
-        quality_label.setStyleSheet(
-            f"color: {GlassmorphismStyler.get_color('text_primary')};"
+        # Simplified quality info
+        quality_info = QLabel(
+            "Quality is now automatically set to maximum for all images."
         )
-        quality_layout.addWidget(quality_label)
-
-        quality_combo_layout = QHBoxLayout()
-        self._controls["quality_priority"] = ModernComboBox()
-        self._controls["quality_priority"].addItems(
-            ["High Quality", "Balanced", "Fast"]
+        quality_info.setFont(GlassmorphismStyler.get_font("body_small"))
+        quality_info.setStyleSheet(
+            f"color: {GlassmorphismStyler.get_color('text_secondary')}; font-style: italic;"
         )
-        quality_combo_layout.addWidget(self._controls["quality_priority"])
-        quality_combo_layout.addWidget(
-            HelpTooltip(
-                "High Quality: Maximum quality, slower rendering\n"
-                "Balanced: Good quality with reasonable performance\n"
-                "Fast: Prioritizes speed over quality"
-            )
-        )
-        quality_combo_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        )
-        quality_layout.addLayout(quality_combo_layout)
-        card.add_layout(quality_layout)
+        card.add_control(quality_info)
 
         parent_layout.addWidget(card)
 
     def _create_cache_settings_section(self, parent_layout):
-        """Create cache settings section."""
+        """Create simplified browse settings section."""
         card = SettingCard(
-            "Cache Settings",
-            "Configure thumbnail caching for improved performance and storage management.",
+            "Browse Settings",
+            "Browse tab now uses simplified high-quality image rendering automatically.",
         )
 
-        # Enable Disk Cache
-        cache_layout = QHBoxLayout()
-        self._controls["enable_cache"] = ModernToggle("Enable Disk Cache")
-        cache_layout.addWidget(self._controls["enable_cache"])
-        cache_layout.addWidget(
-            HelpTooltip(
-                "Stores processed thumbnails on disk for faster loading. "
-                "Recommended for better performance."
-            )
+        # Simplified info
+        info_label = QLabel(
+            "Cache system has been removed for simplicity.\n"
+            "All images now use maximum quality processing automatically."
         )
-        cache_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        info_label.setFont(GlassmorphismStyler.get_font("body_small"))
+        info_label.setStyleSheet(
+            f"color: {GlassmorphismStyler.get_color('text_secondary')}; font-style: italic;"
         )
-        card.add_layout(cache_layout)
-
-        # Cache Mode
-        mode_layout = QVBoxLayout()
-        mode_label = QLabel("Cache Mode:")
-        mode_label.setFont(GlassmorphismStyler.get_font("body_medium"))
-        mode_label.setStyleSheet(
-            f"color: {GlassmorphismStyler.get_color('text_primary')};"
-        )
-        mode_layout.addWidget(mode_label)
-
-        mode_combo_layout = QHBoxLayout()
-        self._controls["cache_mode"] = ModernComboBox()
-        self._controls["cache_mode"].addItems(["memory", "disk", "hybrid"])
-        mode_combo_layout.addWidget(self._controls["cache_mode"])
-        mode_combo_layout.addWidget(
-            HelpTooltip(
-                "Memory: Fast but limited by RAM\n"
-                "Disk: Persistent but slower access\n"
-                "Hybrid: Best of both worlds (recommended)"
-            )
-        )
-        mode_combo_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        )
-        mode_layout.addLayout(mode_combo_layout)
-        card.add_layout(mode_layout)
-
-        # Cache Size
-        size_layout = QVBoxLayout()
-        size_label = QLabel("Maximum Cache Size:")
-        size_label.setFont(GlassmorphismStyler.get_font("body_medium"))
-        size_label.setStyleSheet(
-            f"color: {GlassmorphismStyler.get_color('text_primary')};"
-        )
-        size_layout.addWidget(size_label)
-
-        self._controls["cache_size"] = ModernSlider(50, 2000, 500, " MB")
-        size_layout.addWidget(self._controls["cache_size"])
-        card.add_layout(size_layout)
-
-        # Preload Thumbnails
-        preload_layout = QHBoxLayout()
-        self._controls["preload_thumbnails"] = ModernToggle("Preload Thumbnails")
-        preload_layout.addWidget(self._controls["preload_thumbnails"])
-        preload_layout.addWidget(
-            HelpTooltip(
-                "Preloads thumbnails in the background for smoother browsing. "
-                "Uses more memory but improves user experience."
-            )
-        )
-        preload_layout.addItem(
-            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        )
-        card.add_layout(preload_layout)
+        info_label.setWordWrap(True)
+        card.add_control(info_label)
 
         parent_layout.addWidget(card)
 
@@ -421,42 +346,15 @@ class EnhancedGeneralTab(QWidget):
             current_user = self.settings_manager.users.get_current_user()
             self._controls["user_name"].setText(current_user or "")
 
-            # Thumbnail quality settings
-            self._controls["ultra_quality"].setChecked(
-                browse_settings.get_ultra_quality_enabled()
-            )
-            self._controls["enhancement"].setChecked(
-                browse_settings.get_enhancement_enabled()
-            )
-            self._controls["sharpening"].setChecked(
-                browse_settings.get_sharpening_enabled()
-            )
+            # Thumbnail quality settings - now always enabled
+            self._controls["ultra_quality"].setChecked(True)
+            self._controls["enhancement"].setChecked(True)
+            self._controls["sharpening"].setChecked(True)
 
-            # Map quality priority
-            quality_map = {"high": 0, "balanced": 1, "fast": 2}
-            quality_priority = browse_settings.get_thumbnail_processing_settings().get(
-                "quality_priority", "high"
-            )
-            self._controls["quality_priority"].setCurrentIndex(
-                quality_map.get(quality_priority, 0)
-            )
-
-            # Cache settings
-            self._controls["enable_cache"].setChecked(
-                browse_settings.get_enable_disk_cache()
-            )
-
-            # Map cache mode
-            mode_map = {"memory": 0, "disk": 1, "hybrid": 2}
-            cache_mode = browse_settings.get_cache_mode()
-            self._controls["cache_mode"].setCurrentIndex(mode_map.get(cache_mode, 2))
-
-            self._controls["cache_size"].setValue(
-                browse_settings.get_cache_max_size_mb()
-            )
-            self._controls["preload_thumbnails"].setChecked(
-                browse_settings.get_preload_thumbnails()
-            )
+            # Disable controls since they're always enabled
+            self._controls["ultra_quality"].setEnabled(False)
+            self._controls["enhancement"].setEnabled(False)
+            self._controls["sharpening"].setEnabled(False)
 
             # Performance settings (use defaults for now)
             self._controls["ui_responsiveness"].setValue(7)
@@ -478,45 +376,7 @@ class EnhancedGeneralTab(QWidget):
             lambda text: self._on_user_name_changed(text)
         )
 
-        # Thumbnail quality settings
-        self._controls["ultra_quality"].toggled.connect(
-            lambda checked: self._on_setting_changed(
-                "browse/ultra_quality_enabled", checked
-            )
-        )
-        self._controls["enhancement"].toggled.connect(
-            lambda checked: self._on_setting_changed(
-                "browse/enhancement_enabled", checked
-            )
-        )
-        self._controls["sharpening"].toggled.connect(
-            lambda checked: self._on_setting_changed(
-                "browse/sharpening_enabled", checked
-            )
-        )
-        self._controls["quality_priority"].currentTextChanged.connect(
-            lambda text: self._on_setting_changed(
-                "browse/quality_priority", text.lower().replace(" ", "_")
-            )
-        )
-
-        # Cache settings
-        self._controls["enable_cache"].toggled.connect(
-            lambda checked: self._on_setting_changed(
-                "browse/enable_disk_cache", checked
-            )
-        )
-        self._controls["cache_mode"].currentTextChanged.connect(
-            lambda text: self._on_setting_changed("browse/cache_mode", text.lower())
-        )
-        self._controls["cache_size"].valueChanged.connect(
-            lambda value: self._on_setting_changed("browse/cache_max_size_mb", value)
-        )
-        self._controls["preload_thumbnails"].toggled.connect(
-            lambda checked: self._on_setting_changed(
-                "browse/preload_thumbnails", checked
-            )
-        )
+        # Thumbnail quality settings - no connections needed since they're always enabled
 
         # Performance settings (these would need to be added to settings manager)
         self._controls["ui_responsiveness"].valueChanged.connect(

@@ -510,8 +510,8 @@ class GlassmorphismStyler:
             background: {cls.get_color('surface_light', 0.6)};
         }}
 
-        /* Modern labels */
-        QLabel {{
+        /* Modern labels - exclude image labels to preserve image quality */
+        QLabel:not([objectName*="image"]):not([objectName*="thumbnail"]) {{
             color: {cls.get_color('text_primary')};
             font-size: {cls.FONTS['body_medium']['size']}px;
             padding: {cls.SPACING['xs']}px 0;
