@@ -39,7 +39,15 @@ class ThumbnailGenerator:
             beat_frame_image = None
 
         pil_image = self.qimage_to_pil(beat_frame_image)
-        pil_image = self._resize_image(pil_image, 0.5)
+
+        # CRITICAL FIX: Don't aggressively downscale - preserve quality
+        # Only resize if the image is extremely large (>2000px)
+        if pil_image.width > 2000 or pil_image.height > 2000:
+            # Scale down large images more conservatively
+            scale_factor = min(2000 / pil_image.width, 2000 / pil_image.height)
+            pil_image = self._resize_image(pil_image, scale_factor)
+        # For normal-sized images, keep original size for maximum quality
+
         pil_image = self._sharpen_image(pil_image)
 
         metadata = {"sequence": sequence, "date_added": datetime.now().isoformat()}
@@ -109,15 +117,19 @@ class ThumbnailGenerator:
     def _save_image(
         self, pil_image: Image.Image, image_path: str, info: PngImagePlugin.PngInfo
     ):
-        """Save the PIL image to the specified path, creating directories if needed."""
+        """Save the PIL image to the specified path with maximum quality, creating directories if needed."""
         try:
             # Ensure the directory exists before saving
             directory = os.path.dirname(image_path)
             if directory:  # Only create directory if path has a directory component
                 os.makedirs(directory, exist_ok=True)
 
-            # Save the image
-            pil_image.save(image_path, "PNG", pnginfo=info)
+            # CRITICAL FIX: Save with maximum quality PNG settings
+            # compress_level=1 = fastest compression with good quality
+            # optimize=True = optimize the PNG for smaller file size without quality loss
+            pil_image.save(
+                image_path, "PNG", pnginfo=info, compress_level=1, optimize=True
+            )
 
         except PermissionError as e:
             print(f"Permission error saving thumbnail to {image_path}: {e}")

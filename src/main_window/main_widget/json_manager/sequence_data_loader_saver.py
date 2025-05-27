@@ -84,7 +84,7 @@ class SequenceDataLoaderSaver:
         """Return a default sequence if JSON is missing, empty, or invalid."""
         # Use safe defaults that don't depend on AppContext during initialization
         try:
-            author = AppContext.settings_manager().users.user_manager.get_current_user()
+            author = AppContext.settings_manager().users.get_current_user()
         except:
             author = "Unknown"
 

@@ -119,6 +119,9 @@ class BrowseThumbnailCache(QObject):
             if metadata_loaded:
                 self._save_metadata_safely()
 
+            # Clear old low-quality cache entries on initialization
+            self.clear_old_quality_cache()
+
             logging.debug(
                 f"Browse thumbnail cache initialized: {self.cache_dir} "
                 f"({len(self.metadata)} entries)"
@@ -300,29 +303,34 @@ class BrowseThumbnailCache(QObject):
             logging.error(f"Error clearing corrupted cache: {e}")
 
     def _get_cache_key(
-        self, image_path: str, size: QSize, word: str, variation: int
+        self,
+        image_path: str,
+        size: QSize,
+        word: str,
+        variation: int,
+        quality_version: str = "v2",
     ) -> str:
         """
-        Generate a unique cache key for browse thumbnails.
+        Generate a unique cache key for browse thumbnails with quality versioning.
 
         Args:
             image_path: Path to the source image
             size: Target thumbnail size
             word: Sequence word
             variation: Variation number
+            quality_version: Version string to invalidate cache when quality changes
 
         Returns:
             Unique cache key string
         """
         try:
             mtime = os.path.getmtime(image_path)
-            key_data = f"{word}_{variation}_{size.width()}x{size.height()}_{mtime}"
+            # Include quality version to invalidate old low-quality cache entries
+            key_data = f"{word}_{variation}_{size.width()}x{size.height()}_{mtime}_{quality_version}"
             return hashlib.md5(key_data.encode()).hexdigest()
         except OSError:
             # If we can't get modification time, use current time (will miss cache)
-            key_data = (
-                f"{word}_{variation}_{size.width()}x{size.height()}_{time.time()}"
-            )
+            key_data = f"{word}_{variation}_{size.width()}x{size.height()}_{time.time()}_{quality_version}"
             return hashlib.md5(key_data.encode()).hexdigest()
 
     def _get_cache_file_path(self, cache_key: str) -> Path:
@@ -348,7 +356,7 @@ class BrowseThumbnailCache(QObject):
             return None
 
         try:
-            cache_key = self._get_cache_key(image_path, size, word, variation)
+            cache_key = self._get_cache_key(image_path, size, word, variation, "v2")
 
             # Check memory cache first (fastest)
             if cache_key in self.memory_cache:
@@ -404,7 +412,7 @@ class BrowseThumbnailCache(QObject):
         self, image_path: str, pixmap: QPixmap, size: QSize, word: str, variation: int
     ) -> bool:
         """
-        Cache a processed thumbnail to disk and memory.
+        Cache a processed thumbnail to disk and memory with maximum quality preservation.
 
         Args:
             image_path: Path to the source image
@@ -420,11 +428,18 @@ class BrowseThumbnailCache(QObject):
             return False
 
         try:
-            cache_key = self._get_cache_key(image_path, size, word, variation)
+            cache_key = self._get_cache_key(image_path, size, word, variation, "v2")
             cache_file = self._get_cache_file_path(cache_key)
 
-            # Save the pixmap to cache
-            if pixmap.save(str(cache_file), "PNG"):
+            # CRITICAL FIX: Save with maximum quality to prevent degradation
+            # Convert QPixmap to QImage for quality control
+            image = pixmap.toImage()
+
+            # Save with maximum quality PNG settings (lossless compression)
+            # Quality 100 = maximum quality, compression 0 = fastest/least compression
+            success = image.save(str(cache_file), "PNG", 100)
+
+            if success:
                 # Update metadata
                 try:
                     source_mtime = os.path.getmtime(image_path)
@@ -446,7 +461,9 @@ class BrowseThumbnailCache(QObject):
                 # Add to memory cache
                 self._add_to_memory_cache(cache_key, pixmap)
 
-                logging.debug(f"Cached browse thumbnail: {word}_{variation}")
+                logging.debug(
+                    f"Cached HIGH-QUALITY browse thumbnail: {word}_{variation}"
+                )
 
                 # Periodically save metadata and check cache size
                 if len(self.metadata) % 10 == 0:
@@ -542,6 +559,55 @@ class BrowseThumbnailCache(QObject):
 
         except Exception as e:
             logging.warning(f"Error clearing cache: {e}")
+
+    def clear_old_quality_cache(self) -> None:
+        """Clear old low-quality cache entries to force regeneration with high quality."""
+        try:
+            old_entries_removed = 0
+            entries_to_remove = []
+
+            # Find entries that don't have the new quality version
+            for cache_key, metadata in self.metadata.items():
+                # Check if this is an old cache entry (doesn't contain v2 quality marker)
+                if "v2" not in cache_key:
+                    entries_to_remove.append(cache_key)
+
+            # Remove old entries
+            for cache_key in entries_to_remove:
+                self._remove_cache_entry(cache_key)
+                old_entries_removed += 1
+
+            if old_entries_removed > 0:
+                self._save_metadata_safely()
+                logging.info(
+                    f"Cleared {old_entries_removed} old low-quality cache entries"
+                )
+
+        except Exception as e:
+            logging.warning(f"Error clearing old quality cache: {e}")
+
+    def force_regenerate_all_thumbnails(self) -> None:
+        """Force regeneration of all thumbnails by clearing the entire cache."""
+        try:
+            logging.info("🔄 Forcing regeneration of all thumbnails...")
+
+            # Clear everything
+            self.clear_cache()
+
+            # Reset statistics
+            self.cache_hits = 0
+            self.cache_misses = 0
+            self.disk_cache_hits = 0
+            self.disk_cache_misses = 0
+            self.memory_cache_hits = 0
+            self.memory_cache_misses = 0
+
+            logging.info(
+                "✅ All thumbnails will be regenerated with high quality on next load"
+            )
+
+        except Exception as e:
+            logging.warning(f"Error forcing thumbnail regeneration: {e}")
 
     def get_cache_stats(self) -> Dict[str, Any]:
         """Get cache statistics."""

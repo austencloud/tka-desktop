@@ -497,17 +497,19 @@ class ThumbnailImageLabel(QLabel):
         usable_width = scroll_widget_width - scrollbar_width - total_margins
 
         # Calculate thumbnail width (3 columns)
-        thumbnail_width = max(150, int(usable_width // 3))
+        thumbnail_width = max(200, int(usable_width // 3))  # Increased from 150 to 200
 
         # ULTRA QUALITY: Use maximum available space (minimal padding)
         available_width = int(thumbnail_width - 8)  # Minimal padding
-        available_width = max(140, available_width)  # Higher minimum for quality
+        available_width = max(
+            180, available_width
+        )  # Increased from 140 to 180 for better quality
 
         # Calculate height based on aspect ratio
         available_height = int(available_width / self.aspect_ratio)
 
         # ULTRA QUALITY: Ensure minimum size for crisp display
-        available_height = max(100, available_height)
+        available_height = max(135, available_height)  # Increased from 100 to 135
 
         return QSize(available_width, available_height)
 
@@ -545,18 +547,35 @@ class ThumbnailImageLabel(QLabel):
             enable_enhancement=quality_settings["enhancement_enabled"],
         )
 
+        # CRITICAL: Ensure pixmap is not null before proceeding
+        if ultra_quality_pixmap.isNull():
+            logging.warning(
+                f"Failed to create ultra quality pixmap for {self.current_path}"
+            )
+            # Fallback to standard processing
+            self._resize_pixmap_to_fit_smooth()
+            return
+
         self.setFixedSize(available_size)
         self.setPixmap(ultra_quality_pixmap)
 
-        # Cache the ultra quality version
+        # Cache the ultra quality version with maximum quality preservation
         if self._cache and self._word is not None:
-            self._cache.cache_thumbnail(
+            success = self._cache.cache_thumbnail(
                 self.current_path,
                 ultra_quality_pixmap,
                 available_size,
                 self._word,
                 self._variation,
             )
+            if success:
+                logging.debug(
+                    f"🔥 ULTRA QUALITY thumbnail cached: {os.path.basename(self.current_path)}"
+                )
+            else:
+                logging.debug(
+                    f"⚠️ Failed to cache ultra quality thumbnail: {os.path.basename(self.current_path)}"
+                )
 
         logging.debug(
             f"🔥 ULTRA QUALITY thumbnail processed: {os.path.basename(self.current_path)}"
@@ -588,18 +607,31 @@ class ThumbnailImageLabel(QLabel):
         # Enhanced multi-step scaling for better quality
         scaled_pixmap = self._create_enhanced_scaled_pixmap(scaled_size)
 
+        # CRITICAL: Ensure pixmap is not null before proceeding
+        if scaled_pixmap.isNull():
+            logging.warning(f"Failed to create scaled pixmap for {self.current_path}")
+            return
+
         self.setFixedSize(available_size)
         self.setPixmap(scaled_pixmap)
 
-        # Cache the high-quality version
+        # Cache the high-quality version with maximum quality preservation
         if self._cache and self._word is not None:
-            self._cache.cache_thumbnail(
+            success = self._cache.cache_thumbnail(
                 self.current_path,
                 scaled_pixmap,
                 scaled_size,
                 self._word,
                 self._variation,
             )
+            if success:
+                logging.debug(
+                    f"✅ HIGH-QUALITY thumbnail cached: {os.path.basename(self.current_path)}"
+                )
+            else:
+                logging.debug(
+                    f"⚠️ Failed to cache high-quality thumbnail: {os.path.basename(self.current_path)}"
+                )
 
     def _calculate_scaled_pixmap_size(self, available_size: QSize) -> QSize:
         """Calculate the optimal size for the pixmap while maintaining aspect ratio."""
