@@ -11,7 +11,8 @@ from pathlib import Path
 from data.constants import GOLD, BLUE
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
-# Simple Qt-based image processing - no external dependencies needed
+# Import the new coordinator and components
+from .core.thumbnail_coordinator import ThumbnailCoordinator
 
 if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox

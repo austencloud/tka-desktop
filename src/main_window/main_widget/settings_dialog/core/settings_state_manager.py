@@ -38,19 +38,14 @@ class SettingsStateManager(QObject):
     def _capture_original_state(self):
         """Capture the original state of all settings when dialog opens."""
         try:
-            # Capture browse tab settings
+            # Capture browse tab settings (simplified - cache settings removed)
             browse_settings = self.settings_manager.browse_tab_settings
             self._original_state.update(
                 {
-                    "browse/enable_disk_cache": browse_settings.get_enable_disk_cache(),
-                    "browse/cache_mode": browse_settings.get_cache_mode(),
-                    "browse/cache_max_size_mb": browse_settings.get_cache_max_size_mb(),
-                    "browse/cache_location": browse_settings.get_cache_location(),
-                    "browse/cache_quality_mode": browse_settings.get_cache_quality_mode(),
-                    "browse/preload_thumbnails": browse_settings.get_preload_thumbnails(),
-                    "browse/ultra_quality_enabled": browse_settings.get_ultra_quality_enabled(),
-                    "browse/sharpening_enabled": browse_settings.get_sharpening_enabled(),
-                    "browse/enhancement_enabled": browse_settings.get_enhancement_enabled(),
+                    "browse/sort_method": browse_settings.get_sort_method(),
+                    "browse/current_section": browse_settings.get_current_section(),
+                    "browse/current_filter": browse_settings.get_current_filter(),
+                    "browse/browse_ratio": browse_settings.get_browse_ratio(),
                 }
             )
 

@@ -145,7 +145,6 @@ class EnhancedGeneralTab(QWidget):
 
         parent_layout.addWidget(card)
 
-
     def _create_application_behavior_section(self, parent_layout):
         """Create application behavior settings section."""
         card = SettingCard(
@@ -205,25 +204,9 @@ class EnhancedGeneralTab(QWidget):
     def _load_current_settings(self):
         """Load current settings into the controls."""
         try:
-            browse_settings = self.settings_manager.browse_tab_settings
-
             # User profile settings
             current_user = self.settings_manager.users.get_current_user()
             self._controls["user_name"].setText(current_user or "")
-
-            # Thumbnail quality settings - now always enabled
-            self._controls["ultra_quality"].setChecked(True)
-            self._controls["enhancement"].setChecked(True)
-            self._controls["sharpening"].setChecked(True)
-
-            # Disable controls since they're always enabled
-            self._controls["ultra_quality"].setEnabled(False)
-            self._controls["enhancement"].setEnabled(False)
-            self._controls["sharpening"].setEnabled(False)
-
-            # Performance settings (use defaults for now)
-            self._controls["ui_responsiveness"].setValue(7)
-            self._controls["animation_quality"].setCurrentIndex(0)  # High
 
             # Application behavior (use defaults for now)
             self._controls["autosave"].setChecked(True)
@@ -239,20 +222,6 @@ class EnhancedGeneralTab(QWidget):
         # User profile settings
         self._controls["user_name"].textChanged.connect(
             lambda text: self._on_user_name_changed(text)
-        )
-
-        # Thumbnail quality settings - no connections needed since they're always enabled
-
-        # Performance settings (these would need to be added to settings manager)
-        self._controls["ui_responsiveness"].valueChanged.connect(
-            lambda value: self._on_setting_changed(
-                "performance/ui_responsiveness", value
-            )
-        )
-        self._controls["animation_quality"].currentTextChanged.connect(
-            lambda text: self._on_setting_changed(
-                "performance/animation_quality", text.lower()
-            )
         )
 
         # Application behavior settings

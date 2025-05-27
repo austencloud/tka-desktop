@@ -47,11 +47,28 @@ class MainWidgetUI:
 
         mw.sequence_workbench = SequenceWorkbench(mw)
 
-        # Use the modern settings dialog
-        from .settings_dialog.modern_settings_dialog import ModernSettingsDialog
+        # Use the modern settings dialog with dependency injection
+        try:
+            from .settings_dialog.settings_dialog_factory import SettingsDialogFactory
 
-        mw.settings_dialog = ModernSettingsDialog(mw)
-        print("[SUCCESS] Using modern settings dialog!")
+            if app_context:
+                mw.settings_dialog = SettingsDialogFactory.create(mw, app_context)
+                print(
+                    "[SUCCESS] Using modern settings dialog with dependency injection!"
+                )
+            else:
+                # Fallback to direct creation for backward compatibility
+                from .settings_dialog.modern_settings_dialog import ModernSettingsDialog
+
+                mw.settings_dialog = ModernSettingsDialog(mw)
+                print("[SUCCESS] Using modern settings dialog (legacy mode)!")
+        except Exception as e:
+            print(f"[ERROR] Failed to create settings dialog: {e}")
+            # Create a minimal fallback
+            from PyQt6.QtWidgets import QWidget
+
+            mw.settings_dialog = QWidget(mw)
+            mw.settings_dialog.setWindowTitle("Settings (Unavailable)")
 
         mw.left_stack = QStackedWidget()
         mw.right_stack = QStackedWidget()

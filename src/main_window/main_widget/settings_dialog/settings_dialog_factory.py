@@ -35,10 +35,10 @@ class SettingsDialogFactory(WidgetFactory):
         try:
             from .modern_settings_dialog import ModernSettingsDialog
 
-            # ModernSettingsDialog expects main_widget parameter
+            # ModernSettingsDialog expects main_widget parameter and app_context
             # The parent should be the MainWidgetCoordinator which has main_widget
             main_widget = getattr(parent, "main_widget", parent)
-            settings_dialog = ModernSettingsDialog(main_widget)
+            settings_dialog = ModernSettingsDialog(main_widget, app_context)
             logger.info("✅ Created ModernSettingsDialog with dependency injection")
             return settings_dialog
 
