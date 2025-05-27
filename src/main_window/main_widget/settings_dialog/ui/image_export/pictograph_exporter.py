@@ -10,7 +10,6 @@ from data.constants import LETTER, START_POS, END_POS, BLUE, RED, MOTION_TYPE
 from utils.path_helpers import get_my_photos_path
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
     from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import ImageExportTab
 
 

@@ -11,11 +11,7 @@ from ...turn_applier import TurnApplier
 from .base_exporter import Type2BaseExporter
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
-    from ...pictograph_data_manager import PictographDataManager
-    from ...pictograph_factory import PictographFactory
-    from ...pictograph_renderer import PictographRenderer
-    from ...turn_configuration import TurnConfiguration
+    pass
 
 
 class BothNonZeroTurnExporter(Type2BaseExporter):

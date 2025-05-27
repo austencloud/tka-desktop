@@ -2,9 +2,7 @@
 Modern Action Buttons for settings dialog with comprehensive state management.
 """
 
-from typing import Optional, Callable
-from PyQt6.QtCore import Qt, pyqtSignal, QTimer
-from PyQt6.QtGui import QFont
+from PyQt6.QtCore import pyqtSignal, QTimer
 from PyQt6.QtWidgets import (
     QWidget,
     QHBoxLayout,

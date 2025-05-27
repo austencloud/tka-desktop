@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from data.constants import BLUE, RED
 from enums.glyph_enum import Glyph
 
 if TYPE_CHECKING:

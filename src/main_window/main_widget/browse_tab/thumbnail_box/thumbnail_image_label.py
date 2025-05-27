@@ -4,235 +4,43 @@ from PyQt6.QtWidgets import QLabel
 from typing import TYPE_CHECKING, Optional, Final
 import logging
 import os
+import hashlib
+import json
+from pathlib import Path
 
 from data.constants import GOLD, BLUE
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 
-# PIL/Pillow imports for superior image processing
-try:
-    from PIL import Image as PILImage, ImageFilter, ImageEnhance
-
-    PIL_AVAILABLE = True
-except ImportError:
-    PIL_AVAILABLE = False
-    logging.warning("PIL/Pillow not available - using Qt-only scaling")
+# Simple Qt-based image processing - no external dependencies needed
 
 if TYPE_CHECKING:
     from .thumbnail_box import ThumbnailBox
 
 
-class UltraHighQualityImageProcessor:
+class ImageProcessor:
     """
-    Ultra high-quality image processor for razor-sharp thumbnails.
+    Simple, consistent image processor using Qt SmoothTransformation.
 
-    Features:
-    - PIL/Pillow-based scaling with Lanczos resampling
-    - Multi-stage scaling for optimal quality
-    - Post-processing sharpening and enhancement
-    - Professional-grade quality optimization
-    - Smart scaling threshold detection
+    Provides high-quality image scaling for all thumbnails and exports
+    using Qt's built-in SmoothTransformation for consistent, sharp results.
     """
 
     @staticmethod
-    def process_image_to_ultra_quality(
-        source_path: str,
-        target_size: QSize,
-        enable_sharpening: bool = True,
-        enable_enhancement: bool = True,
-    ) -> QPixmap:
+    def process_image(source_path: str, target_size: QSize) -> QPixmap:
         """
-        Process image to ultra high quality using advanced techniques.
+        Process image using Qt SmoothTransformation for consistent quality.
 
         Args:
             source_path: Path to source image
             target_size: Target size for thumbnail
-            enable_sharpening: Apply sharpening filter
-            enable_enhancement: Apply contrast/brightness enhancement
 
         Returns:
-            Ultra high-quality QPixmap
+            High-quality QPixmap using SmoothTransformation
         """
-        if not PIL_AVAILABLE:
-            return UltraHighQualityImageProcessor._fallback_qt_processing(
-                source_path, target_size
-            )
-
-        try:
-            # Load image with PIL for superior processing
-            pil_image = PILImage.open(source_path)
-
-            # Convert to RGB if necessary
-            if pil_image.mode not in ("RGB", "RGBA"):
-                pil_image = pil_image.convert("RGB")
-
-            original_size = pil_image.size
-            target_w, target_h = target_size.width(), target_size.height()
-
-            # Calculate aspect ratio preserving dimensions
-            aspect_ratio = original_size[0] / original_size[1]
-            if target_w / target_h > aspect_ratio:
-                # Height is the limiting factor
-                new_h = target_h
-                new_w = int(target_h * aspect_ratio)
-            else:
-                # Width is the limiting factor
-                new_w = target_w
-                new_h = int(target_w / aspect_ratio)
-
-            # ULTRA QUALITY SCALING STRATEGY
-            scale_factor = min(new_w / original_size[0], new_h / original_size[1])
-
-            if scale_factor < 0.75:
-                # Multi-stage scaling for maximum quality when downscaling significantly
-                processed_image = UltraHighQualityImageProcessor._multi_stage_scaling(
-                    pil_image, (new_w, new_h), scale_factor
-                )
-            else:
-                # Single-stage high-quality scaling
-                processed_image = pil_image.resize(
-                    (new_w, new_h), PILImage.Resampling.LANCZOS  # Superior to bicubic
-                )
-
-            # POST-PROCESSING FOR RAZOR SHARPNESS
-            if enable_enhancement:
-                processed_image = UltraHighQualityImageProcessor._enhance_image_quality(
-                    processed_image
-                )
-
-            if enable_sharpening:
-                processed_image = UltraHighQualityImageProcessor._apply_sharpening(
-                    processed_image, scale_factor
-                )
-
-            # Convert back to QPixmap
-            return UltraHighQualityImageProcessor._pil_to_qpixmap(processed_image)
-
-        except Exception as e:
-            logging.warning(f"PIL processing failed for {source_path}: {e}")
-            return UltraHighQualityImageProcessor._fallback_qt_processing(
-                source_path, target_size
-            )
+        return ImageProcessor._process_with_qt(source_path, target_size)
 
     @staticmethod
-    def _multi_stage_scaling(
-        pil_image: "PILImage.Image", target_size: tuple, scale_factor: float
-    ) -> "PILImage.Image":
-        """
-        Multi-stage scaling for optimal quality when downscaling significantly.
-        """
-        current_image = pil_image
-        current_size = pil_image.size
-        target_w, target_h = target_size
-
-        # Define scaling stages based on scale factor
-        if scale_factor < 0.25:
-            # Very aggressive downscaling - use 3 stages
-            stages = [0.6, 0.35, 1.0]  # Final stage scales to exact target
-        elif scale_factor < 0.5:
-            # Moderate downscaling - use 2 stages
-            stages = [0.7, 1.0]
-        else:
-            # Single stage for less aggressive scaling
-            stages = [1.0]
-
-        for i, stage_factor in enumerate(stages):
-            if i == len(stages) - 1:
-                # Final stage - scale to exact target size
-                intermediate_size = (target_w, target_h)
-            else:
-                # Intermediate stage
-                intermediate_w = int(current_size[0] * stage_factor)
-                intermediate_h = int(current_size[1] * stage_factor)
-                intermediate_size = (intermediate_w, intermediate_h)
-
-            current_image = current_image.resize(
-                intermediate_size, PILImage.Resampling.LANCZOS
-            )
-            current_size = intermediate_size
-
-            logging.debug(f"Scaling stage {i+1}: {current_size}")
-
-        return current_image
-
-    @staticmethod
-    def _enhance_image_quality(pil_image: "PILImage.Image") -> "PILImage.Image":
-        """
-        Apply quality enhancements for better visual appearance.
-        """
-        # Subtle contrast enhancement for better definition
-        contrast_enhancer = ImageEnhance.Contrast(pil_image)
-        enhanced_image = contrast_enhancer.enhance(1.05)  # 5% contrast boost
-
-        # Slight brightness adjustment for better visibility
-        brightness_enhancer = ImageEnhance.Brightness(enhanced_image)
-        enhanced_image = brightness_enhancer.enhance(1.02)  # 2% brightness boost
-
-        # Color saturation for more vibrant images
-        color_enhancer = ImageEnhance.Color(enhanced_image)
-        enhanced_image = color_enhancer.enhance(1.03)  # 3% saturation boost
-
-        return enhanced_image
-
-    @staticmethod
-    def _apply_sharpening(
-        pil_image: "PILImage.Image", scale_factor: float
-    ) -> "PILImage.Image":
-        """
-        Apply intelligent sharpening based on scale factor.
-        """
-        # Determine sharpening intensity based on how much we scaled down
-        if scale_factor < 0.3:
-            # Heavy downscaling needs more aggressive sharpening
-            sharpening_filter = ImageFilter.UnsharpMask(
-                radius=1.2,  # Larger radius for more comprehensive sharpening
-                percent=120,  # Higher percentage for stronger effect
-                threshold=1,  # Lower threshold to affect more pixels
-            )
-        elif scale_factor < 0.6:
-            # Moderate downscaling needs moderate sharpening
-            sharpening_filter = ImageFilter.UnsharpMask(
-                radius=0.8, percent=100, threshold=2
-            )
-        else:
-            # Light scaling needs subtle sharpening
-            sharpening_filter = ImageFilter.UnsharpMask(
-                radius=0.5, percent=80, threshold=3
-            )
-
-        # Apply the sharpening filter
-        sharpened_image = pil_image.filter(sharpening_filter)
-
-        # Additional edge enhancement for very small images
-        if min(pil_image.size) < 150:
-            edge_enhance_filter = ImageFilter.EDGE_ENHANCE_MORE
-            sharpened_image = sharpened_image.filter(edge_enhance_filter)
-
-        return sharpened_image
-
-    @staticmethod
-    def _pil_to_qpixmap(pil_image: "PILImage.Image") -> QPixmap:
-        """
-        Convert PIL Image to QPixmap with optimal quality.
-        """
-        # Convert to RGB if not already
-        if pil_image.mode != "RGB":
-            pil_image = pil_image.convert("RGB")
-
-        # Convert to bytes
-        import io
-
-        byte_array = io.BytesIO()
-        pil_image.save(byte_array, format="PNG", optimize=True)
-        byte_array.seek(0)
-
-        # Create QPixmap from bytes
-        pixmap = QPixmap()
-        pixmap.loadFromData(byte_array.getvalue())
-
-        return pixmap
-
-    @staticmethod
-    def _fallback_qt_processing(source_path: str, target_size: QSize) -> QPixmap:
+    def _process_with_qt(source_path: str, target_size: QSize) -> QPixmap:
         """
         Fallback processing using Qt when PIL is not available.
         Enhanced Qt-only processing with multi-step scaling.
@@ -242,7 +50,7 @@ class UltraHighQualityImageProcessor:
             original_pixmap = QPixmap(source_path)
             if original_pixmap.isNull():
                 logging.error(f"Failed to load image: {source_path}")
-                return UltraHighQualityImageProcessor._create_error_pixmap(target_size)
+                return ImageProcessor._create_error_pixmap(target_size)
 
             # Calculate target dimensions maintaining aspect ratio
             original_size = original_pixmap.size()
@@ -295,7 +103,7 @@ class UltraHighQualityImageProcessor:
 
         except Exception as e:
             logging.error(f"Qt fallback processing failed for {source_path}: {e}")
-            return UltraHighQualityImageProcessor._create_error_pixmap(target_size)
+            return ImageProcessor._create_error_pixmap(target_size)
 
     @staticmethod
     def _create_error_pixmap(size: QSize) -> QPixmap:
@@ -315,6 +123,10 @@ class ThumbnailImageLabel(QLabel):
     BORDER_WIDTH_RATIO: Final = 0.01
     SEQUENCE_VIEWER_BORDER_SCALE: Final = 0.8
 
+    # Cache configuration
+    CACHE_DIR = Path("browse_thumbnails")
+    CACHE_METADATA_FILE = "cache_metadata.json"
+
     def __init__(self, thumbnail_box: "ThumbnailBox"):
         super().__init__()
         # Instance attributes
@@ -329,8 +141,8 @@ class ThumbnailImageLabel(QLabel):
         self._original_pixmap: Optional[QPixmap] = None
         self._cached_available_size: Optional[QSize] = None
 
-        # Ultra quality processor
-        self.ultra_processor = UltraHighQualityImageProcessor()
+        # Image processor
+        self.image_processor = ImageProcessor()
 
         # Deferred loading to prevent UI blocking
         self._load_timer = QTimer()
@@ -345,7 +157,10 @@ class ThumbnailImageLabel(QLabel):
         self._quality_timer.timeout.connect(self._enhance_image_quality)
         self._needs_quality_enhancement = False
 
-        # Removed cache system - now using direct high-quality processing
+        # Initialize cache system
+        self._cache_metadata = {}
+        self._ensure_cache_directory()
+        self._load_cache_metadata()
 
         # Setup UI
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -487,35 +302,39 @@ class ThumbnailImageLabel(QLabel):
 
         available_size = self._calculate_available_space()
 
-        # FORCE SMOOTH TRANSFORMATION: Always use Qt smooth scaling for debugging
-        logging.info(
-            f"🔍 DEBUG: Processing thumbnail with Qt SmoothTransformation: {os.path.basename(self.current_path)}"
-        )
-        self._resize_pixmap_to_fit_smooth()
-        return
+        # Check cache first
+        cached_pixmap = self._get_cached_thumbnail(available_size)
+        if cached_pixmap and not cached_pixmap.isNull():
+            self.setFixedSize(available_size)
+            self.setPixmap(cached_pixmap)
+            logging.debug(
+                f"✅ Loaded cached thumbnail: {os.path.basename(self.current_path)}"
+            )
+            return
 
-        # ULTRA QUALITY PROCESSING - always maximum quality (temporarily disabled for debugging)
-        ultra_quality_pixmap = self.ultra_processor.process_image_to_ultra_quality(
+        # HIGH QUALITY PROCESSING - always use SmoothTransformation
+        processed_pixmap = self.image_processor.process_image(
             self.current_path,
             available_size,
-            enable_sharpening=True,  # Always enable sharpening
-            enable_enhancement=True,  # Always enable enhancement
         )
 
         # CRITICAL: Ensure pixmap is not null before proceeding
-        if ultra_quality_pixmap.isNull():
+        if processed_pixmap.isNull():
             logging.warning(
-                f"Failed to create ultra quality pixmap for {self.current_path}"
+                f"Failed to create processed pixmap for {self.current_path}"
             )
             # Fallback to standard processing
             self._resize_pixmap_to_fit_smooth()
             return
 
+        # Cache the high-quality thumbnail
+        self._cache_thumbnail(processed_pixmap, available_size)
+
         self.setFixedSize(available_size)
-        self.setPixmap(ultra_quality_pixmap)
+        self.setPixmap(processed_pixmap)
 
         logging.debug(
-            f"🔥 ULTRA QUALITY thumbnail processed: {os.path.basename(self.current_path)}"
+            f"✅ High-quality thumbnail processed: {os.path.basename(self.current_path)}"
         )
 
     # Removed _get_quality_settings - now always using maximum quality
@@ -641,9 +460,113 @@ class ThumbnailImageLabel(QLabel):
                 Qt.TransformationMode.SmoothTransformation,
             )
 
-    # ... [Keep all other methods unchanged: mousePressEvent, enterEvent, leaveEvent,
-    #      set_selected, _draw_border, paintEvent, resizeEvent, _initialize_cache,
-    #      set_word_and_variation, _enhance_image_quality, _check_viewport_visibility]
+    # Cache management methods
+    def _ensure_cache_directory(self) -> None:
+        """Ensure cache directory exists."""
+        try:
+            self.CACHE_DIR.mkdir(exist_ok=True)
+        except Exception as e:
+            logging.warning(f"Failed to create cache directory: {e}")
+
+    def _load_cache_metadata(self) -> None:
+        """Load cache metadata from disk."""
+        metadata_path = self.CACHE_DIR / self.CACHE_METADATA_FILE
+        try:
+            if metadata_path.exists():
+                with open(metadata_path, "r") as f:
+                    self._cache_metadata = json.load(f)
+            else:
+                self._cache_metadata = {}
+        except Exception as e:
+            logging.warning(f"Failed to load cache metadata: {e}")
+            self._cache_metadata = {}
+
+    def _save_cache_metadata(self) -> None:
+        """Save cache metadata to disk."""
+        metadata_path = self.CACHE_DIR / self.CACHE_METADATA_FILE
+        try:
+            with open(metadata_path, "w") as f:
+                json.dump(self._cache_metadata, f, indent=2)
+        except Exception as e:
+            logging.warning(f"Failed to save cache metadata: {e}")
+
+    def _generate_cache_key(self, image_path: str, target_size: QSize) -> str:
+        """Generate cache key based on image path, modification time, and size."""
+        try:
+            # Get file modification time
+            mtime = os.path.getmtime(image_path)
+
+            # Create cache key from path, mtime, and target size
+            key_data = (
+                f"{image_path}_{mtime}_{target_size.width()}x{target_size.height()}"
+            )
+            return hashlib.md5(key_data.encode()).hexdigest()
+        except Exception:
+            # Fallback to path-only key if mtime fails
+            key_data = f"{image_path}_{target_size.width()}x{target_size.height()}"
+            return hashlib.md5(key_data.encode()).hexdigest()
+
+    def _get_cached_thumbnail(self, target_size: QSize) -> Optional[QPixmap]:
+        """Get cached thumbnail if available and valid."""
+        if not self.current_path:
+            return None
+
+        cache_key = self._generate_cache_key(self.current_path, target_size)
+        cache_file = self.CACHE_DIR / f"{cache_key}.png"
+
+        try:
+            # Check if cache file exists and metadata is valid
+            if cache_file.exists() and cache_key in self._cache_metadata:
+                metadata = self._cache_metadata[cache_key]
+
+                # Validate cache entry
+                if (
+                    metadata.get("source_path") == self.current_path
+                    and metadata.get("target_width") == target_size.width()
+                    and metadata.get("target_height") == target_size.height()
+                ):
+
+                    # Load cached pixmap
+                    pixmap = QPixmap(str(cache_file))
+                    if not pixmap.isNull():
+                        return pixmap
+
+        except Exception as e:
+            logging.debug(f"Error loading cached thumbnail: {e}")
+
+        return None
+
+    def _cache_thumbnail(self, pixmap: QPixmap, target_size: QSize) -> None:
+        """Cache thumbnail to disk."""
+        if not self.current_path or pixmap.isNull():
+            return
+
+        cache_key = self._generate_cache_key(self.current_path, target_size)
+        cache_file = self.CACHE_DIR / f"{cache_key}.png"
+
+        try:
+            # Save pixmap to cache
+            if pixmap.save(str(cache_file), "PNG"):
+                # Update metadata
+                self._cache_metadata[cache_key] = {
+                    "source_path": self.current_path,
+                    "target_width": target_size.width(),
+                    "target_height": target_size.height(),
+                    "cached_at": os.path.getmtime(self.current_path),
+                    "cache_file": str(cache_file),
+                }
+
+                # Save metadata (async to avoid blocking)
+                QTimer.singleShot(100, self._save_cache_metadata)
+
+                logging.debug(
+                    f"✅ Cached thumbnail: {os.path.basename(self.current_path)}"
+                )
+            else:
+                logging.warning(f"Failed to save thumbnail cache: {cache_file}")
+
+        except Exception as e:
+            logging.warning(f"Error caching thumbnail: {e}")
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """Handle mouse press events."""

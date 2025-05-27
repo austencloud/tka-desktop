@@ -4,7 +4,7 @@ Modern card widget with rounded corners and shadow.
 
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QGraphicsDropShadowEffect
 from PyQt6.QtGui import QFont, QColor
-from ..theme import Colors, Sizing, StyleSheet
+from ..theme import Sizing, StyleSheet
 
 
 class ModernCard(QFrame):

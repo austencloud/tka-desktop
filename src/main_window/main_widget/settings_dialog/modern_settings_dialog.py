@@ -14,7 +14,6 @@ from PyQt6.QtWidgets import (
     QListWidget,
 )
 from PyQt6.QtCore import QEvent, pyqtSignal, Qt
-from PyQt6.QtGui import QFont
 import logging
 
 # Try to import our modern components, fall back to simple versions if they fail
@@ -22,7 +21,6 @@ try:
     from .core.settings_state_manager import SettingsStateManager
     from .core.glassmorphism_styler import GlassmorphismStyler
     from .ui.settings_dialog_sidebar import SettingsDialogSidebar
-    from .ui.enhanced_general.enhanced_general_tab import EnhancedGeneralTab
 
     MODERN_COMPONENTS_AVAILABLE = True
 except ImportError as e:
@@ -167,14 +165,6 @@ except ImportError as e:
             }
             """
             self.setStyleSheet(sidebar_style)
-
-    class EnhancedGeneralTab(QWidget):
-        def __init__(self, settings_manager, state_manager, parent):
-            super().__init__(parent)
-            layout = QVBoxLayout(self)
-            label = QLabel("Enhanced General Tab (Fallback)")
-            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            layout.addWidget(label)
 
 
 # Import the actual tab implementations
@@ -355,6 +345,7 @@ class ModernActionButtons(QWidget):
             self.set_has_changes(False)
 
 
+from main_window.main_widget.settings_dialog.ui.enhanced_general.enhanced_general_tab import EnhancedGeneralTab
 from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
@@ -857,7 +848,6 @@ class ModernSettingsDialog(QDialog):
     def _on_tab_setting_changed(self, setting_key: str, old_value: Any, new_value: Any):
         """Handle setting change from tab widgets."""
         # This is already handled by the state manager, but we can add additional logic here if needed
-        pass
 
     def _on_validation_failed(self, setting_key: str, error_message: str):
         """Handle validation failure."""

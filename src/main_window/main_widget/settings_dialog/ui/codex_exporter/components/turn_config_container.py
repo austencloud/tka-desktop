@@ -4,8 +4,6 @@ Container component that combines all turn configuration components.
 
 from typing import Dict, Any
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QSizePolicy
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont
 from settings_manager.settings_manager import SettingsManager
 from ..widgets import ModernCard
 from ..theme import Colors

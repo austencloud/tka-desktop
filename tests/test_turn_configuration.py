@@ -11,22 +11,22 @@ from PyQt6.QtCore import Qt
 # Add the src directory to the path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.main_window.main_widget.settings_dialog.ui.image_export.codex_exporter.components.turn_config_style_provider import (
+from src.main_window.main_widget.settings_dialog.ui.codex_exporter.components.turn_config_style_provider import (
     TurnConfigStyleProvider,
 )
-from src.main_window.main_widget.settings_dialog.ui.image_export.codex_exporter.components.grid_mode_selector import (
+from src.main_window.main_widget.settings_dialog.ui.codex_exporter.components.grid_mode_selector import (
     GridModeSelector,
 )
-from src.main_window.main_widget.settings_dialog.ui.image_export.codex_exporter.components.turn_slider import (
+from src.main_window.main_widget.settings_dialog.ui.codex_exporter.components.turn_slider import (
     TurnSlider,
 )
-from src.main_window.main_widget.settings_dialog.ui.image_export.codex_exporter.components.turn_pair_display import (
+from src.main_window.main_widget.settings_dialog.ui.codex_exporter.components.turn_pair_display import (
     TurnPairDisplay,
 )
-from src.main_window.main_widget.settings_dialog.ui.image_export.codex_exporter.components.generate_all_checkbox import (
+from src.main_window.main_widget.settings_dialog.ui.codex_exporter.components.generate_all_checkbox import (
     GenerateAllCheckbox,
 )
-from src.main_window.main_widget.settings_dialog.ui.image_export.codex_exporter.components.turn_config_container import (
+from src.main_window.main_widget.settings_dialog.ui.codex_exporter.components.turn_config_container import (
     TurnConfigContainer,
 )
 

@@ -2,7 +2,7 @@
 Base exporter class for the codex pictograph exporter.
 """
 
-from typing import TYPE_CHECKING, Dict, Any, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 import os
 from PyQt6.QtWidgets import QFileDialog, QProgressDialog
 from PyQt6.QtCore import Qt
@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.ui.codex_exporter.codex_exporter_tab import (
         CodexExporterTab,
     )
-    from base_widgets.pictograph.pictograph import Pictograph
 
 
 class BaseExporter:

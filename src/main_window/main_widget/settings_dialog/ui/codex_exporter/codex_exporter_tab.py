@@ -255,4 +255,3 @@ class CodexExporterTab(QWidget):
         The turn configuration components already load their settings when initialized,
         so we don't need to do anything here.
         """
-        pass

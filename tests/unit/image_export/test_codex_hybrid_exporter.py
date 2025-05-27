@@ -16,7 +16,7 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../src"))
 )
 
-from main_window.main_widget.settings_dialog.ui.image_export.codex_exporter.exporters.hybrid_exporter import (
+from main_window.main_widget.settings_dialog.ui.codex_exporter.exporters.hybrid_exporter import (
     HybridExporter,
 )
 from data.constants import RED, BLUE
@@ -270,7 +270,7 @@ def test_export_pictograph_with_same_turns(hybrid_exporter, tmp_path):
 
 
 @patch(
-    "main_window.main_widget.settings_dialog.ui.image_export.codex_exporter.turn_applier.TurnApplier.apply_turns_to_pictograph"
+    "main_window.main_widget.settings_dialog.ui.codex_exporter.turn_applier.TurnApplier.apply_turns_to_pictograph"
 )
 def test_turn_applier_called_correctly(mock_apply_turns, hybrid_exporter, tmp_path):
     """Test that TurnApplier.apply_turns_to_pictograph is called with correct arguments."""

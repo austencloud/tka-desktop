@@ -2,17 +2,12 @@
 Base class for the codex pictograph exporter.
 """
 
-from typing import TYPE_CHECKING, Dict, Any, Optional, List, Tuple
-import os
-from datetime import datetime
-from PyQt6.QtWidgets import QFileDialog, QMessageBox, QProgressDialog
-from PyQt6.QtGui import QImage, QPainter
-from PyQt6.QtCore import Qt
+from typing import TYPE_CHECKING, Dict, Any, Optional
+from PyQt6.QtWidgets import QFileDialog
+from PyQt6.QtGui import QImage
 
 from base_widgets.pictograph.pictograph import Pictograph
-from data.constants import GRID_MODE, RED, BLUE
-from main_window.main_widget.grid_mode_checker import GridModeChecker
-from enums.letter.letter import Letter
+from data.constants import RED, BLUE
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (

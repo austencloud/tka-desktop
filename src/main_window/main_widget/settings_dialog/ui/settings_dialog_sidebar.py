@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QLabel, QVBoxLayout, QWidget
 from PyQt6.QtCore import Qt, pyqtSignal, QSize, QEvent
-from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor
+from PyQt6.QtGui import QPixmap, QPainter, QColor
 
 if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.modern_settings_dialog import (

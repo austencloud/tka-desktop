@@ -26,6 +26,13 @@ class LetterDeterminer:
 
         self.strategies = [DualFloatStrategy, NonHybridShiftStrategy]
 
+    def update_pictograph_dataset(
+        self, pictograph_dataset: dict[Letter, list[dict]]
+    ) -> None:
+        """Update the pictograph dataset and refresh the comparator."""
+        self.pictograph_dataset = pictograph_dataset
+        self.comparator = MotionComparator(pictograph_dataset)
+
     def determine_letter(
         self, pictograph_data: dict, swap_prop_rot_dir: bool = False
     ) -> Letter:
@@ -55,6 +62,19 @@ class LetterDeterminer:
     def _fallback_search(
         self, pictograph_data: dict, swap_prop_rot_dir: bool
     ) -> Optional[Letter]:
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        # Debug: Check if dataset is populated
+        dataset_size = len(self.pictograph_dataset)
+        logger.debug(f"Fallback search: dataset has {dataset_size} letters")
+        if dataset_size == 0:
+            logger.warning(
+                "Pictograph dataset is empty - cannot perform fallback search"
+            )
+            return None
+
         blue_attrs: dict = pictograph_data[BLUE_ATTRS]
         red_attrs: dict = pictograph_data[RED_ATTRS]
 
@@ -73,9 +93,12 @@ class LetterDeterminer:
         pictograph_data_copy = pictograph_data.copy()
         pictograph_data_copy[RED_ATTRS] = red_copy
         pictograph_data_copy[BLUE_ATTRS] = blue_copy
+
         for letter, examples in self.pictograph_dataset.items():
             for example in examples:
                 if self.comparator.compare(pictograph_data, example):
+                    logger.debug(f"Fallback search found match: {letter}")
                     return letter
 
+        logger.debug("Fallback search: no matches found")
         return None

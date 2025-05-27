@@ -5,10 +5,8 @@ This module provides the base functionality for exporting Type 2 pictographs
 (W, X, Y, Z, Σ, Δ, θ, Ω) with their specific positions and variations.
 """
 
-import os
 from typing import TYPE_CHECKING
 
-from ...turn_applier import TurnApplier
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.pictograph import Pictograph

@@ -5,8 +5,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication
 
 def test_glassmorphism_styler():
     """Test the glassmorphism styler."""

@@ -2,8 +2,7 @@
 Glassmorphism Styler for modern UI design with translucent backgrounds and blur effects.
 """
 
-from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, pyqtProperty
-from PyQt6.QtGui import QColor, QPalette, QFont, QFontMetrics
+from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import QWidget, QGraphicsBlurEffect, QGraphicsDropShadowEffect
 import logging
 

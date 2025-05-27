@@ -1,15 +1,11 @@
 import os
-from datetime import datetime
-from typing import TYPE_CHECKING, List, Dict, Any
+from typing import TYPE_CHECKING, Dict, Any
 from PyQt6.QtWidgets import QFileDialog, QMessageBox, QProgressDialog
 from PyQt6.QtGui import QImage, QPainter
 from PyQt6.QtCore import Qt
 
 from base_widgets.pictograph.pictograph import Pictograph
 from data.constants import (
-    BOX,
-    DIAMOND,
-    LETTER,
     START_POS,
     END_POS,
     BLUE_ATTRS,
@@ -18,11 +14,9 @@ from data.constants import (
     GRID_MODE,
 )
 from utils.path_helpers import get_my_photos_path
-from enums.letter.letter import Letter
 from main_window.main_widget.grid_mode_checker import GridModeChecker
 
 if TYPE_CHECKING:
-    from main_window.main_widget.main_widget import MainWidget
     from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (
         ImageExportTab,
     )

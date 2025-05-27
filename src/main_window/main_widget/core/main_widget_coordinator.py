@@ -258,6 +258,17 @@ class MainWidgetCoordinator(QWidget):
                     logger.info(
                         "Pictograph dataset injected for backward compatibility"
                     )
+
+                    # Update the letter determiner with the loaded dataset
+                    if self.letter_determiner and hasattr(
+                        self.letter_determiner, "update_pictograph_dataset"
+                    ):
+                        self.letter_determiner.update_pictograph_dataset(
+                            self.pictograph_dataset
+                        )
+                        logger.info(
+                            "Letter determiner dataset updated with loaded data"
+                        )
                 else:
                     logger.warning("Pictograph dataset not available from data loader")
                     self.pictograph_dataset = {}

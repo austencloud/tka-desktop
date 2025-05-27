@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtGui import QShowEvent
 from main_window.main_widget.settings_dialog.ui.image_export.image_export_preview_panel import (
     ImageExportPreviewPanel,

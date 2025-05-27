@@ -2,7 +2,7 @@
 Renders pictographs for the codex exporter.
 """
 
-from typing import TYPE_CHECKING, Dict, Any, Optional, Union
+from typing import TYPE_CHECKING, Union
 from PyQt6.QtGui import QImage, QPainter
 from PyQt6.QtCore import Qt
 

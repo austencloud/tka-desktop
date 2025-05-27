@@ -2,7 +2,7 @@
 Grid mode selector component for the codex exporter.
 """
 
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel, QButtonGroup
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QButtonGroup
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QCursor
 from settings_manager.settings_manager import SettingsManager

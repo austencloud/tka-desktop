@@ -2,9 +2,7 @@
 Modern UI Components for the settings dialog with glassmorphism design.
 """
 
-from typing import Optional, Callable, Any
 from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, pyqtSignal, QTimer
-from PyQt6.QtGui import QFont, QPixmap, QIcon
 from PyQt6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -14,14 +12,11 @@ from PyQt6.QtWidgets import (
     QCheckBox,
     QSlider,
     QComboBox,
-    QLineEdit,
-    QTextEdit,
     QFrame,
     QSizePolicy,
     QToolTip,
     QGraphicsOpacityEffect,
 )
-import logging
 from .glassmorphism_styler import GlassmorphismStyler
 
 
