@@ -1,0 +1,10 @@
+**__pycache__
+current_sequence.json
+profiling_output.txt
+*.exe
+*.dll
+build/
+*.log
+dist/
+settings.ini
+trace_log.txt

@@ -1,5 +1,0 @@
-pyinstaller --noconsole --add-data "settings.json;." --add-data "data;data" --add-data "images;images" --add-data "dictionary;dictionary" --add-data "temp;temp" main.py
-
-pyinstaller --add-data "settings.json;." --add-data "data;data" --add-data "images;images" --add-data "dictionary;dictionary" --add-data "temp;temp" main.py
-
-

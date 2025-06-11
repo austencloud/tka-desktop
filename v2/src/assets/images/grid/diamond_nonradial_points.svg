@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="950px" height="950px" viewBox="0 0 950 950"
+    xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .point {
+            fill: black;
+        }
+    </style>
+    <g id="non_radial_points">
+        <circle id="ne_diamond_layer2_point" class="point" cx="618.1" cy="331.9" r="8.8"/>
+        <circle id="se_diamond_layer2_point" class="point" cx="618.1" cy="618.1" r="8.8"/>
+        <circle id="sw_diamond_layer2_point" class="point" cx="331.9" cy="618.1" r="8.8"/>
+        <circle id="nw_diamond_layer2_point" class="point" cx="331.9" cy="331.9" r="8.8"/>
+    </g>
+</svg>

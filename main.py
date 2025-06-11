@@ -1,29 +1,41 @@
+#!/usr/bin/env python3
+"""
+Main entry point for The Kinetic Constructor Desktop application.
+"""
+
 import sys
-from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QApplication
-from qt_debug_message_handler import QtDebugMessageHandler
-from main_window.settings_manager.settings_manager import SettingsManager
-from splash_screen.splash_screen import SplashScreen
-from main_window.main_window import MainWindow
-from profiler import Profiler
+import os
 
-def main() -> None:
-    debug_handler = QtDebugMessageHandler()
-    debug_handler.install()
-    app = QApplication(sys.argv)
-    app.setStyle("Fusion")
-    settings_manager = SettingsManager(None)
-    splash_screen = SplashScreen(app, settings_manager)
-    app.processEvents()
-    profiler = Profiler()
 
-    main_window = MainWindow(profiler, splash_screen)
-    main_window.show()
-    main_window.raise_()
+def main():
+    """Launch the custom launcher."""
+    launcher_path = os.path.join(os.path.dirname(__file__), "launcher")
 
-    QTimer.singleShot(0, lambda: splash_screen.close())
-    exit_code = main_window.exec(app)
-    sys.exit(exit_code)
-    
+    if launcher_path not in sys.path:
+        sys.path.insert(0, launcher_path)
+
+    try:
+        from launcher.core.application import LauncherApplication
+
+        app = LauncherApplication(sys.argv)
+        return app.run()
+    except ImportError as e:
+        print(f"Error importing launcher: {e}")
+        print("Falling back to V1 main application...")
+
+        v1_src_path = os.path.join(os.path.dirname(__file__), "v1", "src")
+        if v1_src_path not in sys.path:
+            sys.path.insert(0, v1_src_path)
+
+        try:
+            from main import main as v1_main
+
+            return v1_main()
+        except ImportError as v1_error:
+            print(f"Error importing V1 main: {v1_error}")
+            print("Please ensure the application is properly set up.")
+            return 1
+
+
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
