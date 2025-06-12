@@ -7,16 +7,29 @@ arrow positioning with comprehensive adjustment data.
 
 import json
 import codecs
+import sys
+import os
+from pathlib import Path
 from typing import Dict, Any, Optional
 from PyQt6.QtCore import QPointF
 
 from ...domain.models.core_models import MotionData, MotionType
+
+# Add launcher core to path for version management
+launcher_core_path = (
+    Path(__file__).parent.parent.parent.parent.parent / "launcher" / "core"
+)
+if str(launcher_core_path) not in sys.path:
+    sys.path.insert(0, str(launcher_core_path))
+
+from version_path_manager import get_path_manager, Version
 
 
 class DefaultPlacementService:
     """Service that loads default placement data and provides adjustments."""
 
     def __init__(self):
+        self.path_manager = get_path_manager()
         self.all_defaults: Dict[str, Dict[str, Dict[str, Any]]] = {
             "diamond": {},
             "box": {},
@@ -42,10 +55,13 @@ class DefaultPlacementService:
         self._load_all_default_placements()
 
     def _load_all_default_placements(self) -> None:
-        """Load all default placement JSON files."""
+        """Load all default placement JSON files using version-aware paths."""
         for grid_mode, motion_files in self.placements_files.items():
             for motion_type, filename in motion_files.items():
-                filepath = f"src/data/arrow_placement/{grid_mode}/default/{filename}"
+                # Use version-aware path management for V2
+                filepath = self.path_manager.get_arrow_placement_path(
+                    grid_mode, "default", filename, Version.V2
+                )
                 self.all_defaults[grid_mode][motion_type] = self._load_json(filepath)
 
     def _load_json(self, path: str) -> Dict[str, Any]:

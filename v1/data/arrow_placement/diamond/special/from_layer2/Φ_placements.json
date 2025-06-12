@@ -1,0 +1,35 @@
+{
+  "Φ": {
+    "(o, 0, 0.5)": {
+      "static_rot_angle_override": true
+    },
+    "(cw, 0, 1.5)": {
+      "static_rot_angle_override": true,
+      "dash": [0, 0]
+    },
+    "(cw, 0, 2.5)": {
+      "dash": [0, 0]
+    },
+    "(o, 1, 2)": {
+      "static_rot_angle_override": true
+    },
+    "(o, 2, 2)": {
+      "static_rot_angle_override": true
+    },
+    "(o, 2, 2.5)": {
+      "static_rot_angle_override": true
+    },
+    "(ccw, 0, 2.5)": {
+      "dash": [0, 0],
+      "static_rot_angle_override": true
+    },
+    "(o, 3, 2)": {
+      "static_rot_angle_override": true
+    },
+    "(cw, 0, 3)": {
+      "dash": [0, 80]
+    },
+    "(ccw, 1, 0)": {},
+    "(o, 1, 1)": {}
+  }
+}

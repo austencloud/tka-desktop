@@ -535,7 +535,6 @@ class ComponentStyleManager:
             QWidget {
                 background: rgba(18, 18, 18, 0.85);
                 border-right: 1px solid rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(20px);
             }
         """,
         "input": """

@@ -9,12 +9,11 @@ import re
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
-from .asset_utils import get_image_path
-from ...domain.models.core_models import (
-    MotionData,
-    MotionType,
-    RotationDirection,
-    Location,
+from src.presentation.components.asset_utils import get_image_path
+from src.domain.models.core_models import MotionData, Location, MotionType
+from src.application.services.motion_orientation_service import (
+    MotionOrientationService,
+    Orientation,
 )
 from ...domain.models.pictograph_models import ArrowData, PictographData
 from ...application.services.arrow_mirror_service import ArrowMirrorService

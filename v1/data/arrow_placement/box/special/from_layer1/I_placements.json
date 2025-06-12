@@ -1,0 +1,140 @@
+{
+  "I": {
+    "(2.5, 0.5)": {},
+    "(0.5, 3)": {
+      "anti": [85, -35]
+    },
+    "(2.5, 2.5)": {
+      "swap_beta_e_nonradial_blue_pro_ne_red_anti_ne": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_pro_nw": true,
+      "swap_beta_n_nonradial_blue_pro_ne_red_anti_ne": true,
+      "swap_beta_s_nonradial_blue_pro_se_red_anti_se": true,
+      "swap_beta_e_nonradial_blue_pro_se_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_sw_red_pro_sw": true,
+      "swap_beta_n_nonradial_blue_pro_nw_red_anti_nw": true,
+      "swap_beta_s_nonradial_blue_pro_sw_red_anti_sw": true
+    },
+    "(fl, 0)": {
+      "float": [15, -15],
+      "pro": [70, -45]
+    },
+    "(0, 0)": {
+      "anti": [-20, -40],
+      "pro": [20, -100]
+    },
+    "(1.5, 1)": {
+      "anti": [0, -165]
+    },
+    "(0.5, 1)": {
+      "anti": [0, -95]
+    },
+    "(0, 3)": {
+      "anti": [0, -65],
+      "pro": [10, -125]
+    },
+    "(2, 2)": {
+      "pro": [5, -135]
+    },
+    "(3, 3)": {
+      "anti": [0, -105]
+    },
+    "(0, 1)": {
+      "pro": [25, -95]
+    },
+    "(0.5, 0.5)": {
+      "swap_beta_ne_nonradial_blue_pro_n_red_anti_n": true,
+      "swap_beta_se_nonradial_blue_pro_e_red_anti_e": true
+    },
+    "(0.5, 0)": {
+      "anti": [-10, -95]
+    },
+    "(1, 3)": {
+      "anti": [0, -95]
+    },
+    "(1, 1.5)": {
+      "pro": [40, 20]
+    },
+    "(0.5, 2)": {
+      "anti": [0, -85]
+    },
+    "(3, 2.5)": {
+      "pro": [25, 10],
+      "anti": [-15, 125]
+    },
+    "(3, 2)": {
+      "anti": [0, -100]
+    },
+    "(3, 1.5)": {
+      "pro": [70, 10]
+    },
+    "(3, 1)": {
+      "anti": [-15, -120]
+    },
+    "(3, 0.5)": {
+      "pro": [60, 5]
+    },
+    "(2.5, 0)": {
+      "anti": [-30, 15]
+    },
+    "(2, 0)": {
+      "anti": [0, -65],
+      "pro": [5, -115]
+    },
+    "(1.5, 0)": {
+      "anti": [-30, -10]
+    },
+    "(1, 0.5)": {
+      "pro": [75, -5]
+    },
+    "(1.5, 0.5)": {
+      "anti": [-30, 135]
+    },
+    "(2.5, 1)": {
+      "anti": [0, -130]
+    },
+    "(2.5, 1.5)": {
+      "pro": [-80, 15],
+      "anti": [35, 45]
+    },
+    "(2.5, 2)": {
+      "anti": [0, -130]
+    },
+    "(2.5, 3)": {
+      "anti": [-10, -125]
+    },
+    "(2, 3)": {
+      "pro": [20, -145]
+    },
+    "(2, 1)": {
+      "pro": [10, -120]
+    },
+    "(1.5, 1.5)": {
+      "pro": [10, -15],
+      "anti": [50, 70]
+    },
+    "(0.5, 1.5)": {
+      "pro": [-75, 20]
+    },
+    "(0, 2)": {
+      "pro": [0, -130]
+    },
+    "(1, 2)": {
+      "anti": [0, -95]
+    },
+    "(1.5, 2)": {
+      "anti": [0, -150]
+    },
+    "(1.5, 2.5)": {
+      "anti": [-15, 135]
+    },
+    "(1.5, 3)": {
+      "anti": [-10, -145]
+    },
+    "(1, 2.5)": {
+      "pro": [25, 20]
+    },
+    "(1, 1)": {
+      "anti": [-15, -110]
+    }
+  }
+}

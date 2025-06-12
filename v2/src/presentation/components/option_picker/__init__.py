@@ -105,11 +105,27 @@ class ModernOptionPicker(QObject):
         return widget
 
     def _create_sections(self):
+        """Create sections with proper parenting to avoid popup windows"""
+        if not self.sections_container:
+            print("❌ Sections container not ready - delaying section creation")
+            return
+
         for section_type in LetterType.ALL_TYPES:
-            section = OptionPickerSection(section_type)
+            # Create section with proper parent to avoid popup windows
+            section = OptionPickerSection(section_type, parent=self.sections_container)
             self._sections[section_type] = section
             if self.sections_layout:
                 self.sections_layout.addWidget(section)
+                print(f"✅ Created section {section_type} with proper parent")
+
+        # Ensure all sections are initially visible (fix for display issue)
+        self._ensure_sections_visible()
+
+    def _ensure_sections_visible(self):
+        """Ensure all section containers are visible (fix for display issue)"""
+        for section in self._sections.values():
+            if hasattr(section, "pictograph_container"):
+                section.pictograph_container.setVisible(True)
 
     def _load_beat_options(self) -> None:
         """Load beat options for the option picker."""
@@ -129,6 +145,9 @@ class ModernOptionPicker(QObject):
 
             self._beat_options = combinations
             self._update_beat_display()
+
+            # Ensure sections are visible after loading combinations
+            self._ensure_sections_visible()
 
             print(f"✅ Loaded {len(combinations)} motion combinations")
 
@@ -191,17 +210,46 @@ class ModernOptionPicker(QObject):
         self._update_beat_display()
 
     def _update_beat_display(self) -> None:
+        """Update beat display with proper parenting to avoid popup windows"""
         for section in self._sections.values():
             section.clear_pictographs()
 
         for beat in self._beat_options:
             if beat.letter:
                 letter_type = LetterType.get_letter_type(beat.letter)
-                frame = ClickablePictographFrame(beat)
-                frame.clicked.connect(self._handle_beat_click)
 
+                # Get the target section for proper parenting
                 if letter_type in self._sections:
-                    self._sections[letter_type].add_pictograph(frame)
+                    target_section = self._sections[letter_type]
+                    # Create frame with proper parent to avoid popup windows
+                    frame = ClickablePictographFrame(
+                        beat, parent=target_section.pictograph_container
+                    )
+                    frame.clicked.connect(self._handle_beat_click)
+                    target_section.add_pictograph(frame)
+                    print(
+                        f"✅ Added pictograph {beat.letter} to section {letter_type} with proper parent"
+                    )
+
+        # Force visibility after adding all pictographs
+        self._force_section_visibility()
+
+    def _force_section_visibility(self):
+        """Force all sections to be visible (aggressive fix for display issue)"""
+        from PyQt6.QtCore import QTimer
+
+        def make_visible():
+            for section in self._sections.values():
+                if hasattr(section, "pictograph_container"):
+                    section.pictograph_container.setVisible(True)
+                    section.pictograph_container.show()
+                    # Also ensure the section itself is visible
+                    section.setVisible(True)
+                    section.show()
+
+        # Call immediately and also with a delay to handle timing issuesYes
+        make_visible()
+        QTimer.singleShot(100, make_visible)
 
     def _handle_beat_click(self, beat_id: str) -> None:
         self.option_selected.emit(beat_id)

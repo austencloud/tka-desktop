@@ -1,0 +1,24 @@
+{
+  "θ-": {
+    "(s, 0, 2)": {
+      "dash_from_layer2": [0, -100]
+    },
+    "(s, 1, 1)": {
+      "dash_from_layer1": [5, -55]
+    },
+    "(s, 1.5, 1)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(o, 1.5, 0.5)": {
+      "pro_from_layer1": [-5, 35],
+      "dash_from_layer2": [65, -70]
+    },
+    "(o, 3, 0.5)": {
+      "pro_from_layer1": [-40, 0]
+    },
+    "(s, 2, 3)": {
+      "dash_from_layer2_rot_angle_override": true,
+      "dash_from_layer2": [-5, -140]
+    }
+  }
+}

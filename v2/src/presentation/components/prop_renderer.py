@@ -10,16 +10,15 @@ from PyQt6.QtCore import QPointF
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
-from .asset_utils import get_image_path
-from ...domain.models.core_models import (
-    MotionData,
-    Location,
-)
-from ...application.services.motion_orientation_service import (
+from src.domain.models.core_models import MotionData, Location
+
+from src.presentation.components.asset_utils import get_image_path
+
+from src.application.services.motion_orientation_service import (
     MotionOrientationService,
     Orientation,
 )
-from ...application.services.beta_prop_position_service import BetaPropPositionService
+from src.application.services.beta_prop_position_service import BetaPropPositionService
 
 
 class PropRenderer:
@@ -172,7 +171,6 @@ class PropRenderer:
         if "blue" not in self.rendered_props or "red" not in self.rendered_props:
             return
 
-        print("🔧 Applying beta prop positioning for overlapping props")
 
         # Calculate separation offsets
         blue_offset, red_offset = (
@@ -193,9 +191,7 @@ class PropRenderer:
         blue_prop.setPos(new_blue_pos)
         red_prop.setPos(new_red_pos)
 
-        print(
-            f"✅ Beta positioning applied: blue offset={blue_offset}, red offset={red_offset}"
-        )
+
 
     def clear_rendered_props(self) -> None:
         """Clear the rendered props cache."""

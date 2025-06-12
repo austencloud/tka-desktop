@@ -8,15 +8,16 @@ from typing import Optional
 from PyQt6.QtWidgets import QGraphicsScene
 from PyQt6.QtGui import QBrush, QColor
 
-from ...domain.models.core_models import BeatData
-from .grid_renderer import GridRenderer
-from .prop_renderer import PropRenderer
-from .arrow_renderer import ArrowRenderer
-from .letter_renderer import LetterRenderer
-from .elemental_glyph_renderer import ElementalGlyphRenderer
-from .vtg_glyph_renderer import VTGGlyphRenderer
-from .tka_glyph_renderer import TKAGlyphRenderer
-from .position_glyph_renderer import PositionGlyphRenderer
+from src.domain.models.core_models import BeatData
+
+from src.presentation.components.grid_renderer import GridRenderer
+from src.presentation.components.prop_renderer import PropRenderer
+from src.presentation.components.arrow_renderer import ArrowRenderer
+from src.presentation.components.letter_renderer import LetterRenderer
+from src.presentation.components.elemental_glyph_renderer import ElementalGlyphRenderer
+from src.presentation.components.vtg_glyph_renderer import VTGGlyphRenderer
+from src.presentation.components.tka_glyph_renderer import TKAGlyphRenderer
+from src.presentation.components.position_glyph_renderer import PositionGlyphRenderer
 
 
 class PictographScene(QGraphicsScene):

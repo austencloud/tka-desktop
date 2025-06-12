@@ -368,6 +368,11 @@ class BeatData:
             metadata=data.get("metadata", {}),
         )
 
+    @classmethod
+    def empty(cls) -> "BeatData":
+        """Create an empty beat data."""
+        return cls(is_blank=True)
+
 
 @dataclass(frozen=True)
 class SequenceData:
@@ -494,6 +499,11 @@ class SequenceData:
             start_position=data.get("start_position"),
             metadata=data.get("metadata", {}),
         )
+
+    @classmethod
+    def empty(cls) -> "SequenceData":
+        """Create an empty sequence."""
+        return cls(name="Empty Sequence", beats=[])
 
 
 # Example of how these models eliminate technical debt:

@@ -1,0 +1,72 @@
+{
+  "K": {
+    "(0, 0.5)": {
+      "blue": [45, -55],
+      "swap_beta_n_nonradial_blue_anti_nw_red_anti_ne": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_anti_sw": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_anti_sw": true,
+      "swap_beta_e_nonradial_blue_anti_se_red_anti_ne": true
+    },
+    "(0, 1.5)": {
+      "blue": [15, -60],
+      "swap_beta_w_nonradial_blue_anti_sw_red_anti_nw": true,
+      "swap_beta_s_nonradial_blue_anti_sw_red_anti_se": true,
+      "swap_beta_e_nonradial_blue_anti_ne_red_anti_se": true,
+      "swap_beta_n_nonradial_blue_anti_ne_red_anti_nw": true
+    },
+    "(0, 2.5)": {
+      "red": [-115, 35]
+    },
+    "(0.5, 0.5)": {
+      "blue": [-100, 70],
+      "red": [-105, 110]
+    },
+    "(0.5, 1.5)": {
+      "blue": [-50, 45]
+    },
+    "(0.5, 2.5)": {
+      "blue": [-65, 45]
+    },
+    "(1, 0.5)": {
+      "swap_beta_e_nonradial_blue_anti_se_red_anti_ne": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_anti_ne": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_anti_sw": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_anti_sw": true
+    },
+    "(1.5, 1.5)": {
+      "red": [-10, 65],
+      "blue": [-105, 115]
+    },
+    "(1.5, 2.5)": {
+      "red": [-105, 110]
+    },
+    "(2, 0.5)": {
+      "swap_beta_e_nonradial_blue_anti_se_red_anti_ne": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_anti_ne": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_anti_sw": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_anti_sw": true
+    },
+    "(2, 1.5)": {
+      "swap_beta_w_nonradial_blue_anti_sw_red_anti_nw": true,
+      "swap_beta_s_nonradial_blue_anti_sw_red_anti_se": true,
+      "swap_beta_n_nonradial_blue_anti_ne_red_anti_nw": true,
+      "swap_beta_e_nonradial_blue_anti_ne_red_anti_se": true
+    },
+    "(2, 2.5)": {
+      "swap_beta_e_nonradial_blue_anti_se_red_anti_ne": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_anti_ne": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_anti_sw": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_anti_sw": true
+    },
+    "(2.5, 0.5)": {
+      "red": [-105, 90],
+      "blue": [-120, 70]
+    },
+    "(2.5, 1.5)": {
+      "blue": [-65, 35]
+    },
+    "(2.5, 2.5)": {
+      "blue": [-90, 40]
+    }
+  }
+}

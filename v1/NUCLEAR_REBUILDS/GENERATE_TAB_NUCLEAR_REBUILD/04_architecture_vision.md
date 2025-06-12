@@ -145,7 +145,6 @@ class GlassmorphismTheme:
             background: rgba(255, 255, 255, {opacity});
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, {border_opacity});
-            backdrop-filter: blur({blur}px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         """
 
@@ -161,7 +160,6 @@ class GlassmorphismTheme:
                 color: white;
                 font-weight: 600;
                 padding: 12px 24px;
-                backdrop-filter: blur(20px);
             }
             QPushButton:hover {
                 background: linear-gradient(135deg,

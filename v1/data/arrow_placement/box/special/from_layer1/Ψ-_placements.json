@@ -1,0 +1,187 @@
+{
+  "Ψ-": {
+    "(s, 3, 0.5)": {
+      "red": [-95, -30],
+      "blue": [-20, -85]
+    },
+    "(s, 3, 2)": {
+      "red": [-70, -40],
+      "blue": [-60, -50]
+    },
+    "(s, 3, 2.5)": {
+      "blue": [0, -85],
+      "red": [-90, -10]
+    },
+    "(s, 3, 3)": {
+      "red": [0, 15]
+    },
+    "(s, 2.5, 3)": {
+      "blue": [-90, 0],
+      "red": [0, -85]
+    },
+    "(s, 0.5, 0.5)": {
+      "red": [-110, 0],
+      "blue": [-110, -80]
+    },
+    "(s, 0.5, 2)": {
+      "red": [-165, -75],
+      "blue": [-90, -70]
+    },
+    "(s, 0.5, 2.5)": {
+      "red": [-130, -60],
+      "blue": [-130, 10]
+    },
+    "(s, 0.5, 3)": {
+      "red": [0, -85],
+      "blue": [-90, -30]
+    },
+    "(s, 1, 2.5)": {
+      "red": [-90, -60],
+      "blue": [0, -15]
+    },
+    "(s, 1.5, 1.5)": {
+      "red": [65, -165]
+    },
+    "(s, 1.5, 2)": {
+      "red": [-105, -30],
+      "blue": [-20, -150]
+    },
+    "(s, 2, 3)": {
+      "blue": [-55, -40],
+      "red": [-40, -50]
+    },
+    "(s, 2, 2.5)": {
+      "red": [-75, -60],
+      "blue": [-145, -65]
+    },
+    "(s, 2, 1.5)": {
+      "blue": [-105, -45],
+      "red": [-10, -175]
+    },
+    "(s, 2, 0.5)": {
+      "red": [-50, -20]
+    },
+    "(s, 2.5, 0.5)": {
+      "red": [-110, 10],
+      "blue": [-110, -60]
+    },
+    "(s, 2.5, 1.5)": {
+      "red": [10, -150],
+      "blue": [-120, -35]
+    },
+    "(s, 2.5, 2)": {
+      "red": [-165, -45]
+    },
+    "(s, 2.5, 2.5)": {
+      "red": [-110, 0],
+      "blue": [-110, -80]
+    },
+    "(o, 1.5, 1.5)": {
+      "red": [10, -170],
+      "blue": [10, -170]
+    },
+    "(o, 1.5, 0.5)": {
+      "red": [-110, -40]
+    },
+    "(o, 2.5, 3)": {
+      "red": [0, -80]
+    },
+    "(o, 1.5, 1)": {
+      "blue": [-15, -150],
+      "red": [0, -5]
+    },
+    "(o, 1, 1.5)": {
+      "red": [-15, -150],
+      "blue": [0, -5]
+    },
+    "(s, 2.5, 1)": {
+      "red": [0, -20]
+    },
+    "(0, 0)": {
+      "swap_beta_s_radial_blue_dash_w_red_dash_e": true,
+      "swap_beta_e_radial_blue_dash_s_red_dash_n": true,
+      "swap_beta_sw_radial_blue_dash_se_red_dash_nw": true
+    },
+    "(o, 1, 1)": {
+      "swap_beta_w_radial_blue_dash_n_red_dash_s": true,
+      "swap_beta_s_radial_blue_dash_w_red_dash_e": true,
+      "swap_beta_n_radial_blue_dash_e_red_dash_w": true,
+      "swap_beta_e_radial_blue_dash_s_red_dash_n": true,
+      "swap_beta_sw_radial_blue_dash_se_red_dash_nw": true,
+      "swap_beta_se_radial_blue_dash_ne_red_dash_sw": true,
+      "swap_beta_ne_radial_blue_dash_se_red_dash_nw": true,
+      "swap_beta_nw_radial_blue_dash_ne_red_dash_sw": true
+    },
+    "(o, 2, 2)": {
+      "swap_beta_s_radial_blue_dash_w_red_dash_e": true
+    },
+    "(cw, 1, 0)": {
+      "swap_beta_sw_radial_blue_dash_se_red_dash_nw": true,
+      "swap_beta_se_radial_blue_dash_ne_red_dash_sw": true
+    },
+    "(ccw, 1, 0)": {
+      "swap_beta_s_radial_blue_dash_w_red_dash_e": true,
+      "swap_beta_w_radial_blue_dash_n_red_dash_s": true,
+      "swap_beta_n_radial_blue_dash_e_red_dash_w": true,
+      "swap_beta_e_radial_blue_dash_s_red_dash_n": true,
+      "swap_beta_nw_radial_blue_dash_ne_red_dash_sw": true,
+      "swap_beta_ne_radial_blue_dash_se_red_dash_nw": true
+    },
+    "(cw, 0, 1)": {
+      "swap_beta_e_radial_blue_dash_s_red_dash_n": true,
+      "swap_beta_n_radial_blue_dash_e_red_dash_w": true,
+      "swap_beta_w_radial_blue_dash_n_red_dash_s": true,
+      "swap_beta_s_radial_blue_dash_w_red_dash_e": true,
+      "swap_beta_nw_radial_blue_dash_ne_red_dash_sw": true,
+      "swap_beta_ne_radial_blue_dash_se_red_dash_nw": true
+    },
+    "(s, 1, 1)": {
+      "red": [-35, 10],
+      "swap_beta_ne_radial_blue_dash_nw_red_dash_nw": true,
+      "swap_beta_nw_radial_blue_dash_sw_red_dash_sw": true
+    },
+    "(o, 2, 3)": {
+      "swap_beta_ne_radial_blue_dash_se_red_dash_nw": true
+    },
+    "(cw, 2, 0)": {
+      "swap_beta_sw_radial_blue_dash_se_red_dash_nw": true,
+      "swap_beta_se_radial_blue_dash_ne_red_dash_sw": true
+    },
+    "(s, 1, 3)": {
+      "blue": [-20, 5]
+    },
+    "(s, 3, 1)": {
+      "red": [-20, 5]
+    },
+    "(s, 2, 2)": {
+      "red": [15, 50],
+      "blue": [-35, 95]
+    },
+    "(s, 2, 1)": {
+      "red": [5, 20]
+    },
+    "(s, 1, 2)": {
+      "blue": [5, 20]
+    },
+    "(ccw, 0, 1)": {
+      "swap_beta_sw_radial_blue_dash_se_red_dash_nw": true,
+      "swap_beta_se_radial_blue_dash_ne_red_dash_sw": true
+    },
+    "(o, 1, 2)": {
+      "swap_beta_ne_radial_blue_dash_se_red_dash_nw": true
+    },
+    "(cw, 0, 3)": {
+      "swap_beta_ne_radial_blue_dash_se_red_dash_nw": true
+    },
+    "(ccw, 0, 2)": {
+      "swap_beta_sw_radial_blue_dash_se_red_dash_nw": true,
+      "swap_beta_se_radial_blue_dash_ne_red_dash_sw": true
+    },
+    "(s, 0.5, 1)": {
+      "blue": [-50, 80]
+    },
+    "(s, 1, 0.5)": {
+      "red": [-50, 80]
+    }
+  }
+}

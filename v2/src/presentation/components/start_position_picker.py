@@ -18,8 +18,9 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QFont
 
+from src.presentation.components.pictograph_component import PictographComponent
+
 from ...domain.models.core_models import BeatData
-from ..components.pictograph_component import PictographComponent
 from ...application.services.pictograph_dataset_service import PictographDatasetService
 
 
@@ -222,3 +223,50 @@ class StartPositionPicker(QWidget):
         """Handle position selection and emit signal."""
         print(f"🎯 Start position selected: {position_key}")
         self.start_position_selected.emit(position_key)
+
+    def update_layout_for_size(self, container_size):
+        """Update layout based on container size to ensure all positions fit horizontally"""
+        if not self.position_options:
+            return
+
+        container_width = container_size.width()
+
+        # Calculate optimal layout based on container width
+        total_positions = len(self.position_options)
+        position_width = 220  # Fixed width per position
+        total_width_needed = (
+            total_positions * position_width + (total_positions - 1) * 15
+        )  # 15px spacing
+
+        # Clear current layout
+        for i in reversed(range(self.positions_layout.count())):
+            item = self.positions_layout.itemAt(i)
+            if item:
+                widget = item.widget()
+                if widget:
+                    widget.setParent(None)
+
+        # If we have enough width, arrange horizontally like v1
+        if container_width >= total_width_needed + 100:  # +100 for margins
+            # Single row layout
+            for i, option in enumerate(self.position_options):
+                self.positions_layout.addWidget(option, 0, i)
+        else:
+            # Calculate optimal grid based on available width
+            max_cols = max(1, (container_width - 100) // (position_width + 15))
+
+            for i, option in enumerate(self.position_options):
+                row = i // max_cols
+                col = i % max_cols
+                self.positions_layout.addWidget(option, row, col)
+
+        # Update container
+        self.positions_container.update()
+
+    def get_current_grid_mode(self) -> str:
+        """Get the current grid mode."""
+        return self.current_grid_mode
+
+    def set_grid_mode(self, grid_mode: str):
+        """Public method to set grid mode."""
+        self._set_grid_mode(grid_mode)

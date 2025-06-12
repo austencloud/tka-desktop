@@ -11,8 +11,8 @@ from PyQt6.QtWidgets import QGraphicsItemGroup
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
-from domain.models.core_models import LetterType
-from presentation.components.asset_utils import get_image_path
+from src.domain.models.core_models import LetterType
+from src.presentation.components.asset_utils import get_image_path
 
 
 class TKAGlyphRenderer:

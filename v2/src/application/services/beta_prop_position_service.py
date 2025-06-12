@@ -10,8 +10,8 @@ from typing import Tuple
 from PyQt6.QtCore import QPointF
 from enum import Enum
 
-from ...domain.models.core_models import BeatData, MotionData, MotionType, Location
-from .beta_prop_swap_service import BetaPropSwapService
+from src.application.services.beta_prop_swap_service import BetaPropSwapService
+from src.domain.models.core_models import BeatData, MotionData, MotionType, Location
 
 
 class PropCategory(Enum):
@@ -201,7 +201,6 @@ class BetaPropPositionService:
         if should_swap:
             # Swap the directions (V1 swap behavior)
             blue_direction, red_direction = red_direction, blue_direction
-            print(f"🔄 Applied beta prop swap override - directions swapped")
 
         # Convert directions to offset vectors
         blue_offset = self._direction_to_offset(

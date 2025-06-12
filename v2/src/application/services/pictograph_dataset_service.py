@@ -45,20 +45,17 @@ class PictographDatasetService:
             
             if diamond_path.exists():
                 self._diamond_dataset = pd.read_csv(diamond_path)
-                print(f"✅ Loaded diamond dataset: {len(self._diamond_dataset)} entries")
             else:
                 print(f"❌ Diamond dataset not found: {diamond_path}")
                 
             if box_path.exists():
                 self._box_dataset = pd.read_csv(box_path)
-                print(f"✅ Loaded box dataset: {len(self._box_dataset)} entries")
             else:
                 print(f"❌ Box dataset not found: {box_path}")
                 
             # Combine datasets
             if self._diamond_dataset is not None and self._box_dataset is not None:
                 self._combined_dataset = pd.concat([self._diamond_dataset, self._box_dataset], ignore_index=True)
-                print(f"✅ Combined dataset: {len(self._combined_dataset)} total entries")
             elif self._diamond_dataset is not None:
                 self._combined_dataset = self._diamond_dataset
             elif self._box_dataset is not None:
@@ -108,7 +105,6 @@ class PictographDatasetService:
             # Convert to BeatData
             beat_data = self._dataset_entry_to_beat_data(entry)
             
-            print(f"✅ Found start position {position_key}: letter='{beat_data.letter}', blue={entry['blue_start_loc']}→{entry['blue_end_loc']}, red={entry['red_start_loc']}→{entry['red_end_loc']}")
             
             return beat_data
             

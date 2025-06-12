@@ -34,10 +34,13 @@ class SvgColorHandler:
         )
         fill_pattern = re.compile(r'(fill=")(#[a-fA-F0-9]{6})(")')
 
-        def replace_color(match):
+        def replace_class_color(match):
             return match.group(1) + new_hex_color + match.group(4)
 
-        svg_data = class_color_pattern.sub(replace_color, svg_data)
-        svg_data = fill_pattern.sub(replace_color, svg_data)
+        def replace_fill_color(match):
+            return match.group(1) + new_hex_color + match.group(3)
+
+        svg_data = class_color_pattern.sub(replace_class_color, svg_data)
+        svg_data = fill_pattern.sub(replace_fill_color, svg_data)
 
         return svg_data

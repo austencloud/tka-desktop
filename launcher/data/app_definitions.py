@@ -10,10 +10,9 @@ class AppPriority(Enum):
 
 
 class AppCategory(Enum):
-    MAIN = "main"
-    DEVELOPMENT = "development"
-    UTILITIES = "utilities"
-    TESTING = "testing"
+    MAIN_APPLICATIONS = "main_applications"
+    DEVELOPMENT_TOOLS = "development_tools"
+    SYSTEM_UTILITIES = "system_utilities"
 
 
 class AppDefinition:
@@ -52,7 +51,7 @@ class AppDefinitions:
             title="V1 Main Application",
             description="Production kinetic constructor with full feature set",
             icon="🚀",
-            category=AppCategory.MAIN,
+            category=AppCategory.MAIN_APPLICATIONS,
             priority=AppPriority.PRIMARY,
             script_path="v1/main.py",
             working_dir=".",
@@ -61,35 +60,35 @@ class AppDefinitions:
             tags=["production", "main", "v1"],
         ),
         AppDefinition(
-            title="V2 Architecture Demo",
-            description="Next-generation architecture preview",
-            icon="⚡",
-            category=AppCategory.MAIN,
+            title="V2 Main Application",
+            description="Next-generation kinetic constructor with modern architecture",
+            icon="🚀",
+            category=AppCategory.MAIN_APPLICATIONS,
             priority=AppPriority.PRIMARY,
-            script_path="v2/demo_new_architecture.py",
+            script_path="v2/main.py",
             working_dir=".",
             env={"PYTHONPATH": "v2"},
             keyboard_shortcut="Ctrl+2",
-            tags=["preview", "v2", "architecture"],
+            tags=["v2", "modern", "main"],
         ),
         AppDefinition(
-            title="Construct Workspace",
-            description="Standalone beat sequence construction",
-            icon="🔨",
-            category=AppCategory.UTILITIES,
+            title="Construct Tab",
+            description="Standalone construct tab component",
+            icon="🔧",
+            category=AppCategory.SYSTEM_UTILITIES,
             priority=AppPriority.SECONDARY,
             script_path="v1/src/standalone/core/launcher.py",
             working_dir=".",
             args=["construct"],
             env={"PYTHONPATH": "v1/src"},
-            keyboard_shortcut="Ctrl+C",
-            tags=["construct", "beats", "sequence"],
+            keyboard_shortcut="Ctrl+Shift+C",
+            tags=["construct", "component"],
         ),
         AppDefinition(
-            title="Generate Workspace",
+            title="Sequence Generator",
             description="Automated sequence generation tools",
             icon="✨",
-            category=AppCategory.UTILITIES,
+            category=AppCategory.SYSTEM_UTILITIES,
             priority=AppPriority.SECONDARY,
             script_path="v1/src/standalone/core/launcher.py",
             working_dir=".",
@@ -99,10 +98,10 @@ class AppDefinitions:
             tags=["generate", "automation"],
         ),
         AppDefinition(
-            title="Browse Library",
+            title="Browse Tab",
             description="Sequence library browser and manager",
             icon="📚",
-            category=AppCategory.UTILITIES,
+            category=AppCategory.SYSTEM_UTILITIES,
             priority=AppPriority.SECONDARY,
             script_path="v1/src/standalone/core/launcher.py",
             working_dir=".",
@@ -118,55 +117,12 @@ class AppDefinitions:
             title="System Health Check",
             description="Comprehensive development environment validation",
             icon="🎯",
-            category=AppCategory.DEVELOPMENT,
+            category=AppCategory.DEVELOPMENT_TOOLS,
             priority=AppPriority.PRIMARY,
             script_path="unified_dev_test.py",
             working_dir=".",
             keyboard_shortcut="F5",
             tags=["health", "validation", "testing"],
-        ),
-        AppDefinition(
-            title="V2 Architecture Test",
-            description="Validate V2 system components and rendering",
-            icon="🧪",
-            category=AppCategory.TESTING,
-            priority=AppPriority.SECONDARY,
-            script_path="v2/test_final_complete.py",
-            working_dir=".",
-            env={"PYTHONPATH": "v2"},
-            keyboard_shortcut="F6",
-            tags=["v2", "testing", "validation"],
-        ),
-        AppDefinition(
-            title="Pictograph Renderer",
-            description="Test pictograph generation and positioning",
-            icon="🖼️",
-            category=AppCategory.TESTING,
-            priority=AppPriority.SECONDARY,
-            script_path="v2/test_pictograph_rendering.py",
-            working_dir=".",
-            env={"PYTHONPATH": "v2"},
-            tags=["pictograph", "rendering", "visual"],
-        ),
-        AppDefinition(
-            title="Debug Pictograph",
-            description="Debug pictograph rendering with breakpoints",
-            icon="🐛",
-            category=AppCategory.TESTING,
-            priority=AppPriority.DEBUG,
-            command=[
-                "python",
-                "-m",
-                "debugpy",
-                "--listen",
-                "5684",
-                "--wait-for-client",
-                "v2/test_pictograph_rendering.py",
-            ],
-            working_dir=".",
-            env={"PYTHONPATH": "v2"},
-            keyboard_shortcut="F7",
-            tags=["debug", "pictograph", "breakpoints"],
         ),
     ]
 

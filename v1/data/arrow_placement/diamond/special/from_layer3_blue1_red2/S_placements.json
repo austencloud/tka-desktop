@@ -1,0 +1,76 @@
+{
+  "S": {
+    "(0, 2.5)": {
+      "red_leading": [20, 25]
+    },
+    "(0.5, 1)": {
+      "blue_trailing": [30, 40]
+    },
+    "(0.5, 2)": {
+      "blue_trailing": [45, 50]
+    },
+    "(1, 1.5)": {
+      "blue_leading": [-10, 0]
+    },
+    "(1.5, 1.5)": {
+      "blue_leading": [20, 35],
+      "red_trailing": [-80, 120],
+      "blue_trailing": [-15, 15]
+    },
+    "(2, 1)": {
+      "red_leading": [-70, 55]
+    },
+    "(2, 2.5)": {
+      "red_leading": [-70, 35]
+    },
+    "(0, 0)": {
+      "red_leading": [5, 25]
+    },
+    "(0.5, 0)": {
+      "red_leading": [30, -30],
+      "leading": [40, -15]
+    },
+    "(0.5, 0.5)": {
+      "red_leading": [-55, 30],
+      "blue_trailing": [5, 50]
+    },
+    "(0.5, 3)": {
+      "blue_trailing": [-25, 65]
+    },
+    "(1.5, 0.5)": {
+      "red_leading": [-70, 35]
+    },
+    "(3, 2.5)": {
+      "blue_trailing": [-50, -20],
+      "red_leading": [-75, 40]
+    },
+    "(3, 1)": {
+      "red_trailing": [-65, 40],
+      "blue_leading": [0, 10]
+    },
+    "(3, 1.5)": {
+      "red_leading": [-100, 170]
+    },
+    "(1.5, 2.5)": {
+      "blue_trailing": [-10, -15]
+    },
+    "(2.5, 0)": {
+      "red_leading": [20, -35]
+    },
+    "(2.5, 0.5)": {
+      "red_leading": [-60, 35],
+      "blue_trailing": [20, 50]
+    },
+    "(2.5, 1)": {
+      "blue_trailing": [55, 35]
+    },
+    "(2.5, 2)": {
+      "red_leading": [-70, -5],
+      "blue_trailing": [-10, 45]
+    },
+    "(0, 0.5)": {
+      "leading_from_layer2": null,
+      "trailing_from_layer1": null
+    }
+  }
+}

@@ -8,7 +8,7 @@ import os
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
-from .asset_utils import get_image_path
+from src.presentation.components.asset_utils import get_image_path
 
 
 class GridRenderer:

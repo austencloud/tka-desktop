@@ -1,0 +1,41 @@
+{
+  "Γ": {
+    "(0, 1, cl)": {
+      "static_from_layer1_rot_angle_override": true,
+      "red": [-70, 0]
+    },
+    "(0, 3, cl)": {
+      "static_from_layer1_rot_angle_override": true
+    },
+    "(o, 0.5, 1, cl, cl)": {
+      "static_from_layer1_rot_angle_override": true,
+      "red": [-70, 0]
+    },
+    "(s, 2.5, 3, cl, op)": {},
+    "(o, 1.5, 1, cl, cl)": {
+      "static_from_layer1_rot_angle_override": true,
+      "red": [-70, 0]
+    },
+    "(o, 2, 1, cl, cl)": {
+      "static_from_layer1_rot_angle_override": true,
+      "red": [-70, 0]
+    },
+    "(o, 2, 3, cl, cl)": {
+      "static_from_layer1_rot_angle_override": true
+    },
+    "(o, 2.5, 1, cl, cl)": {
+      "static_from_layer1_rot_angle_override": true,
+      "red": [-70, 0]
+    },
+    "(o, 2.5, 3, cl, cl)": {
+      "static_from_layer1_rot_angle_override": true
+    },
+    "(o, 3, 1, cl, cl)": {
+      "static_from_layer1_rot_angle_override": true,
+      "red": [-70, 0]
+    },
+    "(o, 3, 3, cl, cl)": {
+      "static_from_layer1_rot_angle_override": true
+    }
+  }
+}

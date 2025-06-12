@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QSizePolicy
 from PyQt6.QtCore import pyqtSignal, Qt
 from ....domain.models.core_models import BeatData
-from ..pictograph_component import PictographComponent
+from src.presentation.components.pictograph_component import PictographComponent
 
 
 class ClickablePictographFrame(QFrame):
@@ -20,7 +20,8 @@ class ClickablePictographFrame(QFrame):
         layout.setContentsMargins(3, 3, 3, 3)
         layout.setSpacing(0)
 
-        self.pictograph_component = PictographComponent()
+        # Create pictograph component with proper parent
+        self.pictograph_component = PictographComponent(parent=self)
         self.pictograph_component.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
@@ -41,6 +42,10 @@ class ClickablePictographFrame(QFrame):
             }
         """
         )
+
+        # Ensure frame and component are visible
+        self.show()
+        self.pictograph_component.show()
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:

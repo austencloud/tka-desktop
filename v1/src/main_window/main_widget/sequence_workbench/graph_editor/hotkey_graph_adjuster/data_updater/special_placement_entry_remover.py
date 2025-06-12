@@ -149,9 +149,10 @@ class SpecialPlacementEntryRemover:
         return self.special_placement_loader.load_json_data(file_path)
 
     def _generate_file_path(self, ori_key: str, letter: Letter, grid_mode: str) -> str:
-        file_path = os.path.join(
-            "src",
-            "data",
+        # Use V1-specific path structure
+        from utils.path_helpers import get_data_path
+
+        relative_path = os.path.join(
             "arrow_placement",
             grid_mode,
             "special",
@@ -159,7 +160,7 @@ class SpecialPlacementEntryRemover:
             f"{letter.value}_placements.json",
         )
 
-        return file_path
+        return get_data_path(relative_path)
 
     def _get_other_color(self, color: str) -> str:
         return RED if color == BLUE else BLUE

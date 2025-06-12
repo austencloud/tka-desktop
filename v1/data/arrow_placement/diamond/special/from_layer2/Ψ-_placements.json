@@ -1,0 +1,149 @@
+{
+  "Ψ-": {
+    "(ccw, 0, 3)": {
+      "red_rot_angle_override": true
+    },
+    "(cw, 0, 3)": {
+      "red_rot_angle_override": true
+    },
+    "(s, 0.5, 0.5)": {
+      "red": [55, 25]
+    },
+    "(cw, 1, 0)": {
+      "blue": [-20, -125],
+      "blue_rot_angle_override": true
+    },
+    "(ccw, 1, 0)": {
+      "blue": [-20, -125],
+      "blue_rot_angle_override": true
+    },
+    "(ccw, 3, 0)": {
+      "blue": [-10, -130]
+    },
+    "(cw, 3, 0)": {
+      "blue": [-10, -130]
+    },
+    "(s, 3, 1)": {
+      "red_rot_angle_override": true
+    },
+    "(s, 3, 1.5)": {
+      "blue": [-35, -155]
+    },
+    "(s, 1.5, 3)": {
+      "red": [-35, -155]
+    },
+    "(s, 3, 2)": {
+      "red": [-20, -25],
+      "blue_rot_angle_override": true
+    },
+    "(s, 2, 3)": {
+      "blue": [-20, -25]
+    },
+    "(s, 3, 2.5)": {
+      "red": [85, -50],
+      "blue": [-30, -125]
+    },
+    "(s, 2.5, 3)": {
+      "red": [-30, -125]
+    },
+    "(s, 3, 3)": {
+      "blue_rot_angle_override": true,
+      "red": [-35, -170],
+      "blue": [-55, -130]
+    },
+    "(o, 3, 3)": {
+      "blue": [-10, -135],
+      "red": [-10, -135]
+    },
+    "(o, 0.5, 1)": {
+      "red_rot_angle_override": true,
+      "red": [0, -125]
+    },
+    "(o, 1, 0.5)": {
+      "blue_rot_angle_override": true,
+      "blue": [0, -125]
+    },
+    "(o, 0.5, 3)": {
+      "red_rot_angle_override": true,
+      "red": [-10, -105]
+    },
+    "(o, 3, 0.5)": {
+      "blue_rot_angle_override": true,
+      "blue": [-10, -105]
+    },
+    "(o, 1, 1.5)": {
+      "blue_rot_angle_override": true,
+      "blue": [-40, -125]
+    },
+    "(o, 1.5, 1)": {
+      "red_rot_angle_override": true,
+      "red": [-40, -125]
+    },
+    "(o, 1, 2)": {
+      "blue_rot_angle_override": true
+    },
+    "(o, 2, 1)": {
+      "blue_rot_angle_override": true,
+      "blue": [-20, -40]
+    },
+    "(o, 1, 2.5)": {
+      "blue_rot_angle_override": true,
+      "blue": [0, -125]
+    },
+    "(o, 2.5, 1)": {
+      "red_rot_angle_override": true,
+      "red": [0, -125]
+    },
+    "(o, 1.5, 1.5)": {
+      "red": [25, -150],
+      "blue": [25, -150],
+      "swap_beta_s_radial_blue_dash_e_red_dash_w": true,
+      "swap_beta_w_radial_blue_dash_s_red_dash_n": true,
+      "swap_beta_n_radial_blue_dash_w_red_dash_e": true,
+      "swap_beta_e_radial_blue_dash_n_red_dash_s": true
+    },
+    "(o, 1.5, 2)": {
+      "red": [0, -20]
+    },
+    "(o, 2, 1.5)": {
+      "blue": [0, -20]
+    },
+    "(o, 1.5, 2.5)": {
+      "red": [65, -10]
+    },
+    "(o, 2.5, 1.5)": {
+      "blue": [65, -10]
+    },
+    "(o, 1.5, 3)": {
+      "red_rot_angle_override": true,
+      "red": [-15, -105]
+    },
+    "(o, 3, 1.5)": {
+      "blue_rot_angle_override": true,
+      "blue": [-15, -105]
+    },
+    "(o, 2, 3)": {
+      "red_rot_angle_override": true,
+      "red": [-45, -100]
+    },
+    "(o, 3, 2)": {
+      "blue_rot_angle_override": true,
+      "blue": [-45, -100]
+    },
+    "(o, 3, 2.5)": {
+      "blue_rot_angle_override": true,
+      "blue": [-5, -125]
+    },
+    "(o, 2.5, 3)": {
+      "red_rot_angle_override": true
+    },
+    "(cw, 0, 1)": {
+      "blue": [40, 0],
+      "swap_beta_e_nonradial_blue_dash_s_red_dash_n": true,
+      "swap_beta_n_nonradial_blue_dash_e_red_dash_w": true
+    },
+    "(ccw, 0, 1)": {
+      "red": [40, 0]
+    }
+  }
+}

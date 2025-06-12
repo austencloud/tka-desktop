@@ -1,0 +1,258 @@
+{
+  "Z-": {
+    "(s, 0, 1)": {
+      "dash": [-25, -145],
+      "anti": [70, -60],
+      "swap_beta_e_nonradial_blue_anti_se_red_dash_n": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_dash_s": true,
+      "dash_rot_angle_override": true
+    },
+    "(ccw, 0, 1)": {
+      "swap_beta_w_nonradial_blue_anti_nw_red_dash_n": true,
+      "swap_beta_e_nonradial_blue_anti_se_red_dash_s": true,
+      "swap_beta_w_nonradial_blue_dash_n_red_anti_nw": true,
+      "swap_beta_e_nonradial_blue_dash_s_red_anti_se": true
+    },
+    "(cw, 0, 1)": {
+      "swap_beta_s_nonradial_blue_dash_e_red_anti_se": true,
+      "swap_beta_n_nonradial_blue_dash_w_red_anti_nw": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_dash_e": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_dash_w": true
+    },
+    "(ccw, 0, 3)": {},
+    "(cw, 0, 3)": {},
+    "(s, 0.5, 3)": {
+      "anti": [-85, 45],
+      "dash_rot_angle_override": true,
+      "dash": [-5, -110],
+      "dash_to_layer2_rot_angle_override": true
+    },
+    "(s, 0.5, 0.5)": {
+      "dash": [50, -40]
+    },
+    "(s, 0.5, 1)": {
+      "dash_rot_angle_override": true,
+      "anti": [-60, 65],
+      "dash_to_layer2_rot_angle_override": true,
+      "dash": [0, -125]
+    },
+    "(s, 0.5, 1.5)": {
+      "anti": [-90, 25]
+    },
+    "(s, 1.5, 3)": {
+      "dash_rot_angle_override": true,
+      "dash": [-5, -90],
+      "anti": [-70, 125],
+      "dash_to_layer2_rot_angle_override": true
+    },
+    "(s, 1.5, 1)": {
+      "dash_rot_angle_override": true,
+      "anti": [-70, 125],
+      "dash": [-20, -105],
+      "dash_to_layer2_rot_angle_override": true
+    },
+    "(s, 1.5, 1.5)": {
+      "dash": [25, -140],
+      "anti": [-75, 65]
+    },
+    "(s, 1.5, 2)": {
+      "dash": [-30, -45]
+    },
+    "(s, 1.5, 2.5)": {
+      "dash": [45, -30]
+    },
+    "(s, 2.5, 1)": {
+      "dash_rot_angle_override": true,
+      "anti": [-90, 65],
+      "dash": [-10, -125],
+      "dash_to_layer2_rot_angle_override": true
+    },
+    "(s, 2.5, 1.5)": {
+      "anti": [-90, 20]
+    },
+    "(s, 2.5, 3)": {
+      "dash_rot_angle_override": true,
+      "dash": [0, -105],
+      "dash_to_layer2_rot_angle_override": true
+    },
+    "(s, 2, 3)": {
+      "dash_rot_angle_override": true,
+      "swap_beta_s_nonradial_blue_dash_w_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_dash_s": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_dash_w": true,
+      "swap_beta_e_nonradial_blue_anti_se_red_dash_n": true,
+      "swap_beta_n_nonradial_blue_dash_e_red_anti_nw": true,
+      "swap_beta_w_nonradial_blue_dash_s_red_anti_nw": true,
+      "swap_beta_e_nonradial_blue_dash_n_red_anti_se": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_dash_e": true
+    },
+    "(s, 1, 3)": {
+      "dash_rot_angle_override": true
+    },
+    "(s, 3, 3)": {
+      "dash_rot_angle_override": true,
+      "swap_beta_s_nonradial_blue_dash_w_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_dash_s": true,
+      "swap_beta_n_nonradial_blue_dash_e_red_anti_nw": true,
+      "swap_beta_e_nonradial_blue_anti_se_red_dash_n": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_dash_w": true,
+      "swap_beta_w_nonradial_blue_dash_s_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_dash_e": true,
+      "swap_beta_e_nonradial_blue_dash_n_red_anti_se": true
+    },
+    "(s, 3, 2)": {
+      "swap_beta_s_nonradial_blue_dash_w_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_dash_s": true,
+      "swap_beta_n_nonradial_blue_dash_e_red_anti_nw": true,
+      "swap_beta_e_nonradial_blue_anti_se_red_dash_n": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_dash_w": true,
+      "swap_beta_w_nonradial_blue_dash_s_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_dash_e": true,
+      "swap_beta_e_nonradial_blue_dash_n_red_anti_se": true
+    },
+    "(cw, 0, 0.5)": {
+      "anti": [45, -60]
+    },
+    "(ccw, 0, 0.5)": {
+      "dash": [85, -35],
+      "anti": [-35, 25]
+    },
+    "(cw, 0, 1.5)": {
+      "anti": [0, 0]
+    },
+    "(cw, 0, 2)": {
+      "anti": [70, -55]
+    },
+    "(ccw, 0, 2)": {
+      "anti": [80, -50]
+    },
+    "(ccw, 0, 1.5)": {
+      "anti": [0, 0]
+    },
+    "(cw, 0, 2.5)": {
+      "anti": [30, -55]
+    },
+    "(ccw, 0, 2.5)": {
+      "anti": [10, -60]
+    },
+    "(o, 0.5, 3)": {
+      "dash": [0, -190]
+    },
+    "(o, 1.5, 0.5)": {
+      "dash": [75, -20]
+    },
+    "(o, 1.5, 1)": {
+      "dash": [-5, -100],
+      "anti": [-70, 125]
+    },
+    "(o, 1.5, 1.5)": {
+      "dash": [10, -170]
+    },
+    "(o, 1.5, 2)": {
+      "dash": [0, -40]
+    },
+    "(o, 1.5, 2.5)": {
+      "anti": [-105, 105],
+      "dash": [70, -15]
+    },
+    "(o, 1.5, 3)": {
+      "dash_rot_angle_override": true,
+      "dash": [-30, -115],
+      "anti": [-75, 130]
+    },
+    "(o, 2, 3)": {
+      "dash_rot_angle_override": true,
+      "swap_beta_s_nonradial_blue_dash_e_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_dash_n": true,
+      "swap_beta_n_nonradial_blue_dash_w_red_anti_nw": true,
+      "swap_beta_e_nonradial_blue_anti_se_red_dash_s": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_dash_e": true,
+      "swap_beta_w_nonradial_blue_dash_n_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_dash_w": true,
+      "swap_beta_e_nonradial_blue_dash_s_red_anti_se": true
+    },
+    "(o, 2.5, 0.5)": {
+      "anti": [-90, 45],
+      "dash": [80, 25]
+    },
+    "(o, 2.5, 1)": {
+      "anti": [-85, 50]
+    },
+    "(o, 2.5, 2)": {
+      "dash": [0, -25],
+      "anti": [-70, 75]
+    },
+    "(o, 2.5, 2.5)": {
+      "dash": [105, 10]
+    },
+    "(o, 2.5, 3)": {
+      "anti": [-70, 65],
+      "dash": [-10, -190]
+    },
+    "(o, 3, 3)": {
+      "dash_rot_angle_override": true,
+      "swap_beta_s_nonradial_blue_dash_e_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_dash_n": true,
+      "swap_beta_n_nonradial_blue_dash_w_red_anti_nw": true,
+      "swap_beta_e_nonradial_blue_anti_se_red_dash_s": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_dash_e": true,
+      "swap_beta_w_nonradial_blue_dash_n_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_dash_w": true,
+      "swap_beta_e_nonradial_blue_dash_s_red_anti_se": true
+    },
+    "(o, 3, 1)": {
+      "dash_rot_angle_override": true,
+      "swap_beta_s_nonradial_blue_dash_e_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_dash_n": true,
+      "swap_beta_n_nonradial_blue_dash_w_red_anti_nw": true,
+      "swap_beta_e_nonradial_blue_anti_se_red_dash_s": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_dash_e": true,
+      "swap_beta_w_nonradial_blue_dash_n_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_dash_w": true,
+      "swap_beta_e_nonradial_blue_dash_s_red_anti_se": true
+    },
+    "(o, 3, 2)": {
+      "swap_beta_s_nonradial_blue_dash_e_red_anti_se": true,
+      "swap_beta_w_nonradial_blue_anti_nw_red_dash_n": true,
+      "swap_beta_n_nonradial_blue_dash_w_red_anti_nw": true,
+      "swap_beta_e_nonradial_blue_anti_se_red_dash_s": true,
+      "swap_beta_s_nonradial_blue_anti_se_red_dash_e": true,
+      "swap_beta_w_nonradial_blue_dash_n_red_anti_nw": true,
+      "swap_beta_n_nonradial_blue_anti_nw_red_dash_w": true,
+      "swap_beta_e_nonradial_blue_dash_s_red_anti_se": true
+    },
+    "(2.5, 0)": {
+      "anti": [-90, 65]
+    },
+    "(o, 0, 0.5)": {
+      "anti": [50, -50]
+    },
+    "(0, 0)": {
+      "dash": [-20, 0]
+    },
+    "(s, 0, 1.5)": {
+      "anti": [0, 0]
+    },
+    "(s, 0, 3)": {
+      "dash_rot_angle_override": true
+    },
+    "(s, fl, 3)": {
+      "dash_to_layer2_rot_angle_override": true
+    },
+    "null": {
+      "dash_to_layer2_rot_angle_override": true
+    },
+    "(s, 1, 1)": {
+      "dash_rot_angle_override": true
+    },
+    "(s, 2, 1)": {
+      "dash_rot_angle_override": true
+    },
+    "(s, 3, 1)": {
+      "dash_rot_angle_override": true
+    },
+    "(o, 2, 2)": {
+      "swap_beta_s_nonradial_blue_dash_e_red_anti_se": true
+    }
+  }
+}
