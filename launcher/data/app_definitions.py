@@ -1,5 +1,19 @@
-from typing import List, Dict, Tuple, Callable, Optional
+from typing import List, Dict, Optional
+from enum import Enum
 from ..core.config import Paths
+
+
+class AppPriority(Enum):
+    PRIMARY = "primary"
+    SECONDARY = "secondary"
+    DEBUG = "debug"
+
+
+class AppCategory(Enum):
+    MAIN = "main"
+    DEVELOPMENT = "development"
+    UTILITIES = "utilities"
+    TESTING = "testing"
 
 
 class AppDefinition:
@@ -8,144 +22,138 @@ class AppDefinition:
         title: str,
         description: str,
         icon: str,
-        category: str,
+        category: AppCategory,
+        priority: AppPriority = AppPriority.SECONDARY,
         script_path: str = "",
         command: Optional[List[str]] = None,
         env: Optional[Dict[str, str]] = None,
         working_dir: str = "",
         args: Optional[List[str]] = None,
+        keyboard_shortcut: str = "",
+        tags: Optional[List[str]] = None,
     ):
         self.title = title
         self.description = description
         self.icon = icon
         self.category = category
+        self.priority = priority
         self.script_path = script_path
         self.command = command or []
         self.env = env or {}
         self.working_dir = working_dir
         self.args = args or []
+        self.keyboard_shortcut = keyboard_shortcut
+        self.tags = tags or []
 
 
 class AppDefinitions:
     APPLICATIONS = [
         AppDefinition(
-            title="🔧 V1 Main Application",
-            description="Launch the main V1 application",
-            icon="🔧",
-            category="applications",
-            script_path=str(Paths.V1_MAIN.relative_to(Paths.ROOT)),
+            title="V1 Main Application",
+            description="Production kinetic constructor with full feature set",
+            icon="🚀",
+            category=AppCategory.MAIN,
+            priority=AppPriority.PRIMARY,
+            script_path="v1/main.py",
             working_dir=".",
             env={"PYTHONPATH": "v1/src"},
+            keyboard_shortcut="Ctrl+1",
+            tags=["production", "main", "v1"],
         ),
         AppDefinition(
-            title="🆕 V2 Demo",
-            description="Launch the new V2 architecture demo",
-            icon="🆕",
-            category="applications",
-            script_path=str(Paths.V2_DEMO.relative_to(Paths.ROOT)),
+            title="V2 Architecture Demo",
+            description="Next-generation architecture preview",
+            icon="⚡",
+            category=AppCategory.MAIN,
+            priority=AppPriority.PRIMARY,
+            script_path="v2/demo_new_architecture.py",
             working_dir=".",
             env={"PYTHONPATH": "v2"},
+            keyboard_shortcut="Ctrl+2",
+            tags=["preview", "v2", "architecture"],
         ),
         AppDefinition(
-            title="🏗️ Construct Tab",
-            description="Launch standalone construct tab",
-            icon="🏗️",
-            category="applications",
+            title="Construct Workspace",
+            description="Standalone beat sequence construction",
+            icon="🔨",
+            category=AppCategory.UTILITIES,
+            priority=AppPriority.SECONDARY,
             script_path="v1/src/standalone/core/launcher.py",
             working_dir=".",
             args=["construct"],
             env={"PYTHONPATH": "v1/src"},
+            keyboard_shortcut="Ctrl+C",
+            tags=["construct", "beats", "sequence"],
         ),
         AppDefinition(
-            title="🎨 Generate Tab",
-            description="Launch standalone generate tab",
-            icon="🎨",
-            category="applications",
+            title="Generate Workspace",
+            description="Automated sequence generation tools",
+            icon="✨",
+            category=AppCategory.UTILITIES,
+            priority=AppPriority.SECONDARY,
             script_path="v1/src/standalone/core/launcher.py",
             working_dir=".",
             args=["generate"],
             env={"PYTHONPATH": "v1/src"},
+            keyboard_shortcut="Ctrl+G",
+            tags=["generate", "automation"],
         ),
         AppDefinition(
-            title="📖 Browse Tab",
-            description="Launch standalone browse tab",
-            icon="📖",
-            category="applications",
+            title="Browse Library",
+            description="Sequence library browser and manager",
+            icon="📚",
+            category=AppCategory.UTILITIES,
+            priority=AppPriority.SECONDARY,
             script_path="v1/src/standalone/core/launcher.py",
             working_dir=".",
             args=["browse"],
             env={"PYTHONPATH": "v1/src"},
+            keyboard_shortcut="Ctrl+B",
+            tags=["browse", "library", "search"],
         ),
     ]
 
-    DEV_TOOLS = [
+    DEVELOPMENT = [
         AppDefinition(
-            title="🧪 Run All Tests",
-            description="Execute complete test suite",
-            icon="🧪",
-            category="dev_tools",
-            command=["python", "-m", "pytest", "tests/"],
-            working_dir="v1",
-            env={"PYTHONPATH": "src"},
-        ),
-        AppDefinition(
-            title="🔧 Standalone Tests",
-            description="Run standalone system tests",
-            icon="🔧",
-            category="dev_tools",
-            command=["python", "-m", "pytest", "src/standalone/tests/"],
-            working_dir="v1",
-            env={"PYTHONPATH": "src"},
-        ),
-        AppDefinition(
-            title="📝 Format Code",
-            description="Format code with black",
-            icon="📝",
-            category="dev_tools",
-            command=["python", "-m", "black", "src/", "--line-length=88"],
-            working_dir="v1",
-        ),
-        AppDefinition(
-            title="🔍 Lint Code",
-            description="Run linting with flake8",
-            icon="🔍",
-            category="dev_tools",
-            command=[
-                "python",
-                "-m",
-                "flake8",
-                "src/",
-                "--max-line-length=88",
-                "--exclude=__pycache__,*.pyc",
-            ],
-            working_dir="v1",
-        ),
-        AppDefinition(
-            title="🧹 Clean Cache",
-            description="Clear Python cache files",
-            icon="🧹",
-            category="dev_tools",
-            command=[
-                "python",
-                "-c",
-                "import shutil, os; [shutil.rmtree(os.path.join(root, '__pycache__'), ignore_errors=True) for root, dirs, files in os.walk('.') if '__pycache__' in dirs]",
-            ],
+            title="System Health Check",
+            description="Comprehensive development environment validation",
+            icon="🎯",
+            category=AppCategory.DEVELOPMENT,
+            priority=AppPriority.PRIMARY,
+            script_path="unified_dev_test.py",
             working_dir=".",
+            keyboard_shortcut="F5",
+            tags=["health", "validation", "testing"],
         ),
         AppDefinition(
-            title="📊 V2 Test",
-            description="Test V2 architecture",
-            icon="📊",
-            category="dev_tools",
-            script_path="v2/test_simple.py",
+            title="V2 Architecture Test",
+            description="Validate V2 system components and rendering",
+            icon="🧪",
+            category=AppCategory.TESTING,
+            priority=AppPriority.SECONDARY,
+            script_path="v2/test_final_complete.py",
             working_dir=".",
             env={"PYTHONPATH": "v2"},
+            keyboard_shortcut="F6",
+            tags=["v2", "testing", "validation"],
         ),
         AppDefinition(
-            title="🎨 Pictograph Renderer Test (Debug)",
-            description="Test V2 pictograph rendering with VSCode debug support",
-            icon="🎨",
-            category="dev_tools",
+            title="Pictograph Renderer",
+            description="Test pictograph generation and positioning",
+            icon="🖼️",
+            category=AppCategory.TESTING,
+            priority=AppPriority.SECONDARY,
+            script_path="v2/test_pictograph_rendering.py",
+            working_dir=".",
+            env={"PYTHONPATH": "v2"},
+            tags=["pictograph", "rendering", "visual"],
+        ),
+        AppDefinition(
+            title="Debug Pictograph",
+            description="Debug pictograph rendering with breakpoints",
+            icon="🐛",
+            category=AppCategory.TESTING,
+            priority=AppPriority.DEBUG,
             command=[
                 "python",
                 "-m",
@@ -157,26 +165,30 @@ class AppDefinitions:
             ],
             working_dir=".",
             env={"PYTHONPATH": "v2"},
-        ),
-        AppDefinition(
-            title="🖼️ Pictograph Renderer Test",
-            description="Test V2 pictograph rendering (normal run)",
-            icon="🖼️",
-            category="dev_tools",
-            script_path="v2/test_pictograph_rendering.py",
-            working_dir=".",
-            env={"PYTHONPATH": "v2"},
+            keyboard_shortcut="F7",
+            tags=["debug", "pictograph", "breakpoints"],
         ),
     ]
 
     @classmethod
-    def get_by_category(cls, category: str) -> List[AppDefinition]:
-        if category == "applications":
-            return cls.APPLICATIONS
-        elif category == "dev_tools":
-            return cls.DEV_TOOLS
-        return []
+    def get_by_category(cls, category: AppCategory) -> List[AppDefinition]:
+        all_apps = cls.APPLICATIONS + cls.DEVELOPMENT
+        return [app for app in all_apps if app.category == category]
+
+    @classmethod
+    def get_by_priority(cls, priority: AppPriority) -> List[AppDefinition]:
+        all_apps = cls.APPLICATIONS + cls.DEVELOPMENT
+        return [app for app in all_apps if app.priority == priority]
+
+    @classmethod
+    def get_primary_apps(cls) -> List[AppDefinition]:
+        return cls.get_by_priority(AppPriority.PRIMARY)
+
+    @classmethod
+    def search_by_tags(cls, tags: List[str]) -> List[AppDefinition]:
+        all_apps = cls.APPLICATIONS + cls.DEVELOPMENT
+        return [app for app in all_apps if any(tag in app.tags for tag in tags)]
 
     @classmethod
     def get_all(cls) -> List[AppDefinition]:
-        return cls.APPLICATIONS + cls.DEV_TOOLS
+        return cls.APPLICATIONS + cls.DEVELOPMENT

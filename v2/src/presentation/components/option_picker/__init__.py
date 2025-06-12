@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QSizePolicy, QLabel
 from PyQt6.QtCore import pyqtSignal, QObject, Qt
 from PyQt6.QtGui import QFont
@@ -112,6 +112,33 @@ class ModernOptionPicker(QObject):
                 self.sections_layout.addWidget(section)
 
     def _load_beat_options(self) -> None:
+        """Load beat options for the option picker."""
+        # Options will be loaded when start position is selected
+        self._beat_options = []
+        self._update_beat_display()
+
+    def load_motion_combinations(self, sequence_data: List[Dict[str, Any]]) -> None:
+        """Load motion combinations based on sequence data."""
+        try:
+            from ....application.services.motion_combination_service import (
+                MotionCombinationService,
+            )
+
+            motion_service = MotionCombinationService()
+            combinations = motion_service.generate_motion_combinations(sequence_data)
+
+            self._beat_options = combinations
+            self._update_beat_display()
+
+            print(f"✅ Loaded {len(combinations)} motion combinations")
+
+        except Exception as e:
+            print(f"❌ Error loading motion combinations: {e}")
+            # Fallback to sample data
+            self._load_sample_beat_options()
+
+    def _load_sample_beat_options(self) -> None:
+        """Load sample beat options as fallback."""
         self._beat_options = [
             BeatData(
                 letter="A",

@@ -14,7 +14,7 @@ from PyQt6.QtCore import Qt
 from datetime import datetime
 from ..components.searchable_grid import SearchableGrid
 from ..components.animated_card import AnimatedCard
-from ...data.app_definitions import AppDefinitions
+from ...data.app_definitions import AppDefinitions, AppCategory
 from ..styles import StyleManager
 
 
@@ -95,9 +95,9 @@ class DashboardTab(QWidget):
         apps_grid.setSpacing(15)
 
         try:
-            from ...data.app_definitions import AppDefinitions
+            from ...data.app_definitions import AppDefinitions, AppCategory
 
-            apps = AppDefinitions.get_by_category("applications")[:6]
+            apps = AppDefinitions.get_by_category(AppCategory.MAIN)[:6]
 
             for i, app_def in enumerate(apps):
                 btn = self.create_app_button(app_def)
@@ -121,9 +121,9 @@ class DashboardTab(QWidget):
         dev_grid.setSpacing(12)
 
         try:
-            from ...data.app_definitions import AppDefinitions
+            from ...data.app_definitions import AppDefinitions, AppCategory
 
-            tools = AppDefinitions.get_by_category("dev_tools")[:10]
+            tools = AppDefinitions.get_by_category(AppCategory.DEVELOPMENT)[:10]
 
             for i, tool_def in enumerate(tools):
                 btn = self.create_app_button(tool_def, compact=True)
@@ -210,6 +210,10 @@ class DashboardTab(QWidget):
 
         self.recent_actions_manager.add_action(app_def.title)
 
+        # Update status immediately
+        if hasattr(self.parent(), "status_label"):
+            self.parent().status_label.setText(f"Launching {app_def.title}...")
+
         if app_def.script_path:
             process = self.process_manager.launch_or_restart_app(
                 app_def.title, app_def.script_path, app_def.args, app_def.env
@@ -221,8 +225,14 @@ class DashboardTab(QWidget):
 
         if not process:
             print(f"Failed to launch {app_def.title}")
+            if hasattr(self.parent(), "status_label"):
+                self.parent().status_label.setText(f"Failed to launch {app_def.title}")
         else:
             self.update_button_states()
+            if hasattr(self.parent(), "status_label"):
+                self.parent().status_label.setText(
+                    f"{app_def.title} launched successfully"
+                )
 
     def update_recent_actions(self):
         self.recent_list.clear()

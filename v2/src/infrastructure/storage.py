@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 import logging
 
 
@@ -35,7 +35,7 @@ class AssetManager:
     def asset_exists(self, filename: str) -> bool:
         return os.path.exists(self.get_asset_path(filename))
 
-    def list_assets(self, extension: str = None) -> list:
+    def list_assets(self, extension: Optional[str] = None) -> List[str]:
         assets = []
         for filename in os.listdir(self.assets_path):
             if extension is None or filename.endswith(extension):

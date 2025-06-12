@@ -32,6 +32,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QLabel,
     QPushButton,
+    QStackedWidget,
 )
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QFont
@@ -47,14 +48,7 @@ from src.core.interfaces.core_services import (
     ISequenceDataService,
     IValidationService,
 )
-from src.domain.models.core_models import (
-    SequenceData,
-    BeatData,
-    MotionData,
-    MotionType,
-    RotationDirection,
-    Location,
-)
+from src.domain.models.core_models import SequenceData
 from src.application.services.simple_sequence_service import (
     SequenceService,
     SimpleSequenceDataService,
@@ -62,6 +56,10 @@ from src.application.services.simple_sequence_service import (
     SimpleValidationService,
 )
 from src.presentation.components.option_picker import ModernOptionPicker
+from src.presentation.components.start_position_picker import StartPositionPicker
+from src.application.services.option_picker_state_service import (
+    OptionPickerStateService,
+)
 
 
 class SimpleLayoutService(ILayoutService):
@@ -120,11 +118,17 @@ class DemoMainWindow(QMainWindow):
         # Setup dependency injection container
         self.container = self._setup_dependency_injection()
 
+        # Setup state management
+        self.state_service = OptionPickerStateService()
+        self.state_service.state_changed.connect(self._handle_state_change)
+        self.state_service.start_position_set.connect(self._handle_start_position_set)
+        self.state_service.option_picker_ready.connect(self._handle_option_picker_ready)
+
         # Setup UI
         self._setup_ui()
 
-        # Initialize demo data
-        self._setup_demo_data()
+        # Initialize state
+        self.state_service.initialize()
 
     def _setup_dependency_injection(self) -> SimpleContainer:
         """
@@ -175,11 +179,26 @@ class DemoMainWindow(QMainWindow):
         workbench_area = self._create_workbench_area()
         content_layout.addWidget(workbench_area, 1)
 
-        # Option picker area - RIGHT SIDE
+        # Right side - Stacked widget for start position picker and option picker
+        self.right_stack = QStackedWidget()
+
+        # Start position picker
+        self.start_position_picker = StartPositionPicker()
+        self.start_position_picker.start_position_selected.connect(
+            self._handle_start_position_selected
+        )
+        self.right_stack.addWidget(self.start_position_picker)
+
+        # Option picker
         self.option_picker = ModernOptionPicker(self.container)
         self.option_picker.initialize()
         self.option_picker.option_selected.connect(self._handle_option_selected)
-        content_layout.addWidget(self.option_picker.widget, 1)
+        self.right_stack.addWidget(self.option_picker.widget)
+
+        # Start with start position picker
+        self.right_stack.setCurrentIndex(0)
+
+        content_layout.addWidget(self.right_stack, 1)
 
         main_layout.addLayout(content_layout, 1)  # Give content most of the space
 
@@ -281,52 +300,70 @@ class DemoMainWindow(QMainWindow):
 
         return workbench
 
-    def _setup_demo_data(self) -> None:
-        """Setup demo data to show the system working."""
-        try:
-            # Get sequence service through dependency injection
-            sequence_service = self.container.resolve(SequenceService)
+    def _handle_state_change(self, new_state: str) -> None:
+        """Handle state changes from the state service."""
+        print(f"🔄 State changed to: {new_state}")
 
-            # Create a demo sequence
-            demo_sequence = sequence_service.create_new_sequence("Demo Sequence")
+        if new_state == "start_position_selection":
+            self.right_stack.setCurrentIndex(0)  # Show start position picker
+        elif new_state in ["option_picker_active", "sequence_building"]:
+            self.right_stack.setCurrentIndex(1)  # Show option picker
 
-            # Add a demo beat
-            demo_beat = BeatData(
-                letter="A",
-                duration=1.0,
-                blue_motion=MotionData(
-                    motion_type=MotionType.PRO,
-                    prop_rot_dir=RotationDirection.CLOCKWISE,
-                    start_loc=Location.NORTH,
-                    end_loc=Location.EAST,
-                    turns=1.0,
-                ),
-                red_motion=MotionData(
-                    motion_type=MotionType.DASH,
-                    prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
-                    start_loc=Location.SOUTH,
-                    end_loc=Location.WEST,
-                    turns=0.5,
-                ),
+    def _handle_start_position_set(self, position_key: str) -> None:
+        """Handle start position being set."""
+        print(f"✅ Start position set: {position_key}")
+
+        # Load motion combinations based on the selected start position
+        sequence_data = self.state_service.sequence_data
+        self.option_picker.load_motion_combinations(sequence_data)
+
+    def _handle_option_picker_ready(self) -> None:
+        """Handle option picker being ready to show."""
+        print("🎯 Option picker ready - switching to option picker view")
+        self.right_stack.setCurrentIndex(1)
+
+    def _handle_start_position_selected(self, position_key: str) -> None:
+        """Handle start position selection from the picker."""
+        print(f"🎯 Start position selected: {position_key}")
+        self.state_service.select_start_position(position_key)
+
+        # Update sequence display
+        self._update_sequence_display_from_state()
+
+    def _update_sequence_display_from_state(self) -> None:
+        """Update sequence display from state service data."""
+        sequence_data = self.state_service.sequence_data
+
+        if len(sequence_data) <= 1:
+            self.sequence_display.setText(
+                "No sequence started - select a start position!"
             )
+            return
 
-            updated_sequence = sequence_service.add_beat_to_sequence(demo_beat)
-            self._update_sequence_display(updated_sequence)
+        display_text = "Sequence Progress:\n\n"
 
-            print("✅ Demo data created using clean service layer!")
+        if len(sequence_data) > 1:
+            start_pos_data = sequence_data[1]
+            display_text += (
+                f"Start Position: {start_pos_data.get('letter', 'Unknown')}\n"
+            )
+            display_text += f"Position: {start_pos_data.get('end_pos', 'Unknown')}\n\n"
 
-        except Exception as e:
-            print(f"❌ Error setting up demo data: {e}")
+        if len(sequence_data) > 2:
+            display_text += "Beats:\n"
+            for i, beat_data in enumerate(sequence_data[2:], 1):
+                display_text += f"  Beat {i}: {beat_data.get('letter', 'Unknown')}\n"
+        else:
+            display_text += "Ready to add beats - choose from the option picker!"
+
+        self.sequence_display.setText(display_text)
 
     def _create_new_sequence(self) -> None:
         """Create a new sequence."""
         try:
-            sequence_service = self.container.resolve(SequenceService)
-            new_sequence = sequence_service.create_new_sequence("New Sequence")
-            self._update_sequence_display(new_sequence)
-
-            # Refresh option picker
-            self.option_picker.refresh_options()
+            # Reset state service to start position selection
+            self.state_service.reset_to_start_position_selection()
+            self._update_sequence_display_from_state()
 
             print("✅ New sequence created!")
 
@@ -334,14 +371,12 @@ class DemoMainWindow(QMainWindow):
             print(f"❌ Error creating new sequence: {e}")
 
     def _load_demo_sequence(self) -> None:
-        """Load the demo sequence."""
+        """Load a demo sequence with a pre-selected start position."""
         try:
-            sequence_service = self.container.resolve(SequenceService)
-            current_sequence = sequence_service.load_current_sequence()
-            self._update_sequence_display(current_sequence)
-
-            # Refresh option picker
-            self.option_picker.refresh_options()
+            # Reset and select alpha1 as demo start position
+            self.state_service.reset_to_start_position_selection()
+            self.state_service.select_start_position("alpha1_alpha1")
+            self._update_sequence_display_from_state()
 
             print("✅ Demo sequence loaded!")
 
@@ -371,11 +406,10 @@ Beats:
     def _handle_option_selected(self, option_id: str) -> None:
         """Handle option selection from the option picker."""
         try:
-            sequence_service = self.container.resolve(SequenceService)
-            updated_sequence = sequence_service.load_current_sequence()
-            self._update_sequence_display(updated_sequence)
-
             print(f"✅ Option selected: {option_id}")
+            # TODO: Add beat to sequence through state service
+            # For now, just update the display
+            self._update_sequence_display_from_state()
 
         except Exception as e:
             print(f"❌ Error handling option selection: {e}")

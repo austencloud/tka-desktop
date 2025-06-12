@@ -19,6 +19,7 @@ from ...application.services.motion_orientation_service import (
     MotionOrientationService,
     Orientation,
 )
+from ...application.services.beta_prop_position_service import BetaPropPositionService
 
 
 class PropRenderer:
@@ -30,6 +31,10 @@ class PropRenderer:
         self.CENTER_Y = 475
         self.HAND_RADIUS = 143.1
         self.orientation_service = MotionOrientationService()
+        self.beta_position_service = BetaPropPositionService()
+
+        # Store rendered props for overlap detection
+        self.rendered_props = {}
 
         self.location_coordinates = {
             Location.NORTH: (0, -self.HAND_RADIUS),
@@ -72,6 +77,9 @@ class PropRenderer:
                 self._place_prop_at_hand_point(
                     prop_item, target_hand_point_x, target_hand_point_y
                 )
+
+                # Store rendered prop for potential beta positioning
+                self.rendered_props[color] = prop_item
 
                 self.scene.addItem(prop_item)
 
@@ -139,3 +147,56 @@ class PropRenderer:
             )
 
         return svg_data
+
+    def apply_beta_positioning(self, beat_data) -> None:
+        """
+        Apply beta prop positioning if conditions are met.
+
+        This method should be called after both props are rendered
+        to detect overlaps and apply separation offsets.
+
+        Args:
+            beat_data: BeatData containing motion information
+        """
+        # Import here to avoid circular imports
+        from ...domain.models.core_models import BeatData
+
+        if not isinstance(beat_data, BeatData):
+            return
+
+        # Check if beta positioning should be applied
+        if not self.beta_position_service.should_apply_beta_positioning(beat_data):
+            return
+
+        # Check if we have both props rendered
+        if "blue" not in self.rendered_props or "red" not in self.rendered_props:
+            return
+
+        print("🔧 Applying beta prop positioning for overlapping props")
+
+        # Calculate separation offsets
+        blue_offset, red_offset = (
+            self.beta_position_service.calculate_separation_offsets(beat_data)
+        )
+
+        # Apply offsets to rendered props
+        blue_prop = self.rendered_props["blue"]
+        red_prop = self.rendered_props["red"]
+
+        # Apply offsets to current positions
+        blue_current_pos = blue_prop.pos()
+        red_current_pos = red_prop.pos()
+
+        new_blue_pos = blue_current_pos + blue_offset
+        new_red_pos = red_current_pos + red_offset
+
+        blue_prop.setPos(new_blue_pos)
+        red_prop.setPos(new_red_pos)
+
+        print(
+            f"✅ Beta positioning applied: blue offset={blue_offset}, red offset={red_offset}"
+        )
+
+    def clear_rendered_props(self) -> None:
+        """Clear the rendered props cache."""
+        self.rendered_props.clear()

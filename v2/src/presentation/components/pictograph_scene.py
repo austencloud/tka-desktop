@@ -49,6 +49,8 @@ class PictographScene(QGraphicsScene):
         """Update the scene with new beat data."""
         self.beat_data = beat_data
         self.clear()
+        # Clear prop renderer cache for new beat
+        self.prop_renderer.clear_rendered_props()
         self._render_pictograph()
 
     def _render_pictograph(self) -> None:
@@ -64,6 +66,10 @@ class PictographScene(QGraphicsScene):
             self.prop_renderer.render_prop("blue", self.beat_data.blue_motion)
         if self.beat_data.red_motion:
             self.prop_renderer.render_prop("red", self.beat_data.red_motion)
+
+        # Apply beta prop positioning after both props are rendered
+        if self.beat_data.blue_motion and self.beat_data.red_motion:
+            self.prop_renderer.apply_beta_positioning(self.beat_data)
 
         # Render arrows for blue and red motions
         if self.beat_data.blue_motion:

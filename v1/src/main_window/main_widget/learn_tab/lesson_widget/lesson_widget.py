@@ -128,9 +128,7 @@ class LessonWidget(QWidget):
         font.setPointSize(question_prompt_font_size)
         self.question_prompt.setFont(font)
         self.question_prompt.setStyleSheet(
-            f"color: {self._get_font_color(
-                self.main_widget.settings_manager.global_settings.get_background_type()
-                )};"
+            f"color: {self._get_font_color(self.main_widget.settings_manager.global_settings.get_background_type())};"
         )
 
     def _get_font_color(self, bg_type: str) -> str:

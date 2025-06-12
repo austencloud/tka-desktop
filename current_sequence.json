@@ -1,0 +1,16 @@
+[
+    {
+        "word": "",
+        "author": "",
+        "level": 0,
+        "prop_type": "staff",
+        "grid_mode": "diamond",
+        "is_circular": false,
+        "can_be_CAP": false,
+        "is_strict_rotated_CAP": false,
+        "is_strict_mirrored_CAP": false,
+        "is_strict_swapped_CAP": false,
+        "is_mirrored_swapped_CAP": false,
+        "is_rotated_swapped_CAP": false
+    }
+]

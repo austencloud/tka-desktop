@@ -1,146 +1,170 @@
 class StyleManager:
     @staticmethod
-    def get_gradient_background(theme="dark"):
-        if theme == "dark":
-            return """
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 #0f0f23, stop:0.3 #1a1a1e, stop:0.7 #16213e, stop:1 #0f0f23);
-            """
-        else:
-            return """
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 #f8f9fa, stop:0.3 #e9ecef, stop:0.7 #dee2e6, stop:1 #f8f9fa);
-            """
+    def get_gradient_background():
+        return """
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #2c3e50, stop:0.3 #34495e, stop:0.7 #2c3e50, stop:1 #1a252f);
+        """
 
     @staticmethod
-    def get_button_style(variant="default", compact=False, state="default"):
-        base_radius = "15px" if compact else "18px"
-        base_padding = "8px" if compact else "12px"
-        base_font_size = "12px" if compact else "14px"
+    def get_card_style():
+        return """
+            QFrame {
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 8px;
+                padding: 12px;
+            }
+            QFrame:hover {
+                background: rgba(255, 255, 255, 0.12);
+                border-color: rgba(74, 144, 226, 0.6);
+            }
+        """
 
-        styles = {
-            "default": f"""
+    @staticmethod
+    def get_button_style(variant="default", compact=False):
+        size = "32px" if compact else "40px"
+        padding = "6px 12px" if compact else "8px 16px"
+        font_size = "11px" if compact else "12px"
+
+        if variant == "primary":
+            return f"""
                 QPushButton {{
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(255, 255, 255, 0.12), 
-                        stop:0.5 rgba(102, 126, 234, 0.1), 
-                        stop:1 rgba(118, 75, 162, 0.1));
-                    border: 2px solid rgba(255, 255, 255, 0.2);
-                    border-radius: {base_radius};
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 #4a90e2, stop:1 #357abd);
                     color: white;
-                    font-size: {base_font_size};
-                    font-weight: 700;
-                    text-align: center;
-                    padding: {base_padding};
-                    font-family: 'Segoe UI';
+                    border: none;
+                    border-radius: 6px;
+                    font-weight: bold;
+                    padding: {padding};
+                    min-height: {size};
+                    font-size: {font_size};
                 }}
                 QPushButton:hover {{
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(255, 255, 255, 0.18), 
-                        stop:0.5 rgba(102, 126, 234, 0.15), 
-                        stop:1 rgba(118, 75, 162, 0.15));
-                    border: 2px solid rgba(255, 255, 255, 0.3);
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 #5ba0f2, stop:1 #458acd);
                 }}
                 QPushButton:pressed {{
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(255, 255, 255, 0.08), 
-                        stop:0.5 rgba(102, 126, 234, 0.08), 
-                        stop:1 rgba(118, 75, 162, 0.08));
-                    border: 2px solid rgba(255, 255, 255, 0.15);
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 #3a80d2, stop:1 #2570ad);
                 }}
-            """,
-            "running": f"""
+            """
+        elif variant == "running":
+            return f"""
                 QPushButton {{
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(46, 204, 113, 0.2), 
-                        stop:0.5 rgba(39, 174, 96, 0.15), 
-                        stop:1 rgba(46, 204, 113, 0.1));
-                    border: 2px solid rgba(46, 204, 113, 0.4);
-                    border-radius: {base_radius};
-                    color: #2ecc71;
-                    font-size: {base_font_size};
-                    font-weight: 700;
-                    text-align: center;
-                    padding: {base_padding};
-                    font-family: 'Segoe UI';
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 #27ae60, stop:1 #1e8449);
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    font-weight: bold;
+                    padding: {padding};
+                    min-height: {size};
+                    font-size: {font_size};
                 }}
                 QPushButton:hover {{
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                        stop:0 rgba(46, 204, 113, 0.3), 
-                        stop:0.5 rgba(39, 174, 96, 0.25), 
-                        stop:1 rgba(46, 204, 113, 0.2));
-                    border: 2px solid rgba(46, 204, 113, 0.6);
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                        stop:0 #2ecc71, stop:1 #239b56);
                 }}
-            """,
-            "compact": f"""
+            """
+        else:
+            return f"""
                 QPushButton {{
                     background: rgba(255, 255, 255, 0.1);
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    border-radius: {base_radius};
                     color: white;
-                    font-size: {base_font_size};
-                    font-weight: 600;
-                    padding: {base_padding};
-                    font-family: 'Segoe UI';
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 6px;
+                    padding: {padding};
+                    min-height: {size};
+                    font-size: {font_size};
+                    font-weight: 500;
                 }}
                 QPushButton:hover {{
                     background: rgba(255, 255, 255, 0.15);
-                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-color: rgba(255, 255, 255, 0.3);
                 }}
-            """,
-        }
-        return styles.get(variant, styles["default"])
-
-    @staticmethod
-    def get_group_style(compact=False):
-        padding = "8px" if compact else "12px"
-        margin = "4px" if compact else "8px"
-        return f"""
-            QGroupBox {{
-                font-weight: 700;
-                font-size: 14px;
-                color: rgba(255, 255, 255, 0.9);
-                border: 2px solid rgba(255, 255, 255, 0.1);
-                border-radius: 12px;
-                margin-top: 1ex;
-                padding: {padding};
-                margin: {margin};
-                background: rgba(255, 255, 255, 0.05);
-            }}
-            QGroupBox::title {{
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 8px 0 8px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 6px;
-            }}
-        """
+                QPushButton:pressed {{
+                    background: rgba(255, 255, 255, 0.05);
+                }}
+            """
 
     @staticmethod
     def get_tab_style():
         return """
             QTabWidget::pane {
-                border: 2px solid rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(0, 0, 0, 0.2);
                 border-radius: 8px;
-                background: rgba(255, 255, 255, 0.02);
             }
             QTabBar::tab {
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
+                background: rgba(255, 255, 255, 0.05);
+                color: rgba(255, 255, 255, 0.8);
                 padding: 8px 16px;
                 margin-right: 2px;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
-                color: rgba(255, 255, 255, 0.7);
-                font-weight: 600;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
             }
             QTabBar::tab:selected {
-                background: rgba(102, 126, 234, 0.2);
+                background: rgba(74, 144, 226, 0.3);
                 color: white;
-                border-bottom: 2px solid #667eea;
             }
-            QTabBar::tab:hover {
-                background: rgba(255, 255, 255, 0.15);
-                color: rgba(255, 255, 255, 0.9);
+            QTabBar::tab:hover:!selected {
+                background: rgba(255, 255, 255, 0.1);
             }
         """
+
+    @staticmethod
+    def get_search_style():
+        return """
+            QLineEdit {
+                background: rgba(255, 255, 255, 0.1);
+                border: 2px solid rgba(255, 255, 255, 0.2);
+                border-radius: 16px;
+                padding: 8px 16px;
+                color: white;
+                font-size: 14px;
+            }
+            QLineEdit:focus {
+                border-color: rgba(74, 144, 226, 0.6);
+                background: rgba(255, 255, 255, 0.15);
+            }
+        """
+
+    @staticmethod
+    def get_group_style(compact=False):
+        padding = "10px 15px 15px 15px" if compact else "15px 20px 20px 20px"
+        font_size = "12px" if compact else "14px"
+
+        return f"""
+            QGroupBox {{
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 8px;
+                font-weight: bold;
+                font-size: {font_size};
+                color: white;
+                padding-top: 18px;
+            }}
+            QGroupBox::title {{
+                subcontrol-origin: margin;
+                subcontrol-position: top left;
+                padding: 0 8px;
+                background: transparent;
+                color: rgba(255, 255, 255, 0.9);
+            }}
+        """
+
+    @staticmethod
+    def get_main_style():
+        return (
+            """
+            QMainWindow {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #2c3e50, stop:0.3 #34495e, stop:0.7 #2c3e50, stop:1 #1a252f);
+                color: white;
+            }
+        """
+            + StyleManager.get_button_style()
+            + StyleManager.get_tab_style()
+            + StyleManager.get_search_style()
+        )

@@ -1,0 +1,145 @@
+Organized by total time:
+
+     Calls      Total Time        Per Call      Cumulative Time       Per Call (Cum)                       Function
+-------------------------------------------------------------------------------------------------------------------
+         5        0.000200        0.000040             0.004411             0.000882 paintEvent                     main_background_widget\main_background_widget.py:47
+         6        0.000112        0.000019             0.000580             0.000097 _draw_text                     level_selector\level_selector_difficulty_drawer.py:36
+         6        0.000112        0.000019             0.000252             0.000042 paintEvent                     letter_type_picker_widget\styled_border_overlay_for_button.py:32
+         2        0.000089        0.000045             0.000332             0.000166 resizeEvent                    letter_type_picker_widget\letter_type_picker_widget.py:97
+         2        0.000079        0.000039             0.001780             0.000890 _update_icons                  level_selector\level_selector.py:99
+         6        0.000078        0.000013             0.001437             0.000240 _draw_difficulty_level         level_selector\level_selector_difficulty_drawer.py:18
+         6        0.000062        0.000010             0.001660             0.000277 get_difficulty_level_pixmap    level_selector\level_selector_difficulty_drawer.py:12
+         6        0.000049        0.000008             0.000092             0.000015 get_gradient                   image_creator\difficult_level_gradients.py:42
+        32        0.000040        0.000001             0.000127             0.000004 eventFilter                    widgets\labeled_toggle_base.py:50
+         2        0.000038        0.000019             0.000103             0.000051 paintEvent                     base_widgets\pytoggle.py:54
+         1        0.000032        0.000032             0.000274             0.000274 _cleanup_prewarming_widgets    startup\widget_prewarming.py:200
+         1        0.000026        0.000026             0.000148             0.000148 paint_background               snowfall\snowfall_background.py:22
+         6        0.000026        0.000004             0.000033             0.000005 paintEvent                     letter_type_picker_widget\letter_type_button.py:68
+         1        0.000021        0.000021             0.000441             0.000441 update_buttons                 navigation_widget\menu_bar_nav_widget.py:91
+         6        0.000019        0.000003             0.000747             0.000124 _draw_ellipse                  level_selector\level_selector_difficulty_drawer.py:31
+         2        0.000018        0.000009             0.000028             0.000014 resizeEvent                    widgets\generate_tab_length_adjuster.py:84
+         1        0.000018        0.000018             0.000032             0.000032 closeEvent                     main_window\main_window.py:88
+         6        0.000017        0.000003             0.000535             0.000089 resizeEvent                    codex\codex_section_type_label.py:36
+         1        0.000015        0.000015             0.000167             0.000167 disable                        src\profiler.py:16
+         2        0.000014        0.000007             0.000024             0.000012 _resize_combo_box              codex\codex_ori_selector.py:83
+         4        0.000013        0.000003             0.000062             0.000015 resizeEvent                    widgets\labeled_toggle_base.py:92
+         6        0.000013        0.000002             0.000013             0.000002 _calculate_rect                level_selector\level_selector_difficulty_drawer.py:28
+         2        0.000010        0.000005             0.000046             0.000023 resizeEvent                    codex\codex_ori_selector.py:72
+        12        0.000008        0.000001             0.000014             0.000001 get_font_size                  codex\codex_section_type_label.py:33
+         2        0.000007        0.000003             0.000021             0.000011 _get_font_color                letter_type_picker_widget\letter_type_picker_widget.py:119
+         5        0.000007        0.000001             0.000392             0.000078 update_appearance              styles\styled_button.py:119
+         5        0.000006        0.000001             0.000006             0.000001 _get_beautiful_context_styles  styles\styled_button.py:152
+         6        0.000006        0.000001             0.000008             0.000001 _adjust_text_y                 level_selector\level_selector_difficulty_drawer.py:57
+         2        0.000006        0.000003             0.001787             0.000893 resizeEvent                    level_selector\level_selector.py:115
+         2        0.000006        0.000003             0.000008             0.000004 _desired_icon_size             level_selector\level_selector.py:109
+         1        0.000006        0.000006             0.000015             0.000015 resizeEvent                    generate_tab\generate_tab.py:101
+         1        0.000005        0.000005             0.000448             0.000448 resizeEvent                    navigation_widget\menu_bar_nav_widget.py:132
+         2        0.000005        0.000002             0.000009             0.000005 _resize_start_ori_label        codex\codex_ori_selector.py:78
+         2        0.000005        0.000002             0.000007             0.000004 get_widget                     access\widget_access_facade.py:35
+         2        0.000004        0.000002             0.000037             0.000019 get_background_type            global_settings\global_settings.py:51
+         5        0.000004        0.000001             0.000006             0.000001 set_selected                   styles\styled_button.py:404
+         2        0.000004        0.000002             0.000008             0.000004 _resize_spacer                 generate_tab\generate_tab.py:110
+         2        0.000004        0.000002             0.000011             0.000005 get_widget                     core\main_widget_coordinator.py:178
+         2        0.000003        0.000001             0.000003             0.000001 get_widget                     core\widget_manager.py:177
+         5        0.000003        0.000001             0.000003             0.000001 _get_safe_context_properties   styles\styled_button.py:139
+         2        0.000002        0.000001             0.000002             0.000001 get_font_color                 font_color_updater\font_color_updater.py:35
+         5        0.000002        0.000000             0.000002             0.000000 state                          styles\styled_button.py:113
+         2        0.000002        0.000001             0.000002             0.000001 settings_manager               global_settings\app_context.py:96
+
+
+Organized by number of calls:
+
+     Calls      Total Time        Per Call      Cumulative Time       Per Call (Cum)                       Function
+-------------------------------------------------------------------------------------------------------------------
+        32        0.000040        0.000001             0.000127             0.000004 eventFilter                    widgets\labeled_toggle_base.py:50
+        12        0.000008        0.000001             0.000014             0.000001 get_font_size                  codex\codex_section_type_label.py:33
+         6        0.000049        0.000008             0.000092             0.000015 get_gradient                   image_creator\difficult_level_gradients.py:42
+         6        0.000112        0.000019             0.000580             0.000097 _draw_text                     level_selector\level_selector_difficulty_drawer.py:36
+         6        0.000112        0.000019             0.000252             0.000042 paintEvent                     letter_type_picker_widget\styled_border_overlay_for_button.py:32
+         6        0.000062        0.000010             0.001660             0.000277 get_difficulty_level_pixmap    level_selector\level_selector_difficulty_drawer.py:12
+         6        0.000078        0.000013             0.001437             0.000240 _draw_difficulty_level         level_selector\level_selector_difficulty_drawer.py:18
+         6        0.000017        0.000003             0.000535             0.000089 resizeEvent                    codex\codex_section_type_label.py:36
+         6        0.000026        0.000004             0.000033             0.000005 paintEvent                     letter_type_picker_widget\letter_type_button.py:68
+         6        0.000013        0.000002             0.000013             0.000002 _calculate_rect                level_selector\level_selector_difficulty_drawer.py:28
+         6        0.000019        0.000003             0.000747             0.000124 _draw_ellipse                  level_selector\level_selector_difficulty_drawer.py:31
+         6        0.000006        0.000001             0.000008             0.000001 _adjust_text_y                 level_selector\level_selector_difficulty_drawer.py:57
+         5        0.000003        0.000001             0.000003             0.000001 _get_safe_context_properties   styles\styled_button.py:139
+         5        0.000007        0.000001             0.000392             0.000078 update_appearance              styles\styled_button.py:119
+         5        0.000002        0.000000             0.000002             0.000000 state                          styles\styled_button.py:113
+         5        0.000004        0.000001             0.000006             0.000001 set_selected                   styles\styled_button.py:404
+         5        0.000006        0.000001             0.000006             0.000001 _get_beautiful_context_styles  styles\styled_button.py:152
+         5        0.000200        0.000040             0.004411             0.000882 paintEvent                     main_background_widget\main_background_widget.py:47
+         4        0.000013        0.000003             0.000062             0.000015 resizeEvent                    widgets\labeled_toggle_base.py:92
+         2        0.000018        0.000009             0.000028             0.000014 resizeEvent                    widgets\generate_tab_length_adjuster.py:84
+         2        0.000007        0.000003             0.000021             0.000011 _get_font_color                letter_type_picker_widget\letter_type_picker_widget.py:119
+         2        0.000038        0.000019             0.000103             0.000051 paintEvent                     base_widgets\pytoggle.py:54
+         2        0.000079        0.000039             0.001780             0.000890 _update_icons                  level_selector\level_selector.py:99
+         2        0.000014        0.000007             0.000024             0.000012 _resize_combo_box              codex\codex_ori_selector.py:83
+         2        0.000003        0.000001             0.000003             0.000001 get_widget                     core\widget_manager.py:177
+         2        0.000004        0.000002             0.000011             0.000005 get_widget                     core\main_widget_coordinator.py:178
+         2        0.000005        0.000002             0.000007             0.000004 get_widget                     access\widget_access_facade.py:35
+         2        0.000005        0.000002             0.000009             0.000005 _resize_start_ori_label        codex\codex_ori_selector.py:78
+         2        0.000010        0.000005             0.000046             0.000023 resizeEvent                    codex\codex_ori_selector.py:72
+         2        0.000004        0.000002             0.000008             0.000004 _resize_spacer                 generate_tab\generate_tab.py:110
+         2        0.000006        0.000003             0.000008             0.000004 _desired_icon_size             level_selector\level_selector.py:109
+         2        0.000002        0.000001             0.000002             0.000001 get_font_color                 font_color_updater\font_color_updater.py:35
+         2        0.000006        0.000003             0.001787             0.000893 resizeEvent                    level_selector\level_selector.py:115
+         2        0.000002        0.000001             0.000002             0.000001 settings_manager               global_settings\app_context.py:96
+         2        0.000089        0.000045             0.000332             0.000166 resizeEvent                    letter_type_picker_widget\letter_type_picker_widget.py:97
+         2        0.000004        0.000002             0.000037             0.000019 get_background_type            global_settings\global_settings.py:51
+         1        0.000021        0.000021             0.000441             0.000441 update_buttons                 navigation_widget\menu_bar_nav_widget.py:91
+         1        0.000018        0.000018             0.000032             0.000032 closeEvent                     main_window\main_window.py:88
+         1        0.000005        0.000005             0.000448             0.000448 resizeEvent                    navigation_widget\menu_bar_nav_widget.py:132
+         1        0.000006        0.000006             0.000015             0.000015 resizeEvent                    generate_tab\generate_tab.py:101
+         1        0.000026        0.000026             0.000148             0.000148 paint_background               snowfall\snowfall_background.py:22
+         1        0.000015        0.000015             0.000167             0.000167 disable                        src\profiler.py:16
+         1        0.000032        0.000032             0.000274             0.000274 _cleanup_prewarming_widgets    startup\widget_prewarming.py:200
+
+
+Organized by cumulative time:
+
+     Calls      Total Time        Per Call      Cumulative Time       Per Call (Cum)                       Function
+-------------------------------------------------------------------------------------------------------------------
+         5        0.000200        0.000040             0.004411             0.000882 paintEvent                     main_background_widget\main_background_widget.py:47
+         2        0.000006        0.000003             0.001787             0.000893 resizeEvent                    level_selector\level_selector.py:115
+         2        0.000079        0.000039             0.001780             0.000890 _update_icons                  level_selector\level_selector.py:99
+         6        0.000062        0.000010             0.001660             0.000277 get_difficulty_level_pixmap    level_selector\level_selector_difficulty_drawer.py:12
+         6        0.000078        0.000013             0.001437             0.000240 _draw_difficulty_level         level_selector\level_selector_difficulty_drawer.py:18
+         6        0.000019        0.000003             0.000747             0.000124 _draw_ellipse                  level_selector\level_selector_difficulty_drawer.py:31
+         6        0.000112        0.000019             0.000580             0.000097 _draw_text                     level_selector\level_selector_difficulty_drawer.py:36
+         6        0.000017        0.000003             0.000535             0.000089 resizeEvent                    codex\codex_section_type_label.py:36
+         1        0.000005        0.000005             0.000448             0.000448 resizeEvent                    navigation_widget\menu_bar_nav_widget.py:132
+         1        0.000021        0.000021             0.000441             0.000441 update_buttons                 navigation_widget\menu_bar_nav_widget.py:91
+         5        0.000007        0.000001             0.000392             0.000078 update_appearance              styles\styled_button.py:119
+         2        0.000089        0.000045             0.000332             0.000166 resizeEvent                    letter_type_picker_widget\letter_type_picker_widget.py:97
+         1        0.000032        0.000032             0.000274             0.000274 _cleanup_prewarming_widgets    startup\widget_prewarming.py:200
+         6        0.000112        0.000019             0.000252             0.000042 paintEvent                     letter_type_picker_widget\styled_border_overlay_for_button.py:32
+         1        0.000015        0.000015             0.000167             0.000167 disable                        src\profiler.py:16
+         1        0.000026        0.000026             0.000148             0.000148 paint_background               snowfall\snowfall_background.py:22
+        32        0.000040        0.000001             0.000127             0.000004 eventFilter                    widgets\labeled_toggle_base.py:50
+         2        0.000038        0.000019             0.000103             0.000051 paintEvent                     base_widgets\pytoggle.py:54
+         6        0.000049        0.000008             0.000092             0.000015 get_gradient                   image_creator\difficult_level_gradients.py:42
+         4        0.000013        0.000003             0.000062             0.000015 resizeEvent                    widgets\labeled_toggle_base.py:92
+         2        0.000010        0.000005             0.000046             0.000023 resizeEvent                    codex\codex_ori_selector.py:72
+         2        0.000004        0.000002             0.000037             0.000019 get_background_type            global_settings\global_settings.py:51
+         6        0.000026        0.000004             0.000033             0.000005 paintEvent                     letter_type_picker_widget\letter_type_button.py:68
+         1        0.000018        0.000018             0.000032             0.000032 closeEvent                     main_window\main_window.py:88
+         2        0.000018        0.000009             0.000028             0.000014 resizeEvent                    widgets\generate_tab_length_adjuster.py:84
+         2        0.000014        0.000007             0.000024             0.000012 _resize_combo_box              codex\codex_ori_selector.py:83
+         2        0.000007        0.000003             0.000021             0.000011 _get_font_color                letter_type_picker_widget\letter_type_picker_widget.py:119
+         1        0.000006        0.000006             0.000015             0.000015 resizeEvent                    generate_tab\generate_tab.py:101
+        12        0.000008        0.000001             0.000014             0.000001 get_font_size                  codex\codex_section_type_label.py:33
+         6        0.000013        0.000002             0.000013             0.000002 _calculate_rect                level_selector\level_selector_difficulty_drawer.py:28
+         2        0.000004        0.000002             0.000011             0.000005 get_widget                     core\main_widget_coordinator.py:178
+         2        0.000005        0.000002             0.000009             0.000005 _resize_start_ori_label        codex\codex_ori_selector.py:78
+         2        0.000004        0.000002             0.000008             0.000004 _resize_spacer                 generate_tab\generate_tab.py:110
+         2        0.000006        0.000003             0.000008             0.000004 _desired_icon_size             level_selector\level_selector.py:109
+         6        0.000006        0.000001             0.000008             0.000001 _adjust_text_y                 level_selector\level_selector_difficulty_drawer.py:57
+         2        0.000005        0.000002             0.000007             0.000004 get_widget                     access\widget_access_facade.py:35
+         5        0.000006        0.000001             0.000006             0.000001 _get_beautiful_context_styles  styles\styled_button.py:152
+         5        0.000004        0.000001             0.000006             0.000001 set_selected                   styles\styled_button.py:404
+         2        0.000003        0.000001             0.000003             0.000001 get_widget                     core\widget_manager.py:177
+         5        0.000003        0.000001             0.000003             0.000001 _get_safe_context_properties   styles\styled_button.py:139
+         2        0.000002        0.000001             0.000002             0.000001 get_font_color                 font_color_updater\font_color_updater.py:35
+         5        0.000002        0.000000             0.000002             0.000000 state                          styles\styled_button.py:113
+         2        0.000002        0.000001             0.000002             0.000001 settings_manager               global_settings\app_context.py:96

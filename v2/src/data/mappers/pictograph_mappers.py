@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List, Union, Hashable
 import pandas as pd
 import os
 
@@ -7,18 +7,20 @@ class PictographDataMapper:
     def __init__(self, assets_path: str):
         self.assets_path = assets_path
 
-    def map_csv_to_pictograph_data(self, csv_filename: str) -> Dict[str, Any]:
+    def map_csv_to_pictograph_data(
+        self, csv_filename: str
+    ) -> List[Dict[Union[str, Hashable], Any]]:
         filepath = os.path.join(self.assets_path, csv_filename)
         try:
             df = pd.read_csv(filepath)
             return df.to_dict("records")
         except FileNotFoundError:
-            return {}
+            return []
 
-    def get_box_pictograph_data(self) -> Dict[str, Any]:
+    def get_box_pictograph_data(self) -> List[Dict[Union[str, Hashable], Any]]:
         return self.map_csv_to_pictograph_data("BoxPictographDataframe.csv")
 
-    def get_diamond_pictograph_data(self) -> Dict[str, Any]:
+    def get_diamond_pictograph_data(self) -> List[Dict[Union[str, Hashable], Any]]:
         return self.map_csv_to_pictograph_data("DiamondPictographDataframe.csv")
 
 
