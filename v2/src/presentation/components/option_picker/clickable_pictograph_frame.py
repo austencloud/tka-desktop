@@ -37,7 +37,7 @@ class ClickablePictographFrame(QFrame):
             ClickablePictographFrame:hover {
                 border-color: #007bff;
                 background-color: #f8f9fa;
-                box-shadow: 0 2px 4px rgba(0,123,255,0.25);
+                border-width: 3px;
             }
         """
         )

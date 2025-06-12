@@ -25,7 +25,10 @@ class PictographDataService:
     def _load_dataset(self) -> None:
         """Load the dataset from CSV files."""
         try:
-            data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data")
+            # Updated path to reflect new directory structure
+            data_dir = os.path.join(
+                os.path.dirname(__file__), "..", "..", "infrastructure", "assets"
+            )
             diamond_path = os.path.join(data_dir, "DiamondPictographDataframe.csv")
             box_path = os.path.join(data_dir, "BoxPictographDataframe.csv")
 

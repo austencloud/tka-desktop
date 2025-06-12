@@ -39,6 +39,7 @@ class HandMotionType(Enum):
     DASH = "dash"
     STATIC = "static"
 
+
 class HandPath(Enum):
     """Hand rotation directions."""
 
@@ -46,6 +47,7 @@ class HandPath(Enum):
     COUNTER_CLOCKWISE = "ccw"
     DASH = "dash"
     STATIC = "static"
+
 
 class RotationDirection(Enum):
     """Rotation directions."""
@@ -155,6 +157,117 @@ class MotionData:
         )
 
 
+class VTGMode(Enum):
+    """VTG (Vertical/Timing/Grid) modes for pictograph classification."""
+
+    SPLIT_SAME = "SS"
+    SPLIT_OPP = "SO"
+    TOG_SAME = "TS"
+    TOG_OPP = "TO"
+    QUARTER_SAME = "QS"
+    QUARTER_OPP = "QO"
+
+
+class ElementalType(Enum):
+    """Elemental types for pictograph classification."""
+
+    WATER = "water"
+    FIRE = "fire"
+    EARTH = "earth"
+    AIR = "air"
+    SUN = "sun"
+    MOON = "moon"
+
+
+class LetterType(Enum):
+    """Letter types for TKA glyph classification."""
+
+    TYPE1 = "Type1"
+    TYPE2 = "Type2"
+    TYPE3 = "Type3"
+    TYPE4 = "Type4"
+    TYPE5 = "Type5"
+    TYPE6 = "Type6"
+    TYPE7 = "Type7"
+    TYPE8 = "Type8"
+    TYPE9 = "Type9"
+
+
+@dataclass(frozen=True)
+class GlyphData:
+    """
+    Data for pictograph glyphs (elemental, VTG, TKA, position).
+    """
+
+    # VTG glyph data
+    vtg_mode: Optional[VTGMode] = None
+
+    # Elemental glyph data
+    elemental_type: Optional[ElementalType] = None
+
+    # TKA glyph data
+    letter_type: Optional[LetterType] = None
+    has_dash: bool = False
+    turns_data: Optional[str] = None  # Turns tuple string
+
+    # Start-to-end position glyph data
+    start_position: Optional[str] = None
+    end_position: Optional[str] = None
+
+    # Visibility flags
+    show_elemental: bool = True
+    show_vtg: bool = True
+    show_tka: bool = True
+    show_positions: bool = True
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for serialization."""
+        return {
+            "vtg_mode": self.vtg_mode.value if self.vtg_mode else None,
+            "elemental_type": (
+                self.elemental_type.value if self.elemental_type else None
+            ),
+            "letter_type": self.letter_type.value if self.letter_type else None,
+            "has_dash": self.has_dash,
+            "turns_data": self.turns_data,
+            "start_position": self.start_position,
+            "end_position": self.end_position,
+            "show_elemental": self.show_elemental,
+            "show_vtg": self.show_vtg,
+            "show_tka": self.show_tka,
+            "show_positions": self.show_positions,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "GlyphData":
+        """Create from dictionary."""
+        vtg_mode = None
+        if data.get("vtg_mode"):
+            vtg_mode = VTGMode(data["vtg_mode"])
+
+        elemental_type = None
+        if data.get("elemental_type"):
+            elemental_type = ElementalType(data["elemental_type"])
+
+        letter_type = None
+        if data.get("letter_type"):
+            letter_type = LetterType(data["letter_type"])
+
+        return cls(
+            vtg_mode=vtg_mode,
+            elemental_type=elemental_type,
+            letter_type=letter_type,
+            has_dash=data.get("has_dash", False),
+            turns_data=data.get("turns_data"),
+            start_position=data.get("start_position"),
+            end_position=data.get("end_position"),
+            show_elemental=data.get("show_elemental", True),
+            show_vtg=data.get("show_vtg", True),
+            show_tka=data.get("show_tka", True),
+            show_positions=data.get("show_positions", True),
+        )
+
+
 @dataclass(frozen=True)
 class BeatData:
     """
@@ -175,6 +288,9 @@ class BeatData:
     # Motion data (replaces complex dictionaries)
     blue_motion: Optional[MotionData] = None
     red_motion: Optional[MotionData] = None
+
+    # Glyph data
+    glyph_data: Optional[GlyphData] = None
 
     # State flags
     blue_reversal: bool = False
@@ -216,6 +332,7 @@ class BeatData:
             "duration": self.duration,
             "blue_motion": self.blue_motion.to_dict() if self.blue_motion else None,
             "red_motion": self.red_motion.to_dict() if self.red_motion else None,
+            "glyph_data": self.glyph_data.to_dict() if self.glyph_data else None,
             "blue_reversal": self.blue_reversal,
             "red_reversal": self.red_reversal,
             "is_blank": self.is_blank,
@@ -233,6 +350,10 @@ class BeatData:
         if data.get("red_motion"):
             red_motion = MotionData.from_dict(data["red_motion"])
 
+        glyph_data = None
+        if data.get("glyph_data"):
+            glyph_data = GlyphData.from_dict(data["glyph_data"])
+
         return cls(
             id=data.get("id", str(uuid.uuid4())),
             beat_number=data.get("beat_number", 1),
@@ -240,6 +361,7 @@ class BeatData:
             duration=data.get("duration", 1.0),
             blue_motion=blue_motion,
             red_motion=red_motion,
+            glyph_data=glyph_data,
             blue_reversal=data.get("blue_reversal", False),
             red_reversal=data.get("red_reversal", False),
             is_blank=data.get("is_blank", False),

@@ -31,7 +31,7 @@ class OptionPickerSectionButton(QPushButton):
                     stop:0 rgba(240, 248, 255, 220),
                     stop:1 rgba(230, 240, 250, 200));
                 border-color: #3498db;
-                box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+                border-width: 3px;
             }
             QPushButton:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,

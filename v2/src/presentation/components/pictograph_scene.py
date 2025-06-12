@@ -13,6 +13,10 @@ from .grid_renderer import GridRenderer
 from .prop_renderer import PropRenderer
 from .arrow_renderer import ArrowRenderer
 from .letter_renderer import LetterRenderer
+from .elemental_glyph_renderer import ElementalGlyphRenderer
+from .vtg_glyph_renderer import VTGGlyphRenderer
+from .tka_glyph_renderer import TKAGlyphRenderer
+from .position_glyph_renderer import PositionGlyphRenderer
 
 
 class PictographScene(QGraphicsScene):
@@ -34,6 +38,12 @@ class PictographScene(QGraphicsScene):
         self.prop_renderer = PropRenderer(self)
         self.arrow_renderer = ArrowRenderer(self)
         self.letter_renderer = LetterRenderer(self)
+
+        # Initialize glyph renderers
+        self.elemental_glyph_renderer = ElementalGlyphRenderer(self)
+        self.vtg_glyph_renderer = VTGGlyphRenderer(self)
+        self.tka_glyph_renderer = TKAGlyphRenderer(self)
+        self.position_glyph_renderer = PositionGlyphRenderer(self)
 
     def update_beat(self, beat_data: BeatData) -> None:
         """Update the scene with new beat data."""
@@ -64,3 +74,42 @@ class PictographScene(QGraphicsScene):
         # Render letter
         if self.beat_data.letter:
             self.letter_renderer.render_letter(self.beat_data.letter)
+
+        # Render glyphs if glyph data is available
+        if self.beat_data.glyph_data:
+            glyph_data = self.beat_data.glyph_data
+
+            # Render elemental glyph
+            if glyph_data.show_elemental and glyph_data.vtg_mode:
+                self.elemental_glyph_renderer.render_elemental_glyph(
+                    glyph_data.vtg_mode,
+                    glyph_data.letter_type.value if glyph_data.letter_type else None,
+                )
+
+            # Render VTG glyph
+            if glyph_data.show_vtg and glyph_data.vtg_mode:
+                self.vtg_glyph_renderer.render_vtg_glyph(
+                    glyph_data.vtg_mode,
+                    glyph_data.letter_type.value if glyph_data.letter_type else None,
+                )
+
+            # Render TKA glyph
+            if glyph_data.show_tka and self.beat_data.letter and glyph_data.letter_type:
+                self.tka_glyph_renderer.render_tka_glyph(
+                    self.beat_data.letter,
+                    glyph_data.letter_type,
+                    glyph_data.has_dash,
+                    glyph_data.turns_data,
+                )
+
+            # Render position glyph
+            if (
+                glyph_data.show_positions
+                and glyph_data.start_position
+                and glyph_data.end_position
+            ):
+                self.position_glyph_renderer.render_position_glyph(
+                    glyph_data.start_position,
+                    glyph_data.end_position,
+                    self.beat_data.letter,
+                )
