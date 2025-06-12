@@ -18,9 +18,16 @@ class Config:
     }
 
     def __init__(self):
-        self.config_file = Path("launcher_config.json")
+        self.config_file = Path("launcher/launcher_config.json")
         self.favorites_file = Path("launcher_favorites.json")
+        self.migrate_old_config()
         self._settings = self.load_settings()
+
+    def migrate_old_config(self):
+        """Migrate old config file from root to launcher directory"""
+        old_config = Path("launcher_config.json")
+        if old_config.exists() and not self.config_file.exists():
+            old_config.rename(self.config_file)
 
     def load_settings(self) -> Dict[str, Any]:
         try:
@@ -53,10 +60,17 @@ class Config:
 
 
 class Paths:
-    ROOT = Path.cwd()
-    V1_ROOT = ROOT / "the-kinetic-constructor-desktop-v1"
-    V2_ROOT = ROOT / "the-kinetic-constructor-desktop-v2"
+    ROOT = Path(__file__).parent.parent.parent  # Launcher root
+    V1_ROOT = ROOT / "v1"
+    V2_ROOT = ROOT / "v2"
     V1_MAIN = V1_ROOT / "src" / "main.py"
     V2_DEMO = V2_ROOT / "demo_new_architecture.py"
+    LAUNCHER_DIR = ROOT / "launcher"
+    CONFIG_FILE = LAUNCHER_DIR / "launcher_config.json"
     CACHE_DIR = ROOT / "cache"
     LOGS_DIR = ROOT / "logs"
+
+    @classmethod
+    def ensure_directories(cls):
+        cls.CACHE_DIR.mkdir(exist_ok=True)
+        cls.LOGS_DIR.mkdir(exist_ok=True)

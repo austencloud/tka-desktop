@@ -68,8 +68,10 @@ class SimpleLayoutService(ILayoutService):
     """Simple implementation of layout service."""
 
     def __init__(self):
-        self._main_window_size = QSize(1200, 800)
-        self._layout_ratio = (2, 1)  # workbench:picker
+        # MATCH V1 WINDOW DIMENSIONS: Update to handle larger window
+        self._main_window_size = QSize(1600, 1000)  # Match v1's window size
+        # CONSTRUCT TAB USES 1:1 RATIO (not 2:1 like browse tab)
+        self._layout_ratio = (1, 1)  # workbench:picker - EQUAL SPACE like V1
 
     def get_main_window_size(self) -> QSize:
         return self._main_window_size
@@ -111,7 +113,9 @@ class DemoMainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Kinetic Constructor v2 - New Architecture Demo")
-        self.setMinimumSize(1200, 800)
+        # MATCH V1 WINDOW SIZE: V1 uses approximately 1600x1000 default window
+        self.setMinimumSize(1600, 1000)
+        self.resize(1600, 1000)  # Set default size to match v1
 
         # Setup dependency injection container
         self.container = self._setup_dependency_injection()
@@ -148,40 +152,45 @@ class DemoMainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
         main_layout = QVBoxLayout(central_widget)
+        main_layout.setContentsMargins(5, 5, 5, 5)  # Minimal margins like v1
+        main_layout.setSpacing(5)
 
-        # Title
+        # Title - more compact like v1
         title = QLabel("Kinetic Constructor v2 - New Architecture Demo")
-        title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
+        title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setStyleSheet("QLabel { color: #2d3748; margin: 5px; }")
         main_layout.addWidget(title)
 
-        # Info panel
+        # Info panel - more compact
         info_panel = self._create_info_panel()
         main_layout.addWidget(info_panel)
 
-        # Main content area
+        # Main content area with CONSTRUCT TAB 1:1 RATIO
         content_layout = QHBoxLayout()
+        content_layout.setContentsMargins(0, 0, 0, 0)
+        content_layout.setSpacing(5)  # Minimal spacing like v1
 
-        # Workbench area (simplified for demo)
+        # Workbench area - LEFT SIDE
         workbench_area = self._create_workbench_area()
-        content_layout.addWidget(workbench_area, 2)  # 2/3 of space
+        content_layout.addWidget(workbench_area, 1)
 
-        # Option picker area
+        # Option picker area - RIGHT SIDE
         self.option_picker = ModernOptionPicker(self.container)
         self.option_picker.initialize()
         self.option_picker.option_selected.connect(self._handle_option_selected)
-        content_layout.addWidget(self.option_picker.widget, 1)  # 1/3 of space
+        content_layout.addWidget(self.option_picker.widget, 1)
 
-        main_layout.addLayout(content_layout)
+        main_layout.addLayout(content_layout, 1)  # Give content most of the space
 
-        # Apply modern styling
+        # V1-style main window colors
         self.setStyleSheet(
             """
             QMainWindow {
-                background-color: #f8f9fa;
+                background-color: #f5f5f5;
             }
             QLabel {
-                color: #212529;
+                color: #2d3748;
             }
         """
         )

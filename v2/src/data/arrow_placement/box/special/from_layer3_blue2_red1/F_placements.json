@@ -1,0 +1,67 @@
+{
+  "F": {
+    "(0.5, 2.5)": {
+      "anti_from_layer1": [-70, 80],
+      "pro_from_layer1": [15, 55],
+      "pro_from_layer2": [-70, 20]
+    },
+    "(1.5, 1.5)": {
+      "anti_from_layer2": [-70, 125],
+      "pro_from_layer1": [20, 25]
+    },
+    "(1.5, 2.5)": {
+      "anti_from_layer1": [-10, 95]
+    },
+    "(2, 1.5)": {
+      "pro_from_layer2": [-70, 0]
+    },
+    "(2, 2.5)": {
+      "anti_from_layer1": [-90, 70],
+      "anti_from_layer2": [-105, 70]
+    },
+    "(2.5, 0)": {
+      "anti_from_layer1": [15, -20]
+    },
+    "(2.5, 2.5)": {
+      "anti_from_layer1": [-70, 40]
+    },
+    "(3, 0)": {
+      "anti_from_layer1": [10, -30]
+    },
+    "(3, 0.5)": {
+      "pro_from_layer1": [-15, 0],
+      "anti_from_layer2": [-45, 50]
+    },
+    "(3, 1.5)": {
+      "pro_from_layer1": [-110, -5],
+      "anti_from_layer2": [-105, 125]
+    },
+    "(3, 2.5)": {
+      "anti_from_layer2": [-50, 60],
+      "pro_from_layer1": [-10, 5]
+    },
+    "(0, 0.5)": {
+      "pro_from_layer1": [60, -55],
+      "anti_from_layer1": [-80, 65]
+    },
+    "(1, 1.5)": {
+      "pro_from_layer1": [0, -5],
+      "pro_from_layer2": [-85, 60],
+      "anti_from_layer1": [-30, 85]
+    },
+    "(1, 2.5)": {
+      "pro_from_layer2": [-85, 60],
+      "anti_from_layer1": [-70, 75],
+      "pro_from_layer1": [-20, 5]
+    },
+    "(2, 0)": {
+      "anti_from_layer1": [20, -35]
+    },
+    "(2, 0.5)": {
+      "anti_from_layer2": [-80, 50]
+    },
+    "(1, 0.5)": {
+      "anti_from_layer2": [-15, 90]
+    }
+  }
+}

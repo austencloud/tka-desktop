@@ -1,0 +1,93 @@
+{
+  "Δ": {
+    "(o, 0.5, 0.5)": {},
+    "(o, 0.5, 1)": {},
+    "(s, 0.5, 2)": {
+      "anti": [-90, 10]
+    },
+    "(o, 0.5, 2)": {
+      "anti": [-90, 45]
+    },
+    "(o, 0.5, 2.5)": {
+      "anti": [-90, 5]
+    },
+    "(s, 0.5, 2.5)": {
+      "anti": [-90, 25]
+    },
+    "(o, 0.5, 3)": {
+      "anti": [-90, 5]
+    },
+    "(s, 0.5, 3)": {
+      "anti": [-90, 45]
+    },
+    "(o, 1, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [105, 105]
+    },
+    "(o, 1.5, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [105, 105]
+    },
+    "(o, 1.5, 1)": {
+      "static_rot_angle_override": true
+    },
+    "(o, 2, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [100, 105]
+    },
+    "(o, 2.5, 3)": {
+      "anti": [-75, 15]
+    },
+    "(s, 2.5, 3)": {
+      "anti": [-90, 45]
+    },
+    "(o, 3, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [100, 105]
+    },
+    "(o, 2.5, 0.5)": {
+      "static": [100, 115],
+      "static_rot_angle_override": true
+    },
+    "(o, 2.5, 1)": {
+      "static_rot_angle_override": true
+    },
+    "(s, 2.5, 2)": {
+      "anti": [-75, 45]
+    },
+    "(o, 2.5, 2)": {
+      "anti": [-80, 50]
+    },
+    "(s, 2.5, 2.5)": {
+      "anti": [-90, 25]
+    },
+    "(o, 2.5, 2.5)": {
+      "anti": [-75, 25],
+      "static": [0, -20]
+    },
+    "(2.5, 0)": {
+      "anti": [-80, 50]
+    },
+    "(o, 2.5, 1.5)": {
+      "anti": [-90, 25]
+    },
+    "": {
+      "anti": [-135, 95]
+    },
+    "(s, 1, 0.5)": {},
+    "(s, 0, 0.5)": {},
+    "(s, 0.5, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-50, -50],
+      "static_to_layer1_rot_angle_override": true
+    },
+    "(s, 1.5, 1)": {
+      "static_to_layer1_rot_angle_override": true,
+      "static": [-50, -50]
+    },
+    "(s, 2.5, 1)": {
+      "static_to_layer1_rot_angle_override": true,
+      "static": [-50, -50]
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "Σ": {
+    "(0, 0)": {
+      "static": [0, 0]
+    },
+    "(s, 0.5, 1)": {},
+    "(s, 1, 0.5)": {},
+    "(s, 1.5, 0.5)": {
+      "pro": [0, 15]
+    },
+    "(s, 1.5, 1)": {
+      "static_rot_angle_override": true,
+      "static": [85, -10]
+    },
+    "(s, 2, 0.5)": {
+      "static_rot_angle_override": true
+    },
+    "(s, 2.5, 1)": {
+      "static_rot_angle_override": true,
+      "static": [85, -10]
+    },
+    "(s, 3, 0.5)": {
+      "pro": [-40, -15],
+      "static_rot_angle_override": true
+    },
+    "(0, 1)": {
+      "static_rot_angle_override": true
+    },
+    "(o, 1, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-50, -50]
+    },
+    "(s, 0, 1)": {}
+  }
+}

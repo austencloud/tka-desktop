@@ -1,0 +1,12 @@
+{
+  "Y": {
+    "(s, 1, 1)": {
+      "static_rot_angle_override": true,
+      "static": [0.0, -90.0]
+    },
+    "(s, 2.5, 3)": {
+      "static_to_layer2_rot_angle_override": true,
+      "pro": [-75.0, 30.0]
+    }
+  }
+}

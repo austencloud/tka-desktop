@@ -1,0 +1,15 @@
+{
+  "X": {
+    "(o, 0.5, 1)": {
+      "static_from_layer2": {},
+      "anti_from_layer1": {},
+      "anti_from_layer2": [-15, 110],
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [-50, -50]
+    },
+    "(s, 1.5, 1.5)": {
+      "static_from_layer1_rot_angle_override": true,
+      "anti_from_layer2": [20, 150]
+    }
+  }
+}

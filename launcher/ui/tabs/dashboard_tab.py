@@ -15,6 +15,7 @@ from datetime import datetime
 from ..components.searchable_grid import SearchableGrid
 from ..components.animated_card import AnimatedCard
 from ...data.app_definitions import AppDefinitions
+from ..styles import StyleManager
 
 
 class DashboardTab(QWidget):
@@ -23,12 +24,16 @@ class DashboardTab(QWidget):
         recent_actions_manager,
         favorites_manager,
         process_manager=None,
+        cache=None,
+        workflow_manager=None,
         parent=None,
     ):
         super().__init__(parent)
         self.recent_actions_manager = recent_actions_manager
         self.favorites_manager = favorites_manager
         self.process_manager = process_manager
+        self.cache = cache
+        self.workflow_manager = workflow_manager
         self.setup_ui()
 
         if self.process_manager:
@@ -37,6 +42,16 @@ class DashboardTab(QWidget):
             )
             self.process_manager.process_finished.connect(
                 lambda: self.update_button_states()
+            )
+
+        if self.workflow_manager:
+            self.workflow_manager.workflow_started.connect(
+                lambda name: print(f"Workflow started: {name}")
+            )
+            self.workflow_manager.workflow_completed.connect(
+                lambda name, success: print(
+                    f"Workflow {name} completed: {'Success' if success else 'Failed'}"
+                )
             )
 
     def setup_ui(self):
@@ -72,7 +87,7 @@ class DashboardTab(QWidget):
 
     def create_apps_section(self):
         apps_group = QGroupBox("🚀 Main Applications")
-        apps_group.setStyleSheet(self.get_group_style())
+        apps_group.setStyleSheet(StyleManager.get_group_style())
         apps_layout = QVBoxLayout(apps_group)
         apps_layout.setContentsMargins(15, 25, 15, 15)
 
@@ -98,7 +113,7 @@ class DashboardTab(QWidget):
 
     def create_dev_tools_section(self):
         dev_group = QGroupBox("🛠️ Development Tools")
-        dev_group.setStyleSheet(self.get_group_style())
+        dev_group.setStyleSheet(StyleManager.get_group_style())
         dev_layout = QVBoxLayout(dev_group)
         dev_layout.setContentsMargins(15, 25, 15, 15)
 
@@ -108,7 +123,7 @@ class DashboardTab(QWidget):
         try:
             from ...data.app_definitions import AppDefinitions
 
-            tools = AppDefinitions.get_by_category("dev_tools")[:4]
+            tools = AppDefinitions.get_by_category("dev_tools")[:10]
 
             for i, tool_def in enumerate(tools):
                 btn = self.create_app_button(tool_def, compact=True)
@@ -128,7 +143,7 @@ class DashboardTab(QWidget):
         status_layout.setSpacing(10)
 
         recent_group = QGroupBox("📋 Recent")
-        recent_group.setStyleSheet(self.get_compact_group_style())
+        recent_group.setStyleSheet(StyleManager.get_group_style(compact=True))
         recent_layout = QVBoxLayout(recent_group)
         recent_layout.setContentsMargins(10, 20, 10, 10)
 
@@ -154,7 +169,7 @@ class DashboardTab(QWidget):
         recent_layout.addWidget(self.recent_list)
 
         system_group = QGroupBox("🖥️ System")
-        system_group.setStyleSheet(self.get_compact_group_style())
+        system_group.setStyleSheet(StyleManager.get_group_style(compact=True))
         system_layout = QVBoxLayout(system_group)
         system_layout.setContentsMargins(10, 20, 10, 10)
 
@@ -180,42 +195,11 @@ class DashboardTab(QWidget):
             btn.setMinimumSize(220, 95)
             btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
-        btn.setText(f"{app_def.icon}\n{app_def.title}")
+        btn.setText(app_def.title)
         btn.setToolTip(app_def.description)
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
 
-        btn.setStyleSheet(
-            f"""
-            QPushButton {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.12), 
-                    stop:0.5 rgba(102, 126, 234, 0.1), 
-                    stop:1 rgba(118, 75, 162, 0.1));
-                border: 2px solid rgba(255, 255, 255, 0.2);
-                border-radius: {'15px' if compact else '18px'};
-                color: white;
-                font-size: {'12px' if compact else '14px'};
-                font-weight: 700;
-                text-align: center;
-                padding: {'8px' if compact else '12px'};
-                font-family: 'Segoe UI';
-            }}
-            QPushButton:hover {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(102, 126, 234, 0.4), 
-                    stop:0.5 rgba(118, 75, 162, 0.35), 
-                    stop:1 rgba(102, 126, 234, 0.4));
-                border: 2px solid rgba(255, 255, 255, 0.6);
-                color: #ffffff;
-            }}
-            QPushButton:pressed {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(102, 126, 234, 0.7), 
-                    stop:1 rgba(118, 75, 162, 0.7));
-                border: 2px solid rgba(255, 255, 255, 0.8);
-            }}
-        """
-        )
+        btn.setStyleSheet(StyleManager.get_button_style("default", compact=compact))
 
         btn.clicked.connect(lambda: self.launch_application(app_def))
         return btn
@@ -268,124 +252,33 @@ class DashboardTab(QWidget):
             button_text = child.text()
             if "\n" in button_text:
                 app_title = button_text.split("\n")[1]
+                compact = child.minimumHeight() < 90
                 if self.process_manager and self.process_manager.is_app_running(
                     app_title
                 ):
-                    child.setStyleSheet(self._get_running_button_style(child))
+                    child.setStyleSheet(
+                        StyleManager.get_button_style("running", compact=compact)
+                    )
                     child.setToolTip(f"{app_title} (Running - Click to restart)")
                 else:
-                    child.setStyleSheet(self._get_default_button_style(child))
+                    child.setStyleSheet(
+                        StyleManager.get_button_style("default", compact=compact)
+                    )
                     child.setToolTip(f"{app_title} (Stopped - Click to start)")
 
     def _get_running_button_style(self, btn):
         compact = btn.minimumHeight() < 90
-        return f"""
-            QPushButton {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(46, 204, 113, 0.3), 
-                    stop:0.5 rgba(39, 174, 96, 0.25), 
-                    stop:1 rgba(46, 204, 113, 0.3));
-                border: 2px solid rgba(46, 204, 113, 0.6);
-                border-radius: {'15px' if compact else '18px'};
-                color: white;
-                font-size: {'12px' if compact else '14px'};
-                font-weight: 700;
-                text-align: center;
-                padding: {'8px' if compact else '12px'};
-                font-family: 'Segoe UI';
-            }}
-            QPushButton:hover {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(231, 76, 60, 0.4), 
-                    stop:0.5 rgba(192, 57, 43, 0.35), 
-                    stop:1 rgba(231, 76, 60, 0.4));
-                border: 2px solid rgba(231, 76, 60, 0.8);
-                color: #ffffff;
-            }}
-            QPushButton:pressed {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(231, 76, 60, 0.7), 
-                    stop:1 rgba(192, 57, 43, 0.7));
-                border: 2px solid rgba(231, 76, 60, 1.0);
-            }}
-        """
+        return StyleManager.get_button_style("running", compact=compact)
 
     def _get_default_button_style(self, btn):
         compact = btn.minimumHeight() < 90
-        return f"""
-            QPushButton {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.12), 
-                    stop:0.5 rgba(102, 126, 234, 0.1), 
-                    stop:1 rgba(118, 75, 162, 0.1));
-                border: 2px solid rgba(255, 255, 255, 0.2);
-                border-radius: {'15px' if compact else '18px'};
-                color: white;
-                font-size: {'12px' if compact else '14px'};
-                font-weight: 700;
-                text-align: center;
-                padding: {'8px' if compact else '12px'};
-                font-family: 'Segoe UI';
-            }}
-            QPushButton:hover {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(102, 126, 234, 0.4), 
-                    stop:0.5 rgba(118, 75, 162, 0.35), 
-                    stop:1 rgba(102, 126, 234, 0.4));
-                border: 2px solid rgba(255, 255, 255, 0.6);
-                color: #ffffff;
-            }}
-            QPushButton:pressed {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(102, 126, 234, 0.7), 
-                    stop:1 rgba(118, 75, 162, 0.7));
-                border: 2px solid rgba(255, 255, 255, 0.8);
-            }}
-        """
+        return StyleManager.get_button_style("default", compact=compact)
 
     def get_group_style(self):
-        return """
-            QGroupBox {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.08), 
-                    stop:1 rgba(255, 255, 255, 0.04));
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 12px;
-                font-weight: 600;
-                font-size: 13px;
-                color: white;
-                padding-top: 8px;
-                margin-top: 8px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                subcontrol-position: top center;
-                padding: 0 10px;
-                color: rgba(255, 255, 255, 0.9);
-            }
-        """
+        return StyleManager.get_group_style()
 
     def get_compact_group_style(self):
-        return """
-            QGroupBox {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.06), 
-                    stop:1 rgba(255, 255, 255, 0.03));
-                border: 1px solid rgba(255, 255, 255, 0.12);
-                border-radius: 8px;
-                font-weight: 600;
-                font-size: 11px;
-                color: white;
-                padding-top: 6px;
-                margin-top: 6px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                subcontrol-position: top center;
-                padding: 0 8px;
-                color: rgba(255, 255, 255, 0.8);
-            }
-        """
+        return StyleManager.get_group_style(compact=True)
 
     def handle_resize(self, size):
         pass

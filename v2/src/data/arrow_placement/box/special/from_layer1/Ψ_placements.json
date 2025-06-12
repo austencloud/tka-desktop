@@ -1,0 +1,286 @@
+{
+  "Ψ": {
+    "(s, 1.5, 2)": {
+      "static_rot_angle_override": true,
+      "static": [0, 20],
+      "static_to_layer1_rot_angle_override": true,
+      "dash": [145, 120]
+    },
+    "(o, 0, 1.5)": {
+      "dash": [-80, 65]
+    },
+    "(cw, 0, 0.5)": {
+      "static": [100, 100]
+    },
+    "(cw, 0, 1)": {
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
+      "swap_beta_n_radial_blue_static_n_red_dash_w": true,
+      "swap_beta_e_radial_blue_static_e_red_dash_n": true,
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_se_radial_blue_dash_ne_red_static_se": true,
+      "swap_beta_sw_radial_blue_dash_se_red_static_sw": true,
+      "swap_beta_nw_radial_blue_static_nw_red_dash_sw": true,
+      "swap_beta_ne_radial_blue_static_ne_red_dash_nw": true
+    },
+    "(cw, 0, 2.5)": {
+      "dash": [-80, 40],
+      "static_rot_angle_override": true
+    },
+    "(cw, 0, 3)": {
+      "static_rot_angle_override": true,
+      "static": [35, -15]
+    },
+    "(ccw, 0, 2)": {
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
+      "swap_beta_e_radial_blue_static_e_red_dash_n": true,
+      "swap_beta_n_radial_blue_static_n_red_dash_w": true,
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true
+    },
+    "(s, 0.5, 0.5)": {
+      "static": [100, 120]
+    },
+    "(s, 0.5, 2.5)": {
+      "static": [0, 45],
+      "static_rot_angle_override": true
+    },
+    "(s, 1, 3)": {
+      "static": [10, 20],
+      "swap_beta_se_radial_blue_static_se_red_dash_sw": true
+    },
+    "(s, 1, 2.5)": {
+      "static_rot_angle_override": true,
+      "dash": [25, 15]
+    },
+    "(s, 2, 3)": {
+      "swap_beta_nw_radial_blue_static_nw_red_dash_sw": true,
+      "dash": [-25, 75]
+    },
+    "(s, 2, 2.5)": {
+      "static_rot_angle_override": true,
+      "static": [0, 25]
+    },
+    "(s, 2, 1)": {
+      "swap_beta_sw_radial_blue_static_sw_red_dash_nw": true,
+      "swap_beta_se_radial_blue_static_se_red_dash_sw": true
+    },
+    "(s, 2, 0.5)": {
+      "static": [100, 100]
+    },
+    "(s, 2.5, 1)": {
+      "static_rot_angle_override": true
+    },
+    "(s, 2.5, 2.5)": {
+      "static": [0, 40]
+    },
+    "(s, 2.5, 3)": {
+      "static_rot_angle_override": true,
+      "static": [10, -15]
+    },
+    "(s, 3, 3)": {
+      "static_rot_angle_override": true,
+      "static": [35, 0]
+    },
+    "(s, 3, 0.5)": {
+      "static": [100, 100]
+    },
+    "(o, 3, 3)": {
+      "static": [-35, 10]
+    },
+    "(o, 3, 2)": {
+      "dash": [25, 40]
+    },
+    "(o, 3, 0.5)": {
+      "dash": [0, -85]
+    },
+    "(o, 3, 1.5)": {
+      "static_rot_angle_override": true,
+      "dash": [0, -10]
+    },
+    "(o, 2.5, 2.5)": {
+      "swap_beta_ne_nonradial_blue_static_ne_red_dash_se": true
+    },
+    "(s, 1.5, 1.5)": {
+      "static": [0, 30],
+      "dash": [130, 65]
+    },
+    "(o, 0.5, 2.5)": {
+      "static": [0, -5]
+    },
+    "(o, 0.5, 0.5)": {
+      "static": [100, 120],
+      "swap_beta_s_nonradial_blue_dash_w_red_static_s": true
+    },
+    "(o, 1, 3)": {
+      "static_rot_angle_override": true,
+      "static": [-5, -20],
+      "dash": [25, 40]
+    },
+    "(0, 0)": {
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
+      "swap_beta_nw_radial_blue_static_nw_red_dash_sw": true,
+      "swap_beta_ne_radial_blue_static_ne_red_dash_nw": true,
+      "swap_beta_se_radial_blue_dash_ne_red_static_se": true,
+      "swap_beta_sw_radial_blue_dash_se_red_static_sw": true
+    },
+    "(o, 1, 1)": {
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
+      "swap_beta_s_radial_blue_dash_w_red_static_s": true,
+      "swap_beta_e_radial_blue_dash_s_red_static_e": true,
+      "swap_beta_n_radial_blue_static_n_red_dash_w": true,
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_n_radial_blue_dash_e_red_static_n": true,
+      "static": [-70, -70],
+      "swap_beta_nw_radial_blue_dash_ne_red_static_nw": true,
+      "swap_beta_ne_radial_blue_dash_se_red_static_ne": true,
+      "swap_beta_sw_radial_blue_static_sw_red_dash_nw": true,
+      "swap_beta_se_radial_blue_static_se_red_dash_sw": true,
+      "static_rot_angle_override": true
+    },
+    "(ccw, 0, 1)": {
+      "static_rot_angle_override": true,
+      "swap_beta_e_radial_blue_static_e_red_dash_n": true,
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
+      "swap_beta_n_radial_blue_static_n_red_dash_w": true,
+      "static": [-70, -70],
+      "swap_beta_nw_radial_blue_static_nw_red_dash_sw": true,
+      "swap_beta_ne_radial_blue_static_ne_red_dash_nw": true,
+      "swap_beta_se_radial_blue_dash_ne_red_static_se": true
+    },
+    "(s, 1, 1)": {
+      "swap_beta_n_radial_blue_dash_e_red_static_n": true,
+      "swap_beta_s_radial_blue_dash_w_red_static_s": true,
+      "swap_beta_e_radial_blue_dash_s_red_static_e": true,
+      "swap_beta_e_radial_blue_static_e_red_dash_n": true,
+      "swap_beta_n_radial_blue_static_n_red_dash_w": true,
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_sw_radial_blue_dash_se_red_static_sw": true,
+      "swap_beta_se_radial_blue_dash_ne_red_static_se": true,
+      "swap_beta_nw_radial_blue_dash_ne_red_static_nw": true,
+      "swap_beta_se_radial_blue_static_se_red_dash_sw": true,
+      "swap_beta_ne_radial_blue_dash_se_red_static_ne": true
+    },
+    "(cw, 1, 0)": {
+      "swap_beta_n_radial_blue_static_n_red_dash_w": true,
+      "swap_beta_e_radial_blue_static_e_red_dash_n": true,
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_nw_radial_blue_static_nw_red_dash_sw": true,
+      "swap_beta_ne_radial_blue_static_ne_red_dash_nw": true
+    },
+    "(s, 1, 2)": {
+      "static": [25, 0],
+      "static_rot_angle_override": true,
+      "dash": [5, 30],
+      "swap_beta_se_radial_blue_static_se_red_dash_sw": true
+    },
+    "(o, 2, 2)": {
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_n_radial_blue_static_n_red_dash_w": true,
+      "swap_beta_e_radial_blue_static_e_red_dash_n": true,
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true
+    },
+    "(s, 2, 2)": {
+      "static_rot_angle_override": true,
+      "static": [20, 0],
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
+      "swap_beta_e_radial_blue_static_e_red_dash_n": true,
+      "swap_beta_n_radial_blue_static_n_red_dash_w": true,
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true
+    },
+    "(o, 2, 1)": {
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_n_radial_blue_static_n_red_dash_w": true,
+      "swap_beta_e_radial_blue_static_e_red_dash_n": true,
+      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
+      "static": [-70, -70],
+      "static_rot_angle_override": true,
+      "swap_beta_ne_radial_blue_dash_se_red_static_ne": true,
+      "swap_beta_nw_radial_blue_dash_ne_red_static_nw": true
+    },
+    "(ccw, 1, 0)": {
+      "swap_beta_ne_radial_blue_dash_se_red_static_ne": true,
+      "swap_beta_nw_radial_blue_dash_ne_red_static_nw": true,
+      "swap_beta_se_radial_blue_static_se_red_dash_sw": true
+    },
+    "(ccw, 0, 0.5)": {},
+    "(o, 3, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-70, -70],
+      "swap_beta_ne_radial_blue_dash_se_red_static_ne": true,
+      "swap_beta_nw_radial_blue_dash_ne_red_static_nw": true
+    },
+    "(ccw, 0, 3)": {
+      "static_rot_angle_override": true,
+      "static": [-15, -15],
+      "swap_beta_nw_radial_blue_static_nw_red_dash_sw": true,
+      "swap_beta_ne_radial_blue_static_ne_red_dash_nw": true
+    },
+    "(ccw, 3, 0)": {
+      "swap_beta_se_radial_blue_static_se_red_dash_sw": true,
+      "swap_beta_sw_radial_blue_static_sw_red_dash_nw": true
+    },
+    "(cw, 3, 0)": {
+      "swap_beta_se_radial_blue_dash_ne_red_static_se": true
+    },
+    "(o, 1.5, 1.5)": {
+      "swap_beta_ne_nonradial_blue_dash_nw_red_static_ne": true
+    },
+    "(s, 1.5, 3)": {
+      "static": [0, 0],
+      "dash": [165, 155],
+      "static_to_layer1_rot_angle_override": true
+    },
+    "(s, 1.5, 1)": {
+      "static": [-80, -80],
+      "static_to_layer1_rot_angle_override": true,
+      "dash": [125, 105]
+    },
+    "(s, 1.5, 2.5)": {
+      "static": [-10, 30],
+      "static_rot_angle_override": true,
+      "dash": [120, 75]
+    },
+    "(o, 1.5, 3)": {
+      "dash": [150, 100],
+      "static_to_layer1_rot_angle_override": true
+    },
+    "(o, 1.5, 2.5)": {
+      "static_rot_angle_override": true,
+      "static": [-10, 15],
+      "dash": [130, 105]
+    },
+    "(o, 1.5, 2)": {
+      "static_to_layer1_rot_angle_override": true,
+      "dash": [120, 140],
+      "static": [0, 20]
+    },
+    "(o, 1.5, 1)": {
+      "static_to_layer1_rot_angle_override": true,
+      "static": [-85, -100],
+      "dash": [90, 115]
+    },
+    "(cw, 1.5, 0)": {
+      "dash": [110, 125]
+    },
+    "(o, 2.5, 1)": {
+      "static_to_layer1_rot_angle_override": true,
+      "static": [-70, -70]
+    },
+    "(s, 1, 1.5)": {
+      "dash": [45, 50]
+    },
+    "(o, 1, 1.5)": {
+      "dash": [45, 25]
+    },
+    "(o, 1, 2.5)": {
+      "static_to_layer2_rot_angle_override": true,
+      "dash": [45, 20]
+    },
+    "(s, 2.5, 0.5)": {
+      "swap_beta_ne_nonradial_blue_static_ne_red_dash_se": true
+    }
+  }
+}

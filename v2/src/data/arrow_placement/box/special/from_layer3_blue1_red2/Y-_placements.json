@@ -1,0 +1,251 @@
+{
+  "Y-": {
+    "(s, 0.5, 0.5)": {
+      "pro_from_layer1": [0, 55],
+      "dash_from_layer1": [10, 120]
+    },
+    "(s, 0.5, 1)": {
+      "pro_from_layer2": [-135, 30],
+      "dash_from_layer1": [10, -30]
+    },
+    "(s, 0.5, 1.5)": {
+      "pro_from_layer2": [-90, 35]
+    },
+    "(s, 0.5, 2)": {
+      "dash_from_layer1": [-110, -30]
+    },
+    "(s, 0.5, 2.5)": {
+      "pro_from_layer1": [0, 55],
+      "pro_from_layer2": [-95, 55],
+      "dash_from_layer1": [-90, -80]
+    },
+    "(s, 0.5, 3)": {
+      "dash_from_layer1": [-70, -65]
+    },
+    "(s, 1, 0.5)": {
+      "dash_from_layer2": [55, -20]
+    },
+    "(s, 1, 1)": {
+      "dash_from_layer1": [-35, -80],
+      "pro_from_layer2": [-75, 80],
+      "pro_from_layer1": [70, 25]
+    },
+    "(s, 1, 1.5)": {
+      "pro_from_layer1": [50, 5],
+      "dash_from_layer1": [10, -110],
+      "pro_from_layer2": [-40, 105]
+    },
+    "(s, 1, 2)": {
+      "pro_from_layer1": [-40, -95],
+      "dash_from_layer1": [-145, -45]
+    },
+    "(s, 1, 2.5)": {
+      "pro_from_layer1": [-20, -75],
+      "dash_from_layer2": [-15, -50]
+    },
+    "(s, 1, 3)": {
+      "dash_from_layer1": [-20, -85],
+      "pro_from_layer2": [-75, 80]
+    },
+    "(1.5, 0)": {
+      "dash_from_layer1": [40, 0]
+    },
+    "(s, 1.5, 0.5)": {
+      "pro_from_layer2": [-30, 165],
+      "dash_from_layer1": [-40, 70]
+    },
+    "(s, 1.5, 1)": {
+      "pro_from_layer1": [-5, -10],
+      "dash_from_layer2": [-25, -165]
+    },
+    "(s, 1.5, 1.5)": {
+      "pro_from_layer1": [10, -25],
+      "dash_from_layer2": [50, -145],
+      "dash_from_layer1": [-20, -145],
+      "pro_from_layer2": [-75, 150]
+    },
+    "(s, 1.5, 2)": {
+      "dash_from_layer2": [-40, -70],
+      "pro_from_layer2": [-60, 185],
+      "dash_from_layer1": [-15, 45],
+      "swap_beta_sw_radial_blue_dash_nw_red_pro_w": true,
+      "swap_beta_nw_radial_blue_dash_ne_red_pro_n": true,
+      "swap_beta_ne_radial_blue_dash_se_red_pro_e": true,
+      "swap_beta_se_radial_blue_dash_sw_red_pro_s": true
+    },
+    "(s, 1.5, 2.5)": {
+      "dash_from_layer2": [35, -60],
+      "pro_from_layer1": [20, 25],
+      "dash_from_layer1": [-90, -95]
+    },
+    "(s, 1.5, 3)": {
+      "dash_from_layer2": [-30, -165],
+      "dash_from_layer1": [0, -30],
+      "pro_from_layer2": [-100, 160]
+    },
+    "(s, 2, 3)": {
+      "dash_from_layer2": [5, -145],
+      "pro_from_layer2": [-45, -15],
+      "dash_from_layer1": [-20, -90]
+    },
+    "(s, 2.5, 0.5)": {
+      "pro_from_layer1": [5, 40],
+      "dash_from_layer1": [-70, -25]
+    },
+    "(s, 2.5, 1)": {
+      "dash_from_layer1": [-15, -65],
+      "pro_from_layer2": [-95, -20]
+    },
+    "(s, 2.5, 1.5)": {
+      "pro_from_layer2": [-85, 50],
+      "dash_from_layer1": [-15, -165],
+      "pro_from_layer1": [20, 65]
+    },
+    "(s, 2.5, 2)": {
+      "dash_from_layer1": [-50, -40]
+    },
+    "(s, 2.5, 2.5)": {
+      "pro_from_layer1": [0, 40],
+      "dash_from_layer1": [-65, -105],
+      "pro_from_layer2": [-100, 25]
+    },
+    "(s, 2.5, 3)": {
+      "pro_from_layer2": [-80, 25],
+      "dash_from_layer1": [-60, -70]
+    },
+    "(s, 3, 0.5)": {
+      "dash_from_layer2": [55, -25]
+    },
+    "(s, 3, 1)": {
+      "dash_from_layer1": [-25, -80]
+    },
+    "(s, 3, 1.5)": {
+      "pro_from_layer1": [-40, -40],
+      "pro_from_layer2": [-30, 95],
+      "dash_from_layer1": [5, -130]
+    },
+    "(s, 3, 2.5)": {
+      "pro_from_layer1": [-20, -85],
+      "dash_from_layer2": [15, -50]
+    },
+    "(s, 3, 3)": {
+      "dash_from_layer1": [-20, -90]
+    },
+    "(cw, 0, 1.5)": {
+      "dash_from_layer1": [10, -130],
+      "pro_from_layer2": [50, -20]
+    },
+    "(o, 0.5, 0.5)": {
+      "pro_from_layer1": [40, 55]
+    },
+    "(o, 0.5, 1)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(o, 0.5, 1.5)": {
+      "dash_from_layer1": [-15, -145],
+      "pro_from_layer2": [-65, -10],
+      "pro_from_layer1": [-10, 55]
+    },
+    "(o, 0.5, 2.5)": {
+      "pro_from_layer1": [5, 90],
+      "dash_from_layer2": [50, -70]
+    },
+    "(o, 0.5, 3)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(o, 1, 1)": {
+      "dash_from_layer2_rot_angle_override": true,
+      "dash_from_layer1": [20, -40],
+      "pro_from_layer2": [-85, 85]
+    },
+    "(o, 1, 1.5)": {
+      "pro_from_layer1": [-55, -70],
+      "pro_from_layer2": [-50, 90]
+    },
+    "(o, 1, 3)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(o, 1.5, 0.5)": {
+      "dash_from_layer2": [75, -35]
+    },
+    "(o, 1.5, 1)": {
+      "dash_from_layer2": [-15, -135],
+      "dash_from_layer1": [20, 10],
+      "pro_from_layer2": [-40, 165]
+    },
+    "(o, 1.5, 1.5)": {
+      "pro_from_layer1": [15, 20],
+      "dash_from_layer2": [5, -160],
+      "dash_from_layer1": [10, -190],
+      "pro_from_layer2": [-105, 140]
+    },
+    "(o, 1.5, 2)": {
+      "pro_from_layer2": [-60, 150],
+      "pro_from_layer1": [-5, -5]
+    },
+    "(o, 1.5, 2.5)": {
+      "dash_from_layer2": [75, -35],
+      "dash_from_layer1": [-115, -45]
+    },
+    "(o, 1.5, 3)": {
+      "dash_from_layer2_rot_angle_override": true,
+      "dash_from_layer2": [-30, -125],
+      "dash_from_layer1": [20, -20]
+    },
+    "(o, 2, 1.5)": {
+      "dash_from_layer1": [10, -110],
+      "pro_from_layer2": [-25, -5]
+    },
+    "(o, 2.5, 0.5)": {
+      "pro_from_layer1": [-5, 35],
+      "dash_from_layer2": [55, -10]
+    },
+    "(o, 2.5, 1.5)": {
+      "pro_from_layer1": [0, 65],
+      "pro_from_layer2": [-100, 0],
+      "dash_from_layer1": [-5, -145]
+    },
+    "(o, 2.5, 2.5)": {
+      "dash_from_layer2": [65, -5]
+    },
+    "(o, 3, 1)": {
+      "dash_from_layer2_rot_angle_override": true,
+      "dash_from_layer1": [10, -35]
+    },
+    "(o, 3, 1.5)": {
+      "pro_from_layer1": [-55, -70]
+    },
+    "(o, 3, 3)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(s, 0, 0.5)": {
+      "pro_from_layer1": [0, -55]
+    },
+    "(s, 0, 1)": {
+      "dash_from_layer2_rot_angle_override": true,
+      "pro_from_layer2": [40, -45]
+    },
+    "(s, 0, 2.5)": {
+      "dash_from_layer1": {},
+      "pro_from_layer1": [0, -70]
+    },
+    "(0.5, 0)": {
+      "pro_from_layer1": [-40, 40]
+    },
+    "(o, 0, 0.5)": {
+      "swap_beta_sw_nonradial_blue_dash_nw_red_pro_s": true,
+      "swap_beta_se_nonradial_blue_dash_sw_red_pro_e": true,
+      "swap_beta_ne_nonradial_blue_dash_se_red_pro_n": true
+    },
+    "(s, fl, 1)": {
+      "float_from_layer2": [100, 0]
+    },
+    "null": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(o, 3, 0.5)": {
+      "swap_beta_nw_nonradial_blue_dash_sw_red_pro_n": true,
+      "swap_beta_se_nonradial_blue_dash_sw_red_pro_e": true
+    }
+  }
+}

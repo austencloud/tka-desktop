@@ -16,7 +16,11 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont, QAction, QShortcut, QKeySequence, QResizeEvent
 from datetime import datetime
+import time
 from .tabs.dashboard_tab import DashboardTab
+from .styles import StyleManager
+from .notifications import NotificationManager
+from .command_palette import CommandPalette
 
 
 class LauncherWindow(QMainWindow):
@@ -27,6 +31,8 @@ class LauncherWindow(QMainWindow):
         recent_actions_manager,
         favorites_manager,
         process_monitor,
+        cache,
+        workflow_manager,
     ):
         super().__init__()
         self.config = config
@@ -34,6 +40,9 @@ class LauncherWindow(QMainWindow):
         self.recent_actions_manager = recent_actions_manager
         self.favorites_manager = favorites_manager
         self.process_monitor = process_monitor
+        self.cache = cache
+        self.workflow_manager = workflow_manager
+        self.notifications = NotificationManager(self)
 
         self.setup_ui()
         self.setup_system_tray()
@@ -52,9 +61,14 @@ class LauncherWindow(QMainWindow):
         self.create_header(layout)
 
         self.tab_widget = QTabWidget()
+        self.tab_widget.setStyleSheet(StyleManager.get_tab_style())
 
         self.dashboard_tab = DashboardTab(
-            self.recent_actions_manager, self.favorites_manager, self.process_manager
+            self.recent_actions_manager,
+            self.favorites_manager,
+            self.process_manager,
+            self.cache,
+            self.workflow_manager,
         )
         self.tab_widget.addTab(self.dashboard_tab, "🏠 Dashboard")
 
@@ -73,16 +87,13 @@ class LauncherWindow(QMainWindow):
         header = QFrame()
         header.setFixedHeight(80)
         header.setStyleSheet(
-            """
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                    stop:0 rgba(102, 126, 234, 0.1), 
-                    stop:0.5 rgba(118, 75, 162, 0.1), 
-                    stop:1 rgba(102, 126, 234, 0.1));
+            f"""
+            QFrame {{
+                {StyleManager.get_gradient_background()}
                 border: none;
                 border-bottom: 2px solid rgba(255, 255, 255, 0.1);
                 border-radius: 0px;
-            }
+            }}
         """
         )
 
@@ -120,7 +131,7 @@ class LauncherWindow(QMainWindow):
 
         for btn in [self.theme_toggle, self.settings_btn, self.minimize_btn]:
             btn.setFixedSize(40, 40)
-            btn.setStyleSheet(self.get_compact_button_style())
+            btn.setStyleSheet(StyleManager.get_button_style("compact", compact=True))
             btn.setCursor(Qt.CursorShape.PointingHandCursor)
             quick_actions.addWidget(btn)
 
@@ -171,66 +182,15 @@ class LauncherWindow(QMainWindow):
                     handle_resize(event.size())
 
     def get_main_style(self):
-        return """
-            QMainWindow {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 #0f0f23, stop:0.3 #1a1a1e, stop:0.7 #16213e, stop:1 #0f0f23);
-            }
-            QTabWidget::pane {
-                border: none;
-                background: transparent;
-                border-radius: 12px;
-            }
-            QTabWidget::tab-bar {
-                alignment: center;
-                background: transparent;
-            }
-            QTabBar::tab {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.15), stop:1 rgba(255, 255, 255, 0.05));
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                padding: 12px 20px;
-                margin: 2px 1px;
-                border-radius: 10px;
-                color: rgba(255, 255, 255, 0.9);
-                font-weight: 600;
-                font-size: 13px;
-                min-width: 120px;
-            }
-            QTabBar::tab:selected {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #667eea, stop:0.5 #764ba2, stop:1 #667eea);
-                border: 1px solid rgba(255, 255, 255, 0.4);
-                color: white;
-            }
-            QTabBar::tab:hover:!selected {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.25), stop:1 rgba(255, 255, 255, 0.15));
-                border: 1px solid rgba(255, 255, 255, 0.3);
-            }
+        return f"""
+            QMainWindow {{
+                {StyleManager.get_gradient_background()}
+            }}
+            {StyleManager.get_tab_style()}
         """
 
     def get_compact_button_style(self):
-        return """
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.15), stop:1 rgba(255, 255, 255, 0.08));
-                border: 2px solid rgba(255, 255, 255, 0.25);
-                border-radius: 20px;
-                color: white;
-                font-size: 16px;
-                font-weight: 700;
-            }
-            QPushButton:hover {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(102, 126, 234, 0.9), stop:1 rgba(118, 75, 162, 0.9));
-                border: 2px solid rgba(255, 255, 255, 0.7);
-            }
-            QPushButton:pressed {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(102, 126, 234, 1.0), stop:1 rgba(118, 75, 162, 1.0));
-            }
-        """
+        return StyleManager.get_button_style("compact", compact=True)
 
     def setup_system_tray(self):
         if QSystemTrayIcon.isSystemTrayAvailable():
@@ -262,10 +222,28 @@ class LauncherWindow(QMainWindow):
         self.search_shortcut = QShortcut(QKeySequence("Ctrl+F"), self)
         self.search_shortcut.activated.connect(self.focus_search)
 
+        self.command_palette_shortcut = QShortcut(QKeySequence("Ctrl+Shift+P"), self)
+        self.command_palette_shortcut.activated.connect(self.show_command_palette)
+
     def setup_monitoring(self):
         self.process_monitor.status_update.connect(
             lambda title, status: self.dashboard_tab.update_system_status(status)
         )
+
+        # Connect process manager signals to notifications
+        if hasattr(self.process_manager, "process_started"):
+            self.process_manager.process_started.connect(
+                lambda name: self.notifications.show_notification(
+                    f"Started {name}", "success"
+                )
+            )
+        if hasattr(self.process_manager, "process_error"):
+            self.process_manager.process_error.connect(
+                lambda name, error: self.notifications.show_notification(
+                    f"Error in {name}: {error[:50]}...", "error"
+                )
+            )
+
         self.process_monitor.start()
 
     def toggle_theme(self):
@@ -317,6 +295,36 @@ class LauncherWindow(QMainWindow):
                 if grid and hasattr(grid, "search_input"):
                     grid.search_input.setFocus()
                     return
+
+    def show_command_palette(self):
+        from ..data.app_definitions import AppDefinitions
+
+        palette = CommandPalette(AppDefinitions.get_all(), self)
+        palette.command_selected.connect(self.handle_command)
+        palette.exec()
+
+    def handle_command(self, action, data):
+        if action == "launch_app" and data:
+            self.dashboard_tab.launch_application(data)
+            start_time = time.time()
+            success = True  # We'll assume success for now
+            launch_time = time.time() - start_time
+            self.cache.record_app_launch(data.title, success, launch_time)
+        elif action == "toggle_theme":
+            self.toggle_theme()
+        elif action == "clear_cache":
+            self.cache.clear_cache()
+            self.notifications.show_notification(
+                "Cache cleared successfully", "success"
+            )
+        elif action == "minimize":
+            self.hide()
+        elif action == "exit":
+            self.close_application()
+        elif action == "show_settings":
+            self.notifications.show_notification(
+                "Settings dialog not implemented yet", "info"
+            )
 
     def tray_icon_activated(self, reason):
         if reason == QSystemTrayIcon.ActivationReason.DoubleClick:

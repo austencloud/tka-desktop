@@ -76,144 +76,63 @@ class MotionValidationService(IMotionValidationService):
         self._load_dataset()
 
     def _load_dataset(self) -> None:
-        """Load the validated pictograph datasets."""
+        """Load the validated pictograph datasets from V2 data directory."""
         try:
-            # PRIORITY 1: Try to load from v2 data directory (copied files)
-            diamond_path_v2 = os.path.join("src", "data", "DiamondPictographDataframe.csv")
-            box_path_v2 = os.path.join("src", "data", "BoxPictographDataframe.csv")
+            data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data")
+            diamond_path = os.path.join(data_dir, "DiamondPictographDataframe.csv")
+            box_path = os.path.join(data_dir, "BoxPictographDataframe.csv")
 
-            # FALLBACK: Try to load from original directory
-            diamond_path_v1 = os.path.join(
-                "the-kinetic-constructor-desktop-v1",
-                "src",
-                "data",
-                "DiamondPictographDataframe.csv",
-            )
-            box_path_v1 = os.path.join(
-                "the-kinetic-constructor-desktop-v1",
-                "src",
-                "data",
-                "BoxPictographDataframe.csv",
-            )
-
-            # Try v2 files first
-            if os.path.exists(diamond_path_v2) and os.path.exists(box_path_v2):
-                diamond_df = pd.read_csv(diamond_path_v2)
-                box_df = pd.read_csv(box_path_v2)
+            if os.path.exists(diamond_path) and os.path.exists(box_path):
+                diamond_df = pd.read_csv(diamond_path)
+                box_df = pd.read_csv(box_path)
                 self._dataset = pd.concat([diamond_df, box_df], ignore_index=True)
                 print(
-                    f"✅ Loaded motion validation dataset from v2 data directory with {len(self._dataset)} entries"
-                )
-            # Fall back to original files
-            elif os.path.exists(diamond_path_v1) and os.path.exists(box_path_v1):
-                diamond_df = pd.read_csv(diamond_path_v1)
-                box_df = pd.read_csv(box_path_v1)
-                self._dataset = pd.concat([diamond_df, box_df], ignore_index=True)
-                print(
-                    f"✅ Loaded motion validation dataset from original directory with {len(self._dataset)} entries"
+                    f"✅ Loaded motion validation dataset with {len(self._dataset)} entries"
                 )
             else:
-                print(
-                    "⚠️ Pictograph data files not found in either location, creating sample valid data"
-                )
+                print("⚠️ Pictograph data files not found, using existing data service")
                 self._create_sample_dataset()
 
         except Exception as e:
-            print(f"⚠️ Error loading pictograph data: {e}, creating sample valid data")
+            print(f"⚠️ Error loading pictograph data: {e}, using existing data service")
             self._create_sample_dataset()
 
     def _create_sample_dataset(self) -> None:
-        """Create sample dataset with valid motion/position combinations."""
-        # Create sample data based on proven system patterns
-        sample_data = []
+        """Load actual valid pictograph data using the existing data service."""
+        try:
+            from .pictograph_data_service import PictographDataService
 
-        # Valid combinations from historical system data
-        valid_combinations = [
-            # Letter A patterns (pro motions allowed)
-            {
-                "letter": "A",
-                "start_pos": "alpha3",
-                "end_pos": "alpha5",
-                "blue_motion_type": "pro",
-                "red_motion_type": "pro",
-            },
-            {
-                "letter": "A",
-                "start_pos": "alpha5",
-                "end_pos": "alpha7",
-                "blue_motion_type": "pro",
-                "red_motion_type": "pro",
-            },
-            # Letter B patterns (anti motions only - B never has pro!)
-            {
-                "letter": "B",
-                "start_pos": "beta2",
-                "end_pos": "beta4",
-                "blue_motion_type": "anti",
-                "red_motion_type": "anti",
-            },
-            {
-                "letter": "B",
-                "start_pos": "beta4",
-                "end_pos": "beta6",
-                "blue_motion_type": "anti",
-                "red_motion_type": "anti",
-            },
-            # Letter C patterns (mixed motions allowed)
-            {
-                "letter": "C",
-                "start_pos": "gamma2",
-                "end_pos": "gamma4",
-                "blue_motion_type": "pro",
-                "red_motion_type": "anti",
-            },
-            {
-                "letter": "C",
-                "start_pos": "gamma4",
-                "end_pos": "gamma6",
-                "blue_motion_type": "anti",
-                "red_motion_type": "pro",
-            },
-            # Static patterns (start positions)
-            {
-                "letter": "α",
-                "start_pos": "alpha1",
-                "end_pos": "alpha1",
-                "blue_motion_type": "static",
-                "red_motion_type": "static",
-            },
-            {
-                "letter": "β",
-                "start_pos": "beta1",
-                "end_pos": "beta1",
-                "blue_motion_type": "static",
-                "red_motion_type": "static",
-            },
-        ]
+            data_service = PictographDataService()
+            dataset_info = data_service.get_dataset_info()
 
-        for combo in valid_combinations:
-            sample_data.append(
+            if dataset_info["loaded"] and dataset_info["entries"] > 0:
+                # Use the actual loaded dataset from the data service
+                self._dataset = data_service._dataset
+                dataset_len = len(self._dataset) if self._dataset is not None else 0
+                print(
+                    f"✅ Loaded actual pictograph dataset with {dataset_len} valid entries"
+                )
+            else:
+                raise ValueError("Data service failed to load dataset")
+
+        except Exception as e:
+            print(f"⚠️ Failed to load actual data service: {e}")
+            # Minimal fallback with just a few real entries
+            sample_data = [
                 {
-                    "letter": combo["letter"],
-                    "start_pos": combo["start_pos"],
-                    "end_pos": combo["end_pos"],
-                    "timing": "split",
-                    "direction": "same",
-                    "blue_motion_type": combo["blue_motion_type"],
-                    "blue_prop_rot_dir": "cw",
+                    "letter": "A",
+                    "blue_motion_type": "pro",
+                    "red_motion_type": "anti",
                     "blue_start_loc": "n",
                     "blue_end_loc": "s",
-                    "red_motion_type": combo["red_motion_type"],
-                    "red_prop_rot_dir": "ccw",
                     "red_start_loc": "s",
                     "red_end_loc": "n",
                 }
+            ]
+            self._dataset = pd.DataFrame(sample_data)
+            print(
+                f"✅ Created minimal fallback dataset with {len(self._dataset)} entries"
             )
-
-        self._dataset = pd.DataFrame(sample_data)
-        print(
-            f"✅ Created sample motion validation dataset with {len(self._dataset)} valid entries"
-        )
 
     def get_random_valid_pictograph_data(
         self, letter: Optional[str] = None

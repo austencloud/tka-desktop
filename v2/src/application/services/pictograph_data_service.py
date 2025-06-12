@@ -155,6 +155,68 @@ class PictographDataService:
 
         return [self._row_to_pictograph_data(row) for _, row in filtered.iterrows()]
 
+    def get_specific_pictograph(self, letter: str, index: int = 0) -> Dict[str, Any]:
+        """Get a specific pictograph by letter and index for consistent testing."""
+        if self._dataset is None or len(self._dataset) == 0:
+            raise ValueError("No dataset available")
+
+        # Filter by letter
+        letter_filtered = self._dataset[self._dataset["letter"] == letter]
+
+        if len(letter_filtered) == 0:
+            raise ValueError(f"No pictographs found for letter '{letter}'")
+
+        # Get the specific index (wrap around if index is too large)
+        row_index = index % len(letter_filtered)
+        row = letter_filtered.iloc[row_index]
+
+        return self._row_to_pictograph_data(row)
+
+    def get_test_pictographs(self) -> List[Dict[str, Any]]:
+        """Get three specific pictographs for consistent testing: A, B, C."""
+        test_pictographs = []
+        test_letters = ["A", "B", "C"]
+
+        for letter in test_letters:
+            try:
+                pictograph = self.get_specific_pictograph(letter, 0)
+                test_pictographs.append(pictograph)
+            except ValueError:
+                # If letter not found, get any available letter
+                if self._dataset is not None and len(self._dataset) > 0:
+                    available_letters = self.get_valid_letters()
+                    if available_letters:
+                        # Use the first available letter as fallback
+                        fallback_letter = available_letters[0]
+                        pictograph = self.get_specific_pictograph(fallback_letter, 0)
+                        pictograph["letter"] = letter  # Override letter for display
+                        test_pictographs.append(pictograph)
+
+        return test_pictographs
+
+    def get_pictographs_by_letter_range(
+        self, start_letter: str, count: int = 3
+    ) -> List[Dict[str, Any]]:
+        """Get pictographs starting from a specific letter."""
+        if self._dataset is None or len(self._dataset) == 0:
+            raise ValueError("No dataset available")
+
+        available_letters = sorted(self.get_valid_letters())
+        pictographs = []
+
+        try:
+            start_index = available_letters.index(start_letter)
+        except ValueError:
+            start_index = 0  # Start from beginning if letter not found
+
+        for i in range(count):
+            letter_index = (start_index + i) % len(available_letters)
+            letter = available_letters[letter_index]
+            pictograph = self.get_specific_pictograph(letter, 0)
+            pictographs.append(pictograph)
+
+        return pictographs
+
     def _row_to_pictograph_data(self, row) -> Dict[str, Any]:
         """Convert a DataFrame row to pictograph data format."""
         return {

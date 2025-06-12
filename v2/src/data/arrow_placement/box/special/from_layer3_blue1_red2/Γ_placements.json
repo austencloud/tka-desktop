@@ -1,0 +1,17 @@
+{
+  "Γ": {
+    "(o, 3, 3)": {
+      "static_from_layer1_rot_angle_override": true
+    },
+    "(o, 1, 1)": {
+      "red": [50, -50],
+      "red_rot_angle_override": true,
+      "blue": [-50, -50],
+      "blue_rot_angle_override": true
+    },
+    "(ccw, 1, cl)": {
+      "red_rot_angle_override": true,
+      "blue": [-50, -50]
+    }
+  }
+}

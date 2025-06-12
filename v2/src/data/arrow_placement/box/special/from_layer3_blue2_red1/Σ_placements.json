@@ -1,0 +1,9 @@
+{
+  "Σ": {
+    "(o, 1, 1)": {
+      "static_from_layer1_rot_angle_override": true,
+      "static_from_layer1": [-50, -50]
+    },
+    "(s, 1.5, 2.5)": {}
+  }
+}

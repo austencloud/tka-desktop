@@ -1,4 +1,5 @@
 from typing import List, Dict, Tuple, Callable, Optional
+from ..core.config import Paths
 
 
 class AppDefinition:
@@ -32,25 +33,16 @@ class AppDefinitions:
             description="Launch the main V1 application",
             icon="🔧",
             category="applications",
-            script_path="v1/src/main.py",
+            script_path=str(Paths.V1_MAIN.relative_to(Paths.ROOT)),
             working_dir=".",
             env={"PYTHONPATH": "v1/src"},
-        ),
-        AppDefinition(
-            title="🔍 V1 Debug Mode",
-            description="Launch V1 with debugging enabled",
-            icon="🔍",
-            category="applications",
-            script_path="v1/src/main.py",
-            working_dir=".",
-            env={"PYTHONDEBUG": "1", "PYTHONPATH": "v1/src"},
         ),
         AppDefinition(
             title="🆕 V2 Demo",
             description="Launch the new V2 architecture demo",
             icon="🆕",
             category="applications",
-            script_path="v2/demo_new_architecture.py",
+            script_path=str(Paths.V2_DEMO.relative_to(Paths.ROOT)),
             working_dir=".",
             env={"PYTHONPATH": "v2"},
         ),
@@ -146,6 +138,32 @@ class AppDefinitions:
             icon="📊",
             category="dev_tools",
             script_path="v2/test_simple.py",
+            working_dir=".",
+            env={"PYTHONPATH": "v2"},
+        ),
+        AppDefinition(
+            title="🎨 Pictograph Renderer Test (Debug)",
+            description="Test V2 pictograph rendering with VSCode debug support",
+            icon="🎨",
+            category="dev_tools",
+            command=[
+                "python",
+                "-m",
+                "debugpy",
+                "--listen",
+                "5684",
+                "--wait-for-client",
+                "v2/test_pictograph_rendering.py",
+            ],
+            working_dir=".",
+            env={"PYTHONPATH": "v2"},
+        ),
+        AppDefinition(
+            title="🖼️ Pictograph Renderer Test",
+            description="Test V2 pictograph rendering (normal run)",
+            icon="🖼️",
+            category="dev_tools",
+            script_path="v2/test_pictograph_rendering.py",
             working_dir=".",
             env={"PYTHONPATH": "v2"},
         ),

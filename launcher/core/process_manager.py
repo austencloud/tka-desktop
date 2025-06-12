@@ -118,15 +118,44 @@ class ProcessManager(QObject):
         if app_name in self.app_processes:
             existing_process = self.app_processes[app_name]
             if existing_process.state() != QProcess.ProcessState.NotRunning:
-                existing_process.terminate()
-                if not existing_process.waitForFinished(2000):
-                    existing_process.kill()
-                del self.app_processes[app_name]
+                self._safely_terminate_process(existing_process, app_name)
 
         process = self.execute_python_script(script_path, args, env)
         if process:
             self.app_processes[app_name] = process
         return process
+
+    def _safely_terminate_process(self, process: QProcess, app_name: str) -> None:
+        """Safely terminate a process without affecting the launcher."""
+        try:
+            # First, disconnect all signals to prevent interference
+            process.finished.disconnect()
+            process.readyReadStandardOutput.disconnect()
+            process.readyReadStandardError.disconnect()
+
+            # Remove from tracking immediately
+            if app_name in self.app_processes:
+                del self.app_processes[app_name]
+
+            if process in self.processes:
+                self.processes.remove(process)
+
+            # Clean termination attempt
+            if process.state() != QProcess.ProcessState.NotRunning:
+                process.terminate()
+
+                # Give it time to close gracefully
+                if not process.waitForFinished(3000):
+                    process.kill()
+                    process.waitForFinished(1000)
+
+        except Exception as e:
+            # If anything goes wrong, force kill and continue
+            try:
+                process.kill()
+                process.waitForFinished(1000)
+            except:
+                pass
 
     def is_app_running(self, app_name: str) -> bool:
         if app_name not in self.app_processes:

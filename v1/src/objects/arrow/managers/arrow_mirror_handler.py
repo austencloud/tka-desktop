@@ -28,10 +28,16 @@ class ArrowMirrorManager:
 
         motion_type = self.arrow.motion.state.motion_type
         prop_rot_dir = self.arrow.motion.state.prop_rot_dir
-        if motion_type in mirror_conditions:
-            is_svg_mirrored = mirror_conditions[motion_type].get(prop_rot_dir)
+
+        if motion_type and prop_rot_dir:
+            if motion_type in mirror_conditions:
+                is_svg_mirrored = mirror_conditions[motion_type].get(
+                    prop_rot_dir, False
+                )
+            else:
+                is_svg_mirrored = mirror_conditions["other"].get(prop_rot_dir, False)
         else:
-            is_svg_mirrored = mirror_conditions["other"].get(prop_rot_dir, False)
+            is_svg_mirrored = False
 
         self.arrow.state.is_svg_mirrored = is_svg_mirrored
 

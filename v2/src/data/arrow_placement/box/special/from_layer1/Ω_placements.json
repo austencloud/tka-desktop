@@ -1,0 +1,185 @@
+{
+  "Ω": {
+    "(o, 0, 0.5)": {
+      "anti": [90, -95]
+    },
+    "(o, 0, 1.5)": {
+      "anti": [85, -95]
+    },
+    "(o, 0, 2.5)": {
+      "anti": [105, -95]
+    },
+    "(s, 0, 3)": {
+      "static_rot_angle_override": true,
+      "static": [15, 0],
+      "anti": [0, -95]
+    },
+    "(s, 0.5, 0.5)": {},
+    "(o, 0.5, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-50, -50]
+    },
+    "(s, 0.5, 2)": {
+      "static_rot_angle_override": true,
+      "static_to_layer1_rot_angle_override": true
+    },
+    "(o, 0.5, 2)": {
+      "anti": [-170, 80]
+    },
+    "(o, 0.5, 3)": {
+      "static_rot_angle_override": true
+    },
+    "(s, 1, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [100, 100]
+    },
+    "(1.5, 0)": {
+      "anti": [0, 45]
+    },
+    "(s, 1.5, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [100, 100]
+    },
+    "(s, 1.5, 1)": {
+      "static_rot_angle_override": true,
+      "static": [80, -20],
+      "anti": [0, 45]
+    },
+    "(o, 1.5, 1)": {
+      "anti": [0, 45]
+    },
+    "(o, 1.5, 2)": {
+      "anti": [0, 45],
+      "static_rot_angle_override": true,
+      "static": [0, 10]
+    },
+    "(s, 1.5, 2.5)": {
+      "static_rot_angle_override": true,
+      "static": [5, 20]
+    },
+    "(s, 1.5, 3)": {
+      "static_rot_angle_override": true,
+      "static": [15, -10],
+      "anti": [0, 45]
+    },
+    "(s, 2, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [100, 100]
+    },
+    "(2.5, 0)": {
+      "anti": [-70, 25]
+    },
+    "(s, 2.5, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [100, 100],
+      "anti": [-90, 20]
+    },
+    "(o, 2.5, 0.5)": {
+      "anti": [-90, 20]
+    },
+    "(s, 2.5, 1)": {
+      "static_rot_angle_override": true,
+      "static": [80, -20],
+      "anti": [-70, 25]
+    },
+    "(o, 2.5, 1)": {
+      "anti": [-70, 25]
+    },
+    "(s, 2.5, 1.5)": {
+      "anti": [-90, -15]
+    },
+    "(o, 2.5, 1.5)": {
+      "anti": [-90, -15],
+      "static_rot_angle_override": true
+    },
+    "(s, 2.5, 2)": {
+      "anti": [-70, 25]
+    },
+    "(o, 2.5, 2)": {
+      "static_rot_angle_override": true,
+      "anti": [-70, 25]
+    },
+    "(s, 2.5, 2.5)": {
+      "anti": [-90, -15],
+      "static_rot_angle_override": true,
+      "static": [0, 20]
+    },
+    "(o, 2.5, 2.5)": {
+      "anti": [-90, -15]
+    },
+    "(s, 2.5, 3)": {
+      "static_rot_angle_override": true,
+      "static": [10, 0],
+      "anti": [-70, 25]
+    },
+    "(o, 2.5, 3)": {
+      "static_rot_angle_override": true,
+      "static": [-25, -10],
+      "anti": [5, 90]
+    },
+    "(s, 3, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [100, 100]
+    },
+    "(s, 3, 1)": {},
+    "(o, 0, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-50, -50]
+    },
+    "(o, 2, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [-65, -90]
+    },
+    "(o, 1, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-50, -50]
+    },
+    "(s, 1, 1)": {
+      "static": [50, 50]
+    },
+    "(s, 1.5, 2)": {
+      "static_rot_angle_override": true
+    },
+    "(o, 2, 3)": {
+      "static_rot_angle_override": true
+    },
+    "(o, 2, 1)": {
+      "static_rot_angle_override": true,
+      "static": [-50, -50]
+    },
+    "(o, 0, 2)": {
+      "anti": [10, -70]
+    },
+    "(o, 0, 3)": {
+      "static_rot_angle_override": true,
+      "anti": [0, -60]
+    },
+    "(o, 1, 3)": {
+      "anti": [0, -60],
+      "static_rot_angle_override": true
+    },
+    "(o, 1.5, 3)": {
+      "static_rot_angle_override": true
+    },
+    "(o, fl, 0.5)": {
+      "static_rot_angle_override": true,
+      "static": [-140, 0]
+    },
+    "null": {
+      "static_rot_angle_override": true
+    },
+    "(s, 0, 1.5)": {
+      "anti": [-15, -5],
+      "static_to_layer2_rot_angle_override": true
+    },
+    "(s, 0, 2)": {
+      "anti": [0, -80]
+    },
+    "(s, 0, 2.5)": {
+      "anti": [-15, -5]
+    },
+    "(s, 0.5, 1.5)": {
+      "static_rot_angle_override": true
+    }
+  }
+}

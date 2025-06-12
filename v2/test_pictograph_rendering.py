@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 """
-Test script for V1-compatible pictograph rendering.
+Test script for v2 pictograph rendering system.
 
-This script tests the fixed SimplePictographComponent to ensure:
-1. V1 SVG assets are loaded correctly
-2. Grid scaling is pixel-perfect (950x950 scene)
-3. Props and arrows are sized correctly relative to grid
-4. Diamond grid is used as specified
-5. All elements maintain V1 proportions
+This script tests the v2 SimplePictographComponent's ability to render pictographs
+using proven positioning algorithms and SVG assets for pixel-perfect accuracy.
+The v2 system implements the complete positioning pipeline while maintaining
+clean architecture and modern design patterns.
+
+Features tested:
+1. Complete arrow positioning pipeline (initial placement, location calculation, adjustments)
+2. Pixel-perfect coordinate system (950x950 scene)
+3. Proper SVG asset loading and scaling
+4. Arrow mirroring based on motion data
+5. Diamond grid rendering with correct proportions
 """
 
 import sys
@@ -32,10 +37,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 
-from src.presentation.components.simple_pictograph_component import (
-    SimplePictographComponent,
-    get_v2_image_path,
-)
+from src.presentation.components.pictograph_component import PictographComponent
+from src.presentation.components.asset_utils import get_image_path
 from src.domain.models.core_models import (
     BeatData,
     MotionData,
@@ -113,12 +116,14 @@ class PictographRenderingTestWindow(QMainWindow):
         pictographs_layout.setSpacing(20)
 
         try:
-            print("\n🎯 GENERATING TEST PICTOGRAPHS:")
+            print("\n🎯 GENERATING SPECIFIC TEST PICTOGRAPHS:")
             print("=" * 50)
 
-            for i in range(3):
-                pictograph_data = self.data_service.get_random_valid_pictograph_data()
-                print(f"\nPictograph {i+1}:")
+            # Get specific test pictographs for consistent testing
+            test_pictographs = self.data_service.get_test_pictographs()
+
+            for i, pictograph_data in enumerate(test_pictographs):
+                print(f"\nPictograph {i+1} (Letter {pictograph_data['letter']}):")
                 print(f"  Letter: {pictograph_data['letter']}")
                 print(f"  Blue Motion: {pictograph_data['blue_motion']['motion_type']}")
                 print(
@@ -224,7 +229,7 @@ class PictographRenderingTestWindow(QMainWindow):
         layout.addWidget(subtitle_label)
 
         # Pictograph component with fixed V1 rendering
-        pictograph = SimplePictographComponent()
+        pictograph = PictographComponent()
         pictograph.update_from_beat(beat_data)
         pictograph.setFixedSize(220, 220)
 
@@ -293,7 +298,7 @@ class PictographRenderingTestWindow(QMainWindow):
         all_found = True
 
         for filename in test_files:
-            path = get_v2_image_path(filename)
+            path = get_image_path(filename)
             exists = os.path.exists(path)
             status = "✓" if exists else "✗"
             status_lines.append(f"  {status} {filename}")

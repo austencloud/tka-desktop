@@ -22,14 +22,21 @@ class LauncherApplication(QApplication):
 
     def run(self):
         from ..ui.main_window import LauncherWindow
-        from .config import Config
+        from .config import Config, Paths
         from .process_manager import ProcessManager
+        from .cache_manager import LauncherCache
+        from .workflow_manager import WorkflowManager
         from ..data.recent_actions import RecentActionsManager
         from ..data.favorites_manager import FavoritesManager
         from ..monitoring.process_monitor import ProcessMonitor
 
+        # Ensure required directories exist
+        Paths.ensure_directories()
+
         config = Config()
         process_manager = ProcessManager()
+        cache = LauncherCache(Paths.CACHE_DIR)
+        workflow_manager = WorkflowManager(Paths.LAUNCHER_DIR, process_manager)
         recent_actions_manager = RecentActionsManager()
         favorites_manager = FavoritesManager()
         process_monitor = ProcessMonitor(process_manager)
@@ -40,6 +47,8 @@ class LauncherApplication(QApplication):
             recent_actions_manager,
             favorites_manager,
             process_monitor,
+            cache,
+            workflow_manager,
         )
         window.show()
 

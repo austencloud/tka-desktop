@@ -1,0 +1,10 @@
+{
+  "Z-": {
+    "(o, 0.5, 1)": {
+      "dash_from_layer2_rot_angle_override": true
+    },
+    "(1, fl)": {
+      "float_from_layer1": [50, -30]
+    }
+  }
+}
