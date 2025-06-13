@@ -40,75 +40,52 @@ class TKAGlyphRenderer:
             has_dash: Whether to show a dash after the letter
             turns_data: Turn information for dots and numbers
         """
-        print(
-            f"🔤 TKA GLYPH RENDERER: Called with letter='{letter}', letter_type={letter_type}, has_dash={has_dash}"
-        )
-
         if not letter or not letter_type:
-            print(f"🔤 TKA GLYPH RENDERER: Skipping - missing letter or letter_type")
             return
 
         # Create a group to hold all TKA components
         tka_group = QGraphicsItemGroup()
-        print(f"🔤 TKA GLYPH: Created group")
 
         # Render the letter
-        print(f"🔤 TKA GLYPH: Rendering letter '{letter}' with type {letter_type}")
         letter_item = self._render_letter(letter, letter_type)
         if letter_item:
-            print(f"🔤 TKA GLYPH: Letter item created successfully")
             tka_group.addToGroup(letter_item)
-        else:
-            print(f"🔤 TKA GLYPH: ❌ Failed to create letter item")
 
         # Render the dash if needed
         if has_dash and "-" in letter and letter_item:
-            print(f"🔤 TKA GLYPH: Rendering dash")
             dash_item = self._render_dash()
             if dash_item:
                 tka_group.addToGroup(dash_item)
                 self._position_dash(dash_item, letter_item)
 
         # Position the entire TKA group
-        print(f"🔤 TKA GLYPH: Positioning TKA group")
         self._position_tka_glyph(tka_group)
-        print(f"🔤 TKA GLYPH: Adding to scene")
         self.scene.addItem(tka_group)
-        print(f"🔤 TKA GLYPH: ✅ Successfully added TKA glyph to scene")
 
     def _render_letter(
         self, letter: str, letter_type: LetterType
     ) -> Optional[QGraphicsSvgItem]:
         """Render the letter SVG."""
-        print(f"🔤 _render_letter: letter='{letter}', letter_type={letter_type}")
 
         # Determine the SVG path based on letter type
         svg_path = get_image_path(f"letters_trimmed/{letter_type.value}/{letter}.svg")
-        print(f"🔤 _render_letter: svg_path='{svg_path}'")
 
         if not os.path.exists(svg_path):
-            print(f"🔤 _render_letter: ❌ Letter glyph asset not found: {svg_path}")
             return None
 
-        print(f"🔤 _render_letter: ✅ SVG file exists, creating QGraphicsSvgItem")
-        letter_item = QGraphicsSvgItem()
         renderer = QSvgRenderer(svg_path)
-        print(f"🔤 _render_letter: Created QSvgRenderer, isValid={renderer.isValid()}")
 
         if renderer.isValid():
+            letter_item = QGraphicsSvgItem()
             letter_item.setSharedRenderer(renderer)
-            print(f"🔤 _render_letter: ✅ Successfully created letter item")
             return letter_item
-        else:
-            print(f"🔤 _render_letter: ❌ Failed to load letter glyph: {svg_path}")
-            return None
+        return None
 
     def _render_dash(self) -> Optional[QGraphicsSvgItem]:
         """Render the dash SVG."""
         svg_path = get_image_path("dash.svg")
 
         if not os.path.exists(svg_path):
-            print(f"Warning: Dash glyph asset not found: {svg_path}")
             return None
 
         dash_item = QGraphicsSvgItem()
@@ -118,7 +95,6 @@ class TKAGlyphRenderer:
             dash_item.setSharedRenderer(renderer)
             return dash_item
         else:
-            print(f"Warning: Failed to load dash glyph: {svg_path}")
             return None
 
     def _position_dash(

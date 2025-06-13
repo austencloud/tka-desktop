@@ -76,14 +76,10 @@ class ModernOptionPicker(QObject):
                 # So sections should use the full widget width, not half
                 actual_width = self.widget.width()
                 actual_height = self.widget.height()
-                print(
-                    f"🔧 Real size provider: Using actual widget size {actual_width}x{actual_height}"
-                )
                 # Return the actual size - sections will use full width
                 return QSize(actual_width, actual_height)
             else:
                 # Fallback for initialization phase
-                print(f"🔧 Real size provider: Using fallback size (widget not ready)")
                 return QSize(1200, 800)
 
         self._display_manager = OptionPickerDisplayManager(

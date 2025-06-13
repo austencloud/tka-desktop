@@ -3,19 +3,13 @@
 Main entry point for The Kinetic Constructor Desktop application.
 """
 
-import sys
 import os
+import sys
 
 
 def main():
-    """Launch the custom launcher."""
-    launcher_path = os.path.join(os.path.dirname(__file__), "launcher")
-
-    if launcher_path not in sys.path:
-        sys.path.insert(0, launcher_path)
-
     try:
-        from launcher.core.application import LauncherApplication
+        from launcher import LauncherApplication
 
         app = LauncherApplication(sys.argv)
         return app.run()

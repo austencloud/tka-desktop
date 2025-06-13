@@ -98,13 +98,7 @@ class PictographScene(QGraphicsScene):
                 )
 
             # Render TKA glyph
-            print(
-                f"🔍 TKA GLYPH CHECK: show_tka={glyph_data.show_tka}, letter='{self.beat_data.letter}', letter_type={glyph_data.letter_type}"
-            )
             if glyph_data.show_tka and self.beat_data.letter and glyph_data.letter_type:
-                print(
-                    f"🔤 CALLING TKA GLYPH RENDERER with letter='{self.beat_data.letter}', letter_type={glyph_data.letter_type}"
-                )
                 self.tka_glyph_renderer.render_tka_glyph(
                     self.beat_data.letter,
                     glyph_data.letter_type,
