@@ -35,8 +35,15 @@ class OptionUpdater:
         self.fade_manager.widget_fader.fade_and_update(frames, self.update_options, 200)
 
     def update_options(self) -> None:
+        print("\n" + "🔄" * 40)
+        print("🔄 V1 OPTION UPDATER ANALYSIS - update_options()")
+        print("🔄" * 40)
+
         sequence = self.json_loader.load_current_sequence()
         sequence_without_metdata = sequence[1:]
+
+        print(f"📊 Full sequence length: {len(sequence)}")
+        print(f"📊 Sequence without metadata: {len(sequence_without_metdata)}")
 
         # Get the selected filter if the reversal_filter is available
         selected_filter = None
@@ -44,21 +51,45 @@ class OptionUpdater:
             selected_filter = (
                 self.option_picker.reversal_filter.reversal_combobox.currentData()
             )
+        print(f"🔧 Selected filter: {selected_filter}")
 
         next_options = self.option_picker.option_getter.get_next_options(
             sequence_without_metdata, selected_filter
         )
 
+        print(f"\n📋 SECTIONAL ASSIGNMENT ANALYSIS:")
+        print(f"   Available option pool size: {len(self.option_picker.option_pool)}")
+        print(f"   Next options to assign: {len(next_options)}")
+
         for section in self.option_picker.option_scroll.sections.values():
             section.clear_pictographs()
 
+        section_assignments = {}
         for i, option_data in enumerate(next_options):
             if i >= len(self.option_picker.option_pool):
+                print(f"⚠️  Reached option pool limit at index {i}")
                 break
             option = self.option_picker.option_pool[i]
             option.managers.updater.update_pictograph(option_data)
             option.elements.view.update_borders()
-            letter_type = LetterType.get_letter_type(option.state.letter)
+
+            letter = option.state.letter
+            letter_type = LetterType.get_letter_type(letter)
             section = self.option_picker.option_scroll.sections.get(letter_type)
+
             if section:
                 section.add_pictograph(option)
+                if letter_type not in section_assignments:
+                    section_assignments[letter_type] = []
+                section_assignments[letter_type].append(letter)
+                print(f"   ✅ Assigned Letter {letter} to Section {letter_type}")
+            else:
+                print(
+                    f"   ❌ No section found for Letter {letter} (type: {letter_type})"
+                )
+
+        print(f"\n📊 FINAL SECTION SUMMARY:")
+        for section_name, letters in section_assignments.items():
+            print(f"   {section_name}: {letters} ({len(letters)} pictographs)")
+
+        print("🔄" * 40)

@@ -166,6 +166,19 @@
     },
     "(fl, 0.5)": {
       "float_from_layer1": [35, -40]
+    },
+    "(s, 0.5, 1)": {
+      "static": [90, 0]
+    },
+    "(0, 1)": {
+      "red": {}
+    },
+    "(0, fl)": {
+      "pro_from_layer1": {},
+      "float_from_layer2": {}
+    },
+    "(0.5, fl)": {
+      "float_from_layer2": {}
     }
   }
 }

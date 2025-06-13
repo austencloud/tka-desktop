@@ -168,6 +168,9 @@
     },
     "null": {
       "float_from_layer2": [30, -45]
+    },
+    "(o, fl, 1)": {
+      "float_from_layer2": [50, -50]
     }
   }
 }

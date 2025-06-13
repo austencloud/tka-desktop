@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel, QSizePolicy
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import pyqtSignal
 
@@ -25,8 +25,11 @@ class QuickLaunchBar(QWidget):
         for app in self.primary_apps:
             btn = QPushButton(f"{app.icon} {app.title}")
             btn.setToolTip(f"{app.description}\n{app.keyboard_shortcut}")
-            btn.setMinimumSize(140, 36)
+            btn.setMinimumHeight(48)
+            btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             btn.clicked.connect(
                 lambda checked, a=app: self.app_launch_requested.emit(a)
             )
             layout.addWidget(btn)
+            # let buttons expand evenly
+            layout.setStretchFactor(btn, 1)

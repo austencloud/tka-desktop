@@ -27,14 +27,44 @@ class OptionGetter:
     def get_next_options(
         self, sequence: list[dict[str, Any]], selected_filter: Optional[str] = None
     ) -> list[dict[str, Any]]:
+        print("\n" + "=" * 80)
+        print("🔍 V1 MOTION GENERATION ANALYSIS - get_next_options()")
+        print("=" * 80)
+        print(f"📊 Input sequence length: {len(sequence)}")
+        if sequence:
+            last_beat = sequence[-1]
+            print(f"📍 Last beat end_pos: {last_beat.get('end_pos', 'N/A')}")
+            print(
+                f"🔵 Last blue end_ori: {last_beat.get('blue_attributes', {}).get('end_ori', 'N/A')}"
+            )
+            print(
+                f"🔴 Last red end_ori: {last_beat.get('red_attributes', {}).get('end_ori', 'N/A')}"
+            )
+
         options = self._load_all_next_option_dicts(sequence)
+        print(f"🎯 Raw options found: {len(options)}")
+
         if selected_filter is not None:
+            print(f"🔧 Applying filter: {selected_filter}")
             options = [
                 o
                 for o in options
                 if self._determine_reversal_filter(sequence, o) == selected_filter
             ]
+            print(f"🎯 Filtered options: {len(options)}")
+
         self.update_orientations(sequence, options)
+
+        print(f"✅ Final options count: {len(options)}")
+        for i, option in enumerate(options[:10]):  # Show first 10
+            letter = option.get("letter", "Unknown")
+            start_pos = option.get("start_pos", "N/A")
+            end_pos = option.get("end_pos", "N/A")
+            print(f"   {i+1:2d}. Letter: {letter}, {start_pos} → {end_pos}")
+        if len(options) > 10:
+            print(f"   ... and {len(options) - 10} more options")
+        print("=" * 80)
+
         return options
 
     def update_orientations(
@@ -58,31 +88,65 @@ class OptionGetter:
     def _load_all_next_option_dicts(
         self, sequence: list[dict[str, Any]]
     ) -> list[dict[str, Any]]:
+        print("\n🔍 V1 DATASET QUERY ANALYSIS - _load_all_next_option_dicts()")
+        print("-" * 60)
+
         next_opts: list[dict[str, Any]] = []
         if not sequence:
+            print("❌ Empty sequence - no options to load")
             return next_opts
 
         # Additional safety check for sequence length
         if len(sequence) < 1:
+            print("❌ Sequence too short - no options to load")
             return next_opts
 
         # Handle placeholder case with additional safety check
         if sequence[-1].get("is_placeholder") and len(sequence) >= 2:
             last = sequence[-2]
+            print("📍 Using second-to-last beat (placeholder detected)")
         else:
             last = sequence[-1]
+            print("📍 Using last beat")
+
         start = last.get(END_POS)
+        print(f"🎯 Searching for options with START_POS = '{start}'")
+
         if start:
-            for group in self.pictograph_dataset.values():
+            dataset_groups_checked = 0
+            total_items_checked = 0
+            matches_found = 0
+
+            for group_key, group in self.pictograph_dataset.items():
+                dataset_groups_checked += 1
                 for item in group:
+                    total_items_checked += 1
                     if item.get(START_POS) == start:
+                        letter = item.get("letter", "Unknown")
+                        end_pos = item.get(END_POS, "N/A")
+                        matches_found += 1
                         next_opts.append(item)
+                        print(
+                            f"   ✅ Match {matches_found}: Letter {letter}, {start} → {end_pos}"
+                        )
+
+            print(f"📊 Dataset search complete:")
+            print(f"   - Groups checked: {dataset_groups_checked}")
+            print(f"   - Total items checked: {total_items_checked}")
+            print(f"   - Matches found: {matches_found}")
+        else:
+            print("❌ No start position found in last beat")
+
+        print(f"🔧 Applying orientation updates to {len(next_opts)} options...")
         for o in next_opts:
             for color in (BLUE, RED):
                 o[f"{color}_attributes"][START_ORI] = last[f"{color}_attributes"][
                     END_ORI
                 ]
             self.ori_validation_engine.validate_single_pictograph(o, last)
+
+        print(f"✅ Returning {len(next_opts)} validated options")
+        print("-" * 60)
         return next_opts
 
     def _determine_reversal_filter(

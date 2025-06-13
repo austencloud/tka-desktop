@@ -14,6 +14,7 @@ from ...application.services.beat_frame_layout_service import BeatFrameLayoutSer
 from src.presentation.components.sequence_workbench.beat_frame.modern_beat_frame import (
     ModernBeatFrame,
 )
+from .sequence_workbench.modern_button_panel import ModernSequenceWorkbenchButtonPanel
 
 
 class ModernSequenceWorkbench(QWidget):
@@ -50,27 +51,28 @@ class ModernSequenceWorkbench(QWidget):
         # Start position state (separate from sequence beats like v1)
         self._start_position_data: Optional[BeatData] = None
 
-        # Beat frame component (will be initialized in _setup_ui)
+        # UI components
         self._beat_frame: Optional[ModernBeatFrame] = None
+        self._button_panel: Optional[ModernSequenceWorkbenchButtonPanel] = None
 
         self._setup_ui()
         self._connect_signals()
 
     def _setup_ui(self):
-        """Setup the UI layout based on v1 workbench structure"""
-        layout = QVBoxLayout(self)
+        """Setup the UI layout matching V1's sequence workbench structure"""
+        # Main layout for the workbench content
+        main_layout = QVBoxLayout(self)
+        main_layout.setSpacing(8)
+        main_layout.setContentsMargins(8, 8, 8, 8)
 
         # Top section: Indicator and difficulty labels
-        self._setup_indicator_section(layout)
+        self._setup_indicator_section(main_layout)
 
-        # Main section: Beat frame area
-        self._setup_beat_frame_section(layout)
+        # Middle section: Beat frame + button panel (horizontal layout like V1)
+        self._setup_beat_frame_with_button_panel(main_layout)
 
-        # Bottom section: Control buttons
-        self._setup_button_panel(layout)
-
-        # Side section: Graph editor (collapsible)
-        self._setup_graph_section()
+        # Bottom section: Graph editor placeholder (collapsible)
+        self._setup_graph_section(main_layout)
 
     def _setup_indicator_section(self, parent_layout: QVBoxLayout):
         """Setup indicator labels section"""
@@ -100,17 +102,20 @@ class ModernSequenceWorkbench(QWidget):
 
         parent_layout.addLayout(indicator_layout)
 
-    def _setup_beat_frame_section(self, parent_layout: QVBoxLayout):
-        """Setup main beat frame display area with actual ModernBeatFrame"""
+    def _setup_beat_frame_with_button_panel(self, parent_layout: QVBoxLayout):
+        """Setup beat frame + button panel layout matching V1's beat_frame_layout"""
+        # Create horizontal layout for beat frame + button panel (like V1)
+        beat_frame_layout = QHBoxLayout()
+        beat_frame_layout.setSpacing(12)
+        beat_frame_layout.setContentsMargins(0, 0, 0, 0)
+
         # Create beat frame layout service
         beat_frame_layout_service = BeatFrameLayoutService()
 
-        # Create the actual ModernBeatFrame component
+        # Create the actual ModernBeatFrame component (left side)
         self._beat_frame = ModernBeatFrame(
             layout_service=beat_frame_layout_service, parent=self
         )
-
-        # Set minimum height for proper display
         self._beat_frame.setMinimumHeight(400)
 
         # Connect beat frame signals to workbench
@@ -119,55 +124,57 @@ class ModernSequenceWorkbench(QWidget):
         self._beat_frame.sequence_modified.connect(self._on_sequence_modified)
         self._beat_frame.layout_changed.connect(self._on_layout_changed)
 
-        parent_layout.addWidget(self._beat_frame)
+        # Create button panel (right side, between beat frame and option picker)
+        self._button_panel = ModernSequenceWorkbenchButtonPanel(self)
 
-    def _setup_button_panel(self, parent_layout: QVBoxLayout):
-        """Setup control buttons panel based on v1 button panel"""
-        button_layout = QHBoxLayout()
+        # Add to horizontal layout with proper proportions (like V1's 10:1 ratio)
+        beat_frame_layout.addWidget(self._beat_frame, 10)  # Beat frame takes most space
+        beat_frame_layout.addWidget(
+            self._button_panel, 1
+        )  # Button panel takes small space
 
-        # Color swap button
-        self._color_swap_btn = QPushButton("Swap Colors")
-        self._color_swap_btn.clicked.connect(self._handle_color_swap)
+        parent_layout.addLayout(beat_frame_layout)
 
-        # Reflection button
-        self._reflect_btn = QPushButton("Reflect")
-        self._reflect_btn.clicked.connect(self._handle_reflection)
-
-        # Rotation button
-        self._rotate_btn = QPushButton("Rotate")
-        self._rotate_btn.clicked.connect(self._handle_rotation)
-
-        # Clear button
-        self._clear_btn = QPushButton("Clear")
-        self._clear_btn.clicked.connect(self._handle_clear)
-
-        # Full screen button
-        self._fullscreen_btn = QPushButton("👁️")
-        self._fullscreen_btn.clicked.connect(self._handle_fullscreen)
-
-        # Copy JSON button
-        self._copy_json_btn = QPushButton("Copy JSON")
-        self._copy_json_btn.clicked.connect(self._handle_copy_json)
-
-        button_layout.addWidget(self._color_swap_btn)
-        button_layout.addWidget(self._reflect_btn)
-        button_layout.addWidget(self._rotate_btn)
-        button_layout.addWidget(self._clear_btn)
-        button_layout.addStretch()
-        button_layout.addWidget(self._fullscreen_btn)
-        button_layout.addWidget(self._copy_json_btn)
-
-        parent_layout.addLayout(button_layout)
-
-    def _setup_graph_section(self):
+    def _setup_graph_section(self, parent_layout: QVBoxLayout):
         """Setup graph editor section"""
-        # Graph editor would be a separate component
-        # This maintains the v1 functionality while using modern architecture
-        pass
+        # Graph editor placeholder (collapsible like V1)
+        graph_placeholder = QLabel("Graph Editor (Collapsible)")
+        graph_placeholder.setStyleSheet(
+            """
+            QLabel {
+                background-color: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 10px;
+                color: rgba(255, 255, 255, 0.7);
+                text-align: center;
+            }
+        """
+        )
+        graph_placeholder.setFixedHeight(50)
+        parent_layout.addWidget(graph_placeholder)
 
     def _connect_signals(self):
-        """Connect internal signals"""
-        pass
+        """Connect button panel signals to service operations"""
+        if not self._button_panel:
+            return
+
+        # Dictionary & Export operations
+        self._button_panel.add_to_dictionary_requested.connect(
+            self._handle_add_to_dictionary
+        )
+        self._button_panel.save_image_requested.connect(self._handle_save_image)
+        self._button_panel.view_fullscreen_requested.connect(self._handle_fullscreen)
+
+        # Transform operations
+        self._button_panel.mirror_sequence_requested.connect(self._handle_reflection)
+        self._button_panel.swap_colors_requested.connect(self._handle_color_swap)
+        self._button_panel.rotate_sequence_requested.connect(self._handle_rotation)
+
+        # Sequence management operations
+        self._button_panel.copy_json_requested.connect(self._handle_copy_json)
+        self._button_panel.delete_beat_requested.connect(self._handle_delete_beat)
+        self._button_panel.clear_sequence_requested.connect(self._handle_clear)
 
     # Public API methods
     def set_sequence(self, sequence: SequenceData):
@@ -190,11 +197,84 @@ class ModernSequenceWorkbench(QWidget):
         """Get the current start position"""
         return self._start_position_data
 
-    # Event handlers that use injected services
+    # Enhanced event handlers using modern button panel
+    def _handle_add_to_dictionary(self):
+        """Handle add to dictionary button click"""
+        if not self._current_sequence:
+            self._show_error_with_button_feedback(
+                "add_to_dictionary", "No sequence to add to dictionary"
+            )
+            return
+
+        try:
+            result = self._dictionary_service.add_sequence_to_dictionary(
+                self._current_sequence
+            )
+            if result:
+                self._show_success_with_button_feedback(
+                    "add_to_dictionary", "Added to dictionary!"
+                )
+            else:
+                self._show_error_with_button_feedback(
+                    "add_to_dictionary", "Sequence already in dictionary"
+                )
+        except Exception as e:
+            self._show_error_with_button_feedback(
+                "add_to_dictionary", f"Failed to add to dictionary: {e}"
+            )
+
+    def _handle_save_image(self):
+        """Handle save image button click"""
+        if not self._current_sequence:
+            self._show_error_with_button_feedback("save_image", "No sequence to export")
+            return
+
+        try:
+            success = self._workbench_service.export_sequence_image(
+                self._current_sequence
+            )
+            if success:
+                self._show_success_with_button_feedback("save_image", "Image saved!")
+            else:
+                self._show_error_with_button_feedback(
+                    "save_image", "Image export failed"
+                )
+        except Exception as e:
+            self._show_error_with_button_feedback("save_image", f"Export failed: {e}")
+
+    def _handle_delete_beat(self):
+        """Handle delete beat button click"""
+        if not self._current_sequence or self._current_sequence.length == 0:
+            self._show_error_with_button_feedback("delete_beat", "No beats to delete")
+            return
+
+        try:
+            # Get selected beat index from beat frame
+            selected_index = (
+                self._beat_frame.get_selected_beat_index() if self._beat_frame else None
+            )
+
+            if selected_index is None:
+                self._show_error_with_button_feedback("delete_beat", "No beat selected")
+                return
+
+            # Use deletion service to remove beat
+            updated_sequence = self._deletion_service.delete_beat(
+                self._current_sequence, selected_index
+            )
+            self._current_sequence = updated_sequence
+            self._update_display()
+            self.sequence_modified.emit(updated_sequence)
+            self._show_success_with_button_feedback("delete_beat", "Beat deleted!")
+        except Exception as e:
+            self._show_error_with_button_feedback("delete_beat", f"Delete failed: {e}")
+
     def _handle_color_swap(self):
         """Handle color swap button click"""
         if not self._current_sequence:
-            self.error_occurred.emit("No sequence to swap colors")
+            self._show_error_with_button_feedback(
+                "swap_colors", "No sequence to swap colors"
+            )
             return
 
         try:
@@ -204,14 +284,18 @@ class ModernSequenceWorkbench(QWidget):
             self._current_sequence = swapped_sequence
             self._update_display()
             self.sequence_modified.emit(swapped_sequence)
-            self.operation_completed.emit("Colors swapped!")
+            self._show_success_with_button_feedback("swap_colors", "Colors swapped!")
         except Exception as e:
-            self.error_occurred.emit(f"Color swap failed: {e}")
+            self._show_error_with_button_feedback(
+                "swap_colors", f"Color swap failed: {e}"
+            )
 
     def _handle_reflection(self):
         """Handle reflection button click"""
         if not self._current_sequence:
-            self.error_occurred.emit("No sequence to reflect")
+            self._show_error_with_button_feedback(
+                "mirror_sequence", "No sequence to reflect"
+            )
             return
 
         try:
@@ -221,14 +305,20 @@ class ModernSequenceWorkbench(QWidget):
             self._current_sequence = reflected_sequence
             self._update_display()
             self.sequence_modified.emit(reflected_sequence)
-            self.operation_completed.emit("Sequence reflected!")
+            self._show_success_with_button_feedback(
+                "mirror_sequence", "Sequence reflected!"
+            )
         except Exception as e:
-            self.error_occurred.emit(f"Reflection failed: {e}")
+            self._show_error_with_button_feedback(
+                "mirror_sequence", f"Reflection failed: {e}"
+            )
 
     def _handle_rotation(self):
         """Handle rotation button click"""
         if not self._current_sequence:
-            self.error_occurred.emit("No sequence to rotate")
+            self._show_error_with_button_feedback(
+                "rotate_sequence", "No sequence to rotate"
+            )
             return
 
         try:
@@ -238,9 +328,13 @@ class ModernSequenceWorkbench(QWidget):
             self._current_sequence = rotated_sequence
             self._update_display()
             self.sequence_modified.emit(rotated_sequence)
-            self.operation_completed.emit("Sequence rotated!")
+            self._show_success_with_button_feedback(
+                "rotate_sequence", "Sequence rotated!"
+            )
         except Exception as e:
-            self.error_occurred.emit(f"Rotation failed: {e}")
+            self._show_error_with_button_feedback(
+                "rotate_sequence", f"Rotation failed: {e}"
+            )
 
     def _handle_clear(self):
         """Handle clear button click - V1 behavior: clear all beats but preserve start position"""
@@ -255,38 +349,69 @@ class ModernSequenceWorkbench(QWidget):
                 # Start position remains visible and persistent
 
             self.sequence_modified.emit(empty_sequence)
-            self.operation_completed.emit("Sequence cleared!")
-
-            print("🗑️ Sequence cleared - start position preserved at (0,0)")
+            self._show_success_with_button_feedback(
+                "clear_sequence", "Sequence cleared!"
+            )
 
         except Exception as e:
-            self.error_occurred.emit(f"Clear failed: {e}")
+            self._show_error_with_button_feedback(
+                "clear_sequence", f"Clear failed: {e}"
+            )
 
     def _handle_fullscreen(self):
         """Handle full screen view button click"""
         if not self._current_sequence:
-            self.error_occurred.emit("No sequence to view")
+            self._show_error_with_button_feedback(
+                "view_fullscreen", "No sequence to view"
+            )
             return
 
         try:
             self._fullscreen_service.show_full_screen_view(self._current_sequence)
+            self._show_success_with_button_feedback(
+                "view_fullscreen", "Opening full screen view..."
+            )
         except Exception as e:
-            self.error_occurred.emit(f"Full screen view failed: {e}")
+            self._show_error_with_button_feedback(
+                "view_fullscreen", f"Full screen view failed: {e}"
+            )
 
     def _handle_copy_json(self):
         """Handle copy JSON button click"""
         if not self._current_sequence:
-            self.error_occurred.emit("No sequence to copy")
+            self._show_error_with_button_feedback("copy_json", "No sequence to copy")
             return
 
         try:
             json_data = self._workbench_service.export_sequence_json(
                 self._current_sequence
             )
-            # Copy to clipboard logic would go here
-            self.operation_completed.emit("Sequence JSON copied to clipboard!")
+
+            # Copy to clipboard
+            from PyQt6.QtWidgets import QApplication
+
+            clipboard = QApplication.clipboard()
+            clipboard.setText(json_data)
+
+            self._show_success_with_button_feedback(
+                "copy_json", "JSON copied to clipboard!"
+            )
         except Exception as e:
-            self.error_occurred.emit(f"JSON export failed: {e}")
+            self._show_error_with_button_feedback(
+                "copy_json", f"JSON export failed: {e}"
+            )
+
+    def _show_success_with_button_feedback(self, button_name: str, message: str):
+        """Show success message with button tooltip feedback"""
+        self.operation_completed.emit(message)
+        if self._button_panel:
+            self._button_panel.show_message_tooltip(button_name, message, 2000)
+
+    def _show_error_with_button_feedback(self, button_name: str, message: str):
+        """Show error message with button tooltip feedback"""
+        self.error_occurred.emit(message)
+        if self._button_panel:
+            self._button_panel.show_message_tooltip(button_name, f"❌ {message}", 3000)
 
     def _update_display(self):
         """Update all display elements based on current sequence"""
@@ -294,6 +419,20 @@ class ModernSequenceWorkbench(QWidget):
             self._indicator_label.setText("No sequence loaded")
             self._difficulty_label.setText("Difficulty: -")
             self._current_word_label.setText("Word: -")
+
+            # Disable relevant buttons when no sequence
+            if self._button_panel:
+                buttons_to_disable = [
+                    "save_image",
+                    "mirror_sequence",
+                    "swap_colors",
+                    "rotate_sequence",
+                    "copy_json",
+                    "clear_sequence",
+                ]
+                for button_name in buttons_to_disable:
+                    self._button_panel.set_button_enabled(button_name, False)
+
             # Clear beat frame
             if self._beat_frame:
                 self._beat_frame.set_sequence(None)
@@ -314,6 +453,19 @@ class ModernSequenceWorkbench(QWidget):
         word = self._dictionary_service.get_word_for_sequence(self._current_sequence)
         self._current_word_label.setText(f"Word: {word or '-'}")
 
+        # Enable buttons when sequence is available
+        if self._button_panel:
+            buttons_to_enable = [
+                "save_image",
+                "mirror_sequence",
+                "swap_colors",
+                "rotate_sequence",
+                "copy_json",
+                "clear_sequence",
+            ]
+            for button_name in buttons_to_enable:
+                self._button_panel.set_button_enabled(button_name, True)
+
         # Update beat frame with sequence data
         if self._beat_frame:
             self._beat_frame.set_sequence(self._current_sequence)
@@ -324,8 +476,9 @@ class ModernSequenceWorkbench(QWidget):
     # Beat frame signal handlers
     def _on_beat_selected(self, beat_index: int):
         """Handle beat selection from beat frame"""
-        # Could emit a signal or update UI state based on selection
-        pass
+        # Enable/disable delete button based on selection
+        if self._button_panel:
+            self._button_panel.set_button_enabled("delete_beat", beat_index is not None)
 
     def _on_beat_modified(self, beat_index: int, beat_data):
         """Handle beat modification from beat frame"""
@@ -351,3 +504,11 @@ class ModernSequenceWorkbench(QWidget):
         """Handle layout change from beat frame"""
         # Could update UI or emit signals based on layout changes
         pass
+
+    def resizeEvent(self, event):
+        """Handle resize events for responsive design"""
+        super().resizeEvent(event)
+
+        # Update button panel sizes
+        if self._button_panel:
+            self._button_panel.update_button_sizes(self.height())

@@ -253,6 +253,13 @@
     },
     "(o, 2, 2)": {
       "swap_beta_s_nonradial_blue_dash_e_red_anti_se": true
+    },
+    "(o, 0.5, 1)": {
+      "anti": [-85, 50]
+    },
+    "(o, 0.5, 0.5)": {
+      "anti": [-80, 45],
+      "dash": [65, 15]
     }
   }
 }

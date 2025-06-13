@@ -29,7 +29,8 @@
     },
     "(o, 0.5, 1)": {
       "static_rot_angle_override": true,
-      "static": [0, -65]
+      "static": [0, -65],
+      "static_to_layer2_rot_angle_override": true
     },
     "(o, 1, 0.5)": {
       "static_rot_angle_override": true,

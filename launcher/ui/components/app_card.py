@@ -1,4 +1,11 @@
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from PyQt6.QtWidgets import (
+    QFrame,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSizePolicy,
+)
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, pyqtSignal
 
@@ -59,9 +66,10 @@ class AppCard(QFrame):
         )
 
         if self.compact:
-            # Enhanced compact mode with better visual hierarchy
-            self.setMinimumSize(280, 60)  # Reduced from 420x80
-            self.setMaximumSize(600, 60)  # Reduced max width
+            # Enhanced compact mode with dynamic sizing
+            self.setSizePolicy(
+                QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+            )
 
             layout = QHBoxLayout(self)
             layout.setSpacing(12)  # Reduced spacing
@@ -153,9 +161,10 @@ class AppCard(QFrame):
             layout.addWidget(launch_btn)
 
         else:
-            # FULL CARD MODE: Vertical layout for grid view
-            self.setMinimumSize(240, 160)  # Increased size for better content fit
-            self.setMaximumSize(280, 180)
+            # FULL CARD MODE: dynamic sizing
+            self.setSizePolicy(
+                QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+            )
 
             layout = QVBoxLayout(self)
             layout.setSpacing(10)  # Increased spacing between sections

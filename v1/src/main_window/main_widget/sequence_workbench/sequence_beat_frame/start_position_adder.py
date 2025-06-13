@@ -23,6 +23,23 @@ class StartPositionAdder:
         self.json_manager = json_manager
 
     def add_start_pos_to_sequence(self, clicked_start_option: "Pictograph") -> None:
+        print("\n" + "🚀" * 50)
+        print("🚀 V1 START POSITION SELECTION ANALYSIS")
+        print("🚀" * 50)
+
+        start_pos_data = clicked_start_option.state.pictograph_data
+        print(
+            f"📍 Selected start position: {start_pos_data.get('start_pos', 'Unknown')}"
+        )
+        print(f"📍 End position: {start_pos_data.get('end_pos', 'Unknown')}")
+        print(
+            f"� Blue motion: {start_pos_data.get('blue_attributes', {}).get('motion_type', 'Unknown')}"
+        )
+        print(
+            f"� Red motion: {start_pos_data.get('red_attributes', {}).get('motion_type', 'Unknown')}"
+        )
+        print(f"📝 Letter: {start_pos_data.get('letter', 'Unknown')}")
+
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         try:
@@ -81,11 +98,18 @@ class StartPositionAdder:
                     logger.warning("json_manager not available in StartPositionAdder")
                     return
 
+            print("💾 Setting start position data in JSON manager...")
             json_manager.start_pos_handler.set_start_position_data(start_pos_beat)
             self.beat_frame.start_pos_view.set_start_pos(start_pos_beat)
             self.beat_frame.selection_overlay.select_beat_view(start_pos_view, False)
+
+            print("🔄 Transitioning to option picker...")
             self.construct_tab.transition_to_option_picker()
+
+            print("🎯 Triggering option picker update...")
             self.construct_tab.option_picker.updater.update_options()
+
+            print("🚀" * 50)
         finally:
             # Revert cursor back to default
             QApplication.restoreOverrideCursor()

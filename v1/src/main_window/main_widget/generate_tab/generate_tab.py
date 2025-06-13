@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSpacerItem, QSizePolicy
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 import logging
 
 from main_window.main_widget.generate_tab.circular.CAP_type_picker.CAP_picker import (
@@ -35,6 +35,7 @@ from .generate_sequence_button import GenerateSequenceButton
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
     from main_window.main_widget.core.tab_manager import TabManager
+    from main_window.main_widget.json_manager.json_manager import JsonManager
 
 
 class GenerateTab(QWidget):
@@ -47,16 +48,42 @@ class GenerateTab(QWidget):
     ):
         super().__init__(main_widget)
         self.main_widget = main_widget
-        # Settings and JSON manager fallback
-        self.settings_manager = (
-            settings_manager or self.main_widget.app_context.settings_manager
-        )
-        self.settings = (
-            self.settings_manager.get_generate_tab_settings()
-        )  # Get the specific generate tab settings
-        self.json_manager = json_manager or self.main_widget.app_context.json_manager
-        # Tab manager fallback
-        self.main_tab_manager = main_tab_manager or self.main_widget.tab_manager
+
+        # Settings manager with proper error handling
+        if settings_manager:
+            self.settings_manager = settings_manager
+        elif hasattr(self.main_widget, "settings_manager"):
+            self.settings_manager = self.main_widget.settings_manager
+        else:
+            try:
+                from src.settings_manager.global_settings.app_context import AppContext
+
+                self.settings_manager = AppContext.settings_manager()
+            except (AttributeError, ImportError):
+                raise RuntimeError("No settings manager available")
+
+        # Get generate tab settings using the correct interface
+        if hasattr(self.settings_manager, "generate_tab_settings"):
+            self.settings = self.settings_manager.generate_tab_settings
+        else:
+            self.settings = self.settings_manager
+
+        # JSON manager with proper typing
+        if json_manager:
+            self.json_manager: Union[IJsonManager, "JsonManager"] = json_manager
+        elif hasattr(self.main_widget, "json_manager"):
+            self.json_manager = self.main_widget.json_manager
+        else:
+            try:
+                from src.settings_manager.global_settings.app_context import AppContext
+
+                self.json_manager = AppContext.json_manager()
+            except (AttributeError, ImportError):
+                raise RuntimeError("No JSON manager available")
+
+        # Tab manager - make it truly optional since it doesn't exist on MainWidget
+        self.main_tab_manager = main_tab_manager
+
         self.logger = logging.getLogger(__name__)
 
         # Initialize with current application state
@@ -64,9 +91,11 @@ class GenerateTab(QWidget):
             self.main_widget.sequence_workbench
         )
 
-        # Store original state for restoration if needed by isolated generation
+        # Store original state with proper typing
         self.original_sequence_workbench: "SequenceWorkbench" = self.sequence_workbench
-        self.original_json_manager: "IJsonManager" = self.json_manager
+        self.original_json_manager: Union[IJsonManager, "JsonManager"] = (
+            self.json_manager
+        )
 
         self._init_builders()
         self._init_ui()
@@ -120,7 +149,7 @@ class GenerateTab(QWidget):
     def set_isolated_generation_context(
         self,
         isolated_workbench: "SequenceWorkbench",
-        isolated_json_manager: "IJsonManager",
+        isolated_json_manager: Union[IJsonManager, "JsonManager"],
     ) -> None:
         """Sets the context for isolated generation."""
         self.original_sequence_workbench = self.sequence_workbench

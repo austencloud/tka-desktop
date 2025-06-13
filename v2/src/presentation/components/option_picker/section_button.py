@@ -13,31 +13,37 @@ class OptionPickerSectionButton(QPushButton):
         self._update_text()
 
     def _setup_styling(self):
-        self.setFont(QFont("Arial", 12, QFont.Weight.Bold))
+        # V1-style font: slightly larger and more prominent
+        self.setFont(QFont("Arial", 13, QFont.Weight.Bold))
+
+        # V1-style header styling: cleaner, more professional appearance
         self.setStyleSheet(
             """
             QPushButton {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(255, 255, 255, 220),
-                    stop:1 rgba(245, 245, 245, 200));
-                border: 2px solid #bdc3c7;
-                border-radius: 6px;
-                padding: 10px 20px;
-                text-align: center;
-                min-height: 20px;
+                    stop:0 rgba(248, 249, 250, 240),
+                    stop:1 rgba(233, 236, 239, 220));
+                border: 1px solid rgba(206, 212, 218, 180);
+                border-radius: 4px;
+                padding: 12px 16px;
+                text-align: left;
+                min-height: 16px;
+                color: #495057;
+                font-weight: bold;
             }
             QPushButton:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(240, 248, 255, 220),
-                    stop:1 rgba(230, 240, 250, 200));
-                border-color: #3498db;
-                border-width: 3px;
+                    stop:0 rgba(233, 236, 239, 240),
+                    stop:1 rgba(222, 226, 230, 220));
+                border-color: rgba(173, 181, 189, 200);
+                color: #343a40;
             }
             QPushButton:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(220, 220, 220, 200),
-                    stop:1 rgba(200, 200, 200, 180));
-                border-color: #2980b9;
+                    stop:0 rgba(222, 226, 230, 220),
+                    stop:1 rgba(206, 212, 218, 200));
+                border-color: rgba(134, 142, 150, 220);
+                color: #212529;
             }
         """
         )
@@ -46,7 +52,13 @@ class OptionPickerSectionButton(QPushButton):
     def _update_text(self):
         description, type_name = LetterType.get_type_description(self.letter_type)
         expand_indicator = "▼" if self.is_expanded else "▶"
-        self.setText(f"{expand_indicator} {type_name}: {description}")
+
+        # CRITICAL FIX: Strip HTML tags from description to display clean text
+        import re
+
+        clean_description = re.sub(r"<[^>]+>", "", description)
+
+        self.setText(f"{expand_indicator} {type_name}: {clean_description}")
 
     def toggle_expansion(self):
         self.is_expanded = not self.is_expanded

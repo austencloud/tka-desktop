@@ -28,42 +28,75 @@ class ConstructTabWidget(QWidget):
         str
     )  # Emits position key when start position is set
 
-    def __init__(self, container: SimpleContainer, parent: Optional[QWidget] = None):
+    def __init__(
+        self,
+        container: SimpleContainer,
+        parent: Optional[QWidget] = None,
+        progress_callback=None,
+    ):
         super().__init__(parent)
         self.container = container
+        self.progress_callback = progress_callback
         self.state_service = OptionPickerStateService()
-        self._setup_ui()
+        self._setup_ui_with_progress()
         self._connect_signals()
 
-    def _setup_ui(self):
-        layout = QHBoxLayout(self)
-        layout.setSpacing(10)
+    def _setup_ui_with_progress(self):
+        """Setup UI with granular progress updates"""
+        if self.progress_callback:
+            self.progress_callback("Setting up construct tab layout...", 0.1)
 
-        splitter = QSplitter(Qt.Orientation.Horizontal)
-        layout.addWidget(splitter)
+        # Main horizontal layout: 50/50 split like V1
+        main_layout = QHBoxLayout(self)
+        main_layout.setSpacing(16)
+        main_layout.setContentsMargins(12, 12, 12, 12)
 
+        if self.progress_callback:
+            self.progress_callback("Creating sequence workbench panel...", 0.2)
+
+        # Left panel: Sequence Workbench (50% width)
         workbench_panel = self._create_workbench_panel()
-        splitter.addWidget(workbench_panel)
+        main_layout.addWidget(workbench_panel, 1)  # Equal weight = 50%
 
-        picker_panel = self._create_picker_panel()
-        splitter.addWidget(picker_panel)
+        if self.progress_callback:
+            self.progress_callback("Creating option picker panel...", 0.5)
 
-        # V1 parity: Use 1:1 (50%:50%) ratio for construct tab (not 2:1 like browse tab)
-        splitter.setStretchFactor(0, 1)  # Workbench panel gets 1 part (50%)
-        splitter.setStretchFactor(1, 1)  # Picker panel gets 1 part (50%)
+        # Right panel: Option Picker (50% width)
+        picker_panel = self._create_picker_panel_with_progress()
+        main_layout.addWidget(picker_panel, 1)  # Equal weight = 50%
+
+        if self.progress_callback:
+            self.progress_callback("Construct tab layout complete!", 1.0)
 
     def _create_workbench_panel(self) -> QWidget:
+        """Create the left panel containing sequence workbench"""
         panel = QWidget()
         layout = QVBoxLayout(panel)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(8)
 
+        # Title for workbench panel
         title = QLabel("🎬 Sequence Workbench")
         title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setStyleSheet(
+            """
+            QLabel {
+                color: white;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+        """
+        )
         layout.addWidget(title)
 
+        # Create modern workbench with integrated button panel
         self.workbench = create_modern_workbench(self.container, panel)
         layout.addWidget(self.workbench)
 
-        # Add clear sequence button
+        # Clear sequence button (additional control)
         self.clear_button = QPushButton("🗑️ Clear Sequence")
         self.clear_button.setStyleSheet(
             """
@@ -86,21 +119,52 @@ class ConstructTabWidget(QWidget):
 
         return panel
 
-    def _create_picker_panel(self) -> QWidget:
+    def _create_picker_panel_with_progress(self) -> QWidget:
+        """Create the right panel containing start pos picker and option picker"""
+        if self.progress_callback:
+            self.progress_callback("Creating picker panel layout...", 0.6)
+
         panel = QWidget()
         layout = QVBoxLayout(panel)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(8)
 
-        # Create stacked widget like v1 - this is the key fix
+        # Title for picker panel
+        title = QLabel("🎯 Construction Tools")
+        title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setStyleSheet(
+            """
+            QLabel {
+                color: white;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+        """
+        )
+        layout.addWidget(title)
+
+        # Create stacked widget for picker views (like V1)
         self.picker_stack = QStackedWidget()
+
+        if self.progress_callback:
+            self.progress_callback("Initializing start position picker...", 0.7)
 
         # Index 0: Start Position Picker
         start_pos_widget = self._create_start_position_widget()
         self.picker_stack.addWidget(start_pos_widget)
 
+        if self.progress_callback:
+            self.progress_callback("Loading option picker dataset...", 0.8)
+
         # Index 1: Option Picker
-        option_widget = self._create_option_picker_widget()
+        option_widget = self._create_option_picker_widget_with_progress()
         self.picker_stack.addWidget(option_widget)
+
+        if self.progress_callback:
+            self.progress_callback("Configuring picker transitions...", 0.9)
 
         # Start with start position picker visible
         self.picker_stack.setCurrentIndex(0)
@@ -109,6 +173,7 @@ class ConstructTabWidget(QWidget):
         return panel
 
     def _create_start_position_widget(self) -> QWidget:
+        """Create start position picker widget"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
@@ -116,6 +181,8 @@ class ConstructTabWidget(QWidget):
         title.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
+
+        from ..components.start_position_picker import StartPositionPicker
 
         self.start_position_picker = StartPositionPicker()
         self.start_position_picker.start_position_selected.connect(
@@ -125,7 +192,8 @@ class ConstructTabWidget(QWidget):
 
         return widget
 
-    def _create_option_picker_widget(self) -> QWidget:
+    def _create_option_picker_widget_with_progress(self) -> QWidget:
+        """Create option picker widget with progress updates for the heavy initialization"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
@@ -134,10 +202,27 @@ class ConstructTabWidget(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
 
-        self.option_picker = ModernOptionPicker(self.container)
-        self.option_picker.initialize()
-        self.option_picker.option_selected.connect(self._handle_option_selected)
-        layout.addWidget(self.option_picker.widget)
+        try:
+            # Create progress callback for ModernOptionPicker's internal initialization
+            def option_picker_progress(step: str, progress: float):
+                if self.progress_callback:
+                    # Map option picker progress (0.0-1.0) to our remaining range
+                    mapped_progress = 0.8 + (progress * 0.1)  # 0.8 to 0.9 range
+                    self.progress_callback(f"Option picker: {step}", mapped_progress)
+
+            self.option_picker = ModernOptionPicker(
+                self.container, progress_callback=option_picker_progress
+            )
+            self.option_picker.initialize()
+            self.option_picker.option_selected.connect(self._handle_option_selected)
+            layout.addWidget(self.option_picker.widget)
+        except RuntimeError as e:
+            print(f"❌ Failed to create option picker: {e}")
+            # Create fallback widget
+            fallback_label = QLabel("Option picker unavailable")
+            fallback_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(fallback_label)
+            self.option_picker = None
 
         return widget
 
@@ -146,41 +231,47 @@ class ConstructTabWidget(QWidget):
         self.state_service.option_picker_ready.connect(
             self._transition_to_option_picker
         )
-        self.workbench.sequence_modified.connect(self._on_workbench_modified)
-        self.workbench.operation_completed.connect(self._on_operation_completed)
+        if self.workbench:
+            self.workbench.sequence_modified.connect(self._on_workbench_modified)
+            self.workbench.operation_completed.connect(self._on_operation_completed)
 
     def _handle_start_position_selected(self, position_key: str):
-        print(f"🎯 Construct tab: Start position selected: {position_key}")
-        self.state_service.select_start_position(position_key)
+        print(f"✅ Construct tab: Start position selected: {position_key}")
 
-        # Create start position data (separate from sequence beats like v1)
+        # Create start position data (separate from sequence like V1)
         start_position_data = self._create_start_position_data(position_key)
 
-        # Set start position in workbench (NOT as sequence beat)
-        self.workbench.set_start_position(start_position_data)
+        # Set start position in workbench (this does NOT create a sequence)
+        if self.workbench:
+            self.workbench.set_start_position(start_position_data)
 
-        # Populate option picker with valid motion combinations based on start position
+        # Populate option picker with valid combinations
         self._populate_option_picker_from_start_position(
             position_key, start_position_data
         )
 
-        # Emit start position signal (not sequence creation)
+        # Transition to option picker view
+        self._transition_to_option_picker()
+
+        # Emit signal for external listeners
         self.start_position_set.emit(position_key)
 
     def _transition_to_option_picker(self):
         """Switch from start position picker to option picker - key fix from v1"""
         print("🔄 Transitioning to option picker view")
-        self.picker_stack.setCurrentIndex(1)
+        if self.picker_stack:
+            self.picker_stack.setCurrentIndex(1)
 
     def _transition_to_start_position_picker(self):
         """Switch back to start position picker"""
         print("🔄 Transitioning to start position picker view")
-        self.picker_stack.setCurrentIndex(0)
+        if self.picker_stack:
+            self.picker_stack.setCurrentIndex(0)
 
     def _handle_option_selected(self, option_id: str):
         print(f"✅ Construct tab: Option selected: {option_id}")
 
-        current_sequence = self.workbench.get_sequence()
+        current_sequence = self.workbench.get_sequence() if self.workbench else None
         if current_sequence:
             new_beat = BeatData(
                 letter="X", duration=4, beat_number=current_sequence.length + 1
@@ -188,65 +279,27 @@ class ConstructTabWidget(QWidget):
             updated_beats = current_sequence.beats + [new_beat]
             updated_sequence = current_sequence.update(beats=updated_beats)
 
-            self.workbench.set_sequence(updated_sequence)
+            if self.workbench:
+                self.workbench.set_sequence(updated_sequence)
             self.sequence_modified.emit(updated_sequence)
 
     def _create_start_position_data(self, position_key: str) -> BeatData:
         """Create start position data from position key (separate from sequence beats)"""
-        from ...application.services.pictograph_dataset_service import (
-            PictographDatasetService,
+        return BeatData(
+            letter=position_key,
+            duration=1.0,  # Use valid duration (start position is conceptual, not timed)
+            beat_number=1,  # Use valid beat number (start position acts as reference beat)
+            is_blank=False,  # Start position has valid data
         )
-
-        # Use dataset service to get actual start position data
-        dataset_service = PictographDatasetService()
-        start_position_data = dataset_service.get_start_position_pictograph(
-            position_key, "diamond"
-        )
-
-        if start_position_data is None:
-            # Fallback if dataset service returns None
-            from ...domain.models.core_models import (
-                MotionData,
-                MotionType,
-                Location,
-                RotationDirection,
-            )
-
-            # Create a basic start position
-            blue_motion = MotionData(
-                motion_type=MotionType.STATIC,
-                prop_rot_dir=RotationDirection.CLOCKWISE,
-                start_loc=Location.NORTH,
-                end_loc=Location.NORTH,
-                turns=0.0,
-                start_ori="in",
-                end_ori="in",
-            )
-
-            red_motion = MotionData(
-                motion_type=MotionType.STATIC,
-                prop_rot_dir=RotationDirection.CLOCKWISE,
-                start_loc=Location.SOUTH,
-                end_loc=Location.SOUTH,
-                turns=0.0,
-                start_ori="out",
-                end_ori="out",
-            )
-
-            start_position_data = BeatData(
-                beat_number=1,
-                letter="Σ",
-                duration=1.0,
-                blue_motion=blue_motion,
-                red_motion=red_motion,
-            )
-
-        return start_position_data
 
     def _populate_option_picker_from_start_position(
         self, position_key: str, start_position_data: BeatData
     ):
         """Populate option picker with valid motion combinations based on start position (V1 behavior)"""
+        if self.option_picker is None:
+            print("❌ Option picker not available, cannot populate")
+            return
+
         try:
             # Convert start position data to sequence format for motion combination service
             sequence_data = [
@@ -263,40 +316,34 @@ class ConstructTabWidget(QWidget):
 
         except Exception as e:
             print(f"❌ Error populating option picker: {e}")
-            # Fallback to sample data
-            self.option_picker._load_sample_beat_options()
+            # Fallback to refresh options if option picker is still available
+            if self.option_picker is not None:
+                try:
+                    self.option_picker.refresh_options()
+                    print("⚠️ Using fallback options for option picker")
+                except Exception as fallback_error:
+                    print(f"❌ Even fallback options failed: {fallback_error}")
 
     def _create_start_sequence(self, position_key: str) -> SequenceData:
         """Create empty sequence (deprecated - start position should not create sequence)"""
-        # This method is deprecated - start position should not create sequence beats
+        print("⚠️ _create_start_sequence called - this should not happen in V2")
         return SequenceData.empty()
 
-    def _on_state_changed(self, new_state: str):
-        print(f"🔄 Construct tab state: {new_state}")
+    def clear_sequence(self):
+        """Clear the current sequence and reset to start position picker"""
+        if self.workbench:
+            self.workbench.set_sequence(SequenceData.empty())
+
+        # Transition back to start position picker
+        self._transition_to_start_position_picker()
+
+        print("🗑️ Sequence cleared, returned to start position picker")
+
+    def _on_state_changed(self, new_state):
+        print(f"🔄 Construct tab state changed: {new_state}")
 
     def _on_workbench_modified(self, sequence: SequenceData):
-        print(f"🔧 Construct tab: Workbench modified sequence: {sequence.length} beats")
         self.sequence_modified.emit(sequence)
 
     def _on_operation_completed(self, message: str):
-        print(f"✅ Construct tab: {message}")
-
-    def get_current_sequence(self) -> Optional[SequenceData]:
-        return self.workbench.get_sequence()
-
-    def clear_sequence(self):
-        """Clear sequence and reset to start position picker"""
-        print("🗑️ Clearing sequence and resetting to start position picker")
-        self.state_service.reset_to_start_position_selection()
-        empty_sequence = SequenceData.empty()
-        self.workbench.set_sequence(empty_sequence)
-        self._transition_to_start_position_picker()
-
-    def reset(self):
-        self.clear_sequence()
-
-    def resizeEvent(self, event):
-        """Handle resize events to ensure start position picker remains responsive"""
-        super().resizeEvent(event)
-        if hasattr(self, "start_position_picker"):
-            self.start_position_picker.update_layout_for_size(self.size())
+        print(f"✅ Operation completed: {message}")

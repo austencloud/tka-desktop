@@ -19,8 +19,8 @@
     "(s, 0, 3)": {
       "pro_from_layer2": [40, -15]
     },
-    "(s, 0.5, 3)": {},
     "(s, 1, 0.5)": {
+      "static_from_layer1_rot_angle_override": true,
       "static_from_layer1": [-100, -100]
     },
     "(s, 1, 1)": {
@@ -76,10 +76,6 @@
     "(o, 1, 2.5)": {
       "pro_from_layer1": [-15, 0]
     },
-    "(o, 1.5, 0.5)": {
-      "static_from_layer2_rot_angle_override": true,
-      "static_from_layer2": [100, -100]
-    },
     "(o, 1.5, 3)": {
       "static_from_layer1": [0, -15]
     },
@@ -91,13 +87,30 @@
       "static_from_layer2": [100, -100]
     },
     "(o, 3, 1)": {
-      "pro_from_layer2": [-45, 75]
+      "pro_from_layer2": [-45, 75],
+      "pro_from_layer1": [35, 0]
     },
     "(o, 3, 2.5)": {
       "static_from_layer2_rot_angle_override": true
     },
     "(o, 1, 1.5)": {
       "pro_from_layer2": [-65, 40]
+    },
+    "(s, 3, 3)": {
+      "pro_from_layer1": [30, 0]
+    },
+    "(s, 3, 2.5)": {
+      "pro_from_layer1": [-10, 0]
+    },
+    "(s, 3, 2)": {
+      "pro_from_layer1": [30, 0]
+    },
+    "(s, 3, 1)": {
+      "pro_from_layer1": [30, 0]
+    },
+    "(o, 1.5, 0.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [100, -100]
     }
   }
 }

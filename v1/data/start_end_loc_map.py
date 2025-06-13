@@ -1,5 +1,4 @@
 from data.constants import *
-from Enums.Enums import StartEndLocationTuple
 
 
 start_end_loc_map = {
@@ -48,7 +47,7 @@ start_end_loc_map = {
 
 def get_start_end_locs(
     motion_type: str, rot_dir: str, arrow_location: str
-) -> StartEndLocationTuple:
+) -> tuple[str, str]:
     return (
         start_end_loc_map.get(arrow_location, {})
         .get(rot_dir, {})

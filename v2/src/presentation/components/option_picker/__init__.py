@@ -1,275 +1,193 @@
 from typing import List, Optional, Dict, Any
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QSizePolicy, QLabel
-from PyQt6.QtCore import pyqtSignal, QObject, Qt
-from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtCore import pyqtSignal, QObject
 
 from ....core.dependency_injection.simple_container import SimpleContainer
 from ....core.interfaces.core_services import ILayoutService
-from ....domain.models.core_models import (
-    BeatData,
-    MotionData,
-    MotionType,
-    RotationDirection,
-    Location,
-)
-from .option_picker_widget import ModernOptionPickerWidget
-from .option_picker_section import OptionPickerSection
+from ....domain.models.core_models import BeatData
+from .pictograph_pool_manager import PictographPoolManager
+from .beat_data_loader import BeatDataLoader
+from .display_manager import OptionPickerDisplayManager
+from .widget_factory import OptionPickerWidgetFactory
+from .dimension_analyzer import OptionPickerDimensionAnalyzer
 from .option_picker_filter import OptionPickerFilter
-from .letter_types import LetterType
-from .clickable_pictograph_frame import ClickablePictographFrame
 
 
 class ModernOptionPicker(QObject):
     option_selected = pyqtSignal(str)
 
-    def __init__(self, container: SimpleContainer):
+    def __init__(self, container: SimpleContainer, progress_callback=None):
         super().__init__()
         self.container = container
+        self.progress_callback = progress_callback
+
+        # Core components
         self.widget: Optional[QWidget] = None
-        self._beat_options: List[BeatData] = []
-        self._sections: Dict[str, OptionPickerSection] = {}
-        self._layout_service: Optional[ILayoutService] = None
         self.sections_container: Optional[QWidget] = None
         self.sections_layout: Optional[QVBoxLayout] = None
         self.filter_widget: Optional[OptionPickerFilter] = None
 
+        # Service components
+        self._layout_service: Optional[ILayoutService] = None
+        self._pool_manager: Optional[PictographPoolManager] = None
+        self._beat_loader: Optional[BeatDataLoader] = None
+        self._display_manager: Optional[OptionPickerDisplayManager] = None
+        self._widget_factory: Optional[OptionPickerWidgetFactory] = None
+        self._dimension_analyzer: Optional[OptionPickerDimensionAnalyzer] = None
+
     def initialize(self) -> None:
+        """Initialize the option picker with all components"""
+        if self.progress_callback:
+            self.progress_callback("Resolving layout service", 0.1)
+
         self._layout_service = self.container.resolve(ILayoutService)
-        self.widget = self._create_widget()
+
+        if self.progress_callback:
+            self.progress_callback("Creating widget factory", 0.15)
+
+        self._widget_factory = OptionPickerWidgetFactory(self.container)
+
+        if self.progress_callback:
+            self.progress_callback("Creating option picker widget", 0.2)
+
+        (
+            self.widget,
+            self.sections_container,
+            self.sections_layout,
+            self.filter_widget,
+        ) = self._widget_factory.create_widget(self._on_widget_resize)
+
+        if self.progress_callback:
+            self.progress_callback("Initializing pool manager", 0.25)
+
+        self._pool_manager = PictographPoolManager(self.widget)
+        self._pool_manager.set_click_handler(self._handle_beat_click)
+
+        if self.progress_callback:
+            self.progress_callback("Initializing display manager", 0.3)
+
+        # Create size provider that gives sections the full available width
+        def mw_size_provider():
+            from PyQt6.QtCore import QSize
+
+            # Get actual available width from the option picker widget hierarchy
+            if self.widget and self.widget.width() > 0:
+                # In V2, the option picker IS the full available space
+                # So sections should use the full widget width, not half
+                actual_width = self.widget.width()
+                actual_height = self.widget.height()
+                print(
+                    f"🔧 Real size provider: Using actual widget size {actual_width}x{actual_height}"
+                )
+                # Return the actual size - sections will use full width
+                return QSize(actual_width, actual_height)
+            else:
+                # Fallback for initialization phase
+                print(f"🔧 Real size provider: Using fallback size (widget not ready)")
+                return QSize(1200, 800)
+
+        self._display_manager = OptionPickerDisplayManager(
+            self.sections_container,
+            self.sections_layout,
+            self._pool_manager,
+            mw_size_provider,
+        )
+
+        if self.progress_callback:
+            self.progress_callback("Initializing beat data loader", 0.35)
+
+        self._beat_loader = BeatDataLoader()
+
+        if self.progress_callback:
+            self.progress_callback("Initializing dimension analyzer", 0.4)
+
+        self._dimension_analyzer = OptionPickerDimensionAnalyzer(
+            self.widget,
+            self.sections_container,
+            self.sections_layout,
+            self._display_manager.get_sections(),
+        )
+
+        if self.progress_callback:
+            self.progress_callback("Initializing pictograph pool", 0.45)
+
+        self._pool_manager.initialize_pool(self.progress_callback)
+
+        if self.progress_callback:
+            self.progress_callback("Creating sections", 0.85)
+
+        self._display_manager.create_sections()
+
+        if self.progress_callback:
+            self.progress_callback("Setting up filter connections", 0.9)
+
+        self.filter_widget.filter_changed.connect(self._on_filter_changed)
+
+        if self.progress_callback:
+            self.progress_callback("Loading initial beat options", 0.95)
+
         self._load_beat_options()
 
-    def _create_widget(self) -> QWidget:
-        widget = ModernOptionPickerWidget()
-        widget.set_resize_callback(self._on_widget_resize)
-        widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        widget.setMinimumSize(600, 800)
-
-        layout = QVBoxLayout(widget)
-        layout.setContentsMargins(10, 10, 10, 10)
-        layout.setSpacing(8)
-
-        title = QLabel("Choose Your Next Pictograph")
-        title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet(
-            """
-            QLabel {
-                color: #2d3748;
-                margin: 5px 0px;
-                padding: 8px;
-                background: transparent;
-            }
-        """
-        )
-        layout.addWidget(title)
-
-        self.filter_widget = OptionPickerFilter()
-        self.filter_widget.filter_changed.connect(self._on_filter_changed)
-        layout.addWidget(self.filter_widget.widget)
-
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        scroll_area.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
-
-        self.sections_container = QWidget()
-        self.sections_layout = QVBoxLayout(self.sections_container)
-        self.sections_layout.setContentsMargins(5, 5, 5, 5)
-        self.sections_layout.setSpacing(8)
-        self.sections_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-
-        self._create_sections()
-        scroll_area.setWidget(self.sections_container)
-        layout.addWidget(scroll_area, 1)
-
-        widget.setStyleSheet(
-            """
-            QWidget {
-                background-color: #ffffff;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-            }
-            QScrollArea {
-                background-color: transparent;
-                border: none;
-            }
-            QScrollArea > QWidget > QWidget {
-                background-color: transparent;
-            }
-        """
-        )
-
-        return widget
-
-    def _create_sections(self):
-        """Create sections with proper parenting to avoid popup windows"""
-        if not self.sections_container:
-            print("❌ Sections container not ready - delaying section creation")
-            return
-
-        for section_type in LetterType.ALL_TYPES:
-            # Create section with proper parent to avoid popup windows
-            section = OptionPickerSection(section_type, parent=self.sections_container)
-            self._sections[section_type] = section
-            if self.sections_layout:
-                self.sections_layout.addWidget(section)
-                print(f"✅ Created section {section_type} with proper parent")
-
-        # Ensure all sections are initially visible (fix for display issue)
-        self._ensure_sections_visible()
-
-    def _ensure_sections_visible(self):
-        """Ensure all section containers are visible (fix for display issue)"""
-        for section in self._sections.values():
-            if hasattr(section, "pictograph_container"):
-                section.pictograph_container.setVisible(True)
-
-    def _load_beat_options(self) -> None:
-        """Load beat options for the option picker."""
-        # Options will be loaded when start position is selected
-        self._beat_options = []
-        self._update_beat_display()
+        if self.progress_callback:
+            self.progress_callback("Option picker initialization complete", 1.0)
 
     def load_motion_combinations(self, sequence_data: List[Dict[str, Any]]) -> None:
-        """Load motion combinations based on sequence data."""
-        try:
-            from ....application.services.motion_combination_service import (
-                MotionCombinationService,
-            )
+        """Load motion combinations using data-driven position matching"""
+        if not self._beat_loader or not self._display_manager:
+            print("❌ Components not initialized")
+            return
 
-            motion_service = MotionCombinationService()
-            combinations = motion_service.generate_motion_combinations(sequence_data)
+        beat_options = self._beat_loader.load_motion_combinations(sequence_data)
+        self._display_manager.update_beat_display(beat_options)
+        self._ensure_sections_visible()
 
-            self._beat_options = combinations
-            self._update_beat_display()
+    def _load_beat_options(self) -> None:
+        """Load initial beat options"""
+        if not self._beat_loader or not self._display_manager:
+            return
 
-            # Ensure sections are visible after loading combinations
-            self._ensure_sections_visible()
+        beat_options = self._beat_loader.refresh_options()
+        self._display_manager.update_beat_display(beat_options)
 
-            print(f"✅ Loaded {len(combinations)} motion combinations")
-
-        except Exception as e:
-            print(f"❌ Error loading motion combinations: {e}")
-            # Fallback to sample data
-            self._load_sample_beat_options()
-
-    def _load_sample_beat_options(self) -> None:
-        """Load sample beat options as fallback."""
-        self._beat_options = [
-            BeatData(
-                letter="A",
-                blue_motion=MotionData(
-                    motion_type=MotionType.STATIC,
-                    prop_rot_dir=RotationDirection.NO_ROTATION,
-                    start_loc=Location.NORTH,
-                    end_loc=Location.NORTH,
-                ),
-                red_motion=MotionData(
-                    motion_type=MotionType.STATIC,
-                    prop_rot_dir=RotationDirection.NO_ROTATION,
-                    start_loc=Location.SOUTH,
-                    end_loc=Location.SOUTH,
-                ),
-            ),
-            BeatData(
-                letter="B",
-                blue_motion=MotionData(
-                    motion_type=MotionType.PRO,
-                    prop_rot_dir=RotationDirection.CLOCKWISE,
-                    start_loc=Location.NORTH,
-                    end_loc=Location.EAST,
-                    turns=1.0,
-                ),
-                red_motion=MotionData(
-                    motion_type=MotionType.PRO,
-                    prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
-                    start_loc=Location.SOUTH,
-                    end_loc=Location.WEST,
-                    turns=1.0,
-                ),
-            ),
-            BeatData(
-                letter="C",
-                blue_motion=MotionData(
-                    motion_type=MotionType.DASH,
-                    prop_rot_dir=RotationDirection.CLOCKWISE,
-                    start_loc=Location.NORTH,
-                    end_loc=Location.SOUTH,
-                ),
-                red_motion=MotionData(
-                    motion_type=MotionType.DASH,
-                    prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
-                    start_loc=Location.EAST,
-                    end_loc=Location.WEST,
-                ),
-            ),
-        ]
-        self._update_beat_display()
-
-    def _update_beat_display(self) -> None:
-        """Update beat display with proper parenting to avoid popup windows"""
-        for section in self._sections.values():
-            section.clear_pictographs()
-
-        for beat in self._beat_options:
-            if beat.letter:
-                letter_type = LetterType.get_letter_type(beat.letter)
-
-                # Get the target section for proper parenting
-                if letter_type in self._sections:
-                    target_section = self._sections[letter_type]
-                    # Create frame with proper parent to avoid popup windows
-                    frame = ClickablePictographFrame(
-                        beat, parent=target_section.pictograph_container
-                    )
-                    frame.clicked.connect(self._handle_beat_click)
-                    target_section.add_pictograph(frame)
-                    print(
-                        f"✅ Added pictograph {beat.letter} to section {letter_type} with proper parent"
-                    )
-
-        # Force visibility after adding all pictographs
-        self._force_section_visibility()
-
-    def _force_section_visibility(self):
-        """Force all sections to be visible (aggressive fix for display issue)"""
-        from PyQt6.QtCore import QTimer
-
-        def make_visible():
-            for section in self._sections.values():
+    def _ensure_sections_visible(self) -> None:
+        """Ensure sections are visible after loading combinations"""
+        if self._display_manager:
+            sections = self._display_manager.get_sections()
+            for section in sections.values():
                 if hasattr(section, "pictograph_container"):
                     section.pictograph_container.setVisible(True)
-                    section.pictograph_container.show()
-                    # Also ensure the section itself is visible
-                    section.setVisible(True)
-                    section.show()
-
-        # Call immediately and also with a delay to handle timing issuesYes
-        make_visible()
-        QTimer.singleShot(100, make_visible)
 
     def _handle_beat_click(self, beat_id: str) -> None:
+        """Handle beat selection clicks"""
         self.option_selected.emit(beat_id)
 
     def _on_widget_resize(self) -> None:
-        for section in self._sections.values():
-            section.update_layout()
+        """Handle widget resize events"""
+        if self._pool_manager:
+            self._pool_manager.resize_all_frames()
 
-    def _on_filter_changed(self, filter_text: str):
-        self._update_beat_display()
+    def _on_filter_changed(self, filter_text: str) -> None:
+        """Handle filter changes"""
+        if self._beat_loader and self._display_manager:
+            beat_options = self._beat_loader.get_beat_options()
+            self._display_manager.update_beat_display(beat_options)
 
     def refresh_options(self) -> None:
+        """Refresh beat options"""
         self._load_beat_options()
 
     def set_enabled(self, enabled: bool) -> None:
+        """Enable or disable the widget"""
         if self.widget:
             self.widget.setEnabled(enabled)
 
     def get_size(self) -> tuple[int, int]:
-        if self._layout_service:
-            picker_size = self._layout_service.get_picker_size()
-            return (picker_size.width(), picker_size.height())
+        """Get widget size"""
+        if self._widget_factory:
+            return self._widget_factory.get_size()
         return (600, 800)
+
+    def log_dimensions(self, phase: str) -> None:
+        """Log comprehensive dimension analysis"""
+        if self._dimension_analyzer:
+            self._dimension_analyzer.log_all_container_dimensions(phase)

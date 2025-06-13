@@ -20,6 +20,15 @@ class PictographComponent(QWidget):
     pictograph_updated = pyqtSignal(object)
 
     def __init__(self, parent: Optional[QWidget] = None):
+        # Validate parent before proceeding
+        if parent is not None:
+            try:
+                # Test if parent is still valid
+                _ = parent.isVisible()
+            except RuntimeError:
+                print(f"❌ Parent widget deleted, cannot create PictographComponent")
+                raise RuntimeError("Parent widget has been deleted")
+
         super().__init__(parent)
 
         self.current_beat: Optional[BeatData] = None
@@ -29,22 +38,36 @@ class PictographComponent(QWidget):
         self._setup_ui()
 
     def _setup_ui(self) -> None:
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
+        try:
+            layout = QVBoxLayout(self)
+            layout.setContentsMargins(0, 0, 0, 0)
 
-        self.scene = PictographScene()
-        self.view = QGraphicsView(self.scene)
-        self.view.setRenderHint(QPainter.RenderHint.Antialiasing)
-        self.view.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        self.view.setDragMode(QGraphicsView.DragMode.NoDrag)
-        self.view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.view.setFrameStyle(0)
+            # Create scene with explicit parent to improve lifecycle management
+            self.scene = PictographScene(parent=self)
+            self.view = QGraphicsView(self.scene, parent=self)
+            self.view.setRenderHint(QPainter.RenderHint.Antialiasing)
+            self.view.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+            self.view.setDragMode(QGraphicsView.DragMode.NoDrag)
+            self.view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.view.setHorizontalScrollBarPolicy(
+                Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+            )
+            self.view.setFrameStyle(0)
 
-        layout.addWidget(self.view)
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.setMinimumSize(100, 100)
-        self._fit_view()
+            layout.addWidget(self.view)
+            self.setSizePolicy(
+                QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+            )
+            self.setMinimumSize(100, 100)
+            self._fit_view()
+        except RuntimeError as e:
+            print(f"❌ Failed to setup PictographComponent UI: {e}")
+            # Create minimal fallback UI
+            from PyQt6.QtWidgets import QLabel
+
+            layout = QVBoxLayout(self)
+            fallback_label = QLabel("Pictograph Error")
+            layout.addWidget(fallback_label)
 
     def update_from_beat(self, beat_data: BeatData) -> None:
         self.current_beat = beat_data
@@ -61,14 +84,32 @@ class PictographComponent(QWidget):
         if self.scene:
             self.scene.clear()
 
+    def cleanup(self) -> None:
+        """Cleanup resources to prevent memory leaks"""
+        try:
+            if self.scene:
+                self.scene.clear()
+                self.scene.setParent(None)
+                self.scene = None
+            if self.view:
+                self.view.setParent(None)
+                self.view = None
+        except RuntimeError:
+            # Objects already deleted
+            pass
+
     def _fit_view(self) -> None:
         if self.view and self.scene:
-            self.view.resetTransform()
-            container_size = min(self.view.width(), self.view.height())
-            scene_size = self.scene.SCENE_SIZE
-            target_scale = (container_size * 0.9) / scene_size
-            self.view.scale(target_scale, target_scale)
-            self.view.centerOn(self.scene.CENTER_X, self.scene.CENTER_Y)
+            try:
+                self.view.resetTransform()
+                container_size = min(self.view.width(), self.view.height())
+                scene_size = self.scene.SCENE_SIZE
+                target_scale = (container_size * 0.9) / scene_size
+                self.view.scale(target_scale, target_scale)
+                self.view.centerOn(self.scene.CENTER_X, self.scene.CENTER_Y)
+            except RuntimeError:
+                # View or scene has been deleted
+                pass
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)

@@ -98,13 +98,13 @@
     },
     "(o, 0.5, 1)": {
       "static_from_layer2_rot_angle_override": true,
-      "red": [0, -100]
+      "red": [-10, -100],
+      "blue_rot_angle_override": true
     },
     "(o, 1, 1)": {
       "blue": [90, 0],
       "red": [0, 90]
     },
-    "(o, 1.5, 1)": {},
     "(o, 2, 1)": {
       "red": [0, -90],
       "static_from_layer2_rot_angle_override": true,

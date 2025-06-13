@@ -11,6 +11,11 @@ special_placements_parent_directory = os.path.join("")
 
 INTEGER_TURNS = [0.0, 1.0, 2.0, 3.0]
 
+BEAT = "beat"
+SEQUENCE_START_POSITION = "sequence_start_position"
+
+GRID_MODE = "grid_mode"
+
 NORTH = "n"
 EAST = "e"
 SOUTH = "s"
@@ -83,10 +88,9 @@ RED_START_ORI = "red_start_ori"
 RED_END_ORI = "red_end_ori"
 RED_TURNS = "red_turns"
 
-
 RED = "red"
 BLUE = "blue"
-
+GOLD = "gold"
 
 HEX_RED = "#ED1C24"
 HEX_BLUE = "#2E3192"
@@ -115,6 +119,8 @@ ANTI = "anti"
 FLOAT = "float"
 DASH = "dash"
 STATIC = "static"
+LETTER_TYPE = "letter_type"
+DURATION = "duration"
 
 VTG_DIR = "vtg_dir"
 VTG_TIMING = "vtg_timing"
@@ -142,13 +148,18 @@ MOTION = "motion"
 PRO_TURNS = "pro_turns"
 ANTI_TURNS = "anti_turns"
 
+PREFLOAT_MOTION_TYPE = "prefloat_motion_type"
+PREFLOAT_PROP_ROT_DIR = "prefloat_prop_rot_dir"
+
+BLUE_ATTRS = "blue_attributes"
+RED_ATTRS = "red_attributes"
+
 STATIC_HANDPATH = "static_handpath"
 DASH_HANDPATH = "dash_handpath"
 
 
-PROP_DIR = "images/props/"
-LETTER_BTN_ICON_DIR = "images/letter_button_icons"
-ICON_DIR = "images/icons/"
+PROP_DIR = "props/"
+ICON_DIR = "icons/"
 
 
 STAFF = "staff"
@@ -172,11 +183,12 @@ SWORD = "sword"
 GUITAR = "guitar"
 UKULELE = "ukulele"
 CHICKEN = "chicken"
-
+TRIQUETRA = "triquetra"
+TRIQUETRA2 = "triquetra2"
 
 DIAMOND = "diamond"
 BOX = "box"
-
+SKEWED = "skewed"
 ALPHA = "alpha"
 BETA = "beta"
 GAMMA = "gamma"
@@ -218,25 +230,5 @@ GAMMA16 = "gamma16"
 
 ### ICONS ###
 
-CLOCK_DIR = ICON_DIR + "clock/"
-CLOCKWISE_ICON = CLOCK_DIR + "clockwise.png"
-COUNTER_CLOCKWISE_ICON = CLOCK_DIR + "counter_clockwise.png"
-EMPTY_CLOCK_ICON = CLOCK_DIR + "empty_clock.png"
-CLOCK_ICON = CLOCK_DIR + "clock.png"
-SWAP_ICON = "swap.png"
-MIRROR_ICON = "mirror.png"
-DECREMENT_TURNS_ICON = "subtract_turns.png"
-INCREMENT_TURNS_ICON = "add_turns.png"
-SWAP_COLORS_ICON = "swap_colors.png"
-
-ICON_PATHS = {
-    "swap_icon": ICON_DIR + SWAP_ICON,
-    "swap_start_end": ICON_DIR + MIRROR_ICON,
-    "subtract_turns": ICON_DIR + DECREMENT_TURNS_ICON,
-    "add_turns": ICON_DIR + INCREMENT_TURNS_ICON,
-    "swap_colors": ICON_DIR + SWAP_COLORS_ICON,
-    "clockwise": CLOCKWISE_ICON,
-    "counter_clockwise": COUNTER_CLOCKWISE_ICON,
-}
 
 DISTANCE = 40

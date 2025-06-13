@@ -42,6 +42,20 @@
     "(o, 3, 1.5)": {
       "static_from_layer2_rot_angle_override": true,
       "static_from_layer2": [-20, 0]
+    },
+    "(s, 1, 0.5)": {
+      "static_from_layer2": [115, -105],
+      "static_from_layer2_rot_angle_override": true
+    },
+    "(1, fl)": {
+      "float": [35, 15]
+    },
+    "(o, 1, 1.5)": {
+      "static_from_layer2_rot_angle_override": true,
+      "static_from_layer2": [-20.0, 0.0]
+    },
+    "(o, 3, 2)": {
+      "dash_from_layer2_rot_angle_override": true
     }
   }
 }

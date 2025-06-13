@@ -144,25 +144,21 @@ class KineticConstructorV2(QMainWindow):
             self.splash.update_progress(70, "Creating tab interface...")
 
         self.tab_widget = QTabWidget()
+        self.tab_widget.setTabPosition(QTabWidget.TabPosition.North)
         self.tab_widget.setStyleSheet(
             """
-            QTabWidget {
-                background: transparent;
-                border: none;
-            }
             QTabWidget::pane {
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
+                border: none;
+                background: transparent;
             }
             QTabBar::tab {
                 background: rgba(255, 255, 255, 0.1);
                 color: white;
                 padding: 8px 16px;
-                margin-right: 2px;
-                border-top-left-radius: 6px;
-                border-top-right-radius: 6px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
+                margin: 2px;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                border-bottom-color: transparent;
             }
             QTabBar::tab:selected {
                 background: rgba(255, 255, 255, 0.2);
@@ -176,11 +172,9 @@ class KineticConstructorV2(QMainWindow):
         layout.addWidget(self.tab_widget)
 
         if self.splash:
-            self.splash.update_progress(80, "Loading construct tab...")
+            self.splash.update_progress(75, "Initializing construct tab...")
 
-        self.construct_tab = ConstructTabWidget(self.container)
-        self.construct_tab.setStyleSheet("background: transparent;")
-        self.tab_widget.addTab(self.construct_tab, "🔧 Construct")
+        self._load_construct_tab_with_granular_progress()
 
         generate_placeholder = QLabel("🚧 Generator tab coming soon...")
         generate_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -196,15 +190,77 @@ class KineticConstructorV2(QMainWindow):
         )
         self.tab_widget.addTab(browse_placeholder, "📚 Browse")
 
-        learn_placeholder = QLabel("🚧 Learn tab coming soon...")
-        learn_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        learn_placeholder.setStyleSheet(
-            "color: white; font-size: 14px; background: transparent;"
-        )
-        self.tab_widget.addTab(learn_placeholder, "🎓 Learn")
-
         if self.splash:
-            self.splash.update_progress(90, "Interface ready")
+            self.splash.update_progress(95, "Finalizing interface...")
+
+    def _load_construct_tab_with_granular_progress(self):
+        """Load construct tab with granular progress updates"""
+        try:
+            # Step 1: Initialize container (76-78%)
+            if self.splash:
+                self.splash.update_progress(76, "Creating construct tab container...")
+
+            # Basic container creation
+            from src.core.dependency_injection.simple_container import SimpleContainer
+
+            if self.splash:
+                self.splash.update_progress(78, "Setting up dependency injection...")
+
+            # Step 2: Initialize core services (78-82%)
+            if self.splash:
+                self.splash.update_progress(79, "Loading pictograph dataset...")
+
+            # This is where the heavy loading happens - break it down
+            from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
+
+            if self.splash:
+                self.splash.update_progress(81, "Initializing position matching...")
+
+            # Step 3: Create widget with progress callback (82-88%)
+            if self.splash:
+                self.splash.update_progress(83, "Creating option picker pool...")
+
+            # Pass progress callback to construct tab
+            def progress_callback(step: str, progress: float):
+                if self.splash:
+                    # Map internal progress (0.0-1.0) to our range (83-88%)
+                    mapped_progress = 83 + (progress * 5)  # 5% range for internal steps
+                    self.splash.update_progress(int(mapped_progress), step)
+
+            if self.splash:
+                self.splash.update_progress(85, "Setting up component layout...")
+
+            self.construct_tab = ConstructTabWidget(
+                self.container, progress_callback=progress_callback
+            )
+
+            if self.splash:
+                self.splash.update_progress(88, "Configuring construct tab styling...")
+
+            self.construct_tab.setStyleSheet("background: transparent;")
+
+            if self.splash:
+                self.splash.update_progress(90, "Adding construct tab to interface...")
+
+            self.tab_widget.addTab(self.construct_tab, "🔧 Construct")
+
+            if self.splash:
+                self.splash.update_progress(92, "Construct tab loaded successfully!")
+
+        except Exception as e:
+            print(f"⚠️ Error loading construct tab: {e}")
+            if self.splash:
+                self.splash.update_progress(
+                    85, "Construct tab load failed, using fallback..."
+                )
+
+            # Create fallback placeholder
+            fallback_placeholder = QLabel("🚧 Construct tab loading failed...")
+            fallback_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            fallback_placeholder.setStyleSheet(
+                "color: white; font-size: 14px; background: transparent;"
+            )
+            self.tab_widget.addTab(fallback_placeholder, "🔧 Construct")
 
     def _setup_background(self):
         if self.splash:

@@ -23,8 +23,7 @@
       "static": [0, 25]
     },
     "(cw, 0, 3)": {
-      "static_rot_angle_override": true,
-      "static": [35, -15]
+      "static": [15, -15]
     },
     "(ccw, 0, 2)": {
       "swap_beta_s_radial_blue_static_s_red_dash_e": true,
@@ -36,15 +35,15 @@
       "static": [100, 120]
     },
     "(s, 0.5, 1)": {
-      "static": [105, -10]
+      "static": [105, -10],
+      "swap_beta_w_nonradial_blue_dash_s_red_static_w": true
     },
     "(s, 0.5, 2.5)": {
       "static": [0, 45],
       "static_rot_angle_override": true
     },
     "(s, 1, 3)": {
-      "static_rot_angle_override": true,
-      "static": [35, 0]
+      "swap_beta_e_radial_blue_static_e_red_dash_n": true
     },
     "(s, 1, 2.5)": {
       "static_rot_angle_override": true,
@@ -147,7 +146,6 @@
     },
     "(0, 0)": {
       "swap_beta_w_radial_blue_static_w_red_dash_s": true,
-      "swap_beta_s_radial_blue_static_s_red_dash_e": true,
       "swap_beta_n_radial_blue_static_n_red_dash_w": true
     },
     "(o, 1, 1)": {
@@ -181,7 +179,8 @@
       "swap_beta_e_radial_blue_static_e_red_dash_n": true,
       "swap_beta_n_radial_blue_static_n_red_dash_w": true,
       "swap_beta_s_radial_blue_static_s_red_dash_e": true,
-      "swap_beta_w_radial_blue_static_w_red_dash_s": true
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "dash": [0, -55]
     },
     "(cw, 1, 0)": {
       "swap_beta_n_radial_blue_static_n_red_dash_w": true,
@@ -209,7 +208,11 @@
       "swap_beta_s_radial_blue_static_s_red_dash_e": true,
       "swap_beta_e_radial_blue_static_e_red_dash_n": true,
       "swap_beta_n_radial_blue_static_n_red_dash_w": true,
-      "swap_beta_w_radial_blue_static_w_red_dash_s": true
+      "swap_beta_w_radial_blue_static_w_red_dash_s": true,
+      "swap_beta_n_radial_blue_dash_e_red_static_n": true,
+      "swap_beta_w_radial_blue_dash_n_red_static_w": true,
+      "swap_beta_e_radial_blue_dash_s_red_static_e": true,
+      "swap_beta_s_radial_blue_dash_w_red_static_s": true
     },
     "(o, 2, 1)": {
       "static_rot_angle_override": true,
@@ -225,6 +228,9 @@
     "(ccw, 0, 3)": {
       "static_rot_angle_override": true,
       "static": [-15, 0]
+    },
+    "(1, fl)": {
+      "float": [50, -35]
     }
   }
 }

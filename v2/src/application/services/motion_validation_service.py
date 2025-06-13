@@ -109,7 +109,6 @@ class MotionValidationService(IMotionValidationService):
             dataset_info = data_service.get_dataset_info()
 
             if dataset_info["loaded"] and dataset_info["entries"] > 0:
-                # Use the actual loaded dataset from the data service
                 self._dataset = data_service._dataset
                 dataset_len = len(self._dataset) if self._dataset is not None else 0
                 print(
@@ -120,22 +119,8 @@ class MotionValidationService(IMotionValidationService):
 
         except Exception as e:
             print(f"⚠️ Failed to load actual data service: {e}")
-            # Minimal fallback with just a few real entries
-            sample_data = [
-                {
-                    "letter": "A",
-                    "blue_motion_type": "pro",
-                    "red_motion_type": "anti",
-                    "blue_start_loc": "n",
-                    "blue_end_loc": "s",
-                    "red_start_loc": "s",
-                    "red_end_loc": "n",
-                }
-            ]
-            self._dataset = pd.DataFrame(sample_data)
-            print(
-                f"✅ Created minimal fallback dataset with {len(self._dataset)} entries"
-            )
+            self._dataset = pd.DataFrame()
+            print("✅ Using empty dataset as absolute fallback")
 
     def get_random_valid_pictograph_data(
         self, letter: Optional[str] = None
