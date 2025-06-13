@@ -15,54 +15,28 @@ from src.application.services.workbench_services import (
     DictionaryService,
     FullScreenService,
 )
+from src.application.services.graph_editor_service import GraphEditorService
 from src.presentation.components.sequence_workbench import ModernSequenceWorkbench
-
-
-class GraphEditorService(IGraphEditorService):
-    """Placeholder graph editor service"""
-
-    def update_graph_display(self, sequence) -> None:
-        pass
-
-    def toggle_graph_visibility(self) -> bool:
-        return False
 
 
 def create_modern_workbench(
     container: SimpleContainer, parent: Optional[QWidget] = None
 ) -> ModernSequenceWorkbench:
-    """
-    Factory function to create a modern sequence workbench with all dependencies injected.
+    """Factory function to create a fully configured modern sequence workbench"""
 
-    This demonstrates how v2 architecture eliminates v1 technical debt:
+    # Configure all services if not already done
+    configure_workbench_services(container)
 
-    ELIMINATED FROM V1:
-    - AppContext.json_manager() global access
-    - self.main_widget coupling
-    - self.sequence_workbench.beat_frame.sequence_workbench chains
-    - Hard-coded dependencies in constructors
-    - Mutable state scattered across components
-
-    PROVIDED IN V2:
-    - Clean dependency injection
-    - Immutable domain models
-    - Service-based architecture
-    - Testable components
-    - Zero global state access
-    """
-
-    # Resolve services from container (no global state!)
+    # Get services from container
     layout_service = container.resolve(ILayoutService)
+    workbench_service = container.resolve(ISequenceWorkbenchService)
+    fullscreen_service = container.resolve(IFullScreenService)
+    deletion_service = container.resolve(IBeatDeletionService)
+    graph_service = container.resolve(IGraphEditorService)
+    dictionary_service = container.resolve(IDictionaryService)
 
-    # Create workbench services with v1 business logic
-    workbench_service = SequenceWorkbenchService()
-    fullscreen_service = FullScreenService()
-    deletion_service = BeatDeletionService()
-    graph_service = GraphEditorService()
-    dictionary_service = DictionaryService()
-
-    # Create the modern workbench with injected dependencies
-    workbench = ModernSequenceWorkbench(
+    # Create and return configured workbench
+    return ModernSequenceWorkbench(
         layout_service=layout_service,
         workbench_service=workbench_service,
         fullscreen_service=fullscreen_service,
@@ -72,15 +46,15 @@ def create_modern_workbench(
         parent=parent,
     )
 
-    return workbench
-
 
 def configure_workbench_services(container: SimpleContainer) -> None:
     """Configure workbench services in the dependency injection container"""
 
-    # Register workbench services as singletons
+    # Register core workbench services
     container.register_singleton(ISequenceWorkbenchService, SequenceWorkbenchService)
-    container.register_singleton(IFullScreenService, FullScreenService)
     container.register_singleton(IBeatDeletionService, BeatDeletionService)
-    container.register_singleton(IGraphEditorService, GraphEditorService)
     container.register_singleton(IDictionaryService, DictionaryService)
+    container.register_singleton(IFullScreenService, FullScreenService)
+
+    # Register modern graph editor service (replaces placeholder)
+    container.register_singleton(IGraphEditorService, GraphEditorService)

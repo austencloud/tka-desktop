@@ -15,9 +15,9 @@ from src.application.services.motion_orientation_service import (
     MotionOrientationService,
     Orientation,
 )
-from ...domain.models.pictograph_models import ArrowData, PictographData
-from ...application.services.arrow_mirror_service import ArrowMirrorService
-from ...application.services.arrow_positioning_service import ArrowPositioningService
+from src.domain.models.pictograph_models import ArrowData, PictographData
+from src.application.services.arrow_mirror_service import ArrowMirrorService
+from src.application.services.arrow_positioning_service import ArrowPositioningService
 
 
 class ArrowRenderer:

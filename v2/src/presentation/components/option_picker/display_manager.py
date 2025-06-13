@@ -26,19 +26,77 @@ class OptionPickerDisplayManager:
         print(f"🔧 V1-STYLE DISPLAY MANAGER: Simple approach initialized")
 
     def create_sections(self) -> None:
-        """V1-style: Create sections and simply add them to layout"""
-        for section_type in LetterType.ALL_TYPES:
+        """V1-style: Create sections with single-row layout for sections 4,5,6"""
+        from PyQt6.QtWidgets import QHBoxLayout, QWidget
+
+        # Create sections 1, 2, 3 normally (vertical layout)
+        for section_type in [LetterType.TYPE1, LetterType.TYPE2, LetterType.TYPE3]:
             section = OptionPickerSection(
                 section_type,
                 parent=self.sections_container,
                 mw_size_provider=self.mw_size_provider,
             )
             self._sections[section_type] = section
-
-            # V1 approach: just add to layout, that's it!
             self.sections_layout.addWidget(section)
-
             print(f"✅ V1-style: Added section {section_type} to layout")
+
+        # V1-style: Create horizontal container for sections 4, 5, 6 in single row
+        self.bottom_row_container = QWidget(self.sections_container)
+        self.bottom_row_layout = QHBoxLayout(self.bottom_row_container)
+        self.bottom_row_layout.setContentsMargins(0, 0, 0, 0)
+        self.bottom_row_layout.setSpacing(10)
+
+        # Create sections 4, 5, 6 in horizontal layout
+        for section_type in [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6]:
+            section = OptionPickerSection(
+                section_type,
+                parent=self.bottom_row_container,
+                mw_size_provider=self.mw_size_provider,
+            )
+            self._sections[section_type] = section
+            self.bottom_row_layout.addWidget(section)
+
+            # CRITICAL: Set proper width for bottom row sections (1/3 each)
+            if self.mw_size_provider:
+                full_width = self.mw_size_provider().width()
+                section_width = (full_width - 20) // 3  # Account for spacing
+                section.setFixedWidth(section_width)
+                print(
+                    f"✅ V1-style: Set bottom row section {section_type} width to {section_width}px (1/3 of {full_width}px)"
+                )
+
+            print(f"✅ V1-style: Added section {section_type} to horizontal row")
+
+        # Add the horizontal container to main layout
+        self.sections_layout.addWidget(self.bottom_row_container)
+        print("✅ V1-style: Added bottom row container with sections 4,5,6")
+
+        # CRITICAL: Make container AND all sections visible after adding all sections
+        if self.sections_container:
+            self.sections_container.setVisible(True)
+            self.sections_container.show()
+            print("🔧 CRITICAL: Made sections container visible")
+
+        # CRITICAL: Make all individual sections visible too
+        for section_type, section in self._sections.items():
+            if section:
+                section.setVisible(True)
+                section.show()
+                print(f"🔧 CRITICAL: Made section {section_type} visible")
+
+                # Also ensure pictograph containers are visible
+                if hasattr(section, "pictograph_container"):
+                    section.pictograph_container.setVisible(True)
+                    section.pictograph_container.show()
+                    print(
+                        f"🔧 CRITICAL: Made section {section_type} pictograph container visible"
+                    )
+
+        # CRITICAL: Make bottom row container visible too
+        if hasattr(self, "bottom_row_container"):
+            self.bottom_row_container.setVisible(True)
+            self.bottom_row_container.show()
+            print("🔧 CRITICAL: Made bottom row container visible")
 
     # V1 approach: no finalization needed, QVBoxLayout just works!
 
@@ -98,3 +156,19 @@ class OptionPickerDisplayManager:
                 )
                 print(f"📄 Section {i} visible: {section.isVisible()}")
         print("📐 END LAYOUT ANALYSIS")
+
+    def resize_bottom_row_sections(self):
+        """Resize bottom row sections to proper 1/3 width when window resizes"""
+        if not self.mw_size_provider:
+            return
+
+        full_width = self.mw_size_provider().width()
+        section_width = (full_width - 20) // 3  # Account for spacing
+
+        for section_type in [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6]:
+            if section_type in self._sections:
+                section = self._sections[section_type]
+                section.setFixedWidth(section_width)
+                print(
+                    f"🔧 Resized bottom row section {section_type} to {section_width}px (1/3 of {full_width}px)"
+                )

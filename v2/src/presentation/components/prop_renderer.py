@@ -171,7 +171,6 @@ class PropRenderer:
         if "blue" not in self.rendered_props or "red" not in self.rendered_props:
             return
 
-
         # Calculate separation offsets
         blue_offset, red_offset = (
             self.beta_position_service.calculate_separation_offsets(beat_data)
@@ -190,8 +189,6 @@ class PropRenderer:
 
         blue_prop.setPos(new_blue_pos)
         red_prop.setPos(new_red_pos)
-
-
 
     def clear_rendered_props(self) -> None:
         """Clear the rendered props cache."""

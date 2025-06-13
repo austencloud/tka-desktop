@@ -18,7 +18,7 @@ class OptionPickerSection(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        self.header_button = OptionPickerSectionButton(self.letter_type)
+        self.header_button = OptionPickerSectionButton(self)
         self.header_button.clicked.connect(self._toggle_section)
         layout.addWidget(self.header_button)
 
@@ -35,12 +35,12 @@ class OptionPickerSection(QWidget):
 
         layout.addWidget(self.pictograph_container)
 
+        # V1-style: transparent background, no borders
         self.pictograph_container.setStyleSheet(
             """
             QWidget {
-                background-color: rgba(248, 249, 250, 180);
-                border: 1px solid rgba(222, 226, 230, 180);
-                border-radius: 6px;
+                background-color: transparent;
+                border: none;
             }
         """
         )
@@ -252,13 +252,12 @@ class OptionPickerSection(QWidget):
             if parent_layout:
                 parent_layout.addWidget(self.pictograph_container)
 
-            # Apply styling
+            # Apply V1-style transparent styling
             self.pictograph_container.setStyleSheet(
                 """
                 QWidget {
-                    background-color: rgba(248, 249, 250, 180);
-                    border: 1px solid rgba(222, 226, 230, 180);
-                    border-radius: 6px;
+                    background-color: transparent;
+                    border: none;
                 }
             """
             )
@@ -287,21 +286,49 @@ class OptionPickerSection(QWidget):
                 return
 
         try:
-            # V2-style sizing: use full available width from option picker
+            # V2-style sizing: different width handling for bottom row vs vertical sections
             if self.mw_size_provider:
-                # V2 pattern: section gets the full option picker width
-                section_width = self.mw_size_provider().width()
-                available_width = section_width - 40  # Account for margins
-                print(
-                    f"🔧 V2-style sizing: Using option picker width {self.mw_size_provider().width()}, section width {section_width}, available {available_width}"
-                )
+                full_width = self.mw_size_provider().width()
+
+                # Check if this section is in the bottom row (sections 4, 5, 6)
+                if self.letter_type in [
+                    LetterType.TYPE4,
+                    LetterType.TYPE5,
+                    LetterType.TYPE6,
+                ]:
+                    # Bottom row sections share the width equally (1/3 each)
+                    section_width = (full_width - 20) // 3  # Account for spacing
+                    available_width = section_width - 20  # Account for margins
+                    print(
+                        f"🔧 V2-style sizing: Bottom row section {self.letter_type} gets {section_width}px (1/3 of {full_width}px), available {available_width}"
+                    )
+                else:
+                    # Vertical sections (1, 2, 3) get full width
+                    section_width = full_width
+                    available_width = section_width - 40  # Account for margins
+                    print(
+                        f"🔧 V2-style sizing: Vertical section {self.letter_type} gets full width {section_width}px, available {available_width}"
+                    )
             else:
                 # Fallback to old method if no size provider
                 available_width = self._get_available_scroll_width()
                 print(f"🔧 Fallback sizing: Using scroll area width {available_width}")
 
             # V1-style responsive sizing: calculate optimal pictograph size
-            COLUMN_COUNT = 8
+            # Adjust column count based on section type and available width
+            if self.letter_type in [
+                LetterType.TYPE4,
+                LetterType.TYPE5,
+                LetterType.TYPE6,
+            ]:
+                # Bottom row sections have less width, so fewer columns
+                COLUMN_COUNT = min(
+                    4, max(2, available_width // 80)
+                )  # Adaptive based on width
+            else:
+                # Vertical sections can have more columns
+                COLUMN_COUNT = 8
+
             container_margins = 10  # Reduced from 20
             grid_spacing = 8
 
@@ -312,6 +339,10 @@ class OptionPickerSection(QWidget):
             )
             pictograph_size = max(
                 60, min(160, available_for_pictographs // COLUMN_COUNT)
+            )
+
+            print(
+                f"🔧 Section {self.letter_type}: Using {COLUMN_COUNT} columns, pictograph size {pictograph_size}px"
             )
 
             # CRITICAL FIX: Resize pictograph frames FIRST, before calculating container size
@@ -565,19 +596,35 @@ class OptionPickerSection(QWidget):
     def resizeEvent(self, event):
         """V2-style resize event to set proper section width"""
         if self.mw_size_provider:
-            # V2 pattern: use full option picker width for sections
-            width = self.mw_size_provider().width()
+            # V2 pattern: different width handling for bottom row vs vertical sections
+            full_width = self.mw_size_provider().width()
 
-            print(
-                f"🔧 V2-style resize: Setting section {self.letter_type} width to {width}px"
-            )
+            # Check if this section is in the bottom row (sections 4, 5, 6)
+            if self.letter_type in [
+                LetterType.TYPE4,
+                LetterType.TYPE5,
+                LetterType.TYPE6,
+            ]:
+                # Bottom row sections share the width equally (1/3 each)
+                section_width = (
+                    full_width - 20
+                ) // 3  # Account for spacing between sections
+                print(
+                    f"🔧 V2-style resize: Setting bottom row section {self.letter_type} width to {section_width}px (1/3 of {full_width}px)"
+                )
+            else:
+                # Vertical sections (1, 2, 3) get full width
+                section_width = full_width
+                print(
+                    f"🔧 V2-style resize: Setting vertical section {self.letter_type} width to {section_width}px"
+                )
 
-            # V2 pattern: set fixed width for proper layout
-            self.setFixedWidth(width)
+            # Set the calculated width
+            self.setFixedWidth(section_width)
 
-            # Also ensure pictograph container uses full available width
+            # Also ensure pictograph container uses available width
             if hasattr(self, "pictograph_container") and self.pictograph_container:
-                container_width = width - 40  # Account for margins
+                container_width = section_width - 20  # Account for margins
                 self.pictograph_container.setMinimumWidth(container_width)
                 self.pictograph_container.setMaximumWidth(container_width)
 

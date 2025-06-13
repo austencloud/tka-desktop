@@ -12,5 +12,31 @@
         "is_strict_swapped_CAP": false,
         "is_mirrored_swapped_CAP": false,
         "is_rotated_swapped_CAP": false
+    },
+    {
+        "beat": 0,
+        "sequence_start_position": "beta",
+        "letter": "β",
+        "end_pos": "beta5",
+        "timing": "none",
+        "direction": "none",
+        "blue_attributes": {
+            "start_loc": "s",
+            "end_loc": "s",
+            "start_ori": "in",
+            "end_ori": "in",
+            "prop_rot_dir": "no_rot",
+            "turns": 0,
+            "motion_type": "static"
+        },
+        "red_attributes": {
+            "start_loc": "s",
+            "end_loc": "s",
+            "start_ori": "in",
+            "end_ori": "in",
+            "prop_rot_dir": "no_rot",
+            "turns": 0,
+            "motion_type": "static"
+        }
     }
 ]

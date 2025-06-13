@@ -1,7 +1,6 @@
 from typing import Optional
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QSizePolicy, QLabel
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QSizePolicy
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont
 
 from ....core.dependency_injection.simple_container import SimpleContainer
 from ....core.interfaces.core_services import ILayoutService
@@ -32,10 +31,6 @@ class OptionPickerWidgetFactory:
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(8)
 
-        # Add title
-        title = self._create_title()
-        layout.addWidget(title)
-
         # Add filter widget
         filter_widget = OptionPickerFilter()
         layout.addWidget(filter_widget.widget)
@@ -48,23 +43,6 @@ class OptionPickerWidgetFactory:
         self._apply_styling(widget)
 
         return widget, sections_container, sections_layout, filter_widget
-
-    def _create_title(self) -> QLabel:
-        """Create the title label"""
-        title = QLabel("Choose Your Next Pictograph")
-        title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet(
-            """
-            QLabel {
-                color: #2d3748;
-                margin: 5px 0px;
-                padding: 8px;
-                background: transparent;
-            }
-        """
-        )
-        return title
 
     def _create_scroll_area(self) -> tuple[QScrollArea, QWidget, QVBoxLayout]:
         """Create the scroll area and sections container"""

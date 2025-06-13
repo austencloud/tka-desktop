@@ -75,23 +75,6 @@ class ConstructTabWidget(QWidget):
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(8)
 
-        # Title for workbench panel
-        title = QLabel("🎬 Sequence Workbench")
-        title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet(
-            """
-            QLabel {
-                color: white;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-                padding: 8px;
-                margin-bottom: 8px;
-            }
-        """
-        )
-        layout.addWidget(title)
-
         # Create modern workbench with integrated button panel
         self.workbench = create_modern_workbench(self.container, panel)
         layout.addWidget(self.workbench)
@@ -128,23 +111,6 @@ class ConstructTabWidget(QWidget):
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(8)
-
-        # Title for picker panel
-        title = QLabel("🎯 Construction Tools")
-        title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet(
-            """
-            QLabel {
-                color: white;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-                padding: 8px;
-                margin-bottom: 8px;
-            }
-        """
-        )
-        layout.addWidget(title)
 
         # Create stacked widget for picker views (like V1)
         self.picker_stack = QStackedWidget()
@@ -196,11 +162,6 @@ class ConstructTabWidget(QWidget):
         """Create option picker widget with progress updates for the heavy initialization"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
-
-        title = QLabel("Available Options")
-        title.setFont(QFont("Arial", 12, QFont.Weight.Bold))
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(title)
 
         try:
             # Create progress callback for ModernOptionPicker's internal initialization

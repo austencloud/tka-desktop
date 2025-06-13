@@ -14,7 +14,9 @@ from ...application.services.beat_frame_layout_service import BeatFrameLayoutSer
 from src.presentation.components.sequence_workbench.beat_frame.modern_beat_frame import (
     ModernBeatFrame,
 )
-from .sequence_workbench.modern_button_panel import ModernSequenceWorkbenchButtonPanel
+from src.presentation.components.sequence_workbench.modern_button_panel import (
+    ModernSequenceWorkbenchButtonPanel,
+)
 
 
 class ModernSequenceWorkbench(QWidget):
@@ -54,6 +56,9 @@ class ModernSequenceWorkbench(QWidget):
         # UI components
         self._beat_frame: Optional[ModernBeatFrame] = None
         self._button_panel: Optional[ModernSequenceWorkbenchButtonPanel] = None
+        self._graph_editor: Optional[ModernGraphEditor] = (
+            None  # Add graph editor component
+        )
 
         self._setup_ui()
         self._connect_signals()
@@ -137,22 +142,23 @@ class ModernSequenceWorkbench(QWidget):
 
     def _setup_graph_section(self, parent_layout: QVBoxLayout):
         """Setup graph editor section"""
-        # Graph editor placeholder (collapsible like V1)
-        graph_placeholder = QLabel("Graph Editor (Collapsible)")
-        graph_placeholder.setStyleSheet(
-            """
-            QLabel {
-                background-color: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-                padding: 10px;
-                color: rgba(255, 255, 255, 0.7);
-                text-align: center;
-            }
-        """
+        # Create the actual ModernGraphEditor component (replaces placeholder)
+        from .sequence_workbench.graph_editor.modern_graph_editor import (
+            ModernGraphEditor,
         )
-        graph_placeholder.setFixedHeight(50)
-        parent_layout.addWidget(graph_placeholder)
+
+        self._graph_editor = ModernGraphEditor(
+            graph_service=self._graph_service, parent=self
+        )
+
+        # Connect graph editor signals to workbench
+        self._graph_editor.beat_modified.connect(self._on_graph_beat_modified)
+        self._graph_editor.arrow_selected.connect(self._on_graph_arrow_selected)
+        self._graph_editor.visibility_changed.connect(self._on_graph_visibility_changed)
+
+        # Position graph editor at bottom of workbench (like v1)
+        # Note: ModernGraphEditor handles its own positioning and animations
+        parent_layout.addWidget(self._graph_editor)
 
     def _connect_signals(self):
         """Connect button panel signals to service operations"""
@@ -504,6 +510,34 @@ class ModernSequenceWorkbench(QWidget):
         """Handle layout change from beat frame"""
         # Could update UI or emit signals based on layout changes
         pass
+
+    def _on_graph_beat_modified(self, beat_index: int, beat_data):
+        """Handle beat modification from graph editor"""
+        if not self._current_sequence:
+            return
+
+        # Update the sequence with the modified beat
+        new_beats = list(self._current_sequence.beats)
+        if beat_index < len(new_beats):
+            new_beats[beat_index] = beat_data
+            self._current_sequence = SequenceData(
+                name=self._current_sequence.name, beats=new_beats
+            )
+            self.sequence_modified.emit(self._current_sequence)
+
+    def _on_graph_arrow_selected(self, arrow_data):
+        """Handle arrow selection in graph editor"""
+        # Implement arrow selection handling if needed
+        pass
+
+    def _on_graph_visibility_changed(self, visible: bool):
+        """Handle graph visibility changes"""
+        if visible:
+            # Graph became visible, update its display
+            self._graph_service.update_graph_display(self._current_sequence)
+        else:
+            # Graph is hidden, handle accordingly (e.g., pause updates)
+            pass
 
     def resizeEvent(self, event):
         """Handle resize events for responsive design"""

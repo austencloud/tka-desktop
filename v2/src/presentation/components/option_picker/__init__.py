@@ -166,6 +166,10 @@ class ModernOptionPicker(QObject):
         if self._pool_manager:
             self._pool_manager.resize_all_frames()
 
+        # CRITICAL: Resize bottom row sections to proper 1/3 width
+        if self._display_manager:
+            self._display_manager.resize_bottom_row_sections()
+
     def _on_filter_changed(self, filter_text: str) -> None:
         """Handle filter changes"""
         if self._beat_loader and self._display_manager:
