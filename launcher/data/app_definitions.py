@@ -15,6 +15,12 @@ class AppCategory(Enum):
     SYSTEM_UTILITIES = "system_utilities"
 
 
+class AppType(Enum):
+    MAIN_APPLICATION = "main_application"
+    STANDALONE_TOOL = "standalone_tool"
+    DEVELOPMENT_TOOL = "development_tool"
+
+
 class AppDefinition:
     def __init__(
         self,
@@ -23,6 +29,7 @@ class AppDefinition:
         icon: str,
         category: AppCategory,
         priority: AppPriority = AppPriority.SECONDARY,
+        app_type: AppType = AppType.MAIN_APPLICATION,
         script_path: str = "",
         command: Optional[List[str]] = None,
         env: Optional[Dict[str, str]] = None,
@@ -36,6 +43,7 @@ class AppDefinition:
         self.icon = icon
         self.category = category
         self.priority = priority
+        self.app_type = app_type
         self.script_path = script_path
         self.command = command or []
         self.env = env or {}
@@ -53,6 +61,7 @@ class AppDefinitions:
             icon="🚀",
             category=AppCategory.MAIN_APPLICATIONS,
             priority=AppPriority.PRIMARY,
+            app_type=AppType.MAIN_APPLICATION,
             script_path="v1/main.py",
             working_dir=".",
             env={"PYTHONPATH": "v1/src"},
@@ -65,6 +74,7 @@ class AppDefinitions:
             icon="🚀",
             category=AppCategory.MAIN_APPLICATIONS,
             priority=AppPriority.PRIMARY,
+            app_type=AppType.MAIN_APPLICATION,
             script_path="v2/main.py",
             working_dir=".",
             env={"PYTHONPATH": "v2"},
@@ -77,6 +87,7 @@ class AppDefinitions:
             icon="🔧",
             category=AppCategory.SYSTEM_UTILITIES,
             priority=AppPriority.SECONDARY,
+            app_type=AppType.STANDALONE_TOOL,
             script_path="v1/src/standalone/core/launcher.py",
             working_dir=".",
             args=["construct"],
@@ -90,6 +101,7 @@ class AppDefinitions:
             icon="✨",
             category=AppCategory.SYSTEM_UTILITIES,
             priority=AppPriority.SECONDARY,
+            app_type=AppType.STANDALONE_TOOL,
             script_path="v1/src/standalone/core/launcher.py",
             working_dir=".",
             args=["generate"],
@@ -103,6 +115,7 @@ class AppDefinitions:
             icon="📚",
             category=AppCategory.SYSTEM_UTILITIES,
             priority=AppPriority.SECONDARY,
+            app_type=AppType.STANDALONE_TOOL,
             script_path="v1/src/standalone/core/launcher.py",
             working_dir=".",
             args=["browse"],
@@ -119,6 +132,7 @@ class AppDefinitions:
             icon="🎯",
             category=AppCategory.DEVELOPMENT_TOOLS,
             priority=AppPriority.PRIMARY,
+            app_type=AppType.DEVELOPMENT_TOOL,
             script_path="unified_dev_test.py",
             working_dir=".",
             keyboard_shortcut="F5",

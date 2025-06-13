@@ -14,6 +14,7 @@ from PyQt6.QtGui import QFont, QResizeEvent
 from typing import List, Dict, Any
 
 from .app_card import AppCard
+from ...data.app_definitions import AppType
 
 
 class ResponsiveAppGrid(QScrollArea):
@@ -36,9 +37,10 @@ class ResponsiveAppGrid(QScrollArea):
         super().__init__(parent)
         self.apps = apps if apps is not None else []
         self.filtered_apps = self.apps.copy()
-        self.view_mode = "list"
-        self.columns = 3
-        self.list_item_height = 70
+        self.min_card_width = 380  # Increase from 280
+        self.max_card_width = 600  # Add maximum to prevent overstretching
+        self.card_height_normal = 140  # Increase from 60 for compact mode
+        self.card_height_expanded = 200  # For main applications
 
         # Initialize UI components that will be created
         self.container: QFrame
@@ -189,39 +191,152 @@ class ResponsiveAppGrid(QScrollArea):
             self.grid_layout.addWidget(empty_state)
             return
 
-        # Create a single responsive grid for all apps without category headers
-        apps_container = QFrame()
-        apps_container.setStyleSheet("QFrame { background: transparent; }")
+        # Separate apps by type
+        main_apps = [
+            app
+            for app in self.filtered_apps
+            if hasattr(app, "app_type") and app.app_type == AppType.MAIN_APPLICATION
+        ]
+        standalone_tools = [
+            app
+            for app in self.filtered_apps
+            if hasattr(app, "app_type") and app.app_type == AppType.STANDALONE_TOOL
+        ]
+        dev_tools = [
+            app
+            for app in self.filtered_apps
+            if hasattr(app, "app_type") and app.app_type == AppType.DEVELOPMENT_TOOL
+        ]
 
-        # Calculate responsive columns based on container width
+        # Calculate responsive columns
         viewport = self.viewport()
         container_width = viewport.width() if viewport else 1200
-        card_width = 280  # Minimum card width
-        margin = 40  # Total horizontal margins
-        available_width = container_width - margin
-        columns = max(1, min(6, available_width // card_width))  # 1-6 columns
+        padding = 40
+        spacing = 16
+        available_width = container_width - padding
 
-        apps_layout = QGridLayout(apps_container)
-        apps_layout.setSpacing(12)  # Reduced spacing
-        apps_layout.setContentsMargins(0, 0, 0, 0)
+        # Dynamic column calculation
+        columns = max(1, min(4, available_width // self.min_card_width))
 
-        # Add all apps in a responsive grid
-        for i, app in enumerate(self.filtered_apps):
-            card = AppCard(app, compact=True)
-            card.setFixedHeight(60)  # Smaller height
-            card.setMaximumWidth(400)  # Prevent cards from being too wide
+        # Main Applications Section
+        if main_apps:
+            section_header = self.create_section_header(
+                "🚀 Main Applications", len(main_apps)
+            )
+            self.grid_layout.addWidget(section_header)
 
+            main_container = self.create_app_section(main_apps, columns, expanded=True)
+            self.grid_layout.addWidget(main_container)
+
+            # Add spacing between sections
+            spacer = QFrame()
+            spacer.setFixedHeight(24)
+            spacer.setStyleSheet("background: transparent;")
+            self.grid_layout.addWidget(spacer)
+
+        # Standalone Tools Section
+        if standalone_tools:
+            section_header = self.create_section_header(
+                "🔧 Standalone Tools", len(standalone_tools)
+            )
+            self.grid_layout.addWidget(section_header)
+
+            tools_container = self.create_app_section(
+                standalone_tools, columns, expanded=False
+            )
+            self.grid_layout.addWidget(tools_container)
+
+            spacer = QFrame()
+            spacer.setFixedHeight(24)
+            spacer.setStyleSheet("background: transparent;")
+            self.grid_layout.addWidget(spacer)
+
+        # Development Tools Section
+        if dev_tools:
+            section_header = self.create_section_header(
+                "🛠️ Development Tools", len(dev_tools)
+            )
+            self.grid_layout.addWidget(section_header)
+
+            dev_container = self.create_app_section(dev_tools, columns, expanded=False)
+            self.grid_layout.addWidget(dev_container)
+
+        self.update_count_label()
+
+    def create_section_header(self, title: str, count: int) -> QWidget:
+        header = QFrame()
+        header.setFixedHeight(40)
+        header.setStyleSheet(
+            """
+            QFrame {
+                background: transparent;
+                border-bottom: 2px solid rgba(74, 144, 226, 0.3);
+                margin-bottom: 8px;
+            }
+        """
+        )
+
+        layout = QHBoxLayout(header)
+        layout.setContentsMargins(0, 0, 0, 8)
+
+        title_label = QLabel(f"{title}")
+        title_label.setFont(QFont("Segoe UI", 14, QFont.Weight.Bold))
+        title_label.setStyleSheet(
+            "color: white; background: transparent; border: none;"
+        )
+        layout.addWidget(title_label)
+
+        count_label = QLabel(f"{count} apps")
+        count_label.setFont(QFont("Segoe UI", 11))
+        count_label.setStyleSheet(
+            "color: rgba(255, 255, 255, 0.6); background: transparent; border: none;"
+        )
+        layout.addWidget(count_label)
+
+        layout.addStretch()
+
+        return header
+
+    def create_app_section(
+        self, apps: List[Any], columns: int, expanded: bool
+    ) -> QWidget:
+        container = QFrame()
+        container.setStyleSheet("QFrame { background: transparent; }")
+
+        layout = QGridLayout(container)
+        layout.setSpacing(16)  # Increase spacing between cards
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        for i, app in enumerate(apps):
             row = i // columns
             col = i % columns
+
+            card = AppCard(app, compact=False, expanded=expanded)
+
+            # Set dynamic sizing
+            card.setMinimumWidth(self.min_card_width)
+            card.setMaximumWidth(self.max_card_width)
+
+            if expanded:
+                card.setFixedHeight(self.card_height_expanded)
+            else:
+                card.setFixedHeight(self.card_height_normal)
 
             card.launch_requested.connect(self.app_launched.emit)
             card.setAccessibleName(f"Launch {app.title}")
             card.setAccessibleDescription(f"{app.description}. Press Enter to launch.")
 
-            apps_layout.addWidget(card, row, col)
+            layout.addWidget(card, row, col)
 
-        self.grid_layout.addWidget(apps_container)
-        self.update_count_label()
+        # Fill remaining columns with stretch
+        total_apps = len(apps)
+        last_row = (total_apps - 1) // columns
+        last_col = (total_apps - 1) % columns
+
+        for col in range(last_col + 1, columns):
+            layout.setColumnStretch(col, 1)
+
+        return container
 
     def create_empty_state(self) -> QWidget:
         empty = QFrame()

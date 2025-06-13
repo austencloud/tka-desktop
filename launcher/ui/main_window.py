@@ -112,8 +112,8 @@ class LauncherWindow(QMainWindow):
     def setup_ui(self):
         """Create the perfect launcher layout hierarchy"""
         self.setWindowTitle("🚀 TKA Kinetic Constructor Launcher")
-        self.setMinimumSize(900, 700)
-        self.resize(1200, 800)  # Optimal default size
+        self.setMinimumSize(1200, 800)  # Increase minimum size
+        self.resize(1400, 900)  # Larger default size
 
         # Apply enhanced glassmorphism styling
         self.setStyleSheet(StyleManager.get_main_style())
@@ -157,7 +157,7 @@ class LauncherWindow(QMainWindow):
         header = QFrame()
         header.setObjectName("globalHeader")
         header.setAccessibleName("System status")
-        header.setFixedHeight(28)  # Even smaller header
+        header.setFixedHeight(40)  # Slightly larger for better visibility
         header.setStyleSheet(
             """
             QFrame#globalHeader {

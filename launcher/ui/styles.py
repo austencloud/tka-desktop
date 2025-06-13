@@ -155,6 +155,35 @@ class StyleManager:
         """
 
     @staticmethod
+    def get_section_header_style():
+        return """
+            QFrame {
+                background: transparent;
+                border-bottom: 2px solid rgba(74, 144, 226, 0.3);
+                padding: 8px 0;
+            }
+            QLabel {
+                color: white;
+                background: transparent;
+                border: none;
+            }
+        """
+
+    @staticmethod
+    def get_enhanced_card_style():
+        return """
+            /* Enhanced card styles without transitions */
+            QFrame {
+                background: transparent;
+            }
+
+            /* Better button styles */
+            QPushButton {
+                font-weight: 600;
+            }
+        """
+
+    @staticmethod
     def get_main_style():
         return (
             """
@@ -167,4 +196,6 @@ class StyleManager:
             + StyleManager.get_button_style()
             + StyleManager.get_tab_style()
             + StyleManager.get_search_style()
+            + StyleManager.get_section_header_style()
+            + StyleManager.get_enhanced_card_style()
         )
