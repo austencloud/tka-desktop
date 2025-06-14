@@ -1,0 +1,51 @@
+name: Test Organization Validation
+
+on:
+  pull_request:
+    paths:
+      - "v2/tests/**/*.py"
+  push:
+    paths:
+      - "v2/tests/**/*.py"
+
+jobs:
+  validate-test-organization:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Validate Test Placement
+        run: |
+          cd v2
+          python tests/scripts/validate_test_placement.py
+
+      - name: Check Test Health
+        run: |
+          cd v2
+          python tests/test_runner.py --health
+
+      - name: Comment on PR with Issues
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `❌ **Test Organization Validation Failed**
+              
+              Please ensure:
+              - Tests are in correct directories
+              - All tests have proper lifecycle metadata
+              - Scaffolding tests have DELETE_AFTER dates
+              
+              Run locally: \`python v2/tests/scripts/validate_test_placement.py\`
+              
+              See: \`v2/tests/TEST_ORGANIZATION_GUIDE.md\``
+            })

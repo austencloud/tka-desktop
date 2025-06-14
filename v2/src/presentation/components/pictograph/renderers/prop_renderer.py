@@ -10,15 +10,15 @@ from PyQt6.QtCore import QPointF
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
-from src.domain.models.core_models import MotionData, Location
+from domain.models.core_models import MotionData, Location
 
 from presentation.components.pictograph.asset_utils import get_image_path
 
-from src.application.services.motion_orientation_service import (
+from application.services.motion_orientation_service import (
     MotionOrientationService,
     Orientation,
 )
-from src.application.services.beta_prop_position_service import BetaPropPositionService
+from application.services.beta_prop_position_service import BetaPropPositionService
 
 
 class PropRenderer:

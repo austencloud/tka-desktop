@@ -157,6 +157,39 @@ class ModernOptionPicker(QObject):
         """Handle beat selection clicks"""
         self.option_selected.emit(beat_id)
 
+    def get_beat_data_for_option(self, option_id: str) -> Optional[BeatData]:
+        """Get BeatData for a specific option ID (e.g., 'beat_J' -> BeatData with letter='J')"""
+        if not self._beat_loader:
+            return None
+
+        # Extract letter from option_id (e.g., "beat_J" -> "J")
+        if option_id.startswith("beat_"):
+            target_letter = option_id[5:]  # Remove "beat_" prefix
+
+            # Search through current beat options for matching letter
+            beat_options = self._beat_loader.get_beat_options()
+            for beat_data in beat_options:
+                if beat_data.letter == target_letter:
+                    print(
+                        f"✅ Found beat data for option {option_id}: {beat_data.letter}"
+                    )
+                    return beat_data
+
+            print(
+                f"❌ No beat data found for option {option_id} (letter: {target_letter})"
+            )
+            return None
+        else:
+            print(f"❌ Invalid option ID format: {option_id}")
+            return None
+
+    def refresh_options(self) -> None:
+        """Refresh the option picker with latest beat options"""
+        if self._beat_loader and self._display_manager:
+            beat_options = self._beat_loader.refresh_options()
+            self._display_manager.update_beat_display(beat_options)
+            print(f"🔄 Option picker refreshed with {len(beat_options)} options")
+
     def _on_widget_resize(self) -> None:
         """Handle widget resize events"""
         if self._pool_manager:

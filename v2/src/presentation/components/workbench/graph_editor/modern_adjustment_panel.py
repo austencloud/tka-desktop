@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QCursor, QMouseEvent
 
-from .....domain.models.core_models import BeatData, MotionType
+from domain.models.core_models import BeatData, MotionType
 from .turn_selection_dialog import TurnSelectionDialog
 
 

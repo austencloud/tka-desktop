@@ -6,12 +6,12 @@ Tests the complete beat frame workflow including service integration.
 
 import pytest
 from unittest.mock import Mock, MagicMock
-from PyQt6.QtCore import QSignalSpy
+from PyQt6.QtTest import QSignalSpy  # Changed from PyQt6.QtCore
 
-from src.presentation.components.workbench.beat_frame.modern_beat_frame import (
+from v2.src.presentation.components.workbench.beat_frame.modern_beat_frame import (
     ModernBeatFrame,
 )
-from src.application.services.beat_frame_layout_service import BeatFrameLayoutService
+from v2.src.application.services.beat_frame_layout_service import BeatFrameLayoutService
 
 
 @pytest.mark.integration

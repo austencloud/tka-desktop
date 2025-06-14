@@ -1,3 +1,41 @@
 {
-  "python.analysis.extraPaths": ["${workspaceFolder}/src", "./v2/src"]
+  "python.analysis.extraPaths": ["${workspaceFolder}/src", "./v2/src"],
+  "settings": {
+    "files.associations": {
+      "test_*.py": "python"
+    },
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": ["v2/tests"],
+    "copilot.chat.experimental.contextualizations": [
+      {
+        "pattern": "**/tests/**/*.py",
+        "context": "This is part of a lifecycle-based testing system. Before creating or modifying tests, read v2/tests/TEST_ORGANIZATION_GUIDE.md and follow the decision tree for proper test placement."
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.pytest",
+      "github.copilot",
+      "github.copilot-chat"
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Validate Test Organization",
+        "type": "shell",
+        "command": "python",
+        "args": ["v2/tests/scripts/validate_test_placement.py"],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always"
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
 }

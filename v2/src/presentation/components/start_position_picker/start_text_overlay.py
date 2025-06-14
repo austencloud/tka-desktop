@@ -63,7 +63,9 @@ class StartTextOverlay(QGraphicsTextItem):
             return
 
         try:
-            if self.isVisible():
+            # Check validity before accessing isVisible()
+            if self._is_valid:
+                # Don't call isVisible() as it might crash, just update position
                 text_padding = scene_size // 28
                 self.setPos(QPointF(text_padding, text_padding))
         except (RuntimeError, AttributeError):
@@ -74,27 +76,20 @@ class StartTextOverlay(QGraphicsTextItem):
         if not self._is_valid:
             return False
 
+        # Additional check: try to access a Qt property to verify object is still alive
         try:
-            # Try to access a basic property to check if object is still valid
+            # This will raise RuntimeError if the C++ object has been deleted
             _ = self.isVisible()
             return True
         except (RuntimeError, AttributeError):
+            # Object has been deleted, mark as invalid
             self._is_valid = False
             return False
 
     def cleanup(self):
         """Cleanup the overlay safely"""
-        if not self._is_valid:
-            return
-
-        try:
-            scene = self.scene()
-            if scene:
-                scene.removeItem(self)
-        except (RuntimeError, AttributeError):
-            pass
-        finally:
-            self._is_valid = False
+        # Mark as invalid immediately to prevent further access
+        self._is_valid = False
 
 
 def add_start_text_to_pictograph(pictograph_component) -> Optional[StartTextOverlay]:
@@ -127,5 +122,14 @@ def remove_start_text_from_pictograph(
         pictograph_component: SimplePictographComponent instance
         start_text_overlay: StartTextOverlay instance to remove
     """
-    if start_text_overlay and pictograph_component.scene:
-        pictograph_component.scene.removeItem(start_text_overlay)
+    if start_text_overlay:
+        # Use the overlay's cleanup method instead of direct scene access
+        start_text_overlay.cleanup()
+
+        # Try to remove from scene safely
+        try:
+            if pictograph_component and pictograph_component.scene:
+                pictograph_component.scene.removeItem(start_text_overlay)
+        except (RuntimeError, AttributeError):
+            # Object may already be deleted - this is expected
+            pass

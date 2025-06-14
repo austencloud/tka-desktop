@@ -8,7 +8,7 @@ import uuid
 from typing import List, Dict, Any, Optional
 from PyQt6.QtCore import QSize
 
-from ...core.interfaces.core_services import (
+from core.interfaces.core_services import (
     ILayoutService,
     ISettingsService,
     ISequenceDataService,

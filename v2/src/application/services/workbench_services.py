@@ -2,7 +2,7 @@ from typing import Optional
 import json
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QClipboard
-from ...core.interfaces.workbench_services import (
+from core.interfaces.workbench_services import (
     ISequenceWorkbenchService,
     IFullScreenService,
     IBeatDeletionService,

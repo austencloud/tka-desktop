@@ -1,7 +1,7 @@
 from typing import Optional, List, Dict, Any
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from ...core.interfaces.workbench_services import IGraphEditorService
+from core.interfaces.workbench_services import IGraphEditorService
 from domain.models.core_models import SequenceData, BeatData
 from .v1_pictograph_integration_service import V1PictographIntegrationService
 
@@ -10,8 +10,8 @@ class GraphEditorService(QObject):
     """Modern graph editor service implementing v2 architecture patterns with V1 integration"""
 
     # Signals for state changes
-    graph_updated = pyqtSignal(SequenceData)
-    beat_selected = pyqtSignal(BeatData, int)
+    graph_updated = pyqtSignal(object)  # SequenceData object
+    beat_selected = pyqtSignal(object, int)  # BeatData object, int
     arrow_selected = pyqtSignal(str)
     visibility_changed = pyqtSignal(bool)
     pictograph_ready = pyqtSignal(object)  # V1 pictograph object
@@ -66,7 +66,9 @@ class GraphEditorService(QObject):
         # Update arrow states cache for this beat
         if beat_data:
             self._update_arrow_states_cache(beat_data)
-            self.beat_selected.emit(beat_data, beat_index or -1)
+            # Emit the beat_index as is if not None, otherwise default to -1
+            emitted_index = beat_index if beat_index is not None else -1
+            self.beat_selected.emit(beat_data, emitted_index)
 
     def get_selected_beat(self) -> Optional[BeatData]:
         """Get the currently selected beat"""
@@ -151,6 +153,10 @@ class GraphEditorService(QObject):
         # This would integrate with v1's arrow modification logic
         # For now, just cache the change (to be implemented with v1 integration)
         return True
+
+    def get_selected_arrow(self) -> Optional[str]:
+        """Get the ID of the currently selected arrow."""
+        return self._selected_arrow_id
 
     def _update_arrow_states_cache(self, beat_data: BeatData):
         """Update internal cache of arrow states from beat data"""

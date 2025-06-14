@@ -10,7 +10,7 @@ import os
 from typing import Dict, Any, Optional
 from pathlib import Path
 
-from src.domain.models.core_models import BeatData, MotionData
+from domain.models.core_models import BeatData, MotionData
 
 
 class BetaPropSwapService:
@@ -65,7 +65,6 @@ class BetaPropSwapService:
                                 )
                         except Exception as e:
                             print(f"⚠️ Error loading {json_file}: {e}")
-
 
         except Exception as e:
             print(f"❌ Error loading special placements: {e}")

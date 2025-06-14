@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """
-End-to-End Critical Bug Tests for TKA V2
-========================================
-
-Tests to reproduce and fix critical bugs:
-1. Program crashes when clearing sequence
-2. Option selection doesn't work after start position selection
-
-These tests simulate the complete user workflow to identify and fix issues.
+TEST LIFECYCLE: SCAFFOLDING
+PURPOSE: End-to-end critical bug reproduction with complete user workflow simulation
+DELETE_AFTER: 2025-07-15
+CREATED: 2025-06-14
+AUTHOR: @austencloud
+RELATED_ISSUE: Critical bugs - sequence clear crash and option selection workflow
 """
 
 import sys

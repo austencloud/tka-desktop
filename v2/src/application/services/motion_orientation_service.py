@@ -9,7 +9,7 @@ algorithms from the reference implementation.
 from enum import Enum
 from typing import Union
 
-from src.domain.models.core_models import MotionData, MotionType, RotationDirection
+from domain.models.core_models import MotionData, MotionType, RotationDirection
 
 
 class Orientation(Enum):

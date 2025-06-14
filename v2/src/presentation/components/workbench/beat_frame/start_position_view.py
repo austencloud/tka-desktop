@@ -136,6 +136,9 @@ class StartPositionView(QFrame):
         if not self._pictograph_component:
             return
 
+        # Mark existing overlay as invalid before any scene operations
+        self._mark_overlay_invalid()
+
         if self._position_data:
             # Update the pictograph component with position data
             self._pictograph_component.update_from_beat(self._position_data)
@@ -149,6 +152,9 @@ class StartPositionView(QFrame):
     def _show_empty_state(self):
         """Show empty state when no position data"""
         # No position label in v1 - just clear the pictograph
+
+        # Mark existing overlay as invalid before clearing
+        self._mark_overlay_invalid()
 
         # Clear pictograph component
         if self._pictograph_component:
@@ -192,33 +198,27 @@ class StartPositionView(QFrame):
             print(f"Failed to create start text overlay: {e}")
             self._start_text_overlay = None
 
+    def _mark_overlay_invalid(self):
+        """Mark the existing overlay as invalid before scene operations"""
+        if self._start_text_overlay:
+            try:
+                if hasattr(self._start_text_overlay, "_is_valid"):
+                    self._start_text_overlay._is_valid = False
+            except (RuntimeError, AttributeError):
+                # Object already deleted - this is expected
+                pass
+
     def _cleanup_existing_overlay(self):
         """Safely cleanup existing overlay with proper Qt lifecycle management"""
         if not self._start_text_overlay:
             return
 
-        try:
-            # Use the overlay's built-in validity checking and cleanup
-            if (
-                hasattr(self._start_text_overlay, "is_valid")
-                and self._start_text_overlay.is_valid()
-            ):
-                # Use the overlay's cleanup method
-                self._start_text_overlay.cleanup()
+        # Mark as invalid immediately to prevent further access
+        self._mark_overlay_invalid()
 
-            # Schedule for deletion using Qt's event system
-            try:
-                self._start_text_overlay.deleteLater()
-            except (RuntimeError, AttributeError):
-                # Object already deleted
-                pass
-
-        except Exception as e:
-            # Catch any unexpected errors during cleanup
-            print(f"Warning: Error during overlay cleanup: {e}")
-        finally:
-            # Always clear the reference
-            self._start_text_overlay = None
+        # Don't try to access the Qt object at all - it may have been deleted by scene.clear()
+        # Just clear our reference and let Qt's garbage collection handle the rest
+        self._start_text_overlay = None
 
     def _update_highlight_style(self):
         """Update styling based on highlight state"""

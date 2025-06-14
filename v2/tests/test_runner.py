@@ -199,28 +199,59 @@ class TestRunner:
 
         # Run tests
         try:
-            result = subprocess.run(
+            process = subprocess.Popen(
                 cmd,
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
-                timeout=self.categories[category]["max_time"] * 2,  # 2x buffer
+                encoding="utf-8",
             )
+            stdout, stderr = process.communicate(
+                timeout=self.categories[category]["max_time"]
+            )
+            return_code = process.returncode
 
-            duration = time.time() - start_time
+            if verbose:
+                print(f"stdout:\\n{stdout}")
+                if stderr:
+                    print(f"stderr:\\n{stderr}")
+
+            end_time = time.time()
+            duration = end_time - start_time
 
             return {
-                "status": "passed" if result.returncode == 0 else "failed",
+                "category": category,
                 "duration": duration,
-                "stdout": result.stdout,
-                "stderr": result.stderr,
-                "returncode": result.returncode,
+                "status": "passed" if return_code == 0 else "failed",
+                "details": f"Finished in {duration:.2f}s",
+                "stdout": stdout,
+                "stderr": stderr,
+                "returncode": return_code,
             }
 
         except subprocess.TimeoutExpired:
+            end_time = time.time()
+            duration = end_time - start_time
             return {
-                "status": "timeout",
-                "duration": time.time() - start_time,
-                "max_time": self.categories[category]["max_time"],
+                "category": category,
+                "duration": duration,
+                "status": "failed",
+                "details": f"Timeout after {duration:.2f}s (max: {self.categories[category]['max_time']:.1f}s)",
+                "stdout": "",
+                "stderr": "Test execution timed out.",
+                "returncode": -1,  # Indicate timeout
+            }
+        except Exception as e:
+            end_time = time.time()
+            duration = end_time - start_time
+            return {
+                "category": category,
+                "duration": duration,
+                "status": "error",
+                "details": f"Error running tests: {e}",
+                "stdout": "",
+                "stderr": str(e),
+                "returncode": -2,  # Indicate general error
             }
 
     def run_all(self, categories: List[str] = None, verbose: bool = False) -> Dict:
@@ -298,6 +329,84 @@ class TestRunner:
         # This would implement intelligent obsolete test detection
         # For now, just return empty list for safety
         return []
+
+    def suggest_test_placement(self, test_content: str, test_name: str) -> str:
+        """Analyze test content and suggest proper placement"""
+        debug_patterns = ["debug", "crash", "bug", "reproduce", "minimal", "simple"]
+        exploration_patterns = ["v1", "behavior", "understand", "explore", "learn"]
+        spike_patterns = ["spike", "prototype", "poc", "experiment", "feasibility"]
+        specification_patterns = [
+            "contract",
+            "behavior",
+            "must",
+            "always",
+            "never",
+            "guarantee",
+        ]
+        regression_patterns = ["prevent", "regression", "issue", "bug_report", "fixed"]
+
+        content_lower = test_content.lower()
+
+        if "TEST LIFECYCLE:" in test_content:
+            return "✅ Test already has proper lifecycle metadata"
+
+        debug_score = sum(1 for p in debug_patterns if p in content_lower)
+        exploration_score = sum(1 for p in exploration_patterns if p in content_lower)
+        spike_score = sum(1 for p in spike_patterns if p in content_lower)
+        spec_score = sum(1 for p in specification_patterns if p in content_lower)
+        regression_score = sum(1 for p in regression_patterns if p in content_lower)
+
+        suggestions = []
+
+        if debug_score > 0:
+            suggestions.append(
+                f"tests/scaffolding/debug/ (debug patterns: {debug_score})"
+            )
+        if exploration_score > 0:
+            suggestions.append(
+                f"tests/scaffolding/exploration/ (exploration patterns: {exploration_score})"
+            )
+        if spike_score > 0:
+            suggestions.append(
+                f"tests/scaffolding/spike/ (spike patterns: {spike_score})"
+            )
+        if spec_score > 0:
+            suggestions.append(
+                f"tests/specification/domain/ (specification patterns: {spec_score})"
+            )
+        if regression_score > 0:
+            suggestions.append(
+                f"tests/regression/bugs/ (regression patterns: {regression_score})"
+            )
+
+        if not suggestions:
+            suggestions.append(
+                "tests/scaffolding/debug/ (default - add proper metadata)"
+            )
+
+        return f"💡 Suggested placement for '{test_name}':\n   " + "\n   ".join(
+            suggestions
+        )
+
+    def auto_fix_suggestions(self, dry_run: bool = True) -> List[str]:
+        """Provide automatic fix suggestions for misplaced tests"""
+        fixes = []
+
+        for test_file in self.test_dir.rglob("test_*.py"):
+            if test_file.is_file():
+                try:
+                    content = test_file.read_text(encoding="utf-8")
+                    suggestion = self.suggest_test_placement(content, test_file.name)
+
+                    if "already has proper" not in suggestion:
+                        fixes.append(
+                            f"{test_file.relative_to(self.test_dir)}: {suggestion}"
+                        )
+
+                except Exception as e:
+                    fixes.append(f"{test_file.name}: Error reading file - {e}")
+
+        return fixes
 
 
 def main():

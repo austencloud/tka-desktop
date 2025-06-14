@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING
 from PyQt6.QtGui import QTransform
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 
-from src.domain.models.core_models import MotionType, RotationDirection
+from domain.models.core_models import MotionType, RotationDirection
 
 if TYPE_CHECKING:
-    from src.domain.models.pictograph_models import ArrowData
+    from domain.models.pictograph_models import ArrowData
 
 
 class ArrowMirrorService:

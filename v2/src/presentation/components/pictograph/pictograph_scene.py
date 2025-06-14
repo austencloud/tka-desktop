@@ -8,7 +8,7 @@ from typing import Optional
 from PyQt6.QtWidgets import QGraphicsScene
 from PyQt6.QtGui import QBrush, QColor
 
-from src.domain.models.core_models import BeatData
+from domain.models.core_models import BeatData
 
 from presentation.components.pictograph.renderers.grid_renderer import GridRenderer
 from presentation.components.pictograph.renderers.prop_renderer import PropRenderer

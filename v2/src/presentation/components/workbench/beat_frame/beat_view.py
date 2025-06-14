@@ -28,7 +28,7 @@ class ModernBeatView(QFrame):
     # Signals
     beat_clicked = pyqtSignal()
     beat_double_clicked = pyqtSignal()
-    beat_modified = pyqtSignal(BeatData)
+    beat_modified = pyqtSignal(object)  # BeatData object
     beat_context_menu = pyqtSignal()
 
     def __init__(self, beat_number: int, parent: Optional[QWidget] = None):

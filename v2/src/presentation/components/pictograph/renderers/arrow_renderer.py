@@ -10,14 +10,10 @@ from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
 from presentation.components.pictograph.asset_utils import get_image_path
-from src.domain.models.core_models import MotionData, Location, MotionType
-from src.application.services.motion_orientation_service import (
-    MotionOrientationService,
-    Orientation,
-)
-from src.domain.models.pictograph_models import ArrowData, PictographData
-from src.application.services.arrow_mirror_service import ArrowMirrorService
-from src.application.services.arrow_positioning_service import ArrowPositioningService
+from domain.models.core_models import MotionData, Location, MotionType
+from domain.models.pictograph_models import ArrowData, PictographData
+from application.services.arrow_mirror_service import ArrowMirrorService
+from application.services.arrow_positioning_service import ArrowPositioningService
 
 
 class ArrowRenderer:
@@ -137,6 +133,7 @@ class ArrowRenderer:
         elif motion_data.motion_type == MotionType.FLOAT:
             return get_image_path("arrows/float.svg")
         else:
+            # Fallback to static for unknown motion types
             return get_image_path(f"arrows/static/from_radial/static_{turns_str}.svg")
 
     def _calculate_arrow_position_with_service(
@@ -163,7 +160,31 @@ class ArrowRenderer:
         """Load SVG file content as string."""
         try:
             with open(file_path, "r", encoding="utf-8") as file:
-                return file.read()
+                content = file.read()
+
+                # Extract dimensions from SVG content for debugging
+                import re
+
+                width_match = re.search(r'width="([^"]*)"', content)
+                height_match = re.search(r'height="([^"]*)"', content)
+                viewbox_match = re.search(r'viewBox="([^"]*)"', content)
+
+                width = width_match.group(1) if width_match else "not found"
+                height = height_match.group(1) if height_match else "not found"
+                viewbox = viewbox_match.group(1) if viewbox_match else "not found"
+
+                print(f"✓ Loaded SVG from: {file_path}")
+                print(f"  📏 Dimensions: width={width}, height={height}")
+                print(f"  📐 ViewBox: {viewbox}")
+                print(f"  📄 Content length: {len(content)} characters")
+
+                # Check if this is an empty/invisible SVG
+                if width == "0" or height == "0":
+                    print(
+                        f"  ⚠️  WARNING: SVG has zero dimensions! This arrow will be invisible."
+                    )
+
+                return content
         except Exception as e:
             print(f"Error loading SVG file {file_path}: {e}")
             return ""

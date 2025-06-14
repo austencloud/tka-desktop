@@ -2,9 +2,11 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QWidget,
     QVBoxLayout,
+    QHBoxLayout,
     QApplication,
     QPushButton,
     QMessageBox,
+    QLabel,  # Added QLabel
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QKeySequence, QShortcut
@@ -14,6 +16,8 @@ import subprocess
 
 
 class AccessibilityManager:
+    """Singleton helper to keep widgets keyboard‑ and screen‑reader‑friendly."""
+
     _instance: Optional["AccessibilityManager"] = None
 
     def __init__(self) -> None:
@@ -27,12 +31,10 @@ class AccessibilityManager:
             cls._instance = AccessibilityManager()
         return cls._instance
 
-    def configure_widget_accessibility(
-        self, widget: QWidget, name: str, description: str = ""
-    ) -> None:
+    # -------- helpers -----------------------------------------------------
+    def configure(self, widget: QWidget, name: str, desc: str = "") -> None:
         widget.setAccessibleName(name)
-        if description:
-            widget.setAccessibleDescription(description)
+        widget.setAccessibleDescription(desc)
         widget.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
 
@@ -43,100 +45,139 @@ class AppDefinition:
         description: str,
         script_path: str = "",
         command: str = "",
-        icon: str = "🚀",
-        tags: Optional[List[str]] = None,
-        args: Optional[List[str]] = None,
-        env: Optional[Dict[str, str]] = None,
-        working_dir: str = "",
+        icon: str | None = "",
     ) -> None:
         self.title = title
         self.description = description
         self.script_path = script_path
         self.command = command
-        self.icon = icon
-        self.tags = tags or []
-        self.args = args or []
-        self.env = env or {}
-        self.working_dir = working_dir
+        self.icon = icon or "💻"
 
 
 class AppDefinitions:
+    """Central place to list launch targets."""
+
     @staticmethod
-    def get_all() -> List[AppDefinition]:
+    def all() -> List[AppDefinition]:
         return [
+            AppDefinition("V1", "Full legacy TKA", "v1/main.py", icon="🔧"),
+            AppDefinition("V2", "Modern TKA demo", "v2/main.py", icon="✨"),
             AppDefinition(
-                "🔧 V1 Main Application",
-                "Full TKA application with all features",
-                "v1/main.py",
+                "Tests", "Run full test suite", "unified_dev_test.py", icon="🧪"
             ),
             AppDefinition(
-                "🆕 V2 Demo Application", "Modern architecture demo", "v2/main.py"
-            ),
-            AppDefinition(
-                "🧪 Run All Tests", "Comprehensive test suite", "unified_dev_test.py"
-            ),
-            AppDefinition(
-                "🎯 Debug Tools", "Development diagnostics", "test_dev_tools.py"
-            ),
+                "Dev", "Debug helpers", "test_dev_tools.py", icon="🛠"
+            ),  # Changed "Dev Tools" to "Dev"
         ]
 
 
 class LauncherWindow(QMainWindow):
+    """A slim, horizontally-oriented launcher bar."""
+
+    HEIGHT = 45  # px, adjusted to better match typical taskbar height
+    WIDTH = 350  # px, can be adjusted if needed with new spacing
+
     def __init__(self) -> None:
         super().__init__()
-        self.accessibility_manager = AccessibilityManager.instance()
-        self.setup_window()
-        self.setup_layout()
-        self.setup_keyboard_shortcuts()
+        self.a11y = AccessibilityManager.instance()
+        self._setup_window()
+        self._setup_layout()
+        self._setup_shortcuts()
+        self.position_overlay_taskbar_secondary_left_fifth()  # Updated method call
 
-    def setup_window(self) -> None:
-        self.setWindowTitle("🚀 TKA Kinetic Constructor Launcher")
-        self.setMinimumSize(800, 600)
-        self.resize(1200, 800)
-        self.setAccessibleName("TKA Kinetic Constructor Launcher")
+    # ---- Window chrome ---------------------------------------------------
+    def _setup_window(self) -> None:
+        self.setWindowTitle("TKA Launcher")
+        # Frameless & always on top keeps it minimal and unobtrusive
+        self.setWindowFlags(
+            Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint
+        )
+        # High‑contrast palette for accessibility; relies on system colors
+        self.setStyleSheet("background: palette(window);")
 
-    def setup_layout(self) -> None:
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
-        layout = QVBoxLayout(central_widget)
+    # ---- Layout ----------------------------------------------------------
+    def _setup_layout(self) -> None:
+        central = QWidget(self)
+        layout = QHBoxLayout(central)
+        layout.setContentsMargins(
+            4, 2, 4, 2
+        )  # Reduced margins (left, top, right, bottom)
+        layout.setSpacing(8)  # Increased spacing between widgets (e.g., from 4 to 8)
+        self.setCentralWidget(central)
 
-        apps = AppDefinitions.get_all()
-        for app in apps:
-            btn = QPushButton(f"{app.icon} {app.title}")
-            btn.clicked.connect(lambda checked=False, a=app: self.launch_app(a))
+        # Add TKA Label
+        tka_label = QLabel("TKA:")  # Added colon
+        tka_label_font = tka_label.font()
+        tka_label_font.setFamily("Monotype Corsiva")  # Set font family
+        tka_label_font.setPointSize(18)  # Slightly larger for style
+        # tka_label_font.setBold(True) # Monotype Corsiva is often better not bold
+        tka_label.setFont(tka_label_font)
+        tka_label.setStyleSheet(
+            "color: palette(text); padding-right: 10px; margin-left: 5px;"
+        )  # Style and spacing
+        layout.addWidget(tka_label)
+
+        for app in AppDefinitions.all():
+            btn = QPushButton(f"{app.icon}  {app.title}")
+            btn.clicked.connect(lambda _, a=app: self._launch(a))
+            btn.setToolTip(app.description)
+            self.a11y.configure(btn, f"Launch {app.title}", app.description)
+            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setMinimumHeight(
+                self.HEIGHT
+                - 8  # e.g., 48 - 8 = 40px button height, allowing 4px top/bottom margin within launcher
+            )
             btn.setStyleSheet(
                 """
                 QPushButton {
-                    background: rgba(74, 144, 226, 0.3);
-                    border: 1px solid rgba(74, 144, 226, 0.5);
-                    border-radius: 8px;
-                    color: white;
-                    font-weight: bold;
-                    font-size: 14px;
-                    text-align: left;
-                    padding: 16px;
-                    margin: 4px;
+                    border: 2px solid transparent; /* Reserve space for focus border */
+                    padding: 0 10px; 
+                    font-size: 14px; 
+                    font-weight: 600;
+                    color: palette(text);
+                    background: palette(base);
+                    border-radius: 4px; 
                 }
-                QPushButton:hover {
-                    background: rgba(74, 144, 226, 0.4);
+                QPushButton:hover { background: palette(light); }
+                QPushButton:focus {
+                    border: 2px solid #0078d4; /* Use border for focus to follow radius */
+                    /* outline: none; */ /* Optionally remove outline if border is used */
                 }
-                QPushButton:pressed {
-                    background: rgba(74, 144, 226, 0.5);
-                }
-            """
+                """
             )
-            layout.addWidget(btn, 1)
+            layout.addWidget(btn)
 
-    def setup_keyboard_shortcuts(self) -> None:
-        shortcuts = {
-            "F5": self.refresh,
-            "Ctrl+Q": self.close,
-        }
-        for key, handler in shortcuts.items():
-            shortcut = QShortcut(QKeySequence(key), self)
-            shortcut.activated.connect(handler)
+    # ---- Shortcuts -------------------------------------------------------
+    def _setup_shortcuts(self) -> None:
+        QShortcut(QKeySequence("Ctrl+Q"), self, self.close)
+        QShortcut(QKeySequence("F5"), self, self._refresh)
 
-    def launch_app(self, app: AppDefinition) -> None:
+    # ---- Geometry helpers -----------------------------------------------
+    def position_overlay_taskbar_secondary_left_fifth(self) -> None:  # Renamed method
+        """Moves the launcher to overlay the taskbar area on the secondary screen,
+        positioned 1/5 from the left edge of the full screen geometry."""
+        screens = QApplication.screens()
+        if len(screens) > 1:
+            secondary_screen = screens[1]  # Assuming the second screen is the target
+        else:
+            secondary_screen = (
+                QApplication.primaryScreen()
+            )  # Fallback to primary if no secondary
+
+        screen_geometry = (
+            secondary_screen.geometry()
+        )  # Use .geometry() to include taskbar area
+
+        # Position 1/5 from the left edge of the full screen area
+        x_position = screen_geometry.x() + (screen_geometry.width() // 5)
+
+        # Position at the bottom of the full screen area
+        y_position = screen_geometry.y() + screen_geometry.height() - self.HEIGHT
+
+        self.setGeometry(x_position, y_position, self.WIDTH, self.HEIGHT)
+
+    # ---- Actions ---------------------------------------------------------
+    def _launch(self, app: AppDefinition) -> None:
         try:
             if app.script_path:
                 subprocess.Popen([sys.executable, app.script_path])
@@ -144,27 +185,18 @@ class LauncherWindow(QMainWindow):
                 subprocess.Popen(app.command, shell=True)
         except Exception as e:
             QMessageBox.warning(
-                self, "Launch Error", f"Failed to launch {app.title}:\n{str(e)}"
+                self, "Launch Error", f"Failed to launch {app.title}:\n{e}"
             )
 
-    def refresh(self) -> None:
+    def _refresh(self) -> None:
         self.close()
-        self.__init__()
-        self.show()
+        new = LauncherWindow()
+        new.show()
 
-    def move_to_secondary_monitor(self) -> None:
-        screens = QApplication.screens()
-        screen = (
-            screens[1]
-            if len(screens) > 1 and not getattr(sys, "frozen", False)
-            else QApplication.primaryScreen()
-        )
-        if screen:
-            geo = screen.availableGeometry()
-            w, h = int(geo.width() * 0.8), int(geo.height() * 0.8)
-            x = geo.x() + (geo.width() - w) // 2
-            y = geo.y() + (geo.height() - h) // 2
-            self.setGeometry(x, y, w, h)
+
+# ---------------------------------------------------------------------------
+#  Application entry‑point
+# ---------------------------------------------------------------------------
 
 
 class LauncherApplication(QApplication):
@@ -177,7 +209,6 @@ class LauncherApplication(QApplication):
     def run(self) -> int:
         window = LauncherWindow()
         window.show()
-        window.move_to_secondary_monitor()
         return self.exec()
 
 

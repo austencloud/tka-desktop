@@ -20,9 +20,9 @@ from domain.models.core_models import (
 class GlyphDataService:
     """Service for determining glyph data from beat information."""
 
-    # Mapping from letters to letter types (simplified for now)
+    # COMPLETE mapping from letters to letter types (matching V1 exactly)
     LETTER_TYPE_MAP = {
-        # Type1 letters (basic single letters)
+        # TYPE1 letters (Dual-Shift: A-V)
         "A": LetterType.TYPE1,
         "B": LetterType.TYPE1,
         "C": LetterType.TYPE1,
@@ -45,11 +45,33 @@ class GlyphDataService:
         "T": LetterType.TYPE1,
         "U": LetterType.TYPE1,
         "V": LetterType.TYPE1,
-        "W": LetterType.TYPE1,
-        "X": LetterType.TYPE1,
-        "Y": LetterType.TYPE1,
-        "Z": LetterType.TYPE1,
-        # Type6 letters (Greek letters for positions)
+        # TYPE2 letters (Shift: W,X,Y,Z,Σ,Δ,θ,Ω)
+        "W": LetterType.TYPE2,
+        "X": LetterType.TYPE2,
+        "Y": LetterType.TYPE2,
+        "Z": LetterType.TYPE2,
+        "Σ": LetterType.TYPE2,
+        "Δ": LetterType.TYPE2,
+        "θ": LetterType.TYPE2,
+        "Ω": LetterType.TYPE2,
+        # TYPE3 letters (Cross-Shift: W-,X-,Y-,Z-,Σ-,Δ-,θ-,Ω-)
+        "W-": LetterType.TYPE3,
+        "X-": LetterType.TYPE3,
+        "Y-": LetterType.TYPE3,
+        "Z-": LetterType.TYPE3,
+        "Σ-": LetterType.TYPE3,
+        "Δ-": LetterType.TYPE3,
+        "θ-": LetterType.TYPE3,
+        "Ω-": LetterType.TYPE3,
+        # TYPE4 letters (Dash: Φ,Ψ,Λ)
+        "Φ": LetterType.TYPE4,
+        "Ψ": LetterType.TYPE4,
+        "Λ": LetterType.TYPE4,
+        # TYPE5 letters (Dual-Dash: Φ-,Ψ-,Λ-)
+        "Φ-": LetterType.TYPE5,
+        "Ψ-": LetterType.TYPE5,
+        "Λ-": LetterType.TYPE5,
+        # TYPE6 letters (Static: α,β,Γ)
         "α": LetterType.TYPE6,
         "β": LetterType.TYPE6,
         "Γ": LetterType.TYPE6,
@@ -96,9 +118,8 @@ class GlyphDataService:
 
     def _determine_letter_type(self, letter: str) -> Optional[LetterType]:
         """Determine the letter type from the letter string."""
-        # Handle compound letters (take first character for now)
-        base_letter = letter[0] if letter else ""
-        return self.LETTER_TYPE_MAP.get(base_letter)
+        # Use the full letter string (not just first character) for compound letters like "W-"
+        return self.LETTER_TYPE_MAP.get(letter)
 
     def _determine_vtg_mode(self, beat_data: BeatData) -> Optional[VTGMode]:
         """

@@ -38,8 +38,8 @@ class ModernBeatFrame(QScrollArea):
 
     # Signals for communication
     beat_selected = pyqtSignal(int)  # beat_index
-    beat_modified = pyqtSignal(int, BeatData)  # beat_index, beat_data
-    sequence_modified = pyqtSignal(SequenceData)
+    beat_modified = pyqtSignal(int, object)  # beat_index, BeatData object
+    sequence_modified = pyqtSignal(object)  # SequenceData object
     layout_changed = pyqtSignal(int, int)  # rows, columns
 
     def __init__(

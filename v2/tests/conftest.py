@@ -6,7 +6,6 @@ import pytest
 import sys
 from pathlib import Path
 from unittest.mock import Mock, MagicMock
-from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
 
 # Add v2 src to path for imports
@@ -22,19 +21,11 @@ def pytest_configure(config):
     """Configure pytest with custom markers."""
     config.addinivalue_line("markers", "unit: Fast unit tests")
     config.addinivalue_line("markers", "integration: Component integration tests")
-    config.addinivalue_line("markers", "ui: User interface tests")
+    config.addinivalue_line(
+        "markers", "ui: User interface tests (now with pytest-qt)"
+    )  # Updated marker description
     config.addinivalue_line("markers", "parity: V1 functionality parity tests")
     config.addinivalue_line("markers", "slow: Tests that take >5 seconds")
-
-
-@pytest.fixture(scope="session")
-def qapp():
-    """Create QApplication instance for UI tests."""
-    app = QApplication.instance()
-    if app is None:
-        app = QApplication([])
-    yield app
-    # Don't quit - let pytest handle cleanup
 
 
 @pytest.fixture
@@ -43,6 +34,27 @@ def mock_container():
     container = Mock()
     container.resolve = Mock()
     return container
+
+
+@pytest.fixture
+def qtbot_with_container(qtbot, mock_container):
+    """Extended qtbot with your dependency container."""
+    qtbot.container = mock_container
+    return qtbot
+
+
+@pytest.fixture
+def construct_tab_widget(qtbot, mock_container):
+    """Factory for creating ConstructTabWidget in tests."""
+
+    def _create_construct_tab():
+        from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
+
+        widget = ConstructTabWidget(mock_container)
+        qtbot.addWidget(widget)  # Auto-cleanup
+        return widget
+
+    return _create_construct_tab
 
 
 @pytest.fixture
@@ -63,7 +75,7 @@ def mock_sequence_data():
     if not beat1 or not beat2:
         return SequenceData.empty()
 
-    return SequenceData(beats=[beat1, beat2], length=2, start_position=beat1)
+    return SequenceData(beats=[beat1, beat2], start_position=beat1)
 
 
 @pytest.fixture
@@ -163,3 +175,9 @@ def setup_test_environment():
     yield
     # Cleanup after test
     pass
+
+
+@pytest.fixture
+def dummy_conftest_fixture():
+    """A simple fixture to test conftest loading."""
+    return "hello_from_conftest"

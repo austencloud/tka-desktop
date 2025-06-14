@@ -10,7 +10,7 @@ from typing import Optional
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
-from src.domain.models.core_models import VTGMode
+from domain.models.core_models import VTGMode
 from presentation.components.pictograph.asset_utils import get_image_path
 
 

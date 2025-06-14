@@ -1,6 +1,6 @@
 [
     {
-        "word": "",
+        "word": "GHI",
         "author": "",
         "level": 0,
         "prop_type": "staff",
@@ -37,6 +37,90 @@
             "prop_rot_dir": "no_rot",
             "turns": 0,
             "motion_type": "static"
+        }
+    },
+    {
+        "beat": 1,
+        "letter": "G",
+        "letter_type": "Type1",
+        "duration": 1,
+        "start_pos": "beta5",
+        "end_pos": "beta7",
+        "timing": "tog",
+        "direction": "same",
+        "blue_attributes": {
+            "motion_type": "pro",
+            "start_ori": "in",
+            "prop_rot_dir": "cw",
+            "start_loc": "s",
+            "end_loc": "w",
+            "turns": 0,
+            "end_ori": "in"
+        },
+        "red_attributes": {
+            "motion_type": "pro",
+            "start_ori": "in",
+            "prop_rot_dir": "cw",
+            "start_loc": "s",
+            "end_loc": "w",
+            "turns": 0,
+            "end_ori": "in"
+        }
+    },
+    {
+        "beat": 2,
+        "letter": "H",
+        "letter_type": "Type1",
+        "duration": 1,
+        "start_pos": "beta7",
+        "end_pos": "beta5",
+        "timing": "tog",
+        "direction": "same",
+        "blue_attributes": {
+            "motion_type": "anti",
+            "start_ori": "in",
+            "prop_rot_dir": "cw",
+            "start_loc": "w",
+            "end_loc": "s",
+            "turns": 0,
+            "end_ori": "out"
+        },
+        "red_attributes": {
+            "motion_type": "anti",
+            "start_ori": "in",
+            "prop_rot_dir": "cw",
+            "start_loc": "w",
+            "end_loc": "s",
+            "turns": 0,
+            "end_ori": "out"
+        }
+    },
+    {
+        "beat": 3,
+        "letter": "I",
+        "letter_type": "Type1",
+        "duration": 1,
+        "start_pos": "beta5",
+        "end_pos": "beta7",
+        "timing": "tog",
+        "direction": "same",
+        "blue_attributes": {
+            "motion_type": "pro",
+            "start_ori": "out",
+            "prop_rot_dir": "cw",
+            "start_loc": "s",
+            "end_loc": "w",
+            "turns": 0,
+            "end_ori": "out"
+        },
+        "red_attributes": {
+            "motion_type": "anti",
+            "start_ori": "out",
+            "prop_rot_dir": "ccw",
+            "start_loc": "s",
+            "end_loc": "w",
+            "turns": 0,
+            "end_ori": "in"
         }
     }
 ]

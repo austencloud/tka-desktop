@@ -15,6 +15,11 @@ class BeatDataLoader(QObject):
         self, sequence_data: List[Dict[str, Any]]
     ) -> List[BeatData]:
         """Load motion combinations using data-driven position matching"""
+        print(f"\n🔄 BEAT DATA LOADER: Loading motion combinations")
+        print(f"   Sequence Data Length: {len(sequence_data) if sequence_data else 0}")
+        if sequence_data:
+            print(f"   Sequence Data: {sequence_data}")
+
         try:
             from ....application.services.position_matching_service import (
                 PositionMatchingService,
@@ -27,21 +32,27 @@ class BeatDataLoader(QObject):
             conversion_service = DataConversionService()
 
             if not sequence_data or len(sequence_data) < 2:
-                print("⚠️ No valid sequence data for position matching")
+                print(
+                    "⚠️ No valid sequence data for position matching - FALLING BACK TO ALPHA-1"
+                )
                 return self._load_sample_beat_options()
 
             last_beat = sequence_data[-1]
+            print(f"   Last Beat: {last_beat}")
+
             last_end_pos = self._extract_end_position(last_beat, position_service)
 
             if not last_end_pos:
-                print("❌ No end position found in last beat")
+                print("❌ No end position found in last beat - FALLING BACK TO ALPHA-1")
                 return self._load_sample_beat_options()
 
             print(f"🎯 Using position matching for end_pos: {last_end_pos}")
 
             next_options = position_service.get_next_options(last_end_pos)
             if not next_options:
-                print(f"❌ No options found for position: {last_end_pos}")
+                print(
+                    f"❌ No options found for position: {last_end_pos} - FALLING BACK TO ALPHA-1"
+                )
                 return self._load_sample_beat_options()
 
             beat_options = []
@@ -61,7 +72,7 @@ class BeatDataLoader(QObject):
             return beat_options
 
         except Exception as e:
-            print(f"❌ Error in position matching: {e}")
+            print(f"❌ Error in position matching: {e} - FALLING BACK TO ALPHA-1")
             return self._load_sample_beat_options()
 
     def _extract_end_position(

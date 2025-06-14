@@ -26,7 +26,7 @@ class ModernSequenceWorkbench(QWidget):
     """Modern sequence workbench component following v2 architecture patterns"""
 
     # Signals for communication with other components
-    sequence_modified = pyqtSignal(SequenceData)
+    sequence_modified = pyqtSignal(object)  # SequenceData object
     operation_completed = pyqtSignal(str)
     error_occurred = pyqtSignal(str)
 
@@ -44,6 +44,7 @@ class ModernSequenceWorkbench(QWidget):
 
         # Store injected dependencies
         self._layout_service = layout_service
+        self._graph_service = graph_service
         self._dictionary_service = dictionary_service
 
         # Current state
@@ -100,8 +101,8 @@ class ModernSequenceWorkbench(QWidget):
 
         # Bottom section: Graph section (constrained size)
         self._graph_section = WorkbenchGraphSection(
-            graph_service=self._dictionary_service,
-            parent=self,  # Note: using dictionary_service as placeholder
+            graph_service=self._graph_service,
+            parent=self,
         )
         main_layout.addWidget(self._graph_section, 0)  # No stretch
 

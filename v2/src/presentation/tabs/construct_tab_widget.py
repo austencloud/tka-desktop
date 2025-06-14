@@ -23,8 +23,8 @@ from src.presentation.factories.workbench_factory import create_modern_workbench
 
 
 class ConstructTabWidget(QWidget):
-    sequence_created = pyqtSignal(SequenceData)
-    sequence_modified = pyqtSignal(SequenceData)
+    sequence_created = pyqtSignal(object)  # SequenceData object
+    sequence_modified = pyqtSignal(object)  # SequenceData object
     start_position_set = pyqtSignal(
         str
     )  # Emits position key when start position is set
@@ -226,32 +226,28 @@ class ConstructTabWidget(QWidget):
 
         try:
             # Get real beat data from option picker
+            real_beat = None
             if self.option_picker and hasattr(
                 self.option_picker, "get_beat_data_for_option"
             ):
-                # Try to get beat data from option picker first
+                # Get beat data from option picker using the actual selected option
                 real_beat = self.option_picker.get_beat_data_for_option(option_id)
-                print(
-                    f"🎯 Got beat data from option picker: {real_beat.letter if real_beat else 'None'}"
-                )
-            else:
-                # Fallback to dataset service
-                from ...application.services.pictograph_dataset_service import (
-                    PictographDatasetService,
-                )
-
-                dataset_service = PictographDatasetService()
-                # Use a different position for variety (not always alpha1_alpha1)
-                fallback_positions = ["beta5_beta5", "gamma11_gamma11", "alpha2_alpha2"]
-                real_beat = None
-
-                for pos in fallback_positions:
-                    real_beat = dataset_service.get_start_position_pictograph(
-                        pos, "diamond"
+                if real_beat:
+                    print(
+                        f"✅ Using actual option data: {real_beat.letter} with motion data"
                     )
-                    if real_beat:
-                        print(f"🎯 Using fallback beat data: {real_beat.letter}")
-                        break
+                    if real_beat.blue_motion:
+                        print(
+                            f"   Blue motion: {real_beat.blue_motion.motion_type.value}"
+                        )
+                    if real_beat.red_motion:
+                        print(
+                            f"   Red motion: {real_beat.red_motion.motion_type.value}"
+                        )
+                else:
+                    print(f"❌ No beat data found for option: {option_id}")
+            else:
+                print("❌ Option picker does not have get_beat_data_for_option method")
 
             if real_beat:
                 # Update beat number for sequence position
@@ -263,12 +259,12 @@ class ConstructTabWidget(QWidget):
                     f"📝 Created new beat: {new_beat.letter} (beat #{new_beat.beat_number})"
                 )
             else:
-                # Last resort fallback
-                print("⚠️ No real beat data available, creating basic beat")
+                # Only fallback if option picker completely failed
+                print("⚠️ Option picker failed, creating placeholder beat")
                 new_beat = BeatData.empty().update(
                     beat_number=current_sequence.length + 1,
                     duration=1.0,
-                    letter=f"Beat{current_sequence.length + 1}",
+                    letter=f"Placeholder{current_sequence.length + 1}",
                     is_blank=False,
                 )
 

@@ -106,7 +106,7 @@ class WorkbenchButtonSignals(QObject):
     # Sequence state signals
     sequence_cleared = pyqtSignal()
     beat_deleted = pyqtSignal(int)  # beat index
-    sequence_modified = pyqtSignal(SequenceData)
+    sequence_modified = pyqtSignal(object)  # SequenceData object
 
     # Export signals
     image_exported = pyqtSignal(str)  # file path
@@ -312,7 +312,7 @@ class WorkbenchButtonInterfaceAdapter:
 class WorkbenchButtonInterfaceSignals(QObject):
     """Signal container for button interface adapter"""
 
-    sequence_modified = pyqtSignal(SequenceData)
+    sequence_modified = pyqtSignal(object)  # SequenceData object
     operation_completed = pyqtSignal(str)
     operation_failed = pyqtSignal(str)
 

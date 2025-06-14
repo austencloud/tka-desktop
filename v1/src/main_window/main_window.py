@@ -81,7 +81,7 @@ class MainWindow(QMainWindow):
         self.profiler.enable()
         result = app.exec()
         self.profiler.disable()
-        self.profiler.write_profiling_stats_to_file("profiling_output.txt", os.getcwd())
+        self.profiler.write_profiling_stats_to_file("profiling_output.txt", "v1/src/")
         return result
 
     def closeEvent(self, event):

@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import QGraphicsItemGroup
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
-from src.domain.models.core_models import LetterType
+from domain.models.core_models import LetterType
 from presentation.components.pictograph.asset_utils import get_image_path
 
 
@@ -52,7 +52,8 @@ class TKAGlyphRenderer:
             tka_group.addToGroup(letter_item)
 
         # Render the dash if needed
-        if has_dash and "-" in letter and letter_item:
+        # Don't add separate dash for Type3 and Type5 letters as they already include dash in SVG
+        if has_dash and "-" in letter and letter_item and letter_type not in [LetterType.TYPE3, LetterType.TYPE5]:
             dash_item = self._render_dash()
             if dash_item:
                 tka_group.addToGroup(dash_item)

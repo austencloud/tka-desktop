@@ -6,7 +6,7 @@ category to use (layer1_alpha, layer2_alpha, etc.).
 """
 
 from domain.models.core_models import MotionData, MotionType
-from ...application.services.motion_orientation_service import (
+from application.services.motion_orientation_service import (
     MotionOrientationService,
     Orientation,
 )

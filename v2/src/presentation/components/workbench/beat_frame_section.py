@@ -3,9 +3,9 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout
 from PyQt6.QtCore import pyqtSignal
 
 from .button_panel import ModernSequenceWorkbenchButtonPanel
-from ....domain.models.core_models import SequenceData, BeatData
-from ....core.interfaces.core_services import ILayoutService
-from ....application.services.beat_frame_layout_service import BeatFrameLayoutService
+from domain.models.core_models import SequenceData, BeatData
+from core.interfaces.core_services import ILayoutService
+from application.services.beat_frame_layout_service import BeatFrameLayoutService
 from .beat_frame.modern_beat_frame import ModernBeatFrame
 
 if TYPE_CHECKING:
@@ -18,7 +18,7 @@ class WorkbenchBeatFrameSection(QWidget):
     # Signals for parent workbench
     beat_selected = pyqtSignal(int)
     beat_modified = pyqtSignal(int, object)
-    sequence_modified = pyqtSignal(SequenceData)
+    sequence_modified = pyqtSignal(object)  # SequenceData object
     layout_changed = pyqtSignal(int, int)
 
     # Button panel signals

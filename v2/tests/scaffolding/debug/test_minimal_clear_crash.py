@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Minimal Clear Sequence Crash Test for TKA V2
-============================================
-
-This test isolates the exact crash point during clear sequence operations
-by testing each component individually to find where the crash occurs.
+TEST LIFECYCLE: SCAFFOLDING
+PURPOSE: Minimal crash reproduction for sequence clear bug debugging
+DELETE_AFTER: 2025-07-15
+CREATED: 2025-06-14
+AUTHOR: @austencloud
+RELATED_ISSUE: Minimal reproduction of clear sequence crash
 """
 
 import sys
@@ -48,10 +49,10 @@ def test_workbench_creation():
     try:
         container = SimpleContainer()
         container.register_singleton(ILayoutService, SimpleLayoutService)
-        
+
         construct_tab = ConstructTabWidget(container)
         workbench = construct_tab.workbench
-        
+
         if workbench:
             print("✅ Workbench created successfully")
             return workbench
@@ -189,29 +190,29 @@ def test_update_display_safe(workbench):
 def test_handle_clear_step_by_step(workbench):
     """Test _handle_clear step by step to isolate crash point."""
     print("\n🧪 Testing _handle_clear step by step...")
-    
+
     try:
         print("   Step 1: Creating empty sequence...")
         empty_sequence = SequenceData.empty()
         workbench._current_sequence = empty_sequence
         print("   ✅ Step 1 completed")
-        
+
         print("   Step 2: Updating beat frame...")
         if workbench._beat_frame:
             workbench._beat_frame.set_sequence(empty_sequence)
         print("   ✅ Step 2 completed")
-        
+
         print("   Step 3: Updating display safely...")
         workbench._update_display_safe()
         print("   ✅ Step 3 completed")
-        
+
         print("   Step 4: Emitting signal...")
         workbench.sequence_modified.emit(empty_sequence)
         print("   ✅ Step 4 completed")
-        
+
         print("✅ All _handle_clear steps completed successfully")
         return True
-        
+
     except Exception as e:
         print(f"❌ _handle_clear step failed: {e}")
         traceback.print_exc()
@@ -235,17 +236,17 @@ def main():
     """Main test function."""
     print("🔍 MINIMAL CLEAR SEQUENCE CRASH TEST")
     print("=" * 50)
-    
+
     app = QApplication(sys.argv)
-    
+
     # Run tests in sequence
     tests = [
         ("SequenceData.empty()", test_sequence_data_empty),
         ("Workbench Creation", test_workbench_creation),
     ]
-    
+
     workbench = None
-    
+
     for test_name, test_func in tests:
         print(f"\n🧪 Running: {test_name}")
         if test_name == "Workbench Creation":
@@ -258,30 +259,45 @@ def main():
             if not result:
                 print(f"❌ Test failed: {test_name}")
                 return 1
-    
+
     # Continue with workbench-dependent tests
     workbench_tests = [
-        ("Workbench set_sequence(empty)", lambda: test_workbench_set_sequence(workbench)),
-        ("Beat frame set_sequence(empty)", lambda: test_beat_frame_set_sequence(workbench)),
-        ("Beat frame set_sequence(None)", lambda: test_beat_frame_set_sequence_none(workbench)),
+        (
+            "Workbench set_sequence(empty)",
+            lambda: test_workbench_set_sequence(workbench),
+        ),
+        (
+            "Beat frame set_sequence(empty)",
+            lambda: test_beat_frame_set_sequence(workbench),
+        ),
+        (
+            "Beat frame set_sequence(None)",
+            lambda: test_beat_frame_set_sequence_none(workbench),
+        ),
         ("Graph service update(empty)", lambda: test_graph_service_update(workbench)),
-        ("Graph service update(None)", lambda: test_graph_service_update_none(workbench)),
+        (
+            "Graph service update(None)",
+            lambda: test_graph_service_update_none(workbench),
+        ),
         ("Dictionary service", lambda: test_dictionary_service(workbench)),
         ("Update display safe", lambda: test_update_display_safe(workbench)),
-        ("Handle clear step by step", lambda: test_handle_clear_step_by_step(workbench)),
+        (
+            "Handle clear step by step",
+            lambda: test_handle_clear_step_by_step(workbench),
+        ),
         ("Actual handle clear", lambda: test_actual_handle_clear(workbench)),
     ]
-    
+
     for test_name, test_func in workbench_tests:
         print(f"\n🧪 Running: {test_name}")
         result = test_func()
         if not result:
             print(f"❌ CRASH POINT FOUND: {test_name}")
             return 1
-    
+
     print("\n🎉 ALL TESTS PASSED - NO CRASH DETECTED")
     print("This suggests the crash might be in signal handling or timing-related")
-    
+
     return 0
 
 

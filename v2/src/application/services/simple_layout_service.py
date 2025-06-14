@@ -1,5 +1,5 @@
 from typing import Tuple
-from ...core.interfaces.core_services import ILayoutService
+from core.interfaces.core_services import ILayoutService
 
 
 class SimpleLayoutService(ILayoutService):

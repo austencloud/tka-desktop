@@ -10,8 +10,8 @@ from typing import Tuple
 from PyQt6.QtCore import QPointF
 from enum import Enum
 
-from src.application.services.beta_prop_swap_service import BetaPropSwapService
-from src.domain.models.core_models import BeatData, MotionData, MotionType, Location
+from application.services.beta_prop_swap_service import BetaPropSwapService
+from domain.models.core_models import BeatData, MotionData, MotionType, Location
 
 
 class PropCategory(Enum):
