@@ -259,6 +259,7 @@ class GlassmorphismTheme:
         QWidget {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 16px;
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }

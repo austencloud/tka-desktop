@@ -16,15 +16,9 @@ def get_data_path(filename) -> str:
         if os.path.exists(full_path):
             return full_path
 
-    # Try V1-specific paths first, then legacy paths
+    # Try multiple possible locations for the data directory
     possible_paths = [
-        # V1-specific paths (prioritized)
-        os.path.abspath(os.path.join(os.getcwd(), "v1", "data")),  # From project root
-        os.path.abspath(os.path.join(os.getcwd(), "data")),  # From v1/ directory
-        os.path.abspath(
-            os.path.join(os.path.dirname(os.getcwd()), "v1", "data")
-        ),  # From subdirectory
-        # Legacy paths for compatibility
+        os.path.abspath(os.path.join(os.getcwd(), "data")),
         os.path.abspath(os.path.join(os.getcwd(), "src", "data")),
         os.path.abspath(os.path.join(os.path.dirname(os.getcwd()), "data")),
         os.path.abspath(os.path.join(os.path.dirname(os.getcwd()), "src", "data")),
@@ -62,15 +56,9 @@ def get_image_path(filename) -> str:
         if os.path.exists(full_path):
             return full_path
 
-    # Try V1-specific image paths first, then legacy paths
+    # Try multiple possible locations for the images directory
     possible_paths = [
-        # V1-specific paths (prioritized)
-        os.path.abspath(os.path.join(os.getcwd(), "v1", "images")),  # From project root
-        os.path.abspath(os.path.join(os.getcwd(), "images")),  # From v1/ directory
-        os.path.abspath(
-            os.path.join(os.path.dirname(os.getcwd()), "v1", "images")
-        ),  # From subdirectory
-        # Legacy paths for compatibility
+        os.path.abspath(os.path.join(os.getcwd(), "images")),
         os.path.abspath(os.path.join(os.getcwd(), "src", "images")),
         os.path.abspath(os.path.join(os.path.dirname(os.getcwd()), "images")),
         os.path.abspath(os.path.join(os.getcwd(), "..", "images")),

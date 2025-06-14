@@ -290,6 +290,7 @@ class GlassmorphicCard(BaseComponent):
                 background: rgba(255, 255, 255, {self._opacity});
                 border-radius: 16px;
                 border: 1px solid rgba(255, 255, 255, {self._border_opacity});
+                backdrop-filter: blur({self._blur_radius}px);
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             }}
         """
@@ -319,6 +320,7 @@ class AnimatedSlider(QSlider):
                 height: 8px;
                 background: rgba(255, 255, 255, 0.1);
                 border-radius: 4px;
+                backdrop-filter: blur(10px);
             }
 
             QSlider::handle:horizontal {
@@ -329,6 +331,7 @@ class AnimatedSlider(QSlider):
                 width: 20px;
                 margin: -6px 0;
                 border-radius: 10px;
+                backdrop-filter: blur(20px);
             }
 
             QSlider::handle:horizontal:hover {
@@ -369,6 +372,7 @@ class ModernButton(QPushButton):
                 font-weight: 600;
                 font-size: 14px;
                 padding: 12px 24px;
+                backdrop-filter: blur(20px);
             }
 
             ModernButton:hover {

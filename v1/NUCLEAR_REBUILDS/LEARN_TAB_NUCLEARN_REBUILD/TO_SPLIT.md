@@ -1592,6 +1592,7 @@ class GlassmorphismTheme:
         QWidget {{
             background: rgba(255, 255, 255, {opacity});
             border-radius: 16px;
+            backdrop-filter: blur({blur}px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }}
@@ -1611,6 +1612,7 @@ class GlassmorphismTheme:
             font-weight: 600;
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
         }
         QPushButton:hover {
             background: qlineargradient(
@@ -2324,6 +2326,7 @@ class GlassmorphismTheme:
         QWidget {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 16px;
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }

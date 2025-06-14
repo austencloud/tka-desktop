@@ -110,8 +110,10 @@ class ComponentInitializationManager:
         """Initialize essential services for backward compatibility."""
         self.logger.info("Initializing essential services...")
 
-        # Just verify services are available without storing them
+        # Set sequence_properties_manager immediately after widgets are initialized
         self._setup_sequence_properties_manager()
+
+        # Set additional services after widgets are initialized
         self._setup_fade_manager()
         self._setup_sequence_workbench()
         self._setup_thumbnail_finder()
@@ -130,24 +132,31 @@ class ComponentInitializationManager:
                 SequencePropertiesManagerFactory,
             )
 
-            SequencePropertiesManagerFactory.create(self.app_context)
-            self.logger.info("Sequence properties manager available")
+            self.coordinator.sequence_properties_manager = (
+                SequencePropertiesManagerFactory.create(self.app_context)
+            )
+            self.logger.info(
+                "Sequence properties manager injected for backward compatibility"
+            )
         except Exception as e:
             self.logger.warning(f"Sequence properties manager not available: {e}")
+            self.coordinator.sequence_properties_manager = None
 
     def _setup_fade_manager(self) -> None:
         """Set up fade manager."""
-        fade_manager = self.widget_manager.get_widget("fade_manager")
-        if fade_manager:
-            self.logger.info("Fade manager available")
+        self.coordinator.fade_manager = self.widget_manager.get_widget("fade_manager")
+        if self.coordinator.fade_manager:
+            self.logger.info("Fade manager injected for backward compatibility")
         else:
             self.logger.warning("Fade manager not available")
 
     def _setup_sequence_workbench(self) -> None:
         """Set up sequence workbench."""
-        sequence_workbench = self.widget_manager.get_widget("sequence_workbench")
-        if sequence_workbench:
-            self.logger.info("Sequence workbench available")
+        self.coordinator.sequence_workbench = self.widget_manager.get_widget(
+            "sequence_workbench"
+        )
+        if self.coordinator.sequence_workbench:
+            self.logger.info("Sequence workbench injected for backward compatibility")
         else:
             self.logger.warning("Sequence workbench not available")
 
@@ -156,10 +165,11 @@ class ComponentInitializationManager:
         try:
             from main_window.main_widget.thumbnail_finder import ThumbnailFinder
 
-            ThumbnailFinder()
-            self.logger.info("Thumbnail finder available")
+            self.coordinator.thumbnail_finder = ThumbnailFinder()
+            self.logger.info("Thumbnail finder created for backward compatibility")
         except Exception as e:
             self.logger.warning(f"Thumbnail finder creation failed: {e}")
+            self.coordinator.thumbnail_finder = None
 
     def _setup_sequence_level_evaluator(self) -> None:
         """Set up sequence level evaluator."""
@@ -168,21 +178,26 @@ class ComponentInitializationManager:
                 SequenceLevelEvaluator,
             )
 
-            SequenceLevelEvaluator()
-            self.logger.info("Sequence level evaluator available")
+            self.coordinator.sequence_level_evaluator = SequenceLevelEvaluator()
+            self.logger.info(
+                "Sequence level evaluator created for backward compatibility"
+            )
         except Exception as e:
             self.logger.warning(f"Sequence level evaluator creation failed: {e}")
+            self.coordinator.sequence_level_evaluator = None
 
     def _setup_letter_determiner(self) -> None:
         """Set up letter determiner."""
         try:
             from letter_determination.core import LetterDeterminer
 
-            letter_determiner = self.app_context.get_service(LetterDeterminer)
-            if letter_determiner:
-                self.logger.info("Letter determiner available")
+            self.coordinator.letter_determiner = self.app_context.get_service(
+                LetterDeterminer
+            )
+            self.logger.info("Letter determiner injected for backward compatibility")
         except Exception as e:
             self.logger.warning(f"Letter determiner not available: {e}")
+            self.coordinator.letter_determiner = None
 
     def _setup_pictograph_dataset(self) -> None:
         """Set up pictograph dataset."""
@@ -195,12 +210,29 @@ class ComponentInitializationManager:
             if pictograph_data_loader and hasattr(
                 pictograph_data_loader, "get_pictograph_dataset"
             ):
-                pictograph_dataset = pictograph_data_loader.get_pictograph_dataset()
-                self.logger.info("Pictograph dataset available")
+                self.coordinator.pictograph_dataset = (
+                    pictograph_data_loader.get_pictograph_dataset()
+                )
+                self.logger.info(
+                    "Pictograph dataset injected for backward compatibility"
+                )
+
+                # Update the letter determiner with the loaded dataset
+                if self.coordinator.letter_determiner and hasattr(
+                    self.coordinator.letter_determiner, "update_pictograph_dataset"
+                ):
+                    self.coordinator.letter_determiner.update_pictograph_dataset(
+                        self.coordinator.pictograph_dataset
+                    )
+                    self.logger.info(
+                        "Letter determiner dataset updated with loaded data"
+                    )
             else:
                 self.logger.warning("Pictograph dataset not available from data loader")
+                self.coordinator.pictograph_dataset = {}
         except Exception as e:
             self.logger.warning(f"Pictograph dataset not available: {e}")
+            self.coordinator.pictograph_dataset = {}
 
     def _setup_pictograph_collector(self) -> None:
         """Set up pictograph collector."""
@@ -209,32 +241,51 @@ class ComponentInitializationManager:
                 PictographCollectorFactory,
             )
 
-            PictographCollectorFactory.create(
+            self.coordinator.pictograph_collector = PictographCollectorFactory.create(
                 parent=self.coordinator, app_context=self.app_context
             )
-            self.logger.info("Pictograph collector available")
-        except ImportError:
-            self.logger.info("Using fallback pictograph collector approach")
+            self.logger.info("Pictograph collector created for backward compatibility")
+
+        except ImportError as e:
+            self.logger.warning(f"Could not import PictographCollectorFactory: {e}")
+            # Fallback: create basic pictograph collector
+            try:
+                from main_window.main_widget.pictograph_collector import (
+                    PictographCollector,
+                )
+
+                self.coordinator.pictograph_collector = PictographCollector(
+                    self.coordinator
+                )
+                self.logger.info(
+                    "Fallback pictograph collector created for backward compatibility"
+                )
+            except ImportError as e2:
+                self.logger.error(f"Could not create pictograph_collector: {e2}")
+                self.coordinator.pictograph_collector = None
         except Exception as e:
             self.logger.error(f"Failed to initialize pictograph_collector: {e}")
+            self.coordinator.pictograph_collector = None
 
     def _setup_tab_widgets(self) -> None:
         """Set up tab widgets for backward compatibility."""
-        construct_tab = self.tab_manager.get_tab_widget("construct")
-        if construct_tab:
-            self.logger.info("Construct tab available")
+        self.coordinator.construct_tab = self.tab_manager.get_tab_widget("construct")
+        if self.coordinator.construct_tab:
+            self.logger.info("Construct tab injected for backward compatibility")
         else:
             self.logger.warning("Construct tab not available")
 
-        learn_tab = self.tab_manager.get_tab_widget("learn")
-        if learn_tab:
-            self.logger.info("Learn tab available")
+        self.coordinator.learn_tab = self.tab_manager.get_tab_widget("learn")
+        if self.coordinator.learn_tab:
+            self.logger.info("Learn tab injected for backward compatibility")
         else:
             self.logger.warning("Learn tab not available")
 
-        settings_dialog = self.widget_manager.get_widget("settings_dialog")
-        if settings_dialog:
-            self.logger.info("Settings dialog available")
+        self.coordinator.settings_dialog = self.widget_manager.get_widget(
+            "settings_dialog"
+        )
+        if self.coordinator.settings_dialog:
+            self.logger.info("Settings dialog injected for backward compatibility")
         else:
             self.logger.warning("Settings dialog not available")
 
@@ -242,33 +293,29 @@ class ComponentInitializationManager:
         """Set up the menu bar layout after widgets are initialized."""
         self.logger.info("Setting up menu bar layout...")
         try:
+            # Get the menu bar widget
             menu_bar = self.widget_manager.get_widget("menu_bar")
             if not menu_bar:
                 self.logger.warning("Menu bar widget not available for layout setup")
                 return
 
+            # Create top layout for menu bar components
             from PyQt6.QtWidgets import QHBoxLayout
 
-            top_layout = QHBoxLayout()
-            top_layout.setContentsMargins(0, 0, 0, 0)
-            top_layout.setSpacing(0)
+            self.coordinator.top_layout = QHBoxLayout()
+            self.coordinator.top_layout.setContentsMargins(0, 0, 0, 0)
+            self.coordinator.top_layout.setSpacing(0)
 
-            # Add menu bar components with safe attribute access
-            social_media_widget = getattr(menu_bar, "social_media_widget", None)
-            if social_media_widget:
-                top_layout.addWidget(social_media_widget, 1)
+            # Add menu bar components with proper proportions
+            if hasattr(menu_bar, "social_media_widget"):
+                self.coordinator.top_layout.addWidget(menu_bar.social_media_widget, 1)
+            if hasattr(menu_bar, "navigation_widget"):
+                self.coordinator.top_layout.addWidget(menu_bar.navigation_widget, 16)
+            if hasattr(menu_bar, "settings_button"):
+                self.coordinator.top_layout.addWidget(menu_bar.settings_button, 1)
 
-            navigation_widget = getattr(menu_bar, "navigation_widget", None)
-            if navigation_widget:
-                top_layout.addWidget(navigation_widget, 16)
-
-            settings_button = getattr(menu_bar, "settings_button", None)
-            if settings_button:
-                top_layout.addWidget(settings_button, 1)
-
-            # Insert into main layout if it exists
-            if hasattr(self.coordinator, "main_layout"):
-                self.coordinator.main_layout.insertLayout(0, top_layout)
+            # Insert the top layout at the beginning of the main layout
+            self.coordinator.main_layout.insertLayout(0, self.coordinator.top_layout)
 
         except Exception as e:
             self.logger.error(f"Failed to set up menu bar layout: {e}")
@@ -291,50 +338,55 @@ class ComponentInitializationManager:
         """Load the saved sequence from current_sequence.json into the beat frame UI."""
         self.logger.info("Loading saved sequence into beat frame...")
         try:
+            # Get the sequence workbench
             sequence_workbench = self.widget_manager.get_widget("sequence_workbench")
-            if not sequence_workbench:
-                self.logger.warning("Sequence workbench not available")
+            if not sequence_workbench or not hasattr(sequence_workbench, "beat_frame"):
+                self.logger.warning(
+                    "Sequence workbench or beat frame not available for sequence loading"
+                )
                 return
 
-            beat_frame = getattr(sequence_workbench, "beat_frame", None)
-            if not beat_frame:
-                self.logger.warning("Beat frame not available on sequence workbench")
+            beat_frame = sequence_workbench.beat_frame
+            if not beat_frame or not hasattr(beat_frame, "populator"):
+                self.logger.warning(
+                    "Beat frame populator not available for sequence loading"
+                )
                 return
 
-            if not hasattr(beat_frame, "populator"):
-                self.logger.warning("Beat frame populator not available")
-                return
-
+            # STARTUP OPTIMIZATION: Skip construct tab dependency check during startup
+            # The construct tab will be created on-demand when needed
             construct_tab = self.tab_manager.get_tab_widget("construct")
             if not construct_tab or not hasattr(construct_tab, "start_pos_picker"):
                 self.logger.info(
-                    "Construct tab not available during startup - will load on-demand"
+                    "Construct tab not available during startup - skipping sequence loading (will load on-demand)"
                 )
+                # CRITICAL FIX: Don't defer with QTimer - this causes infinite startup loop
+                # The sequence will be loaded when the construct tab is actually accessed
                 return
 
+            # Load the current sequence from JSON
             json_manager = self.app_context.json_manager
-            loader_saver = getattr(json_manager, "loader_saver", None)
-            if not loader_saver:
-                self.logger.warning("JSON manager loader_saver not available")
-                return
+            current_sequence = json_manager.loader_saver.load_current_sequence()
 
-            current_sequence = loader_saver.load_current_sequence()
-
+            # Only load if there's actual sequence data (more than just the default entry)
             if len(current_sequence) > 1:
                 self.logger.info(
-                    f"Loading sequence with {len(current_sequence)} entries"
+                    f"Loading sequence with {len(current_sequence)} entries into beat frame"
                 )
+
+                # Use the beat frame populator to load the sequence
                 beat_frame.populator.populate_beat_frame_from_json(
                     current_sequence, initial_state_load=True
                 )
-                self.logger.info("Sequence loaded successfully")
+                self.logger.info("Sequence loaded successfully into beat frame UI")
             else:
                 self.logger.info(
-                    "No saved sequence found, starting with empty beat frame"
+                    "No saved sequence found or sequence is empty, starting with empty beat frame"
                 )
 
         except Exception as e:
             self.logger.error(f"Failed to load saved sequence: {e}")
+            # Don't raise - let the application continue with an empty beat frame
 
         self.logger.info("Saved sequence loading completed")
 

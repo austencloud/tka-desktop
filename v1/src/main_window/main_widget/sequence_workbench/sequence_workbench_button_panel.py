@@ -1,8 +1,8 @@
 import json
 import os
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon, QClipboard
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QPushButton,
     QFrame,
@@ -135,7 +135,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
                 with open(sequence_file_path, "r", encoding="utf-8") as file:
                     sequence_data = json.load(file)
                 json_string = json.dumps(sequence_data, indent=4)
-                clipboard: QClipboard = cast(QClipboard, QApplication.clipboard())
+                clipboard = QApplication.clipboard()
                 clipboard.setText(json_string)
                 self.indicator_label.show_message("Sequence JSON copied to clipboard!")
                 self.copy_sequence_button.setToolTip("Sequence JSON copied!")
@@ -188,8 +188,8 @@ class SequenceWorkbenchButtonPanel(QFrame):
     def _create_button(
         self, icon_path: str | None, callback, tooltip: str
     ) -> WorkbenchButton:
-        # Allow None for icon_path by providing an empty string if None
-        button = WorkbenchButton(icon_path if icon_path is not None else "", tooltip, callback)
+        # Allow None for icon_path
+        button = WorkbenchButton(icon_path, tooltip, callback)
         return button
 
     def toggle_swap_colors_icon(self):
