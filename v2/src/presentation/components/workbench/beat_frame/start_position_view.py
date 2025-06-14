@@ -173,30 +173,51 @@ class StartPositionView(QFrame):
         if not self._pictograph_component or not self._pictograph_component.scene:
             return
 
-        # Clean up existing overlay safely
-        if self._start_text_overlay:
-            try:
-                scene = self._start_text_overlay.scene()
-                if scene:
-                    scene.removeItem(self._start_text_overlay)
-            except (RuntimeError, AttributeError):
-                pass
+        # Clean up existing overlay safely with proper Qt lifecycle management
+        self._cleanup_existing_overlay()
 
-            try:
-                self._start_text_overlay.deleteLater()
-            except (RuntimeError, AttributeError):
-                pass
-
-            self._start_text_overlay = None
-
-        # Create new overlay
+        # Create new overlay with proper parent-child relationship
         try:
+            # Create overlay with scene as parent for Qt lifecycle management
             self._start_text_overlay = StartTextOverlay(
                 self._pictograph_component.scene
             )
+
+            # Set the StartPositionView as the widget parent for proper cleanup
+            # This ensures the overlay is cleaned up when the view is destroyed
+            self._start_text_overlay.setParent(self)
+
             self._start_text_overlay.show_start_text()
         except Exception as e:
             print(f"Failed to create start text overlay: {e}")
+            self._start_text_overlay = None
+
+    def _cleanup_existing_overlay(self):
+        """Safely cleanup existing overlay with proper Qt lifecycle management"""
+        if not self._start_text_overlay:
+            return
+
+        try:
+            # Use the overlay's built-in validity checking and cleanup
+            if (
+                hasattr(self._start_text_overlay, "is_valid")
+                and self._start_text_overlay.is_valid()
+            ):
+                # Use the overlay's cleanup method
+                self._start_text_overlay.cleanup()
+
+            # Schedule for deletion using Qt's event system
+            try:
+                self._start_text_overlay.deleteLater()
+            except (RuntimeError, AttributeError):
+                # Object already deleted
+                pass
+
+        except Exception as e:
+            # Catch any unexpected errors during cleanup
+            print(f"Warning: Error during overlay cleanup: {e}")
+        finally:
+            # Always clear the reference
             self._start_text_overlay = None
 
     def _update_highlight_style(self):
@@ -272,6 +293,28 @@ class StartPositionView(QFrame):
         if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
             self.position_clicked.emit()
         super().keyPressEvent(event)
+
+    # Cleanup and lifecycle management
+    def cleanup(self):
+        """Cleanup resources when the view is being destroyed"""
+        self._cleanup_existing_overlay()
+
+        if self._pictograph_component:
+            self._pictograph_component.cleanup()
+            self._pictograph_component = None
+
+    def closeEvent(self, event):
+        """Handle close event to cleanup resources"""
+        self.cleanup()
+        super().closeEvent(event)
+
+    def __del__(self):
+        """Destructor to ensure cleanup"""
+        try:
+            self.cleanup()
+        except:
+            # Ignore errors during destruction
+            pass
 
     # Animation support (for future enhancements)
     def pulse_animation(self):

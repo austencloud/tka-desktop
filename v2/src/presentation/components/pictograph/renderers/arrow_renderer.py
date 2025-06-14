@@ -10,7 +10,7 @@ from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
 from presentation.components.pictograph.asset_utils import get_image_path
-from src.domain.models.core_models import MotionData, Location
+from src.domain.models.core_models import MotionData, Location, MotionType
 from src.application.services.motion_orientation_service import (
     MotionOrientationService,
     Orientation,
@@ -57,36 +57,37 @@ class ArrowRenderer:
 
     def render_arrow(self, color: str, motion_data: MotionData) -> None:
         """Render an arrow using SVG files."""
-        print(
-            f"🏹 ARROW RENDER: Attempting to render {color} arrow for motion type {motion_data.motion_type.value}"
-        )
         arrow_svg_path = self._get_arrow_svg_file(motion_data)
-        print(f"🏹 ARROW RENDER: SVG path: {arrow_svg_path}")
+        print(
+            f"Arrow render: {color} {motion_data.motion_type} - SVG exists: {os.path.exists(arrow_svg_path)}"
+        )
 
         if os.path.exists(arrow_svg_path):
-            print(f"🏹 ARROW RENDER: SVG file exists, creating arrow item")
             arrow_item = QGraphicsSvgItem()
+
+            # Apply color transformation to SVG data
             svg_data = self._load_svg_file(arrow_svg_path)
-
-            if not svg_data or len(svg_data.strip()) == 0:
-                print(f"🏹 ARROW RENDER: ERROR - SVG data is empty")
-                return
-
             colored_svg_data = self._apply_color_transformation(svg_data, color)
-            renderer = QSvgRenderer(bytearray(colored_svg_data, encoding="utf-8"))
 
+            renderer = QSvgRenderer(bytearray(colored_svg_data, encoding="utf-8"))
             if renderer.isValid():
-                print(f"🏹 ARROW RENDER: SVG renderer is valid, setting up arrow")
                 arrow_item.setSharedRenderer(renderer)
+
+                # NO INDIVIDUAL SCALING - positioning service assumes full-size scene
+                # All scaling will be applied to the entire scene as final step
+
                 position_x, position_y, rotation = (
                     self._calculate_arrow_position_with_service(color, motion_data)
                 )
                 print(
-                    f"🏹 ARROW RENDER: Position calculated: ({position_x}, {position_y}), rotation: {rotation}"
+                    f"Arrow position: {color} at ({position_x:.1f}, {position_y:.1f})"
                 )
 
+                # CRITICAL: Set transform origin to arrow's visual center BEFORE rotation
                 bounds = arrow_item.boundingRect()
                 arrow_item.setTransformOriginPoint(bounds.center())
+
+                # Now apply rotation around the visual center
                 arrow_item.setRotation(rotation)
 
                 arrow_data = ArrowData(
@@ -99,36 +100,41 @@ class ArrowRenderer:
                 )
                 self.arrow_mirroring_service.update_arrow_mirror(arrow_item, arrow_data)
 
+                # POSITIONING FORMULA:
+                # Get bounding rect AFTER all transformations (scaling + rotation)
+                # This ensures we have the correct bounds for positioning calculation
                 final_bounds = arrow_item.boundingRect()
+
+                # final_pos = calculated_pos - bounding_rect_center
+                # This ensures the arrow's visual center appears exactly at the calculated position
+                # regardless of rotation angle, achieving pixel-perfect positioning accuracy
                 final_x = position_x - final_bounds.center().x()
                 final_y = position_y - final_bounds.center().y()
-                print(f"🏹 ARROW RENDER: Final position: ({final_x}, {final_y})")
 
                 arrow_item.setPos(final_x, final_y)
-                arrow_item.setZValue(100)
+                arrow_item.setZValue(100)  # Bring arrows to front
+                print(
+                    f"Arrow added to scene: {color} at setPos({final_x:.1f}, {final_y:.1f})"
+                )
                 self.scene.addItem(arrow_item)
-                print(f"🏹 ARROW RENDER: ✅ Arrow added to scene successfully!")
             else:
-                print(f"🏹 ARROW RENDER: ERROR - SVG renderer is invalid")
+                print(f"Invalid SVG renderer for {color} arrow")
         else:
-            print(f"🏹 ARROW RENDER: ERROR - SVG file does not exist: {arrow_svg_path}")
+            print(f"Missing SVG: {arrow_svg_path}")
 
     def _get_arrow_svg_file(self, motion_data: MotionData) -> str:
         """Get the correct arrow SVG file path with proper motion type mapping."""
         turns_str = f"{motion_data.turns:.1f}"
 
-        # Use value-based comparison to avoid enum identity issues
-        motion_type_value = motion_data.motion_type.value
-
-        if motion_type_value == "static":
+        if motion_data.motion_type == MotionType.STATIC:
             return get_image_path(f"arrows/static/from_radial/static_{turns_str}.svg")
-        elif motion_type_value == "pro":
+        elif motion_data.motion_type == MotionType.PRO:
             return get_image_path(f"arrows/pro/from_radial/pro_{turns_str}.svg")
-        elif motion_type_value == "anti":
+        elif motion_data.motion_type == MotionType.ANTI:
             return get_image_path(f"arrows/anti/from_radial/anti_{turns_str}.svg")
-        elif motion_type_value == "dash":
+        elif motion_data.motion_type == MotionType.DASH:
             return get_image_path(f"arrows/dash/from_radial/dash_{turns_str}.svg")
-        elif motion_type_value == "float":
+        elif motion_data.motion_type == MotionType.FLOAT:
             return get_image_path("arrows/float.svg")
         else:
             return get_image_path(f"arrows/static/from_radial/static_{turns_str}.svg")

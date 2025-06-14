@@ -16,6 +16,7 @@ class StartTextOverlay(QGraphicsTextItem):
     def __init__(self, parent_scene: Optional[QGraphicsScene] = None):
         super().__init__("START")
         self.parent_scene = parent_scene
+        self._is_valid = True
 
         # Match v1's font styling exactly
         self.setFont(QFont("Georgia", 60, QFont.Weight.DemiBold))
@@ -29,28 +30,71 @@ class StartTextOverlay(QGraphicsTextItem):
 
     def show_start_text(self):
         """Show the START text with v1-style positioning"""
-        if not self.parent_scene:
+        if not self._is_valid or not self.parent_scene:
             return
 
-        # Calculate padding like v1: scene.height() // 28
-        scene_height = self.parent_scene.height()
-        text_padding = scene_height // 28
+        try:
+            # Calculate padding like v1: scene.height() // 28
+            scene_height = self.parent_scene.height()
+            text_padding = scene_height // 28
 
-        # Position text with padding from top-left like v1
-        self.setPos(QPointF(text_padding, text_padding))
+            # Position text with padding from top-left like v1
+            self.setPos(QPointF(text_padding, text_padding))
 
-        # Make visible
-        self.setVisible(True)
+            # Make visible
+            self.setVisible(True)
+        except (RuntimeError, AttributeError):
+            # Object may have been deleted
+            self._is_valid = False
 
     def hide_start_text(self):
         """Hide the START text"""
-        self.setVisible(False)
+        if not self._is_valid:
+            return
+
+        try:
+            self.setVisible(False)
+        except (RuntimeError, AttributeError):
+            self._is_valid = False
 
     def update_for_scene_size(self, scene_size: float):
         """Update positioning when scene size changes"""
-        if self.isVisible():
-            text_padding = scene_size // 28
-            self.setPos(QPointF(text_padding, text_padding))
+        if not self._is_valid:
+            return
+
+        try:
+            if self.isVisible():
+                text_padding = scene_size // 28
+                self.setPos(QPointF(text_padding, text_padding))
+        except (RuntimeError, AttributeError):
+            self._is_valid = False
+
+    def is_valid(self) -> bool:
+        """Check if the overlay is still valid (not deleted)"""
+        if not self._is_valid:
+            return False
+
+        try:
+            # Try to access a basic property to check if object is still valid
+            _ = self.isVisible()
+            return True
+        except (RuntimeError, AttributeError):
+            self._is_valid = False
+            return False
+
+    def cleanup(self):
+        """Cleanup the overlay safely"""
+        if not self._is_valid:
+            return
+
+        try:
+            scene = self.scene()
+            if scene:
+                scene.removeItem(self)
+        except (RuntimeError, AttributeError):
+            pass
+        finally:
+            self._is_valid = False
 
 
 def add_start_text_to_pictograph(pictograph_component) -> Optional[StartTextOverlay]:

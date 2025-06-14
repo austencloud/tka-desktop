@@ -67,25 +67,27 @@ class PictographScene(QGraphicsScene):
         if not self.beat_data:
             return
 
+        print(f"Rendering beat: {self.beat_data.letter}")
+        print(f"Blue motion: {self.beat_data.blue_motion}")
+        print(f"Red motion: {self.beat_data.red_motion}")
+
+        # Render grid
         self.grid_renderer.render_grid()
 
+        # Render props for blue and red motions
         if self.beat_data.blue_motion:
             self.prop_renderer.render_prop("blue", self.beat_data.blue_motion)
         if self.beat_data.red_motion:
             self.prop_renderer.render_prop("red", self.beat_data.red_motion)
 
+        # Apply beta prop positioning after both props are rendered
         if self.beat_data.blue_motion and self.beat_data.red_motion:
             self.prop_renderer.apply_beta_positioning(self.beat_data)
 
+        # Render arrows for blue and red motions
         if self.beat_data.blue_motion:
-            print(
-                f"🎨 PICTOGRAPH SCENE: Rendering blue arrow for motion: {self.beat_data.blue_motion}"
-            )
             self.arrow_renderer.render_arrow("blue", self.beat_data.blue_motion)
         if self.beat_data.red_motion:
-            print(
-                f"🎨 PICTOGRAPH SCENE: Rendering red arrow for motion: {self.beat_data.red_motion}"
-            )
             self.arrow_renderer.render_arrow("red", self.beat_data.red_motion)
 
         # Render glyphs if glyph data is available
