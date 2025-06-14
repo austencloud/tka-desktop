@@ -11,7 +11,7 @@ class TurnPairDisplay(QWidget):
 
     def __init__(self, parent=None, style_provider=None, initial_values=(0.0, 0.0)):
         """Initialize the turn pair display.
-
+        
         Args:
             parent: The parent widget
             style_provider: The style provider for consistent styling
@@ -45,7 +45,7 @@ class TurnPairDisplay(QWidget):
 
     def update_values(self, first_value, second_value):
         """Update the displayed values.
-
+        
         Args:
             first_value: The first turn value
             second_value: The second turn value
@@ -54,11 +54,11 @@ class TurnPairDisplay(QWidget):
 
     def set_enabled(self, enabled):
         """Enable or disable the display.
-
+        
         Args:
             enabled: Whether the display should be enabled
         """
         self.pair_value.setEnabled(enabled)
-
+        
         # Update styling based on enabled state
         self.pair_value.setStyleSheet(self.style_provider.get_pair_value_style(enabled))

@@ -7,7 +7,7 @@ and current sequence state, providing options for the option picker.
 
 from typing import List, Dict, Any, Optional
 
-from ...domain.models.core_models import BeatData
+from domain.models.core_models import BeatData
 from .position_matching_service import PositionMatchingService
 from .data_conversion_service import DataConversionService
 

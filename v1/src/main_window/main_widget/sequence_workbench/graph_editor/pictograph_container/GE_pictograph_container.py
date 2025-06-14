@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-import logging
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
 from base_widgets.pictograph.elements.views.GE_pictograph_view import GE_PictographView
@@ -42,16 +41,7 @@ class GraphEditorPictographContainer(QWidget):
 
         pictograph.is_blank = False
         view.reference_beat = reference_beat
-
-        # CRITICAL FIX: Add null check for reference_beat.view to prevent NoneType error
-        if reference_beat and hasattr(reference_beat, "view") and reference_beat.view:
-            view.is_start_pos = reference_beat.view.is_start_pos
-        else:
-            view.is_start_pos = False
-            logging.warning(
-                "reference_beat.view is None - setting is_start_pos to False"
-            )
-
+        view.is_start_pos = reference_beat.view.is_start_pos
         pictograph.state.blue_reversal = reference_beat.state.blue_reversal
         pictograph.state.red_reversal = reference_beat.state.red_reversal
 

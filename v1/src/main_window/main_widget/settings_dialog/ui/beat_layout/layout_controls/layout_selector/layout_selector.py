@@ -12,7 +12,9 @@ from .select_layout_label import SelectLayoutLabel
 if TYPE_CHECKING:
     from ..layout_controls import LayoutControls
 
-BEAT_FRAME_LAYOUT_OPTIONS_PATH = get_data_path("beat_frame_layout_options.json")
+BEAT_FRAME_LAYOUT_OPTIONS_PATH = get_data_path(
+    "beat_frame_layout_options.json"
+)
 
 
 class LayoutSelector(QFrame):

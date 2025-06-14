@@ -71,7 +71,7 @@ class MirroredRotatedCAPExecutor(CAPExecutor):
                 previous_entry[RED_ATTRS], previous_matching_beat[RED_ATTRS]
             ),
         }
-
+        
         if previous_matching_beat[BLUE_ATTRS].get(PREFLOAT_MOTION_TYPE, ""):
             new_entry[BLUE_ATTRS][PREFLOAT_MOTION_TYPE] = previous_matching_beat[
                 BLUE_ATTRS
@@ -88,7 +88,7 @@ class MirroredRotatedCAPExecutor(CAPExecutor):
             new_entry[RED_ATTRS][PREFLOAT_PROP_ROT_DIR] = previous_matching_beat[
                 RED_ATTRS
             ][PREFLOAT_PROP_ROT_DIR]
-
+            
         # Ensure orientations are set properly
         new_entry[BLUE_ATTRS][END_ORI] = (
             self.circular_sequence_generator.json_manager.ori_calculator.calculate_end_ori(

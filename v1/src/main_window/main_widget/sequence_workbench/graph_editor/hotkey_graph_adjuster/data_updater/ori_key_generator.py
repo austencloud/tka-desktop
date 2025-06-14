@@ -2,9 +2,8 @@ import logging
 from typing import TYPE_CHECKING
 
 
-from placement_managers.arrow_placement_manager.arrow_placement_context import (
-    ArrowPlacementContext,
-)
+
+from placement_managers.arrow_placement_manager.arrow_placement_context import ArrowPlacementContext
 
 
 from data.constants import (
@@ -19,9 +18,7 @@ from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
 
-    from base_widgets.pictograph.managers.getter.pictograph_getter import (
-        PictographGetter,
-    )
+    from base_widgets.pictograph.managers.getter.pictograph_getter import PictographGetter
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

@@ -13,7 +13,6 @@ from main_window.main_widget.construct_tab.option_picker.widgets.scroll.section_
 from main_window.main_widget.construct_tab.option_picker.widgets.scroll.section_header import (
     OptionPickerSectionHeader,
 )
-
 if TYPE_CHECKING:
     from .option_scroll import OptionScroll
 

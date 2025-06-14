@@ -19,7 +19,7 @@ class VisibilityStateManager:
             "motion": [],
             "non_radial": [],
             "all": [],
-            "buttons": [],  # Added category for button updates
+            "buttons": []  # Added category for button updates
         }
 
     def register_observer(self, callback: Callable, categories: List[str] = ["all"]):
@@ -54,11 +54,11 @@ class VisibilityStateManager:
         base_visibility = self.settings.value(
             f"visibility/{glyph_type}", default_visibility, type=bool
         )
-
+        
         # For dependent glyphs, check if both motions are visible
         if glyph_type in ["TKA", "VTG", "Elemental", "Positions"]:
             return base_visibility and self.are_all_motions_visible()
-
+        
         # For non-dependent glyphs, return direct visibility
         return base_visibility
 
@@ -77,14 +77,14 @@ class VisibilityStateManager:
         Ensures at least one motion remains visible at all times.
         """
         other_color = "blue" if color == "red" else "red"
-
+        
         # Prevent turning off both colors
         if not visible and not self.get_motion_visibility(other_color):
             self.settings.setValue(f"visibility/{color}_motion", False)
             self.settings.setValue(f"visibility/{other_color}_motion", True)
             self._notify_observers(["motion", "glyph", "buttons"])
             return
-
+            
         # Normal case
         self.settings.setValue(f"visibility/{color}_motion", visible)
         self._notify_observers(["motion", "glyph", "buttons"])

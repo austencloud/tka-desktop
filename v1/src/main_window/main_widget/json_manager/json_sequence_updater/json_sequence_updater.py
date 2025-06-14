@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from src.data.constants import BEAT, SEQUENCE_START_POSITION
+from data.constants import BEAT
 
 
 from .json_duration_updater import JsonDurationUpdater
@@ -37,15 +37,7 @@ class JsonSequenceUpdater:
         view = beat.view
         sequence_data = self.json_manager.loader_saver.load_current_sequence()
         sequence_metadata = sequence_data[0] if "word" in sequence_data[0] else {}
-
-        # Separate start position from actual beats
-        start_position = None
-        sequence_beats = []
-        for entry in sequence_data[1:]:
-            if entry.get(SEQUENCE_START_POSITION):
-                start_position = entry
-            else:
-                sequence_beats.append(entry)
+        sequence_beats = sequence_data[1:]
         if not beat_data:
             beat_data = beat.state.pictograph_data.copy()
         beat_data["duration"] = beat.duration
@@ -64,12 +56,7 @@ class JsonSequenceUpdater:
             sequence_beats.append(placeholder_entry)
 
         sequence_beats.sort(key=lambda entry: entry.get(BEAT, float("inf")))
-
-        # Reconstruct sequence: metadata + start_position + beats
-        sequence_data = [sequence_metadata]
-        if start_position:
-            sequence_data.append(start_position)
-        sequence_data.extend(sequence_beats)
+        sequence_data = [sequence_metadata] + sequence_beats
 
         self.json_manager.loader_saver.save_current_sequence(sequence_data)
 
@@ -83,15 +70,7 @@ class JsonSequenceUpdater:
     ):
         sequence_data = self.json_manager.loader_saver.load_current_sequence()
         sequence_metadata = sequence_data[0] if "word" in sequence_data[0] else {}
-
-        # Separate start position from actual beats
-        start_position = None
-        sequence_beats = []
-        for entry in sequence_data[1:]:
-            if entry.get(SEQUENCE_START_POSITION):
-                start_position = entry
-            else:
-                sequence_beats.append(entry)
+        sequence_beats = sequence_data[1:]
 
         placeholder_entry = {
             BEAT: beat_num,
@@ -101,12 +80,7 @@ class JsonSequenceUpdater:
         sequence_beats.append(placeholder_entry)
 
         sequence_beats.sort(key=lambda entry: entry.get(BEAT, float("inf")))
-
-        # Reconstruct sequence: metadata + start_position + beats
-        sequence_data = [sequence_metadata]
-        if start_position:
-            sequence_data.append(start_position)
-        sequence_data.extend(sequence_beats)
+        sequence_data = [sequence_metadata] + sequence_beats
 
         self.json_manager.loader_saver.save_current_sequence(sequence_data)
 

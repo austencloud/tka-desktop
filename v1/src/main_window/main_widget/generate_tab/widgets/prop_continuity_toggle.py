@@ -3,8 +3,6 @@ from .labeled_toggle_base import LabeledToggleBase
 
 if TYPE_CHECKING:
     from ..generate_tab import GenerateTab
-
-
 class PropContinuityToggle(LabeledToggleBase):
     def __init__(self, generate_tab: "GenerateTab"):
         super().__init__(

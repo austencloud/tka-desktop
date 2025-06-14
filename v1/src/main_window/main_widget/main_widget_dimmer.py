@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import Qt
 
-
 class MainWidgetDimmer(QWidget):
     def __init__(self, main_widget: QWidget):
         super().__init__(main_widget)

@@ -13,10 +13,10 @@ from .splash_layout_manager import SplashLayoutManager
 from .splash_updater import SplashUpdater
 
 if TYPE_CHECKING:
+    from settings_manager.settings_manager import SettingsManager
     from main_window.main_widget.rainbow_progress_bar import (
         RainbowProgressBar,
     )
-    from main_window.settings_manager.settings_manager import SettingsManager
 
 
 class SplashScreen(QWidget):
@@ -56,3 +56,4 @@ class SplashScreen(QWidget):
         painter = QPainter(self)
         if self.background_handler.background_manager:
             self.background_handler.background_manager.paint_background(self, painter)
+        painter.end()

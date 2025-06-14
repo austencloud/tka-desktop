@@ -37,11 +37,14 @@ class OptionPickerDisplayManager:
             self._sections[section_type] = section
             self.sections_layout.addWidget(section)
 
-        # V1-style: Create horizontal container for sections 4, 5, 6 in single row
+        # V1-style: Create transparent horizontal container for sections 4, 5, 6
         self.bottom_row_container = QWidget(self.sections_container)
+        self.bottom_row_container.setStyleSheet(
+            "background: transparent; border: none;"
+        )
         self.bottom_row_layout = QHBoxLayout(self.bottom_row_container)
-        self.bottom_row_layout.setContentsMargins(0, 0, 0, 0)
-        self.bottom_row_layout.setSpacing(10)
+        self.bottom_row_layout.setContentsMargins(5, 0, 5, 0)  # Reduced margins
+        self.bottom_row_layout.setSpacing(8)  # Reduced spacing
 
         # Create sections 4, 5, 6 in horizontal layout
         for section_type in [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6]:
@@ -53,32 +56,30 @@ class OptionPickerDisplayManager:
             self._sections[section_type] = section
             self.bottom_row_layout.addWidget(section)
 
-            # CRITICAL: Set proper width for bottom row sections (1/3 each)
+            # Calculate proper width accounting for margins and spacing
             if self.mw_size_provider:
                 full_width = self.mw_size_provider().width()
-                section_width = (full_width - 20) // 3  # Account for spacing
+                total_margins = 10  # Left + right margins
+                total_spacing = 16  # 2 spacing gaps between 3 sections
+                available_width = full_width - total_margins - total_spacing
+                section_width = available_width // 3
                 section.setFixedWidth(section_width)
 
-        # Add the horizontal container to main layout
         self.sections_layout.addWidget(self.bottom_row_container)
 
-        # CRITICAL: Make container AND all sections visible after adding all sections
+        # Make all containers transparent
         if self.sections_container:
             self.sections_container.setVisible(True)
             self.sections_container.show()
 
-        # CRITICAL: Make all individual sections visible too
         for section_type, section in self._sections.items():
             if section:
                 section.setVisible(True)
                 section.show()
-
-                # Also ensure pictograph containers are visible
                 if hasattr(section, "pictograph_container"):
                     section.pictograph_container.setVisible(True)
                     section.pictograph_container.show()
 
-        # CRITICAL: Make bottom row container visible too
         if hasattr(self, "bottom_row_container"):
             self.bottom_row_container.setVisible(True)
             self.bottom_row_container.show()

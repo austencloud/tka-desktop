@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class ModernActionButtons(QWidget):
     """
     Modern action buttons with glassmorphism styling and proper state management.
-
+    
     Responsibilities:
     - Provide Apply, OK, Cancel buttons
     - Handle button state management
@@ -32,7 +32,7 @@ class ModernActionButtons(QWidget):
         super().__init__()
         self.app_context = app_context
         self._has_changes = False
-
+        
         self._setup_ui()
         self._setup_connections()
         self._update_button_states()
@@ -61,9 +61,7 @@ class ModernActionButtons(QWidget):
         self.ok_btn.clicked.connect(self.ok_requested.emit)
         self.cancel_btn.clicked.connect(self.cancel_requested.emit)
 
-    def _create_modern_button(
-        self, text: str, style_type: str = "primary"
-    ) -> QPushButton:
+    def _create_modern_button(self, text: str, style_type: str = "primary") -> QPushButton:
         """Create a modern button with glassmorphism styling."""
         button = QPushButton(text)
         button.setMinimumSize(120, 40)

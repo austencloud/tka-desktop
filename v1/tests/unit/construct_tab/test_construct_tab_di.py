@@ -21,29 +21,29 @@ from main_window.main_widget.fade_manager.fade_manager import FadeManager
 
 class MockSettingsManager(ISettingsManager):
     """Mock implementation of ISettingsManager for testing."""
-
+    
     def get_setting(self, section, key, default_value=None):
         return default_value
-
+    
     def set_setting(self, section, key, value):
         pass
-
+    
     def get_global_settings(self):
         return MagicMock()
-
+    
     def get_construct_tab_settings(self):
         return MagicMock()
 
 
 class MockJsonManager(IJsonManager):
     """Mock implementation of IJsonManager for testing."""
-
+    
     def save_sequence(self, sequence_data):
         return True
-
+    
     def load_sequence(self, file_path=None):
         return []
-
+    
     def get_updater(self):
         return MagicMock()
 
@@ -55,7 +55,7 @@ def test_construct_tab_with_di():
     mock_json_manager = MockJsonManager()
     mock_beat_frame = MagicMock()
     mock_fade_manager = MagicMock()
-
+    
     # Create the component with mock dependencies
     construct_tab = ConstructTab(
         beat_frame=mock_beat_frame,
@@ -64,14 +64,14 @@ def test_construct_tab_with_di():
         fade_to_stack_index=lambda index: None,
         fade_manager=mock_fade_manager,
         settings_manager=mock_settings_manager,
-        json_manager=mock_json_manager,
+        json_manager=mock_json_manager
     )
-
+    
     # Verify that the dependencies were properly injected
     assert construct_tab.settings_manager is mock_settings_manager
     assert construct_tab.json_manager is mock_json_manager
-
+    
     # Verify that we can call methods that use the dependencies
     construct_tab.transition_to_option_picker()  # This uses fade_to_stack_index
-
+    
     # This test passes if no exceptions are raised

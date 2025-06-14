@@ -2,9 +2,7 @@ from PyQt6.QtWidgets import QDialog, QHBoxLayout
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 from data.constants import ANTI, BLUE, FLOAT, HEX_BLUE, HEX_RED, PRO
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import (
-    TurnsValue,
-)
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import TurnsValue
 from .direct_set_turns_button import DirectSetTurnsButton
 
 if TYPE_CHECKING:
@@ -39,12 +37,12 @@ class DirectSetTurnsDialog(QDialog):
         )
 
     def _setup_buttons(self):
-        turns_values = ["0", "0.5", "1", "1.5", "2", "2.5", "3"]
+        turns_values = ["0", "0.5", "1", "1.5", "2", "2.5", "3"]  
         if self.turns_box.matching_motion.state.motion_type in [PRO, ANTI, FLOAT]:
             turns_values.insert(0, "fl")
         for value in turns_values:
             button = DirectSetTurnsButton(value, self)
-
+            
             button.clicked.connect(
                 lambda _, v=value: self.select_turns(
                     "fl" if v == "fl" else float(v) if "." in v else int(v)
@@ -67,7 +65,7 @@ class DirectSetTurnsDialog(QDialog):
         global_turns_label_pos = self.turns_display_frame.turns_label.mapToGlobal(
             self.turns_display_frame.turns_label.pos()
         )
-
+        
         turns_widget_pos = self.turns_widget.mapToGlobal(self.turns_widget.pos())
         dialog_x = turns_widget_pos.x()
         dialog_y = global_turns_label_pos.y() + turns_label_rect.height()

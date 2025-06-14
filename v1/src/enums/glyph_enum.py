@@ -31,6 +31,6 @@ Glyph = Union[
     "StartToEndPosGlyph",
     "TKA_Glyph",
     "VTG_Glyph",
-    "Prop",
+    "Prop"  ,
     "Arrow",
 ]

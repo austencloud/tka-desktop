@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .ufo_manager import UFOManager
 
-
 class UFOMovementManager:
     def __init__(self, ufo_manager: "UFOManager"):
         self.ufo_manager = ufo_manager  # Access the UFOManager instance

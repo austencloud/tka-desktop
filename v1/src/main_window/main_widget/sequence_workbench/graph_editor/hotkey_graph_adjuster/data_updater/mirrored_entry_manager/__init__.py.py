@@ -18,8 +18,8 @@ from .mirrored_entry_utils import MirroredEntryUtils
 
 # Export the main components
 __all__ = [
-    "MirroredEntryService",
-    "MirroredEntryFactory",
-    "MirroredEntryAdapter",
-    "MirroredEntryUtils",
+    'MirroredEntryService',
+    'MirroredEntryFactory',
+    'MirroredEntryAdapter',
+    'MirroredEntryUtils',
 ]

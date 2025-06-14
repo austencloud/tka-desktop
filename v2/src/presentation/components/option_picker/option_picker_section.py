@@ -1,5 +1,5 @@
 from typing import List
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QHBoxLayout
 from PyQt6.QtCore import Qt
 from .section_button import OptionPickerSectionButton
 from .letter_types import LetterType
@@ -18,9 +18,19 @@ class OptionPickerSection(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
+        # Create a transparent container for the header button to ensure proper centering
+        header_container = QWidget()
+        header_container.setStyleSheet("background: transparent; border: none;")
+        header_layout = QHBoxLayout(header_container)
+        header_layout.setContentsMargins(0, 0, 0, 0)
+        header_layout.addStretch()
+
         self.header_button = OptionPickerSectionButton(self)
         self.header_button.clicked.connect(self._toggle_section)
-        layout.addWidget(self.header_button)
+        header_layout.addWidget(self.header_button)
+        header_layout.addStretch()
+
+        layout.addWidget(header_container)
 
         # V1-style container: simple QFrame with QGridLayout
         from PyQt6.QtWidgets import QFrame

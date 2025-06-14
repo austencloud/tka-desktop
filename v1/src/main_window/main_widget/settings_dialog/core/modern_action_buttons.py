@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
 )
 import logging
 from .modern_components import ModernButton, StatusIndicator
-from styles.glassmorphism_styler import GlassmorphismStyler
+from .glassmorphism_styler import GlassmorphismStyler
 
 
 class ModernActionButtons(QWidget):

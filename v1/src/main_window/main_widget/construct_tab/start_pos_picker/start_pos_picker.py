@@ -32,7 +32,6 @@ if TYPE_CHECKING:
 DIAMOND_START_POS_KEYS = ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"]
 BOX_START_POS_KEYS = ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
 
-
 class StartPosPicker(BaseStartPosPicker):
     SPACING = 10
     start_position_selected = pyqtSignal(Pictograph)
@@ -89,9 +88,7 @@ class StartPosPicker(BaseStartPosPicker):
         """Load only the start positions relevant to the current grid mode."""
         self.pictograph_frame.clear_pictographs()
         grid_mode = DIAMOND
-        start_pos_keys = (
-            DIAMOND_START_POS_KEYS if grid_mode == DIAMOND else BOX_START_POS_KEYS
-        )
+        start_pos_keys = DIAMOND_START_POS_KEYS if grid_mode == DIAMOND else BOX_START_POS_KEYS
         if grid_mode == BOX:
             self.get_box_pictographs()
             for position_key in start_pos_keys:

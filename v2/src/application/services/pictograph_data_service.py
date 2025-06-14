@@ -9,6 +9,8 @@ import os
 from typing import Dict, List, Optional, Any
 import pandas as pd
 
+from infrastructure.data_path_handler import DataPathHandler
+
 
 class PictographDataService:
     """
@@ -20,25 +22,14 @@ class PictographDataService:
 
     def __init__(self):
         self._dataset: Optional[pd.DataFrame] = None
+        self._data_handler = DataPathHandler()
         self._load_dataset()
 
     def _load_dataset(self) -> None:
         """Load the dataset from CSV files."""
         try:
-            # Updated path to reflect new directory structure
-            data_dir = os.path.join(
-                os.path.dirname(__file__), "..", "..", "infrastructure", "assets"
-            )
-            diamond_path = os.path.join(data_dir, "DiamondPictographDataframe.csv")
-            box_path = os.path.join(data_dir, "BoxPictographDataframe.csv")
-
-            if os.path.exists(diamond_path):
-                self._dataset = pd.read_csv(diamond_path)
-                if os.path.exists(box_path):
-                    box_df = pd.read_csv(box_path)
-                    self._dataset = pd.concat(
-                        [self._dataset, box_df], ignore_index=True
-                    )
+            self._dataset = self._data_handler.load_combined_dataset()
+            if not self._dataset.empty:
                 print(f"✅ Loaded dataset with {len(self._dataset)} entries")
             else:
                 raise FileNotFoundError("Pictograph data files not found")

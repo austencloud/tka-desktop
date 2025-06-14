@@ -15,13 +15,14 @@ from typing import Dict, List, Optional, Any
 import pandas as pd
 from abc import ABC, abstractmethod
 
-from ...domain.models.core_models import (
+from domain.models.core_models import (
     BeatData,
     MotionData,
     MotionType,
     RotationDirection,
     Location,
 )
+from infrastructure.data_path_handler import DataPathHandler
 
 
 class IMotionValidationService(ABC):
@@ -73,29 +74,20 @@ class MotionValidationService(IMotionValidationService):
 
     def __init__(self):
         self._dataset: Optional[pd.DataFrame] = None
+        self._data_handler = DataPathHandler()
         self._load_dataset()
 
     def _load_dataset(self) -> None:
         """Load the validated pictograph datasets from V2 data directory."""
         try:
-            # Updated path to reflect new directory structure
-            data_dir = os.path.join(
-                os.path.dirname(__file__), "..", "..", "infrastructure", "assets"
-            )
-            diamond_path = os.path.join(data_dir, "DiamondPictographDataframe.csv")
-            box_path = os.path.join(data_dir, "BoxPictographDataframe.csv")
-
-            if os.path.exists(diamond_path) and os.path.exists(box_path):
-                diamond_df = pd.read_csv(diamond_path)
-                box_df = pd.read_csv(box_path)
-                self._dataset = pd.concat([diamond_df, box_df], ignore_index=True)
+            self._dataset = self._data_handler.load_combined_dataset()
+            if not self._dataset.empty:
                 print(
                     f"✅ Loaded motion validation dataset with {len(self._dataset)} entries"
                 )
             else:
                 print("⚠️ Pictograph data files not found, using existing data service")
                 self._create_sample_dataset()
-
         except Exception as e:
             print(f"⚠️ Error loading pictograph data: {e}, using existing data service")
             self._create_sample_dataset()

@@ -27,7 +27,7 @@ class Type2BaseExporter:
         turn_configuration: "TurnConfiguration",
     ):
         """Initialize the Type 2 base exporter.
-
+        
         Args:
             data_manager: The pictograph data manager
             factory: The pictograph factory
@@ -41,7 +41,7 @@ class Type2BaseExporter:
 
     def _save_pictograph(self, pictograph: "Pictograph", filepath: str, message: str):
         """Saves a pictograph image to a file.
-
+        
         Args:
             pictograph: The pictograph to save
             filepath: The path to save the image to
@@ -50,7 +50,7 @@ class Type2BaseExporter:
         image = self.renderer.create_pictograph_image(pictograph)
         image.save(filepath, "PNG", 100)
         print(message)
-
+    
     def export_pictograph(
         self,
         letter: str,
@@ -61,9 +61,9 @@ class Type2BaseExporter:
         grid_mode: str = "diamond",
     ) -> int:
         """Export a Type 2 pictograph with specified turns.
-
+        
         This is an abstract method that should be implemented by subclasses.
-
+        
         Args:
             letter: The letter to export
             directory: The directory to save to
@@ -71,7 +71,7 @@ class Type2BaseExporter:
             blue_turns: The number of turns for the blue hand
             matching_pictographs: The matching pictographs
             grid_mode: The grid mode to use ('diamond' or 'box')
-
+            
         Returns:
             The number of exported pictographs
         """

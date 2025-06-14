@@ -1,5 +1,5 @@
 class WordSimplifier:
-    """Simplifies long words by removing repeated patterns."""
+    """ Simplifies long words by removing repeated patterns. """
 
     @staticmethod
     def simplify_repeated_word(word: str) -> str:

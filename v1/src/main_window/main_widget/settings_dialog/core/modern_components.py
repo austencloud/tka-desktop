@@ -17,7 +17,7 @@ from PyQt6.QtWidgets import (
     QToolTip,
     QGraphicsOpacityEffect,
 )
-from styles.glassmorphism_styler import GlassmorphismStyler
+from .glassmorphism_styler import GlassmorphismStyler
 
 
 class SettingCard(QFrame):

@@ -10,7 +10,7 @@ class WordDrawer:
     def __init__(self, image_creator: "ImageCreator"):
         self.image_creator = image_creator
         self.base_font = QFont("Georgia", 175, QFont.Weight.DemiBold, False)
-        self.base_kerning = 20  # Base kerning value (will be scaled dynamically)
+        self.kerning = int(20 * image_creator.beat_scale)  # Adjust this value as needed
 
     def draw_word(
         self,
@@ -19,9 +19,6 @@ class WordDrawer:
         num_filled_beats: int,
         additional_height_top: int,
     ) -> None:
-        # Calculate kerning dynamically with current beat_scale
-        kerning = int(self.base_kerning * self.image_creator.beat_scale)
-
         base_margin = 50 * self.image_creator.beat_scale
         font, margin = FontMarginHelper.adjust_font_and_margin(
             self.base_font, num_filled_beats, base_margin, self.image_creator.beat_scale
@@ -45,14 +42,7 @@ class WordDrawer:
             text_height = metrics.ascent()
 
         self._draw_text(
-            painter,
-            image,
-            word,
-            font,
-            margin,
-            text_height,
-            additional_height_top,
-            kerning,
+            painter, image, word, font, margin, text_height, additional_height_top
         )
         painter.end()
 
@@ -65,7 +55,6 @@ class WordDrawer:
         margin: int,
         text_height: int,
         additional_height_top: int,
-        kerning: int,
         text_width: int = None,
     ) -> None:
         painter.setFont(font)
@@ -84,8 +73,8 @@ class WordDrawer:
             + border_width
         )
 
-        x = (image.width() - text_width - kerning * (len(text) - 1)) // 2
+        x = (image.width() - text_width - self.kerning * (len(text) - 1)) // 2
 
         for letter in text:
             painter.drawText(x, y, letter)
-            x += metrics.horizontalAdvance(letter) + kerning
+            x += metrics.horizontalAdvance(letter) + self.kerning

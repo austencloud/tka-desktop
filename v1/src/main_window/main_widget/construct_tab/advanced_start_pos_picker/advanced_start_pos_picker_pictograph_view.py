@@ -2,9 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import QSize
 from typing import Callable
 
-from base_widgets.pictograph.elements.views.bordered_pictograph_view import (
-    BorderedPictographView,
-)
+from base_widgets.pictograph.elements.views.bordered_pictograph_view import BorderedPictographView
 
 
 if TYPE_CHECKING:

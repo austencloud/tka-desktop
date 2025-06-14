@@ -1,13 +1,12 @@
 from typing import Optional
 from PyQt6.QtWidgets import QWidget
 
+from presentation.components.ui.settings.modern_settings_dialog import ModernSettingsDialog
 from src.core.interfaces.settings_interfaces import (
     ISettingsDialogService,
     ISettingsService,
 )
-from src.presentation.components.ui.settings.modern_settings_dialog import (
-    ModernSettingsDialog,
-)
+
 
 
 class SettingsDialogService(ISettingsDialogService):

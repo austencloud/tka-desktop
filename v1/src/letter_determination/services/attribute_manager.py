@@ -35,13 +35,9 @@ class AttributeManager:
                     else pictograph_data[BLUE_ATTRS]
                 )
 
-                self._update_prefloat_attributes(
-                    attrs, other_attrs, pictograph_data[BEAT], color
-                )
+                self._update_prefloat_attributes(attrs, other_attrs, pictograph_data[BEAT], color)
 
-    def _update_prefloat_attributes(
-        self, attrs: dict, other_attrs: dict, beat: int, color: str
-    ) -> None:
+    def _update_prefloat_attributes(self, attrs: dict, other_attrs: dict, beat: int, color: str) -> None:
         prefloat_motion_type = self._determine_prefloat_motion_type(attrs, other_attrs)
         attrs[PREFLOAT_MOTION_TYPE] = prefloat_motion_type
         self.json_handler.update_prefloat_motion_type(beat, color, prefloat_motion_type)
@@ -53,13 +49,9 @@ class AttributeManager:
                 else other_attrs.get(PREFLOAT_PROP_ROT_DIR, NO_ROT)
             )
             attrs[PREFLOAT_PROP_ROT_DIR] = prefloat_prop_rot_dir
-            self.json_handler.update_prefloat_prop_rot_dir(
-                beat, color, prefloat_prop_rot_dir
-            )
+            self.json_handler.update_prefloat_prop_rot_dir(beat, color, prefloat_prop_rot_dir)
 
-    def _determine_prefloat_motion_type(
-        self, attrs: dict, other_attrs: dict
-    ) -> Optional[str]:
+    def _determine_prefloat_motion_type(self, attrs: dict, other_attrs: dict) -> Optional[str]:
         if other_attrs[MOTION_TYPE] in [PRO, ANTI]:
             return other_attrs[MOTION_TYPE]
         if other_attrs[MOTION_TYPE] in [PRO, ANTI]:

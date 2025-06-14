@@ -22,7 +22,7 @@ class PropState:
     prop_type: Optional[str] = None
     loc: Optional[str] = None
     ori: Optional[str] = None
-
+    
     def update_from_dict(
         self, prop_data: dict[str, Union[str, "Arrow", "QGraphicsPixmapItem"]]
     ) -> None:
@@ -42,7 +42,7 @@ class Prop(GraphicalObject):
     state: PropState
     pixmap_item: QGraphicsPixmapItem
     name = "prop"
-
+    
     def __init__(
         self, pictograph, prop_data: dict, motion: "Motion", prop_type_str: str
     ):

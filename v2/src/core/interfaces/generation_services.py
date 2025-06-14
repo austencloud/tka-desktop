@@ -13,7 +13,7 @@ from typing import Dict, Any, List, Set, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 
 if TYPE_CHECKING:
-    from ...domain.models.generation_models import GenerationConfig, GenerationResult
+    from domain.models.generation_models import GenerationConfig, GenerationResult
 
 
 class GenerationMode(Enum):

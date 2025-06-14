@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QSizePolicy
 from PyQt6.QtCore import pyqtSignal, Qt
 from ....domain.models.core_models import BeatData
-from src.presentation.components.pictograph_component import PictographComponent
+from presentation.components.pictograph.pictograph_component import PictographComponent
 
 
 class ClickablePictographFrame(QFrame):
@@ -111,10 +111,6 @@ class ClickablePictographFrame(QFrame):
             # Apply the calculated size
             self.setFixedSize(final_size, final_size)
 
-            print(
-                f"🔧 Frame resized to {final_size}x{final_size} (container_width={container_width}, columns={desired_columns})"
-            )
-
         except Exception as e:
             print(f"❌ Error in resize_frame: {e}")
 
@@ -139,3 +135,11 @@ class ClickablePictographFrame(QFrame):
         if event.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit(f"beat_{self.beat_data.letter}")
         super().mousePressEvent(event)
+
+    def enterEvent(self, event):
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        self.setCursor(Qt.CursorShape.ArrowCursor)
+        super().leaveEvent(event)

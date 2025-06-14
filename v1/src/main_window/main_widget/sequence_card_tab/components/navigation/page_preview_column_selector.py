@@ -16,7 +16,7 @@ class PagePreviewColumnSelector(QFrame):
 
     def __init__(self, settings_manager, sidebar_width: int = 200):
         super().__init__()
-        self.settings_manager: "ISettingsManager" = settings_manager
+        self.settings_manager:"ISettingsManager" = settings_manager
         self.sidebar_width = sidebar_width
         self.setObjectName("columnFrame")
         self.setup_ui()

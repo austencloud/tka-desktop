@@ -4,17 +4,9 @@ from PyQt6.QtCore import Qt, QMimeData, QEvent, QByteArray
 from PyQt6.QtGui import QCursor, QMouseEvent, QDrag
 from typing import TYPE_CHECKING
 
-# Note: ThumbnailImageLabel import removed due to browse_tab restructure
-# Creating a simple replacement for now
-from PyQt6.QtWidgets import QLabel
-
-
-class ThumbnailImageLabel(QLabel):
-    """Simple replacement for ThumbnailImageLabel."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setMinimumSize(200, 150)
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_image_label import (
+    ThumbnailImageLabel,
+)
 
 
 if TYPE_CHECKING:

@@ -3,15 +3,9 @@ from PyQt6.QtCore import Qt, QTimer, QThreadPool
 from PyQt6.QtGui import QPixmap, QPainter
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 
-from main_window.main_widget.main_background_widget.backgrounds.snowfall.new.snowflake import (
-    Snowflake,
-)
-from main_window.main_widget.main_background_widget.backgrounds.snowfall.new.snowflake_config_manager import (
-    SnowflakeConfigManager,
-)
-from main_window.main_widget.main_background_widget.backgrounds.snowfall.new.snowflake_update_task import (
-    SnowflakeUpdateTask,
-)
+from main_window.main_widget.main_background_widget.backgrounds.snowfall.new.snowflake import Snowflake
+from main_window.main_widget.main_background_widget.backgrounds.snowfall.new.snowflake_config_manager import SnowflakeConfigManager
+from main_window.main_widget.main_background_widget.backgrounds.snowfall.new.snowflake_update_task import SnowflakeUpdateTask
 
 
 class SnowflakeRenderer(QOpenGLWidget):
@@ -20,7 +14,7 @@ class SnowflakeRenderer(QOpenGLWidget):
         self.config_manager = SnowflakeConfigManager(config_path)
         self.config_manager.config_updated.connect(self.on_config_updated)
 
-        self.snowflakes: list[Snowflake] = []
+        self.snowflakes : list[Snowflake] = []
         self.thread_pool = QThreadPool.globalInstance()
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_snowflakes)

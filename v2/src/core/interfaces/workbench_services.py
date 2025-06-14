@@ -1,6 +1,6 @@
 from typing import Protocol, Optional, List
-from ...domain.models.core_models import SequenceData, BeatData
-from ...domain.models.sequence_operations import (
+from domain.models.core_models import SequenceData, BeatData
+from domain.models.sequence_operations import (
     ColorSwapOperation,
     ReflectionOperation,
     RotationOperation,

@@ -93,3 +93,5 @@ class Letter(Enum):
         from enums.letter.letter_type import LetterType
 
         return LetterType.get_letter_type(self)
+
+

@@ -8,7 +8,6 @@ if TYPE_CHECKING:
 
 class WidgetAndStackFader:
     """Handles simultaneous fading of widgets and a stack."""
-
     def __init__(self, manager: "FadeManager"):
         self.manager = manager
 
@@ -79,3 +78,4 @@ class WidgetAndStackFader:
         animation.setEndValue(1.0 if fade_in else 0.0)
         animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
         group.addAnimation(animation)
+

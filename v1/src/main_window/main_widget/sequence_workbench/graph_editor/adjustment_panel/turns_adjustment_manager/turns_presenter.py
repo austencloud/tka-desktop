@@ -10,9 +10,7 @@ if TYPE_CHECKING:
 
 
 class TurnsPresenter:
-    def __init__(
-        self, turns_widget: "TurnsWidget", motion_type_label: "MotionTypeLabel"
-    ):
+    def __init__(self, turns_widget: "TurnsWidget", motion_type_label: "MotionTypeLabel"):
         self._motion_type_label = motion_type_label
         self.turns_widget = turns_widget
 
@@ -33,19 +31,15 @@ class TurnsPresenter:
             self.turns_widget.display_frame.decrement_button.setEnabled(False)
             self.turns_widget.display_frame.increment_button.setEnabled(True)
         else:
-            self.turns_widget.display_frame.decrement_button.setEnabled(
-                value.raw_value != 0
-            )
-            self.turns_widget.display_frame.increment_button.setEnabled(
-                value.raw_value != 3
-            )
+            self.turns_widget.display_frame.decrement_button.setEnabled(value.raw_value != 0)
+            self.turns_widget.display_frame.increment_button.setEnabled(value.raw_value != 3)
 
         header = self.turns_widget.turns_box.header
         if is_float:
             header.hide_prop_rot_dir_buttons()
             header.unpress_prop_rot_dir_buttons()
         else:
-            if value.raw_value > 0 or motion_type in [PRO, ANTI]:
+            if value.raw_value > 0 or  motion_type in [PRO, ANTI]:
                 header.show_prop_rot_dir_buttons()
             else:
                 header.hide_prop_rot_dir_buttons()

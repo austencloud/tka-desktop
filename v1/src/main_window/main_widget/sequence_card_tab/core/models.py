@@ -18,19 +18,19 @@ class SequenceCardData:
 @dataclass
 class ImageLoadRequest:
     """Data structure for image loading requests."""
-
+    
     path: str
     word: str
     sequence_file: str
     metadata: Dict[str, Any]
     priority: int = 0
     callback: Optional[callable] = None
-
-
+    
+    
 @dataclass
 class SequenceCardBatch:
     """Data structure for batched sequence card processing."""
-
+    
     sequences: List[Dict[str, Any]]
     batch_size: int
     start_index: int

@@ -21,8 +21,8 @@ from typing import Dict, Tuple, Optional, Union
 from abc import ABC, abstractmethod
 from PyQt6.QtCore import QPointF
 
-from ...domain.models.pictograph_models import PictographData, ArrowData, GridMode
-from ...domain.models.core_models import (
+from domain.models.pictograph_models import PictographData, ArrowData, GridMode
+from domain.models.core_models import (
     MotionData,
     MotionType,
     Location,
@@ -108,24 +108,12 @@ class ArrowPositioningService(IArrowPositioningService):
     ) -> Tuple[float, float, float]:
         """
         Calculate arrow position and rotation using complete positioning pipeline.
-
-        IMPLEMENTS COMPLETE POSITIONING PIPELINE:
-        1. Initial placement strategy (layer2_point vs hand_point)
-        2. Location calculation (shift, static, dash algorithms)
-        3. Adjustment calculation (default + special placements)
-        4. Quadrant-based directional adjustments
-        5. Final positioning with bounding rect compensation
         """
         if not arrow_data.motion_data:
-            # Default position for arrows without motion
             return self.CENTER_X, self.CENTER_Y, 0.0
 
         motion = arrow_data.motion_data
-
-        # STEP 1: Calculate arrow location using location calculators
         arrow_location = self._calculate_arrow_location(motion)
-
-        # STEP 2: Get initial position using initial placement strategy
         initial_position = self._compute_initial_position(motion, arrow_location)
 
         # STEP 3: Calculate rotation using rotation calculators
@@ -518,7 +506,7 @@ class ArrowPositioningService(IArrowPositioningService):
             elif prop_rot_dir == RotationDirection.COUNTER_CLOCKWISE:
                 return [(-x, -y), (y, -x), (x, y), (-y, x)]
             else:  # NO_ROTATION
-                return [(x, y), (-y, -x), (x, -y), (y, x)]
+                return [(x, y), (-y, -x), (x, -y), (y, -x)]
         else:  # box mode
             if prop_rot_dir == RotationDirection.CLOCKWISE:
                 return [(-y, x), (-x, -y), (y, -x), (x, y)]

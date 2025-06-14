@@ -15,7 +15,7 @@ class GridModeSelector(QWidget):
 
     def __init__(self, parent=None, style_provider=None, settings_manager=None):
         """Initialize the grid mode selector.
-
+        
         Args:
             parent: The parent widget
             style_provider: The style provider for consistent styling
@@ -32,6 +32,7 @@ class GridModeSelector(QWidget):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(self.style_provider.grid_spacing)
+
 
         # Create radio buttons
         self.grid_mode_group = QButtonGroup(self)
@@ -62,7 +63,7 @@ class GridModeSelector(QWidget):
 
     def get_grid_mode(self):
         """Get the selected grid mode.
-
+        
         Returns:
             str: "box" if box is selected, "diamond" otherwise
         """

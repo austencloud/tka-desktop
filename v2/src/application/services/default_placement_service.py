@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 from PyQt6.QtCore import QPointF
 
-from ...domain.models.core_models import MotionData, MotionType
+from domain.models.core_models import MotionData, MotionType
 
 
 class DefaultPlacementService:
@@ -26,18 +26,18 @@ class DefaultPlacementService:
 
         self.placements_files = {
             "diamond": {
-                "pro": "default_diamond_pro_placements.json",
-                "anti": "default_diamond_anti_placements.json",
-                "float": "default_diamond_float_placements.json",
-                "dash": "default_diamond_dash_placements.json",
-                "static": "default_diamond_static_placements.json",
+                "pro": "default/default_diamond_pro_placements.json",
+                "anti": "default/default_diamond_anti_placements.json",
+                "float": "default/default_diamond_float_placements.json",
+                "dash": "default/default_diamond_dash_placements.json",
+                "static": "default/default_diamond_static_placements.json",
             },
             "box": {
-                "pro": "default_box_pro_placements.json",
-                "anti": "default_box_anti_placements.json",
-                "float": "default_box_float_placements.json",
-                "dash": "default_box_dash_placements.json",
-                "static": "default_box_static_placements.json",
+                "pro": "default/default_box_pro_placements.json",
+                "anti": "default/default_box_anti_placements.json",
+                "float": "default/default_box_float_placements.json",
+                "dash": "default/default_box_dash_placements.json",
+                "static": "default/default_box_static_placements.json",
             },
         }
 
@@ -48,12 +48,7 @@ class DefaultPlacementService:
         for grid_mode, motion_files in self.placements_files.items():
             for motion_type, filename in motion_files.items():
                 filepath = (
-                    self.root_path
-                    / "v2"
-                    / "data"
-                    / "arrow_placements"
-                    / grid_mode
-                    / filename
+                    self.root_path / "data" / "arrow_placement" / grid_mode / filename
                 )
                 self.all_defaults[grid_mode][motion_type] = self._load_json(
                     str(filepath)

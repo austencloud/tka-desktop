@@ -16,7 +16,7 @@ class GenerateAllCheckbox(QWidget):
 
     def __init__(self, parent=None, style_provider=None, initial_state=False):
         """Initialize the generate all checkbox.
-
+        
         Args:
             parent: The parent widget
             style_provider: The style provider for consistent styling
@@ -46,7 +46,7 @@ class GenerateAllCheckbox(QWidget):
 
     def _on_state_changed(self, state):
         """Handle checkbox state changes.
-
+        
         Args:
             state: The new checkbox state
         """
@@ -54,7 +54,7 @@ class GenerateAllCheckbox(QWidget):
 
     def is_checked(self):
         """Get the current checkbox state.
-
+        
         Returns:
             bool: Whether the checkbox is checked
         """
@@ -62,7 +62,7 @@ class GenerateAllCheckbox(QWidget):
 
     def set_checked(self, checked):
         """Set the checkbox state.
-
+        
         Args:
             checked: The new checkbox state
         """

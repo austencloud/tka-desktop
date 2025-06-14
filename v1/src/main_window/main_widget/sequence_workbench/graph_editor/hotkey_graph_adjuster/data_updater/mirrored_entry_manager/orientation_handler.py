@@ -8,7 +8,6 @@ from .turns_pattern_manager import TurnsPatternManager
 
 logger = logging.getLogger(__name__)
 
-
 class OrientationHandler:
     def __init__(self, arrow: Arrow, turns_manager: TurnsPatternManager):
         self.arrow = arrow

@@ -1,4 +1,5 @@
 import os
+import logging
 from typing import TYPE_CHECKING
 from PIL import Image, PngImagePlugin
 from PyQt6.QtWidgets import QMessageBox
@@ -17,6 +18,9 @@ from utils.path_helpers import get_data_path
 
 
 class MetaDataExtractor:
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
     def get_tags(self, file_path: str) -> list[str]:
         """Retrieve the list of tags from the metadata."""
         metadata = self.extract_metadata_from_file(file_path)
@@ -53,12 +57,13 @@ class MetaDataExtractor:
                 if metadata:
                     return json.loads(metadata)
                 else:
-                    QMessageBox.warning(
-                        None,
-                        "Error",
-                        "No sequence metadata found in the thumbnail.",
+                    # Silent logging instead of annoying popup
+                    self.logger.debug(
+                        f"No sequence metadata found in thumbnail: {file_path}"
                     )
+                    return None
         except Exception as e:
+            # Keep critical errors as popups since these indicate real issues
             QMessageBox.critical(
                 None,
                 "Error",
@@ -139,8 +144,7 @@ class MetaDataExtractor:
         """
         Get the start position type (alpha, beta, gamma) from the metadata.
 
-        If the sequence_start_position field is missing, it attempts to derive it
-        from the end_pos field of the start position entry.
+        If the sequence_start_position field is missing, it attempts to derive it from the end_pos field of the start position entry.
         """
         metadata = self.extract_metadata_from_file(file_path)
         if metadata and "sequence" in metadata and len(metadata["sequence"]) > 1:

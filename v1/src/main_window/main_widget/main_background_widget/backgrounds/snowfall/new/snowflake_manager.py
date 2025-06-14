@@ -49,9 +49,7 @@ class SnowflakeManager:
 
             flake["x"] = flake["x"] % 1.0
 
-        self.wind += random.uniform(
-            -self.wind_direction_change, self.wind_direction_change
-        )
+        self.wind += random.uniform(-self.wind_direction_change, self.wind_direction_change)
         self.wind = max(-0.002, min(self.wind, 0.002))
 
     def draw_snowflakes(self, painter: QPainter, widget: QWidget):

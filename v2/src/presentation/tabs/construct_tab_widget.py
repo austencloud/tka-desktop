@@ -14,7 +14,8 @@ from PyQt6.QtGui import QFont
 from src.core.dependency_injection.simple_container import SimpleContainer
 from src.domain.models.core_models import SequenceData, BeatData
 from src.presentation.components.option_picker import ModernOptionPicker
-from src.presentation.components.start_position_picker import StartPositionPicker
+
+# StartPositionPicker imported locally in _create_start_position_widget method
 from src.application.services.option_picker_state_service import (
     OptionPickerStateService,
 )
@@ -38,6 +39,10 @@ class ConstructTabWidget(QWidget):
         self.container = container
         self.progress_callback = progress_callback
         self.state_service = OptionPickerStateService()
+
+        # Flag to prevent circular signal emissions during clear operations
+        self._emitting_signal = False
+
         self._setup_ui_with_progress()
         self._connect_signals()
 
@@ -78,27 +83,6 @@ class ConstructTabWidget(QWidget):
         # Create modern workbench with integrated button panel
         self.workbench = create_modern_workbench(self.container, panel)
         layout.addWidget(self.workbench)
-
-        # Clear sequence button (additional control)
-        self.clear_button = QPushButton("🗑️ Clear Sequence")
-        self.clear_button.setStyleSheet(
-            """
-            QPushButton {
-                background: rgba(220, 53, 69, 0.8);
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                margin: 5px;
-            }
-            QPushButton:hover {
-                background: rgba(220, 53, 69, 1.0);
-            }
-        """
-        )
-        self.clear_button.clicked.connect(self.clear_sequence)
-        layout.addWidget(self.clear_button)
 
         return panel
 
@@ -148,7 +132,9 @@ class ConstructTabWidget(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
 
-        from ..components.start_position_picker import StartPositionPicker
+        from ..components.start_position_picker.start_position_picker import (
+            StartPositionPicker,
+        )
 
         self.start_position_picker = StartPositionPicker()
         self.start_position_picker.start_position_selected.connect(
@@ -232,26 +218,147 @@ class ConstructTabWidget(QWidget):
     def _handle_option_selected(self, option_id: str):
         print(f"✅ Construct tab: Option selected: {option_id}")
 
+        # Get current sequence or create empty one if none exists
         current_sequence = self.workbench.get_sequence() if self.workbench else None
-        if current_sequence:
-            new_beat = BeatData(
-                letter="X", duration=4, beat_number=current_sequence.length + 1
-            )
+        if current_sequence is None:
+            current_sequence = SequenceData.empty()
+            print("📝 Created empty sequence for first beat")
+
+        try:
+            # Get real beat data from option picker
+            if self.option_picker and hasattr(
+                self.option_picker, "get_beat_data_for_option"
+            ):
+                # Try to get beat data from option picker first
+                real_beat = self.option_picker.get_beat_data_for_option(option_id)
+                print(
+                    f"🎯 Got beat data from option picker: {real_beat.letter if real_beat else 'None'}"
+                )
+            else:
+                # Fallback to dataset service
+                from ...application.services.pictograph_dataset_service import (
+                    PictographDatasetService,
+                )
+
+                dataset_service = PictographDatasetService()
+                # Use a different position for variety (not always alpha1_alpha1)
+                fallback_positions = ["beta5_beta5", "gamma11_gamma11", "alpha2_alpha2"]
+                real_beat = None
+
+                for pos in fallback_positions:
+                    real_beat = dataset_service.get_start_position_pictograph(
+                        pos, "diamond"
+                    )
+                    if real_beat:
+                        print(f"🎯 Using fallback beat data: {real_beat.letter}")
+                        break
+
+            if real_beat:
+                # Update beat number for sequence position
+                new_beat = real_beat.update(
+                    beat_number=current_sequence.length + 1,
+                    duration=1.0,  # Ensure valid duration
+                )
+                print(
+                    f"📝 Created new beat: {new_beat.letter} (beat #{new_beat.beat_number})"
+                )
+            else:
+                # Last resort fallback
+                print("⚠️ No real beat data available, creating basic beat")
+                new_beat = BeatData.empty().update(
+                    beat_number=current_sequence.length + 1,
+                    duration=1.0,
+                    letter=f"Beat{current_sequence.length + 1}",
+                    is_blank=False,
+                )
+
+            # Add beat to sequence
             updated_beats = current_sequence.beats + [new_beat]
             updated_sequence = current_sequence.update(beats=updated_beats)
 
+            print(f"📊 Sequence updated: {len(updated_beats)} beats")
+
+            # Update workbench
             if self.workbench:
                 self.workbench.set_sequence(updated_sequence)
-            self.sequence_modified.emit(updated_sequence)
+                print("✅ Workbench sequence updated")
+
+            # Emit signal (with protection)
+            if not self._emitting_signal:
+                try:
+                    self._emitting_signal = True
+                    self.sequence_modified.emit(updated_sequence)
+                    print("📡 Sequence modified signal emitted")
+                finally:
+                    self._emitting_signal = False
+            else:
+                print("🔄 Skipping signal emission to prevent circular calls")
+
+        except Exception as e:
+            print(f"❌ Error in option selection: {e}")
+            import traceback
+
+            traceback.print_exc()
+
+            # Emergency fallback
+            try:
+                new_beat = BeatData.empty().update(
+                    beat_number=current_sequence.length + 1,
+                    duration=1.0,
+                    letter=f"Error{current_sequence.length + 1}",
+                    is_blank=False,
+                )
+                updated_beats = current_sequence.beats + [new_beat]
+                updated_sequence = current_sequence.update(beats=updated_beats)
+
+                if self.workbench:
+                    self.workbench.set_sequence(updated_sequence)
+                self.sequence_modified.emit(updated_sequence)
+                print("🚑 Emergency fallback beat added")
+
+            except Exception as fallback_error:
+                print(f"❌ Even emergency fallback failed: {fallback_error}")
 
     def _create_start_position_data(self, position_key: str) -> BeatData:
-        """Create start position data from position key (separate from sequence beats)"""
-        return BeatData(
-            letter=position_key,
-            duration=1.0,  # Use valid duration (start position is conceptual, not timed)
-            beat_number=1,  # Use valid beat number (start position acts as reference beat)
-            is_blank=False,  # Start position has valid data
-        )
+        """Create start position data from position key using real dataset (separate from sequence beats)"""
+        try:
+            from ...application.services.pictograph_dataset_service import (
+                PictographDatasetService,
+            )
+
+            dataset_service = PictographDatasetService()
+            # Get real start position data from dataset
+            real_start_position = dataset_service.get_start_position_pictograph(
+                position_key, "diamond"
+            )
+
+            if real_start_position:
+                # Ensure it has proper beat number for start position
+                return real_start_position.update(
+                    beat_number=1,  # Start position is always beat 1
+                    duration=1.0,  # Standard duration
+                )
+            else:
+                print(
+                    f"⚠️ No real data found for position {position_key}, using fallback"
+                )
+                # Fallback to empty beat with position key as letter
+                return BeatData.empty().update(
+                    letter=position_key,
+                    beat_number=1,
+                    duration=1.0,
+                    is_blank=False,
+                )
+
+        except Exception as e:
+            print(f"❌ Error loading real start position data: {e}")
+            # Fallback to basic beat data
+            return BeatData.empty().update(
+                letter=position_key,
+                beat_number=1,
+                duration=1.0,
+                is_blank=False,
+            )
 
     def _populate_option_picker_from_start_position(
         self, position_key: str, start_position_data: BeatData
@@ -304,7 +411,25 @@ class ConstructTabWidget(QWidget):
         print(f"🔄 Construct tab state changed: {new_state}")
 
     def _on_workbench_modified(self, sequence: SequenceData):
-        self.sequence_modified.emit(sequence)
+        """Handle workbench sequence modification with circular emission protection"""
+        if self._emitting_signal:
+            print("🔄 Construct tab: Preventing circular signal emission")
+            return
+
+        try:
+            self._emitting_signal = True
+            print(
+                f"📡 Construct tab: Emitting sequence_modified for {sequence.length if sequence else 0} beats"
+            )
+            self.sequence_modified.emit(sequence)
+            print("✅ Construct tab: Signal emitted successfully")
+        except Exception as e:
+            print(f"❌ Construct tab: Signal emission failed: {e}")
+            import traceback
+
+            traceback.print_exc()
+        finally:
+            self._emitting_signal = False
 
     def _on_operation_completed(self, message: str):
         print(f"✅ Operation completed: {message}")

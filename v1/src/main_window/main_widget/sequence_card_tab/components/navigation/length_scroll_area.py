@@ -6,11 +6,11 @@ from PyQt6.QtWidgets import (
     QFrame,
 )
 from PyQt6.QtCore import Qt, pyqtSignal
-from typing import Dict
+from typing import  Dict
 
-from main_window.main_widget.sequence_card_tab.components.navigation.length_option_frame import (
-    LengthOptionFrame,
-)
+from main_window.main_widget.sequence_card_tab.components.navigation.length_option_frame import LengthOptionFrame
+
+
 
 
 class LengthScrollArea(QScrollArea):

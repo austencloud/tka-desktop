@@ -93,7 +93,9 @@ class ImageExportTabButton(QPushButton):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        parent_width = self.parentWidget().width() if self.parentWidget() else 200
+        parent_width = (
+            self.parentWidget().width() if self.parentWidget() else 200
+        )
         font_size = int(parent_width / 60)
         font = QFont()
         font.setPointSize(font_size)

@@ -220,7 +220,7 @@ class PositionMatchingService:
             }
 
         # Import here to avoid circular imports
-        from ...domain.models.letter_type_classifier import LetterTypeClassifier
+        from domain.models.letter_type_classifier import LetterTypeClassifier
 
         letters = [opt.get("letter", "Unknown") for opt in options]
         letter_types = {}

@@ -80,6 +80,7 @@ class ModernSettingsDialog(QDialog):
         close_button = QPushButton("✕")
         close_button.setObjectName("close_button")
         close_button.setFixedSize(40, 40)
+        close_button.setCursor(Qt.CursorShape.PointingHandCursor)
         close_button.clicked.connect(self.close)
 
         header_layout.addWidget(title)
@@ -102,14 +103,17 @@ class ModernSettingsDialog(QDialog):
 
         reset_button = QPushButton("Reset to Defaults")
         reset_button.setObjectName("action_button")
+        reset_button.setCursor(Qt.CursorShape.PointingHandCursor)
         reset_button.clicked.connect(self._reset_settings)
 
         apply_button = QPushButton("Apply")
         apply_button.setObjectName("action_button")
+        apply_button.setCursor(Qt.CursorShape.PointingHandCursor)
         apply_button.clicked.connect(self._apply_settings)
 
         ok_button = QPushButton("OK")
         ok_button.setObjectName("primary_button")
+        ok_button.setCursor(Qt.CursorShape.PointingHandCursor)
         ok_button.clicked.connect(self.accept)
 
         button_layout.addWidget(reset_button)

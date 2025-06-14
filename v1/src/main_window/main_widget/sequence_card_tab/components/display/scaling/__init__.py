@@ -5,6 +5,6 @@ from .aspect_ratio_manager import AspectRatioManager
 
 __all__ = [
     "ScalingCalculator",
-    "QualityEnhancer",
+    "QualityEnhancer", 
     "AspectRatioManager",
 ]

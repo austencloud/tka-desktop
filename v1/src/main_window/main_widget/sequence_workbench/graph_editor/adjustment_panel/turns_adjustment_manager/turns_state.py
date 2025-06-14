@@ -2,7 +2,6 @@
 from PyQt6.QtCore import QObject, pyqtSignal
 from .turns_value import TurnsValue
 
-
 class TurnsState(QObject):
     turns_changed = pyqtSignal(TurnsValue)
     validation_error = pyqtSignal(str)
@@ -29,7 +28,7 @@ class TurnsState(QObject):
         """Ensure valid state transitions"""
         current = self._current_turns.raw_value
         new = new_value.raw_value
-
+        
         if current == "fl" and new == 0:
             return  # Valid float to zero transition
         if current == 0 and new == "fl":

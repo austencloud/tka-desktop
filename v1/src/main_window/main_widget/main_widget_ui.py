@@ -10,7 +10,7 @@ from core.migration_adapters import AppContextAdapter
 from .construct_tab.construct_tab_factory import ConstructTabFactory
 from .generate_tab.generate_tab_factory import GenerateTabFactory
 from .learn_tab.learn_tab_factory import LearnTabFactory
-from browse_tab.integration.browse_tab_factory import BrowseTabFactory
+from .browse_tab.browse_tab_factory import BrowseTabFactory
 from .main_background_widget.main_background_widget_factory import (
     MainBackgroundWidgetFactory,
 )
@@ -50,9 +50,6 @@ class MainWidgetUI:
         # Use the modern settings dialog with dependency injection
         try:
             from .settings_dialog.settings_dialog_factory import SettingsDialogFactory
-            from .settings_dialog.tabs.settings_tab_manager import (
-                SettingsTabImportError,
-            )
 
             if app_context:
                 mw.settings_dialog = SettingsDialogFactory.create(mw, app_context)
@@ -65,52 +62,13 @@ class MainWidgetUI:
 
                 mw.settings_dialog = ModernSettingsDialog(mw)
                 print("[SUCCESS] Using modern settings dialog (legacy mode)!")
-
-        except SettingsTabImportError as e:
-            # Critical error - settings tabs are missing or broken
-            error_msg = f"CRITICAL ERROR: Settings dialog cannot be initialized due to missing or broken tab implementations.\n\nError: {e}\n\nThe application cannot start properly without functional settings tabs."
-            print(f"[CRITICAL ERROR] {error_msg}")
-
-            # Show error dialog to user and exit
-            from PyQt6.QtWidgets import QMessageBox, QApplication
-
-            app = QApplication.instance()
-            if app:
-                msg_box = QMessageBox()
-                msg_box.setIcon(QMessageBox.Icon.Critical)
-                msg_box.setWindowTitle("Critical Application Error")
-                msg_box.setText("Settings Dialog Initialization Failed")
-                msg_box.setDetailedText(error_msg)
-                msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
-                msg_box.exec()
-
-            # Exit the application - we cannot continue without functional settings
-            import sys
-
-            sys.exit(1)
-
         except Exception as e:
-            # Unexpected error - still critical but different handling
-            error_msg = f"UNEXPECTED ERROR: Failed to create settings dialog due to an unexpected error.\n\nError: {e}\n\nThis may indicate a code issue that needs to be fixed."
-            print(f"[UNEXPECTED ERROR] {error_msg}")
+            print(f"[ERROR] Failed to create settings dialog: {e}")
+            # Create a minimal fallback
+            from PyQt6.QtWidgets import QWidget
 
-            # Show error dialog to user and exit
-            from PyQt6.QtWidgets import QMessageBox, QApplication
-
-            app = QApplication.instance()
-            if app:
-                msg_box = QMessageBox()
-                msg_box.setIcon(QMessageBox.Icon.Critical)
-                msg_box.setWindowTitle("Unexpected Application Error")
-                msg_box.setText("Settings Dialog Creation Failed")
-                msg_box.setDetailedText(error_msg)
-                msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
-                msg_box.exec()
-
-            # Exit the application - we cannot continue without settings
-            import sys
-
-            sys.exit(1)
+            mw.settings_dialog = QWidget(mw)
+            mw.settings_dialog.setWindowTitle("Settings (Unavailable)")
 
         mw.left_stack = QStackedWidget()
         mw.right_stack = QStackedWidget()
@@ -164,8 +122,12 @@ class MainWidgetUI:
 
             mw.generate_tab = GenerateTab(mw, settings_manager, json_manager)
 
-        # Create Browse Tab using the new factory system
-        mw.browse_tab = BrowseTabFactory.create(mw, temp_app_context)
+        try:
+            mw.browse_tab = BrowseTabFactory.create(mw, temp_app_context)
+        except TypeError:
+            from .browse_tab.browse_tab import BrowseTab
+
+            mw.browse_tab = BrowseTab(mw, settings_manager, json_manager)
 
         try:
             mw.learn_tab = LearnTabFactory.create(mw, temp_app_context)

@@ -1,1 +1,0 @@
-# Standalone Image Creator Service

@@ -3,6 +3,7 @@ from PyQt6.QtGui import QBrush, QPen, QColor
 from PyQt6.QtCore import QPointF, Qt
 
 
+
 class NonRadialGridPoint(QGraphicsEllipseItem):
     def __init__(self, x, y, r, point_id):
         super().__init__(-r, -r, 2 * r, 2 * r)

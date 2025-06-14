@@ -4,9 +4,7 @@ from PyQt6.QtGui import QLinearGradient, QColor, QPainter
 from PyQt6.QtWidgets import QWidget
 import math
 
-from main_window.main_widget.main_background_widget.backgrounds.base_background import (
-    BaseBackground,
-)
+from main_window.main_widget.main_background_widget.backgrounds.base_background import BaseBackground
 
 from .sparkle_manager import SparkleManager
 from .blob_manager import BlobManager

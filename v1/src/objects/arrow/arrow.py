@@ -1,10 +1,6 @@
 # objects/arrow/arrow.py
-from objects.arrow.managers.location_manager.arrow_location_manager import (
-    ArrowLocationManager,
-)
-from objects.arrow.managers.rot_angle_manager.arrow_rot_angle_manager import (
-    ArrowRotAngleManager,
-)
+from objects.arrow.managers.location_manager.arrow_location_manager import ArrowLocationManager
+from objects.arrow.managers.rot_angle_manager.arrow_rot_angle_manager import ArrowRotAngleManager
 from .arrow_state import ArrowState
 from .arrow_mirror_handler import ArrowMirrorManager
 from .arrow_updater import ArrowUpdater
@@ -19,7 +15,7 @@ if TYPE_CHECKING:
 class Arrow(GraphicalObject):
     motion: "Motion"
     name = "arrow"
-
+    
     def __init__(self, pictograph, arrow_data) -> None:
         super().__init__(pictograph)
         self.arrow_data = arrow_data

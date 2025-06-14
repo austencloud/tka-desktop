@@ -10,7 +10,7 @@ import random
 import time
 from typing import Optional, Dict, Any, List, Set
 
-from ...domain.models.generation_models import (
+from domain.models.generation_models import (
     GenerationConfig,
     GenerationResult,
     GenerationMetadata,

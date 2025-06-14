@@ -12,12 +12,13 @@ from objects.arrow.arrow import Arrow
 from placement_managers.attr_key_generator import (
     AttrKeyGenerator,
 )
-
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.graph_editor.hotkey_graph_adjuster.hotkey_graph_adjuster import (
         HotkeyGraphAdjuster,
     )
     from .special_placement_data_updater import SpecialPlacementDataUpdater
+
+
 
 
 class SpecialPlacementEntryRemover:

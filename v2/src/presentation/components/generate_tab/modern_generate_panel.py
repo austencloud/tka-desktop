@@ -171,9 +171,11 @@ class ModernGeneratePanel(QWidget):
 
         self._generate_button = QPushButton("Generate New Sequence")
         self._generate_button.setMinimumHeight(40)
+        self._generate_button.setCursor(Qt.CursorShape.PointingHandCursor)
 
         self._auto_complete_button = QPushButton("Auto Complete")
         self._auto_complete_button.setMinimumHeight(40)
+        self._auto_complete_button.setCursor(Qt.CursorShape.PointingHandCursor)
 
         button_layout.addWidget(self._auto_complete_button)
         button_layout.addWidget(self._generate_button)

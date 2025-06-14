@@ -14,10 +14,9 @@ class LayoutDropdown(QComboBox):
         self.layout_selector = layout_selector
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
+
     def _populate_dropdown(self):
-        valid_layout_strs = [
-            f"{rows} x {cols}" for rows, cols in self.layout_selector.valid_layouts
-        ]
+        valid_layout_strs = [f"{rows} x {cols}" for rows, cols in self.layout_selector.valid_layouts]
         self.addItems(valid_layout_strs)
         self.currentTextChanged.connect(self._on_current_text_changed)
 

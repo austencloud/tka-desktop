@@ -11,7 +11,7 @@ class CAPType(Enum):
 
     ROTATED_COMPLEMENTARY = "rotated_complementary"
     MIRRORED_SWAPPED = "mirrored_swapped"
-
+    
     MIRRORED_COMPLEMENTARY = "mirrored_complementary"
     ROTATED_SWAPPED = "rotated_swapped"
 
@@ -22,7 +22,7 @@ class CAPType(Enum):
     # MIRRORED_ROTATED_SWAPPED = "mirrored_rotated_swapped"
     # MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED = "mirrored_rotated_complementary_swapped"
     # TIME REVERSAL = "time_reversal"
-
+    
     @staticmethod
     def from_str(s: str):
         _lookup_map = {cap_type.value: cap_type for cap_type in CAPType}

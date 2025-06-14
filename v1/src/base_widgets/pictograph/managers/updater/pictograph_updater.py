@@ -50,6 +50,7 @@ class PictographUpdater:
         self.pictograph.elements.tka_glyph.update_tka_glyph()
         self.pictograph.elements.reversal_glyph.update_reversal_symbols()
 
+
         logger.debug("Data update (partial or complete) applied successfully.")
 
     def get_prop_data(self, pictograph_data: dict, color: str) -> dict:

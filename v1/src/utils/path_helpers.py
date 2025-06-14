@@ -4,83 +4,46 @@ import winreg
 
 
 def get_data_path(filename) -> str:
-    """
-    Dynamically resolve the correct data path.
-
-    This function tries to find the specified file in multiple possible locations.
-    It first checks if the file exists in each location before returning the path.
-    """
-    if hasattr(sys, "_MEIPASS"):  # PyInstaller uses _MEIPASS for the temp folder
+    if hasattr(sys, "_MEIPASS"):
         base_dir = os.path.join(sys._MEIPASS, "src", "data")
         full_path = os.path.join(base_dir, filename)
         if os.path.exists(full_path):
             return full_path
 
-    # Try multiple possible locations for the data directory
-    possible_paths = [
-        os.path.abspath(os.path.join(os.getcwd(), "data")),
-        os.path.abspath(os.path.join(os.getcwd(), "src", "data")),
-        os.path.abspath(os.path.join(os.path.dirname(os.getcwd()), "data")),
-        os.path.abspath(os.path.join(os.path.dirname(os.getcwd()), "src", "data")),
-        os.path.abspath(os.path.join(os.getcwd(), "..", "data")),
-        os.path.abspath(os.path.join(os.getcwd(), "..", "src", "data")),
-    ]
+    # Always use root data directory as single source of truth
+    root_data_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "data")
+    )
 
-    # Check each possible path for the specific file
-    for base_dir in possible_paths:
-        full_path = os.path.join(base_dir, filename)
-        if os.path.exists(full_path):
-            return full_path
+    full_path = os.path.join(root_data_dir, filename)
+    if os.path.exists(full_path):
+        return full_path
 
-    # If the file is not found in any of the possible locations,
-    # return the default path (even if the file doesn't exist there)
-    base_dir = os.path.abspath(os.path.join(os.getcwd(), "data"))
-    os.makedirs(base_dir, exist_ok=True)
-    return os.path.join(base_dir, filename)
+    os.makedirs(root_data_dir, exist_ok=True)
+    return full_path
 
 
 def get_image_path(filename) -> str:
-    """
-    Dynamically resolve the correct images path.
-
-    This function tries to find the specified file in multiple possible locations.
-    It first checks if the file exists in each location before returning the path.
-    If the file is not found, it returns a path where the file should be.
-    """
-    # Normalize the filename to use forward slashes
     filename = filename.replace("\\", "/")
 
-    if hasattr(sys, "_MEIPASS"):  # PyInstaller uses _MEIPASS for the temp folder
+    if hasattr(sys, "_MEIPASS"):
         base_dir = os.path.join(sys._MEIPASS, "src", "images")
         full_path = os.path.join(base_dir, filename)
         if os.path.exists(full_path):
             return full_path
 
-    # Try multiple possible locations for the images directory
-    possible_paths = [
-        os.path.abspath(os.path.join(os.getcwd(), "images")),
-        os.path.abspath(os.path.join(os.getcwd(), "src", "images")),
-        os.path.abspath(os.path.join(os.path.dirname(os.getcwd()), "images")),
-        os.path.abspath(os.path.join(os.getcwd(), "..", "images")),
-        os.path.abspath(os.path.join(os.getcwd(), "data", "images")),
-        os.path.abspath(os.path.join(os.getcwd(), "src", "data", "images")),
-    ]
+    # Always use root images directory as single source of truth
+    root_images_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "images")
+    )
 
-    # Check each possible path for the specific file
-    for base_dir in possible_paths:
-        full_path = os.path.join(base_dir, filename)
-        if os.path.exists(full_path):
-            return full_path
+    full_path = os.path.join(root_images_dir, filename)
+    if os.path.exists(full_path):
+        return full_path
 
-    # If the file is not found in any of the possible locations,
-    # create the default directory and return the path (even if the file doesn't exist)
-    base_dir = os.path.abspath(os.path.join(os.getcwd(), "images"))
-
-    # Create the directory structure for the file
-    dir_path = os.path.dirname(os.path.join(base_dir, filename))
+    dir_path = os.path.dirname(full_path)
     os.makedirs(dir_path, exist_ok=True)
-
-    return os.path.join(base_dir, filename)
+    return full_path
 
 
 def get_settings_path():
@@ -134,44 +97,18 @@ def get_user_editable_resource_path(filename) -> str:
 
 
 def get_dictionary_path() -> str:
-    """
-    Returns the path to the dictionary directory.
-
-    In development mode, it tries multiple possible locations.
-    In a packaged PyInstaller executable, it uses the AppData directory.
-    """
     if getattr(sys, "frozen", False):
-        # For packaged executable
         dictionary_path = os.path.join(
             os.getenv("LOCALAPPDATA"), "The Kinetic Alphabet", "dictionary"
         )
     else:
-        # For development mode, try multiple possible locations
-        possible_paths = [
-            os.path.abspath(os.path.join(os.getcwd(), "data", "dictionary")),
-            os.path.abspath(os.path.join(os.getcwd(), "src", "data", "dictionary")),
-            os.path.abspath(
-                os.path.join(os.path.dirname(os.getcwd()), "data", "dictionary")
-            ),
-            os.path.abspath(os.path.join(os.getcwd(), "..", "data", "dictionary")),
-            os.path.abspath(os.path.join(os.getcwd(), "dictionary")),
-            os.path.abspath(os.path.join(os.getcwd(), "browse")),  # Legacy path
-        ]
-
-        # Use the first path that exists
-        dictionary_path = None
-        for path in possible_paths:
-            if os.path.exists(path):
-                dictionary_path = path
-                break
-
-        # If no existing path is found, use the default
-        if dictionary_path is None:
-            dictionary_path = os.path.abspath(
-                os.path.join(os.getcwd(), "data", "dictionary")
+        # Always use root data/dictionary directory
+        dictionary_path = os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__), "..", "..", "..", "data", "dictionary"
             )
+        )
 
-    # Make sure the directory exists
     os.makedirs(dictionary_path, exist_ok=True)
     return dictionary_path
 

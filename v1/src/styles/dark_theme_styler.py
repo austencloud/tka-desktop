@@ -1,13 +1,5 @@
 from PyQt6.QtGui import QPalette, QColor, QCursor
-from PyQt6.QtWidgets import (
-    QWidget,
-    QTabWidget,
-    QPushButton,
-    QFrame,
-    QLabel,
-    QComboBox,
-    QSpinBox,
-)
+from PyQt6.QtWidgets import QWidget, QTabWidget, QPushButton, QFrame, QLabel, QComboBox, QSpinBox
 from PyQt6.QtCore import Qt
 
 
@@ -71,8 +63,7 @@ class DarkThemeStyler:
         palette.setColor(QPalette.ColorRole.Window, QColor(DarkThemeStyler.LIGHT_BG))
         tab_widget.setPalette(palette)
 
-        tab_widget.setStyleSheet(
-            f"""
+        tab_widget.setStyleSheet(f"""
             QTabWidget::pane {{
                 background: {DarkThemeStyler.LIGHT_BG};
                 border: 1px solid {DarkThemeStyler.BORDER_COLOR};
@@ -89,15 +80,13 @@ class DarkThemeStyler:
             QTabBar::tab:hover {{
                 background: {DarkThemeStyler.BUTTON_HOVER};
             }}
-        """
-        )
+        """)
 
     @staticmethod
     def style_button(button: QPushButton):
         """Apply dark mode styles to a QPushButton with hover and pressed animations."""
         button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        button.setStyleSheet(
-            f"""
+        button.setStyleSheet(f"""
             QPushButton {{
                 {DarkThemeStyler.DEFAULT_BG_GRADIENT}
                 border: 2px solid {DarkThemeStyler.BORDER_COLOR};
@@ -112,20 +101,17 @@ class DarkThemeStyler:
             QPushButton:pressed {{
                 background-color: {DarkThemeStyler.BORDER_COLOR};
             }}
-        """
-        )
+        """)
 
     @staticmethod
     def style_frame(frame: QFrame):
         """Apply dark mode styles to a QFrame."""
-        frame.setStyleSheet(
-            f"""
+        frame.setStyleSheet(f"""
             QFrame {{
                 background-color: {DarkThemeStyler.LIGHT_BG};
                 border: 1px solid {DarkThemeStyler.BORDER_COLOR};
             }}
-        """
-        )
+        """)
 
     @staticmethod
     def style_label(label: QLabel):
@@ -135,8 +121,7 @@ class DarkThemeStyler:
     @staticmethod
     def style_combo_box(combo_box: QComboBox):
         """Apply dark mode styles to a QComboBox."""
-        combo_box.setStyleSheet(
-            f"""
+        combo_box.setStyleSheet(f"""
             QComboBox {{
                 background-color: {DarkThemeStyler.LIGHT_BG};
                 color: {DarkThemeStyler.TEXT_COLOR};
@@ -148,19 +133,17 @@ class DarkThemeStyler:
                 color: {DarkThemeStyler.TEXT_COLOR};
                 selection-background-color: {DarkThemeStyler.ACCENT_COLOR};
             }}
-        """
-        )
+        """)
 
     @staticmethod
     def style_spinbox(spinbox: QSpinBox):
         """Apply dark mode styles to a QSpinBox."""
-        spinbox.setStyleSheet(
-            f"""
+        spinbox.setStyleSheet(f"""
             QSpinBox {{
                 background-color: {DarkThemeStyler.LIGHT_BG};
                 color: {DarkThemeStyler.TEXT_COLOR};
                 border: 1px solid {DarkThemeStyler.BORDER_COLOR};
                 padding: 5px;
             }}
-        """
-        )
+        """)
+

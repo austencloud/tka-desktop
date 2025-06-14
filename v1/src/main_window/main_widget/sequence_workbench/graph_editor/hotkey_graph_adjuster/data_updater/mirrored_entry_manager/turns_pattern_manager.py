@@ -20,6 +20,9 @@ class TurnsPatternManager:
     for both normal and mirrored entries.
     """
 
+
+
+
     def extract_turns_from_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Extract turns values from pictograph data.

@@ -3,12 +3,8 @@ from base_widgets.pictograph.elements.grid.non_radial_points_group import (
     NonRadialPointsGroup,
 )
 from enums.glyph_enum import Glyph
-
 if TYPE_CHECKING:
-    from .visibility_pictograph_interaction_manager import (
-        VisibilityPictographInteractionManager,
-    )
-
+    from .visibility_pictograph_interaction_manager import VisibilityPictographInteractionManager
 
 class VisibilityController:
     """Controls visibility and opacity transitions for pictograph elements."""
@@ -71,3 +67,5 @@ class VisibilityController:
         else:
             # For other glyphs
             self.manager.toggler.toggle_glyph_visibility(item.name, new_visibility)
+
+    

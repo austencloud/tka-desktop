@@ -1,5 +1,4 @@
 from datetime import datetime
-import logging
 from PyQt6.QtGui import QImage, QPainter, QPen
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
@@ -31,17 +30,7 @@ class ImageCreator:
         self.export_manager = export_manager
         self.beat_frame = export_manager.beat_frame
         self.layout_manager = export_manager.layout_handler
-        # Get beat size with safety check for None beat
-        if (
-            hasattr(self.beat_frame, "start_pos_view")
-            and self.beat_frame.start_pos_view
-            and hasattr(self.beat_frame.start_pos_view, "beat")
-            and self.beat_frame.start_pos_view.beat
-        ):
-            self.beat_size = self.beat_frame.start_pos_view.beat.width()
-        else:
-            # Default beat size if start_pos_view.beat is None
-            self.beat_size = 950  # Standard beat size
+        self.beat_size = self.beat_frame.start_pos_view.beat.width()
         self.beat_factory = export_manager.beat_factory
         self.beat_scale = 1
         self._setup_drawers()
@@ -59,8 +48,6 @@ class ImageCreator:
         options: dict = None,
         dictionary: bool = False,
         fullscreen_preview: bool = False,
-        override_word: str = None,
-        override_difficulty_level: int = None,
     ) -> QImage:
         if options is None:
             options = (
@@ -82,27 +69,14 @@ class ImageCreator:
         if not fullscreen_preview:
             options.update(self._update_options(options, num_filled_beats))
 
-        # Apply dynamic scale factor FIRST if provided (for page-optimized generation)
-        original_beat_scale = self.beat_scale
-        if (
-            "dynamic_scale_factor" in options
-            and options["dynamic_scale_factor"] is not None
-        ):
-            self.beat_scale = options["dynamic_scale_factor"]
-            logging.info(f"🎯 Applied dynamic scale factor: {self.beat_scale:.3f}")
-
         if options["add_reversal_symbols"]:
             self.reversal_processor.process_reversals(sequence, filled_beats)
-
-        # Calculate additional heights AFTER scale factor is applied
         options["additional_height_top"], options["additional_height_bottom"] = (
             self._determine_additional_heights(options, num_filled_beats)
         )
-
         if dictionary or fullscreen_preview:
             options = self._parse_options_for_dictionary_or_fullscreen_preview(options)
-
-        # Get the layout based on the current beat frame layout
+        # Get the layout based on tFuckhe current beat frame layout
         # Note: layout_manager.calculate_layout returns (columns, rows) for the image
         column_count, row_count = self.layout_manager.calculate_layout(
             num_filled_beats,
@@ -115,15 +89,6 @@ class ImageCreator:
             options["additional_height_top"] + options["additional_height_bottom"],
         )
 
-        # Extract start position data from sequence if available
-        start_pos_data = None
-        if options["include_start_position"] and len(sequence) > 1:
-            # Look for start position data in the sequence (usually at index 1)
-            for entry in sequence:
-                if entry.get("sequence_start_position"):
-                    start_pos_data = entry
-                    break
-
         self.beat_drawer.draw_beats(
             image,
             filled_beats,
@@ -132,20 +97,9 @@ class ImageCreator:
             options["include_start_position"],
             options["additional_height_top"],
             options["add_beat_numbers"],
-            start_pos_data,  # Pass start position data to BeatDrawer
         )
         if not fullscreen_preview and not dictionary:
-            self._draw_additional_info(
-                image,
-                filled_beats,
-                options,
-                num_filled_beats,
-                override_word=override_word,
-                override_difficulty_level=override_difficulty_level,
-            )
-
-        # Restore original beat scale to avoid affecting subsequent operations
-        self.beat_scale = original_beat_scale
+            self._draw_additional_info(image, filled_beats, options, num_filled_beats)
 
         return image
 
@@ -168,9 +122,7 @@ class ImageCreator:
             "add_user_info": False,
             "add_word": False,
             "add_difficulty_level": False,
-            "include_start_position": options.get(
-                "include_start_position", False
-            ),  # Preserve start position setting instead of forcing False
+            "include_start_position": False,
             "combined_grids": options.get(
                 "combined_grids", False
             ),  # Preserve combined grids setting
@@ -229,35 +181,22 @@ class ImageCreator:
         filled_beats: list[BeatView],
         options: dict,
         num_filled_beats: int,
-        override_word: str = None,
-        override_difficulty_level: int = None,
     ):
         if options["add_user_info"]:
             self.user_info_drawer.draw_user_info(image, options, num_filled_beats)
 
         if options["add_word"]:
-            # Use override word if provided, otherwise get from beat frame
-            if override_word is not None:
-                word = override_word
-            else:
-                word = self.beat_frame.get.current_word()
+            word = self.beat_frame.get.current_word()
             self.word_drawer.draw_word(
                 image, word, num_filled_beats, options["additional_height_top"]
             )
 
         if options["add_difficulty_level"]:
-            # Use override difficulty level if provided, otherwise calculate from current sequence
-            if override_difficulty_level is not None:
-                difficulty_level = override_difficulty_level
-            else:
-                difficulty_level = self.export_manager.main_widget.sequence_level_evaluator.get_sequence_difficulty_level(
-                    self.export_manager.beat_frame.json_manager.loader_saver.load_current_sequence()
-                )
+            difficulty_level = self.export_manager.main_widget.sequence_level_evaluator.get_sequence_difficulty_level(
+                self.export_manager.beat_frame.json_manager.loader_saver.load_current_sequence()
+            )
             self.difficulty_level_drawer.draw_difficulty_level(
-                image,
-                difficulty_level,
-                options["additional_height_top"],
-                self.beat_scale,
+                image, difficulty_level, options["additional_height_top"]
             )
 
         for beat_view in filled_beats:

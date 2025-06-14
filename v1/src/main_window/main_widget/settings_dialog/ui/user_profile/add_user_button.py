@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from .user_profile_tab import UserProfileTab
 
 
+
 class AddUserButton(QPushButton):
     """Button for adding a new user with plus icon."""
 

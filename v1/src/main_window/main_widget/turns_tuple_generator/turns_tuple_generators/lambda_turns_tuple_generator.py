@@ -24,8 +24,7 @@ class LambdaTurnsTupleGenerator(BaseTurnsTupleGenerator):
 
         if dash.state.turns == 0 and static.state.turns > 0:
             open_close_state = static_direction_map.get(
-                (dash.state.end_loc, static.state.end_loc, static.state.prop_rot_dir),
-                "",
+                (dash.state.end_loc, static.state.end_loc, static.state.prop_rot_dir), ""
             )
             return f"({self._normalize_turns(dash)}, {self._normalize_turns(static)}, {open_close_state})"
         elif static.state.turns == 0 and dash.state.turns > 0:
@@ -35,15 +34,12 @@ class LambdaTurnsTupleGenerator(BaseTurnsTupleGenerator):
             return f"({self._normalize_turns(dash)}, {self._normalize_turns(static)}, {open_close_state})"
         elif static.state.turns > 0 and dash.state.turns > 0:
             static_open_close_state = static_direction_map.get(
-                (dash.state.end_loc, static.state.end_loc, static.state.prop_rot_dir),
-                "",
+                (dash.state.end_loc, static.state.end_loc, static.state.prop_rot_dir), ""
             )
             dash_open_close_state = dash_direction_map.get(
                 (dash.state.end_loc, static.state.end_loc, dash.state.prop_rot_dir), ""
             )
-            vtg_dir = (
-                "s" if static.state.prop_rot_dir == dash.state.prop_rot_dir else "o"
-            )
+            vtg_dir = "s" if static.state.prop_rot_dir == dash.state.prop_rot_dir else "o"
             return f"({vtg_dir}, {self._normalize_turns(dash)}, {self._normalize_turns(static)}, {dash_open_close_state}, {static_open_close_state})"
         else:
             return f"({self._normalize_turns(dash)}, {self._normalize_turns(static)})"

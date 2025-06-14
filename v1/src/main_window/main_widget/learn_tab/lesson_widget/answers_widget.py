@@ -39,9 +39,7 @@ class AnswersWidget(QWidget):
         if answer_type == "button":
             return ButtonAnswersRenderer()
         elif answer_type == "pictograph":
-            return PictographAnswersRenderer(
-                self.lesson_widget.lesson_type, columns=columns, spacing=spacing
-            )
+            return PictographAnswersRenderer(self.lesson_widget.lesson_type, columns=columns, spacing=spacing)
         else:
             raise ValueError(f"Unknown answer_type: {answer_type}")
 

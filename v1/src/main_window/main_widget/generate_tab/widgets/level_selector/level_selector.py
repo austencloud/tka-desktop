@@ -48,9 +48,7 @@ class LevelSelector(QWidget):
 
             info_label = QLabel(label_text)
             info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-            info_label.setStyleSheet(
-                "color: white; font-size: 12pt; font-weight: bold;"
-            )
+            info_label.setStyleSheet("color: white; font-size: 12pt; font-weight: bold;")
 
             self.buttons.append(button)
             self.info_labels.append(info_label)

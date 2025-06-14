@@ -1,8 +1,6 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.elements.views.base_pictograph_view import (
-    BasePictographView,
-)
+from base_widgets.pictograph.elements.views.base_pictograph_view import BasePictographView
 
 if TYPE_CHECKING:
     from .....main_window.main_widget.codex.codex import Codex

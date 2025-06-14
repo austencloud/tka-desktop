@@ -9,10 +9,15 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 
+
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_card_tab.tab import SequenceCardTab
+
+
+
 
 
 class SequenceCardContentArea(QWidget):

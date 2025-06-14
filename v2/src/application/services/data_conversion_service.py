@@ -9,7 +9,7 @@ from typing import Dict, Any, Optional
 
 try:
     # Try relative imports first (for normal package usage)
-    from ...domain.models.core_models import (
+    from domain.models.core_models import (
         BeatData,
         MotionData,
         MotionType,

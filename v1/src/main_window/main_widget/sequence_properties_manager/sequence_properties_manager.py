@@ -5,9 +5,6 @@ from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvalua
 from main_window.main_widget.sequence_properties_manager.strict_swapped_CAP_checker import (
     StrictSwappedCAPChecker,
 )
-from main_window.main_widget.json_manager.default_sequence_provider import (
-    DefaultSequenceProvider,
-)
 
 if TYPE_CHECKING:
     from core.application_context import ApplicationContext
@@ -33,12 +30,26 @@ class SequencePropertiesManager:
             app_context: Application context with dependencies. If None, uses legacy adapter.
         """
         self.sequence: list[dict] = []
-        self.app_context = app_context
 
-        # Lazy-loaded dependencies to avoid circular dependency
-        self._settings_manager = None
-        self._json_manager = None
-        self._dependencies_initialized = False
+        # Set up dependencies
+        if app_context:
+            self.app_context = app_context
+            self.settings_manager = app_context.settings_manager
+            self.json_manager = app_context.json_manager
+        else:
+            # Legacy compatibility - use adapter with fallback
+            try:
+                from core.migration_adapters import AppContextAdapter
+
+                self.app_context = None
+                self.settings_manager = AppContextAdapter.settings_manager()
+                self.json_manager = AppContextAdapter.json_manager()
+            except RuntimeError:
+                # AppContextAdapter not initialized yet - use None for now
+                # This will be set up later when the adapter is available
+                self.app_context = None
+                self.settings_manager = None
+                self.json_manager = None
 
         # Default properties
         self.properties = {
@@ -59,45 +70,6 @@ class SequencePropertiesManager:
             "is_mirrored_swapped_CAP": MirroredSwappedCAPChecker(self),
             "is_rotated_swapped_CAP": RotatedSwappedCAPChecker(self),
         }
-
-    @property
-    def settings_manager(self):
-        """Lazy property for settings_manager to avoid circular dependency."""
-        if self._settings_manager is None:
-            self._initialize_dependencies()
-        return self._settings_manager
-
-    @property
-    def json_manager(self):
-        """Lazy property for json_manager to avoid circular dependency."""
-        if self._json_manager is None:
-            self._initialize_dependencies()
-        return self._json_manager
-
-    def _initialize_dependencies(self):
-        """Initialize dependencies lazily to avoid circular dependency."""
-        if self._dependencies_initialized:
-            return
-
-        if self.app_context:
-            # Use dependency injection
-            self._settings_manager = self.app_context.settings_manager
-            self._json_manager = self.app_context.json_manager
-        else:
-            # Legacy compatibility - use adapter with fallback
-            try:
-                from core.migration_adapters import AppContextAdapter
-
-                self._settings_manager = AppContextAdapter.settings_manager()
-                self._json_manager = AppContextAdapter.json_manager()
-            except (RuntimeError, AttributeError):
-                # AppContextAdapter not initialized yet or circular dependency
-                # Use None for now - this will be retried on next access
-                self._settings_manager = None
-                self._json_manager = None
-                return  # Don't mark as initialized so we retry later
-
-        self._dependencies_initialized = True
 
     def instantiate_sequence(self, sequence):
         self.sequence = sequence[1:]
@@ -186,8 +158,23 @@ class SequencePropertiesManager:
         }
 
     def _default_properties(self):
-        default_seq = DefaultSequenceProvider.get_default_sequence(self.app_context)
-        return default_seq[0]
+        # Get current user safely
+        current_user = ""
+        if self.settings_manager:
+            current_user = self.settings_manager.users.get_current_user()
+
+        return {
+            "word": "",
+            "author": current_user,
+            "level": 0,
+            "is_circular": False,
+            "can_be_CAP": False,
+            "is_strict_rotated_CAP": False,
+            "is_strict_mirrored_CAP": False,
+            "is_strict_swapped_CAP": False,
+            "is_mirrored_swapped_CAP": False,
+            "is_rotated_swapped_CAP": False,
+        }
 
     def _check_ends_at_start_pos(self) -> bool:
         if self.sequence[-1].get("is_placeholder", False):

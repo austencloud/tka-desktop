@@ -21,14 +21,12 @@ class VisibilityButton(StyledButton):
 
         self.clicked.connect(self._toggle_state)
         self._initialize_state()
-
+        
         # Set tooltips based on button type
         if self.is_dependent:
             self.setToolTip("Requires both red and blue motions to be visible")
         elif name in ["Red Motion", "Blue Motion"]:
-            self.setToolTip(
-                "Toggle motion visibility. At least one motion must remain visible."
-            )
+            self.setToolTip("Toggle motion visibility. At least one motion must remain visible.")
         elif name == "Non-radial_points":
             self.setToolTip("Toggle visibility of non-radial grid points")
         else:
@@ -54,14 +52,14 @@ class VisibilityButton(StyledButton):
 
         self.is_toggled = is_toggled
         self.state = ButtonState.ACTIVE if is_toggled else ButtonState.NORMAL
-
+        
         # If this is a dependent button, check if it should be disabled
         if self.is_dependent:
             all_motions_visible = settings.are_all_motions_visible()
             self.setEnabled(all_motions_visible)
             if not all_motions_visible:
                 self.state = ButtonState.DISABLED
-
+        
         self.update_appearance()
 
     def _toggle_state(self):
@@ -103,7 +101,7 @@ class VisibilityButton(StyledButton):
         # Force update to visibility pictograph
         pictograph = self.visibility_buttons_widget.visibility_tab.pictograph
         pictograph._update_from_state_manager()
-
+        
         # Update all button states
         self.visibility_buttons_widget.update_button_flags()
 
@@ -111,16 +109,14 @@ class VisibilityButton(StyledButton):
         """Set the active state of the button."""
         self.is_toggled = is_active
         self.state = ButtonState.ACTIVE if is_active else ButtonState.NORMAL
-
+        
         # If this is a dependent button, check if it should be disabled
         if self.is_dependent:
-            all_motions_visible = (
-                self.visibility_buttons_widget.visibility_tab.settings.are_all_motions_visible()
-            )
+            all_motions_visible = self.visibility_buttons_widget.visibility_tab.settings.are_all_motions_visible()
             self.setEnabled(all_motions_visible)
             if not all_motions_visible:
                 self.state = ButtonState.DISABLED
-
+                
         self.update_appearance()
 
     def resizeEvent(self, event):

@@ -7,6 +7,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 
+
+
 class SidebarHeader(QFrame):
     def __init__(self):
         super().__init__()

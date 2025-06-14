@@ -26,9 +26,7 @@ class FadeWhenReadyHelper(QObject):
         if event.type() == QEvent.Type.Show:
             obj.removeEventFilter(self)
             if self.fader.manager.fades_enabled():
-                self.fader.fade_widgets(
-                    [obj], self.fade_in, self.duration, self.callback
-                )
+                self.fader.fade_widgets([obj], self.fade_in, self.duration, self.callback)
             else:
                 effect = self.fader._ensure_opacity_effect(obj)
                 effect.setOpacity(1.0 if self.fade_in else 0.0)

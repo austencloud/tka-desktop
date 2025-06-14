@@ -6,18 +6,13 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from main_window.main_widget.sequence_recorder.SR_beat_control_panel import (
-    SR_BeatControlPanel,
-)
-from main_window.main_widget.sequence_recorder.SR_video_control_panel import (
-    SR_VideoControlPanel,
-)
+from main_window.main_widget.sequence_recorder.SR_beat_control_panel import SR_BeatControlPanel
+from main_window.main_widget.sequence_recorder.SR_video_control_panel import SR_VideoControlPanel
+
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_recorder.sequence_recorder import (
-        SequenceRecorder,
-    )
+    from main_window.main_widget.sequence_recorder.sequence_recorder import SequenceRecorder
 
 
 class SR_MainControlFrame(QWidget):

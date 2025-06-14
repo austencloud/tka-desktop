@@ -8,8 +8,8 @@ from ...core.interfaces.workbench_services import (
     IBeatDeletionService,
     IDictionaryService,
 )
-from ...domain.models.core_models import SequenceData
-from ...domain.models.sequence_operations import (
+from domain.models.core_models import SequenceData
+from domain.models.sequence_operations import (
     ColorSwapOperation,
     ReflectionOperation,
     RotationOperation,

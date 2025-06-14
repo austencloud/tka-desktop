@@ -40,11 +40,6 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             for cap_type in CAPType
         }
 
-    @property
-    def sequence_workbench(self):
-        """Delegate to the generate_tab's sequence_workbench for context-aware access."""
-        return self.generate_tab.sequence_workbench
-
     def build_sequence(
         self, length, turn_intensity, level, slice_size, CAP_type, prop_continuity
     ):
@@ -55,21 +50,12 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
             )
         finally:
             QApplication.restoreOverrideCursor()
-            self.generate_tab.sequence_workbench.beat_frame.emit_update_image_export_preview()
+            self.sequence_workbench.beat_frame.emit_update_image_export_preview()
 
     def _build_sequence_internal(
-        self,
-        length,
-        turn_intensity,
-        level,
-        slice_size,
-        CAP_type,
-        prop_continuity,
-        start_position=None,
+        self, length, turn_intensity, level, slice_size, CAP_type, prop_continuity
     ):
-        self.initialize_sequence(
-            length, start_position=start_position, CAP_type=CAP_type
-        )
+        self.initialize_sequence(length, CAP_type=CAP_type)
         blue_rot_dir, red_rot_dir = RotationDeterminer.get_rotation_dirs(
             prop_continuity
         )
@@ -134,7 +120,7 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
     def _add_pictograph_to_sequence(self, next_pictograph):
         self.sequence.append(next_pictograph)
-        self.generate_tab.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
+        self.sequence_workbench.beat_frame.beat_factory.create_new_beat_and_add_to_sequence(
             next_pictograph,
             override_grow_sequence=True,
             update_image_export_preview=False,
@@ -173,66 +159,20 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
         return self.update_beat_number(next_beat, self.sequence)
 
     def _get_filtered_options(self, prop_continuity, blue_rot_dir, red_rot_dir):
-        options = []
-        construct_tab = None
-
-        # Strategy 1: Try new tab manager system with on-demand creation
+        # Get construct tab through the new tab manager system
         try:
-            if (
-                hasattr(self.main_widget, "tab_manager")
-                and self.main_widget.tab_manager
-            ):
-                # First try to get existing tab
-                construct_tab = self.main_widget.tab_manager.get_tab_widget("construct")
-
-                # If tab doesn't exist, create it on demand
-                if not construct_tab:
-                    import logging
-
-                    logger = logging.getLogger(__name__)
-                    logger.info(
-                        "Construct tab not found, creating it for sequence generation"
+            construct_tab = self.main_widget.tab_manager.get_tab_widget("construct")
+            if construct_tab:
+                options = deepcopy(
+                    construct_tab.option_picker.option_getter._load_all_next_option_dicts(
+                        self.sequence
                     )
-                    construct_tab = self.main_widget.tab_manager._create_tab(
-                        "construct"
-                    )
-                    if construct_tab:
-                        logger.info("Successfully created construct tab on demand")
-                    else:
-                        logger.error("Failed to create construct tab on demand")
-        except (AttributeError, TypeError) as e:
-            import logging
-
-            logger = logging.getLogger(__name__)
-            logger.warning(f"Tab manager access failed: {e}")
-
-        # Strategy 2: Try direct access if tab manager failed
-        if not construct_tab:
-            try:
-                if (
-                    hasattr(self.main_widget, "construct_tab")
-                    and self.main_widget.construct_tab
-                ):
-                    construct_tab = self.main_widget.construct_tab
-            except (AttributeError, TypeError):
-                pass
-
-        # Get options if construct tab is available
-        if construct_tab:
-            try:
-                if (
-                    hasattr(construct_tab, "option_picker")
-                    and construct_tab.option_picker
-                    and hasattr(construct_tab.option_picker, "option_getter")
-                    and construct_tab.option_picker.option_getter
-                    and hasattr(
-                        construct_tab.option_picker.option_getter,
-                        "_load_all_next_option_dicts",
-                    )
-                ):
-
+                )
+            else:
+                # Fallback: try direct access for backward compatibility
+                if hasattr(self.main_widget, "construct_tab"):
                     options = deepcopy(
-                        construct_tab.option_picker.option_getter._load_all_next_option_dicts(
+                        self.main_widget.construct_tab.option_picker.option_getter._load_all_next_option_dicts(
                             self.sequence
                         )
                     )
@@ -241,48 +181,30 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
                     logger = logging.getLogger(__name__)
                     logger.warning(
-                        "Construct tab found but option_picker chain is incomplete"
+                        "construct_tab not available in CircularSequenceBuilder"
                     )
-            except Exception as e:
+                    options = []
+        except AttributeError:
+            # Fallback: try direct access for backward compatibility
+            if hasattr(self.main_widget, "construct_tab"):
+                options = deepcopy(
+                    self.main_widget.construct_tab.option_picker.option_getter._load_all_next_option_dicts(
+                        self.sequence
+                    )
+                )
+            else:
                 import logging
 
                 logger = logging.getLogger(__name__)
-                logger.warning(f"Error accessing construct tab options: {e}")
-
-        # If we still don't have options, this is a critical error
-        if not options:
-            import logging
-
-            logger = logging.getLogger(__name__)
-            logger.error(
-                "No construct tab available and failed to create it - sequence generation cannot continue"
-            )
-            raise RuntimeError(
-                "Cannot access construct tab for pictograph options. "
-                "This is required for sequence generation. "
-                "Please ensure the construct tab can be properly initialized."
-            )
-
-        # Apply filtering if we have options
+                logger.warning("construct_tab not available in CircularSequenceBuilder")
+                options = []
         if prop_continuity == "continuous":
             options = self.filter_options_by_rotation(
                 options, blue_rot_dir, red_rot_dir
             )
-
         return options
 
     def _select_next_beat(self, options, is_last_in_word, CAP_type, slice_size):
-        if not options:
-            import logging
-
-            logger = logging.getLogger(__name__)
-            logger.error(
-                "No options available for beat selection - sequence generation cannot continue"
-            )
-            raise RuntimeError(
-                "No pictograph options available for sequence generation. Ensure construct tab is properly initialized."
-            )
-
         if is_last_in_word:
             expected_end_pos = self._determine_expected_end_pos(CAP_type, slice_size)
             next_beat = PictographSelector.select_pictograph(options, expected_end_pos)
@@ -365,19 +287,9 @@ class CircularSequenceBuilder(BaseSequenceBuilder):
 
     def _update_construct_tab_options(self):
         """Update construct tab options using the new MVVM architecture with graceful fallbacks."""
-        # Skip construct tab updates during isolated generation to prevent context conflicts
-        if hasattr(self.generate_tab, "original_sequence_workbench"):
-            import logging
-
-            logger = logging.getLogger(__name__)
-            logger.debug(
-                "Skipping construct tab options update during isolated generation"
-            )
-            return
-
         try:
             # Try to get construct tab through the new coordinator pattern
-            construct_tab = self.main_widget.tab_manager.get_tab_widget("construct")
+            construct_tab = self.main_widget.get_tab_widget("construct")
             if (
                 construct_tab
                 and hasattr(construct_tab, "option_picker")

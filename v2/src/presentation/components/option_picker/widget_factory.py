@@ -28,7 +28,7 @@ class OptionPickerWidgetFactory:
         widget.setMinimumSize(600, 800)
 
         layout = QVBoxLayout(widget)
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(5, 5, 5, 5)  # Reduced margins
         layout.setSpacing(8)
 
         # Add filter widget
@@ -75,16 +75,15 @@ class OptionPickerWidgetFactory:
         widget.setStyleSheet(
             """
             QWidget {
-                background-color: #ffffff;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
+                background: transparent;
+                border: none;
             }
             QScrollArea {
-                background-color: transparent;
+                background: transparent;
                 border: none;
             }
             QScrollArea > QWidget > QWidget {
-                background-color: transparent;
+                background: transparent;
             }
         """
         )

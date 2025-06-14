@@ -1,13 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from data.constants import (
-    ANTI,
-    NO_ROT,
-    PREFLOAT_MOTION_TYPE,
-    PREFLOAT_PROP_ROT_DIR,
-    PRO,
-)
+from data.constants import ANTI, NO_ROT, PREFLOAT_MOTION_TYPE, PREFLOAT_PROP_ROT_DIR, PRO
 
 if TYPE_CHECKING:
     from objects.motion.motion_state import MotionState

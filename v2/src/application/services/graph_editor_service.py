@@ -2,17 +2,19 @@ from typing import Optional, List, Dict, Any
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from ...core.interfaces.workbench_services import IGraphEditorService
-from ...domain.models.core_models import SequenceData, BeatData
+from domain.models.core_models import SequenceData, BeatData
+from .v1_pictograph_integration_service import V1PictographIntegrationService
 
 
 class GraphEditorService(QObject):
-    """Modern graph editor service implementing v2 architecture patterns"""
+    """Modern graph editor service implementing v2 architecture patterns with V1 integration"""
 
     # Signals for state changes
     graph_updated = pyqtSignal(SequenceData)
     beat_selected = pyqtSignal(BeatData, int)
     arrow_selected = pyqtSignal(str)
     visibility_changed = pyqtSignal(bool)
+    pictograph_ready = pyqtSignal(object)  # V1 pictograph object
 
     def __init__(self):
         super().__init__()
@@ -26,6 +28,10 @@ class GraphEditorService(QObject):
 
         # Arrow state cache for adjustments
         self._arrow_states: Dict[str, Dict[str, Any]] = {}
+
+        # V1 integration service
+        self._v1_integration = V1PictographIntegrationService()
+        self._connect_v1_signals()
 
     def update_graph_display(self, sequence: Optional[SequenceData]) -> None:
         """Update the graph editor display with sequence data"""
@@ -66,10 +72,33 @@ class GraphEditorService(QObject):
         """Get the currently selected beat"""
         return self._selected_beat
 
+    def _connect_v1_signals(self):
+        """Connect V1 integration service signals."""
+        self._v1_integration.pictograph_updated.connect(self.pictograph_ready.emit)
+        self._v1_integration.arrow_selected.connect(self._on_v1_arrow_selected)
+        self._v1_integration.arrow_deselected.connect(self._on_v1_arrow_deselected)
+
+    def _on_v1_arrow_selected(self, arrow_id: str):
+        """Handle arrow selection from V1 pictograph."""
+        self._selected_arrow_id = arrow_id
+        self.arrow_selected.emit(arrow_id)
+
+    def _on_v1_arrow_deselected(self):
+        """Handle arrow deselection from V1 pictograph."""
+        self._selected_arrow_id = None
+
+    def create_pictograph_for_beat(self, beat_data: BeatData, scene) -> bool:
+        """Create V1 pictograph for the given beat in the provided scene."""
+        return self._v1_integration.create_pictograph_for_beat(beat_data, scene)
+
     def update_beat_adjustments(self, beat_data: BeatData) -> BeatData:
         """Apply adjustment panel modifications to beat data"""
-        # This would integrate with v1's beat modification logic
-        # For now, return the beat data as-is (to be implemented with v1 integration)
+        # Update V1 pictograph with new beat data
+        if hasattr(self, "_current_scene") and self._current_scene:
+            self._v1_integration.create_pictograph_for_beat(
+                beat_data, self._current_scene
+            )
+
         self._selected_beat = beat_data
         return beat_data
 

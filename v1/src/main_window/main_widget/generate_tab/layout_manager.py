@@ -1,4 +1,8 @@
-from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QStackedWidget
+from PyQt6.QtWidgets import (
+    QVBoxLayout,
+    QHBoxLayout,
+    QStackedWidget
+)
 from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
@@ -20,7 +24,7 @@ class GenerateTabLayoutManager:
         self.tab.stacked_widget = QStackedWidget()
         self.tab.stacked_widget.addWidget(self.tab.freeform_generator_frame)
         self.tab.stacked_widget.addWidget(self.tab.circular_generator_frame)
-
+        
         top_hbox = QHBoxLayout()
         top_hbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
         top_hbox.addWidget(self.tab.customize_sequence_label)

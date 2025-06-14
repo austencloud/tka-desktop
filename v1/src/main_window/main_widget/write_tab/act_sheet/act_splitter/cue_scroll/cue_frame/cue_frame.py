@@ -35,3 +35,4 @@ class CueFrame(QWidget):
 
             self.layout.addWidget(cue_box)
             cue_box.timestamp.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+

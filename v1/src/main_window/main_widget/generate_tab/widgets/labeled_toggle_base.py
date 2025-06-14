@@ -70,7 +70,7 @@ class LabeledToggleBase(QWidget):
         """Externally set the toggle state and update UI."""
         was_blocked = self.toggle.blockSignals(True)
         self.toggle.setChecked(is_checked)
-
+        
         # Adjust toggle position instantly
         if is_checked:
             self.toggle.circle_position = self.toggle.width() - 26

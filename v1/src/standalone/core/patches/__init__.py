@@ -1,1 +1,0 @@
-# Standalone System Patches

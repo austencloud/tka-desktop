@@ -74,17 +74,44 @@ class OptionPickerSectionButton(QPushButton):
 
     def _generate_html_text(self, letter_type: str) -> str:
         """Generate V1-exact HTML text format"""
-        # Get description and type name from V2's LetterType class
-        description, type_name = LetterType.get_type_description(letter_type)
+        # Map letter types to v1's exact format
+        type_texts = {
+            "Type1": "Type 1 - Dual Shift",
+            "Type2": "Type 2 - Shift",
+            "Type3": "Type 3 - Cross Shift",
+            "Type4": "Type 4 - Dash",
+            "Type5": "Type 5 - Dual Dash",
+            "Type6": "Type 6 - Static",
+        }
 
-        # Extract plain text from HTML description for color processing
-        import re
+        # Get v1's exact text format
+        display_text = type_texts.get(letter_type, letter_type)
 
-        plain_description = re.sub(r"<[^>]+>", "", description)
+        # Apply v1's color scheme to the words
+        words = display_text.split()
+        styled_words = []
 
-        # Generate V1-style colored HTML text
-        styled_type_name = LetterTypeTextPainter.get_colored_text(plain_description)
-        return f"{type_name}: {styled_type_name}"
+        for word in words:
+            if word in ["Dual", "Shift", "Cross", "Dash", "Static"]:
+                color = self._get_word_color(word)
+                styled_words.append(f"<span style='color: {color};'>{word}</span>")
+            elif word in ["Type", "1", "2", "3", "4", "5", "6", "-"]:
+                styled_words.append(f"<span style='color: #000000;'>{word}</span>")
+            else:
+                styled_words.append(word)
+
+        return " ".join(styled_words)
+
+    def _get_word_color(self, word: str) -> str:
+        """Get v1's exact color for each word type"""
+        colors = {
+            "Dual": "#00b3ff",  # Blue for Dual
+            "Shift": "#6F2DA8",  # Purple for Shift
+            "Cross": "#26e600",  # Green for Cross
+            "Dash": "#26e600",  # Green for Dash
+            "Static": "#eb7d00",  # Orange for Static
+        }
+        return colors.get(word, "#000000")
 
     def _set_initial_styles(self) -> None:
         """Apply V1-exact initial styling"""
@@ -100,17 +127,30 @@ class OptionPickerSectionButton(QPushButton):
         """
         V1-exact button styling: oval shape, transparent background, no borders.
         """
-        background_color = background_color or self._base_background_color
+        background_color = background_color or "rgba(255, 255, 255, 0.3)"
+
+        # Force a substantial border radius for visible rounding
+        border_radius = 18
+
         style = (
             f"QPushButton {{"
-            f"  background-color: {background_color};"
+            f"  background: {background_color};"
+            f"  border: 1px solid rgba(255, 255, 255, 0.4);"
+            f"  border-radius: {border_radius}px;"
+            f"  padding: 8px 20px;"
+            f"  margin: 2px;"
             f"  font-weight: bold;"
-            f"  border: none;"
-            f"  border-radius: {self.height() // 2}px;"  # V1's oval shape
-            f"  padding: 5px;"
+            f"  min-height: 36px;"
             f"}}"
             f"QPushButton:hover {{"
-            f"  border: 2px solid black;"  # V1's hover effect
+            f"  background: rgba(255, 255, 255, 0.45);"
+            f"  border: 2px solid rgba(255, 255, 255, 0.6);"
+            f"  border-radius: {border_radius}px;"
+            f"}}"
+            f"QPushButton:pressed {{"
+            f"  background: rgba(255, 255, 255, 0.55);"
+            f"  border: 1px solid rgba(255, 255, 255, 0.7);"
+            f"  border-radius: {border_radius}px;"
             f"}}"
         )
         self.setStyleSheet(style)
@@ -119,6 +159,7 @@ class OptionPickerSectionButton(QPushButton):
 
     def enterEvent(self, event) -> None:
         """V1-exact hover effect with gradient"""
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
         gradient = (
             "qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, "
             "stop:0 rgba(200, 200, 200, 1), stop:1 rgba(150, 150, 150, 1))"
@@ -128,6 +169,7 @@ class OptionPickerSectionButton(QPushButton):
 
     def leaveEvent(self, event) -> None:
         """V1-exact leave effect"""
+        self.setCursor(Qt.CursorShape.ArrowCursor)
         self._update_style()
         super().leaveEvent(event)
 

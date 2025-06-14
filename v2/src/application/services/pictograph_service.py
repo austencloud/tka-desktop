@@ -21,7 +21,7 @@ from typing import Dict, Optional, Tuple
 from abc import ABC, abstractmethod
 
 from ...core.interfaces.core_services import ILayoutService
-from ...domain.models.pictograph_models import (
+from domain.models.pictograph_models import (
     PictographData,
     ArrowData,
     PropData,
@@ -30,7 +30,7 @@ from ...domain.models.pictograph_models import (
     ArrowType,
     PropType,
 )
-from ...domain.models.core_models import MotionData, BeatData
+from domain.models.core_models import MotionData, BeatData
 
 
 class IPictographService(ABC):

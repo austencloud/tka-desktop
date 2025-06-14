@@ -9,9 +9,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .color_manager import ColorManager
-    from ..main_window.main_widget.settings_dialog.core.styling.typography_manager import (
-        TypographyManager,
-    )
+    from .typography_manager import TypographyManager
 
 
 class ComponentStyler:

@@ -16,7 +16,7 @@ from src.application.services.workbench_services import (
     FullScreenService,
 )
 from src.application.services.graph_editor_service import GraphEditorService
-from src.presentation.components.sequence_workbench import ModernSequenceWorkbench
+from src.presentation.components.workbench import ModernSequenceWorkbench
 
 
 def create_modern_workbench(

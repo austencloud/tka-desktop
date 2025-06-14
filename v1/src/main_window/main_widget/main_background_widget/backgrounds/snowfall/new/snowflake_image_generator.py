@@ -20,28 +20,15 @@ class SnowflakeImageGenerator:
 
         for _ in range(count):
             size = random.randint(20, 50)  # Match size range from the original design
-            snowflake_type = random.choice(
-                [1, 2, 3, 0]
-            )  # Include non-special snowflakes
+            snowflake_type = random.choice([1, 2, 3, 0])  # Include non-special snowflakes
             if snowflake_type == 0:
-                images.append(
-                    (SnowflakeImageGenerator.generate_circle_snowflake(size), "circle")
-                )
+                images.append((SnowflakeImageGenerator.generate_circle_snowflake(size), "circle"))
             elif snowflake_type == 1:
-                images.append(
-                    (SnowflakeImageGenerator.generate_star_snowflake(size), "star")
-                )
+                images.append((SnowflakeImageGenerator.generate_star_snowflake(size), "star"))
             elif snowflake_type == 2:
-                images.append(
-                    (SnowflakeImageGenerator.generate_spiky_snowflake(size), "spiky")
-                )
+                images.append((SnowflakeImageGenerator.generate_spiky_snowflake(size), "spiky"))
             elif snowflake_type == 3:
-                images.append(
-                    (
-                        SnowflakeImageGenerator.generate_spiky_snowflake_variant(size),
-                        "spiky_variant",
-                    )
-                )
+                images.append((SnowflakeImageGenerator.generate_spiky_snowflake_variant(size), "spiky_variant"))
 
         return images
 
@@ -185,3 +172,4 @@ if __name__ == "__main__":
     images = SnowflakeImageGenerator.generate_images(count=50)
     for i, (image, snowflake_type) in enumerate(images):
         image.save(os.path.join(output_dir, f"snowflake_{snowflake_type}_{i + 1}.png"))
+

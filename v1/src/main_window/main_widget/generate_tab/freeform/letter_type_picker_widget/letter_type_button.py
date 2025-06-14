@@ -36,9 +36,7 @@ class LetterTypeButton(QWidget):
     def enterEvent(self, event):
         self._hovered = True
         QApplication.setOverrideCursor(Qt.CursorShape.PointingHandCursor)
-        self._bg_color = self._lighten_color(
-            self._base_color, self._hover_lighten_factor
-        )
+        self._bg_color = self._lighten_color(self._base_color, self._hover_lighten_factor)
         self._update_stylesheet()
         super().enterEvent(event)
 

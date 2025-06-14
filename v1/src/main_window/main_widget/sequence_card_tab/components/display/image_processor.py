@@ -7,14 +7,14 @@ that maintains backward compatibility while using the new architecture.
 """
 
 import logging
-from typing import TYPE_CHECKING, Dict, Any, List
+from typing import TYPE_CHECKING, Dict, Any
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
     from ..pages.printable_factory import PrintablePageFactory
 
-from .image_core.image_processor_coordinator import ImageProcessorCoordinator
+from .core.image_processor_coordinator import ImageProcessorCoordinator
 
 DEFAULT_IMAGE_CACHE_SIZE = 1000
 
@@ -56,17 +56,6 @@ class ImageProcessor:
     def clear_cache(self) -> None:
         """Clear all image caches."""
         self.coordinator.clear_cache()
-
-    def load_images_batch_if_cached(
-        self,
-        image_paths: List[str],
-        page_scale_factor: float = 1.0,
-        current_page_index: int = -1,
-    ) -> Dict[str, QPixmap]:
-        """Load multiple images instantly if they are cached, bypassing async loading."""
-        return self.coordinator.load_images_batch_if_cached(
-            image_paths, page_scale_factor, current_page_index
-        )
 
     # Backward compatibility methods - delegate to coordinator
     def load_image_with_consistent_scaling(

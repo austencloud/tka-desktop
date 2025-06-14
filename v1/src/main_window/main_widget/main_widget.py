@@ -12,6 +12,7 @@ from main_window.main_widget.startup_dialog import StartupDialog
 from main_window.main_widget.tab_index import TAB_INDEX
 from main_window.main_widget.tab_name import TabName
 from main_window.main_widget.sequence_card_tab.tab import SequenceCardTab
+from .browse_tab.browse_tab import BrowseTab
 from .fade_manager.fade_manager import FadeManager
 from .full_screen_image_overlay import FullScreenImageOverlay
 from .construct_tab.construct_tab import ConstructTab

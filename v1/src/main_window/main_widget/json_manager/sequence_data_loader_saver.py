@@ -21,7 +21,6 @@ from main_window.main_widget.sequence_properties_manager.sequence_properties_man
 from src.settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_user_editable_resource_path
 from utils.word_simplifier import WordSimplifier
-from .default_sequence_provider import DefaultSequenceProvider
 
 if TYPE_CHECKING:
     from core.application_context import ApplicationContext
@@ -35,28 +34,41 @@ class SequenceDataLoaderSaver:
         Args:
             app_context: Application context with dependencies. If None, uses legacy approach.
         """
-        self.current_sequence_json = get_user_editable_resource_path(
-            "current_sequence.json"
-        )
-        self.app_context = app_context
+        # Try multiple possible locations for current_sequence.json
+        import os
 
-        # Lazy-loaded sequence properties manager to avoid circular dependency
-        self._sequence_properties_manager = None
+        possible_paths = [
+            get_user_editable_resource_path("current_sequence.json"),  # Original logic
+            os.path.join(
+                os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                "current_sequence.json",
+            ),  # Project root
+            os.path.abspath("current_sequence.json"),  # Current directory
+            os.path.join("..", "current_sequence.json"),  # Parent directory
+            os.path.join("..", "..", "current_sequence.json"),  # Grandparent directory
+        ]
 
-    @property
-    def sequence_properties_manager(self):
-        """Lazy property for sequence_properties_manager to avoid circular dependency."""
-        if self._sequence_properties_manager is None:
-            # Create sequence properties manager with dependency injection
-            if self.app_context:
-                self._sequence_properties_manager = (
-                    SequencePropertiesManagerFactory.create(self.app_context)
-                )
-            else:
-                self._sequence_properties_manager = (
-                    SequencePropertiesManagerFactory.create_legacy()
-                )
-        return self._sequence_properties_manager
+        self.current_sequence_json = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                self.current_sequence_json = path
+                break
+
+        # Fallback to the original path if none found
+        if self.current_sequence_json is None:
+            self.current_sequence_json = get_user_editable_resource_path(
+                "current_sequence.json"
+            )
+
+        # Create sequence properties manager with dependency injection
+        if app_context:
+            self.sequence_properties_manager = SequencePropertiesManagerFactory.create(
+                app_context
+            )
+        else:
+            self.sequence_properties_manager = (
+                SequencePropertiesManagerFactory.create_legacy()
+            )
 
     def load_current_sequence(self) -> list[dict]:
         try:
@@ -91,7 +103,38 @@ class SequenceDataLoaderSaver:
             return default_sequence
 
     def get_default_sequence(self) -> list[dict]:
-        return DefaultSequenceProvider.get_default_sequence(self.app_context)
+        """Return a default sequence if JSON is missing, empty, or invalid."""
+        # Use safe defaults that don't depend on AppContext during initialization
+        try:
+            author = AppContext.settings_manager().users.get_current_user()
+        except:
+            author = "Unknown"
+
+        try:
+            prop_type = (
+                AppContext.settings_manager()
+                .global_settings.get_prop_type()
+                .name.lower()
+            )
+        except:
+            prop_type = "staff"
+
+        return [
+            {
+                "word": "",
+                "author": author,
+                "level": 0,
+                "prop_type": prop_type,
+                GRID_MODE: DIAMOND,
+                "is_circular": False,
+                "can_be_CAP": False,
+                "is_strict_rotated_CAP": False,
+                "is_strict_mirrored_CAP": False,
+                "is_strict_swapped_CAP": False,
+                "is_mirrored_swapped_CAP": False,
+                "is_rotated_swapped_CAP": False,
+            }
+        ]
 
     def save_current_sequence(self, sequence: list[dict]):
         if not sequence:
@@ -103,7 +146,7 @@ class SequenceDataLoaderSaver:
             if "author" not in sequence[0]:
                 sequence[0][
                     "author"
-                ] = AppContext.settings_manager().users.user_manager.get_current_user()
+                ] = AppContext.settings_manager().users.get_current_user()
             if "level" not in sequence[0]:
                 sequence[0]["level"] = (
                     SequenceLevelEvaluator.get_sequence_difficulty_level(sequence)

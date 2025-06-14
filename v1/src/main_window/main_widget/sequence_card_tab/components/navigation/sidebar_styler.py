@@ -33,6 +33,7 @@ class SidebarStyler:
                 font-size: 16px;
                 font-weight: bold;
                 letter-spacing: 0.5px;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             }
 
             QLabel#headerSubtitle {
@@ -133,6 +134,7 @@ class SidebarStyler:
                 font-size: 14px;
                 font-weight: 600;
                 letter-spacing: 0.5px;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             }
 
             /* Column dropdown */

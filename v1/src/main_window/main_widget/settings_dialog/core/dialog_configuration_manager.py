@@ -19,19 +19,14 @@ logger = logging.getLogger(__name__)
 class DialogConfigurationManager:
     """
     Manages dialog configuration and positioning.
-
+    
     Responsibilities:
     - Setup dialog properties (frameless, modal, etc.)
     - Handle dialog positioning and centering
     - Manage window flags and attributes
     """
 
-    def __init__(
-        self,
-        dialog: QDialog,
-        main_widget: "MainWidget",
-        app_context: "ApplicationContext" = None,
-    ):
+    def __init__(self, dialog: QDialog, main_widget: "MainWidget", app_context: "ApplicationContext" = None):
         self.dialog = dialog
         self.main_widget = main_widget
         self.app_context = app_context

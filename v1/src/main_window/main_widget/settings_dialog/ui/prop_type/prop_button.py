@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QIcon, QCursor
 from PyQt6.QtCore import Qt, QSize
 from enums.prop_type import PropType
-from styles.glassmorphism_styler import GlassmorphismStyler
+from ...core.glassmorphism_styler import GlassmorphismStyler
 
 if TYPE_CHECKING:
     from .prop_type_tab import PropTypeTab
@@ -54,14 +54,16 @@ class PropButton(QPushButton):
                 }}
                 QPushButton:hover {{
                     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 {GlassmorphismStyler.get_color('primary', 0.9)},
-                        stop:1 {GlassmorphismStyler.get_color('primary_dark', 1.0)});
-                    border: 2px solid {GlassmorphismStyler.get_color('primary_light', 1.0)};
+                        stop:0 rgba(255, 255, 255, 0.9),
+                        stop:1 rgba(245, 245, 245, 0.9));
+                    border: 2px solid #4a90e2;
+                    color: #333;
                 }}
                 QPushButton:pressed {{
                     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 {GlassmorphismStyler.get_color('primary_dark', 0.9)},
-                        stop:1 {GlassmorphismStyler.get_color('primary', 0.8)});
+                        stop:0 rgba(235, 235, 235, 0.9),
+                        stop:1 rgba(225, 225, 225, 0.9));
+                    border: 2px solid #357abd;
                 }}
             """
             )

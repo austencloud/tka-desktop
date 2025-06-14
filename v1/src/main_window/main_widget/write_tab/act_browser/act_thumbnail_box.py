@@ -2,25 +2,12 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QApplication
 from PyQt6.QtGui import QPixmap
 
-# Note: Browse tab imports removed due to restructure
-# Creating simple replacements for now
-from PyQt6.QtWidgets import QWidget
-
-
-class ThumbnailBoxFavoritesManager:
-    """Simple replacement for ThumbnailBoxFavoritesManager."""
-
-    def __init__(self, parent=None):
-        pass
-
-
-class ThumbnailBoxHeader(QWidget):
-    """Simple replacement for ThumbnailBoxHeader."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_favorites_manager import (
+    ThumbnailBoxFavoritesManager,
+)
+from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
+    ThumbnailBoxHeader,
+)
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
 from main_window.main_widget.write_tab.act_browser.act_thumbnail_image_label import (
     ActThumbnailImageLabel,

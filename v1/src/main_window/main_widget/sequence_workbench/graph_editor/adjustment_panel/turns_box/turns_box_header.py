@@ -1,8 +1,6 @@
 from typing import TYPE_CHECKING
 from data.constants import CLOCKWISE, COUNTER_CLOCKWISE, NO_ROT
-from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_button import (
-    PropRotDirButton,
-)
+from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_button import PropRotDirButton
 from ..base_adjustment_box_header_widget import BaseAdjustmentBoxHeaderWidget
 from utils.path_helpers import get_image_path
 from data.constants import ICON_DIR
@@ -23,9 +21,7 @@ class TurnsBoxHeader(BaseAdjustmentBoxHeaderWidget):
             self.turns_box, CLOCKWISE, get_image_path(f"{ICON_DIR}clock/clockwise.png")
         )
         self.ccw_button = PropRotDirButton(
-            self.turns_box,
-            COUNTER_CLOCKWISE,
-            get_image_path(f"{ICON_DIR}clock/counter_clockwise.png"),
+            self.turns_box, COUNTER_CLOCKWISE, get_image_path(f"{ICON_DIR}clock/counter_clockwise.png")
         )
 
         self._add_widgets()

@@ -112,15 +112,6 @@ class DependencyContainer:
         )
         logger.debug(f"Registered factory: {interface.__name__}")
 
-    def register_lazy_singleton(
-        self, interface: Type[T], factory: Callable[[], T]
-    ) -> None:
-        """Register a lazy singleton that's created only when first accessed."""
-        self._services[interface] = ServiceDescriptor(
-            interface=interface, factory=factory, lifetime=ServiceLifetime.SINGLETON
-        )
-        logger.debug(f"Registered lazy singleton: {interface.__name__}")
-
     def resolve(self, interface: Type[T]) -> T:
         """
         Resolve a service instance.
@@ -140,11 +131,7 @@ class DependencyContainer:
 
         # Check for circular dependencies
         if interface in self._resolution_stack:
-            stack_chain = " -> ".join([cls.__name__ for cls in self._resolution_stack])
-            raise RuntimeError(
-                f"Circular dependency detected for {interface.__name__}. "
-                f"Resolution chain: {stack_chain} -> {interface.__name__}"
-            )
+            raise RuntimeError(f"Circular dependency detected for {interface.__name__}")
 
         descriptor = self._services[interface]
 
@@ -203,25 +190,6 @@ class DependencyContainer:
                 f"constructor injection not fully implemented yet"
             )
 
-    def safe_resolve(self, interface: Type[T], default: T = None) -> Optional[T]:
-        """
-        Safely resolve a service, returning default if resolution fails.
-
-        This is useful during initialization when some dependencies might not be ready yet.
-
-        Args:
-            interface: The interface/type to resolve
-            default: Default value to return if resolution fails
-
-        Returns:
-            The resolved service instance or the default value
-        """
-        try:
-            return self.resolve(interface)
-        except (ValueError, RuntimeError) as e:
-            logger.debug(f"Safe resolve failed for {interface.__name__}: {e}")
-            return default
-
     def is_registered(self, interface: Type) -> bool:
         """Check if a service is registered."""
         return interface in self._services
@@ -254,7 +222,7 @@ def configure_dependencies() -> DependencyContainer:
     _register_managers(container)
     _register_data_services(container)
 
-    logger.info("Dependency container configured successfully")
+    # Only log completion, not the verbose registration messages
     return container
 
 
@@ -266,56 +234,43 @@ def _register_core_services(container: DependencyContainer) -> None:
         from settings_manager.settings_manager import SettingsManager
 
         container.register_singleton(ISettingsManager, SettingsManager)
-        logger.info("Settings Manager registered")
     except ImportError as e:
         logger.warning(f"Failed to register Settings Manager: {e}")
 
-    # JSON Manager - using lazy singleton to break circular dependencies
+    # JSON Manager
     try:
         from interfaces.json_manager_interface import IJsonManager
 
-        # Create a lazy factory function to avoid circular dependencies
-        def create_json_manager_lazy():
+        # Create a factory function to avoid circular dependencies
+        def create_json_manager():
             try:
-                from main_window.main_widget.json_manager.json_manager_lazy import (
-                    LazyJsonManager,
+                from main_window.main_widget.json_manager.json_manager import (
+                    JsonManager,
                 )
 
-                # Create a lazy JsonManager that defers dependency resolution
-                logger.debug("Creating LazyJsonManager to avoid circular dependency")
-                return LazyJsonManager()
+                # Always create JsonManager without app_context to avoid circular dependency
+                # The SequencePropertiesManager will handle the AppContextAdapter check gracefully
+                logger.debug(
+                    "Creating JsonManager without app_context to avoid circular dependency"
+                )
+                return JsonManager(None)
 
-            except ImportError:
-                # Fallback to regular JsonManager if lazy version doesn't exist yet
-                try:
-                    from main_window.main_widget.json_manager.json_manager import (
-                        JsonManager,
-                    )
+            except ImportError as e:
+                logger.error(f"Failed to import JsonManager: {e}")
+                raise ImportError(
+                    "JsonManager could not be imported from main_window.main_widget.json_manager.json_manager"
+                )
 
-                    logger.debug(
-                        "Creating JsonManager without app_context to avoid circular dependency"
-                    )
-                    return JsonManager(None)
-
-                except ImportError as e:
-                    logger.error(f"Failed to import JsonManager: {e}")
-                    raise ImportError(
-                        "JsonManager could not be imported from main_window.main_widget.json_manager.json_manager"
-                    )
-
-        container.register_lazy_singleton(IJsonManager, create_json_manager_lazy)
-        logger.info("JSON Manager registered as lazy singleton")
+        container.register_factory(IJsonManager, create_json_manager)
     except ImportError as e:
         logger.warning(f"Failed to register JSON Manager: {e}")
-
-    logger.info("Core services registration completed")
 
 
 def _register_managers(container: DependencyContainer) -> None:
     """Register various manager services."""
     # Dictionary Data Manager - using correct path (it's a dataclass)
     try:
-        from settings_manager.global_settings.dictionary_data_manager import (
+        from main_window.main_widget.browse_tab.sequence_picker.dictionary_data_manager import (
             DictionaryDataManager,
         )
 
@@ -325,7 +280,6 @@ def _register_managers(container: DependencyContainer) -> None:
         container.register_factory(
             DictionaryDataManager, create_dictionary_data_manager
         )
-        logger.info("Dictionary Data Manager registered")
     except ImportError as e:
         logger.warning(f"Failed to register Dictionary Data Manager: {e}")
 
@@ -337,11 +291,8 @@ def _register_managers(container: DependencyContainer) -> None:
         # Register these as transient since they're often created per-use
         container.register_transient(Motion, Motion)
         container.register_transient(Arrow, Arrow)
-        logger.info("Motion and Arrow objects registered")
     except ImportError as e:
         logger.warning(f"Failed to register Motion/Arrow objects: {e}")
-
-    logger.info("Manager services registration completed")
 
 
 def _register_data_services(container: DependencyContainer) -> None:
@@ -356,7 +307,6 @@ def _register_data_services(container: DependencyContainer) -> None:
             return PictographDataLoader(None)
 
         container.register_factory(PictographDataLoader, create_pictograph_data_loader)
-        logger.info("Pictograph Data Loader registered")
     except ImportError as e:
         logger.warning(f"Failed to register Pictograph Data Loader: {e}")
 
@@ -380,7 +330,6 @@ def _register_data_services(container: DependencyContainer) -> None:
                 return LetterDeterminer({}, None)
 
         container.register_factory(LetterDeterminer, create_letter_determiner)
-        logger.info("Letter Determiner registered")
     except ImportError as e:
         logger.warning(f"Failed to register Letter Determiner: {e}")
 
@@ -389,8 +338,6 @@ def _register_data_services(container: DependencyContainer) -> None:
     logger.info(
         "Sequence Validator skipped - functionality integrated into other components"
     )
-
-    logger.info("Data services registration completed")
 
 
 def register_additional_service(

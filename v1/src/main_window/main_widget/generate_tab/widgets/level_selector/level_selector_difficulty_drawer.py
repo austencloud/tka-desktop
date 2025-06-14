@@ -4,7 +4,6 @@ from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export
     DifficultyLevelGradients,
 )
 
-
 class LevelSelectorDifficultyDrawer:
     def __init__(self):
         self.gradients = DifficultyLevelGradients()

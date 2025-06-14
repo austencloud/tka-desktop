@@ -5,6 +5,7 @@ import tempfile
 from typing import IO, Any, Callable, Optional
 
 
+
 class Profiler:
     def __init__(self) -> None:
         self.profiler: cProfile.Profile = cProfile.Profile()

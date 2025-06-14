@@ -116,6 +116,7 @@ class ModernGenerationModeToggle(ModernControlBase):
         self._freeform_button.setCheckable(True)
         self._freeform_button.setChecked(True)
         self._freeform_button.setMinimumHeight(32)
+        self._freeform_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self._button_group.addButton(self._freeform_button, 0)
         button_layout.addWidget(self._freeform_button)
 
@@ -123,6 +124,7 @@ class ModernGenerationModeToggle(ModernControlBase):
         self._circular_button = QPushButton("Circular")
         self._circular_button.setCheckable(True)
         self._circular_button.setMinimumHeight(32)
+        self._circular_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self._button_group.addButton(self._circular_button, 1)
         button_layout.addWidget(self._circular_button)
 
@@ -266,6 +268,7 @@ class ModernLevelSelector(ModernControlBase):
             button.setCheckable(True)
             button.setMinimumSize(32, 32)
             button.setMaximumSize(32, 32)
+            button.setCursor(Qt.CursorShape.PointingHandCursor)
             if i == 1:
                 button.setChecked(True)
 
@@ -356,6 +359,7 @@ class ModernTurnIntensitySelector(ModernControlBase):
             button = QPushButton(label)
             button.setCheckable(True)
             button.setMinimumSize(32, 24)
+            button.setCursor(Qt.CursorShape.PointingHandCursor)
             if value == 1.0:
                 button.setChecked(True)
 
@@ -441,6 +445,7 @@ class ModernPropContinuityToggle(ModernControlBase):
         self._continuous_button.setCheckable(True)
         self._continuous_button.setChecked(True)
         self._continuous_button.setMinimumHeight(32)
+        self._continuous_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self._button_group.addButton(self._continuous_button, 0)
         button_layout.addWidget(self._continuous_button)
 
@@ -448,6 +453,7 @@ class ModernPropContinuityToggle(ModernControlBase):
         self._random_button = QPushButton("Random")
         self._random_button.setCheckable(True)
         self._random_button.setMinimumHeight(32)
+        self._random_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self._button_group.addButton(self._random_button, 1)
         button_layout.addWidget(self._random_button)
 
@@ -592,6 +598,7 @@ class ModernSliceSizeSelector(ModernControlBase):
         self._halved_button.setCheckable(True)
         self._halved_button.setChecked(True)
         self._halved_button.setMinimumHeight(32)
+        self._halved_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self._button_group.addButton(self._halved_button, 0)
         button_layout.addWidget(self._halved_button)
 
@@ -599,6 +606,7 @@ class ModernSliceSizeSelector(ModernControlBase):
         self._quartered_button = QPushButton("Quartered")
         self._quartered_button.setCheckable(True)
         self._quartered_button.setMinimumHeight(32)
+        self._quartered_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self._button_group.addButton(self._quartered_button, 1)
         button_layout.addWidget(self._quartered_button)
 

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from src.data.constants import BEAT
+from data.constants import BEAT
 
 if TYPE_CHECKING:
     from src.base_widgets.pictograph.elements.views.beat_view import (

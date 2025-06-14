@@ -2,10 +2,7 @@
 from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import Qt, QSize
 from typing import Callable
-from main_window.main_widget.construct_tab.option_picker.resizable_mixin import (
-    ResizableMixin,
-)
-
+from main_window.main_widget.construct_tab.option_picker.resizable_mixin import ResizableMixin
 
 class ChooseYourNextPictographLabel(ResizableMixin, QLabel):
     def __init__(self, size_provider: Callable[[], QSize], parent=None):

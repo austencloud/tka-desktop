@@ -6,7 +6,6 @@ from PyQt6.QtWidgets import QApplication
 if TYPE_CHECKING:
     from main_window.main_window import MainWindow
 
-
 class PaletteManager:
     def __init__(self, main_window: "MainWindow"):
         self.main_window = main_window

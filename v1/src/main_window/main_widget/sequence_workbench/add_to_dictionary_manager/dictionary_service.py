@@ -6,6 +6,7 @@ from typing import Union, Optional, TYPE_CHECKING
 from src.settings_manager.global_settings.app_context import AppContext
 from .structural_variation_checker import StructuralVariationChecker
 from .thumbnail_generator import ThumbnailGenerator
+from ....main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox
 from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
@@ -145,7 +146,7 @@ class DictionaryService:
         if thumbnail_box:
             thumbnail_box.update_thumbnails(thumbnails)
 
-    def _find_thumbnail_box(self, base_word: str) -> Optional[object]:
+    def _find_thumbnail_box(self, base_word: str) -> Optional["ThumbnailBox"]:
         """Find the thumbnail box for a given word using the new dependency injection pattern."""
         try:
             # Get browse tab using the new dependency injection pattern
@@ -194,7 +195,7 @@ class DictionaryService:
         """Get the browse tab using the new dependency injection pattern with graceful fallbacks."""
         try:
             # Try to get browse tab through the new coordinator pattern
-            return self.main_widget.tab_manager.get_tab_widget("browse")
+            return self.main_widget.get_tab_widget("browse")
         except AttributeError:
             # Fallback: try through tab_manager for backward compatibility
             try:

@@ -1,3 +1,4 @@
+
 import random
 from PyQt6.QtGui import QPainter, QColor, QPainterPath
 from PyQt6.QtCore import Qt
@@ -58,3 +59,5 @@ class BlobManager:
             painter.drawPath(blob_path)
 
         painter.setOpacity(1.0)  # Reset opacity
+        
+

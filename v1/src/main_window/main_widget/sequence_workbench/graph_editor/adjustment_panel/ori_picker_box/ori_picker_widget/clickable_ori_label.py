@@ -79,15 +79,11 @@ class ClickableOriLabel(QLabel):
         # Calculate the height based on font metrics and border size
         text_height = font_metrics.height()
         border_size = max(int(required_width / 60), 1)
-        total_height = (
-            text_height + 2 * border_size
-        )  # Account for top and bottom borders
+        total_height = text_height + 2 * border_size  # Account for top and bottom borders
         self.setFixedHeight(total_height)
 
         border_color = self._get_border_color(self.ori_picker_widget.color)
-        border_radius = (
-            total_height // 2
-        )  # Use half the height for radius to ensure rounded corners
+        border_radius = total_height // 2  # Use half the height for radius to ensure rounded corners
 
         self.setStyleSheet(
             f"QLabel {{"
