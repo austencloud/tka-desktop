@@ -26,7 +26,7 @@ if str(v2_path) not in sys.path:
     sys.path.insert(0, str(v2_path))
 
 try:
-    from src.core.dependency_injection.simple_container import SimpleContainer
+    from core.dependency_injection.di_container import SimpleContainer
     from src.core.interfaces.core_services import ILayoutService
     from src.application.services.simple_layout_service import SimpleLayoutService
     from src.presentation.tabs.construct_tab_widget import ConstructTabWidget

@@ -53,7 +53,14 @@ class TKAGlyphRenderer:
 
         # Render the dash if needed
         # Don't add separate dash for Type3 and Type5 letters as they already include dash in SVG
-        if has_dash and "-" in letter and letter_item and letter_type not in [LetterType.TYPE3, LetterType.TYPE5]:
+        # Also don't add dash for Type6 letters (α, β, Γ) as they never have dashes
+        if (
+            has_dash
+            and "-" in letter
+            and letter_item
+            and letter_type
+            not in [LetterType.TYPE3, LetterType.TYPE5, LetterType.TYPE6]
+        ):
             dash_item = self._render_dash()
             if dash_item:
                 tka_group.addToGroup(dash_item)

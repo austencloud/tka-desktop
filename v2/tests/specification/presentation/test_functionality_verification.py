@@ -9,7 +9,7 @@ import sys
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
 
-from src.core.dependency_injection.simple_container import SimpleContainer
+from core.dependency_injection.di_container import SimpleContainer
 from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
 from src.application.services.simple_layout_service import SimpleLayoutService
 from src.core.interfaces.core_services import ILayoutService

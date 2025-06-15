@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from unittest.mock import Mock, MagicMock
 from PyQt6.QtCore import QTimer
+from hypothesis import strategies as st
 
 # Add v2 src to path for imports
 v2_src_path = Path(__file__).parent.parent / "src"
@@ -181,3 +182,95 @@ def setup_test_environment():
 def dummy_conftest_fixture():
     """A simple fixture to test conftest loading."""
     return "hello_from_conftest"
+
+
+# Property-based testing strategies for domain models
+@pytest.fixture
+def motion_type_strategy():
+    """Hypothesis strategy for MotionType enum."""
+    from src.domain.models.core_models import MotionType
+
+    return st.sampled_from(MotionType)
+
+
+@pytest.fixture
+def rotation_direction_strategy():
+    """Hypothesis strategy for RotationDirection enum."""
+    from src.domain.models.core_models import RotationDirection
+
+    return st.sampled_from(RotationDirection)
+
+
+@pytest.fixture
+def location_strategy():
+    """Hypothesis strategy for Location enum."""
+    from src.domain.models.core_models import Location
+
+    return st.sampled_from(Location)
+
+
+@pytest.fixture
+def motion_data_strategy():
+    """Hypothesis strategy for MotionData."""
+    from src.domain.models.core_models import (
+        MotionData,
+        MotionType,
+        RotationDirection,
+        Location,
+    )
+
+    return st.builds(
+        MotionData,
+        motion_type=st.sampled_from(MotionType),
+        prop_rot_dir=st.sampled_from(RotationDirection),
+        start_loc=st.sampled_from(Location),
+        end_loc=st.sampled_from(Location),
+        turns=st.floats(
+            min_value=0.0, max_value=10.0, allow_nan=False, allow_infinity=False
+        ),
+        start_ori=st.sampled_from(["in", "out"]),
+        end_ori=st.sampled_from(["in", "out"]),
+    )
+
+
+@pytest.fixture
+def beat_data_strategy():
+    """Hypothesis strategy for BeatData."""
+    from src.domain.models.core_models import (
+        BeatData,
+        MotionData,
+        MotionType,
+        RotationDirection,
+        Location,
+    )
+
+    motion_strategy = st.builds(
+        MotionData,
+        motion_type=st.sampled_from(MotionType),
+        prop_rot_dir=st.sampled_from(RotationDirection),
+        start_loc=st.sampled_from(Location),
+        end_loc=st.sampled_from(Location),
+        turns=st.floats(
+            min_value=0.0, max_value=10.0, allow_nan=False, allow_infinity=False
+        ),
+        start_ori=st.sampled_from(["in", "out"]),
+        end_ori=st.sampled_from(["in", "out"]),
+    )
+
+    return st.builds(
+        BeatData,
+        beat_number=st.integers(min_value=1, max_value=64),
+        letter=st.one_of(
+            st.none(),
+            st.text(alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ", min_size=1, max_size=1),
+        ),
+        duration=st.floats(
+            min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False
+        ),
+        blue_motion=st.one_of(st.none(), motion_strategy),
+        red_motion=st.one_of(st.none(), motion_strategy),
+        blue_reversal=st.booleans(),
+        red_reversal=st.booleans(),
+        is_blank=st.booleans(),
+        metadata=st.dictionaries(st.text(), st.text()),
+    )

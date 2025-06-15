@@ -43,20 +43,44 @@ class ArrowType(Enum):
 class PropType(Enum):
     """Types of props in pictographs."""
 
+    # Hand props
+    HAND = "hand"
+
+    # Staff variants
     STAFF = "staff"
+    SIMPLESTAFF = "simplestaff"
+    BIGSTAFF = "bigstaff"
+
+    # Club variants
     CLUB = "club"
-    HOOP = "hoop"
+
+    # Buugeng variants
     BUUGENG = "buugeng"
+    BIGBUUGENG = "bigbuugeng"
+    FRACTALGENG = "fractalgeng"
+
+    # Ring variants
+    EIGHTRINGS = "eightrings"
+    BIG_EIGHT_RINGS = "bigeightrings"
+
+    # Hoop variants
+    MINIHOOP = "minihoop"
+    BIGHOOP = "bighoop"
+
+    # Star variants
+    DOUBLESTAR = "doublestar"
+    BIGDOUBLESTAR = "bigdoublestar"
+
+    # Other props
+    FAN = "fan"
     TRIAD = "triad"
-    MINI_HOOP = "mini_hoop"
-    BIGBALL = "bigball"
-    FRACTALS = "fractals"
-    EIGHT_RINGS = "eight_rings"
-    DOUBLE_STAFF = "double_staff"
+    QUIAD = "quiad"
     SWORD = "sword"
     GUITAR = "guitar"
     UKULELE = "ukulele"
     CHICKEN = "chicken"
+    TRIQUETRA = "triquetra"
+    TRIQUETRA2 = "triquetra2"
 
 
 @dataclass(frozen=True)

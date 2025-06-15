@@ -57,6 +57,13 @@ class RotationDirection(Enum):
     NO_ROTATION = "no_rot"
 
 
+class Orientation(Enum):
+    """Prop orientations."""
+
+    IN = "in"
+    OUT = "out"
+
+
 class Location(Enum):
     """Location constants matching v1 exactly."""
 

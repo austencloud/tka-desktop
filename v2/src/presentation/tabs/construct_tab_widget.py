@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
-from src.core.dependency_injection.simple_container import SimpleContainer
+from core.dependency_injection.di_container import SimpleContainer
 from src.domain.models.core_models import SequenceData, BeatData
 from src.presentation.components.option_picker import ModernOptionPicker
 

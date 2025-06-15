@@ -2,7 +2,7 @@ from typing import Optional
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QSizePolicy
 from PyQt6.QtCore import Qt
 
-from ....core.dependency_injection.simple_container import SimpleContainer
+from ....core.dependency_injection.di_container import SimpleContainer
 from ....core.interfaces.core_services import ILayoutService
 from .option_picker_widget import ModernOptionPickerWidget
 from .option_picker_filter import OptionPickerFilter

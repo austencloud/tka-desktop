@@ -19,7 +19,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
 from src.domain.models.core_models import SequenceData, BeatData
-from src.application.services.beat_frame_layout_service import BeatFrameLayoutService
+from src.application.services.layout_management_service import LayoutManagementService
 from .beat_view import ModernBeatView
 from .start_position_view import StartPositionView
 from .beat_selection_manager import BeatSelectionManager
@@ -43,7 +43,7 @@ class ModernBeatFrame(QScrollArea):
     layout_changed = pyqtSignal(int, int)  # rows, columns
 
     def __init__(
-        self, layout_service: BeatFrameLayoutService, parent: Optional[QWidget] = None
+        self, layout_service: LayoutManagementService, parent: Optional[QWidget] = None
     ):
         super().__init__(parent)
 
@@ -171,11 +171,16 @@ class ModernBeatFrame(QScrollArea):
             return
 
         # Calculate optimal layout using service
-        layout_config = self._layout_service.calculate_optimal_layout(
-            self._current_sequence.length
+        container_size = (self.width(), self.height())
+        layout_config = self._layout_service.calculate_beat_frame_layout(
+            self._current_sequence, container_size
         )
 
-        self._apply_layout(layout_config["rows"], layout_config["columns"])
+        rows = layout_config.get("rows", 1)
+        columns = layout_config.get(
+            "columns", min(8, len(self._current_sequence.beats))
+        )
+        self._apply_layout(rows, columns)
 
     def _apply_layout(self, rows: int, columns: int):
         """Apply the specified grid layout like v1"""
@@ -259,8 +264,9 @@ class ModernBeatFrame(QScrollArea):
 
         # Recalculate layout if needed for new size
         if self._current_sequence and self._layout_service:
-            new_layout = self._layout_service.calculate_layout_for_size(
-                self._current_sequence.length, event.size()
+            container_size = (event.size().width(), event.size().height())
+            new_layout = self._layout_service.calculate_beat_frame_layout(
+                self._current_sequence, container_size
             )
 
             current_layout = self._current_layout

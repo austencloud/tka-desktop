@@ -1,22 +1,22 @@
 from typing import Optional
 from PyQt6.QtWidgets import QWidget
-from src.core.dependency_injection.simple_container import SimpleContainer
-from src.core.interfaces.core_services import ILayoutService
-from src.core.interfaces.workbench_services import (
+from core.dependency_injection.di_container import SimpleContainer
+from core.interfaces.core_services import ILayoutService
+from core.interfaces.workbench_services import (
     ISequenceWorkbenchService,
     IFullScreenService,
     IBeatDeletionService,
     IGraphEditorService,
     IDictionaryService,
 )
-from src.application.services.workbench_services import (
-    SequenceWorkbenchService,
-    BeatDeletionService,
-    DictionaryService,
-    FullScreenService,
+from application.services.sequence_management_service import (
+    SequenceManagementService,
 )
-from src.application.services.graph_editor_service import GraphEditorService
-from src.presentation.components.workbench import ModernSequenceWorkbench
+from application.services.ui_state_management_service import (
+    UIStateManagementService,
+)
+
+from presentation.components.workbench import ModernSequenceWorkbench
 
 
 def create_modern_workbench(
@@ -50,11 +50,9 @@ def create_modern_workbench(
 def configure_workbench_services(container: SimpleContainer) -> None:
     """Configure workbench services in the dependency injection container"""
 
-    # Register core workbench services
-    container.register_singleton(ISequenceWorkbenchService, SequenceWorkbenchService)
-    container.register_singleton(IBeatDeletionService, BeatDeletionService)
-    container.register_singleton(IDictionaryService, DictionaryService)
-    container.register_singleton(IFullScreenService, FullScreenService)
-
-    # Register modern graph editor service (replaces placeholder)
-    container.register_singleton(IGraphEditorService, GraphEditorService)
+    # Register consolidated services directly
+    container.register_singleton(ISequenceWorkbenchService, SequenceManagementService)
+    container.register_singleton(IBeatDeletionService, SequenceManagementService)
+    container.register_singleton(IDictionaryService, SequenceManagementService)
+    container.register_singleton(IFullScreenService, UIStateManagementService)
+    container.register_singleton(IGraphEditorService, UIStateManagementService)

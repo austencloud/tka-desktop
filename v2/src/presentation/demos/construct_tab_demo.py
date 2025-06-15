@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 
-from src.core.dependency_injection.simple_container import (
+from core.dependency_injection.di_container import (
     SimpleContainer,
     get_container,
 )

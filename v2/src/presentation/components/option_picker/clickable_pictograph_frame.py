@@ -79,22 +79,6 @@ class ClickablePictographFrame(QFrame):
             return
 
         try:
-            from application.services.pictograph_context_configurator import (
-                PictographContextConfigurator,
-            )
-
-            # CRITICAL FIX: Use DEFAULT scaling context for Option Picker frames
-            # This makes pictographs scale to fill their immediate parent frame (160x160px)
-            # rather than using external window dimensions that cause undersized pictographs
-            from application.services.context_aware_scaling_service import (
-                ScalingContext,
-            )
-
-            self.pictograph_component.set_scaling_context(
-                ScalingContext.DEFAULT,
-                # No external size parameters - use immediate parent frame size
-            )
-
             # Apply letter type-specific colored borders
             if beat_data.glyph_data and beat_data.glyph_data.letter_type:
                 self.pictograph_component.enable_borders()
@@ -102,22 +86,12 @@ class ClickablePictographFrame(QFrame):
                     beat_data.glyph_data.letter_type
                 )
 
-            PictographContextConfigurator.configure_hover_effects(
-                self.pictograph_component, enable_gold_hover=True
-            )
+            # Configure hover effects for option picker context
+            # This is now handled by the pictograph component itself
 
         except Exception as e:
             print(f"⚠️  Failed to configure Option Picker context: {e}")
-            # Fallback: use default scaling and enable borders with letter type colors
-            try:
-                from application.services.context_aware_scaling_service import (
-                    ScalingContext,
-                )
-
-                self.pictograph_component.set_scaling_context(ScalingContext.DEFAULT)
-            except:
-                pass  # If even this fails, continue with default behavior
-
+            # Fallback: enable borders with letter type colors
             if beat_data.glyph_data and beat_data.glyph_data.letter_type:
                 self.pictograph_component.enable_borders()
                 self.pictograph_component.update_border_colors_for_letter_type(

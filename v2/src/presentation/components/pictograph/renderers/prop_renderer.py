@@ -14,11 +14,11 @@ from domain.models.core_models import MotionData, Location
 
 from presentation.components.pictograph.asset_utils import get_image_path
 
-from application.services.motion_orientation_service import (
-    MotionOrientationService,
-    Orientation,
+from application.services.motion_management_service import (
+    MotionManagementService,
 )
-from application.services.beta_prop_position_service import BetaPropPositionService
+from domain.models.core_models import Orientation
+from application.services.prop_management_service import PropManagementService
 
 
 class PropRenderer:
@@ -29,8 +29,8 @@ class PropRenderer:
         self.CENTER_X = 475
         self.CENTER_Y = 475
         self.HAND_RADIUS = 143.1
-        self.orientation_service = MotionOrientationService()
-        self.beta_position_service = BetaPropPositionService()
+        self.motion_service = MotionManagementService()
+        self.prop_management_service = PropManagementService()
 
         # Store rendered props for overlap detection
         self.rendered_props = {}
@@ -127,7 +127,7 @@ class PropRenderer:
         """Calculate prop rotation using orientation-based system."""
         # Use the orientation service to calculate the correct rotation angle
         # This follows the reference implementation's orientation calculation
-        return self.orientation_service.get_prop_rotation_angle(
+        return self.motion_service.calculate_prop_rotation_angle(
             motion_data, Orientation.IN
         )
 
@@ -186,10 +186,8 @@ class PropRenderer:
         from domain.models.core_models import BeatData
 
         if not isinstance(beat_data, BeatData):
-            return
-
-        # Check if beta positioning should be applied
-        if not self.beta_position_service.should_apply_beta_positioning(beat_data):
+            return  # Check if beta positioning should be applied
+        if not self.prop_management_service.should_apply_beta_positioning(beat_data):
             return
 
         # Check if we have both props rendered
@@ -198,7 +196,7 @@ class PropRenderer:
 
         # Calculate separation offsets
         blue_offset, red_offset = (
-            self.beta_position_service.calculate_separation_offsets(beat_data)
+            self.prop_management_service.calculate_separation_offsets(beat_data)
         )
 
         # Apply offsets to rendered props

@@ -1,234 +1,240 @@
 """
-Data Service for Kinetic Constructor
+Pictograph Data Service - Focused Pictograph CRUD Operations
 
-This service generates and provides access to valid pictograph combinations
-using its own dataset.
+Handles all core pictograph data operations including:
+- Pictograph creation and manipulation
+- Dataset management and querying
+- Pictograph caching and indexing
+- Category-based organization
+
+This service provides a clean, focused interface for pictograph data operations
+while maintaining the proven data management algorithms.
 """
 
-import os
-from typing import Dict, List, Optional, Any
-import pandas as pd
+from typing import List, Dict, Any, Optional
+from abc import ABC, abstractmethod
+import uuid
 
-from infrastructure.data_path_handler import DataPathHandler
+from domain.models.core_models import BeatData
+from domain.models.pictograph_models import PictographData, GridData, GridMode, ArrowData
 
 
-class PictographDataService:
+class IPictographDataService(ABC):
+    """Interface for pictograph data operations."""
+
+    @abstractmethod
+    def create_pictograph(self, grid_mode: GridMode = GridMode.DIAMOND) -> PictographData:
+        """Create a new blank pictograph."""
+        pass
+
+    @abstractmethod
+    def create_from_beat(self, beat_data: BeatData) -> PictographData:
+        """Create pictograph from beat data."""
+        pass
+
+    @abstractmethod
+    def update_pictograph_arrows(
+        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
+    ) -> PictographData:
+        """Update arrows in pictograph."""
+        pass
+
+    @abstractmethod
+    def search_dataset(self, query: Dict[str, Any]) -> List[PictographData]:
+        """Search pictograph dataset with query."""
+        pass
+
+    @abstractmethod
+    def add_to_dataset(self, pictograph: PictographData, category: str = "user_created") -> str:
+        """Add pictograph to dataset."""
+        pass
+
+
+class PictographDataService(IPictographDataService):
     """
-    Service that generates and provides access to valid pictograph combinations.
+    Focused pictograph data service.
 
-    This service uses its own dataset
-    to ensure all generated pictographs are valid.
+    Provides comprehensive pictograph data management including:
+    - Pictograph creation and manipulation
+    - Dataset management and querying
+    - Pictograph caching and indexing
+    - Category-based organization
     """
 
     def __init__(self):
-        self._dataset: Optional[pd.DataFrame] = None
-        self._data_handler = DataPathHandler()
-        self._load_dataset()
+        # Dataset management
+        self._pictograph_cache: Dict[str, PictographData] = {}
+        self._dataset_index: Dict[str, List[str]] = {}
 
-    def _load_dataset(self) -> None:
-        """Load the dataset from CSV files."""
-        try:
-            self._dataset = self._data_handler.load_combined_dataset()
-            if not self._dataset.empty:
-                print(f"✅ Loaded dataset with {len(self._dataset)} entries")
-            else:
-                raise FileNotFoundError("Pictograph data files not found")
-        except Exception as e:
-            print(f"❌ Error loading data: {e}")
-            self._dataset = pd.DataFrame()
-
-    def get_random_valid_pictograph_data(
-        self, letter: Optional[str] = None, grid_mode: str = "diamond"
-    ) -> Dict[str, Any]:
-        """Get a random valid pictograph data from the dataset."""
-        if self._dataset is None or len(self._dataset) == 0:
-            raise ValueError("No dataset available")
-
-        # Filter by grid mode first
-        if "grid_mode" in self._dataset.columns:
-            mode_filtered = self._dataset[self._dataset["grid_mode"] == grid_mode]
-        else:
-            # If no grid_mode column, filter by valid positions
-            diamond_positions = {"n", "e", "s", "w"}
-            mode_filtered = self._dataset[
-                (self._dataset["blue_start_loc"].isin(diamond_positions))
-                & (self._dataset["blue_end_loc"].isin(diamond_positions))
-                & (self._dataset["red_start_loc"].isin(diamond_positions))
-                & (self._dataset["red_end_loc"].isin(diamond_positions))
-            ]
-
-        if len(mode_filtered) == 0:
-            print(f"⚠️ No {grid_mode} mode pictographs found, using all data")
-            mode_filtered = self._dataset
-
-        # Filter by letter if specified
-        filtered_df = (
-            mode_filtered[mode_filtered["letter"] == letter]
-            if letter
-            else mode_filtered
+    def create_pictograph(self, grid_mode: GridMode = GridMode.DIAMOND) -> PictographData:
+        """Create a new blank pictograph."""
+        grid_data = GridData(
+            grid_mode=grid_mode,
+            center_x=200.0,
+            center_y=200.0,
+            radius=100.0,
         )
-        if len(filtered_df) == 0:
-            filtered_df = mode_filtered
 
-        # Get random row
-        row = filtered_df.sample(n=1).iloc[0]
+        return PictographData(
+            grid_data=grid_data,
+            arrows={},
+            props={},
+            is_blank=True,
+            metadata={"created_by": "pictograph_data_service"},
+        )
 
-        return {
-            "letter": row["letter"],
-            "blue_motion": {
-                "motion_type": row["blue_motion_type"],
-                "prop_rot_dir": row["blue_prop_rot_dir"],
-                "start_loc": row["blue_start_loc"],
-                "end_loc": row["blue_end_loc"],
-                "turns": 1.0,
+    def create_from_beat(self, beat_data: BeatData) -> PictographData:
+        """Create pictograph from beat data."""
+        pictograph = self.create_pictograph()
+
+        # Add arrows based on beat motions
+        arrows = {}
+
+        if beat_data.blue_motion:
+            arrows["blue"] = ArrowData(
+                color="blue",
+                motion_data=beat_data.blue_motion,
+                is_visible=True,
+            )
+
+        if beat_data.red_motion:
+            arrows["red"] = ArrowData(
+                color="red",
+                motion_data=beat_data.red_motion,
+                is_visible=True,
+            )
+
+        return pictograph.update(
+            arrows=arrows,
+            is_blank=len(arrows) == 0,
+            metadata={
+                "created_from_beat": beat_data.beat_number,
+                "letter": beat_data.letter,
             },
-            "red_motion": {
-                "motion_type": row["red_motion_type"],
-                "prop_rot_dir": row["red_prop_rot_dir"],
-                "start_loc": row["red_start_loc"],
-                "end_loc": row["red_end_loc"],
-                "turns": 1.0,
-            },
-            "grid_mode": row.get("grid_mode", "diamond"),
-            "timing": row.get("timing", "together"),
-        }
+        )
 
-    def validate_motion_position_combination(
-        self,
-        letter: str,
-        start_pos: str,
-        end_pos: str,
-        blue_motion: str,
-        red_motion: str,
-    ) -> bool:
-        """Validate if a motion/position combination is valid according to rules."""
-        if self._dataset is None:
+    def update_pictograph_arrows(
+        self, pictograph: PictographData, arrows: Dict[str, ArrowData]
+    ) -> PictographData:
+        """Update arrows in pictograph."""
+        return pictograph.update(
+            arrows=arrows,
+            is_blank=len(arrows) == 0,
+        )
+
+    def search_dataset(self, query: Dict[str, Any]) -> List[PictographData]:
+        """Search pictograph dataset with query."""
+        results = []
+
+        # Extract search criteria
+        max_results = query.get("max_results", 50)
+
+        # Search through cached pictographs
+        for pictograph_id, pictograph in self._pictograph_cache.items():
+            if self._matches_query(pictograph, query):
+                results.append(pictograph)
+
+                if len(results) >= max_results:
+                    break
+
+        return results
+
+    def add_to_dataset(self, pictograph: PictographData, category: str = "user_created") -> str:
+        """Add pictograph to dataset."""
+        pictograph_id = str(uuid.uuid4())
+
+        # Cache the pictograph
+        self._pictograph_cache[pictograph_id] = pictograph
+
+        # Update dataset index
+        if category not in self._dataset_index:
+            self._dataset_index[category] = []
+        self._dataset_index[category].append(pictograph_id)
+
+        return pictograph_id
+
+    def get_dataset_categories(self) -> List[str]:
+        """Get all available dataset categories."""
+        return list(self._dataset_index.keys())
+
+    def get_pictographs_by_category(self, category: str) -> List[PictographData]:
+        """Get all pictographs in a category."""
+        pictograph_ids = self._dataset_index.get(category, [])
+        return [
+            self._pictograph_cache[pid]
+            for pid in pictograph_ids
+            if pid in self._pictograph_cache
+        ]
+
+    def get_pictograph_by_id(self, pictograph_id: str) -> Optional[PictographData]:
+        """Get pictograph by ID."""
+        return self._pictograph_cache.get(pictograph_id)
+
+    def remove_from_dataset(self, pictograph_id: str) -> bool:
+        """Remove pictograph from dataset."""
+        if pictograph_id not in self._pictograph_cache:
             return False
 
-        # Check if this exact combination exists in the dataset
-        matches = self._dataset[
-            (self._dataset["letter"] == letter)
-            & (self._dataset["blue_motion_type"] == blue_motion)
-            & (self._dataset["red_motion_type"] == red_motion)
-        ]
+        # Remove from cache
+        del self._pictograph_cache[pictograph_id]
 
-        return len(matches) > 0
+        # Remove from all categories
+        for category, ids in self._dataset_index.items():
+            if pictograph_id in ids:
+                ids.remove(pictograph_id)
 
-    def get_valid_letters(self) -> List[str]:
-        """Get list of valid letters from the dataset."""
-        return (
-            self._dataset["letter"].unique().tolist()
-            if self._dataset is not None
-            else []
-        )
+        return True
 
-    def get_dataset_info(self) -> Dict[str, Any]:
-        """Get information about the loaded dataset."""
-        if self._dataset is None:
-            return {"loaded": False, "entries": 0}
-
+    def get_dataset_stats(self) -> Dict[str, Any]:
+        """Get dataset statistics."""
         return {
-            "loaded": True,
-            "entries": len(self._dataset),
-            "letters": self.get_valid_letters(),
-            "motion_types": self._dataset["blue_motion_type"].unique().tolist(),
-            "sample_entry": (
-                self._dataset.iloc[0].to_dict() if len(self._dataset) > 0 else None
-            ),
+            "total_pictographs": len(self._pictograph_cache),
+            "categories": {
+                category: len(ids) for category, ids in self._dataset_index.items()
+            },
+            "cache_size": len(self._pictograph_cache),
         }
 
-    def get_pictographs_by_motion_type(self, motion_type: str) -> List[Dict[str, Any]]:
-        """Get all pictographs that match a specific motion type."""
-        if self._dataset is None:
-            return []
+    def clear_cache(self) -> None:
+        """Clear the pictograph cache."""
+        self._pictograph_cache.clear()
+        self._dataset_index.clear()
 
-        filtered = self._dataset[
-            (self._dataset["blue_motion_type"] == motion_type)
-            | (self._dataset["red_motion_type"] == motion_type)
-        ]
+    # Private helper methods
 
-        return [self._row_to_pictograph_data(row) for _, row in filtered.iterrows()]
+    def _matches_query(self, pictograph: PictographData, query: Dict[str, Any]) -> bool:
+        """Check if pictograph matches search query."""
+        # Letter matching
+        if "letter" in query:
+            letter = pictograph.metadata.get("letter", "").lower()
+            query_letter = query["letter"].lower()
+            if query_letter not in letter:
+                return False
 
-    def get_specific_pictograph(self, letter: str, index: int = 0) -> Dict[str, Any]:
-        """Get a specific pictograph by letter and index for consistent testing."""
-        if self._dataset is None or len(self._dataset) == 0:
-            raise ValueError("No dataset available")
+        # Motion type matching
+        if "motion_type" in query:
+            query_motion_type = query["motion_type"]
+            has_matching_motion = False
 
-        # Filter by letter
-        letter_filtered = self._dataset[self._dataset["letter"] == letter]
+            for arrow in pictograph.arrows.values():
+                if arrow.motion_data and arrow.motion_data.motion_type == query_motion_type:
+                    has_matching_motion = True
+                    break
 
-        if len(letter_filtered) == 0:
-            raise ValueError(f"No pictographs found for letter '{letter}'")
+            if not has_matching_motion:
+                return False
 
-        # Get the specific index (wrap around if index is too large)
-        row_index = index % len(letter_filtered)
-        row = letter_filtered.iloc[row_index]
+        # Start position matching
+        if "start_position" in query:
+            query_start_position = query["start_position"]
+            has_matching_start = False
 
-        return self._row_to_pictograph_data(row)
+            for arrow in pictograph.arrows.values():
+                if arrow.motion_data and arrow.motion_data.start_loc == query_start_position:
+                    has_matching_start = True
+                    break
 
-    def get_test_pictographs(self) -> List[Dict[str, Any]]:
-        """Get three specific pictographs for consistent testing: A, B, C."""
-        test_pictographs = []
-        test_letters = ["A", "B", "C"]
+            if not has_matching_start:
+                return False
 
-        for letter in test_letters:
-            try:
-                pictograph = self.get_specific_pictograph(letter, 0)
-                test_pictographs.append(pictograph)
-            except ValueError:
-                # If letter not found, get any available letter
-                if self._dataset is not None and len(self._dataset) > 0:
-                    available_letters = self.get_valid_letters()
-                    if available_letters:
-                        # Use the first available letter as fallback
-                        fallback_letter = available_letters[0]
-                        pictograph = self.get_specific_pictograph(fallback_letter, 0)
-                        pictograph["letter"] = letter  # Override letter for display
-                        test_pictographs.append(pictograph)
-
-        return test_pictographs
-
-    def get_pictographs_by_letter_range(
-        self, start_letter: str, count: int = 3
-    ) -> List[Dict[str, Any]]:
-        """Get pictographs starting from a specific letter."""
-        if self._dataset is None or len(self._dataset) == 0:
-            raise ValueError("No dataset available")
-
-        available_letters = sorted(self.get_valid_letters())
-        pictographs = []
-
-        try:
-            start_index = available_letters.index(start_letter)
-        except ValueError:
-            start_index = 0  # Start from beginning if letter not found
-
-        for i in range(count):
-            letter_index = (start_index + i) % len(available_letters)
-            letter = available_letters[letter_index]
-            pictograph = self.get_specific_pictograph(letter, 0)
-            pictographs.append(pictograph)
-
-        return pictographs
-
-    def _row_to_pictograph_data(self, row) -> Dict[str, Any]:
-        """Convert a DataFrame row to pictograph data format."""
-        return {
-            "letter": row["letter"],
-            "blue_motion": {
-                "motion_type": row["blue_motion_type"],
-                "prop_rot_dir": row["blue_prop_rot_dir"],
-                "start_loc": row["blue_start_loc"],
-                "end_loc": row["blue_end_loc"],
-                "turns": 1.0,
-            },
-            "red_motion": {
-                "motion_type": row["red_motion_type"],
-                "prop_rot_dir": row["red_prop_rot_dir"],
-                "start_loc": row["red_start_loc"],
-                "end_loc": row["red_end_loc"],
-                "turns": 1.0,
-            },
-            "grid_mode": row.get("grid_mode", "diamond"),
-            "timing": row.get("timing", "together"),
-        }
+        return True

@@ -23,7 +23,7 @@ v2_src_path = os.path.join(os.path.dirname(__file__), "src")
 if v2_src_path not in sys.path:
     sys.path.insert(0, v2_src_path)
 
-from src.core.dependency_injection.simple_container import SimpleContainer
+from core.dependency_injection.di_container import SimpleContainer
 from src.presentation.factories.workbench_factory import (
     create_modern_workbench,
     configure_workbench_services,
@@ -114,30 +114,36 @@ def test_complete_user_flow_with_qtbot(
         # Store initial sequence state for comparison
         initial_sequence = workbench._current_sequence
         initial_beat_count = len(initial_sequence.beats) if initial_sequence else 0
-        
+
         # Perform the click
-        qtbot_with_container.mouseClick(
-            first_beat_frame, Qt.MouseButton.LeftButton
-        )
-        
+        qtbot_with_container.mouseClick(first_beat_frame, Qt.MouseButton.LeftButton)
+
         # Wait for sequence state to change instead of relying on signal
         def sequence_updated():
             current_sequence = workbench._current_sequence
             current_beat_count = len(current_sequence.beats) if current_sequence else 0
             return current_beat_count > initial_beat_count
-        
+
         # Wait for the workbench to update its sequence
         qtbot_with_container.waitUntil(sequence_updated, timeout=5000)
-        
+
         # Verify the workbench state has been updated
         current_sequence = workbench._current_sequence
         current_beat_count = len(current_sequence.beats) if current_sequence else 0
-        
-        assert current_beat_count > initial_beat_count, f"Beat count should have increased from {initial_beat_count} to {current_beat_count}"
-        assert current_sequence is not None, "Workbench should have a current sequence after click"
-        assert len(current_sequence.beats) > 0, "Sequence should contain beats after click"
-        
-        print(f"   → Beat successfully added! Sequence now has {current_beat_count} beats")
+
+        assert (
+            current_beat_count > initial_beat_count
+        ), f"Beat count should have increased from {initial_beat_count} to {current_beat_count}"
+        assert (
+            current_sequence is not None
+        ), "Workbench should have a current sequence after click"
+        assert (
+            len(current_sequence.beats) > 0
+        ), "Sequence should contain beats after click"
+
+        print(
+            f"   → Beat successfully added! Sequence now has {current_beat_count} beats"
+        )
 
         print(
             "✅ Beat frame click simulation and state verification completed successfully!"
@@ -168,9 +174,12 @@ def test_complete_user_flow_with_qtbot(
     # In testing environment, this may be a Mock, which is acceptable
     service_type_name = type(graph_service).__name__
     print(f"✅ Graph section has service type: {service_type_name}")
-    
+
     # Verify that either we have the real service or a proper mock
-    assert service_type_name in ["GraphEditorService", "Mock"], f"Graph section has unexpected service type: {service_type_name}"
+    assert service_type_name in [
+        "GraphEditorService",
+        "Mock",
+    ], f"Graph section has unexpected service type: {service_type_name}"
 
     # Verify graph editor display was updated (e.g. by checking for visible items)
     # This might require a more specific signal from the graph editor or checking its state.

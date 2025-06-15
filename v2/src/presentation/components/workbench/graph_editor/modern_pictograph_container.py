@@ -5,7 +5,9 @@ from PyQt6.QtGui import QMouseEvent, QPainter
 
 from src.domain.models.core_models import BeatData
 from src.domain.models.pictograph_models import PictographData
-from src.application.services.pictograph_service import PictographService
+from src.application.services.pictograph_management_service import (
+    PictographManagementService,
+)
 from presentation.components.pictograph.pictograph_scene import PictographScene
 
 
@@ -22,10 +24,7 @@ class ModernPictographContainer(QWidget):
         # Get layout service from parent's container
         container = getattr(parent, "container", None)
         if container:
-            from src.core.interfaces.core_services import ILayoutService
-
-            layout_service = container.resolve(ILayoutService)
-            self._pictograph_service = PictographService(layout_service)
+            self._pictograph_service = PictographManagementService()
         else:
             self._pictograph_service = None
 

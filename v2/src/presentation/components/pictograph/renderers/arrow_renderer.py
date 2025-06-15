@@ -12,8 +12,7 @@ from PyQt6.QtSvg import QSvgRenderer
 from presentation.components.pictograph.asset_utils import get_image_path
 from domain.models.core_models import MotionData, Location, MotionType
 from domain.models.pictograph_models import ArrowData, PictographData
-from application.services.arrow_mirror_service import ArrowMirrorService
-from application.services.arrow_positioning_service import ArrowPositioningService
+from application.services.arrow_management_service import ArrowManagementService
 
 
 class ArrowRenderer:
@@ -25,8 +24,7 @@ class ArrowRenderer:
         self.CENTER_Y = 475
         self.HAND_RADIUS = 143.1
 
-        self.arrow_mirroring_service = ArrowMirrorService()
-        self.arrow_positioning_service = ArrowPositioningService()
+        self.arrow_service = ArrowManagementService()
 
         self.location_coordinates = {
             Location.NORTH.value: (0, -self.HAND_RADIUS),
@@ -94,7 +92,9 @@ class ArrowRenderer:
                     position_y=position_y,
                     rotation_angle=rotation,
                 )
-                self.arrow_mirroring_service.update_arrow_mirror(arrow_item, arrow_data)
+                self.arrow_service.apply_mirror_transform(
+                    arrow_item, self.arrow_service.should_mirror_arrow(arrow_data)
+                )
 
                 # POSITIONING FORMULA:
                 # Get bounding rect AFTER all transformations (scaling + rotation)
@@ -148,9 +148,7 @@ class ArrowRenderer:
 
         pictograph_data = PictographData(arrows={color: arrow_data})
 
-        return self.arrow_positioning_service.calculate_arrow_position(
-            arrow_data, pictograph_data
-        )
+        return self.arrow_service.calculate_arrow_position(arrow_data, pictograph_data)
 
     def _get_location_position(self, location: Location) -> tuple[float, float]:
         """Get the coordinate position for a location."""

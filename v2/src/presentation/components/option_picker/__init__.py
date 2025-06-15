@@ -2,7 +2,7 @@ from typing import List, Optional, Dict, Any
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtCore import pyqtSignal, QObject
 
-from ....core.dependency_injection.simple_container import SimpleContainer
+from ....core.dependency_injection.di_container import SimpleContainer
 from ....core.interfaces.core_services import ILayoutService
 from ....domain.models.core_models import BeatData
 from .pictograph_pool_manager import PictographPoolManager

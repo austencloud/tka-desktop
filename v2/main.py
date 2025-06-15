@@ -22,25 +22,15 @@ from PyQt6.QtGui import QFont, QIcon, QGuiApplication
 v2_src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(v2_src_path))
 
-from src.core.dependency_injection.simple_container import get_container
+from core.dependency_injection.di_container import get_container
 from src.core.interfaces.core_services import (
+    ILayoutManagementService,
+    IUIStateManagementService,
     ILayoutService,
-    ISettingsService,
-    ISequenceDataService,
-    IValidationService,
 )
-from src.application.services.simple_layout_service import SimpleLayoutService
-from src.application.services.simple_sequence_service import (
-    SequenceService,
-    SimpleSequenceDataService,
-    SimpleSettingsService,
-    SimpleValidationService,
-)
-from src.application.services.settings_service import SettingsService
-from src.application.services.settings_dialog_service import SettingsDialogService
-from src.core.interfaces.settings_interfaces import (
-    ISettingsService as IModernSettingsService,
-    ISettingsDialogService,
+from src.application.services.layout_management_service import LayoutManagementService
+from src.application.services.ui_state_management_service import (
+    UIStateManagementService,
 )
 from src.presentation.components.ui.settings.settings_button import SettingsButton
 from src.presentation.factories.workbench_factory import configure_workbench_services
@@ -66,25 +56,154 @@ class KineticConstructorV2(QMainWindow):
         if self.splash:
             self.splash.update_progress(20, "Configuring services...")
 
-        self.container.register_singleton(ILayoutService, SimpleLayoutService)
-        self.container.register_singleton(ISettingsService, SimpleSettingsService)
+        # Register consolidated services
         self.container.register_singleton(
-            ISequenceDataService, SimpleSequenceDataService
+            ILayoutManagementService, LayoutManagementService
         )
-        self.container.register_singleton(IValidationService, SimpleValidationService)
-        self.container.register_singleton(SequenceService, SequenceService)
+        self.container.register_singleton(
+            IUIStateManagementService, UIStateManagementService
+        )
 
-        # Register modern settings services
-        self.container.register_singleton(IModernSettingsService, SettingsService)
+        # Register legacy interface for compatibility (same implementation)
+        self.container.register_singleton(ILayoutService, LayoutManagementService)
 
-        # Initialize settings dialog service
-        settings_service = self.container.resolve(IModernSettingsService)
-        self.settings_dialog_service = SettingsDialogService(settings_service, self)
+        # Register new focused motion services
+        self._register_motion_services()
+
+        # Register new focused layout services
+        self._register_layout_services()
+
+        # Register new focused pictograph services
+        self._register_pictograph_services()
+
+        # Get UI state service for settings functionality
+        self.ui_state_service = self.container.resolve(IUIStateManagementService)
 
         configure_workbench_services(self.container)
 
         if self.splash:
             self.splash.update_progress(40, "Services configured")
+
+    def _register_motion_services(self):
+        """Register the new focused motion services."""
+        from application.services.motion_validation_service import (
+            MotionValidationService,
+            IMotionValidationService,
+        )
+        from application.services.motion_generation_service import (
+            MotionGenerationService,
+            IMotionGenerationService,
+        )
+        from application.services.motion_orientation_service import (
+            MotionOrientationService,
+            IMotionOrientationService,
+        )
+
+        # Register focused motion services
+        validation_service = MotionValidationService()
+        self.container.register_instance(IMotionValidationService, validation_service)
+
+        generation_service = MotionGenerationService(
+            validation_service=validation_service
+        )
+        self.container.register_instance(IMotionGenerationService, generation_service)
+
+        orientation_service = MotionOrientationService()
+        self.container.register_instance(IMotionOrientationService, orientation_service)
+
+        # Register bridge service for backward compatibility
+        from application.services.motion_management_bridge_service import (
+            MotionManagementBridgeService,
+        )
+        from core.interfaces.core_services import IMotionManagementService
+
+        bridge_service = MotionManagementBridgeService(
+            validation_service, generation_service, orientation_service
+        )
+        self.container.register_instance(IMotionManagementService, bridge_service)
+
+    def _register_layout_services(self):
+        """Register the new focused layout services."""
+        from application.services.beat_layout_service import (
+            BeatLayoutService,
+            IBeatLayoutService,
+        )
+        from application.services.responsive_layout_service import (
+            ResponsiveLayoutService,
+            IResponsiveLayoutService,
+        )
+        from application.services.component_layout_service import (
+            ComponentLayoutService,
+            IComponentLayoutService,
+        )
+
+        # Register focused layout services
+        beat_layout_service = BeatLayoutService()
+        self.container.register_instance(IBeatLayoutService, beat_layout_service)
+
+        responsive_layout_service = ResponsiveLayoutService()
+        self.container.register_instance(
+            IResponsiveLayoutService, responsive_layout_service
+        )
+
+        component_layout_service = ComponentLayoutService()
+        self.container.register_instance(
+            IComponentLayoutService, component_layout_service
+        )
+
+        # Register bridge service for backward compatibility
+        from application.services.layout_management_bridge_service import (
+            LayoutManagementBridgeService,
+        )
+        from core.interfaces.core_services import ILayoutManagementService
+
+        layout_bridge_service = LayoutManagementBridgeService(
+            beat_layout_service, responsive_layout_service, component_layout_service
+        )
+        self.container.register_instance(
+            ILayoutManagementService, layout_bridge_service
+        )
+
+    def _register_pictograph_services(self):
+        """Register the new focused pictograph services."""
+        from application.services.pictograph_data_service import (
+            PictographDataService,
+            IPictographDataService,
+        )
+        from application.services.data_conversion_service import (
+            DataConversionService,
+            IDataConversionService,
+        )
+        from application.services.pictograph_context_service import (
+            PictographContextService,
+            IPictographContextService,
+        )
+
+        # Register focused pictograph services
+        data_service = PictographDataService()
+        self.container.register_instance(IPictographDataService, data_service)
+
+        conversion_service = DataConversionService()
+        self.container.register_instance(IDataConversionService, conversion_service)
+
+        context_service = PictographContextService()
+        self.container.register_instance(IPictographContextService, context_service)
+
+        # Register bridge service for backward compatibility
+        from application.services.pictograph_management_bridge_service import (
+            PictographManagementBridgeService,
+        )
+        from application.services.pictograph_management_service import (
+            PictographManagementService,
+        )
+
+        pictograph_bridge_service = PictographManagementBridgeService(
+            data_service, conversion_service, context_service
+        )
+        # Note: PictographManagementService doesn't have an interface yet, so we register the concrete class
+        self.container.register_instance(
+            PictographManagementService, pictograph_bridge_service
+        )
 
     def _set_v1_style_dimensions(self):
         """Set window dimensions to match v1: 90% of screen size"""
@@ -201,7 +320,7 @@ class KineticConstructorV2(QMainWindow):
                 self.splash.update_progress(76, "Creating construct tab container...")
 
             # Basic container creation
-            from src.core.dependency_injection.simple_container import SimpleContainer
+            from core.dependency_injection.di_container import SimpleContainer
 
             if self.splash:
                 self.splash.update_progress(78, "Setting up dependency injection...")
@@ -277,7 +396,26 @@ class KineticConstructorV2(QMainWindow):
 
     def _show_settings(self):
         """Open the settings dialog"""
-        self.settings_dialog_service.show_settings_dialog()
+        # Use the UI state service to show settings
+        print("🔧 Settings requested - using UI State Management Service")
+        print("Current settings:")
+
+        # Show some current settings
+        settings_to_show = [
+            "theme",
+            "auto_save",
+            "show_grid",
+            "animation_speed",
+            "default_sequence_length",
+            "graph_editor_auto_open",
+        ]
+
+        for setting in settings_to_show:
+            value = self.ui_state_service.get_setting(setting, "Not set")
+            print(f"  {setting}: {value}")
+
+        print("\nTo modify settings, use the UI State Management Service methods.")
+        print("Settings are automatically saved to user_settings.json")
 
 
 def main():
