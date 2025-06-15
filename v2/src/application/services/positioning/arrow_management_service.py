@@ -136,6 +136,29 @@ class ArrowManagementService(IArrowManagementService):
         4. Apply adjustments (default placement + special rules)
         5. Return final position and rotation
         """
+        # DEBUGGING: Always log that this method is called
+        print(f"🔧 V2 ARROW MANAGEMENT SERVICE: calculate_arrow_position called")
+        print(f"   Arrow color: {arrow_data.color}")
+        print(
+            f"   Motion type: {arrow_data.motion_data.motion_type.value if arrow_data.motion_data else 'None'}"
+        )
+
+        # DEBUGGING: Always log what we receive for letters G, H, I
+        if (
+            pictograph_data
+            and hasattr(pictograph_data, "letter")
+            and pictograph_data.letter in ["G", "H", "I"]
+        ):
+            print(
+                f"🔧 V2 ARROW MANAGEMENT SERVICE: Received letter {pictograph_data.letter}"
+            )
+        elif pictograph_data:
+            print(
+                f"⚠️ V2 ARROW MANAGEMENT SERVICE: Received pictograph_data but letter is {getattr(pictograph_data, 'letter', 'MISSING')}"
+            )
+        else:
+            print(f"⚠️ V2 ARROW MANAGEMENT SERVICE: Received None pictograph_data")
+
         if not arrow_data.motion_data:
             return self.CENTER_X, self.CENTER_Y, 0.0
 
@@ -421,6 +444,16 @@ class ArrowManagementService(IArrowManagementService):
         2. Special adjustments for specific letters and configurations
         3. Quadrant-based directional adjustments
         """
+        # DEBUGGING: Always log when this method is called for letters G, H, I
+        if pictograph_data and pictograph_data.letter in ["G", "H", "I"]:
+            print(
+                f"🔧 V2 _calculate_adjustment called for letter {pictograph_data.letter}"
+            )
+            print(f"   Arrow color: {arrow_data.color}")
+            print(
+                f"   Motion type: {arrow_data.motion_data.motion_type.value if arrow_data.motion_data else 'None'}"
+            )
+
         motion = arrow_data.motion_data
         if not motion:
             return QPointF(0, 0)

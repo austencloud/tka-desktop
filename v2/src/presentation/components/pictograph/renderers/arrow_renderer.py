@@ -12,8 +12,8 @@ from PyQt6.QtSvg import QSvgRenderer
 from presentation.components.pictograph.asset_utils import get_image_path
 from domain.models.core_models import MotionData, Location, MotionType
 from domain.models.pictograph_models import ArrowData, PictographData
-from application.services.old_services_before_consolidation.arrow_positioning_service import (
-    ArrowPositioningService,
+from application.services.positioning.arrow_management_service import (
+    ArrowManagementService,
 )
 
 
@@ -26,7 +26,7 @@ class ArrowRenderer:
         self.CENTER_Y = 475
         self.HAND_RADIUS = 143.1
 
-        self.arrow_service = ArrowPositioningService()
+        self.arrow_service = ArrowManagementService()
 
         self.location_coordinates = {
             Location.NORTH.value: (0, -self.HAND_RADIUS),
@@ -172,8 +172,18 @@ class ArrowRenderer:
         # Use full pictograph data if available for Type 3 detection
         if full_pictograph_data:
             pictograph_data = full_pictograph_data
+            # DEBUGGING: Log pictograph data for letters G, H, I
+            if full_pictograph_data.letter in ["G", "H", "I"]:
+                print(
+                    f"🔧 V2 ARROW RENDERER: Using full pictograph data for letter {full_pictograph_data.letter}"
+                )
+                print(f"   Color: {color}")
+                print(f"   Motion type: {motion_data.motion_type.value}")
         else:
             pictograph_data = PictographData(arrows={color: arrow_data})
+            print(
+                f"⚠️ V2 ARROW RENDERER: No full pictograph data, creating fallback (letter will be None)"
+            )
 
         return self.arrow_service.calculate_arrow_position(arrow_data, pictograph_data)
 

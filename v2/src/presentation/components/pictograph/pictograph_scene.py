@@ -87,17 +87,43 @@ class PictographScene(QGraphicsScene):
             blue_arrow = ArrowData(motion_data=self.beat_data.blue_motion, color="blue")
             red_arrow = ArrowData(motion_data=self.beat_data.red_motion, color="red")
 
+            # CRITICAL FIX: Include letter information for special placement service
             full_pictograph_data = PictographData(
-                arrows={"blue": blue_arrow, "red": red_arrow}
+                arrows={"blue": blue_arrow, "red": red_arrow},
+                letter=self.beat_data.letter,  # This enables special placement and logging
             )
 
         if self.beat_data.blue_motion:
+            # Create single-arrow pictograph data if full data doesn't exist
+            single_blue_data = full_pictograph_data
+            if not full_pictograph_data:
+                from domain.models.pictograph_models import PictographData, ArrowData
+
+                blue_arrow = ArrowData(
+                    motion_data=self.beat_data.blue_motion, color="blue"
+                )
+                single_blue_data = PictographData(
+                    arrows={"blue": blue_arrow}, letter=self.beat_data.letter
+                )
+
             self.arrow_renderer.render_arrow(
-                "blue", self.beat_data.blue_motion, full_pictograph_data
+                "blue", self.beat_data.blue_motion, single_blue_data
             )
         if self.beat_data.red_motion:
+            # Create single-arrow pictograph data if full data doesn't exist
+            single_red_data = full_pictograph_data
+            if not full_pictograph_data:
+                from domain.models.pictograph_models import PictographData, ArrowData
+
+                red_arrow = ArrowData(
+                    motion_data=self.beat_data.red_motion, color="red"
+                )
+                single_red_data = PictographData(
+                    arrows={"red": red_arrow}, letter=self.beat_data.letter
+                )
+
             self.arrow_renderer.render_arrow(
-                "red", self.beat_data.red_motion, full_pictograph_data
+                "red", self.beat_data.red_motion, single_red_data
             )
 
         # Render glyphs if glyph data is available

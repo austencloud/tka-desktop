@@ -99,7 +99,7 @@ class SpecialPlacementService:
                 print(f"   Available turn keys: {list(letter_data.keys())}")
             return None
 
-        # Get motion-type-specific adjustment
+        # Try motion-type-specific adjustment first (for letters like I)
         motion_type_key = (
             motion.motion_type.value.lower()
         )  # "pro", "anti", "float", etc.
@@ -114,9 +114,26 @@ class SpecialPlacementService:
                     )
                 return result
 
+        # If motion type lookup failed, try color-based lookup (for letters like G, H)
+        color_key = arrow_data.color.lower()  # "blue" or "red"
+
+        if letter in ["G", "H", "I"]:
+            print(f"   🔍 Trying color-based lookup with key: {color_key}")
+
+        if color_key in turn_data:
+            adjustment_values = turn_data[color_key]
+            if isinstance(adjustment_values, list) and len(adjustment_values) == 2:
+                result = QPointF(adjustment_values[0], adjustment_values[1])
+                if letter in ["G", "H", "I"]:
+                    print(
+                        f"   ✅ SPECIAL ADJUSTMENT FOUND (COLOR): ({result.x()}, {result.y()})"
+                    )
+                return result
+
         if letter in ["G", "H", "I"]:
             print(f"   ❌ No motion type data found for {motion_type_key}")
-            print(f"   Available motion types: {list(turn_data.keys())}")
+            print(f"   ❌ No color data found for {color_key}")
+            print(f"   Available keys: {list(turn_data.keys())}")
 
         return None
 
