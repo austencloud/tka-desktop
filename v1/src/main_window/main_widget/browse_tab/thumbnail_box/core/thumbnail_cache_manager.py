@@ -8,6 +8,7 @@ import logging
 import os
 import hashlib
 import json
+import time  # ← add this at the top
 from pathlib import Path
 from typing import Optional, Dict, Any
 from PyQt6.QtCore import QSize
@@ -217,7 +218,7 @@ class ThumbnailCacheManager:
                 "image_path": image_path,
                 "mtime": mtime,
                 "target_size": f"{target_size.width()}x{target_size.height()}",
-                "cached_at": os.time.time()
+                "cached_at": time.time()  # ← replace os.time.time()
             }
             
             # Save metadata periodically (not every time for performance)
@@ -226,3 +227,4 @@ class ThumbnailCacheManager:
                 
         except Exception as e:
             self.logger.warning(f"Error updating cache metadata: {e}")
+

@@ -7,13 +7,10 @@ from PyQt6.QtWidgets import QGraphicsView
 from PyQt6.QtCore import pyqtSignal, Qt, QTimer, QSize, QEvent
 from PyQt6.QtGui import QPainter, QKeyEvent
 
+from application.services.context_aware_scaling_service import ScalingContext
 from domain.models.core_models import BeatData
 
 from .pictograph_scene import PictographScene
-from application.services.context_aware_scaling_service import (
-    ContextAwareScalingService,
-    ScalingContext,
-)
 from .border_manager import BorderedPictographMixin
 
 
@@ -32,14 +29,7 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         BorderedPictographMixin.__init__(self)
 
         self.current_beat: Optional[BeatData] = None
-        self.scene: Optional[PictographScene] = None
-
-        # Context-aware scaling
-        self.scaling_service = ContextAwareScalingService()
-        self.scaling_context = ScalingContext.DEFAULT
-        self.context_params = {}
-
-        # Dimension debugging
+        self.scene: Optional[PictographScene] = None  # Dimension debugging
         self.debug_enabled = False
         self.debug_timer = QTimer()
         self.debug_timer.timeout.connect(self._print_debug_dimensions)
@@ -75,6 +65,11 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         if self.scene:
             self.scene.update_beat(beat_data)
             self._fit_view()
+
+        # Update border colors based on letter type if available
+        if beat_data.glyph_data and beat_data.glyph_data.letter_type:
+            self.update_border_colors_for_letter_type(beat_data.glyph_data.letter_type)
+
         self.pictograph_updated.emit(beat_data)
 
     def get_current_beat(self) -> Optional[BeatData]:
@@ -95,54 +90,12 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
             pass
 
     def _fit_view(self) -> None:
+        """Fit the pictograph scene to the view, exactly like V1."""
         if self.scene:
             try:
-                self.resetTransform()
-
-                scene_size = QSize(950, 950)
-                view_size = self.size()
-
-                # CRITICAL FIX: Account for border space when borders are enabled
-                # This prevents borders from cutting off pictograph content
-                effective_view_size = view_size
-                if self.border_manager.show_borders:
-                    # Calculate exact border space usage matching the debug calculation
-                    viewport_width = view_size.width()
-                    outer_border_width = max(1.0, viewport_width * 0.016)
-                    inner_border_width = max(1.0, viewport_width * 0.016)
-
-                    # Calculate exact border inset as per debug output:
-                    # Total Border Inset = half_outer_pen + outer_border_width + half_inner_pen + inner_border_width
-                    half_outer_pen = outer_border_width / 2.0
-                    half_inner_pen = inner_border_width / 2.0
-                    total_border_inset = (
-                        half_outer_pen
-                        + outer_border_width
-                        + half_inner_pen
-                        + inner_border_width
-                    )
-
-                    # Apply border inset to both sides (left+right, top+bottom)
-                    border_space = total_border_inset * 2
-
-                    # Reduce effective view size to account for border space
-                    border_adjusted_width = max(100, view_size.width() - border_space)
-                    border_adjusted_height = max(100, view_size.height() - border_space)
-                    effective_view_size = QSize(
-                        int(border_adjusted_width), int(border_adjusted_height)
-                    )
-
-                # Use context-aware scaling service with border-adjusted size
-                scale_x, scale_y = self.scaling_service.calculate_context_scale(
-                    context=self.scaling_context,
-                    container_size=effective_view_size,  # Use border-adjusted size
-                    scene_size=scene_size,
-                    parent_widget=self.parent(),
-                    **self.context_params,
-                )
-
-                self.scale(scale_x, scale_y)
-                self.centerOn(self.scene.CENTER_X, self.scene.CENTER_Y)
+                # Simple V1-style fitting: just use fitInView to automatically scale
+                self.setSceneRect(self.scene.itemsBoundingRect())
+                self.fitInView(self.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
             except RuntimeError:
                 pass
 
@@ -314,6 +267,9 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         if self.scene:
             self.scene.update_beat(beat_data)
             self._fit_view()
-            # Trigger debug print if enabled
-            self._trigger_debug_print()
+
+        # Update border colors based on letter type if available
+        if beat_data.glyph_data and beat_data.glyph_data.letter_type:
+            self.update_border_colors_for_letter_type(beat_data.glyph_data.letter_type)
+
         self.pictograph_updated.emit(beat_data)

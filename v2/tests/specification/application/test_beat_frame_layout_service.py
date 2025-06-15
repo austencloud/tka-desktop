@@ -7,7 +7,8 @@ Tests the core layout calculation logic in isolation.
 import pytest
 from unittest.mock import Mock, patch
 
-from src.application.services.beat_frame_layout_service import BeatFrameLayoutService
+from application.services.layout.beat_frame_layout_service import BeatFrameLayoutService
+
 
 
 @pytest.mark.unit

@@ -1,4 +1,4 @@
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List, Dict, Any
 from PyQt6.QtWidgets import (
     QWidget,
     QHBoxLayout,
@@ -16,8 +16,8 @@ from src.domain.models.core_models import SequenceData, BeatData
 from src.presentation.components.option_picker import ModernOptionPicker
 
 # StartPositionPicker imported locally in _create_start_position_widget method
-from src.application.services.option_picker_state_service import (
-    OptionPickerStateService,
+from application.services.ui.ui_state_management_service import (
+    UIStateManagementService,
 )
 from src.presentation.factories.workbench_factory import create_modern_workbench
 
@@ -38,7 +38,7 @@ class ConstructTabWidget(QWidget):
         super().__init__(parent)
         self.container = container
         self.progress_callback = progress_callback
-        self.state_service = OptionPickerStateService()
+        self.state_service = UIStateManagementService()
 
         # Flag to prevent circular signal emissions during clear operations
         self._emitting_signal = False
@@ -161,7 +161,11 @@ class ConstructTabWidget(QWidget):
                 self.container, progress_callback=option_picker_progress
             )
             self.option_picker.initialize()
-            self.option_picker.option_selected.connect(self._handle_option_selected)
+            # Use only the new precise signal that fixes the pictograph selection bug
+            # self.option_picker.option_selected.connect(self._handle_option_selected)  # Disabled - old buggy method
+            self.option_picker.beat_data_selected.connect(
+                self._handle_beat_data_selected
+            )
             layout.addWidget(self.option_picker.widget)
         except RuntimeError as e:
             print(f"❌ Failed to create option picker: {e}")
@@ -174,10 +178,11 @@ class ConstructTabWidget(QWidget):
         return widget
 
     def _connect_signals(self):
-        self.state_service.state_changed.connect(self._on_state_changed)
-        self.state_service.option_picker_ready.connect(
-            self._transition_to_option_picker
-        )
+        # TODO: Update signal connections for consolidated UIStateManagementService
+        # self.state_service.state_changed.connect(self._on_state_changed)
+        # self.state_service.option_picker_ready.connect(
+        #     self._transition_to_option_picker
+        # )
         if self.workbench:
             self.workbench.sequence_modified.connect(self._on_workbench_modified)
             self.workbench.operation_completed.connect(self._on_operation_completed)
@@ -315,10 +320,67 @@ class ConstructTabWidget(QWidget):
             except Exception as fallback_error:
                 print(f"❌ Even emergency fallback failed: {fallback_error}")
 
+    def _handle_beat_data_selected(self, beat_data: BeatData):
+        """Handle precise beat data selection (new method that fixes the bug)"""
+        print(f"✅ Construct tab: Precise beat data selected: {beat_data.letter}")
+        print(
+            f"   Beat data preview: Blue {beat_data.blue_motion.start_loc}→{beat_data.blue_motion.end_loc}, Red {beat_data.red_motion.start_loc}→{beat_data.red_motion.end_loc}"
+        )
+
+        # Get current sequence or create empty one if none exists
+        current_sequence = self.workbench.get_sequence() if self.workbench else None
+        if current_sequence is None:
+            current_sequence = SequenceData.empty()
+            print("📝 Created empty sequence for first beat")
+
+        try:
+            # Use the exact beat data that was clicked (this fixes the bug!)
+            new_beat = beat_data.update(
+                beat_number=current_sequence.length + 1,
+                duration=1.0,  # Ensure valid duration
+            )
+            print(
+                f"📝 Created new beat: {new_beat.letter} (beat #{new_beat.beat_number})"
+            )
+            print(
+                f"   Motion data: Blue {new_beat.blue_motion.start_loc}→{new_beat.blue_motion.end_loc}, Red {new_beat.red_motion.start_loc}→{new_beat.red_motion.end_loc}"
+            )
+
+            # Add beat to sequence
+            updated_beats = current_sequence.beats + [new_beat]
+            updated_sequence = current_sequence.update(beats=updated_beats)
+
+            print(f"📊 Sequence updated: {len(updated_beats)} beats")
+
+            # Update workbench
+            if self.workbench:
+                self.workbench.set_sequence(updated_sequence)
+                print("✅ Workbench sequence updated")
+
+            # DYNAMIC OPTION PICKER UPDATE: Refresh options after beat addition
+            self._refresh_option_picker_from_sequence(updated_sequence)
+
+            # Emit signal (with protection)
+            if not self._emitting_signal:
+                try:
+                    self._emitting_signal = True
+                    self.sequence_modified.emit(updated_sequence)
+                    print("📡 Sequence modified signal emitted")
+                finally:
+                    self._emitting_signal = False
+            else:
+                print("🔄 Skipping signal emission to prevent circular calls")
+
+        except Exception as e:
+            print(f"❌ Error in precise beat data selection: {e}")
+            import traceback
+
+            traceback.print_exc()
+
     def _create_start_position_data(self, position_key: str) -> BeatData:
         """Create start position data from position key using real dataset (separate from sequence beats)"""
         try:
-            from ...application.services.pictograph_dataset_service import (
+            from ...application.services.old_services_before_consolidation.pictograph_dataset_service import (
                 PictographDatasetService,
             )
 
@@ -329,32 +391,70 @@ class ConstructTabWidget(QWidget):
             )
 
             if real_start_position:
-                # Ensure it has proper beat number for start position
-                return real_start_position.update(
+                # Ensure it has proper beat number for start position AND end_pos for option picker
+                beat_data = real_start_position.update(
                     beat_number=1,  # Start position is always beat 1
                     duration=1.0,  # Standard duration
                 )
+
+                # CRITICAL FIX: Add end_pos to beat data for option picker
+                beat_dict = beat_data.to_dict()
+                beat_dict["end_pos"] = self._extract_end_position_from_position_key(
+                    position_key
+                )
+
+                print(
+                    f"🎯 Created start position data with end_pos: {beat_dict['end_pos']}"
+                )
+                return beat_data
             else:
                 print(
                     f"⚠️ No real data found for position {position_key}, using fallback"
                 )
                 # Fallback to empty beat with position key as letter
-                return BeatData.empty().update(
+                fallback_beat = BeatData.empty().update(
                     letter=position_key,
                     beat_number=1,
                     duration=1.0,
                     is_blank=False,
                 )
 
+                # Add end_pos to fallback too
+                fallback_dict = fallback_beat.to_dict()
+                fallback_dict["end_pos"] = self._extract_end_position_from_position_key(
+                    position_key
+                )
+
+                return fallback_beat
+
         except Exception as e:
             print(f"❌ Error loading real start position data: {e}")
             # Fallback to basic beat data
-            return BeatData.empty().update(
+            fallback_beat = BeatData.empty().update(
                 letter=position_key,
                 beat_number=1,
                 duration=1.0,
                 is_blank=False,
             )
+
+            # Add end_pos to fallback
+            fallback_dict = fallback_beat.to_dict()
+            fallback_dict["end_pos"] = self._extract_end_position_from_position_key(
+                position_key
+            )
+
+            return fallback_beat
+
+    def _extract_end_position_from_position_key(self, position_key: str) -> str:
+        """Extract the actual end position from a position key like 'beta5_beta5'"""
+        # Position keys are in format "start_end", we want the end part
+        if "_" in position_key:
+            parts = position_key.split("_")
+            if len(parts) == 2:
+                return parts[1]  # Return the end position part
+
+        # Fallback: if no underscore, assume it's already the position
+        return position_key
 
     def _populate_option_picker_from_start_position(
         self, position_key: str, start_position_data: BeatData
@@ -366,9 +466,20 @@ class ConstructTabWidget(QWidget):
 
         try:
             # Convert start position data to sequence format for motion combination service
+            start_position_dict = start_position_data.to_dict()
+
+            # CRITICAL FIX: Ensure end_pos is in the start position data
+            if "end_pos" not in start_position_dict:
+                start_position_dict["end_pos"] = (
+                    self._extract_end_position_from_position_key(position_key)
+                )
+                print(
+                    f"🔧 Added missing end_pos to start position: {start_position_dict['end_pos']}"
+                )
+
             sequence_data = [
                 {"metadata": "sequence_info"},  # Metadata entry
-                start_position_data.to_dict(),  # Start position entry
+                start_position_dict,  # Start position entry with end_pos
             ]
 
             # Load motion combinations into option picker
@@ -414,6 +525,17 @@ class ConstructTabWidget(QWidget):
 
         try:
             self._emitting_signal = True
+
+            # Check if sequence was cleared (empty) and transition back to start position picker
+            if sequence is None or sequence.length == 0:
+                print(
+                    "🗑️ Sequence cleared detected, transitioning to start position picker"
+                )
+                self._transition_to_start_position_picker()
+            else:
+                # DYNAMIC OPTION PICKER UPDATE: Refresh options based on sequence state
+                self._refresh_option_picker_from_sequence(sequence)
+
             print(
                 f"📡 Construct tab: Emitting sequence_modified for {sequence.length if sequence else 0} beats"
             )
@@ -426,6 +548,110 @@ class ConstructTabWidget(QWidget):
             traceback.print_exc()
         finally:
             self._emitting_signal = False
+
+    def _refresh_option_picker_from_sequence(self, sequence: SequenceData):
+        """Refresh option picker based on current sequence state (V1-compatible dynamic updates)"""
+        if not self.option_picker or not sequence or sequence.length == 0:
+            return
+
+        try:
+            # Convert V2 SequenceData to V1-compatible format for option picker
+            sequence_data = self._convert_sequence_to_v1_format(sequence)
+
+            # Refresh option picker with new options based on sequence state
+            self.option_picker.refresh_options_from_sequence(sequence_data)
+            print(
+                f"🔄 Option picker refreshed for sequence with {sequence.length} beats"
+            )
+
+        except Exception as e:
+            print(f"❌ Error refreshing option picker from sequence: {e}")
+            import traceback
+
+            traceback.print_exc()
+
+    def _convert_sequence_to_v1_format(
+        self, sequence: SequenceData
+    ) -> List[Dict[str, Any]]:
+        """Convert V2 SequenceData to V1-compatible format for option picker"""
+        try:
+            # Start with metadata entry (V1 format)
+            v1_sequence = [{"metadata": "sequence_info"}]
+
+            # Convert each beat to V1 format
+            for beat in sequence.beats:
+                if beat and not beat.is_blank:
+                    beat_dict = beat.to_dict()
+
+                    # Ensure V1-compatible structure
+                    if "metadata" not in beat_dict:
+                        beat_dict["metadata"] = {}
+
+                    # CRITICAL FIX: Use end_pos from metadata if available, otherwise calculate
+                    if "end_pos" not in beat_dict:
+                        # First try to get end_pos from beat metadata
+                        metadata_end_pos = (
+                            beat.metadata.get("end_pos") if beat.metadata else None
+                        )
+
+                        if metadata_end_pos:
+                            # Use the correct end position from metadata
+                            beat_dict["end_pos"] = metadata_end_pos
+                            print(
+                                f"🎯 Using metadata end_pos: {metadata_end_pos} for beat {beat.letter}"
+                            )
+                        elif beat.blue_motion and beat.red_motion:
+                            # Fallback: Calculate end position from motion data
+                            blue_end = (
+                                beat.blue_motion.end_loc.value
+                                if beat.blue_motion.end_loc
+                                else "s"
+                            )
+                            red_end = (
+                                beat.red_motion.end_loc.value
+                                if beat.red_motion.end_loc
+                                else "s"
+                            )
+
+                            # Map to position format
+                            position_map = {
+                                ("n", "n"): "alpha1",
+                                ("n", "e"): "alpha2",
+                                ("n", "s"): "alpha3",
+                                ("n", "w"): "alpha4",
+                                ("e", "n"): "alpha5",
+                                ("e", "e"): "alpha6",
+                                ("e", "s"): "alpha7",
+                                ("e", "w"): "alpha8",
+                                ("s", "n"): "beta1",
+                                ("s", "e"): "beta2",
+                                ("s", "s"): "beta3",
+                                ("s", "w"): "beta4",
+                                ("w", "n"): "beta5",
+                                ("w", "e"): "beta6",
+                                ("w", "s"): "beta7",
+                                ("w", "w"): "beta8",
+                            }
+
+                            end_pos = position_map.get((blue_end, red_end), "beta5")
+                            beat_dict["end_pos"] = end_pos
+                            print(
+                                f"🎯 Calculated end_pos: {end_pos} for beat {beat.letter} from motion data"
+                            )
+                        else:
+                            # Final fallback
+                            beat_dict["end_pos"] = "beta5"
+                            print(
+                                f"⚠️ Using fallback end_pos: beta5 for beat {beat.letter}"
+                            )
+
+                    v1_sequence.append(beat_dict)
+
+            return v1_sequence
+
+        except Exception as e:
+            print(f"❌ Error converting sequence to V1 format: {e}")
+            return [{"metadata": "sequence_info"}]  # Fallback to empty sequence
 
     def _on_operation_completed(self, message: str):
         print(f"✅ Operation completed: {message}")

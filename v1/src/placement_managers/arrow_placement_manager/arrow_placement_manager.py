@@ -54,6 +54,19 @@ class ArrowPlacementManager:
         final_x = initial_pos.x() + dir_x - arrow.boundingRect().center().x()
         final_y = initial_pos.y() + dir_y - arrow.boundingRect().center().y()
 
+        # ARROW POSITION LOGGING: Track final coordinates for letters G, H, I
+        letter = self.pictograph.state.letter
+        if letter and letter.value in ["G", "H", "I"]:
+            print(
+                f"🎯 V1 ARROW POSITION: Letter {letter.value}, {arrow.state.color} arrow"
+            )
+            print(f"   Initial pos: ({initial_pos.x():.1f}, {initial_pos.y():.1f})")
+            print(f"   Adjustment: ({dir_x:.1f}, {dir_y:.1f})")
+            print(
+                f"   Bounding center: ({arrow.boundingRect().center().x():.1f}, {arrow.boundingRect().center().y():.1f})"
+            )
+            print(f"   ✅ FINAL POS: ({final_x:.1f}, {final_y:.1f})")
+
         arrow.setPos(final_x, final_y)
 
     def _build_context(self, arrow: "Arrow") -> ArrowPlacementContext:

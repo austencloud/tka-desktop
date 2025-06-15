@@ -23,10 +23,15 @@ class PictographPoolManager(QObject):
         self._pictograph_pool: List[ClickablePictographFrame] = []
         self._pool_initialized = False
         self._click_handler: Optional[Callable] = None
+        self._beat_data_click_handler: Optional[Callable] = None
 
     def set_click_handler(self, handler: Callable[[str], None]) -> None:
         """Set the click handler for all pool objects"""
         self._click_handler = handler
+
+    def set_beat_data_click_handler(self, beat_data_handler: Callable) -> None:
+        """Set the beat data click handler for all pool objects"""
+        self._beat_data_click_handler = beat_data_handler
 
     def initialize_pool(self, progress_callback: Optional[Callable] = None) -> None:
         """Initialize V1-style object pool with progress updates"""
@@ -36,13 +41,11 @@ class PictographPoolManager(QObject):
         if progress_callback:
             progress_callback("Starting pictograph pool initialization", 0.3)
 
-        print(f"🏊 Initializing pictograph pool with {self.MAX_PICTOGRAPHS} objects...")
-
         try:
             if progress_callback:
                 progress_callback("Loading pictograph dataset service", 0.4)
 
-            from ....application.services.pictograph_dataset_service import (
+            from ....application.services.old_services_before_consolidation.pictograph_dataset_service import (
                 PictographDatasetService,
             )
 
@@ -83,6 +86,8 @@ class PictographPoolManager(QObject):
                     )
                     if self._click_handler:
                         frame.clicked.connect(self._click_handler)
+                    if self._beat_data_click_handler:
+                        frame.beat_data_clicked.connect(self._beat_data_click_handler)
                     frame.setVisible(False)
                     frame.set_container_widget(self.parent_widget)
 
@@ -153,6 +158,8 @@ class PictographPoolManager(QObject):
                 frame = ClickablePictographFrame(dummy_beat, parent=self.parent_widget)
                 if self._click_handler:
                     frame.clicked.connect(self._click_handler)
+                if self._beat_data_click_handler:
+                    frame.beat_data_clicked.connect(self._beat_data_click_handler)
                 frame.setVisible(False)
                 frame.set_container_widget(self.parent_widget)
                 self._pictograph_pool.append(frame)

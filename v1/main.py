@@ -174,6 +174,32 @@ def install_handlers():
     qInstallMessageHandler(qt_message_handler)
 
 
+def detect_parallel_testing_mode():
+    """Detect if we're running in parallel testing mode."""
+    import argparse
+
+    # Check command line arguments
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--parallel-testing", action="store_true")
+    parser.add_argument("--monitor", choices=["primary", "secondary", "left", "right"])
+    args, _ = parser.parse_known_args()
+
+    # Check environment variable
+    env_parallel = os.environ.get("TKA_PARALLEL_TESTING", "").lower() == "true"
+    env_monitor = os.environ.get("TKA_PARALLEL_MONITOR", "")
+    env_geometry = os.environ.get("TKA_PARALLEL_GEOMETRY", "")
+
+    parallel_mode = args.parallel_testing or env_parallel
+    monitor = args.monitor or env_monitor
+
+    if parallel_mode:
+        print(f"🔄 V1 Parallel Testing Mode: {monitor} monitor")
+        if env_geometry:
+            print(f"   📐 Target geometry: {env_geometry}")
+
+    return parallel_mode, monitor, env_geometry
+
+
 def main():
     configure_import_paths()
 
@@ -184,12 +210,18 @@ def main():
     from src.utils.logging_config import get_logger
     from src.utils.startup_silencer import silence_startup_logs
 
+    # Detect parallel testing mode early
+    parallel_mode, monitor, geometry = detect_parallel_testing_mode()
+
     # Get a logger for the main module
     logger = get_logger(__name__)
 
     # Log minimal startup information
     logger.info(f"Kinetic Constructor v1.0.0")
     logger.info(f"Python {sys.version.split()[0]}")
+
+    if parallel_mode:
+        logger.info(f"Parallel testing mode: {monitor} monitor")
 
     # Use the startup silencer to reduce noise during initialization
     with silence_startup_logs():
@@ -213,6 +245,16 @@ def main():
     # Create and initialize main window
     main_window = create_main_window(profiler, splash_screen, app_context)
     main_window.initialize_widgets()
+
+    # Apply parallel testing positioning if enabled
+    if parallel_mode and geometry:
+        try:
+            x, y, width, height = map(int, geometry.split(","))
+            main_window.setGeometry(x, y, width, height)
+            main_window.setWindowTitle("TKA V1 - Parallel Testing")
+            print(f"🔄 V1 positioned at: {x},{y} ({width}x{height})")
+        except Exception as e:
+            logger.warning(f"Failed to apply parallel testing geometry: {e}")
 
     try:
         main_window.show()

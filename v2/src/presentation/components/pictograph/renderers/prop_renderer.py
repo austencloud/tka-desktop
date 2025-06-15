@@ -14,11 +14,11 @@ from domain.models.core_models import MotionData, Location
 
 from presentation.components.pictograph.asset_utils import get_image_path
 
-from application.services.motion_management_service import (
+from application.services.motion.motion_management_service import (
     MotionManagementService,
 )
 from domain.models.core_models import Orientation
-from application.services.prop_management_service import PropManagementService
+from application.services.positioning.prop_management_service import PropManagementService
 
 
 class PropRenderer:

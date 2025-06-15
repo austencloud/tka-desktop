@@ -31,7 +31,7 @@ class TestCriticalBugsDebug:
         """Setup for each test method."""
         # Import here to avoid import issues
         from src.domain.models.core_models import SequenceData, BeatData
-        from src.application.services.pictograph_dataset_service import PictographDatasetService
+        from application.services.data.pictograph_dataset_service import PictographDatasetService
         
         self.SequenceData = SequenceData
         self.BeatData = BeatData

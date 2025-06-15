@@ -62,7 +62,7 @@ def construct_tab_widget(qtbot, mock_container):
 def mock_sequence_data():
     """Real sequence data for testing using PictographDatasetService."""
     from src.domain.models.core_models import SequenceData
-    from src.application.services.pictograph_dataset_service import (
+    from application.services.data.pictograph_dataset_service import (
         PictographDatasetService,
     )
 
@@ -82,7 +82,7 @@ def mock_sequence_data():
 @pytest.fixture
 def mock_beat_data():
     """Real beat data for testing using PictographDatasetService."""
-    from src.application.services.pictograph_dataset_service import (
+    from application.services.data.pictograph_dataset_service import (
         PictographDatasetService,
     )
 

@@ -9,11 +9,14 @@ from core.interfaces.workbench_services import (
     IGraphEditorService,
     IDictionaryService,
 )
-from application.services.sequence_management_service import (
+from application.services.core.sequence_management_service import (
     SequenceManagementService,
 )
-from application.services.ui_state_management_service import (
+from application.services.ui.ui_state_management_service import (
     UIStateManagementService,
+)
+from application.services.old_services_before_consolidation.graph_editor_service import (
+    GraphEditorService,
 )
 
 from presentation.components.workbench import ModernSequenceWorkbench
@@ -55,4 +58,17 @@ def configure_workbench_services(container: SimpleContainer) -> None:
     container.register_singleton(IBeatDeletionService, SequenceManagementService)
     container.register_singleton(IDictionaryService, SequenceManagementService)
     container.register_singleton(IFullScreenService, UIStateManagementService)
-    container.register_singleton(IGraphEditorService, UIStateManagementService)
+    container.register_singleton(IGraphEditorService, GraphEditorService)
+
+    # Note: ILayoutService should already be registered in main.py
+    # Only register if not already registered to avoid overriding register_instance with register_singleton
+    try:
+        container.resolve(ILayoutService)
+        # Don't register again - this would override the existing registration
+    except Exception:
+        # Register fallback if not found
+        from application.services.layout.layout_management_service import (
+            LayoutManagementService,
+        )
+
+        container.register_singleton(ILayoutService, LayoutManagementService)

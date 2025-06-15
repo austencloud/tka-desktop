@@ -20,10 +20,10 @@ from typing import Tuple, List, Dict, Any, Optional
 from PyQt6.QtCore import QPointF
 
 from application.services.arrow_positioning_service import ArrowPositioningService
-from application.services.pictograph_management_service import (
+from application.services.core.pictograph_management_service import (
     PictographManagementService,
 )
-from application.services.data_conversion_service import DataConversionService
+from application.services.core.data_conversion_service import DataConversionService
 from domain.models.core_models import (
     MotionData,
     MotionType,

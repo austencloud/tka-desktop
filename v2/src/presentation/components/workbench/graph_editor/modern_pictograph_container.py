@@ -5,7 +5,7 @@ from PyQt6.QtGui import QMouseEvent, QPainter
 
 from src.domain.models.core_models import BeatData
 from src.domain.models.pictograph_models import PictographData
-from src.application.services.pictograph_management_service import (
+from application.services.core.pictograph_management_service import (
     PictographManagementService,
 )
 from presentation.components.pictograph.pictograph_scene import PictographScene

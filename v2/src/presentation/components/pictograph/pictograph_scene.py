@@ -46,9 +46,7 @@ class PictographScene(QGraphicsScene):
         self.grid_renderer = GridRenderer(self)
         self.prop_renderer = PropRenderer(self)
         self.arrow_renderer = ArrowRenderer(self)
-        self.letter_renderer = LetterRenderer(self)
-
-        # Initialize glyph renderers
+        self.letter_renderer = LetterRenderer(self)  # Initialize glyph renderers
         self.elemental_glyph_renderer = ElementalGlyphRenderer(self)
         self.vtg_glyph_renderer = VTGGlyphRenderer(self)
         self.tka_glyph_renderer = TKAGlyphRenderer(self)
@@ -67,10 +65,6 @@ class PictographScene(QGraphicsScene):
         if not self.beat_data:
             return
 
-        print(f"Rendering beat: {self.beat_data.letter}")
-        print(f"Blue motion: {self.beat_data.blue_motion}")
-        print(f"Red motion: {self.beat_data.red_motion}")
-
         # Render grid
         self.grid_renderer.render_grid()
 
@@ -82,13 +76,29 @@ class PictographScene(QGraphicsScene):
 
         # Apply beta prop positioning after both props are rendered
         if self.beat_data.blue_motion and self.beat_data.red_motion:
-            self.prop_renderer.apply_beta_positioning(self.beat_data)
+            self.prop_renderer.apply_beta_positioning(
+                self.beat_data
+            )  # Render arrows for blue and red motions
+        # Create full pictograph data for Type 3 detection
+        full_pictograph_data = None
+        if self.beat_data.blue_motion and self.beat_data.red_motion:
+            from domain.models.pictograph_models import PictographData, ArrowData
 
-        # Render arrows for blue and red motions
+            blue_arrow = ArrowData(motion_data=self.beat_data.blue_motion, color="blue")
+            red_arrow = ArrowData(motion_data=self.beat_data.red_motion, color="red")
+
+            full_pictograph_data = PictographData(
+                arrows={"blue": blue_arrow, "red": red_arrow}
+            )
+
         if self.beat_data.blue_motion:
-            self.arrow_renderer.render_arrow("blue", self.beat_data.blue_motion)
+            self.arrow_renderer.render_arrow(
+                "blue", self.beat_data.blue_motion, full_pictograph_data
+            )
         if self.beat_data.red_motion:
-            self.arrow_renderer.render_arrow("red", self.beat_data.red_motion)
+            self.arrow_renderer.render_arrow(
+                "red", self.beat_data.red_motion, full_pictograph_data
+            )
 
         # Render glyphs if glyph data is available
         # Note: Letters are rendered via TKA glyph, not simple letter renderer

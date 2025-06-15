@@ -146,7 +146,7 @@ def test_position_matching_performance():
     
     try:
         import time
-        from application.services.position_matching_service import PositionMatchingService
+        from application.services.positioning.position_matching_service import PositionMatchingService
         
         print("⏱️ Performance testing...")
         

@@ -9,6 +9,7 @@ from presentation.components.pictograph.pictograph_component import PictographCo
 
 class ClickablePictographFrame(QFrame):
     clicked = pyqtSignal(str)
+    beat_data_clicked = pyqtSignal(object)  # New signal that passes the actual BeatData
 
     def __init__(self, beat_data: BeatData, parent: Optional[QWidget] = None) -> None:
         if parent is not None:
@@ -79,6 +80,14 @@ class ClickablePictographFrame(QFrame):
             return
 
         try:
+            # CRITICAL FIX: Set appropriate scaling context for option picker
+            # This prevents the over-scaling issue seen in the option picker
+            from application.services.context_aware_scaling_service import (
+                ScalingContext,
+            )
+
+            self.pictograph_component.set_scaling_context(ScalingContext.OPTION_VIEW)
+
             # Apply letter type-specific colored borders
             if beat_data.glyph_data and beat_data.glyph_data.letter_type:
                 self.pictograph_component.enable_borders()
@@ -91,7 +100,12 @@ class ClickablePictographFrame(QFrame):
 
         except Exception as e:
             print(f"⚠️  Failed to configure Option Picker context: {e}")
-            # Fallback: enable borders with letter type colors
+            # Fallback: enable borders with letter type colors and set scaling context
+            from application.services.context_aware_scaling_service import (
+                ScalingContext,
+            )
+
+            self.pictograph_component.set_scaling_context(ScalingContext.OPTION_VIEW)
             if beat_data.glyph_data and beat_data.glyph_data.letter_type:
                 self.pictograph_component.enable_borders()
                 self.pictograph_component.update_border_colors_for_letter_type(
@@ -150,7 +164,11 @@ class ClickablePictographFrame(QFrame):
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
+            # Emit both the old signal (for compatibility) and the new signal with actual beat data
             self.clicked.emit(f"beat_{self.beat_data.letter}")
+            self.beat_data_clicked.emit(
+                self.beat_data
+            )  # Pass the actual BeatData object
         super().mousePressEvent(event)
 
     def enterEvent(self, event: QEnterEvent) -> None:

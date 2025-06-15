@@ -22,7 +22,6 @@ if str(v2_path) not in sys.path:
 try:
     from core.dependency_injection.di_container import SimpleContainer
     from src.core.interfaces.core_services import ILayoutService
-    from src.application.services.simple_layout_service import SimpleLayoutService
     from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
     from src.domain.models.core_models import SequenceData, BeatData
 except ImportError as e:

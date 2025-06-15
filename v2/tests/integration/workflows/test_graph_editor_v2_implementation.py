@@ -58,7 +58,7 @@ def mock_graph_service():
 @pytest.fixture
 def sample_beat_data():
     """Create real sample beat data using PictographDatasetService."""
-    from src.application.services.pictograph_dataset_service import (
+    from application.services.data.pictograph_dataset_service import (
         PictographDatasetService,
     )
     from src.domain.models.core_models import BeatData

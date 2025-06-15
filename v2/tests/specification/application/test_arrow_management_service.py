@@ -10,7 +10,7 @@ import pytest
 from typing import Tuple
 from PyQt6.QtCore import QPointF
 
-from application.services.arrow_management_service import (
+from application.services.positioning.arrow_management_service import (
     ArrowManagementService,
     IArrowManagementService,
 )

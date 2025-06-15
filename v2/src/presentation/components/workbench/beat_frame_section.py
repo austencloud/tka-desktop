@@ -5,7 +5,7 @@ from PyQt6.QtCore import pyqtSignal
 from .button_panel import ModernSequenceWorkbenchButtonPanel
 from domain.models.core_models import SequenceData, BeatData
 from core.interfaces.core_services import ILayoutService
-from application.services.beat_frame_layout_service import BeatFrameLayoutService
+from application.services.layout.beat_layout_service import BeatLayoutService
 from .beat_frame.modern_beat_frame import ModernBeatFrame
 
 if TYPE_CHECKING:
@@ -54,7 +54,7 @@ class WorkbenchBeatFrameSection(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         # Create beat frame layout service
-        beat_frame_layout_service = BeatFrameLayoutService()
+        beat_frame_layout_service = BeatLayoutService()
 
         # Create beat frame (left side)
         self._beat_frame = ModernBeatFrame(

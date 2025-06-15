@@ -2,9 +2,9 @@ from typing import List, Optional, Dict, Any
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtCore import pyqtSignal, QObject
 
-from ....core.dependency_injection.di_container import SimpleContainer
-from ....core.interfaces.core_services import ILayoutService
-from ....domain.models.core_models import BeatData
+from core.dependency_injection.di_container import SimpleContainer
+from core.interfaces.core_services import ILayoutService
+from domain.models.core_models import BeatData
 from .pictograph_pool_manager import PictographPoolManager
 from .beat_data_loader import BeatDataLoader
 from .display_manager import OptionPickerDisplayManager
@@ -15,6 +15,7 @@ from .option_picker_filter import OptionPickerFilter
 
 class ModernOptionPicker(QObject):
     option_selected = pyqtSignal(str)
+    beat_data_selected = pyqtSignal(object)  # New signal for actual BeatData
 
     def __init__(self, container: SimpleContainer, progress_callback=None):
         super().__init__()
@@ -62,6 +63,7 @@ class ModernOptionPicker(QObject):
 
         self._pool_manager = PictographPoolManager(self.widget)
         self._pool_manager.set_click_handler(self._handle_beat_click)
+        self._pool_manager.set_beat_data_click_handler(self._handle_beat_data_click)
 
         if self.progress_callback:
             self.progress_callback("Initializing display manager", 0.3)
@@ -154,8 +156,12 @@ class ModernOptionPicker(QObject):
                     section.pictograph_container.setVisible(True)
 
     def _handle_beat_click(self, beat_id: str) -> None:
-        """Handle beat selection clicks"""
+        """Handle beat selection clicks (legacy compatibility)"""
         self.option_selected.emit(beat_id)
+
+    def _handle_beat_data_click(self, beat_data: BeatData) -> None:
+        """Handle beat data selection clicks (new precise method)"""
+        self.beat_data_selected.emit(beat_data)
 
     def get_beat_data_for_option(self, option_id: str) -> Optional[BeatData]:
         """Get BeatData for a specific option ID (e.g., 'beat_J' -> BeatData with letter='J')"""
@@ -190,6 +196,19 @@ class ModernOptionPicker(QObject):
             self._display_manager.update_beat_display(beat_options)
             print(f"🔄 Option picker refreshed with {len(beat_options)} options")
 
+    def refresh_options_from_sequence(
+        self, sequence_data: List[Dict[str, Any]]
+    ) -> None:
+        """Refresh options based on sequence state (V1-compatible dynamic updates)"""
+        if self._beat_loader and self._display_manager:
+            beat_options = self._beat_loader.refresh_options_from_sequence(
+                sequence_data
+            )
+            self._display_manager.update_beat_display(beat_options)
+            print(
+                f"🔄 Option picker dynamically refreshed with {len(beat_options)} options"
+            )
+
     def _on_widget_resize(self) -> None:
         """Handle widget resize events"""
         if self._pool_manager:
@@ -204,10 +223,6 @@ class ModernOptionPicker(QObject):
         if self._beat_loader and self._display_manager:
             beat_options = self._beat_loader.get_beat_options()
             self._display_manager.update_beat_display(beat_options)
-
-    def refresh_options(self) -> None:
-        """Refresh beat options"""
-        self._load_beat_options()
 
     def set_enabled(self, enabled: bool) -> None:
         """Enable or disable the widget"""

@@ -12,7 +12,9 @@ from PyQt6.QtSvg import QSvgRenderer
 from presentation.components.pictograph.asset_utils import get_image_path
 from domain.models.core_models import MotionData, Location, MotionType
 from domain.models.pictograph_models import ArrowData, PictographData
-from application.services.arrow_management_service import ArrowManagementService
+from application.services.old_services_before_consolidation.arrow_positioning_service import (
+    ArrowPositioningService,
+)
 
 
 class ArrowRenderer:
@@ -24,7 +26,7 @@ class ArrowRenderer:
         self.CENTER_Y = 475
         self.HAND_RADIUS = 143.1
 
-        self.arrow_service = ArrowManagementService()
+        self.arrow_service = ArrowPositioningService()
 
         self.location_coordinates = {
             Location.NORTH.value: (0, -self.HAND_RADIUS),
@@ -49,12 +51,18 @@ class ArrowRenderer:
             ),
         }
 
-    def render_arrow(self, color: str, motion_data: MotionData) -> None:
+    def render_arrow(
+        self,
+        color: str,
+        motion_data: MotionData,
+        full_pictograph_data: PictographData = None,
+    ) -> None:
         """Render an arrow using SVG files."""
+        # CRITICAL FIX: Static motions with 0 turns should be completely invisible
+        if motion_data.motion_type == MotionType.STATIC and motion_data.turns == 0.0:
+            return
+
         arrow_svg_path = self._get_arrow_svg_file(motion_data)
-        print(
-            f"Arrow render: {color} {motion_data.motion_type} - SVG exists: {os.path.exists(arrow_svg_path)}"
-        )
 
         if os.path.exists(arrow_svg_path):
             arrow_item = QGraphicsSvgItem()
@@ -65,16 +73,15 @@ class ArrowRenderer:
 
             renderer = QSvgRenderer(bytearray(colored_svg_data, encoding="utf-8"))
             if renderer.isValid():
-                arrow_item.setSharedRenderer(renderer)
-
-                # NO INDIVIDUAL SCALING - positioning service assumes full-size scene
+                arrow_item.setSharedRenderer(
+                    renderer
+                )  # NO INDIVIDUAL SCALING - positioning service assumes full-size scene
                 # All scaling will be applied to the entire scene as final step
 
                 position_x, position_y, rotation = (
-                    self._calculate_arrow_position_with_service(color, motion_data)
-                )
-                print(
-                    f"Arrow position: {color} at ({position_x:.1f}, {position_y:.1f})"
+                    self._calculate_arrow_position_with_service(
+                        color, motion_data, full_pictograph_data
+                    )
                 )
 
                 # CRITICAL: Set transform origin to arrow's visual center BEFORE rotation
@@ -107,16 +114,29 @@ class ArrowRenderer:
                 final_x = position_x - final_bounds.center().x()
                 final_y = position_y - final_bounds.center().y()
 
+                # ARROW POSITION LOGGING: Track final coordinates for letters G, H, I
+                if full_pictograph_data and full_pictograph_data.letter in [
+                    "G",
+                    "H",
+                    "I",
+                ]:
+                    print(
+                        f"🎯 V2 ARROW POSITION: Letter {full_pictograph_data.letter}, {color} arrow"
+                    )
+                    print(f"   Calculated pos: ({position_x:.1f}, {position_y:.1f})")
+                    print(f"   Rotation: {rotation:.1f}°")
+                    print(
+                        f"   Final bounds center: ({final_bounds.center().x():.1f}, {final_bounds.center().y():.1f})"
+                    )
+                    print(f"   ✅ FINAL POS: ({final_x:.1f}, {final_y:.1f})")
+
                 arrow_item.setPos(final_x, final_y)
                 arrow_item.setZValue(100)  # Bring arrows to front
-                print(
-                    f"Arrow added to scene: {color} at setPos({final_x:.1f}, {final_y:.1f})"
-                )
                 self.scene.addItem(arrow_item)
             else:
-                print(f"Invalid SVG renderer for {color} arrow")
+                pass  # Invalid SVG renderer
         else:
-            print(f"Missing SVG: {arrow_svg_path}")
+            pass  # Missing SVG file
 
     def _get_arrow_svg_file(self, motion_data: MotionData) -> str:
         """Get the correct arrow SVG file path with proper motion type mapping."""
@@ -137,7 +157,10 @@ class ArrowRenderer:
             return get_image_path(f"arrows/static/from_radial/static_{turns_str}.svg")
 
     def _calculate_arrow_position_with_service(
-        self, color: str, motion_data: MotionData
+        self,
+        color: str,
+        motion_data: MotionData,
+        full_pictograph_data: PictographData = None,
     ) -> tuple[float, float, float]:
         """Calculate arrow position using the complete positioning service."""
         arrow_data = ArrowData(
@@ -146,7 +169,11 @@ class ArrowRenderer:
             turns=motion_data.turns,
         )
 
-        pictograph_data = PictographData(arrows={color: arrow_data})
+        # Use full pictograph data if available for Type 3 detection
+        if full_pictograph_data:
+            pictograph_data = full_pictograph_data
+        else:
+            pictograph_data = PictographData(arrows={color: arrow_data})
 
         return self.arrow_service.calculate_arrow_position(arrow_data, pictograph_data)
 
@@ -171,20 +198,8 @@ class ArrowRenderer:
                 height = height_match.group(1) if height_match else "not found"
                 viewbox = viewbox_match.group(1) if viewbox_match else "not found"
 
-                print(f"✓ Loaded SVG from: {file_path}")
-                print(f"  📏 Dimensions: width={width}, height={height}")
-                print(f"  📐 ViewBox: {viewbox}")
-                print(f"  📄 Content length: {len(content)} characters")
-
-                # Check if this is an empty/invisible SVG
-                if width == "0" or height == "0":
-                    print(
-                        f"  ⚠️  WARNING: SVG has zero dimensions! This arrow will be invisible."
-                    )
-
                 return content
         except Exception as e:
-            print(f"Error loading SVG file {file_path}: {e}")
             return ""
 
     def _apply_color_transformation(self, svg_data: str, color: str) -> str:

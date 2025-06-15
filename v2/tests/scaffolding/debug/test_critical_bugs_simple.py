@@ -26,7 +26,7 @@ def test_clear_sequence_crash():
     try:
         # Import required modules
         from src.domain.models.core_models import SequenceData, BeatData
-        from src.application.services.pictograph_dataset_service import (
+        from application.services.data.pictograph_dataset_service import (
             PictographDatasetService,
         )
 
@@ -75,7 +75,7 @@ def test_option_selection_workflow():
     try:
         # Import required modules
         from src.domain.models.core_models import SequenceData, BeatData
-        from src.application.services.pictograph_dataset_service import (
+        from application.services.data.pictograph_dataset_service import (
             PictographDatasetService,
         )
 
@@ -134,7 +134,7 @@ def test_construct_tab_integration():
     try:
         # Test the specific methods that are causing issues
         from src.domain.models.core_models import SequenceData, BeatData
-        from src.application.services.pictograph_dataset_service import (
+        from application.services.data.pictograph_dataset_service import (
             PictographDatasetService,
         )
 

@@ -28,23 +28,36 @@ from src.core.interfaces.core_services import (
     IUIStateManagementService,
     ILayoutService,
 )
-from src.application.services.layout_management_service import LayoutManagementService
-from src.application.services.ui_state_management_service import (
+from application.services.layout.layout_management_service import (
+    LayoutManagementService,
+)
+from application.services.ui.ui_state_management_service import (
     UIStateManagementService,
 )
 from src.presentation.components.ui.settings.settings_button import SettingsButton
 from src.presentation.factories.workbench_factory import configure_workbench_services
-from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
 from src.presentation.widgets.background_widget import MainBackgroundWidget
 from src.presentation.widgets.splash_screen import SplashScreen
 
 
 class KineticConstructorV2(QMainWindow):
-    def __init__(self, splash_screen=None, target_screen=None):
+    def __init__(
+        self,
+        splash_screen=None,
+        target_screen=None,
+        parallel_mode=False,
+        parallel_geometry=None,
+    ):
         super().__init__()
         self.splash = splash_screen
         self.target_screen = target_screen
-        self.setWindowTitle("🚀 Kinetic Constructor v2")
+        self.parallel_mode = parallel_mode
+        self.parallel_geometry = parallel_geometry
+
+        if parallel_mode:
+            self.setWindowTitle("TKA V2 - Parallel Testing")
+        else:
+            self.setWindowTitle("🚀 Kinetic Constructor v2")
 
         self.container = get_container()
         self._configure_services()
@@ -57,15 +70,17 @@ class KineticConstructorV2(QMainWindow):
             self.splash.update_progress(20, "Configuring services...")
 
         # Register consolidated services
-        self.container.register_singleton(
-            ILayoutManagementService, LayoutManagementService
+        layout_management_service = LayoutManagementService()
+        self.container.register_instance(
+            ILayoutManagementService, layout_management_service
         )
+        # Register the same service instance for ILayoutService interface
+        from core.interfaces.core_services import ILayoutService
+
+        self.container.register_instance(ILayoutService, layout_management_service)
         self.container.register_singleton(
             IUIStateManagementService, UIStateManagementService
         )
-
-        # Register legacy interface for compatibility (same implementation)
-        self.container.register_singleton(ILayoutService, LayoutManagementService)
 
         # Register new focused motion services
         self._register_motion_services()
@@ -86,15 +101,15 @@ class KineticConstructorV2(QMainWindow):
 
     def _register_motion_services(self):
         """Register the new focused motion services."""
-        from application.services.motion_validation_service import (
+        from application.services.motion.motion_validation_service import (
             MotionValidationService,
             IMotionValidationService,
         )
-        from application.services.motion_generation_service import (
+        from application.services.motion.motion_generation_service import (
             MotionGenerationService,
             IMotionGenerationService,
         )
-        from application.services.motion_orientation_service import (
+        from application.services.motion.motion_orientation_service import (
             MotionOrientationService,
             IMotionOrientationService,
         )
@@ -112,7 +127,7 @@ class KineticConstructorV2(QMainWindow):
         self.container.register_instance(IMotionOrientationService, orientation_service)
 
         # Register bridge service for backward compatibility
-        from application.services.motion_management_bridge_service import (
+        from application.services.motion.motion_management_bridge_service import (
             MotionManagementBridgeService,
         )
         from core.interfaces.core_services import IMotionManagementService
@@ -124,15 +139,15 @@ class KineticConstructorV2(QMainWindow):
 
     def _register_layout_services(self):
         """Register the new focused layout services."""
-        from application.services.beat_layout_service import (
+        from application.services.layout.beat_layout_service import (
             BeatLayoutService,
             IBeatLayoutService,
         )
-        from application.services.responsive_layout_service import (
+        from application.services.layout.responsive_layout_service import (
             ResponsiveLayoutService,
             IResponsiveLayoutService,
         )
-        from application.services.component_layout_service import (
+        from application.services.layout.component_layout_service import (
             ComponentLayoutService,
             IComponentLayoutService,
         )
@@ -151,64 +166,56 @@ class KineticConstructorV2(QMainWindow):
             IComponentLayoutService, component_layout_service
         )
 
-        # Register bridge service for backward compatibility
-        from application.services.layout_management_bridge_service import (
-            LayoutManagementBridgeService,
-        )
-        from core.interfaces.core_services import ILayoutManagementService
-
-        layout_bridge_service = LayoutManagementBridgeService(
-            beat_layout_service, responsive_layout_service, component_layout_service
-        )
-        self.container.register_instance(
-            ILayoutManagementService, layout_bridge_service
-        )
+        # Note: ILayoutManagementService is already registered in _configure_services()
+        # with the consolidated LayoutManagementService that also implements ILayoutService
 
     def _register_pictograph_services(self):
         """Register the new focused pictograph services."""
-        from application.services.pictograph_data_service import (
+        from application.services.data.pictograph_data_service import (
             PictographDataService,
             IPictographDataService,
         )
-        from application.services.data_conversion_service import (
-            DataConversionService,
-            IDataConversionService,
-        )
-        from application.services.pictograph_context_service import (
-            PictographContextService,
-            IPictographContextService,
-        )
+
+        # Data conversion is now part of PictographManagementService
+        # from application.services.data_conversion_service import (        #     DataConversionService,
+        #     IDataConversionService,
+        # )
 
         # Register focused pictograph services
         data_service = PictographDataService()
         self.container.register_instance(IPictographDataService, data_service)
 
-        conversion_service = DataConversionService()
-        self.container.register_instance(IDataConversionService, conversion_service)
+        # Data conversion is now part of PictographManagementService
+        # conversion_service = DataConversionService()
+        # self.container.register_instance(IDataConversionService, conversion_service)
 
-        context_service = PictographContextService()
-        self.container.register_instance(IPictographContextService, context_service)
-
-        # Register bridge service for backward compatibility
-        from application.services.pictograph_management_bridge_service import (
-            PictographManagementBridgeService,
-        )
-        from application.services.pictograph_management_service import (
+        # Register pictograph management service directly
+        from src.application.services.core.pictograph_management_service import (
             PictographManagementService,
         )
 
-        pictograph_bridge_service = PictographManagementBridgeService(
-            data_service, conversion_service, context_service
-        )
+        pictograph_management_service = PictographManagementService()
         # Note: PictographManagementService doesn't have an interface yet, so we register the concrete class
         self.container.register_instance(
-            PictographManagementService, pictograph_bridge_service
+            PictographManagementService, pictograph_management_service
         )
 
     def _set_v1_style_dimensions(self):
         """Set window dimensions to match v1: 90% of screen size"""
         if self.splash:
             self.splash.update_progress(50, "Setting window dimensions...")
+
+        # Check for parallel testing mode first
+        if self.parallel_mode and self.parallel_geometry:
+            try:
+                x, y, width, height = map(int, self.parallel_geometry.split(","))
+                self.setGeometry(x, y, width, height)
+                self.setMinimumSize(1400, 900)
+                print(f"🔄 V2 positioned at: {x},{y} ({width}x{height})")
+                return
+            except Exception as e:
+                print(f"⚠️ Failed to apply parallel testing geometry: {e}")
+                # Fall through to normal positioning
 
         # Use target screen for consistent positioning with splash
         screen = self.target_screen or QGuiApplication.primaryScreen()
@@ -418,15 +425,111 @@ class KineticConstructorV2(QMainWindow):
         print("Settings are automatically saved to user_settings.json")
 
 
+def detect_parallel_testing_mode():
+    """Detect if we're running in parallel testing mode."""
+    import argparse
+    import os
+
+    # Check command line arguments
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--parallel-testing", action="store_true")
+    parser.add_argument("--monitor", choices=["primary", "secondary", "left", "right"])
+    args, _ = parser.parse_known_args()
+
+    # Check environment variable
+    env_parallel = os.environ.get("TKA_PARALLEL_TESTING", "").lower() == "true"
+    env_monitor = os.environ.get("TKA_PARALLEL_MONITOR", "")
+    env_geometry = os.environ.get("TKA_PARALLEL_GEOMETRY", "")
+
+    parallel_mode = args.parallel_testing or env_parallel
+    monitor = args.monitor or env_monitor
+
+    if parallel_mode:
+        print(f"🔄 V2 Parallel Testing Mode: {monitor} monitor")
+        if env_geometry:
+            print(f"   📐 Target geometry: {env_geometry}")
+
+    return parallel_mode, monitor, env_geometry
+
+
+def create_application():
+    """Create V2 application for external use (like parallel testing)."""
+    app = QApplication.instance()
+    if not app:
+        app = QApplication(sys.argv)
+        app.setStyle("Fusion")
+
+    # Detect parallel testing mode
+    parallel_mode, monitor, geometry = detect_parallel_testing_mode()
+
+    # Determine target screen
+    screens = QGuiApplication.screens()
+    if parallel_mode and monitor == "secondary" and len(screens) > 1:
+        target_screen = screens[1]
+    elif parallel_mode and monitor == "primary":
+        target_screen = screens[0]
+    else:
+        target_screen = (
+            screens[1] if len(screens) > 1 else QGuiApplication.primaryScreen()
+        )
+
+    # Create window without splash for external use
+    window = KineticConstructorV2(
+        splash_screen=None,
+        target_screen=target_screen,
+        parallel_mode=parallel_mode,
+        parallel_geometry=geometry,
+    )
+
+    return app, window
+
+
 def main():
     print("🚀 Kinetic Constructor v2 - Starting...")
+
+    # Detect parallel testing mode early
+    parallel_mode, monitor, geometry = detect_parallel_testing_mode()
 
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
 
     # Determine target screen (dual monitor support)
     screens = QGuiApplication.screens()
-    target_screen = screens[1] if len(screens) > 1 else QGuiApplication.primaryScreen()
+
+    # Override screen selection for parallel testing
+    if parallel_mode and len(screens) > 1:
+        if monitor in ["secondary", "right"]:
+            # Determine which screen is physically on the right
+            primary_screen = screens[0]
+            secondary_screen = screens[1]
+
+            # If secondary has higher X coordinate, it's on the right
+            if secondary_screen.geometry().x() > primary_screen.geometry().x():
+                target_screen = secondary_screen
+                print(f"🔄 V2 forced to RIGHT monitor (secondary) for parallel testing")
+            else:
+                target_screen = primary_screen
+                print(f"🔄 V2 forced to RIGHT monitor (primary) for parallel testing")
+
+        elif monitor in ["primary", "left"]:
+            # Determine which screen is physically on the left
+            primary_screen = screens[0]
+            secondary_screen = screens[1]
+
+            # If secondary has lower X coordinate, it's on the left
+            if secondary_screen.geometry().x() < primary_screen.geometry().x():
+                target_screen = secondary_screen
+                print(f"🔄 V2 forced to LEFT monitor (secondary) for parallel testing")
+            else:
+                target_screen = primary_screen
+                print(f"🔄 V2 forced to LEFT monitor (primary) for parallel testing")
+        else:
+            target_screen = screens[1]  # Default to secondary
+    else:
+        # Normal behavior: prefer secondary monitor if available
+        target_screen = (
+            screens[1] if len(screens) > 1 else QGuiApplication.primaryScreen()
+        )
 
     # Create and show splash screen on target screen
     splash = SplashScreen(target_screen=target_screen)
@@ -443,7 +546,12 @@ def main():
             app.setWindowIcon(QIcon(str(icon_path)))
 
         splash.update_progress(15, "Creating main window...")
-        window = KineticConstructorV2(splash_screen=splash, target_screen=target_screen)
+        window = KineticConstructorV2(
+            splash_screen=splash,
+            target_screen=target_screen,
+            parallel_mode=parallel_mode,
+            parallel_geometry=geometry,
+        )
 
         def complete_startup():
             splash.update_progress(100, "Ready!")

@@ -63,8 +63,12 @@ class AppDefinitions:
             AppDefinition("V1", "Full legacy TKA", "v1/main.py", icon="🔧"),
             AppDefinition("V2", "Modern TKA demo", "v2/main.py", icon="✨"),
             AppDefinition(
-                "Tests", "Run full test suite", "unified_dev_test.py", icon="🧪"
+                "Parallel",
+                "V1/V2 side-by-side testing",
+                "parallel_test_launcher.py",
+                icon="🔄",
             ),
+
             AppDefinition(
                 "Dev", "Debug helpers", "test_dev_tools.py", icon="🛠"
             ),  # Changed "Dev Tools" to "Dev"
@@ -75,7 +79,7 @@ class LauncherWindow(QMainWindow):
     """A slim, horizontally-oriented launcher bar."""
 
     HEIGHT = 45  # px, adjusted to better match typical taskbar height
-    WIDTH = 350  # px, can be adjusted if needed with new spacing
+    WIDTH = 420  # px, increased to accommodate Parallel button
 
     def __init__(self) -> None:
         super().__init__()

@@ -19,7 +19,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
 from src.domain.models.core_models import SequenceData, BeatData
-from src.application.services.layout_management_service import LayoutManagementService
+from application.services.layout.layout_management_service import LayoutManagementService
 from .beat_view import ModernBeatView
 from .start_position_view import StartPositionView
 from .beat_selection_manager import BeatSelectionManager

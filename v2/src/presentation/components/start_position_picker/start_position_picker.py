@@ -21,7 +21,9 @@ from PyQt6.QtGui import QFont
 from ..pictograph.pictograph_component import PictographComponent
 
 from ....domain.models.core_models import BeatData
-from ....application.services.pictograph_dataset_service import PictographDatasetService
+from ....application.services.old_services_before_consolidation.pictograph_dataset_service import (
+    PictographDatasetService,
+)
 
 
 class StartPositionOption(QWidget):
@@ -45,6 +47,7 @@ class StartPositionOption(QWidget):
         # Create pictograph preview
         self.pictograph_component = PictographComponent()
         self.pictograph_component.setFixedSize(200, 200)
+
         self.pictograph_component.setStyleSheet(
             """
             QWidget {

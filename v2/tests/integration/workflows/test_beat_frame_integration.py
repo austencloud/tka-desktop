@@ -71,7 +71,7 @@ class TestBeatFrameIntegration:
         qapp.processEvents()
 
         # Modify sequence (add beat) using real data
-        from src.application.services.pictograph_dataset_service import (
+        from application.services.data.pictograph_dataset_service import (
             PictographDatasetService,
         )
         from src.domain.models.core_models import BeatData
@@ -166,7 +166,7 @@ class TestBeatFrameIntegration:
         """Test performance of beat view creation for large sequences using real data."""
         import time
         from src.domain.models.core_models import SequenceData, BeatData
-        from src.application.services.pictograph_dataset_service import (
+        from application.services.data.pictograph_dataset_service import (
             PictographDatasetService,
         )
 

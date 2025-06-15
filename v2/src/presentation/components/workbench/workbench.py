@@ -173,6 +173,10 @@ class ModernSequenceWorkbench(QWidget):
         self._current_sequence = sequence
         self._update_all_components()
 
+        # CRITICAL FIX: Emit sequence_modified signal to notify external listeners
+        # This enables dynamic option picker updates when sequence changes
+        self.sequence_modified.emit(sequence)
+
     def get_sequence(self) -> Optional[SequenceData]:
         """Get the current sequence"""
         return self._current_sequence

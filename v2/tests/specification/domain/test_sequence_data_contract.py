@@ -28,7 +28,7 @@ class TestSequenceDataContract:
     def setup_method(self):
         """Setup for each test method."""
         from src.domain.models.core_models import SequenceData, BeatData
-        from src.application.services.pictograph_dataset_service import PictographDatasetService
+        from application.services.data.pictograph_dataset_service import PictographDatasetService
         
         self.SequenceData = SequenceData
         self.BeatData = BeatData
@@ -112,7 +112,7 @@ class TestBeatDataContract:
     def setup_method(self):
         """Setup for each test method."""
         from src.domain.models.core_models import BeatData
-        from src.application.services.pictograph_dataset_service import PictographDatasetService
+        from application.services.data.pictograph_dataset_service import PictographDatasetService
         
         self.BeatData = BeatData
         self.dataset_service = PictographDatasetService()
@@ -156,7 +156,7 @@ class TestPictographDatasetServiceContract:
     
     def setup_method(self):
         """Setup for each test method."""
-        from src.application.services.pictograph_dataset_service import PictographDatasetService
+        from application.services.data.pictograph_dataset_service import PictographDatasetService
         from src.domain.models.core_models import BeatData
         
         self.service = PictographDatasetService()

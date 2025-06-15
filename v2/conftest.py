@@ -32,7 +32,7 @@ def qtbot_with_container(qtbot, mock_container):
 @pytest.fixture
 def mock_beat_data():
     """Real beat data for testing using PictographDatasetService."""
-    from src.application.services.pictograph_dataset_service import (
+    from application.services.data.pictograph_dataset_service import (
         PictographDatasetService,
     )
 

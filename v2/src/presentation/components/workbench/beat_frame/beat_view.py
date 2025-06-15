@@ -63,6 +63,12 @@ class ModernBeatView(QFrame):
         self._pictograph_component = PictographComponent(parent=self)
         if self._pictograph_component:
             self._pictograph_component.setMinimumSize(120, 120)  # Fill container
+            # CRITICAL FIX: Set proper scaling context for beat frame
+            from application.services.context_aware_scaling_service import (
+                ScalingContext,
+            )
+
+            self._pictograph_component.set_scaling_context(ScalingContext.BEAT_VIEW)
         layout.addWidget(self._pictograph_component)
 
         # Enable mouse tracking for hover effects

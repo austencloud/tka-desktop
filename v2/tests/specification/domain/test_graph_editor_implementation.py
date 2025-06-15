@@ -40,7 +40,7 @@ def create_sample_beat_data():
         if str(v2_src_path) not in sys.path:
             sys.path.insert(0, str(v2_src_path))
 
-        from application.services.pictograph_dataset_service import (
+        from application.services.data.pictograph_dataset_service import (
             PictographDatasetService,
         )
 

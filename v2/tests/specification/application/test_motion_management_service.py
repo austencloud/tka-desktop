@@ -9,7 +9,7 @@ EXPECTED_DURATION: permanent
 import pytest
 from typing import List, Tuple
 
-from application.services.motion_management_service import (
+from application.services.motion.motion_management_service import (
     MotionManagementService,
     IMotionManagementService,
 )
