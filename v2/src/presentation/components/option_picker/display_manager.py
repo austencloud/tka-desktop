@@ -1,7 +1,7 @@
 from typing import List, Dict
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 
-from ....domain.models.core_models import BeatData
+from domain.models.core_models import BeatData
 from .option_picker_section import OptionPickerSection
 from .pictograph_pool_manager import PictographPoolManager
 from .letter_types import LetterType
@@ -87,7 +87,49 @@ class OptionPickerDisplayManager:
     # V1 approach: no finalization needed, QVBoxLayout just works!
 
     def update_beat_display(self, beat_options: List[BeatData]) -> None:
-        """V1-style: Update beat display simply"""
+        """Optimized: Batch update beat display for instant performance"""
+        try:
+            # Batch all operations to minimize UI updates
+            self._batch_update_beat_display(beat_options)
+        except Exception as e:
+            print(f"❌ Error in batched beat display update: {e}")
+            # Fallback to original method
+            self._fallback_update_beat_display(beat_options)
+
+    def _batch_update_beat_display(self, beat_options: List[BeatData]) -> None:
+        """Optimized batch update implementation"""
+        from domain.models.letter_type_classifier import LetterTypeClassifier
+
+        # Step 1: Clear all sections in one pass
+        for section in self._sections.values():
+            section.clear_pictographs_v1_style()
+
+        # Step 2: Pre-categorize beats by letter type to minimize lookups
+        beats_by_type = {}
+        for i, beat in enumerate(beat_options):
+            if i >= self.pool_manager.get_pool_size():
+                break
+            if beat.letter:
+                letter_type = LetterTypeClassifier.get_letter_type(beat.letter)
+                if letter_type in self._sections:
+                    if letter_type not in beats_by_type:
+                        beats_by_type[letter_type] = []
+                    beats_by_type[letter_type].append((i, beat))
+
+        # Step 3: Batch update frames and add to sections
+        for letter_type, beat_list in beats_by_type.items():
+            target_section = self._sections[letter_type]
+            for pool_index, beat in beat_list:
+                frame = self.pool_manager.get_pool_frame(pool_index)
+                if frame:
+                    frame.update_beat_data(beat)
+                    frame.setParent(target_section.pictograph_container)
+                    target_section.add_pictograph_from_pool(frame)
+
+    def _fallback_update_beat_display(self, beat_options: List[BeatData]) -> None:
+        """Fallback to original implementation if batch update fails"""
+        from domain.models.letter_type_classifier import LetterTypeClassifier
+
         # Clear existing pictographs
         for section in self._sections.values():
             section.clear_pictographs_v1_style()
@@ -99,10 +141,6 @@ class OptionPickerDisplayManager:
                 break
 
             if beat.letter:
-                from ....domain.models.letter_type_classifier import (
-                    LetterTypeClassifier,
-                )
-
                 letter_type = LetterTypeClassifier.get_letter_type(beat.letter)
 
                 if letter_type in self._sections:

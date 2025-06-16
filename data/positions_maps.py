@@ -178,6 +178,9 @@ swapped_positions = {
     GAMMA16: GAMMA2,
 }
 
+# Position mapping from location combinations to position names
+# Tuple format: (blue_location, red_location) -> position_name
+# Where: blue = left hand, red = right hand
 positions_map: dict[tuple[str], str] = {
     (SOUTH, NORTH): ALPHA1,
     (SOUTHWEST, NORTHEAST): ALPHA2,
@@ -391,7 +394,6 @@ rotated_mirrored_positions = {
     GAMMA14: GAMMA8,
     GAMMA15: GAMMA7,
     GAMMA16: GAMMA6,
-
 }
 
 diamond_positions = [

@@ -13,7 +13,7 @@ while maintaining the proven algorithms from the individual services.
 Prop positioning has been moved to PropManagementService.
 """
 
-from typing import Tuple, Dict, Any, Optional
+from typing import Tuple, Dict, Any, Optional, TYPE_CHECKING
 from abc import ABC, abstractmethod
 from PyQt6.QtCore import QPointF
 from PyQt6.QtGui import QTransform
@@ -44,6 +44,9 @@ from ..placement_key_service import PlacementKeyService
 from domain.models.letter_type_classifier import LetterTypeClassifier
 from .dash_location_service import DashLocationService
 
+if TYPE_CHECKING:
+    from ..special_placement_service import SpecialPlacementService
+
 
 class IArrowManagementService(ABC):
     """Unified interface for arrow management operations."""
@@ -58,6 +61,11 @@ class IArrowManagementService(ABC):
     @abstractmethod
     def should_mirror_arrow(self, arrow_data: ArrowData) -> bool:
         """Determine if arrow should be mirrored based on motion type."""
+        pass
+
+    @abstractmethod
+    def apply_mirror_transform(self, arrow_item: Any, should_mirror: bool) -> None:
+        """Apply mirror transformation to arrow graphics item."""
         pass
 
     @abstractmethod
@@ -89,10 +97,13 @@ class ArrowManagementService(IArrowManagementService):
 
         # Initialize placement services
         self.default_placement_service = DefaultPlacementService()
-        self.placement_key_service = PlacementKeyService()
-
-        # Initialize V1-compatible dash location service
-        self.dash_location_service = DashLocationService()
+        self.placement_key_service = (
+            PlacementKeyService()
+        )  # Initialize V1-compatible dash location service
+        self.dash_location_service = (
+            DashLocationService()
+        )  # Cache special placement service to avoid reloading JSON files on every call
+        self._special_placement_service: Optional["SpecialPlacementService"] = None
 
         # CRITICAL FIX: Use correct coordinates from circle_coords.json (old working service)
         # Hand point coordinates (for STATIC/DASH arrows) - inner grid positions where props are placed
@@ -486,13 +497,18 @@ class ArrowManagementService(IArrowManagementService):
         self, arrow_data: ArrowData, pictograph_data: PictographData
     ) -> QPointF | None:
         """Get special adjustment for specific letters and configurations."""
-        # CRITICAL FIX: Implement special placement logic using V1's JSON configuration
+        # CRITICAL FIX: Use cached service instance to avoid reloading JSON files on every call
 
         try:
-            from ..special_placement_service import SpecialPlacementService
+            # Use cached service instance to avoid expensive JSON reloading
+            if self._special_placement_service is None:
+                from ..special_placement_service import SpecialPlacementService
 
-            special_service = SpecialPlacementService()
-            result = special_service.get_special_adjustment(arrow_data, pictograph_data)
+                self._special_placement_service = SpecialPlacementService()
+
+            result = self._special_placement_service.get_special_adjustment(
+                arrow_data, pictograph_data
+            )
 
             return result
         except Exception as e:

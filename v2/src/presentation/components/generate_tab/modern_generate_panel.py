@@ -20,12 +20,12 @@ from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QFont
 from typing import Optional
 
-from ....domain.models.generation_models import (
+from domain.models.generation_models import (
     GenerationConfig,
     GenerationState,
     GenerationResult,
 )
-from ....core.interfaces.generation_services import GenerationMode
+from core.interfaces.generation_services import GenerationMode
 from .generation_controls import (
     ModernGenerationModeToggle,
     ModernLengthSelector,

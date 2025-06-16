@@ -3,7 +3,7 @@ from PyQt6.QtCore import pyqtSignal, Qt, QEvent
 from PyQt6.QtGui import QCloseEvent, QMouseEvent, QEnterEvent
 from typing import Optional
 
-from ....domain.models.core_models import BeatData
+from domain.models.core_models import BeatData
 from presentation.components.pictograph.pictograph_component import PictographComponent
 
 

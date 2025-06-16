@@ -13,7 +13,9 @@ from PyQt6.QtGui import QFont
 
 from core.dependency_injection.di_container import SimpleContainer
 from src.domain.models.core_models import SequenceData, BeatData
-from src.presentation.components.option_picker import ModernOptionPicker
+from src.presentation.components.option_picker.modern_option_picker import (
+    ModernOptionPicker,
+)
 
 # StartPositionPicker imported locally in _create_start_position_widget method
 from application.services.ui.ui_state_management_service import (
@@ -42,6 +44,10 @@ class ConstructTabWidget(QWidget):
 
         # Flag to prevent circular signal emissions during clear operations
         self._emitting_signal = False
+
+        # Performance optimization: Cache for position calculations
+        self._position_cache = {}
+        self._sequence_conversion_cache = {}
 
         self._setup_ui_with_progress()
         self._connect_signals()
@@ -346,7 +352,9 @@ class ConstructTabWidget(QWidget):
             updated_beats = current_sequence.beats + [new_beat]
             updated_sequence = current_sequence.update(beats=updated_beats)
 
-            print(f"📊 Sequence updated: {len(updated_beats)} beats")            # Update workbench
+            print(
+                f"📊 Sequence updated: {len(updated_beats)} beats"
+            )  # Update workbench
             if self.workbench:
                 self.workbench.set_sequence(updated_sequence)
                 print("✅ Workbench sequence updated")
@@ -448,6 +456,50 @@ class ConstructTabWidget(QWidget):
         # Fallback: if no underscore, assume it's already the position
         return position_key
 
+    def _get_cached_end_position(self, beat: BeatData) -> str:
+        """Get end position with caching to eliminate redundant calculations"""
+        # Create cache key from motion data
+        blue_end = (
+            beat.blue_motion.end_loc.value
+            if beat.blue_motion and beat.blue_motion.end_loc
+            else "s"
+        )
+        red_end = (
+            beat.red_motion.end_loc.value
+            if beat.red_motion and beat.red_motion.end_loc
+            else "s"
+        )
+
+        cache_key = f"{blue_end}_{red_end}"
+
+        # Check cache first
+        if cache_key in self._position_cache:
+            return self._position_cache[cache_key]
+
+        # Calculate and cache the result
+        position_map = {
+            ("n", "n"): "alpha1",
+            ("n", "e"): "alpha2",
+            ("n", "s"): "alpha3",
+            ("n", "w"): "alpha4",
+            ("e", "n"): "alpha5",
+            ("e", "e"): "alpha6",
+            ("e", "s"): "alpha7",
+            ("e", "w"): "alpha8",
+            ("s", "n"): "beta1",
+            ("s", "e"): "beta2",
+            ("s", "s"): "beta3",
+            ("s", "w"): "beta4",
+            ("w", "n"): "beta5",
+            ("w", "e"): "beta6",
+            ("w", "s"): "beta7",
+            ("w", "w"): "beta8",
+        }
+
+        end_pos = position_map.get((blue_end, red_end), "beta5")
+        self._position_cache[cache_key] = end_pos
+        return end_pos
+
     def _populate_option_picker_from_start_position(
         self, position_key: str, start_position_data: BeatData
     ):
@@ -536,16 +588,20 @@ class ConstructTabWidget(QWidget):
             self._emitting_signal = False
 
     def _refresh_option_picker_from_sequence(self, sequence: SequenceData):
-        """Refresh option picker based on current sequence state (V1-compatible dynamic updates)"""
+        """Refresh option picker based on current sequence state - PURE V2 IMPLEMENTATION"""
         if not self.option_picker or not sequence or sequence.length == 0:
             return
 
-        try:
-            # Convert V2 SequenceData to V1-compatible format for option picker
-            sequence_data = self._convert_sequence_to_v1_format(sequence)
+        import time
 
-            # Refresh option picker with new options based on sequence state
-            self.option_picker.refresh_options_from_sequence(sequence_data)
+        start_time = time.perf_counter()
+
+        try:
+            # PURE V2: Work directly with SequenceData - no conversion needed!
+            self.option_picker.refresh_options_from_v2_sequence(sequence)
+
+            total_time = (time.perf_counter() - start_time) * 1000
+            print(f"⚡ PURE V2 OPTION REFRESH: {total_time:.1f}ms")
             print(
                 f"🔄 Option picker refreshed for sequence with {sequence.length} beats"
             )
@@ -559,7 +615,16 @@ class ConstructTabWidget(QWidget):
     def _convert_sequence_to_v1_format(
         self, sequence: SequenceData
     ) -> List[Dict[str, Any]]:
-        """Convert V2 SequenceData to V1-compatible format for option picker"""
+        """Convert V2 SequenceData to V1-compatible format for option picker with caching"""
+        # Create cache key from sequence hash
+        sequence_hash = hash(
+            tuple(beat.letter + str(beat.beat_number) for beat in sequence.beats)
+        )
+
+        # Check cache first
+        if sequence_hash in self._sequence_conversion_cache:
+            return self._sequence_conversion_cache[sequence_hash]
+
         try:
             # Start with metadata entry (V1 format)
             v1_sequence = [{"metadata": "sequence_info"}]
@@ -587,42 +652,11 @@ class ConstructTabWidget(QWidget):
                                 f"🎯 Using metadata end_pos: {metadata_end_pos} for beat {beat.letter}"
                             )
                         elif beat.blue_motion and beat.red_motion:
-                            # Fallback: Calculate end position from motion data
-                            blue_end = (
-                                beat.blue_motion.end_loc.value
-                                if beat.blue_motion.end_loc
-                                else "s"
-                            )
-                            red_end = (
-                                beat.red_motion.end_loc.value
-                                if beat.red_motion.end_loc
-                                else "s"
-                            )
-
-                            # Map to position format
-                            position_map = {
-                                ("n", "n"): "alpha1",
-                                ("n", "e"): "alpha2",
-                                ("n", "s"): "alpha3",
-                                ("n", "w"): "alpha4",
-                                ("e", "n"): "alpha5",
-                                ("e", "e"): "alpha6",
-                                ("e", "s"): "alpha7",
-                                ("e", "w"): "alpha8",
-                                ("s", "n"): "beta1",
-                                ("s", "e"): "beta2",
-                                ("s", "s"): "beta3",
-                                ("s", "w"): "beta4",
-                                ("w", "n"): "beta5",
-                                ("w", "e"): "beta6",
-                                ("w", "s"): "beta7",
-                                ("w", "w"): "beta8",
-                            }
-
-                            end_pos = position_map.get((blue_end, red_end), "beta5")
+                            # Optimized: Use cached position calculation
+                            end_pos = self._get_cached_end_position(beat)
                             beat_dict["end_pos"] = end_pos
                             print(
-                                f"🎯 Calculated end_pos: {end_pos} for beat {beat.letter} from motion data"
+                                f"🎯 Cached end_pos: {end_pos} for beat {beat.letter} from motion data"
                             )
                         else:
                             # Final fallback
@@ -632,6 +666,15 @@ class ConstructTabWidget(QWidget):
                             )
 
                     v1_sequence.append(beat_dict)
+
+            # Cache the result for future use
+            self._sequence_conversion_cache[sequence_hash] = v1_sequence
+
+            # Limit cache size to prevent memory issues
+            if len(self._sequence_conversion_cache) > 100:
+                # Remove oldest entries (simple FIFO)
+                oldest_key = next(iter(self._sequence_conversion_cache))
+                del self._sequence_conversion_cache[oldest_key]
 
             return v1_sequence
 

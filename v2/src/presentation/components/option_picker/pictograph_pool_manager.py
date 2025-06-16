@@ -2,7 +2,7 @@ from typing import List, Optional, Callable
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import QObject
 
-from ....domain.models.core_models import (
+from domain.models.core_models import (
     BeatData,
     MotionData,
     MotionType,
