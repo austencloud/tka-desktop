@@ -334,7 +334,7 @@ class KineticConstructorModern(QMainWindow):
                 self.splash.update_progress(79, "Loading pictograph dataset...")
 
             # This is where the heavy loading happens - break it down
-            from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
+            from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
 
             if self.splash:
                 self.splash.update_progress(81, "Initializing position matching...")

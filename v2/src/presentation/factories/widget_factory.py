@@ -4,8 +4,8 @@ from PyQt6.QtCore import Qt
 
 from core.dependency_injection.di_container import DIContainer
 from src.core.interfaces.core_services import ILayoutService
-from .option_picker_widget import ModernOptionPickerWidget
-from .option_picker_filter import OptionPickerFilter
+from ..components.option_picker.option_picker_widget import ModernOptionPickerWidget
+from ..components.option_picker.option_picker_filter import OptionPickerFilter
 
 
 class OptionPickerWidgetFactory:

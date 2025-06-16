@@ -28,7 +28,7 @@ from src.presentation.factories.workbench_factory import (
     create_modern_workbench,
     configure_workbench_services,
 )
-from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
+from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
 from src.core.interfaces.core_services import (
     ILayoutService,
     ISettingsService,

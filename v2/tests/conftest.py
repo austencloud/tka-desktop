@@ -49,7 +49,7 @@ def construct_tab_widget(qtbot, mock_container):
     """Factory for creating ConstructTabWidget in tests."""
 
     def _create_construct_tab():
-        from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
+        from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
 
         widget = ConstructTabWidget(mock_container)
         qtbot.addWidget(widget)  # Auto-cleanup

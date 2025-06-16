@@ -235,60 +235,21 @@ class BeatDataLoader(QObject):
         return None
 
     def _load_sample_beat_options(self) -> List[BeatData]:
-        """Load sample beat options as fallback"""
-        try:
-            from application.services.data.pictograph_dataset_service import (
-                PictographDatasetService,
-            )
-
-            dataset_service = PictographDatasetService()
-
-            if (
-                hasattr(dataset_service, "_diamond_dataset")
-                and dataset_service._diamond_dataset is not None
-            ):
-                if not dataset_service._diamond_dataset.empty:
-                    sample_entries = dataset_service._diamond_dataset.head(6)
-                    beat_options = []
-                    for _, entry in sample_entries.iterrows():
-                        try:
-                            beat_data = dataset_service._dataset_entry_to_beat_data(
-                                entry
-                            )
-                            beat_options.append(beat_data)
-                        except Exception as e:
-                            print(f"Failed to convert sample entry: {e}")
-                            continue
-
-                    if beat_options:
-                        self._beat_options = beat_options
-                        return beat_options
-
-            from application.services.positioning.position_matching_service import (
-                PositionMatchingService,
-            )
-
-            position_service = PositionMatchingService()
-            alpha1_options = position_service.get_alpha1_options()
-
-            if alpha1_options:
-                self._beat_options = alpha1_options[:6]
-                return self._beat_options
-            else:
-                self._beat_options = []
-                return self._beat_options
-
-        except Exception as e:
-            self._beat_options = []
-            return self._beat_options
+        """Load sample beat options as fallback - V1 behavior: return empty list"""
+        # V1 behavior: Don't show hardcoded "6 variations of A" fallback
+        # Option picker should remain empty when no valid options are available
+        self._beat_options = []
+        return self._beat_options
 
     def get_beat_options(self) -> List[BeatData]:
         """Get current beat options"""
         return self._beat_options
 
     def refresh_options(self) -> List[BeatData]:
-        """Refresh beat options (reload sample data)"""
-        return self._load_sample_beat_options()
+        """Refresh beat options - V1 behavior: return empty list when no sequence context"""
+        # V1 behavior: Don't show hardcoded options when refreshing without context
+        self._beat_options = []
+        return self._beat_options
 
     def refresh_options_from_sequence(
         self, sequence_data: List[Dict[str, Any]]

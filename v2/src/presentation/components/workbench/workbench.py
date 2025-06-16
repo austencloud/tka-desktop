@@ -187,6 +187,17 @@ class ModernSequenceWorkbench(QWidget):
         if self._beat_frame_section:
             self._beat_frame_section.set_start_position(start_position_data)
 
+    def clear_start_position(self):
+        """Clear the start position data (V1 clear behavior)"""
+        self._start_position_data = None
+        if self._beat_frame_section and hasattr(
+            self._beat_frame_section, "_beat_frame"
+        ):
+            beat_frame = self._beat_frame_section._beat_frame
+            if hasattr(beat_frame, "_start_position_view"):
+                # Clear start position view to show only START text
+                beat_frame._start_position_view.clear_position_data()
+
     def get_start_position(self) -> Optional[BeatData]:
         """Get the current start position"""
         return self._start_position_data

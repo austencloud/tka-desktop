@@ -34,7 +34,7 @@ from domain.models.core_models import (
     MotionType,
 )
 from presentation.components.option_picker.beat_data_loader import BeatDataLoader
-from presentation.tabs.construct_tab_widget import ConstructTabWidget
+from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
 
 
 class TestDynamicOptionPickerUpdates:

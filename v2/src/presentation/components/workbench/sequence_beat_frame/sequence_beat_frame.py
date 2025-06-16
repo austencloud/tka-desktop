@@ -221,10 +221,24 @@ class SequenceBeatFrame(QScrollArea):
             # No sequence beats to display, but start position remains visible
             return
 
+        # Check if this is a preserved start position sequence (after clear)
+        is_preserved_start = (
+            self._current_sequence.metadata.get("preserve_start_position", False)
+            and self._current_sequence.length == 1
+            and self._current_sequence.beats[0].is_blank
+        )
+
         # Update beat views with sequence data
         for i, beat_data in enumerate(self._current_sequence.beats):
             if i < len(self._beat_views):
-                self._beat_views[i].set_beat_data(beat_data)
+                beat_view = self._beat_views[i]
+                beat_view.set_beat_data(beat_data)
+
+                # Enable START text overlay for preserved start position beat
+                if is_preserved_start and i == 0:
+                    beat_view.set_start_text_visible(True)
+                else:
+                    beat_view.set_start_text_visible(False)
 
         # Start position is always separate from sequence beats (Legacy behavior)
         # Start position data is managed independently via set_start_position()

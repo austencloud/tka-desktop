@@ -11,6 +11,9 @@ from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtGui import QFont, QMouseEvent, QPainter, QPen, QColor
 
 from presentation.components.pictograph.pictograph_component import PictographComponent
+from presentation.components.start_position_picker.start_text_overlay import (
+    StartTextOverlay,
+)
 from domain.models.core_models import BeatData
 
 
@@ -42,6 +45,10 @@ class BeatView(QFrame):
 
         # UI components (will be initialized in _setup_ui)
         self._pictograph_component: Optional[PictographComponent] = None
+
+        # START text overlay for preserved start position beat
+        self._start_text_overlay: Optional[StartTextOverlay] = None
+        self._show_start_text = False
 
         self._setup_ui()
         self._setup_styling()
@@ -129,6 +136,16 @@ class BeatView(QFrame):
         """Check if beat is highlighted"""
         return self._is_highlighted
 
+    def set_start_text_visible(self, visible: bool):
+        """Set whether START text overlay should be visible (for preserved start position beat)"""
+        if self._show_start_text != visible:
+            self._show_start_text = visible
+            self._update_start_text_overlay()
+
+    def is_start_text_visible(self) -> bool:
+        """Check if START text overlay is visible"""
+        return self._show_start_text
+
     # Display updates
     def _update_display(self):
         """Update the visual display based on beat data"""
@@ -148,6 +165,9 @@ class BeatView(QFrame):
         # Update the pictograph component with beat data
         self._pictograph_component.update_from_beat(self._beat_data)
 
+        # Update START text overlay (mutual exclusivity with beat content)
+        self._update_start_text_overlay()
+
     def _show_empty_state(self):
         """Show empty state when no beat data"""
         # No beat label in legacy - just clear the pictograph
@@ -155,6 +175,9 @@ class BeatView(QFrame):
         # Clear pictograph component
         if self._pictograph_component:
             self._pictograph_component.clear_pictograph()
+
+        # Update START text overlay if needed
+        self._update_start_text_overlay()
 
     def _update_selection_style(self):
         """Update styling based on selection state"""
@@ -195,6 +218,78 @@ class BeatView(QFrame):
             )
         elif not self._is_selected:
             self._setup_styling()  # Reset to default
+
+    def _update_start_text_overlay(self):
+        """Update START text overlay based on current state"""
+        if not self._pictograph_component or not self._pictograph_component.scene:
+            return
+
+        # Clean up existing overlay
+        self._cleanup_start_text_overlay()
+
+        # Show START text if enabled and beat is empty (mutual exclusivity with beat content)
+        if self._show_start_text and (not self._beat_data or self._beat_data.is_blank):
+            try:
+                # Create overlay with scene as parent for Qt lifecycle management
+                self._start_text_overlay = StartTextOverlay(
+                    self._pictograph_component.scene
+                )
+
+                # Set the BeatView as the widget parent for proper cleanup
+                self._start_text_overlay.setParent(self)
+
+                self._start_text_overlay.show_start_text()
+            except Exception as e:
+                print(f"Failed to create START text overlay on beat: {e}")
+                self._start_text_overlay = None
+
+    def _cleanup_start_text_overlay(self):
+        """Safely cleanup existing START text overlay"""
+        if not self._start_text_overlay:
+            return
+
+        # Mark as invalid immediately to prevent further access
+        if hasattr(self._start_text_overlay, "_is_valid"):
+            self._start_text_overlay._is_valid = False
+
+        # Clear our reference and let Qt's garbage collection handle the rest
+        self._start_text_overlay = None
+
+    def _update_start_text_overlay(self):
+        """Update START text overlay based on current state"""
+        if not self._pictograph_component or not self._pictograph_component.scene:
+            return
+
+        # Clean up existing overlay
+        self._cleanup_start_text_overlay()
+
+        # Show START text if enabled and beat is empty (mutual exclusivity with beat content)
+        if self._show_start_text and (not self._beat_data or self._beat_data.is_blank):
+            try:
+                # Create overlay with scene as parent for Qt lifecycle management
+                self._start_text_overlay = StartTextOverlay(
+                    self._pictograph_component.scene
+                )
+
+                # Set the BeatView as the widget parent for proper cleanup
+                self._start_text_overlay.setParent(self)
+
+                self._start_text_overlay.show_start_text()
+            except Exception as e:
+                print(f"Failed to create START text overlay on beat: {e}")
+                self._start_text_overlay = None
+
+    def _cleanup_start_text_overlay(self):
+        """Safely cleanup existing START text overlay"""
+        if not self._start_text_overlay:
+            return
+
+        # Mark as invalid immediately to prevent further access
+        if hasattr(self._start_text_overlay, "_is_valid"):
+            self._start_text_overlay._is_valid = False
+
+        # Clear our reference and let Qt's garbage collection handle the rest
+        self._start_text_overlay = None
 
     # Event handlers
     def mousePressEvent(self, event: QMouseEvent):
@@ -270,3 +365,25 @@ class BeatView(QFrame):
             if self._beat_data:
                 self.beat_modified.emit(BeatData.empty())
         super().keyPressEvent(event)
+
+    # Cleanup and lifecycle management
+    def cleanup(self):
+        """Cleanup resources when the view is being destroyed"""
+        self._cleanup_start_text_overlay()
+
+        if self._pictograph_component:
+            self._pictograph_component.cleanup()
+            self._pictograph_component = None
+
+    def closeEvent(self, event):
+        """Handle close event to cleanup resources"""
+        self.cleanup()
+        super().closeEvent(event)
+
+    def __del__(self):
+        """Destructor to ensure cleanup"""
+        try:
+            self.cleanup()
+        except:
+            # Ignore errors during destruction
+            pass

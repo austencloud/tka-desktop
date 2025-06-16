@@ -128,8 +128,9 @@ class WorkbenchEventController(QObject):
             return False, f"Rotation failed: {e}", None
 
     def handle_clear(self) -> tuple[bool, str, Optional[SequenceData]]:
-        """Handle clear sequence operation"""
+        """Handle clear sequence operation - V1-style complete clearing"""
         try:
+            # V1 behavior: Completely clear sequence, return to start position picker
             empty_sequence = SequenceData.empty()
             self._current_sequence = empty_sequence
             return True, "Sequence cleared!", empty_sequence

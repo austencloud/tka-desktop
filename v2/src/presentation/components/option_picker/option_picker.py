@@ -8,7 +8,7 @@ from domain.models.core_models import BeatData, SequenceData
 from .pictograph_pool_manager import PictographPoolManager
 from .beat_data_loader import BeatDataLoader
 from .display_manager import OptionPickerDisplayManager
-from .widget_factory import OptionPickerWidgetFactory
+from ...factories.widget_factory import OptionPickerWidgetFactory
 from .dimension_analyzer import OptionPickerDimensionAnalyzer
 from .option_picker_filter import OptionPickerFilter
 

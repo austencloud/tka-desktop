@@ -110,6 +110,12 @@ class StartPositionView(QFrame):
         """Get the current position key"""
         return self._position_key
 
+    def clear_position_data(self):
+        """Clear position data and show only START text (V1-style clear behavior)"""
+        self._position_data = None
+        self._position_key = None
+        self._show_cleared_state()
+
     def set_highlighted(self, highlighted: bool):
         """Set highlight state"""
         if self._is_highlighted != highlighted:
@@ -161,6 +167,25 @@ class StartPositionView(QFrame):
             self._pictograph_component.clear_pictograph()
 
         # Always show START text overlay, even in empty state (legacy behavior)
+        self._add_start_text_overlay()
+
+    def _show_cleared_state(self):
+        """Show cleared state - ONLY START text, no pictograph content (V1 behavior)"""
+        # Mark existing overlay as invalid before clearing
+        self._mark_overlay_invalid()
+
+        # Completely clear pictograph component - no grid, props, glyphs, or TKA elements
+        if self._pictograph_component:
+            self._pictograph_component.clear_pictograph()
+            # Ensure scene is completely empty except for START text
+            if (
+                hasattr(self._pictograph_component, "scene")
+                and self._pictograph_component.scene
+            ):
+                # Clear all items except what we'll add back
+                self._pictograph_component.scene.clear()
+
+        # Show ONLY START text overlay (V1 clear behavior)
         self._add_start_text_overlay()
 
     def _initialize_start_text(self):

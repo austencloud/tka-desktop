@@ -73,37 +73,9 @@ class StartPositionOption(QWidget):
 
         layout.addWidget(self.pictograph_component)
 
-        # Add position label using actual dataset letter
-        position_name = self._get_position_display_name(beat_data)
-        label = QLabel(position_name)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
-        label.setStyleSheet("color: #2d3748; margin: 5px;")
-        layout.addWidget(label)
-
         # Make clickable
-        self.setFixedSize(220, 250)
+        self.setFixedSize(220, 220)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-
-    def _get_position_display_name(self, beat_data: Optional[BeatData] = None) -> str:
-        """Get display name for this position using actual dataset letter."""
-        if beat_data and beat_data.letter:
-            # Use the actual letter from the dataset
-            letter = beat_data.letter
-            position_key_map = {
-                "alpha1_alpha1": f"{letter} (Alpha 1)",
-                "beta5_beta5": f"{letter} (Beta 5)",
-                "gamma11_gamma11": f"{letter} (Gamma 11)",
-                "alpha2_alpha2": f"{letter} (Alpha 2)",
-                "beta4_beta4": f"{letter} (Beta 4)",
-                "gamma12_gamma12": f"{letter} (Gamma 12)",
-            }
-            return position_key_map.get(
-                self.position_key, f"{letter} ({self.position_key})"
-            )
-        else:
-            # Fallback to position key only
-            return self.position_key
 
     def mousePressEvent(self, event):
         """Handle mouse click to select this position."""
