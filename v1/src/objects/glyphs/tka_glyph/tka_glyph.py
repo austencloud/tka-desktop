@@ -12,7 +12,7 @@ from .dash import Dash
 from .turns_number_group.turns_column import TurnsColumn
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class TKA_Glyph(QGraphicsItemGroup):
@@ -25,7 +25,7 @@ class TKA_Glyph(QGraphicsItemGroup):
     same_dot: Dot
     opp_dot: Dot
 
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         super().__init__()
         self.pictograph = pictograph
         self.letter = None

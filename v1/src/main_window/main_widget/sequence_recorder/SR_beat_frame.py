@@ -17,14 +17,14 @@ from data.constants import (
 from main_window.main_widget.sequence_recorder.SR_beat_selection_manager import (
     SR_BeatSelectionManager,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import (
     Beat,
     BeatView,
 )
 from utils.path_helpers import get_my_videos_path
 
 
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 if TYPE_CHECKING:
@@ -89,7 +89,7 @@ class SR_BeatFrame(QFrame):
         self.layout.addWidget(beat_view, row, col)
         self.beat_views.append(beat_view)
 
-    def add_scene_to_sequence(self, new_beat: "Pictograph") -> None:
+    def add_scene_to_sequence(self, new_beat: "LegacyPictograph") -> None:
         next_beat_index = self.find_next_available_beat()
         if next_beat_index is not None:
             self.beat_views[next_beat_index].set_beat(new_beat, next_beat_index + 2)

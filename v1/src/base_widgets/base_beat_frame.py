@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QFrame
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat_frame_getter import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat_frame_getter import (
     BeatFrameGetter,
 )
 from base_widgets.pictograph.elements.views.beat_view import (
     BeatView,
 )
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
 from src.settings_manager.global_settings.app_context import AppContext

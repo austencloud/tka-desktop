@@ -14,7 +14,7 @@ from data.constants import (
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.turns_value import (
     TurnsValue,
 )
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_box.prop_rot_dir_button_manager.prop_rot_dir_btn_state import (
     PropRotationState,
 )
@@ -118,7 +118,7 @@ class PropRotDirButtonManager:
         """Called when motion changes to update UI and logic states."""
         self.update_for_motion_change(motion)
 
-    def update_pictograph_letter(self, pictograph: "Pictograph") -> None:
+    def update_pictograph_letter(self, pictograph: "LegacyPictograph") -> None:
         new_letter = (
             self.turns_box.graph_editor.main_widget.letter_determiner.determine_letter(
                 pictograph.state.pictograph_data, swap_prop_rot_dir=False

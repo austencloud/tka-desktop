@@ -3,10 +3,10 @@ from PyQt6.QtCore import pyqtSignal, QSize
 from typing import TYPE_CHECKING, Callable
 
 from enums.glyph_enum import Letter
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from main_window.main_widget.fade_manager.fade_manager import FadeManager
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-    SequenceBeatFrame,
+from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+    LegacyBeatFrame,
 )
 from interfaces.settings_manager_interface import ISettingsManager
 from interfaces.json_manager_interface import IJsonManager
@@ -14,7 +14,7 @@ from interfaces.json_manager_interface import IJsonManager
 from .start_pos_picker.start_pos_picker import StartPosPicker
 from .advanced_start_pos_picker.advanced_start_pos_picker import AdvancedStartPosPicker
 from .add_to_sequence_manager.add_to_sequence_manager import AddToSequenceManager
-from .option_picker.widgets.option_picker import OptionPicker
+from .option_picker.widgets.legacy_option_picker import LegacyOptionPicker
 
 
 class ConstructTab(QFrame):
@@ -26,7 +26,7 @@ class ConstructTab(QFrame):
 
     def __init__(
         self,
-        beat_frame: "SequenceBeatFrame",
+        beat_frame: "LegacyBeatFrame",
         pictograph_dataset: dict,
         size_provider: Callable[[], QSize],
         fade_to_stack_index: Callable[[int], None],
@@ -43,10 +43,10 @@ class ConstructTab(QFrame):
         self.mw_size_provider = size_provider
         self.fade_to_stack_index = fade_to_stack_index
         self.fade_manager = fade_manager
-        self.last_beat: "Pictograph" = None
+        self.last_beat: "LegacyPictograph" = None
         self.start_position_picked = False
 
-        self.pictograph_cache: dict[Letter, dict[str, Pictograph]] = {
+        self.pictograph_cache: dict[Letter, dict[str, LegacyPictograph]] = {
             letter: {} for letter in Letter
         }
 
@@ -58,7 +58,7 @@ class ConstructTab(QFrame):
             settings_manager=self.settings_manager,
         )
 
-        self.option_picker = OptionPicker(
+        self.option_picker = LegacyOptionPicker(
             add_to_sequence_manager=self.add_to_sequence_manager,
             pictograph_dataset=self.pictograph_dataset,
             beat_frame=self.beat_frame,

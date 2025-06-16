@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
 )
 
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.current_word_line_edit import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.current_word_line_edit import (
     CurrentWordLineEdit,
 )
 from utils.word_simplifier import WordSimplifier

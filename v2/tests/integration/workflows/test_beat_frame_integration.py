@@ -8,8 +8,8 @@ import pytest
 from unittest.mock import Mock, MagicMock
 from PyQt6.QtTest import QSignalSpy  # Changed from PyQt6.QtCore
 
-from v2.src.presentation.components.workbench.beat_frame.modern_beat_frame import (
-    ModernBeatFrame,
+from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
+    SequenceBeatFrame,
 )
 from v2.src.application.services.beat_frame_layout_service import BeatFrameLayoutService
 
@@ -25,7 +25,7 @@ class TestBeatFrameIntegration:
     def test_beat_frame_creation_with_real_service(self, qapp, mock_sequence_data):
         """Test beat frame creation with real layout service."""
         # Create beat frame with real service
-        beat_frame = ModernBeatFrame(layout_service=self.layout_service, parent=None)
+        beat_frame = SequenceBeatFrame(layout_service=self.layout_service, parent=None)
 
         # Verify initialization
         assert beat_frame is not None
@@ -39,7 +39,7 @@ class TestBeatFrameIntegration:
 
     def test_beat_selection_signal_flow(self, qapp, mock_sequence_data):
         """Test signal flow when beat is selected."""
-        beat_frame = ModernBeatFrame(layout_service=self.layout_service, parent=None)
+        beat_frame = SequenceBeatFrame(layout_service=self.layout_service, parent=None)
 
         # Setup signal spy
         signal_spy = QSignalSpy(beat_frame.beat_selected)
@@ -60,7 +60,7 @@ class TestBeatFrameIntegration:
 
     def test_sequence_modification_workflow(self, qapp, mock_sequence_data):
         """Test complete sequence modification workflow using real data."""
-        beat_frame = ModernBeatFrame(layout_service=self.layout_service, parent=None)
+        beat_frame = SequenceBeatFrame(layout_service=self.layout_service, parent=None)
 
         # Setup signal spies
         beat_selected_spy = QSignalSpy(beat_frame.beat_selected)
@@ -97,7 +97,7 @@ class TestBeatFrameIntegration:
 
     def test_layout_service_integration(self, qapp, mock_sequence_data):
         """Test integration with layout service."""
-        beat_frame = ModernBeatFrame(layout_service=self.layout_service, parent=None)
+        beat_frame = SequenceBeatFrame(layout_service=self.layout_service, parent=None)
 
         # Set sequence
         beat_frame.set_sequence(mock_sequence_data)
@@ -124,7 +124,7 @@ class TestBeatFrameIntegration:
 
     def test_responsive_resize_behavior(self, qapp, mock_sequence_data):
         """Test responsive behavior during resize."""
-        beat_frame = ModernBeatFrame(layout_service=self.layout_service, parent=None)
+        beat_frame = SequenceBeatFrame(layout_service=self.layout_service, parent=None)
 
         # Set sequence
         beat_frame.set_sequence(mock_sequence_data)
@@ -148,7 +148,7 @@ class TestBeatFrameIntegration:
 
     def test_start_position_integration(self, qapp, mock_sequence_data):
         """Test start position view integration."""
-        beat_frame = ModernBeatFrame(layout_service=self.layout_service, parent=None)
+        beat_frame = SequenceBeatFrame(layout_service=self.layout_service, parent=None)
 
         # Set sequence with start position
         beat_frame.set_sequence(mock_sequence_data)
@@ -193,7 +193,7 @@ class TestBeatFrameIntegration:
 
         large_sequence = SequenceData(beats=beats, length=64)
 
-        beat_frame = ModernBeatFrame(layout_service=self.layout_service, parent=None)
+        beat_frame = SequenceBeatFrame(layout_service=self.layout_service, parent=None)
 
         # Measure creation time
         start_time = time.time()

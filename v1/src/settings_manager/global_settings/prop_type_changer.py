@@ -4,7 +4,7 @@ from data.constants import BLUE, RED
 from objects.prop.prop import Prop
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from ..settings_manager import SettingsManager
 
 
@@ -12,7 +12,7 @@ class PropTypeChanger:
     def __init__(self, settings_manager: "SettingsManager") -> None:
         self.settings_manager = settings_manager
 
-    def replace_props(self, new_prop_type: PropType, pictograph: "Pictograph"):
+    def replace_props(self, new_prop_type: PropType, pictograph: "LegacyPictograph"):
         for color, prop in pictograph.elements.props.items():
             new_prop = pictograph.managers.initializer.prop_factory.create_prop_of_type(
                 prop, new_prop_type.name
@@ -22,7 +22,7 @@ class PropTypeChanger:
         self._finalize_pictograph_update(pictograph)
 
     def _update_pictograph_prop(
-        self, pictograph: "Pictograph", color, new_prop: "Prop"
+        self, pictograph: "LegacyPictograph", color, new_prop: "Prop"
     ):
         old_prop = pictograph.elements.props[color]
         if hasattr(old_prop.state, "loc"):
@@ -42,17 +42,17 @@ class PropTypeChanger:
             pictograph.elements.motion_set[color].prop = new_prop
             new_prop.updater.update_prop(old_prop_data)
 
-    def _finalize_pictograph_update(self, pictograph: "Pictograph"):
+    def _finalize_pictograph_update(self, pictograph: "LegacyPictograph"):
         pictograph.elements.red_prop = pictograph.elements.props[RED]
         pictograph.elements.blue_prop = pictograph.elements.props[BLUE]
         pictograph.managers.updater.update_pictograph()
 
-    def apply_prop_type(self, pictographs: list["Pictograph"]) -> None:
+    def apply_prop_type(self, pictographs: list["LegacyPictograph"]) -> None:
         prop_type = self.settings_manager.global_settings.get_prop_type()
         self.update_props_to_type(prop_type, pictographs)
 
     def update_props_to_type(
-        self, new_prop_type: PropType, pictographs: list["Pictograph"]
+        self, new_prop_type: PropType, pictographs: list["LegacyPictograph"]
     ) -> None:
         for pictograph in pictographs:
             self.replace_props(new_prop_type, pictograph)

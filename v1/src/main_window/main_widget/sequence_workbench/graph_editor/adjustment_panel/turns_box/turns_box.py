@@ -9,14 +9,14 @@ from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
 if TYPE_CHECKING:
     from ..beat_adjustment_panel import BeatAdjustmentPanel
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class TurnsBox(QFrame):
     def __init__(
         self,
         adjustment_panel: "BeatAdjustmentPanel",
-        pictograph: "Pictograph",
+        pictograph: "LegacyPictograph",
         color: str,
     ) -> None:
         super().__init__(adjustment_panel)

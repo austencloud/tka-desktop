@@ -6,15 +6,15 @@ from base_widgets.pictograph.elements.views.lesson_pictograph_view import (
 
 if TYPE_CHECKING:
     from main_window.main_widget.main_widget import MainWidget
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class PictographCollector:
     def __init__(self, main_widget: "MainWidget") -> None:
         self.main_widget = main_widget
 
-    def collect_all_pictographs(self) -> list["Pictograph"]:
-        collectors: list[Callable[[], list["Pictograph"]]] = [
+    def collect_all_pictographs(self) -> list["LegacyPictograph"]:
+        collectors: list[Callable[[], list["LegacyPictograph"]]] = [
             self._collect_from_graph_editor,
             self._collect_from_advanced_start_pos_picker,
             self._collect_from_start_pos_picker,
@@ -28,12 +28,12 @@ class PictographCollector:
         return list(self._collect_pictographs(collectors))
 
     def _collect_pictographs(
-        self, collectors: list[Callable[[], list["Pictograph"]]]
-    ) -> Iterator["Pictograph"]:
+        self, collectors: list[Callable[[], list["LegacyPictograph"]]]
+    ) -> Iterator["LegacyPictograph"]:
         for collector in collectors:
             yield from collector()
 
-    def _collect_from_advanced_start_pos_picker(self) -> list["Pictograph"]:
+    def _collect_from_advanced_start_pos_picker(self) -> list["LegacyPictograph"]:
         # Use dynamic lookup instead of cached reference
         construct_tab = self.main_widget.get_tab_widget("construct")
         if not construct_tab or not hasattr(construct_tab, "advanced_start_pos_picker"):
@@ -51,7 +51,7 @@ class PictographCollector:
                 pictographs.append(pictograph)
         return pictographs
 
-    def _collect_from_start_pos_picker(self) -> list["Pictograph"]:
+    def _collect_from_start_pos_picker(self) -> list["LegacyPictograph"]:
         # Use dynamic lookup instead of cached reference
         construct_tab = self.main_widget.get_tab_widget("construct")
         if not construct_tab or not hasattr(construct_tab, "start_pos_picker"):
@@ -71,7 +71,7 @@ class PictographCollector:
                 pictographs.append(pictograph)
         return pictographs
 
-    def _collect_from_sequence_beat_frame(self) -> list["Pictograph"]:
+    def _collect_from_sequence_beat_frame(self) -> list["LegacyPictograph"]:
         # Use dynamic lookup instead of cached reference
         sequence_workbench = self.main_widget.get_widget("sequence_workbench")
         if not sequence_workbench or not hasattr(sequence_workbench, "beat_frame"):
@@ -99,7 +99,7 @@ class PictographCollector:
 
         return pictographs
 
-    def _collect_from_pictograph_cache(self) -> list["Pictograph"]:
+    def _collect_from_pictograph_cache(self) -> list["LegacyPictograph"]:
         pictographs = []
         for pictograph_key_with_scene in self.main_widget.pictograph_cache.values():
             pictographs.extend(
@@ -109,7 +109,7 @@ class PictographCollector:
             )
         return pictographs
 
-    def _collect_from_option_picker(self) -> list["Pictograph"]:
+    def _collect_from_option_picker(self) -> list["LegacyPictograph"]:
         construct_tab = self.main_widget.get_tab_widget("construct")
         if construct_tab and hasattr(construct_tab, "option_picker"):
             return [
@@ -117,7 +117,7 @@ class PictographCollector:
             ]
         return []
 
-    def _collect_from_graph_editor(self) -> list["Pictograph"]:
+    def _collect_from_graph_editor(self) -> list["LegacyPictograph"]:
         sequence_workbench = self.main_widget.get_widget("sequence_workbench")
         if sequence_workbench and hasattr(sequence_workbench, "graph_editor"):
             graph_editor = sequence_workbench.graph_editor
@@ -125,14 +125,14 @@ class PictographCollector:
             return [ge_view.pictograph]
         return []
 
-    def _collect_from_codex(self) -> list["Pictograph"]:
+    def _collect_from_codex(self) -> list["LegacyPictograph"]:
         codex = self.main_widget.get_widget("codex")
         if codex and hasattr(codex, "section_manager"):
             codex_views = codex.section_manager.codex_views.values()
             return [view.pictograph for view in codex_views]
         return []
 
-    def _collect_from_settings_dialog(self) -> list["Pictograph"]:
+    def _collect_from_settings_dialog(self) -> list["LegacyPictograph"]:
         # Use dynamic lookup instead of cached reference
         settings_dialog = self.main_widget.get_widget("settings_dialog")
         if not settings_dialog or not hasattr(settings_dialog, "ui"):
@@ -151,7 +151,7 @@ class PictographCollector:
             return [visibility_pictograph]
         return []
 
-    def _collect_from_lessons(self) -> list["Pictograph"]:
+    def _collect_from_lessons(self) -> list["LegacyPictograph"]:
         # Use dynamic lookup instead of cached reference
         learn_tab = self.main_widget.get_tab_widget("learn")
         if not learn_tab or not hasattr(learn_tab, "lessons"):

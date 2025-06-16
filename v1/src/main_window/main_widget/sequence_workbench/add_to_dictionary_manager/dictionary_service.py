@@ -10,8 +10,8 @@ from ....main_widget.browse_tab.thumbnail_box.thumbnail_box import ThumbnailBox
 from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ class DictionaryService:
 
     dictionary_dir = get_data_path("dictionary")
 
-    def __init__(self, beat_frame: "SequenceBeatFrame"):
+    def __init__(self, beat_frame: "LegacyBeatFrame"):
         """Initialize the dictionary service."""
         self.beat_frame = beat_frame
         self.structural_checker = StructuralVariationChecker()

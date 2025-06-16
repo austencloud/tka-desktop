@@ -10,13 +10,15 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea
 
 if TYPE_CHECKING:
-    from presentation.components.workbench.beat_frame.modern_beat_frame import ModernBeatFrame
+    from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
 
 
 class AdvancedBeatFrameResizerService:
     """
     Advanced beat frame resizing service with intelligent sizing.
-    
+
     Provides:
     - Dynamic beat size calculations
     - Container-aware sizing
@@ -29,21 +31,21 @@ class AdvancedBeatFrameResizerService:
         self._size_cache = {}
 
     def calculate_beat_size(
-        self, 
-        beat_frame: "ModernBeatFrame",
-        container_width: int, 
+        self,
+        beat_frame: "SequenceBeatFrame",
+        container_width: int,
         container_height: int,
-        num_columns: int
+        num_columns: int,
     ) -> int:
         """
         Calculate optimal beat size using intelligent algorithm.
-        
+
         Args:
             beat_frame: The beat frame widget
             container_width: Available width
             container_height: Available height
             num_columns: Number of columns in current layout
-            
+
         Returns:
             Optimal beat size in pixels
         """
@@ -57,32 +59,30 @@ class AdvancedBeatFrameResizerService:
         else:
             # Intelligent calculation balancing width and height constraints
             beat_size = min(
-                int(container_width // num_columns), 
-                int(container_height // 6)
+                int(container_width // num_columns), int(container_height // 6)
             )
 
         # Safety check for positive size
         beat_size = max(beat_size, 1)
-        
+
         self._size_cache[cache_key] = beat_size
         return beat_size
 
     def calculate_container_dimensions(
-        self, 
-        beat_frame: "ModernBeatFrame"
+        self, beat_frame: "SequenceBeatFrame"
     ) -> Tuple[int, int]:
         """
         Calculate available container dimensions with intelligent sizing.
-        
+
         Args:
             beat_frame: The beat frame widget
-            
+
         Returns:
             Tuple of (width, height) available for beats
         """
         # Get the scroll area parent
         scroll_area = self._find_scroll_area_parent(beat_frame)
-        
+
         if scroll_area:
             # Calculation with scroll bar consideration
             scrollbar_width = scroll_area.verticalScrollBar().width()
@@ -104,37 +104,28 @@ class AdvancedBeatFrameResizerService:
             parent = parent.parent()
         return None
 
-    def configure_scroll_behavior(
-        self, 
-        scroll_area: QScrollArea, 
-        num_rows: int
-    ):
+    def configure_scroll_behavior(self, scroll_area: QScrollArea, num_rows: int):
         """
         Configure scroll bar behavior with intelligent thresholds.
-        
+
         Args:
             scroll_area: The scroll area widget
             num_rows: Number of rows in current layout
         """
         # Intelligent scroll bar logic
         if num_rows > 4:
-            scroll_area.setVerticalScrollBarPolicy(
-                Qt.ScrollBarPolicy.ScrollBarAlwaysOn
-            )
+            scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         else:
             scroll_area.setVerticalScrollBarPolicy(
                 Qt.ScrollBarPolicy.ScrollBarAlwaysOff
             )
 
     def resize_beat_views(
-        self, 
-        beat_views: list, 
-        beat_size: int,
-        start_position_view = None
+        self, beat_views: list, beat_size: int, start_position_view=None
     ):
         """
         Resize beat views with intelligent sizing constraints.
-        
+
         Args:
             beat_views: List of beat view widgets
             beat_size: Target size for beats

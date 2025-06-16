@@ -17,7 +17,7 @@ from data.constants import (
     TIMING,
     TURNS,
 )
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class JsonStartPositionHandler:
         self.manager = manager
 
     def set_start_position_data(
-        self, start_pos_pictograph: Pictograph, start_pos_data: dict = {}
+        self, start_pos_pictograph: LegacyPictograph, start_pos_data: dict = {}
     ) -> None:
         red_start_ori = start_pos_pictograph.state.pictograph_data[RED_ATTRS][START_ORI]
         blue_start_ori = start_pos_pictograph.state.pictograph_data[BLUE_ATTRS][
@@ -81,7 +81,9 @@ class JsonStartPositionHandler:
             sequence[1][f"{color}_attributes"][START_ORI] = ori
             self.manager.loader_saver.save_current_sequence(sequence)
 
-    def get_sequence_start_position(self, start_pos_pictograph: Pictograph) -> str:
+    def get_sequence_start_position(
+        self, start_pos_pictograph: LegacyPictograph
+    ) -> str:
         """
         Extract the start position type (alpha, beta, gamma) from the end position.
 

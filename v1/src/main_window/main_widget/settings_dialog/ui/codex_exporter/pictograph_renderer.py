@@ -7,7 +7,7 @@ from PyQt6.QtGui import QImage, QPainter
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (
         ImageExportTab,
     )
@@ -27,7 +27,7 @@ class PictographRenderer:
         self.parent = parent
 
     def create_pictograph_image(
-        self, pictograph: "Pictograph", add_border: bool = False
+        self, pictograph: "LegacyPictograph", add_border: bool = False
     ) -> QImage:
         """Create a QImage from a pictograph.
         Args:
@@ -44,7 +44,9 @@ class PictographRenderer:
         painter.end()
         return image
 
-    def create_pictograph_image_with_border(self, pictograph: "Pictograph") -> QImage:
+    def create_pictograph_image_with_border(
+        self, pictograph: "LegacyPictograph"
+    ) -> QImage:
         """Create a QImage from a pictograph with a black border.
         Args:
             pictograph: The pictograph to convert to an image

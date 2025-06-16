@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from objects.glyphs.tka_glyph.tka_glyph import TKA_Glyph
     from objects.glyphs.vtg_glyph.vtg_glyph import VTG_Glyph
 
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from objects.arrow.arrow import Arrow
     from objects.prop.prop import Prop
 
@@ -31,6 +31,6 @@ Glyph = Union[
     "StartToEndPosGlyph",
     "TKA_Glyph",
     "VTG_Glyph",
-    "Prop"  ,
+    "Prop",
     "Arrow",
 ]

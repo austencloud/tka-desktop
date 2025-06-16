@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from enums.prop_type import PropType
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from data.constants import DIAMOND
 from .prop_type_changer import PropTypeChanger
 from settings_manager.settings_logger import log_setting_get, log_setting_set
@@ -73,7 +73,7 @@ class GlobalSettings:
         self.settings.setValue("global/grow_sequence", grow_sequence)
 
     def set_prop_type(
-        self, prop_type: PropType, pictographs: list["Pictograph"]
+        self, prop_type: PropType, pictographs: list["LegacyPictograph"]
     ) -> None:
         self.settings.setValue("global/prop_type", prop_type.name)
         self.prop_type_changer.apply_prop_type(pictographs)

@@ -6,11 +6,11 @@ from main_window.main_widget.special_placement_loader import SpecialPlacementLoa
 from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker import (
-        OptionPicker,
+    from v1.src.main_window.main_widget.construct_tab.option_picker.widgets.legacy_option_picker import (
+        LegacyOptionPicker,
     )
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
     from main import MainWindow
     from objects.arrow.arrow import Arrow
@@ -176,7 +176,7 @@ class AppContext:
         )
 
     @classmethod
-    def sequence_beat_frame(cls) -> "SequenceBeatFrame":
+    def sequence_beat_frame(cls) -> "LegacyBeatFrame":
         """Retrieve sequence_beat_frame only if it's set."""
         if cls._sequence_beat_frame is None:
             raise RuntimeError(
@@ -185,7 +185,7 @@ class AppContext:
         return cls._sequence_beat_frame
 
     @classmethod
-    def option_picker(cls) -> "OptionPicker":
+    def option_picker(cls) -> "LegacyOptionPicker":
         return cls.main_widget().construct_tab.option_picker
 
     @classmethod

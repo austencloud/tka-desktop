@@ -1,21 +1,21 @@
 from typing import TYPE_CHECKING
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
 from interfaces.settings_manager_interface import ISettingsManager
 from interfaces.json_manager_interface import IJsonManager
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class AddToSequenceManager:
     def __init__(
         self,
         json_manager: IJsonManager,
-        beat_frame: "SequenceBeatFrame",
+        beat_frame: "LegacyBeatFrame",
         last_beat: "Beat",
         settings_manager: ISettingsManager = None,
     ):
@@ -24,7 +24,7 @@ class AddToSequenceManager:
         self.last_beat = last_beat
         self.settings_manager = settings_manager
 
-    def create_new_beat(self, clicked_option: "Pictograph") -> "Beat":
+    def create_new_beat(self, clicked_option: "LegacyPictograph") -> "Beat":
         sequence = self.json_manager.loader_saver.load_current_sequence()
 
         last_beat_data = None

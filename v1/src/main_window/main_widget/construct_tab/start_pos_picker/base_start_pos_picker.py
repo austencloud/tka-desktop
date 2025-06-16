@@ -5,7 +5,7 @@ from base_widgets.pictograph.elements.views.start_pos_picker_pictograph_view imp
     StartPosPickerPictographView,
 )
 from data.positions_maps import box_positions, diamond_positions
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from data.constants import BOX, DIAMOND, END_POS, GRID_MODE, LETTER, START_POS
 from PyQt6.QtCore import QSize
 
@@ -17,13 +17,13 @@ class BaseStartPosPicker(QWidget):
         super().__init__()
         self.pictograph_dataset = pictograph_dataset
         self.mw_size_provider = mw_size_provider
-        self.box_pictographs: list[Pictograph] = []
-        self.diamond_pictographs: list[Pictograph] = []
-        self.start_options: dict[str, Pictograph] = {}
+        self.box_pictographs: list[LegacyPictograph] = []
+        self.diamond_pictographs: list[LegacyPictograph] = []
+        self.start_options: dict[str, LegacyPictograph] = {}
 
     def create_pictograph_from_dict(
         self, pictograph_data: dict, target_grid_mode: str
-    ) -> Pictograph:
+    ) -> LegacyPictograph:
         """
         Create a pictograph using the provided dictionary, setting a local grid_mode.
         No context managers, no flipping global states.
@@ -35,7 +35,7 @@ class BaseStartPosPicker(QWidget):
         if pictograph_key in self.start_options:
             return self.start_options[pictograph_key]
 
-        pictograph = Pictograph()
+        pictograph = LegacyPictograph()
         pictograph.elements.view = StartPosPickerPictographView(
             self, pictograph, size_provider=self.mw_size_provider
         )
@@ -55,7 +55,7 @@ class BaseStartPosPicker(QWidget):
         end_pos = pictograph_data.get(END_POS, "no_end")
         return f"{letter}_{start_pos}_{end_pos}_{grid_mode}"
 
-    def get_box_pictographs(self) -> list[Pictograph]:
+    def get_box_pictographs(self) -> list[LegacyPictograph]:
         if self.box_pictographs:
             return self.box_pictographs
 
@@ -67,7 +67,7 @@ class BaseStartPosPicker(QWidget):
 
         return self.box_pictographs
 
-    def get_diamond_pictographs(self) -> list[Pictograph]:
+    def get_diamond_pictographs(self) -> list[LegacyPictograph]:
         if self.diamond_pictographs:
             return self.diamond_pictographs
 

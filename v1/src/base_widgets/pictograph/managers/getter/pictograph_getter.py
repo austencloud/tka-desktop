@@ -18,12 +18,12 @@ from objects.arrow.arrow import Arrow
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from objects.prop.prop import Prop
 
 
 class PictographGetter:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         self.pictograph = pictograph
         self.is_initialized = False
 

@@ -10,11 +10,11 @@ from base_widgets.pictograph.elements.views.base_pictograph_view import (
 )
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class BorderedPictographView(BasePictographView):
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         super().__init__(pictograph)
         self.primary_color = None
         self.secondary_color = None

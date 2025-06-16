@@ -9,11 +9,11 @@ from enums.prop_type import (
 )
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class PropClassifier:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         self.pictograph = pictograph
         self.big_uni: list[Prop] = []
         self.small_uni: list[Prop] = []

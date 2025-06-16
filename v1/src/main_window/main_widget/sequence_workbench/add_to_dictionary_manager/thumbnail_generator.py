@@ -8,13 +8,13 @@ from datetime import datetime
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
 
 
 class ThumbnailGenerator:
-    def __init__(self, beat_frame: "SequenceBeatFrame"):
+    def __init__(self, beat_frame: "LegacyBeatFrame"):
         self.beat_frame = beat_frame
         self.image_creator = beat_frame.image_export_manager.image_creator
 

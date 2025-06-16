@@ -7,7 +7,7 @@ from data.constants import RED, BLUE
 from objects.motion.motion import MotionOriCalculator
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class TurnApplier:
@@ -15,7 +15,7 @@ class TurnApplier:
 
     @staticmethod
     def apply_turns_to_pictograph(
-        pictograph: "Pictograph",
+        pictograph: "LegacyPictograph",
         red_turns: float = 0.0,
         blue_turns: float = 0.0,
     ) -> None:

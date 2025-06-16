@@ -5,17 +5,17 @@ from base_widgets.pictograph.elements.views.bordered_pictograph_view import (
 )
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
-    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker import (
-        OptionPicker,
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
+    from v1.src.main_window.main_widget.construct_tab.option_picker.widgets.legacy_option_picker import (
+        LegacyOptionPicker,
     )
 
 
 class OptionView(BorderedPictographView):
     def __init__(
         self,
-        op: "OptionPicker",
-        pictograph: "Pictograph",
+        op: "LegacyOptionPicker",
+        pictograph: "LegacyPictograph",
         mw_size_provider: Callable[[], QSize],
     ):
         super().__init__(pictograph)

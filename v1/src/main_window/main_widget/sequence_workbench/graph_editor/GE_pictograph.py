@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
 
 if TYPE_CHECKING:
     from base_widgets.pictograph.elements.views.GE_pictograph_view import (

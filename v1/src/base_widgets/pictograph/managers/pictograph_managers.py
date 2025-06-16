@@ -16,7 +16,7 @@ from .updater.pictograph_updater import PictographUpdater
 from .pictograph_initializer import PictographInitializer
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 from PyQt6.QtWidgets import QGraphicsScene
 from dataclasses import dataclass

@@ -10,7 +10,7 @@ from data.constants import BLUE_ATTRS, RED_ATTRS, TURNS
 
 logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class TurnsPatternManager:
@@ -19,9 +19,6 @@ class TurnsPatternManager:
     Provides functionality to create consistent representations of turns patterns
     for both normal and mirrored entries.
     """
-
-
-
 
     def extract_turns_from_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """

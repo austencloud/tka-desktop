@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QFileDialog, QMessageBox, QProgressDialog
 from PyQt6.QtGui import QImage, QPainter
 from PyQt6.QtCore import Qt
 
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from data.constants import (
     START_POS,
     END_POS,
@@ -159,7 +159,7 @@ class PictographDatasetExporter:
 
     def _create_pictograph_from_data(
         self, pictograph_data: Dict[str, Any], grid_mode: str
-    ) -> Pictograph:
+    ) -> LegacyPictograph:
         """
         Create a pictograph instance from pictograph data.
 
@@ -171,7 +171,7 @@ class PictographDatasetExporter:
             A pictograph instance with the data applied
         """
         # Create a new pictograph
-        pictograph = Pictograph()
+        pictograph = LegacyPictograph()
 
         # Add grid mode to the data
         data_copy = pictograph_data.copy()
@@ -182,7 +182,7 @@ class PictographDatasetExporter:
 
         return pictograph
 
-    def _create_pictograph_image(self, pictograph: Pictograph) -> QImage:
+    def _create_pictograph_image(self, pictograph: LegacyPictograph) -> QImage:
         """
         Create a QImage from a pictograph.
 

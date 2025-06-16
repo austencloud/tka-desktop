@@ -16,14 +16,14 @@ from .small_prop_positioner import SmallPropPositioner
 from .swap_beta_handler import SwapBetaHandler
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
     from ..prop_placement_manager import PropPlacementManager
 
 
 class BetaPropPositioner:
     def __init__(self, prop_placement_manager: "PropPlacementManager") -> None:
-        self.pictograph: "Pictograph" = prop_placement_manager.pictograph
+        self.pictograph: "LegacyPictograph" = prop_placement_manager.pictograph
         self.prop_placement_manager = prop_placement_manager
 
         self.classifier = PropClassifier(self.pictograph)

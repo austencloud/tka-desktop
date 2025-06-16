@@ -5,13 +5,13 @@ from main_window.main_widget.fade_manager.fade_manager import FadeManager
 from interfaces.json_manager_interface import IJsonManager
 
 if TYPE_CHECKING:
-    from ..widgets.option_picker import OptionPicker
+    from ..widgets.legacy_option_picker import LegacyOptionPicker
 
 
 class OptionUpdater:
     def __init__(
         self,
-        option_picker: "OptionPicker",
+        option_picker: "LegacyOptionPicker",
         fade_manager: FadeManager,
         json_manager: IJsonManager,
     ) -> None:

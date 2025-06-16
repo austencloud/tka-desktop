@@ -5,7 +5,7 @@ from PyQt6.QtCore import QSize
 from main_window.main_widget.sequence_workbench.labels.difficulty_level_icon import (
     DifficultyLevelIcon,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.difficult_level_gradients import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_manager.image_creator.difficult_level_gradients import (
     DifficultyLevelGradients,
 )
 from src.settings_manager.global_settings.app_context import AppContext

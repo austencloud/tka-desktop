@@ -12,13 +12,13 @@ from data.constants import (
 )
 
 if TYPE_CHECKING:
-    from ...pictograph import Pictograph
+    from ...legacy_pictograph import LegacyPictograph
 
 logger = logging.getLogger(__name__)
 
 
 class ArrowDataUpdater:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         self.pictograph = pictograph
 
     def update_arrows(self, pictograph_data: dict) -> None:

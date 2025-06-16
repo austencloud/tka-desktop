@@ -23,7 +23,7 @@ from main_window.main_widget.settings_dialog.settings_provider import SettingsPr
 from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
-    from ..pictograph import Pictograph
+    from ..legacy_pictograph import LegacyPictograph
 
 
 # pictograph_initializer.py
@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 class PictographInitializer:
     default_grid_mode = DIAMOND
 
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         self.pictograph = pictograph
         self.settings = SettingsProvider.get_settings()
         self.pictograph.setSceneRect(0, 0, 950, 950)

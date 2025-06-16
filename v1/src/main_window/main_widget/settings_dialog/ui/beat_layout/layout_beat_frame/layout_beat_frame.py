@@ -2,15 +2,15 @@ from typing import TYPE_CHECKING, Union
 from PyQt6.QtWidgets import QGridLayout, QFrame, QSizePolicy
 from PyQt6.QtCore import Qt, QSize
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
 from base_widgets.pictograph.elements.views.beat_view import (
     BeatView,
 )
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
 from ..layout_beat_view import LayoutBeatView

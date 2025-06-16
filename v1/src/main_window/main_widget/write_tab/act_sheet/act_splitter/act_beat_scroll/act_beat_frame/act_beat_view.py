@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QGraphicsView, QGraphicsTextItem, QMenu
 from PyQt6.QtCore import QPointF, Qt
 from PyQt6.QtGui import QFont, QAction
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.act_beat import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.act_beat import (
     ActBeat,
 )
 

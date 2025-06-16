@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from ..turn_applier import TurnApplier
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from ..pictograph_data_manager import PictographDataManager
     from ..pictograph_factory import PictographFactory
     from ..pictograph_renderer import PictographRenderer
@@ -31,7 +31,9 @@ class HybridExporter:
         self.renderer = renderer
         self.turn_configuration = turn_configuration
 
-    def _save_pictograph(self, pictograph: "Pictograph", filepath: str, message: str):
+    def _save_pictograph(
+        self, pictograph: "LegacyPictograph", filepath: str, message: str
+    ):
         """Saves a pictograph image to a file."""
         image = self.renderer.create_pictograph_image(pictograph)
         image.save(filepath, "PNG", 100)

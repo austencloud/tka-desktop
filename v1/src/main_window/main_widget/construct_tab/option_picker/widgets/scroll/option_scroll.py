@@ -11,8 +11,8 @@ from enums.letter.letter_type import LetterType
 from PyQt6.QtCore import QSize
 
 if TYPE_CHECKING:
-    from main_window.main_widget.construct_tab.option_picker.widgets.option_picker import (
-        OptionPicker,
+    from v1.src.main_window.main_widget.construct_tab.option_picker.widgets.legacy_option_picker import (
+        LegacyOptionPicker,
     )
 
 
@@ -23,7 +23,7 @@ class OptionScroll(QScrollArea):
     sections: dict["LetterType", "OptionPickerSectionWidget"] = {}
 
     def __init__(
-        self, option_picker: "OptionPicker", mw_size_provider: Callable[[], QSize]
+        self, option_picker: "LegacyOptionPicker", mw_size_provider: Callable[[], QSize]
     ):
         super().__init__(option_picker)
         self.option_picker = option_picker

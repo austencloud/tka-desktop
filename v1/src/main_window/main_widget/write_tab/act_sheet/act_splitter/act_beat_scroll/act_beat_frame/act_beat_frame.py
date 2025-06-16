@@ -9,7 +9,7 @@ from .act_populator import ActPopulator
 from .act_beat_view import ActBeatView
 from .act_step_label import ActStepLabel
 from .act_beat_frame_layout_manager import ActBeatFrameLayoutManager
-from ......sequence_workbench.sequence_beat_frame.beat_selection_overlay import (
+from ......sequence_workbench.legacy_beat_frame.beat_selection_overlay import (
     BeatSelectionOverlay,
 )
 

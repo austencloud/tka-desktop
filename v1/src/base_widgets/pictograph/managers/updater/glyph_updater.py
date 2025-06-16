@@ -2,13 +2,13 @@ import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ...pictograph import Pictograph
+    from ...legacy_pictograph import LegacyPictograph
 
 logger = logging.getLogger(__name__)
 
 
 class GlyphUpdater:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         self.pictograph = pictograph
 
     def update(self) -> None:

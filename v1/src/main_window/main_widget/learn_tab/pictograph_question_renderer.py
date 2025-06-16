@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 from PyQt6.QtCore import Qt
 
@@ -21,7 +21,7 @@ class PictographQuestionRenderer:
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.widget.setLayout(self.layout)
 
-        self.pictograph = Pictograph()
+        self.pictograph = LegacyPictograph()
         self.view = LessonPictographView(self.pictograph)
         self.pictograph.elements.view = self.view
         self.pictograph.state.disable_gold_overlay = True

@@ -9,7 +9,7 @@ from .prop_rot_angle_manager import PropRotAngleManager
 if TYPE_CHECKING:
     from enums.prop_type import PropType
     from objects.arrow.arrow import Arrow
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from objects.motion.motion import Motion
 
 

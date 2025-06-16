@@ -3,22 +3,22 @@ from PyQt6.QtCore import Qt
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..widgets.option_picker import OptionPicker
-    from base_widgets.pictograph.pictograph import Pictograph
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from ..widgets.legacy_option_picker import LegacyOptionPicker
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
 
 
 class OptionClickHandler:
     def __init__(
-        self, option_picker: "OptionPicker", beat_frame: "SequenceBeatFrame"
+        self, option_picker: "LegacyOptionPicker", beat_frame: "LegacyBeatFrame"
     ) -> None:
         self.option_picker = option_picker
         self.beat_frame = beat_frame
         self.add_to_sequence_manager = option_picker.add_to_sequence_manager
 
-    def handle_option_click(self, clicked_option: "Pictograph") -> None:
+    def handle_option_click(self, clicked_option: "LegacyPictograph") -> None:
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
             new_beat = self.add_to_sequence_manager.create_new_beat(clicked_option)

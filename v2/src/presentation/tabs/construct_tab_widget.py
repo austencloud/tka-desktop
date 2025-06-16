@@ -13,8 +13,8 @@ from PyQt6.QtGui import QFont
 
 from core.dependency_injection.di_container import SimpleContainer
 from src.domain.models.core_models import SequenceData, BeatData
-from src.presentation.components.option_picker.modern_option_picker import (
-    ModernOptionPicker,
+from presentation.components.option_picker.option_picker import (
+    OptionPicker,
 )
 
 # StartPositionPicker imported locally in _create_start_position_widget method
@@ -163,7 +163,7 @@ class ConstructTabWidget(QWidget):
                     mapped_progress = 0.8 + (progress * 0.1)  # 0.8 to 0.9 range
                     self.progress_callback(f"Option picker: {step}", mapped_progress)
 
-            self.option_picker = ModernOptionPicker(
+            self.option_picker = OptionPicker(
                 self.container, progress_callback=option_picker_progress
             )
             self.option_picker.initialize()

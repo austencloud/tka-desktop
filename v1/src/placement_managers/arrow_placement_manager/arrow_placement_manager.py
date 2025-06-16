@@ -14,12 +14,12 @@ from .strategies.quadrant_adjustment_strategy import QuadrantAdjustmentStrategy
 from .strategies.special_placement_strategy import SpecialPlacementStrategy
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from objects.arrow.arrow import Arrow
 
 
 class ArrowPlacementManager:
-    def __init__(self, pictograph: "Pictograph"):
+    def __init__(self, pictograph: "LegacyPictograph"):
         self.pictograph = pictograph
         self.quadrant_index_handler = QuadrantIndexHandler(self)
         self.initial_strategy = InitialPlacementStrategy(pictograph)

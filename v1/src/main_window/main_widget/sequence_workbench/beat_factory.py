@@ -7,20 +7,20 @@ from enums.letter.letter import Letter
 from data.constants import (
     FLOAT,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
 
 
 class BeatFactory:
-    def __init__(self, beat_frame: "SequenceBeatFrame") -> None:
+    def __init__(self, beat_frame: "LegacyBeatFrame") -> None:
         self.beat_frame = beat_frame
         self.main_widget = beat_frame.main_widget
 

@@ -17,19 +17,19 @@ from main_window.main_widget.browse_tab.temp_beat_frame.temp_beat_frame_layout_m
     TempBeatFrameLayoutManager,
 )
 
-from base_widgets.pictograph.pictograph import Pictograph
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
 from base_widgets.pictograph.elements.views.beat_view import (
     BeatView,
 )
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_export_manager import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_manager.image_export_manager import (
     ImageExportManager,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat_view import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
 from src.settings_manager.global_settings.app_context import AppContext
@@ -83,7 +83,7 @@ class TempBeatFrame(BaseBeatFrame):
             self.layout.addWidget(beat, row + 1, col + 1)
         self.layout_manager.configure_beat_frame(16)
 
-    def add_beat_to_sequence(self, new_beat: "Pictograph") -> None:
+    def add_beat_to_sequence(self, new_beat: "LegacyPictograph") -> None:
         next_beat_index = self.get.next_available_beat()
 
         if (

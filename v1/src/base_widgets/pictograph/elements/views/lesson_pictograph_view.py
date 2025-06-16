@@ -2,15 +2,17 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QGraphicsRectItem
 from PyQt6.QtGui import QBrush, QColor
 
-from base_widgets.pictograph.elements.views.bordered_pictograph_view import BorderedPictographView
+from base_widgets.pictograph.elements.views.bordered_pictograph_view import (
+    BorderedPictographView,
+)
 
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class LessonPictographView(BorderedPictographView):
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         super().__init__(pictograph)
         self.pictograph = pictograph
 

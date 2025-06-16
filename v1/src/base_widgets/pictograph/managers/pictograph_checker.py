@@ -4,11 +4,11 @@ from enums.letter.letter_condition import LetterCondition
 from enums.prop_type import PropType
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class PictographChecker:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         self.pictograph = pictograph
 
     def ends_with_beta(self) -> bool:

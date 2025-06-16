@@ -3,12 +3,12 @@ from PyQt6.QtCore import Qt
 from base_widgets.pictograph.elements.views.base_pictograph_view import (
     BasePictographView,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
 from utils.ui_utils import ensure_positive_size
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
 
 
@@ -18,7 +18,7 @@ class BeatView(BasePictographView):
     is_selected = False
     beat: "Beat" = None
 
-    def __init__(self, beat_frame: "SequenceBeatFrame", number: int = None):
+    def __init__(self, beat_frame: "LegacyBeatFrame", number: int = None):
         super().__init__(None)
         self.beat_frame = beat_frame
         self.number = number

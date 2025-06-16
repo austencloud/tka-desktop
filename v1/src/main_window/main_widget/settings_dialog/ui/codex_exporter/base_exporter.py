@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Dict, Any, Optional
 from PyQt6.QtWidgets import QFileDialog
 from PyQt6.QtGui import QImage
 
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from data.constants import RED, BLUE
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class BaseCodexExporter:
 
     def _create_pictograph_from_data(
         self, pictograph_data: Dict[str, Any], grid_mode: str
-    ) -> Pictograph:
+    ) -> LegacyPictograph:
         """Create a pictograph from the given data.
 
         Args:
@@ -42,7 +42,7 @@ class BaseCodexExporter:
         raise NotImplementedError("Subclasses must implement this method")
 
     def _create_pictograph_image(
-        self, pictograph: Pictograph, add_border: bool = False
+        self, pictograph: LegacyPictograph, add_border: bool = False
     ) -> QImage:
         """Create a QImage from a pictograph.
 
@@ -71,7 +71,7 @@ class BaseCodexExporter:
 
     def _apply_turns_to_pictograph(
         self,
-        pictograph: Pictograph,
+        pictograph: LegacyPictograph,
         red_turns: float = 0.0,
         blue_turns: float = 0.0,
     ) -> None:

@@ -18,7 +18,7 @@ from main_window.main_widget.browse_tab.temp_beat_frame.temp_beat_frame import (
 )
 
 from main_window.main_widget.metadata_extractor import MetaDataExtractor
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_export_manager import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_manager.image_export_manager import (
     ImageExportManager,
 )
 from utils.path_helpers import (

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import QObject, pyqtSignal
 from data.constants import ANTI, CLOCKWISE, PRO
 from objects.motion.motion import Motion
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from utils.reversal_detector import ReversalDetector
 
 if TYPE_CHECKING:
@@ -122,7 +122,7 @@ class PropRotDirLogicHandler(QObject):
             # Update UI with reversal symbols
             pictograph.elements.reversal_glyph.update_reversal_symbols()
 
-    def _get_affected_pictographs(self) -> list[Pictograph]:
+    def _get_affected_pictographs(self) -> list[LegacyPictograph]:
         """Retrieve pictographs that need updating due to rotation changes."""
         selected_beat = (
             self.turns_box.graph_editor.sequence_workbench.beat_frame.get.currently_selected_beat_view()

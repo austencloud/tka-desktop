@@ -8,7 +8,7 @@ from base_widgets.pictograph.elements.views.codex_pictograph_view import (
     CodexPictographView,
 )
 from .codex_section_type_label import CodexSectionTypeLabel
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 if TYPE_CHECKING:
     from .codex import Codex
@@ -91,7 +91,7 @@ class CodexSectionManager:
             return
 
         if letter_str not in self.codex_views:
-            pictograph = Pictograph()
+            pictograph = LegacyPictograph()
             view = CodexPictographView(pictograph, self.codex)
             pictograph.managers.updater.update_pictograph(p_dict)
             self.codex_views[letter_str] = view

@@ -7,7 +7,7 @@ from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.tu
 from main_window.main_widget.sequence_workbench.graph_editor.adjustment_panel.turns_adjustment_manager.motion_type_setter import (
     MotionTypeSetter,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import Beat
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
 from data.constants import CLOCKWISE, DASH, DASH, FLOAT, NO_ROT, STATIC
 from objects.motion.motion import Motion
 

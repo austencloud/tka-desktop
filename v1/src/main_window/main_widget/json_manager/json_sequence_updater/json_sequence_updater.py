@@ -12,11 +12,11 @@ from .json_turns_updater import JsonTurnsUpdater
 
 
 if TYPE_CHECKING:
-    from src.main_window.main_widget.sequence_workbench.sequence_beat_frame.beat import (
+    from src.main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import (
         Beat,
     )
-    from src.main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
     from src.main_window.main_widget.json_manager.json_manager import JsonManager
 
@@ -84,7 +84,7 @@ class JsonSequenceUpdater:
 
         self.json_manager.loader_saver.save_current_sequence(sequence_data)
 
-    def clear_and_repopulate_json_from_beat_view(self, beat_frame: "SequenceBeatFrame"):
+    def clear_and_repopulate_json_from_beat_view(self, beat_frame: "LegacyBeatFrame"):
         self.json_manager.loader_saver.clear_current_sequence_file()
         beat_views = beat_frame.beat_views
         start_pos = beat_frame.start_pos_view.start_pos

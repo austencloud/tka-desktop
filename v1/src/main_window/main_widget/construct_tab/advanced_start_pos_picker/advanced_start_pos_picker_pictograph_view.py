@@ -2,21 +2,23 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import QSize
 from typing import Callable
 
-from base_widgets.pictograph.elements.views.bordered_pictograph_view import BorderedPictographView
+from base_widgets.pictograph.elements.views.bordered_pictograph_view import (
+    BorderedPictographView,
+)
 
 
 if TYPE_CHECKING:
     from main_window.main_widget.construct_tab.advanced_start_pos_picker.advanced_start_pos_picker import (
         AdvancedStartPosPicker,
     )
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class AdvancedStartPosPickerPictographView(BorderedPictographView):
     def __init__(
         self,
         advanced_start_pos_picker: "AdvancedStartPosPicker",
-        pictograph: "Pictograph",
+        pictograph: "LegacyPictograph",
         size_provider: Callable[[], QSize],
     ):
         super().__init__(pictograph)

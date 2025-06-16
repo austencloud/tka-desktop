@@ -27,7 +27,7 @@ from utils.path_helpers import get_data_path, get_image_path
 
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 SVG_PATHS = {
@@ -48,7 +48,7 @@ SVG_PATHS = {
 class VTG_Glyph(QGraphicsSvgItem):
     name = "VTG"
 
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         super().__init__()
         self.pictograph = pictograph
 

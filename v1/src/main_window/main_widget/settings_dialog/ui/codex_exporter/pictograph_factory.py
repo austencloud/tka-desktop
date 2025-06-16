@@ -3,7 +3,7 @@ Creates pictographs for the codex exporter.
 """
 
 from typing import TYPE_CHECKING, Dict, Any, Union
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from data.constants import GRID_MODE
 
 if TYPE_CHECKING:
@@ -65,7 +65,7 @@ class CustomPropSvgManager:
 class CustomSvgManager:
     """Custom SVG manager for pictographs."""
 
-    def __init__(self, pictograph: Pictograph):
+    def __init__(self, pictograph: LegacyPictograph):
         """Initialize the SVG manager.
 
         Args:
@@ -125,7 +125,7 @@ class PictographFactory:
 
     def create_pictograph_from_data(
         self, pictograph_data: Dict[str, Any], grid_mode: str
-    ) -> Pictograph:
+    ) -> LegacyPictograph:
         """Create a pictograph from the given data.
 
         Args:
@@ -136,7 +136,7 @@ class PictographFactory:
             The created pictograph
         """
         # Create a new pictograph
-        pictograph = Pictograph()
+        pictograph = LegacyPictograph()
 
         # Replace the default SvgManager with our custom one that uses simple_staff.svg
         pictograph.managers.svg_manager = CustomSvgManager(pictograph)

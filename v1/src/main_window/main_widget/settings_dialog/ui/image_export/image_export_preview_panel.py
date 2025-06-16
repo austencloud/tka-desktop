@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QLabel, QFrame, QVBoxLayout, QApplication
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_export_manager import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_manager.image_export_manager import (
     ImageExportManager,
 )
 

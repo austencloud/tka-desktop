@@ -1,6 +1,6 @@
 [
     {
-        "word": "G",
+        "word": "GGGHH",
         "author": "",
         "level": "",
         "prop_type": "staff",
@@ -63,6 +63,118 @@
             "prop_rot_dir": "ccw",
             "start_loc": "s",
             "end_loc": "e",
+            "turns": 0,
+            "end_ori": "in"
+        }
+    },
+    {
+        "beat": 2,
+        "letter": "G",
+        "letter_type": "Type1",
+        "duration": 1,
+        "start_pos": "beta3",
+        "end_pos": "beta1",
+        "timing": "tog",
+        "direction": "same",
+        "blue_attributes": {
+            "motion_type": "pro",
+            "start_ori": "in",
+            "prop_rot_dir": "ccw",
+            "start_loc": "e",
+            "end_loc": "n",
+            "turns": 0,
+            "end_ori": "in"
+        },
+        "red_attributes": {
+            "motion_type": "pro",
+            "start_ori": "in",
+            "prop_rot_dir": "ccw",
+            "start_loc": "e",
+            "end_loc": "n",
+            "turns": 0,
+            "end_ori": "in"
+        }
+    },
+    {
+        "beat": 3,
+        "letter": "G",
+        "letter_type": "Type1",
+        "duration": 1,
+        "start_pos": "beta1",
+        "end_pos": "beta7",
+        "timing": "tog",
+        "direction": "same",
+        "blue_attributes": {
+            "motion_type": "pro",
+            "start_ori": "in",
+            "prop_rot_dir": "ccw",
+            "start_loc": "n",
+            "end_loc": "w",
+            "turns": 0,
+            "end_ori": "in"
+        },
+        "red_attributes": {
+            "motion_type": "pro",
+            "start_ori": "in",
+            "prop_rot_dir": "ccw",
+            "start_loc": "n",
+            "end_loc": "w",
+            "turns": 0,
+            "end_ori": "in"
+        }
+    },
+    {
+        "beat": 4,
+        "letter": "H",
+        "letter_type": "Type1",
+        "duration": 1,
+        "start_pos": "beta7",
+        "end_pos": "beta1",
+        "timing": "tog",
+        "direction": "same",
+        "blue_attributes": {
+            "motion_type": "anti",
+            "start_ori": "in",
+            "prop_rot_dir": "ccw",
+            "start_loc": "w",
+            "end_loc": "n",
+            "turns": 0,
+            "end_ori": "out"
+        },
+        "red_attributes": {
+            "motion_type": "anti",
+            "start_ori": "in",
+            "prop_rot_dir": "ccw",
+            "start_loc": "w",
+            "end_loc": "n",
+            "turns": 0,
+            "end_ori": "out"
+        }
+    },
+    {
+        "beat": 5,
+        "letter": "H",
+        "letter_type": "Type1",
+        "duration": 1,
+        "start_pos": "beta1",
+        "end_pos": "beta7",
+        "timing": "tog",
+        "direction": "same",
+        "blue_attributes": {
+            "motion_type": "anti",
+            "start_ori": "out",
+            "prop_rot_dir": "cw",
+            "start_loc": "n",
+            "end_loc": "w",
+            "turns": 0,
+            "end_ori": "in"
+        },
+        "red_attributes": {
+            "motion_type": "anti",
+            "start_ori": "out",
+            "prop_rot_dir": "cw",
+            "start_loc": "n",
+            "end_loc": "w",
             "turns": 0,
             "end_ori": "in"
         }

@@ -18,7 +18,7 @@ from PyQt6.QtTest import QTest
 # Add the src directory to the path for imports
 sys.path.insert(0, "src")
 
-from src.presentation.components.workbench.beat_frame.start_position_view import (
+from src.presentation.components.workbench.sequence_beat_frame.start_position_view import (
     StartPositionView,
 )
 from src.presentation.components.start_position_picker.start_text_overlay import (
@@ -260,8 +260,8 @@ class TestStartTextOverlayLifecycle:
         Test the exact workflow that triggers the error in real application:
         start position selection -> workbench -> beat frame -> start position view
         """
-        from src.presentation.components.workbench.beat_frame.modern_beat_frame import (
-            ModernBeatFrame,
+        from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
+            SequenceBeatFrame,
         )
         from src.application.services.beat_frame_layout_service import (
             BeatFrameLayoutService,
@@ -270,7 +270,7 @@ class TestStartTextOverlayLifecycle:
 
         # Create the full component hierarchy like in real app
         layout_service: BeatFrameLayoutService = BeatFrameLayoutService()
-        beat_frame: ModernBeatFrame = ModernBeatFrame(
+        beat_frame: SequenceBeatFrame = SequenceBeatFrame(
             layout_service, parent=parent_widget
         )
 

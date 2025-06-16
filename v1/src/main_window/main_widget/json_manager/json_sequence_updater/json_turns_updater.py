@@ -17,8 +17,8 @@ from src.settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
     from main_window.main_widget.json_manager.json_sequence_updater.json_sequence_updater import (
         JsonSequenceUpdater,

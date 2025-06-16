@@ -7,11 +7,11 @@ from base_widgets.pictograph.managers.pictograph_data_copier import dictCopier
 
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class BasePictographView(QGraphicsView):
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         super().__init__(pictograph)
         if pictograph:
             self.pictograph = pictograph

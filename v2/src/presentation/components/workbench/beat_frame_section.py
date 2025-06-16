@@ -6,7 +6,7 @@ from .button_panel import ModernSequenceWorkbenchButtonPanel
 from domain.models.core_models import SequenceData, BeatData
 from core.interfaces.core_services import ILayoutService
 from application.services.layout.beat_layout_service import BeatLayoutService
-from .beat_frame.modern_beat_frame import ModernBeatFrame
+from .sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
 
 if TYPE_CHECKING:
     pass
@@ -41,7 +41,7 @@ class WorkbenchBeatFrameSection(QWidget):
         self._start_position_data: Optional[BeatData] = None
 
         # Components
-        self._beat_frame: Optional[ModernBeatFrame] = None
+        self._beat_frame: Optional[SequenceBeatFrame] = None
         self._button_panel: Optional[ModernSequenceWorkbenchButtonPanel] = None
 
         self._setup_ui()
@@ -57,7 +57,7 @@ class WorkbenchBeatFrameSection(QWidget):
         beat_frame_layout_service = BeatLayoutService()
 
         # Create beat frame (left side)
-        self._beat_frame = ModernBeatFrame(
+        self._beat_frame = SequenceBeatFrame(
             layout_service=beat_frame_layout_service, parent=self
         )
         self._beat_frame.setMinimumHeight(400)

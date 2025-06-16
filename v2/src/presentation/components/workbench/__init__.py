@@ -4,8 +4,8 @@ Sequence Workbench Components
 V2 sequence workbench with modern architecture.
 """
 
-from src.presentation.components.workbench.beat_frame import (
-    ModernBeatFrame,
+from src.presentation.components.workbench.sequence_beat_frame import (
+    SequenceBeatFrame,
     ModernBeatView,
     StartPositionView,
     BeatSelectionManager,
@@ -33,7 +33,7 @@ from .button_interface import (
 
 __all__ = [
     "ModernSequenceWorkbench",
-    "ModernBeatFrame",
+    "SequenceBeatFrame",
     "ModernBeatView",
     "StartPositionView",
     "BeatSelectionManager",

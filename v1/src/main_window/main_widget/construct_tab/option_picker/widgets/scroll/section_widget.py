@@ -4,7 +4,7 @@ from enums.letter.letter_type import LetterType
 
 from data.constants import OPP, SAME
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
 from PyQt6.QtCore import QSize
 from main_window.main_widget.construct_tab.option_picker.widgets.scroll.section_pictograph_frame import (
@@ -13,6 +13,7 @@ from main_window.main_widget.construct_tab.option_picker.widgets.scroll.section_
 from main_window.main_widget.construct_tab.option_picker.widgets.scroll.section_header import (
     OptionPickerSectionHeader,
 )
+
 if TYPE_CHECKING:
     from .option_scroll import OptionScroll
 
@@ -39,7 +40,7 @@ class OptionPickerSectionWidget(QGroupBox):
 
     def setup_components(self) -> None:
         self.pictograph_frame = OptionPickerSectionPictographFrame(self)
-        self.pictographs: dict[str, Pictograph] = {}
+        self.pictographs: dict[str, LegacyPictograph] = {}
         self.pictograph_frame.setStyleSheet("QFrame {border: none;}")
         self._setup_header()
         self._setup_layout()
@@ -68,7 +69,7 @@ class OptionPickerSectionWidget(QGroupBox):
             pictograph.elements.view.setVisible(False)
         self.pictographs = {}
 
-    def add_pictograph(self, pictograph: Pictograph) -> None:
+    def add_pictograph(self, pictograph: LegacyPictograph) -> None:
         COLUMN_COUNT = self.option_scroll.option_picker.COLUMN_COUNT
         self.pictographs[
             PictographKeyGenerator().generate_pictograph_key(

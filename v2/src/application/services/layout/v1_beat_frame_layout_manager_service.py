@@ -14,13 +14,15 @@ from .v1_beat_layout_service import V1BeatLayoutService
 from .v1_beat_frame_resizer_service import V1BeatFrameResizerService
 
 if TYPE_CHECKING:
-    from presentation.components.workbench.beat_frame.modern_beat_frame import ModernBeatFrame
+    from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
+        SequenceBeatFrame,
+    )
 
 
 class V1BeatFrameLayoutManagerService:
     """
     Direct port of V1's BeatFrameLayoutManager.
-    
+
     Provides complete V1 layout management including:
     - Grid arrangement with start position
     - Beat view show/hide optimization
@@ -34,15 +36,15 @@ class V1BeatFrameLayoutManagerService:
         self._current_layout_state = {"rows": 1, "columns": 8, "beat_count": 0}
 
     def setup_initial_layout(
-        self, 
-        beat_frame: "ModernBeatFrame",
+        self,
+        beat_frame: "SequenceBeatFrame",
         grid_layout: QGridLayout,
         start_position_view: QWidget,
-        beat_views: List[QWidget]
+        beat_views: List[QWidget],
     ):
         """
         Setup initial layout using V1's exact pattern.
-        
+
         Args:
             beat_frame: The beat frame widget
             grid_layout: The grid layout to configure
@@ -69,16 +71,16 @@ class V1BeatFrameLayoutManagerService:
 
     def configure_beat_frame_layout(
         self,
-        beat_frame: "ModernBeatFrame", 
+        beat_frame: "SequenceBeatFrame",
         grid_layout: QGridLayout,
         start_position_view: QWidget,
         beat_views: List[QWidget],
         num_beats: int,
-        sequence: Optional[SequenceData] = None
+        sequence: Optional[SequenceData] = None,
     ):
         """
         Configure beat frame layout using V1's exact algorithm.
-        
+
         Args:
             beat_frame: The beat frame widget
             grid_layout: The grid layout to configure
@@ -97,7 +99,7 @@ class V1BeatFrameLayoutManagerService:
         else:
             # Fallback to direct calculation
             layout_config = self.layout_service._get_layout_for_beat_count(num_beats)
-            rows = layout_config["rows"] 
+            rows = layout_config["rows"]
             columns = layout_config["columns"]
 
         # V1's scroll bar management
@@ -107,15 +109,14 @@ class V1BeatFrameLayoutManagerService:
 
         # Perform the layout rearrangement
         self._rearrange_beats(
-            grid_layout, start_position_view, beat_views, 
-            num_beats, rows, columns
+            grid_layout, start_position_view, beat_views, num_beats, rows, columns
         )
 
         # Update state tracking
         self._current_layout_state = {
-            "rows": rows, 
-            "columns": columns, 
-            "beat_count": num_beats
+            "rows": rows,
+            "columns": columns,
+            "beat_count": num_beats,
         }
 
     def _rearrange_beats(
@@ -125,11 +126,11 @@ class V1BeatFrameLayoutManagerService:
         beat_views: List[QWidget],
         num_beats: int,
         rows: int,
-        columns: int
+        columns: int,
     ):
         """
         Rearrange beats in grid using V1's exact algorithm.
-        
+
         This is a direct port of V1's rearrange_beats method.
         """
         # V1's optimization: Clear layout while preserving widgets
@@ -148,17 +149,19 @@ class V1BeatFrameLayoutManagerService:
             for col in range(1, columns + 1):  # +1 to skip start position column
                 if index < num_beats and index < len(beat_views):
                     beat_view = beat_views[index]
-                    
+
                     # Add to grid layout
                     grid_layout.addWidget(beat_view, row, col)
-                    
+
                     # Update beat number (V1 behavior)
-                    if hasattr(beat_view, 'beat') and hasattr(beat_view.beat, 'beat_number_item'):
+                    if hasattr(beat_view, "beat") and hasattr(
+                        beat_view.beat, "beat_number_item"
+                    ):
                         beat_view.beat.beat_number_item.update_beat_number(index + 1)
-                    
+
                     # Show the beat view
                     beat_view.show()
-                    
+
                     index += 1
                 else:
                     # V1 optimization: Hide unused beats
@@ -201,36 +204,40 @@ class V1BeatFrameLayoutManagerService:
 
     def adjust_layout_to_sequence_length(
         self,
-        beat_frame: "ModernBeatFrame",
+        beat_frame: "SequenceBeatFrame",
         grid_layout: QGridLayout,
         start_position_view: QWidget,
         beat_views: List[QWidget],
-        sequence: SequenceData
+        sequence: SequenceData,
     ):
         """
         Adjust layout to sequence length using V1's grow sequence logic.
-        
+
         Direct port of V1's adjust_layout_to_sequence_length method.
         """
         # Count filled beats (V1 equivalent)
         filled_count = len([beat for beat in sequence.beats if beat is not None])
-        
+
         self.configure_beat_frame_layout(
-            beat_frame, grid_layout, start_position_view, beat_views,
-            filled_count, sequence
+            beat_frame,
+            grid_layout,
+            start_position_view,
+            beat_views,
+            filled_count,
+            sequence,
         )
 
     def resize_for_container(
         self,
-        beat_frame: "ModernBeatFrame",
+        beat_frame: "SequenceBeatFrame",
         beat_views: List[QWidget],
         start_position_view: QWidget,
         container_width: int,
-        container_height: int
+        container_height: int,
     ):
         """
         Resize beats for container using V1's resizing logic.
-        
+
         Direct port of V1's resize_beat_frame functionality.
         """
         # Calculate available dimensions

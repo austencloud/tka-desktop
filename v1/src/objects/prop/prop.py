@@ -12,7 +12,7 @@ from .prop_rot_angle_manager import PropRotAngleManager
 if TYPE_CHECKING:
     from enums.prop_type import PropType
     from objects.arrow.arrow import Arrow
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from objects.motion.motion import Motion
 
 
@@ -22,7 +22,7 @@ class PropState:
     prop_type: Optional[str] = None
     loc: Optional[str] = None
     ori: Optional[str] = None
-    
+
     def update_from_dict(
         self, prop_data: dict[str, Union[str, "Arrow", "QGraphicsPixmapItem"]]
     ) -> None:
@@ -42,7 +42,7 @@ class Prop(GraphicalObject):
     state: PropState
     pixmap_item: QGraphicsPixmapItem
     name = "prop"
-    
+
     def __init__(
         self, pictograph, prop_data: dict, motion: "Motion", prop_type_str: str
     ):
@@ -50,7 +50,7 @@ class Prop(GraphicalObject):
         self.motion = motion
         self.prop_data = prop_data
         self.prop_type_str = prop_type_str
-        self.pictograph: Pictograph = pictograph
+        self.pictograph: LegacyPictograph = pictograph
         self.attr_manager = PropAttrManager(self)
         self.rot_angle_manager = PropRotAngleManager(self)
         self.check = PropChecker(self)

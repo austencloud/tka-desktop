@@ -4,11 +4,11 @@ from objects.arrow.arrow import Arrow
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class InitialPlacementStrategy:
-    def __init__(self, pictograph: "Pictograph"):
+    def __init__(self, pictograph: "LegacyPictograph"):
         self.pictograph = pictograph
 
     def compute_initial_position(self, arrow: Arrow) -> QPointF:

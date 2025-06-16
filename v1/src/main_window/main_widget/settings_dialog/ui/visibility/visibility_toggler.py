@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from enums.glyph_enum import Glyph
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
     from main_window.main_widget.settings_dialog.ui.visibility.visibility_tab import (
         VisibilityTab,
     )
@@ -100,7 +100,7 @@ class VisibilityToggler:
         # Update dependent elements when motion visibility changes
         self.update_dependent_glyphs_visibility()
 
-    def _update_placements(self, pictograph: "Pictograph"):
+    def _update_placements(self, pictograph: "LegacyPictograph"):
         """Update arrow and prop placements for a pictograph."""
         if hasattr(pictograph.managers, "updater") and hasattr(
             pictograph.managers.updater, "placement_updater"
@@ -140,7 +140,7 @@ class VisibilityToggler:
         self._update_all_pictographs()
 
     def _apply_glyph_visibility_to_pictograph(
-        self, pictograph: "Pictograph", glyph_type: str, is_visible: bool
+        self, pictograph: "LegacyPictograph", glyph_type: str, is_visible: bool
     ):
         """Apply glyph visibility to a specific pictograph."""
         # Mapping of glyph types to pictograph elements

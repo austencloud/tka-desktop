@@ -1,6 +1,6 @@
 # orientation_setter.py
 from typing import TYPE_CHECKING
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from data.constants import (
     BLUE,
     BLUE_ATTRS,
@@ -132,7 +132,7 @@ class OrientationSetter:
         self.beat_frame.updater.update_beats_from_current_sequence_json()
 
     def set_initial_orientation(
-        self, start_pos_pictograph: "Pictograph", color: str
+        self, start_pos_pictograph: "LegacyPictograph", color: str
     ) -> None:
         initial_orientation = self._get_initial_orientation(start_pos_pictograph, color)
         self.current_orientation_index = self.ori_picker_widget.orientations.index(
@@ -141,7 +141,7 @@ class OrientationSetter:
         self.ori_picker_widget.clickable_ori_label.setText(initial_orientation)
 
     def _get_initial_orientation(
-        self, start_pos_pictograph: "Pictograph", color: str
+        self, start_pos_pictograph: "LegacyPictograph", color: str
     ) -> str:
         if color == BLUE:
             return start_pos_pictograph.state.pictograph_data[BLUE_ATTRS][START_ORI]

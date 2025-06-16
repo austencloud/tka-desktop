@@ -1,6 +1,6 @@
 from PyQt6.QtGui import QPixmap, QImage, QPainter, QFont, QFontMetrics
 from PyQt6.QtCore import Qt, QRect, QPoint
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.image_export_manager.image_creator.difficult_level_gradients import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.image_export_manager.image_creator.difficult_level_gradients import (
     DifficultyLevelGradients,
 )
 

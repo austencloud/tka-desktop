@@ -14,7 +14,7 @@ from data.constants import (
     END_ORI,
     START_POS,
 )
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
 

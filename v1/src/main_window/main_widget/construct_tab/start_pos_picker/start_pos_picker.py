@@ -13,9 +13,9 @@ from data.constants import (
     START_POS,
     END_POS,
 )
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from main_window.main_widget.pictograph_key_generator import PictographKeyGenerator
-from main_window.main_widget.sequence_workbench.sequence_beat_frame.start_pos_beat import (
+from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat import (
     StartPositionBeat,
 )
 from .start_pos_picker_variations_button import StartPosVariationsButton
@@ -24,23 +24,24 @@ from .choose_your_start_pos_label import ChooseYourStartPosLabel
 from .base_start_pos_picker import BaseStartPosPicker
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.sequence_beat_frame.sequence_beat_frame import (
-        SequenceBeatFrame,
+    from v1.src.main_window.main_widget.sequence_workbench.legacy_beat_frame.legacy_beat_frame import (
+        LegacyBeatFrame,
     )
 
 # Define start position keys at the top
 DIAMOND_START_POS_KEYS = ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"]
 BOX_START_POS_KEYS = ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
 
+
 class StartPosPicker(BaseStartPosPicker):
     SPACING = 10
-    start_position_selected = pyqtSignal(Pictograph)
+    start_position_selected = pyqtSignal(LegacyPictograph)
     COLUMN_COUNT = 3
 
     def __init__(
         self,
         pictograph_dataset: dict,
-        beat_frame: "SequenceBeatFrame",
+        beat_frame: "LegacyBeatFrame",
         mw_size_provider,
         advanced_transition_handler,
     ):
@@ -88,7 +89,9 @@ class StartPosPicker(BaseStartPosPicker):
         """Load only the start positions relevant to the current grid mode."""
         self.pictograph_frame.clear_pictographs()
         grid_mode = DIAMOND
-        start_pos_keys = DIAMOND_START_POS_KEYS if grid_mode == DIAMOND else BOX_START_POS_KEYS
+        start_pos_keys = (
+            DIAMOND_START_POS_KEYS if grid_mode == DIAMOND else BOX_START_POS_KEYS
+        )
         if grid_mode == BOX:
             self.get_box_pictographs()
             for position_key in start_pos_keys:
@@ -138,7 +141,7 @@ class StartPosPicker(BaseStartPosPicker):
 
         return start_pos_beat
 
-    def get_start_pos_pictograph(self, start_pos_data) -> "Pictograph":
+    def get_start_pos_pictograph(self, start_pos_data) -> "LegacyPictograph":
         if not start_pos_data:
             raise ValueError("start_pos_data cannot be None")
         start_pos_key = start_pos_data[END_POS]

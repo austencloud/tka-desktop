@@ -10,13 +10,13 @@ from .motion_data_updater import MotionDataUpdater
 from .placement_updater import PlacementUpdater
 
 if TYPE_CHECKING:
-    from ...pictograph import Pictograph
+    from ...legacy_pictograph import LegacyPictograph
 
 logger = logging.getLogger(__name__)
 
 
 class PictographUpdater:
-    def __init__(self, pictograph: "Pictograph") -> None:
+    def __init__(self, pictograph: "LegacyPictograph") -> None:
         self.pictograph = pictograph
         self.motion_updater = MotionDataUpdater(pictograph)
         self.arrow_updater = ArrowDataUpdater(pictograph)
@@ -49,7 +49,6 @@ class PictographUpdater:
 
         self.pictograph.elements.tka_glyph.update_tka_glyph()
         self.pictograph.elements.reversal_glyph.update_reversal_symbols()
-
 
         logger.debug("Data update (partial or complete) applied successfully.")
 

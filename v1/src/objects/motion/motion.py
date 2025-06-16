@@ -7,18 +7,18 @@ from .motion_ori_calculator import MotionOriCalculator
 from .motion_updater import MotionUpdater
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
     from objects.arrow.arrow import Arrow
     from objects.prop.prop import Prop
 
 
 class Motion:
-    pictograph: "Pictograph"
+    pictograph: "LegacyPictograph"
     arrow: "Arrow"
     prop: "Prop"
 
-    def __init__(self, pictograph: "Pictograph", motion_data: dict) -> None:
+    def __init__(self, pictograph: "LegacyPictograph", motion_data: dict) -> None:
         self.pictograph = pictograph
         self.motion_data = motion_data
         self.state = MotionState()

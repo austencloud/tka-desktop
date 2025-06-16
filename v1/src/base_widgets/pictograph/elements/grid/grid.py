@@ -10,13 +10,15 @@ from .grid_item import GridItem
 from .non_radial_points_group import NonRadialPointsGroup
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 GRID_DIR = "grid/"
 
 
 class Grid:
-    def __init__(self, pictograph: "Pictograph", grid_data: GridData, grid_mode: str):
+    def __init__(
+        self, pictograph: "LegacyPictograph", grid_data: GridData, grid_mode: str
+    ):
 
         self.pictograph = pictograph
         self.grid_data = grid_data

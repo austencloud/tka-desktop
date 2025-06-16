@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from data.constants import (
     ALPHA1,
     BLUE,
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     )
 
 
-class VisibilityPictograph(Pictograph):
+class VisibilityPictograph(LegacyPictograph):
     """Special class for the visibility tab pictograph with improved visibility behavior."""
 
     example_data = {

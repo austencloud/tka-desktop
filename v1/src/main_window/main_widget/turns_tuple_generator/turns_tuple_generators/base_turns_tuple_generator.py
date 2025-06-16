@@ -3,7 +3,7 @@ from data.constants import BLUE, RED
 from objects.motion.motion import Motion
 
 if TYPE_CHECKING:
-    from base_widgets.pictograph.pictograph import Pictograph
+    from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 
 class BaseTurnsTupleGenerator:
@@ -16,7 +16,7 @@ class BaseTurnsTupleGenerator:
             else motion.state.turns
         )
 
-    def set_pictograph(self, pictograph: "Pictograph"):
+    def set_pictograph(self, pictograph: "LegacyPictograph"):
         self.pictograph = pictograph
 
         self.blue_motion = self.pictograph.elements.motion_set.get(BLUE)

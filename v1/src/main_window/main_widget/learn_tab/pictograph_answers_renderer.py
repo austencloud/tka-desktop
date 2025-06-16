@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, List, Callable
 from PyQt6.QtWidgets import QGridLayout
 from PyQt6.QtCore import Qt
-from base_widgets.pictograph.pictograph import Pictograph
+from v1.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 
 from base_widgets.pictograph.elements.views.lesson_pictograph_view import (
     LessonPictographView,
@@ -38,7 +38,7 @@ class PictographAnswersRenderer:
         self._clear_layout()
         for i, answer in enumerate(answers):
             answer_key = self.key_generator.generate_pictograph_key(answer)
-            scene = Pictograph()
+            scene = LegacyPictograph()
             view = LessonPictographView(scene)
             scene.elements.view = view
             scene.managers.updater.update_pictograph(answer)
