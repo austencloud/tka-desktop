@@ -1,21 +1,25 @@
 # 🏗️ Scaffolding Tests - TEMPORARY Development Aids
 
 ## Purpose
+
 Scaffolding tests are **temporary** tests created to aid development, debugging, and exploration. They should be **actively removed** when they've served their purpose.
 
 ## Categories
 
 ### 🐛 Debug (`debug/`)
+
 - **Purpose**: Reproduce and fix specific bugs
 - **Lifecycle**: Delete after bug is fixed and regression test is added
 - **Example**: `test_option_picker_crash_debug.py`
 
 ### 🔍 Exploration (`exploration/`)
+
 - **Purpose**: Understand existing code or explore new approaches
 - **Lifecycle**: Delete after understanding is achieved
-- **Example**: `test_v1_behavior_exploration.py`
+- **Example**: `test_legacy_behavior_exploration.py`
 
 ### ⚡ Spike (`spike/`)
+
 - **Purpose**: Proof of concept for new features
 - **Lifecycle**: Delete after spike is complete and real implementation begins
 - **Example**: `test_graph_editor_animation_spike.py`
@@ -23,13 +27,15 @@ Scaffolding tests are **temporary** tests created to aid development, debugging,
 ## Lifecycle Rules
 
 ### ✅ When to Create Scaffolding Tests
+
 - Debugging a specific issue
 - Exploring unfamiliar code
 - Prototyping new functionality
-- Understanding V1 behavior for parity
+- Understanding Legacy behavior for parity
 - Testing layout/sizing issues
 
 ### 🗑️ When to Delete Scaffolding Tests
+
 - Bug is fixed and regression test exists
 - Understanding is achieved and documented
 - Spike is complete and real implementation started
@@ -37,6 +43,7 @@ Scaffolding tests are **temporary** tests created to aid development, debugging,
 - Test has reached its DELETE_BY date
 
 ### ⚠️ Red Flags (Delete Immediately)
+
 - Test older than 30 days without clear purpose
 - Test duplicating specification coverage
 - Test with no DELETE_BY date
@@ -70,6 +77,7 @@ RELATED_ISSUE: #123 (if applicable)
 ## Examples
 
 ### Good Scaffolding Test
+
 ```python
 """
 TEST LIFECYCLE: SCAFFOLDING
@@ -85,7 +93,7 @@ RELATED_ISSUE: #47
 @pytest.mark.debug
 class TestOptionPickerLayoutDebug:
     """DELETE: Debugging option picker layout issues"""
-    
+
     def test_widget_sizing_crash(self):
         """DELETE: Reproduce widget sizing crash"""
         # Temporary debugging code
@@ -93,6 +101,7 @@ class TestOptionPickerLayoutDebug:
 ```
 
 ### Bad Scaffolding Test (Delete Immediately)
+
 ```python
 # No metadata, unclear purpose, old
 def test_something():

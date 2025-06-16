@@ -17,6 +17,7 @@ from domain.models.core_models import SequenceData
 def get_data_path(filename: str) -> str:
     """Helper function to get data file paths"""
     import os
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.join(current_dir, "..", "..", "..", "..")
     return os.path.join(project_root, "data", filename)
@@ -25,6 +26,7 @@ def get_data_path(filename: str) -> str:
 @dataclass
 class LayoutConfig:
     """Configuration for the enhanced layout system"""
+
     grow_sequence: bool = True
     overrides_file: str = "beat_layout_overrides.json"
 
@@ -40,7 +42,7 @@ class EnhancedBeatLayoutService:
         self.settings = QSettings("TKA", "KineticConstructor")
         self._layout_cache = {}
         self._overrides_cache = None
-        
+
         # Complete default layouts (rows, columns) for all beat counts
         self._default_layouts = {
             "0": [1, 0],
@@ -107,7 +109,7 @@ class EnhancedBeatLayoutService:
             "61": [16, 4],
             "62": [16, 4],
             "63": [16, 4],
-            "64": [16, 4]
+            "64": [16, 4],
         }
 
     def calculate_beat_frame_layout(
@@ -115,11 +117,11 @@ class EnhancedBeatLayoutService:
     ) -> Dict[str, int]:
         """
         Calculate layout using intelligent sequence adaptation.
-        
+
         Args:
             sequence: Current sequence data
             container_size: Available container size (width, height)
-            
+
         Returns:
             Dictionary with 'rows' and 'columns' keys
         """
@@ -134,10 +136,10 @@ class EnhancedBeatLayoutService:
     def calculate_optimal_layout(self, beat_count: int) -> Dict[str, int]:
         """
         Calculate optimal grid layout for given beat count.
-        
+
         Args:
             beat_count: Number of beats in sequence
-            
+
         Returns:
             Dictionary with 'rows' and 'columns' keys
         """
@@ -199,7 +201,7 @@ class EnhancedBeatLayoutService:
         overrides = self._load_overrides()
         overrides[str(beat_count)] = [rows, columns]
         self._save_overrides(overrides)
-        
+
         # Clear cache to force reload
         self._overrides_cache = None
         if str(beat_count) in self._layout_cache:
@@ -217,7 +219,7 @@ class EnhancedBeatLayoutService:
                     formatted_items = []
                     for key, value in obj.items():
                         if isinstance(value, list):
-                            value_str = json.dumps(value, separators=(',', ':'))
+                            value_str = json.dumps(value, separators=(",", ":"))
                         else:
                             value_str = json.dumps(value)
                         formatted_items.append(f'  "{key}": {value_str}')

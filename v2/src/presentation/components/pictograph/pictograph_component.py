@@ -1,5 +1,5 @@
 """
-Direct pictograph view for Kinetic Constructor v2 - matches v1 container hierarchy.
+Direct pictograph view for Kinetic Constructor v2 - matches legacy container hierarchy.
 """
 
 from typing import Optional
@@ -90,10 +90,10 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
             pass
 
     def _fit_view(self) -> None:
-        """Fit the pictograph scene to the view, exactly like V1."""
+        """Fit the pictograph scene to the view, exactly like Legacy."""
         if self.scene:
             try:
-                # Simple V1-style fitting: just use fitInView to automatically scale
+                # Simple Legacy-style fitting: just use fitInView to automatically scale
                 self.setSceneRect(self.scene.itemsBoundingRect())
                 self.fitInView(self.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
             except RuntimeError:

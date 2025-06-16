@@ -318,14 +318,14 @@ class WorkbenchButtonInterfaceSignals(QObject):
 
 
 class WorkbenchButtonInterfaceAdapter:
-    """Adapter for V1 button interface compatibility"""
+    """Adapter for Legacy button interface compatibility"""
 
     def __init__(self, workbench):
         self._workbench = workbench
         self.signals = WorkbenchButtonInterfaceSignals()
 
     def add_to_dictionary(self) -> bool:
-        """Legacy method for V1 compatibility"""
+        """Legacy method for Legacy compatibility"""
         if hasattr(self._workbench, "_handle_add_to_dictionary"):
             try:
                 self._workbench._handle_add_to_dictionary()
@@ -335,7 +335,7 @@ class WorkbenchButtonInterfaceAdapter:
         return False
 
     def save_image(self) -> bool:
-        """Legacy method for V1 compatibility"""
+        """Legacy method for Legacy compatibility"""
         if hasattr(self._workbench, "_handle_save_image"):
             try:
                 self._workbench._handle_save_image()
@@ -345,7 +345,7 @@ class WorkbenchButtonInterfaceAdapter:
         return False
 
     def delete_beat(self) -> bool:
-        """Legacy method for V1 compatibility"""
+        """Legacy method for Legacy compatibility"""
         if hasattr(self._workbench, "_handle_delete_beat"):
             try:
                 self._workbench._handle_delete_beat()
@@ -355,7 +355,7 @@ class WorkbenchButtonInterfaceAdapter:
         return False
 
     def clear_sequence(self) -> bool:
-        """Legacy method for V1 compatibility"""
+        """Legacy method for Legacy compatibility"""
         if hasattr(self._workbench, "_handle_clear"):
             try:
                 self._workbench._handle_clear()
@@ -365,7 +365,7 @@ class WorkbenchButtonInterfaceAdapter:
         return False
 
     def mirror_sequence(self) -> bool:
-        """Legacy method for V1 compatibility"""
+        """Legacy method for Legacy compatibility"""
         if hasattr(self._workbench, "_handle_reflection"):
             try:
                 self._workbench._handle_reflection()
@@ -375,7 +375,7 @@ class WorkbenchButtonInterfaceAdapter:
         return False
 
     def swap_colors(self) -> bool:
-        """Legacy method for V1 compatibility"""
+        """Legacy method for Legacy compatibility"""
         if hasattr(self._workbench, "_handle_color_swap"):
             try:
                 self._workbench._handle_color_swap()
@@ -385,7 +385,7 @@ class WorkbenchButtonInterfaceAdapter:
         return False
 
     def rotate_sequence(self) -> bool:
-        """Legacy method for V1 compatibility"""
+        """Legacy method for Legacy compatibility"""
         if hasattr(self._workbench, "_handle_rotation"):
             try:
                 self._workbench._handle_rotation()
@@ -395,7 +395,7 @@ class WorkbenchButtonInterfaceAdapter:
         return False
 
     def copy_json(self) -> bool:
-        """Legacy method for V1 compatibility"""
+        """Legacy method for Legacy compatibility"""
         if hasattr(self._workbench, "_handle_copy_json"):
             try:
                 self._workbench._handle_copy_json()
@@ -405,7 +405,7 @@ class WorkbenchButtonInterfaceAdapter:
         return False
 
     def view_fullscreen(self) -> bool:
-        """Legacy method for V1 compatibility"""
+        """Legacy method for Legacy compatibility"""
         if hasattr(self._workbench, "_handle_fullscreen"):
             try:
                 self._workbench._handle_fullscreen()

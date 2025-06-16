@@ -533,7 +533,7 @@ class ModernLetterTypeSelector(ModernControlBase):
 
         self._checkboxes = {}
 
-        # V1's letter type descriptions
+        # Legacy's letter type descriptions
         letter_type_info = [
             (LetterType.TYPE1, "Type 1 (Dual-Shift: A-V)"),
             (LetterType.TYPE2, "Type 2 (Shift: W,X,Y,Z,Σ,Δ,θ,Ω)"),
@@ -674,7 +674,7 @@ class ModernCAPTypeSelector(ModernControlBase):
         """Setup CAP type controls"""
         combo = QComboBox()
 
-        # Add all V1 CAP types
+        # Add all Legacy CAP types
         cap_types = [
             ("Strict Rotated", CAPType.STRICT_ROTATED),
             ("Strict Mirrored", CAPType.STRICT_MIRRORED),

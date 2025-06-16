@@ -66,7 +66,7 @@ class TestPlacementValidator:
             if re.search(r"debug|crash|bug|reproduce", content, re.IGNORECASE):
                 return "tests/scaffolding/debug"
             elif re.search(
-                r"exploration|v1|behavior|understand", content, re.IGNORECASE
+                r"exploration|legacy|behavior|understand", content, re.IGNORECASE
             ):
                 return "tests/scaffolding/exploration"
             elif re.search(r"spike|prototype|poc|concept", content, re.IGNORECASE):

@@ -20,25 +20,28 @@ python launch_parallel_testing.py
 ```
 
 This will:
+
 1. ✅ **Verify data structures** (100% accuracy check)
-2. 🖥️ **Deploy V1 on left monitor, V2 on right monitor**
+2. 🖥️ **Deploy Legacy on left monitor, V2 on right monitor**
 3. 🎮 **Provide interactive testing interface**
 4. 📊 **Real-time visual comparison**
 
 ## 🔧 **ARCHITECTURE OVERVIEW**
 
 ### **Core Components**
-- **Master Test Orchestrator**: Coordinates synchronized actions across V1/V2
-- **Application Drivers**: V1/V2-specific automation with verified data access patterns
+
+- **Master Test Orchestrator**: Coordinates synchronized actions across Legacy/V2
+- **Application Drivers**: Legacy/V2-specific automation with verified data access patterns
 - **Result Comparer**: Deep comparison engine with TKA domain model awareness
 - **Test Scenarios**: 6 comprehensive workflow scenarios covering all TKA interactions
 - **Side-by-Side Deployer**: Multi-monitor window management for visual testing
 
 ### **Verified Data Structures**
 
-**✅ V1 Data Access Pattern** (100% verified):
+**✅ Legacy Data Access Pattern** (100% verified):
+
 ```python
-# V1: main_widget.sequence_workbench.beat_frame.beat_views[].beat.state.pictograph_data
+# Legacy: main_widget.sequence_workbench.beat_frame.beat_views[].beat.state.pictograph_data
 beat_data = {
     "letter": "A",
     "blue_attributes": {
@@ -52,12 +55,13 @@ beat_data = {
 ```
 
 **✅ V2 Data Access Pattern** (100% verified):
+
 ```python
 # V2: workbench.beat_frame_section._beat_frame._current_sequence.beats[]
 BeatData(
     letter="A",
     blue_motion=MotionData(
-        motion_type=MotionType.PRO,    # ✅ VERIFIED: Same values as V1
+        motion_type=MotionType.PRO,    # ✅ VERIFIED: Same values as Legacy
         prop_rot_dir=RotationDirection.CLOCKWISE,  # ✅ VERIFIED: Same field name
         start_loc=Location.NORTH, end_loc=Location.SOUTH,
         turns=1.0, start_ori="in", end_ori="out"
@@ -68,16 +72,19 @@ BeatData(
 ## 🎯 **CRITICAL CORRECTIONS MADE**
 
 ### **1. Motion Type Mapping Error - FIXED**
+
 - **❌ REMOVED**: False "shift → pro" mapping assumption
-- **✅ REALITY**: Both V1 and V2 use identical motion types: `"pro"`, `"anti"`, `"static"`, `"dash"`, `"float"`
-- **✅ FACT**: "shift" is a **category** in V1 (includes PRO, ANTI, FLOAT), not a motion type
+- **✅ REALITY**: Both Legacy and V2 use identical motion types: `"pro"`, `"anti"`, `"static"`, `"dash"`, `"float"`
+- **✅ FACT**: "shift" is a **category** in Legacy (includes PRO, ANTI, FLOAT), not a motion type
 
 ### **2. Field Name Verification - CONFIRMED**
-- **✅ VERIFIED**: Both V1 and V2 use `prop_rot_dir` field name
+
+- **✅ VERIFIED**: Both Legacy and V2 use `prop_rot_dir` field name
 - **✅ NO MAPPING NEEDED**: Direct 1:1 field compatibility
 
 ### **3. Data Extraction Patterns - VERIFIED**
-- **✅ V1**: `beat.state.pictograph_data["blue_attributes"]`
+
+- **✅ Legacy**: `beat.state.pictograph_data["blue_attributes"]`
 - **✅ V2**: `BeatData.blue_motion.to_dict()` (handles enum conversion)
 
 ## 📋 **TEST SCENARIOS AVAILABLE**
@@ -92,12 +99,14 @@ BeatData(
 ## 🖥️ **MONITOR CONFIGURATION SUPPORT**
 
 ### **Dual Monitor Setup** (Recommended)
-- **V1**: Full screen on primary monitor (left)
+
+- **Legacy**: Full screen on primary monitor (left)
 - **V2**: Full screen on secondary monitor (right)
 - **Perfect for**: Real-time visual comparison
 
 ### **Single Monitor Setup** (Fallback)
-- **V1**: Left half of screen
+
+- **Legacy**: Left half of screen
 - **V2**: Right half of screen
 - **Good for**: Basic side-by-side comparison
 
@@ -132,9 +141,10 @@ python verify_data_structures.py
 ```
 
 **Verification Checks**:
+
 - ✅ Motion type mappings (no false "shift" mappings)
 - ✅ Data normalization accuracy
-- ✅ V1 data access patterns
+- ✅ Legacy data access patterns
 - ✅ V2 data access patterns
 - ✅ Field name compatibility
 
@@ -148,7 +158,7 @@ v2/tests/parallel/
 ├── master_test_orchestrator.py     # Core coordination logic
 ├── master_parallel_test.py         # CLI test runner
 ├── actions/                        # Action abstraction layer
-├── drivers/                        # V1/V2 application drivers
+├── drivers/                        # Legacy/V2 application drivers
 ├── comparison/                     # Deep comparison engine
 ├── scenarios/                      # Test scenario definitions
 ├── AUDIT_REPORT.md                 # Comprehensive audit findings
@@ -158,18 +168,21 @@ v2/tests/parallel/
 ## 🚨 **IMPORTANT NOTES**
 
 ### **Prerequisites**
-- ✅ TKA V1 application available and functional
+
+- ✅ TKA Legacy application available and functional
 - ✅ TKA V2 application available and functional
 - ✅ PyQt6 installed
 - ✅ No other TKA instances running
 
 ### **Safety Features**
+
 - 🛡️ **Verification-first approach** - Won't deploy without 100% verification
-- 🛡️ **Resource isolation** - V1 and V2 run in separate processes
+- 🛡️ **Resource isolation** - Legacy and V2 run in separate processes
 - 🛡️ **Graceful cleanup** - Automatic application shutdown on exit
 - 🛡️ **Error recovery** - Comprehensive exception handling
 
 ### **Performance Optimized**
+
 - ⚡ **Efficient synchronization** - TKA-specific timing delays
 - ⚡ **Smart comparison** - Focus on business logic over implementation details
 - ⚡ **Visual observation pauses** - 3-second delays for human inspection
@@ -178,9 +191,10 @@ v2/tests/parallel/
 ## 🎉 **READY FOR PRODUCTION USE**
 
 The TKA Parallel Testing Framework is now:
+
 - **✅ 100% verified** through comprehensive codebase analysis
 - **✅ Error-free** with all false assumptions corrected
-- **✅ Production-ready** for V1/V2 migration validation
+- **✅ Production-ready** for Legacy/V2 migration validation
 - **✅ User-friendly** with interactive testing interface
 - **✅ Visually impressive** with side-by-side deployment
 

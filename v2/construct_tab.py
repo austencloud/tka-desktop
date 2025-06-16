@@ -44,7 +44,7 @@ def main():
 
     print("✅ Construct tab demo started!")
     print("📋 Features:")
-    print("   • Modern v1 construct tab layout")
+    print("   • Modern legacy construct tab layout")
     print("   • Sequence workbench on the left")
     print("   • Start position + option pickers on the right")
     print("   • Zero global state access")

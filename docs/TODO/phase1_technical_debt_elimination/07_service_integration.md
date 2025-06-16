@@ -535,8 +535,8 @@ By the end of Task 1.6:
 After Task 1.6, run this comprehensive validation:
 
 ```bash
-# 1. Verify no V1 references remain
-grep -r "V1\|v1\|old\|legacy" v2/src/application/services/ --include="*.py"
+# 1. Verify no Legacy references remain
+grep -r "Legacy\|legacy\|old\|legacy" v2/src/application/services/ --include="*.py"
 # Should return zero results
 
 # 2. Run all tests
@@ -562,7 +562,7 @@ print(f'DI setup time: {(time.time() - start) * 1000:.1f}ms')
 
 **Expected Results:**
 
-- ✅ Zero V1 references found
+- ✅ Zero Legacy references found
 - ✅ All tests pass
 - ✅ Application starts successfully
 - ✅ Service integration validates

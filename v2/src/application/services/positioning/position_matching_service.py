@@ -108,9 +108,9 @@ class PositionMatchingService:
 
     def get_next_options(self, last_beat_end_pos: str) -> List[BeatData]:
         """
-        V1's exact algorithm: find all pictographs where start_pos matches.
+        Legacy's exact algorithm: find all pictographs where start_pos matches.
 
-        This is the complete algorithm from V1's option_getter.py lines 120-131:
+        This is the complete algorithm from Legacy's option_getter.py lines 120-131:
         ```python
         for group in self.pictograph_dataset.values():
             for item in group:
@@ -124,7 +124,7 @@ class PositionMatchingService:
         Returns:
             List of BeatData objects that can follow the given position
         """
-        print(f"\n🔍 V1 POSITION MATCHING ANALYSIS")
+        print(f"\n🔍 Legacy POSITION MATCHING ANALYSIS")
         print(f"🎯 Searching for options with start_pos = '{last_beat_end_pos}'")
 
         if not self.pictograph_dataset:
@@ -136,7 +136,7 @@ class PositionMatchingService:
         total_items_checked = 0
         matches_found = 0
 
-        # V1's exact algorithm implementation
+        # Legacy's exact algorithm implementation
         for group_key, group in self.pictograph_dataset.items():
             dataset_groups_checked += 1
             for item in group:
@@ -148,7 +148,7 @@ class PositionMatchingService:
 
                     # Convert dictionary to BeatData object
                     try:
-                        beat_data = self.data_conversion_service.convert_v1_pictograph_to_beat_data(
+                        beat_data = self.data_conversion_service.convert_legacy_pictograph_to_beat_data(
                             item
                         )
                         next_opts.append(beat_data)  # ← ADD TO VALID OPTIONS

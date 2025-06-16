@@ -1,14 +1,14 @@
 # TKA Parallel Testing Framework
 
-Comprehensive parallel testing system that validates functional equivalence between TKA V1 and V2 implementations during the migration process.
+Comprehensive parallel testing system that validates functional equivalence between TKA Legacy and V2 implementations during the migration process.
 
 ## Overview
 
-This framework executes identical user actions simultaneously on both V1 and V2 applications and compares results to ensure V2 maintains exact parity with V1's behavior while respecting the existing consolidated service architecture.
+This framework executes identical user actions simultaneously on both Legacy and V2 applications and compares results to ensure V2 maintains exact parity with Legacy's behavior while respecting the existing consolidated service architecture.
 
 **Lifecycle**: SCAFFOLDING  
-**Delete After**: V1 deprecation complete  
-**Purpose**: Validate V1/V2 functional equivalence during migration
+**Delete After**: Legacy deprecation complete  
+**Purpose**: Validate Legacy/V2 functional equivalence during migration
 
 ## Architecture
 
@@ -21,7 +21,7 @@ tests/parallel/
 │   └── action_validators.py       # Pre/post-condition validation
 ├── drivers/
 │   ├── driver_base.py             # Common driver interface
-│   ├── v1_driver.py              # V1-specific test driver
+│   ├── legacy_driver.py              # Legacy-specific test driver
 │   └── v2_driver.py              # V2-specific test driver
 ├── comparison/
 │   └── result_comparer.py        # Deep comparison engine
@@ -33,40 +33,47 @@ tests/parallel/
 ## Key Features
 
 ### 🎯 Action Mirroring System
-- Executes synchronized actions across both V1 and V2 applications
+
+- Executes synchronized actions across both Legacy and V2 applications
 - Handles timing differences and state synchronization
 - Provides rollback capabilities for failed test scenarios
 
 ### 🔍 Deep Result Comparison
+
 - **Sequence Data Comparison**: Beat count, motion positions, turn values with exact matching
 - **Pictograph Data Comparison**: SVG file paths, arrow positioning, motion-type-specific rendering
 - **Arrow Rendering Validation**: Ensures V2 correctly loads motion-type-specific SVG files
 - **Numeric Tolerance**: Floating-point comparisons with ±0.001 precision for turn values
 
 ### 📊 Comprehensive Reporting
+
 - Step-by-step action execution results with visual pass/fail indicators
-- Side-by-side comparison views for V1 vs V2 outputs
+- Side-by-side comparison views for Legacy vs V2 outputs
 - Detailed difference breakdowns with exact field-level mismatches
 - HTML reports with actionable debugging information
 
 ## TKA Domain Model Integration
 
 ### Verified Motion Type Mappings
+
 Based on codebase analysis, the framework handles:
-- **V1 → V2 Motion Types**: `shift` → `pro`, direct mappings for `anti`, `dash`, `static`, `float`
+
+- **Legacy → V2 Motion Types**: `shift` → `pro`, direct mappings for `anti`, `dash`, `static`, `float`
 - **Field Names**: Both versions use `prop_rot_dir` (no mapping needed)
 - **Turn Values**: Special handling for float motion (`"fl"` → `-0.5`)
 
 ### Data Extraction Patterns
-- **V1**: Extracts from `beat.state.pictograph_data` with `blue_attributes`/`red_attributes` structure
+
+- **Legacy**: Extracts from `beat.state.pictograph_data` with `blue_attributes`/`red_attributes` structure
 - **V2**: Uses `BeatData` with `blue_motion`/`red_motion` MotionData objects
 - **Normalization**: Converts enum values to strings for comparison
 
 ## Quick Start
 
 ### Prerequisites
+
 - Python 3.8+
-- TKA V1 and V2 source code available
+- TKA Legacy and V2 source code available
 - PyQt6 installed
 
 ### Basic Usage
@@ -106,26 +113,31 @@ python master_parallel_test.py --all --verbose --no-screenshots
 ### Core Workflow Scenarios
 
 1. **Start Position Selection**
+
    - Tests alpha, beta, gamma position selection
    - Verifies option picker updates correctly
    - Duration: ~15 seconds
 
 2. **Single Beat Creation**
+
    - Tests start position → option selection → beat creation workflow
    - Validates pictograph rendering
    - Duration: ~20 seconds
 
 3. **Sequence Building**
+
    - Tests multi-beat sequence creation with dynamic option updates
    - Verifies sequence state management
    - Duration: ~45 seconds
 
 4. **Motion Modification**
+
    - Tests turn adjustments and motion type changes
    - Validates motion property updates
    - Duration: ~30 seconds
 
 5. **Graph Editor Toggle**
+
    - Tests graph editor open/close functionality
    - Verifies layout preservation
    - Duration: ~20 seconds
@@ -145,18 +157,21 @@ python master_parallel_test.py --all --verbose --no-screenshots
 ## Implementation Timeline
 
 ### Phase 1 (Weeks 1-2): Infrastructure & Single Action
+
 - ✅ Core action abstraction layer
-- ✅ V1/V2 application drivers
+- ✅ Legacy/V2 application drivers
 - ✅ Basic comparison framework
 - ✅ Single action (start position) working reliably
 
 ### Phase 2 (Weeks 3-4): Core Workflow
+
 - ✅ Start position → option selection → beat addition workflow
 - ✅ Arrow rendering validation
 - ✅ TKA-specific data normalization
 - ✅ Comprehensive test scenarios
 
 ### Phase 3 (Weeks 5-6): Advanced Features & Validation
+
 - 🔄 Advanced motion modification scenarios
 - 🔄 Graph editor integration testing
 - 🔄 Performance optimization
@@ -167,12 +182,14 @@ python master_parallel_test.py --all --verbose --no-screenshots
 ### Common Issues
 
 1. **Application Startup Failures**
+
    ```bash
    # Check application paths and dependencies
    python master_parallel_test.py --verbose --scenario start_position_selection
    ```
 
 2. **Timing Issues**
+
    ```bash
    # Increase timeouts for slower systems
    python master_parallel_test.py --timeout 20 --scenario sequence_building
@@ -187,8 +204,9 @@ python master_parallel_test.py --all --verbose --no-screenshots
 ### Debug Output
 
 The framework provides detailed logging and debug snapshots:
+
 - **Test logs**: `parallel_test_YYYYMMDD_HHMMSS.log`
-- **Screenshots**: `test_data/screenshots/v1/` and `test_data/screenshots/v2/`
+- **Screenshots**: `test_data/screenshots/legacy/` and `test_data/screenshots/v2/`
 - **Debug snapshots**: `debug_snapshots/` (when enabled)
 
 ## Integration with Existing Test Framework

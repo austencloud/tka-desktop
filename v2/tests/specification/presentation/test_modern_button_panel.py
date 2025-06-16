@@ -76,7 +76,7 @@ def test_modern_button_panel():
         print("   - Glassmorphism background with transparency")
         print("   - Hover effects with visual feedback")
         print("   - Emoji-based icons for modern appeal")
-        print("   - Grouped layout matching V1 structure")
+        print("   - Grouped layout matching Legacy structure")
 
         print("\n🔧 Testing button functionality...")
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Standalone Option Picker Test - V1-style Layout
+Standalone Option Picker Test - Legacy-style Layout
 Tests option picker display with Alpha 1 start position options
 """
 
@@ -36,7 +36,7 @@ from presentation.components.pictograph.pictograph_component import PictographCo
 
 
 class CollapsibleSection(QGroupBox):
-    """V1-style collapsible section with header button"""
+    """Legacy-style collapsible section with header button"""
 
     def __init__(self, title: str, parent=None):
         super().__init__(parent)
@@ -50,7 +50,7 @@ class CollapsibleSection(QGroupBox):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        # Header button (V1-style)
+        # Header button (Legacy-style)
         self.header_button = QPushButton(f"▼ {self.section_title}")
         self.header_button.setStyleSheet(
             """
@@ -71,11 +71,11 @@ class CollapsibleSection(QGroupBox):
         self.header_button.clicked.connect(self._toggle_section)
         layout.addWidget(self.header_button)
 
-        # Content frame (V1-style grid)
+        # Content frame (Legacy-style grid)
         self.content_frame = QFrame()
         self.content_layout = QGridLayout(self.content_frame)
         self.content_layout.setContentsMargins(5, 5, 5, 5)
-        self.content_layout.setSpacing(8)  # V1 spacing
+        self.content_layout.setSpacing(8)  # Legacy spacing
         self.content_layout.setAlignment(
             Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft
         )
@@ -114,7 +114,7 @@ class SimplePictographWidget(QFrame):
         self._setup_ui()
 
     def _setup_ui(self):
-        self.setFixedSize(160, 160)  # V1-style size
+        self.setFixedSize(160, 160)  # Legacy-style size
         self.setFrameStyle(QFrame.Shape.Box)
         self.setLineWidth(2)
 
@@ -160,7 +160,7 @@ class SimplePictographWidget(QFrame):
 
 
 class TestOptionPicker(QWidget):
-    """Test option picker with V1-style layout"""
+    """Test option picker with Legacy-style layout"""
 
     def __init__(self):
         super().__init__()
@@ -178,7 +178,7 @@ class TestOptionPicker(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
 
-        # Scroll area (V1-style)
+        # Scroll area (Legacy-style)
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -194,7 +194,7 @@ class TestOptionPicker(QWidget):
         scroll_area.setWidget(self.sections_container)
         layout.addWidget(scroll_area)
 
-        # Create sections (V1-style)
+        # Create sections (Legacy-style)
         self.sections = {}
         section_names = ["Type1", "Type2", "Type3", "Type4", "Type5", "Type6"]
         for section_name in section_names:
@@ -267,8 +267,8 @@ class TestOptionPicker(QWidget):
             self.test_beats.append((beat, "Type3"))
 
     def _populate_sections(self):
-        """Populate sections with test data using V1-style layout"""
-        COLUMN_COUNT = 8  # V1's exact column count
+        """Populate sections with test data using Legacy-style layout"""
+        COLUMN_COUNT = 8  # Legacy's exact column count
 
         # Group beats by section
         section_beats = {}
@@ -299,7 +299,7 @@ class TestWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Option Picker Test - V1 Style")
+        self.setWindowTitle("Option Picker Test - Legacy Style")
         self.setGeometry(100, 100, 800, 600)
 
         self.option_picker = TestOptionPicker()

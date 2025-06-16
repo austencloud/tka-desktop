@@ -255,7 +255,7 @@ class TestCalculateAllArrowPositions:
         result = arrow_service.calculate_all_arrow_positions(sample_pictograph_data)
 
         assert isinstance(result, PictographData)
-        # Pictographs always have blue and red arrows (v1 pattern)
+        # Pictographs always have blue and red arrows (legacy pattern)
         assert len(result.arrows) == 2
         assert "blue" in result.arrows
         assert "red" in result.arrows

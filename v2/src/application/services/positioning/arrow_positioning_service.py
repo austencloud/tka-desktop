@@ -242,7 +242,7 @@ class ArrowPositioningService(IArrowPositioningService):
     def _calculate_dash_arrow_location(
         self, motion: MotionData, pictograph_data: PictographData = None
     ) -> Location:
-        """Calculate location for dash arrows using V1-compatible logic with Type 3 detection."""
+        """Calculate location for dash arrows using Legacy-compatible logic with Type 3 detection."""
 
         # Detect Type 3 scenario: one DASH with zero turns + one shift motion
         if (
@@ -475,7 +475,7 @@ class ArrowPositioningService(IArrowPositioningService):
     ) -> QPointF | None:
         """Get special adjustment for specific letters and configurations."""
         # For now, return None (no special adjustments)
-        # TODO: Load from V1 special placement JSON files
+        # TODO: Load from Legacy special placement JSON files
         return None
 
     def _apply_quadrant_adjustments(

@@ -60,15 +60,14 @@ class AppDefinitions:
     @staticmethod
     def all() -> List[AppDefinition]:
         return [
-            AppDefinition("V1", "Full legacy TKA", "v1/main.py", icon="🔧"),
+            AppDefinition("Legacy", "Full legacy TKA", "legacy/main.py", icon="🔧"),
             AppDefinition("V2", "Modern TKA demo", "v2/main.py", icon="✨"),
             AppDefinition(
                 "Parallel",
-                "V1/V2 side-by-side testing",
+                "Legacy/V2 side-by-side testing",
                 "parallel_test_launcher.py",
                 icon="🔄",
             ),
-
             AppDefinition(
                 "Dev", "Debug helpers", "test_dev_tools.py", icon="🛠"
             ),  # Changed "Dev Tools" to "Dev"

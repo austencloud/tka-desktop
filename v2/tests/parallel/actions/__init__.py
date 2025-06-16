@@ -2,11 +2,11 @@
 Action Abstraction Layer
 ========================
 
-Standardized action system for parallel testing between V1 and V2.
+Standardized action system for parallel testing between Legacy and V2.
 
 LIFECYCLE: SCAFFOLDING
-DELETE_AFTER: V1 deprecation complete
-PURPOSE: Provide standardized action abstractions for V1/V2 comparison
+DELETE_AFTER: Legacy deprecation complete
+PURPOSE: Provide standardized action abstractions for Legacy/V2 comparison
 """
 
 from .user_actions import (
@@ -34,22 +34,20 @@ from .action_validators import (
 __all__ = [
     # Core action types
     "ActionType",
-    "GridPosition", 
+    "GridPosition",
     "MotionTypeValue",
     "OrientationValue",
-    
     # Action data structures
     "ActionParameters",
     "ExpectedOutcome",
     "UserAction",
     "ActionSequence",
-    
     # Validation system
     "ValidationResult",
     "IActionValidator",
     "BaseActionValidator",
     "StartPositionValidator",
-    "BeatOperationValidator", 
+    "BeatOperationValidator",
     "MotionModificationValidator",
     "GraphEditorValidator",
     "ActionValidatorFactory",

@@ -86,24 +86,24 @@ class TestBeatFrameLayoutContract:
     """Permanent UI contract - NEVER DELETE"""
     
     def test_beat_frame_sizing_contract(self):
-        """PERMANENT: Beat frames must maintain 120x120 size for V1 parity"""
+        """PERMANENT: Beat frames must maintain 120x120 size for Legacy parity"""
         pass
     
     def test_beat_frame_grid_contract(self):
-        """PERMANENT: Beat frames must use zero spacing for V1 parity"""
+        """PERMANENT: Beat frames must use zero spacing for Legacy parity"""
         pass
 
-# V1 parity contract:
+# Legacy parity contract:
 @pytest.mark.specification
 @pytest.mark.parity
 @pytest.mark.critical
-class TestV1ParityContract:
-    """Permanent V1 parity contract - NEVER DELETE"""
+class TestLegacyParityContract:
+    """Permanent Legacy parity contract - NEVER DELETE"""
     
     def test_start_position_display_parity(self):
-        """PERMANENT: Start position must display exactly like V1"""
+        """PERMANENT: Start position must display exactly like Legacy"""
         pass
     
     def test_sequence_workflow_parity(self):
-        """PERMANENT: Sequence creation workflow must match V1"""
+        """PERMANENT: Sequence creation workflow must match Legacy"""
         pass

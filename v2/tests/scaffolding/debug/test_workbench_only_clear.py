@@ -20,7 +20,7 @@ if str(v2_path) not in sys.path:
     sys.path.insert(0, str(v2_path))
 
 try:
-    from core.dependency_injection.di_container import SimpleContainer
+    from core.dependency_injection.di_container import DIContainer
     from src.core.interfaces.core_services import ILayoutService
     from src.core.interfaces.workbench_services import (
         ISequenceWorkbenchService,
@@ -52,7 +52,7 @@ def test_workbench_only_clear():
 
     try:
         # Create container and register services
-        container = SimpleContainer()
+        container = DIContainer()
         container.register_singleton(ILayoutService, SimpleLayoutService)
         container.register_singleton(
             ISequenceWorkbenchService, SequenceWorkbenchService
@@ -163,7 +163,7 @@ def test_workbench_signal_emission():
 
     try:
         # Create container and register services
-        container = SimpleContainer()
+        container = DIContainer()
         container.register_singleton(ILayoutService, SimpleLayoutService)
         container.register_singleton(
             ISequenceWorkbenchService, SequenceWorkbenchService

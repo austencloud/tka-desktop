@@ -92,11 +92,11 @@ class DataRequiringComponent:
         return beats
 ```
 
-### Object Pooling (V1 Compatibility)
+### Object Pooling (Legacy Compatibility)
 
 ```python
 class PooledComponent:
-    MAX_OBJECTS = 36  # V1 compatibility
+    MAX_OBJECTS = 36  # Legacy compatibility
 
     def __init__(self):
         self._pool: List[PoolObject] = []
@@ -156,7 +156,7 @@ class TestComponent:
 
 - **Minimal comments** - code should be self-documenting
 - Comment **WHY, not WHAT**
-- Document **complex algorithms** or **V1 compatibility notes**
+- Document **complex algorithms** or **Legacy compatibility notes**
 
 ### Method Documentation
 
@@ -177,12 +177,12 @@ def complex_method(self, param: ComplexType) -> Result:
 
 ## 🔄 **Migration Standards**
 
-### V1 Compatibility
+### Legacy Compatibility
 
 - Maintain **object pooling patterns** for Qt stability
 - Preserve **signal/slot architecture**
 - Keep **layout algorithms** that work
-- Document **V1 behavioral equivalence**
+- Document **Legacy behavioral equivalence**
 
 ### Progressive Enhancement
 
@@ -218,7 +218,7 @@ def complex_method(self, param: ComplexType) -> Result:
 
 - **No blocking operations** on main thread
 - **Progressive loading** with callbacks
-- **Object reuse** over recreation (V1 pattern)
+- **Object reuse** over recreation (Legacy pattern)
 - **Lazy initialization** where appropriate
 
 ### Memory Management
@@ -271,6 +271,6 @@ from ..domain.models import BeatData
 1. **Immediate**: Fix dummy data usage across codebase
 2. **Short term**: Split large classes (starting with OptionPicker)
 3. **Medium term**: Standardize dependency injection patterns
-4. **Long term**: Complete V1 compatibility verification
+4. **Long term**: Complete Legacy compatibility verification
 
 This document is **living** - update as patterns emerge and standards evolve.

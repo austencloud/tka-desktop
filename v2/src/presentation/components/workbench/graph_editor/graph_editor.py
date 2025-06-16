@@ -6,7 +6,7 @@ from PyQt6.QtGui import QResizeEvent, QKeyEvent
 from src.core.interfaces.workbench_services import IGraphEditorService
 from src.domain.models.core_models import SequenceData, BeatData
 from .pictograph_container import GraphEditorPictographContainer
-from .modern_adjustment_panel import ModernAdjustmentPanel
+from .adjustment_panel import AdjustmentPanel
 from .modern_toggle_tab import ModernToggleTab
 
 if TYPE_CHECKING:
@@ -45,14 +45,14 @@ class GraphEditor(QFrame):
 
         # Components (will be created in setup)
         self._pictograph_container: Optional[GraphEditorPictographContainer] = None
-        self._adjustment_panel: Optional[ModernAdjustmentPanel] = None
+        self._adjustment_panel: Optional[AdjustmentPanel] = None
         self._toggle_tab: Optional[ModernToggleTab] = None
 
         self._setup_ui()
         self._setup_animations()
         self._connect_signals()
 
-        # Start hidden like v1
+        # Start hidden like legacy
         self.hide()
 
     def _setup_ui(self):
@@ -79,22 +79,22 @@ class GraphEditor(QFrame):
         """
         )
 
-        # Main horizontal layout matching V1's structure exactly
+        # Main horizontal layout matching Legacy's structure exactly
         main_layout = QHBoxLayout(self)
         # Increase margins to ensure content stays within rounded borders
         main_layout.setContentsMargins(20, 20, 20, 20)
         main_layout.setSpacing(16)
 
-        # Left adjustment controls (stretch=1, like V1's left_stack)
-        self._left_adjustment_panel = ModernAdjustmentPanel(self, side="left")
+        # Left adjustment controls (stretch=1, like Legacy's left_stack)
+        self._left_adjustment_panel = AdjustmentPanel(self, side="left")
 
-        # Central pictograph container (stretch=0, fixed size like V1)
+        # Central pictograph container (stretch=0, fixed size like Legacy)
         self._pictograph_container = GraphEditorPictographContainer(self)
 
-        # Right adjustment controls (stretch=1, like V1's right_stack)
-        self._right_adjustment_panel = ModernAdjustmentPanel(self, side="right")
+        # Right adjustment controls (stretch=1, like Legacy's right_stack)
+        self._right_adjustment_panel = AdjustmentPanel(self, side="right")
 
-        # Add to layout with V1's exact proportions
+        # Add to layout with Legacy's exact proportions
         main_layout.addWidget(
             self._left_adjustment_panel, 1
         )  # Left controls (stretch=1)
@@ -200,7 +200,7 @@ class GraphEditor(QFrame):
         # Account for other components: indicators, beat frame, margins, etc.
         available_height = self._calculate_available_height()
 
-        # Use v1's sizing logic but constrain to available space
+        # Use legacy's sizing logic but constrain to available space
         calculated_height = min(int(parent_height // 3.5), parent_width // 4)
 
         # Ensure we don't exceed available space or go below minimum

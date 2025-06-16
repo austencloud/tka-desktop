@@ -34,15 +34,15 @@ python -m pytest v2/tests/ -v
 Before making any changes, understand what you're working with:
 
 ```bash
-# Find all V1 references that need cleanup
+# Find all Legacy references that need cleanup
 cd v2/src/application/services
-grep -r "V1\|v1\|old\|legacy" . --include="*.py" > v1_references.txt
-cat v1_references.txt  # Review what needs to be cleaned up
+grep -r "Legacy\|legacy\|old\|legacy" . --include="*.py" > legacy_references.txt
+cat legacy_references.txt  # Review what needs to be cleaned up
 ```
 
 ### **Step 2: Start with Arrow Management Service**
 
-This is the most critical service with V1 compatibility code:
+This is the most critical service with Legacy compatibility code:
 
 ```bash
 # Open the main file that needs cleanup
@@ -51,9 +51,9 @@ code src/application/services/arrow_management_service.py
 
 **What to look for and remove:**
 
-- Comments referencing V1: `# V1 compatibility`, `# Old method`, etc.
-- Commented-out code blocks from V1
-- Imports that reference V1 modules
+- Comments referencing Legacy: `# Legacy compatibility`, `# Old method`, etc.
+- Commented-out code blocks from Legacy
+- Imports that reference Legacy modules
 - Dead code marked as "legacy" or "deprecated"
 
 ### **Step 3: Validate Changes**
@@ -97,21 +97,21 @@ print('✅ Service loads correctly')
 3. **Commit frequently**
    ```bash
    git add .
-   git commit -m "Clean V1 references from arrow_management_service"
+   git commit -m "Clean Legacy references from arrow_management_service"
    ```
 
 ### **Common Patterns to Remove**
 
-**Bad (V1 compatibility):**
+**Bad (Legacy compatibility):**
 
 ```python
-# V1 compatibility - remove this entire block
+# Legacy compatibility - remove this entire block
 def get_arrow_placement_old(self, beat):
     # Old placement logic
     pass
 
-# TODO: Remove when V1 is deprecated
-from src.v1.legacy_module import old_function
+# TODO: Remove when Legacy is deprecated
+from src.legacy.legacy_module import old_function
 ```
 
 **Good (Clean V2):**
@@ -128,17 +128,17 @@ def get_arrow_placement(self, beat: BeatData) -> ArrowPlacement:
 
 ### **Phase 1: Technical Debt Elimination (Week 1)**
 
-#### **Day 1-2: V1 Code Cleanup**
+#### **Day 1-2: Legacy Code Cleanup**
 
 1. **Create cleanup script:**
 
    ```bash
-   # Create a script to help identify V1 references
+   # Create a script to help identify Legacy references
    echo '#!/bin/bash
-   echo "🔍 Finding V1 references..."
-   grep -r "V1\|v1\|old\|legacy" src/ --include="*.py" --line-number
+   echo "🔍 Finding Legacy references..."
+   grep -r "Legacy\|legacy\|old\|legacy" src/ --include="*.py" --line-number
    echo "📝 Finding TODO/FIXME items..."
-   grep -r "TODO.*V1\|FIXME.*V1" src/ --include="*.py" --line-number
+   grep -r "TODO.*Legacy\|FIXME.*Legacy" src/ --include="*.py" --line-number
    ' > cleanup_checker.sh
    chmod +x cleanup_checker.sh
    ```
@@ -150,7 +150,7 @@ def get_arrow_placement(self, beat: BeatData) -> ArrowPlacement:
    ./cleanup_checker.sh
 
    # Clean each file identified
-   # Remove V1 comments, dead code, and old imports
+   # Remove Legacy comments, dead code, and old imports
 
    # Verify after each file
    python -m pytest tests/ -k "arrow_management" -v
@@ -188,7 +188,7 @@ app = TKADesktop()
 print(f'Startup time: {time.time() - start:.2f}s')
 "
 
-# Check for any remaining V1 references
+# Check for any remaining Legacy references
 ./cleanup_checker.sh  # Should show no results
 ```
 
@@ -257,7 +257,7 @@ print(f'Startup time: {time.time() - start:.2f}s')
 ### **Import Errors After Cleanup**
 
 ```bash
-# If you get import errors after cleaning up V1 references:
+# If you get import errors after cleaning up Legacy references:
 python -c "
 import sys
 sys.path.append('.')

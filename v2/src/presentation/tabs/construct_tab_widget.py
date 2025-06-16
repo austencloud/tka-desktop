@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
-from core.dependency_injection.di_container import SimpleContainer
+from core.dependency_injection.di_container import DIContainer
 from src.domain.models.core_models import SequenceData, BeatData
 from presentation.components.option_picker.option_picker import (
     OptionPicker,
@@ -33,7 +33,7 @@ class ConstructTabWidget(QWidget):
 
     def __init__(
         self,
-        container: SimpleContainer,
+        container: DIContainer,
         parent: Optional[QWidget] = None,
         progress_callback=None,
     ):
@@ -57,7 +57,7 @@ class ConstructTabWidget(QWidget):
         if self.progress_callback:
             self.progress_callback("Setting up construct tab layout...", 0.1)
 
-        # Main horizontal layout: 50/50 split like V1
+        # Main horizontal layout: 50/50 split like Legacy
         main_layout = QHBoxLayout(self)
         main_layout.setSpacing(16)
         main_layout.setContentsMargins(12, 12, 12, 12)
@@ -102,7 +102,7 @@ class ConstructTabWidget(QWidget):
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(8)
 
-        # Create stacked widget for picker views (like V1)
+        # Create stacked widget for picker views (like Legacy)
         self.picker_stack = QStackedWidget()
 
         if self.progress_callback:
@@ -196,7 +196,7 @@ class ConstructTabWidget(QWidget):
     def _handle_start_position_selected(self, position_key: str):
         print(f"✅ Construct tab: Start position selected: {position_key}")
 
-        # Create start position data (separate from sequence like V1)
+        # Create start position data (separate from sequence like Legacy)
         start_position_data = self._create_start_position_data(position_key)
 
         # Set start position in workbench (this does NOT create a sequence)
@@ -213,7 +213,7 @@ class ConstructTabWidget(QWidget):
         self.start_position_set.emit(position_key)
 
     def _transition_to_option_picker(self):
-        """Switch from start position picker to option picker - key fix from v1"""
+        """Switch from start position picker to option picker - key fix from legacy"""
         if self.picker_stack:
             self.picker_stack.setCurrentIndex(1)
 
@@ -503,7 +503,7 @@ class ConstructTabWidget(QWidget):
     def _populate_option_picker_from_start_position(
         self, position_key: str, start_position_data: BeatData
     ):
-        """Populate option picker with valid motion combinations based on start position (V1 behavior)"""
+        """Populate option picker with valid motion combinations based on start position (Legacy behavior)"""
         if self.option_picker is None:
             print("❌ Option picker not available, cannot populate")
             return
@@ -612,10 +612,10 @@ class ConstructTabWidget(QWidget):
 
             traceback.print_exc()
 
-    def _convert_sequence_to_v1_format(
+    def _convert_sequence_to_legacy_format(
         self, sequence: SequenceData
     ) -> List[Dict[str, Any]]:
-        """Convert V2 SequenceData to V1-compatible format for option picker with caching"""
+        """Convert V2 SequenceData to Legacy-compatible format for option picker with caching"""
         # Create cache key from sequence hash
         sequence_hash = hash(
             tuple(beat.letter + str(beat.beat_number) for beat in sequence.beats)
@@ -626,15 +626,15 @@ class ConstructTabWidget(QWidget):
             return self._sequence_conversion_cache[sequence_hash]
 
         try:
-            # Start with metadata entry (V1 format)
-            v1_sequence = [{"metadata": "sequence_info"}]
+            # Start with metadata entry (Legacy format)
+            legacy_sequence = [{"metadata": "sequence_info"}]
 
-            # Convert each beat to V1 format
+            # Convert each beat to Legacy format
             for beat in sequence.beats:
                 if beat and not beat.is_blank:
                     beat_dict = beat.to_dict()
 
-                    # Ensure V1-compatible structure
+                    # Ensure Legacy-compatible structure
                     if "metadata" not in beat_dict:
                         beat_dict["metadata"] = {}
 
@@ -665,10 +665,10 @@ class ConstructTabWidget(QWidget):
                                 f"⚠️ Using fallback end_pos: beta5 for beat {beat.letter}"
                             )
 
-                    v1_sequence.append(beat_dict)
+                    legacy_sequence.append(beat_dict)
 
             # Cache the result for future use
-            self._sequence_conversion_cache[sequence_hash] = v1_sequence
+            self._sequence_conversion_cache[sequence_hash] = legacy_sequence
 
             # Limit cache size to prevent memory issues
             if len(self._sequence_conversion_cache) > 100:
@@ -676,10 +676,10 @@ class ConstructTabWidget(QWidget):
                 oldest_key = next(iter(self._sequence_conversion_cache))
                 del self._sequence_conversion_cache[oldest_key]
 
-            return v1_sequence
+            return legacy_sequence
 
         except Exception as e:
-            print(f"❌ Error converting sequence to V1 format: {e}")
+            print(f"❌ Error converting sequence to Legacy format: {e}")
             return [{"metadata": "sequence_info"}]  # Fallback to empty sequence
 
     def _on_operation_completed(self, message: str):

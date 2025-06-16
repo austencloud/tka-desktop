@@ -2,7 +2,7 @@
 Test Dynamic Option Picker Updates - Scaffolding Test
 Expiration: 2025-01-15
 
-Tests the dynamic option picker update functionality to ensure V1-compatible
+Tests the dynamic option picker update functionality to ensure Legacy-compatible
 continuous sequence building behavior in V2.
 
 This test validates:
@@ -22,7 +22,13 @@ from PyQt6.QtCore import QTimer
 # Add project root to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from domain.models.core_models import BeatData, SequenceData, MotionData, Location, MotionType
+from domain.models.core_models import (
+    BeatData,
+    SequenceData,
+    MotionData,
+    Location,
+    MotionType,
+)
 from presentation.components.option_picker.beat_data_loader import BeatDataLoader
 from presentation.components.option_picker import OptionPickerWidget
 from presentation.tabs.construct_tab_widget import ConstructTabWidget
@@ -46,40 +52,58 @@ class TestDynamicOptionPickerUpdates:
         """Create mock services for testing"""
         position_service = Mock()
         conversion_service = Mock()
-        
+
         # Mock position service methods
         position_service.get_next_options.return_value = [
             {
                 "letter": "A",
                 "end_pos": "alpha2",
-                "blue_attributes": {"start_loc": "n", "end_loc": "e", "motion_type": "pro"},
-                "red_attributes": {"start_loc": "n", "end_loc": "e", "motion_type": "anti"}
+                "blue_attributes": {
+                    "start_loc": "n",
+                    "end_loc": "e",
+                    "motion_type": "pro",
+                },
+                "red_attributes": {
+                    "start_loc": "n",
+                    "end_loc": "e",
+                    "motion_type": "anti",
+                },
             },
             {
-                "letter": "B", 
+                "letter": "B",
                 "end_pos": "alpha3",
-                "blue_attributes": {"start_loc": "n", "end_loc": "s", "motion_type": "pro"},
-                "red_attributes": {"start_loc": "n", "end_loc": "s", "motion_type": "anti"}
-            }
+                "blue_attributes": {
+                    "start_loc": "n",
+                    "end_loc": "s",
+                    "motion_type": "pro",
+                },
+                "red_attributes": {
+                    "start_loc": "n",
+                    "end_loc": "s",
+                    "motion_type": "anti",
+                },
+            },
         ]
-        
+
         # Mock conversion service
-        conversion_service.convert_v1_pictograph_to_beat_data.side_effect = lambda data: BeatData(
-            letter=data["letter"],
-            beat_number=1,
-            duration=1.0,
-            blue_motion=MotionData(
-                motion_type=MotionType.PRO,
-                start_loc=Location.NORTH,
-                end_loc=Location.EAST
-            ),
-            red_motion=MotionData(
-                motion_type=MotionType.ANTI,
-                start_loc=Location.NORTH,
-                end_loc=Location.EAST
+        conversion_service.convert_legacy_pictograph_to_beat_data.side_effect = (
+            lambda data: BeatData(
+                letter=data["letter"],
+                beat_number=1,
+                duration=1.0,
+                blue_motion=MotionData(
+                    motion_type=MotionType.PRO,
+                    start_loc=Location.NORTH,
+                    end_loc=Location.EAST,
+                ),
+                red_motion=MotionData(
+                    motion_type=MotionType.ANTI,
+                    start_loc=Location.NORTH,
+                    end_loc=Location.EAST,
+                ),
             )
         )
-        
+
         return position_service, conversion_service
 
     @pytest.fixture
@@ -91,11 +115,13 @@ class TestDynamicOptionPickerUpdates:
         loader.conversion_service = conversion_service
         return loader
 
-    def test_end_position_extraction_from_v1_format(self, beat_data_loader):
-        """Test end position extraction from V1-format beat data"""
+    def test_end_position_extraction_from_legacy_format(self, beat_data_loader):
+        """Test end position extraction from Legacy-format beat data"""
         # Test direct end_pos field
         beat_data = {"end_pos": "beta5", "letter": "A"}
-        end_pos = beat_data_loader._extract_end_position(beat_data, beat_data_loader.position_service)
+        end_pos = beat_data_loader._extract_end_position(
+            beat_data, beat_data_loader.position_service
+        )
         assert end_pos == "beta5"
 
     def test_end_position_extraction_from_motion_data(self, beat_data_loader):
@@ -103,37 +129,39 @@ class TestDynamicOptionPickerUpdates:
         beat_data = {
             "letter": "A",
             "blue_attributes": {"end_loc": "e"},
-            "red_attributes": {"end_loc": "s"}
+            "red_attributes": {"end_loc": "s"},
         }
-        end_pos = beat_data_loader._extract_end_position(beat_data, beat_data_loader.position_service)
+        end_pos = beat_data_loader._extract_end_position(
+            beat_data, beat_data_loader.position_service
+        )
         assert end_pos == "alpha7"  # (e, s) maps to alpha7
 
     def test_refresh_options_from_sequence(self, beat_data_loader, mock_services):
         """Test option refresh based on sequence data"""
         position_service, conversion_service = mock_services
-        
+
         # Create sequence with start position and one beat
         sequence_data = [
             {"metadata": "sequence_info"},
             {"beat": 0, "letter": "β", "end_pos": "beta5"},
-            {"beat": 1, "letter": "A", "end_pos": "alpha2"}
+            {"beat": 1, "letter": "A", "end_pos": "alpha2"},
         ]
-        
+
         # Test refresh
         options = beat_data_loader.refresh_options_from_sequence(sequence_data)
-        
+
         # Verify position service was called with last beat's end position
         position_service.get_next_options.assert_called_with("alpha2")
-        
+
         # Verify options were converted
         assert len(options) == 2
         assert all(isinstance(opt, BeatData) for opt in options)
 
-    def test_sequence_to_v1_format_conversion(self, app):
-        """Test conversion of V2 SequenceData to V1 format"""
+    def test_sequence_to_legacy_format_conversion(self, app):
+        """Test conversion of V2 SequenceData to Legacy format"""
         # Create mock construct tab
         construct_tab = Mock(spec=ConstructTabWidget)
-        
+
         # Create test sequence
         beat1 = BeatData(
             letter="A",
@@ -142,44 +170,54 @@ class TestDynamicOptionPickerUpdates:
             blue_motion=MotionData(
                 motion_type=MotionType.PRO,
                 start_loc=Location.NORTH,
-                end_loc=Location.EAST
+                end_loc=Location.EAST,
             ),
             red_motion=MotionData(
                 motion_type=MotionType.ANTI,
                 start_loc=Location.NORTH,
-                end_loc=Location.SOUTH
-            )
+                end_loc=Location.SOUTH,
+            ),
         )
-        
-        sequence = SequenceData(name="Test", beats=[beat1])
-        
-        # Test conversion method
-        construct_tab._convert_sequence_to_v1_format = ConstructTabWidget._convert_sequence_to_v1_format
-        v1_format = construct_tab._convert_sequence_to_v1_format(construct_tab, sequence)
-        
-        # Verify format
-        assert len(v1_format) == 2  # metadata + 1 beat
-        assert v1_format[0] == {"metadata": "sequence_info"}
-        assert v1_format[1]["letter"] == "A"
-        assert v1_format[1]["end_pos"] == "alpha3"  # (n->e, n->s) maps to alpha3
 
-    @patch('presentation.components.option_picker.OptionPickerWidget')
-    def test_option_picker_refresh_integration(self, mock_option_picker_class, app, mock_services):
+        sequence = SequenceData(name="Test", beats=[beat1])
+
+        # Test conversion method
+        construct_tab._convert_sequence_to_legacy_format = (
+            ConstructTabWidget._convert_sequence_to_legacy_format
+        )
+        legacy_format = construct_tab._convert_sequence_to_legacy_format(
+            construct_tab, sequence
+        )
+
+        # Verify format
+        assert len(legacy_format) == 2  # metadata + 1 beat
+        assert legacy_format[0] == {"metadata": "sequence_info"}
+        assert legacy_format[1]["letter"] == "A"
+        assert legacy_format[1]["end_pos"] == "alpha3"  # (n->e, n->s) maps to alpha3
+
+    @patch("presentation.components.option_picker.OptionPickerWidget")
+    def test_option_picker_refresh_integration(
+        self, mock_option_picker_class, app, mock_services
+    ):
         """Test integration of option picker refresh with sequence updates"""
         position_service, conversion_service = mock_services
-        
+
         # Create mock option picker instance
         mock_option_picker = Mock()
         mock_option_picker_class.return_value = mock_option_picker
-        
+
         # Create construct tab with mocked dependencies
-        with patch('presentation.tabs.construct_tab_widget.ConstructTabWidget._create_workbench'), \
-             patch('presentation.tabs.construct_tab_widget.ConstructTabWidget._create_start_position_picker'), \
-             patch('presentation.tabs.construct_tab_widget.ConstructTabWidget._create_option_picker'):
-            
+        with patch(
+            "presentation.tabs.construct_tab_widget.ConstructTabWidget._create_workbench"
+        ), patch(
+            "presentation.tabs.construct_tab_widget.ConstructTabWidget._create_start_position_picker"
+        ), patch(
+            "presentation.tabs.construct_tab_widget.ConstructTabWidget._create_option_picker"
+        ):
+
             construct_tab = ConstructTabWidget()
             construct_tab.option_picker = mock_option_picker
-            
+
             # Create test sequence
             beat1 = BeatData(
                 letter="A",
@@ -188,23 +226,23 @@ class TestDynamicOptionPickerUpdates:
                 blue_motion=MotionData(
                     motion_type=MotionType.PRO,
                     start_loc=Location.NORTH,
-                    end_loc=Location.EAST
+                    end_loc=Location.EAST,
                 ),
                 red_motion=MotionData(
                     motion_type=MotionType.ANTI,
                     start_loc=Location.NORTH,
-                    end_loc=Location.SOUTH
-                )
+                    end_loc=Location.SOUTH,
+                ),
             )
-            
+
             sequence = SequenceData(name="Test", beats=[beat1])
-            
+
             # Test refresh method
             construct_tab._refresh_option_picker_from_sequence(sequence)
-            
+
             # Verify option picker refresh was called
             mock_option_picker.refresh_options_from_sequence.assert_called_once()
-            
+
             # Verify the sequence data passed to option picker
             call_args = mock_option_picker.refresh_options_from_sequence.call_args[0][0]
             assert len(call_args) == 2  # metadata + 1 beat
@@ -212,20 +250,24 @@ class TestDynamicOptionPickerUpdates:
 
     def test_circular_signal_protection(self, app):
         """Test that circular signal emissions are prevented"""
-        with patch('presentation.tabs.construct_tab_widget.ConstructTabWidget._create_workbench'), \
-             patch('presentation.tabs.construct_tab_widget.ConstructTabWidget._create_start_position_picker'), \
-             patch('presentation.tabs.construct_tab_widget.ConstructTabWidget._create_option_picker'):
-            
+        with patch(
+            "presentation.tabs.construct_tab_widget.ConstructTabWidget._create_workbench"
+        ), patch(
+            "presentation.tabs.construct_tab_widget.ConstructTabWidget._create_start_position_picker"
+        ), patch(
+            "presentation.tabs.construct_tab_widget.ConstructTabWidget._create_option_picker"
+        ):
+
             construct_tab = ConstructTabWidget()
             construct_tab.option_picker = Mock()
             construct_tab._emitting_signal = True  # Simulate ongoing emission
-            
+
             # Create test sequence
             sequence = SequenceData(name="Test", beats=[])
-            
+
             # Test that refresh is skipped during signal emission
             construct_tab._on_workbench_modified(sequence)
-            
+
             # Verify option picker refresh was not called due to circular protection
             construct_tab.option_picker.refresh_options_from_sequence.assert_not_called()
 

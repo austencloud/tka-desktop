@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class Version(Enum):
-    V1 = "v1"
+    Legacy = "legacy"
     V2 = "v2"
 
 
@@ -17,7 +17,7 @@ class PathManager:
         grid_mode: str,
         placement_type: str,
         filename: str,
-        version: Version = Version.V1,
+        version: Version = Version.Legacy,
     ) -> str:
         if version == Version.V2:
             base_path = self.root / "data" / "arrow_placements" / grid_mode
@@ -26,7 +26,7 @@ class PathManager:
 
         return str(base_path / filename)
 
-    def get_data_path(self, version: Version = Version.V1) -> Path:
+    def get_data_path(self, version: Version = Version.Legacy) -> Path:
 
         return self.root / "data"
 

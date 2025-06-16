@@ -1,7 +1,7 @@
 """
-Automated comparison testing for V1 vs V2 pictograph dimensions.
+Automated comparison testing for Legacy vs V2 pictograph dimensions.
 
-This test creates side-by-side renderings of identical pictographs in both V1 and V2
+This test creates side-by-side renderings of identical pictographs in both Legacy and V2
 and compares their dimensions to identify discrepancies.
 """
 
@@ -13,72 +13,74 @@ from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLa
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QPixmap, QPainter
 
-# Add paths for both V1 and V2
+# Add paths for both Legacy and V2
 current_dir = os.path.dirname(os.path.abspath(__file__))
-v1_src_path = os.path.join(current_dir, "..", "..", "v1", "src")
+legacy_src_path = os.path.join(current_dir, "..", "..", "legacy", "src")
 v2_src_path = os.path.join(current_dir, "..", "src")
 
-sys.path.insert(0, v1_src_path)
+sys.path.insert(0, legacy_src_path)
 sys.path.insert(0, v2_src_path)
 
-print(f"V1 path: {v1_src_path}")
+print(f"Legacy path: {legacy_src_path}")
 print(f"V2 path: {v2_src_path}")
-print(f"V1 exists: {os.path.exists(v1_src_path)}")
+print(f"Legacy exists: {os.path.exists(legacy_src_path)}")
 print(f"V2 exists: {os.path.exists(v2_src_path)}")
 
 
 @dataclass
 class DimensionComparison:
-    """Results of comparing V1 and V2 pictograph dimensions."""
+    """Results of comparing Legacy and V2 pictograph dimensions."""
 
-    v1_component_size: Tuple[int, int]
+    legacy_component_size: Tuple[int, int]
     v2_component_size: Tuple[int, int]
-    v1_scene_size: Tuple[float, float]
+    legacy_scene_size: Tuple[float, float]
     v2_scene_size: Tuple[float, float]
-    v1_scale: Tuple[float, float]
+    legacy_scale: Tuple[float, float]
     v2_scale: Tuple[float, float]
-    v1_effective_size: Tuple[float, float]
+    legacy_effective_size: Tuple[float, float]
     v2_effective_size: Tuple[float, float]
-    v1_tka_size: Optional[Tuple[float, float]]
+    legacy_tka_size: Optional[Tuple[float, float]]
     v2_tka_size: Optional[Tuple[float, float]]
 
     def size_difference_percentage(self) -> float:
         """Calculate percentage difference in effective pictograph size."""
-        v1_area = self.v1_effective_size[0] * self.v1_effective_size[1]
+        legacy_area = self.legacy_effective_size[0] * self.legacy_effective_size[1]
         v2_area = self.v2_effective_size[0] * self.v2_effective_size[1]
-        if v1_area == 0:
+        if legacy_area == 0:
             return 0.0
-        return ((v2_area - v1_area) / v1_area) * 100
+        return ((v2_area - legacy_area) / legacy_area) * 100
 
     def tka_size_difference_percentage(self) -> Optional[float]:
         """Calculate percentage difference in TKA glyph size."""
-        if not self.v1_tka_size or not self.v2_tka_size:
+        if not self.legacy_tka_size or not self.v2_tka_size:
             return None
-        v1_area = self.v1_tka_size[0] * self.v1_tka_size[1]
+        legacy_area = self.legacy_tka_size[0] * self.legacy_tka_size[1]
         v2_area = self.v2_tka_size[0] * self.v2_tka_size[1]
-        if v1_area == 0:
+        if legacy_area == 0:
             return 0.0
-        return ((v2_area - v1_area) / v1_area) * 100
+        return ((v2_area - legacy_area) / legacy_area) * 100
 
 
 class PictographComparisonTest:
-    """Automated testing framework for comparing V1 and V2 pictograph dimensions."""
+    """Automated testing framework for comparing Legacy and V2 pictograph dimensions."""
 
     def __init__(self):
         self.app = None
-        self.v1_pictograph = None
+        self.legacy_pictograph = None
         self.v2_pictograph = None
         self.comparison_widget = None
 
     def setup_test_environment(self) -> bool:
-        """Setup the test environment with both V1 and V2 components."""
+        """Setup the test environment with both Legacy and V2 components."""
         try:
             # Create QApplication if it doesn't exist
             if not QApplication.instance():
                 self.app = QApplication(sys.argv)
 
-            # Import V1 components
-            from base_widgets.pictograph.pictograph import Pictograph as V1Pictograph
+            # Import Legacy components
+            from base_widgets.pictograph.pictograph import (
+                Pictograph as LegacyPictograph,
+            )
             from base_widgets.pictograph.elements.views.base_pictograph_view import (
                 BasePictographView,
             )
@@ -94,10 +96,10 @@ class PictographComparisonTest:
                 LetterType,
             )
 
-            # Create V1 pictograph
-            self.v1_pictograph = V1Pictograph()
-            self.v1_view = BasePictographView(self.v1_pictograph)
-            self.v1_view.setFixedSize(400, 400)
+            # Create Legacy pictograph
+            self.legacy_pictograph = LegacyPictograph()
+            self.legacy_view = BasePictographView(self.legacy_pictograph)
+            self.legacy_view.setFixedSize(400, 400)
 
             # Create V2 pictograph
             self.v2_pictograph = PictographComponent()
@@ -151,14 +153,14 @@ class PictographComparisonTest:
             return None
 
     def update_pictographs_with_test_data(self, beat_data: Any) -> bool:
-        """Update both V1 and V2 pictographs with the same test data."""
+        """Update both Legacy and V2 pictographs with the same test data."""
         try:
             # Update V2 pictograph
             self.v2_pictograph.update_from_beat(beat_data)
 
-            # Update V1 pictograph (convert beat_data to V1 format)
-            v1_data = self._convert_beat_data_to_v1_format(beat_data)
-            self.v1_pictograph.managers.updater.update_pictograph(v1_data)
+            # Update Legacy pictograph (convert beat_data to Legacy format)
+            legacy_data = self._convert_beat_data_to_legacy_format(beat_data)
+            self.legacy_pictograph.managers.updater.update_pictograph(legacy_data)
 
             print("✅ Both pictographs updated with test data")
             return True
@@ -167,10 +169,10 @@ class PictographComparisonTest:
             print(f"❌ Failed to update pictographs: {e}")
             return False
 
-    def _convert_beat_data_to_v1_format(self, beat_data: Any) -> Dict[str, Any]:
-        """Convert V2 BeatData to V1 pictograph data format."""
+    def _convert_beat_data_to_legacy_format(self, beat_data: Any) -> Dict[str, Any]:
+        """Convert V2 BeatData to Legacy pictograph data format."""
         # This is a simplified conversion - in a real test, this would need
-        # to be more comprehensive to match V1's exact data structure
+        # to be more comprehensive to match Legacy's exact data structure
         return {
             "letter": beat_data.letter,
             "start_pos": "alpha1",
@@ -197,25 +199,25 @@ class PictographComparisonTest:
         """Capture and compare dimensions from both pictographs."""
         try:
             # Force rendering and layout updates
-            self.v1_view.update()
+            self.legacy_view.update()
             self.v2_pictograph.update()
 
             # Process events to ensure rendering is complete
             if self.app:
                 self.app.processEvents()
 
-            # Capture V1 dimensions
-            v1_component_size = (
-                self.v1_view.size().width(),
-                self.v1_view.size().height(),
+            # Capture Legacy dimensions
+            legacy_component_size = (
+                self.legacy_view.size().width(),
+                self.legacy_view.size().height(),
             )
-            v1_scene_rect = self.v1_view.sceneRect()
-            v1_scene_size = (v1_scene_rect.width(), v1_scene_rect.height())
-            v1_transform = self.v1_view.transform()
-            v1_scale = (v1_transform.m11(), v1_transform.m22())
-            v1_effective_size = (
-                v1_scene_size[0] * v1_scale[0],
-                v1_scene_size[1] * v1_scale[1],
+            legacy_scene_rect = self.legacy_view.sceneRect()
+            legacy_scene_size = (legacy_scene_rect.width(), legacy_scene_rect.height())
+            legacy_transform = self.legacy_view.transform()
+            legacy_scale = (legacy_transform.m11(), legacy_transform.m22())
+            legacy_effective_size = (
+                legacy_scene_size[0] * legacy_scale[0],
+                legacy_scene_size[1] * legacy_scale[1],
             )
 
             # Capture V2 dimensions
@@ -233,19 +235,19 @@ class PictographComparisonTest:
             )
 
             # Capture TKA glyph dimensions (simplified)
-            v1_tka_size = self._get_v1_tka_dimensions()
+            legacy_tka_size = self._get_legacy_tka_dimensions()
             v2_tka_size = self._get_v2_tka_dimensions()
 
             comparison = DimensionComparison(
-                v1_component_size=v1_component_size,
+                legacy_component_size=legacy_component_size,
                 v2_component_size=v2_component_size,
-                v1_scene_size=v1_scene_size,
+                legacy_scene_size=legacy_scene_size,
                 v2_scene_size=v2_scene_size,
-                v1_scale=v1_scale,
+                legacy_scale=legacy_scale,
                 v2_scale=v2_scale,
-                v1_effective_size=v1_effective_size,
+                legacy_effective_size=legacy_effective_size,
                 v2_effective_size=v2_effective_size,
-                v1_tka_size=v1_tka_size,
+                legacy_tka_size=legacy_tka_size,
                 v2_tka_size=v2_tka_size,
             )
 
@@ -255,14 +257,14 @@ class PictographComparisonTest:
             print(f"❌ Failed to capture dimensions: {e}")
             return None
 
-    def _get_v1_tka_dimensions(self) -> Optional[Tuple[float, float]]:
-        """Get V1 TKA glyph dimensions."""
+    def _get_legacy_tka_dimensions(self) -> Optional[Tuple[float, float]]:
+        """Get Legacy TKA glyph dimensions."""
         try:
             if (
-                hasattr(self.v1_pictograph.elements, "tka_glyph")
-                and self.v1_pictograph.elements.tka_glyph
+                hasattr(self.legacy_pictograph.elements, "tka_glyph")
+                and self.legacy_pictograph.elements.tka_glyph
             ):
-                tka_rect = self.v1_pictograph.elements.tka_glyph.sceneBoundingRect()
+                tka_rect = self.legacy_pictograph.elements.tka_glyph.sceneBoundingRect()
                 return (tka_rect.width(), tka_rect.height())
         except:
             pass
@@ -289,7 +291,7 @@ class PictographComparisonTest:
 
         print(f"\n📐 COMPONENT SIZES:")
         print(
-            f"   V1: {comparison.v1_component_size[0]}x{comparison.v1_component_size[1]}"
+            f"   Legacy: {comparison.legacy_component_size[0]}x{comparison.legacy_component_size[1]}"
         )
         print(
             f"   V2: {comparison.v2_component_size[0]}x{comparison.v2_component_size[1]}"
@@ -297,19 +299,21 @@ class PictographComparisonTest:
 
         print(f"\n📐 SCENE SIZES:")
         print(
-            f"   V1: {comparison.v1_scene_size[0]:.1f}x{comparison.v1_scene_size[1]:.1f}"
+            f"   Legacy: {comparison.legacy_scene_size[0]:.1f}x{comparison.legacy_scene_size[1]:.1f}"
         )
         print(
             f"   V2: {comparison.v2_scene_size[0]:.1f}x{comparison.v2_scene_size[1]:.1f}"
         )
 
         print(f"\n📐 VIEW SCALES:")
-        print(f"   V1: {comparison.v1_scale[0]:.4f}x{comparison.v1_scale[1]:.4f}")
+        print(
+            f"   Legacy: {comparison.legacy_scale[0]:.4f}x{comparison.legacy_scale[1]:.4f}"
+        )
         print(f"   V2: {comparison.v2_scale[0]:.4f}x{comparison.v2_scale[1]:.4f}")
 
         print(f"\n📐 EFFECTIVE SIZES:")
         print(
-            f"   V1: {comparison.v1_effective_size[0]:.1f}x{comparison.v1_effective_size[1]:.1f}"
+            f"   Legacy: {comparison.legacy_effective_size[0]:.1f}x{comparison.legacy_effective_size[1]:.1f}"
         )
         print(
             f"   V2: {comparison.v2_effective_size[0]:.1f}x{comparison.v2_effective_size[1]:.1f}"
@@ -318,10 +322,10 @@ class PictographComparisonTest:
         size_diff = comparison.size_difference_percentage()
         print(f"\n📊 SIZE DIFFERENCE: {size_diff:+.1f}%")
 
-        if comparison.v1_tka_size and comparison.v2_tka_size:
+        if comparison.legacy_tka_size and comparison.v2_tka_size:
             print(f"\n🔤 TKA GLYPH SIZES:")
             print(
-                f"   V1: {comparison.v1_tka_size[0]:.1f}x{comparison.v1_tka_size[1]:.1f}"
+                f"   Legacy: {comparison.legacy_tka_size[0]:.1f}x{comparison.legacy_tka_size[1]:.1f}"
             )
             print(
                 f"   V2: {comparison.v2_tka_size[0]:.1f}x{comparison.v2_tka_size[1]:.1f}"

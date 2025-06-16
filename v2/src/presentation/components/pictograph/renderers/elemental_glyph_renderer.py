@@ -75,7 +75,7 @@ class ElementalGlyphRenderer:
         """
         Position the elemental glyph in the top-right corner of the pictograph.
 
-        Based on v1 positioning logic from elemental_glyph.py:
+        Based on legacy positioning logic from elemental_glyph.py:
         - 4% offset from edges
         - Positioned in top-right corner
         """

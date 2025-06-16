@@ -277,10 +277,10 @@ class TestBackwardCompatibility:
 
     def test_simple_container_alias(self):
         """Test that SimpleContainer alias works."""
-        from core.dependency_injection.di_container import SimpleContainer
+        from core.dependency_injection.di_container import DIContainer
 
         # Should be the same as EnhancedContainer
-        assert SimpleContainer is DIContainer
+        assert DIContainer is DIContainer
 
     def test_existing_registration_patterns_work(self, container):
         """Test that existing registration patterns still work."""

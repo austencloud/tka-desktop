@@ -2,7 +2,7 @@
 Beat Frame Layout Service
 
 Provides grid layout calculations for the sequence workbench beat frame,
-replacing V1's hardcoded layout logic with configurable, responsive calculations.
+replacing Legacy's hardcoded layout logic with configurable, responsive calculations.
 """
 
 from typing import Dict, List, Tuple, Any
@@ -14,12 +14,12 @@ class BeatFrameLayoutService:
     """
     Service for calculating optimal beat frame grid layouts.
     
-    Replaces V1's hardcoded layout configurations with dynamic calculations
+    Replaces Legacy's hardcoded layout configurations with dynamic calculations
     based on sequence length, available space, and user preferences.
     """
     
     def __init__(self):
-        # Default layout configurations (based on V1 patterns)
+        # Default layout configurations (based on Legacy patterns)
         self._default_layouts = {
             1: {"rows": 1, "columns": 8},
             2: {"rows": 1, "columns": 8},

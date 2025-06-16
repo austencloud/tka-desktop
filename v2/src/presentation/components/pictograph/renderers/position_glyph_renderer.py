@@ -99,7 +99,7 @@ class PositionGlyphRenderer:
 
         if renderer.isValid():
             symbol_item.setSharedRenderer(renderer)
-            # Apply scaling to match v1 behavior
+            # Apply scaling to match legacy behavior
             scale_factor = 0.75
             symbol_item.setScale(scale_factor)
             return symbol_item
@@ -120,7 +120,7 @@ class PositionGlyphRenderer:
 
         if renderer.isValid():
             arrow_item.setSharedRenderer(renderer)
-            # Apply scaling to match v1 behavior
+            # Apply scaling to match legacy behavior
             scale_factor = 0.75
             arrow_item.setScale(scale_factor)
             return arrow_item
@@ -141,11 +141,11 @@ class PositionGlyphRenderer:
         # Position start symbol at origin
         start_item.setPos(0, 0)
 
-        # Position arrow after start symbol with proper spacing (matching v1 logic)
+        # Position arrow after start symbol with proper spacing (matching legacy logic)
         arrow_x = (
             start_item.boundingRect().width() * scale_factor + spacing * scale_factor
         )
-        # Center arrow vertically relative to start symbol (matching v1 logic)
+        # Center arrow vertically relative to start symbol (matching legacy logic)
         arrow_y = (
             start_item.boundingRect().height() * scale_factor // 2
             - arrow_item.boundingRect().height() * scale_factor
@@ -164,8 +164,8 @@ class PositionGlyphRenderer:
         """
         Position the position glyph in the pictograph.
 
-        Uses v1's precise positioning logic from start_to_end_pos_glyph.py:
-        - Calculate total width manually to match v1 behavior
+        Uses legacy's precise positioning logic from start_to_end_pos_glyph.py:
+        - Calculate total width manually to match legacy behavior
         - Center horizontally at top of pictograph
         """
         if not position_group.childItems():
@@ -176,7 +176,7 @@ class PositionGlyphRenderer:
         if len(items) < 3:
             return
 
-        # Calculate total width using v1's method for precise alignment
+        # Calculate total width using legacy's method for precise alignment
         scale_factor = 0.75
         spacing = 25
 
@@ -185,7 +185,7 @@ class PositionGlyphRenderer:
         arrow_item = items[1]
         end_item = items[2]
 
-        # Calculate total width exactly like v1
+        # Calculate total width exactly like legacy
         total_width = (
             start_item.boundingRect().width() * scale_factor
             + arrow_item.boundingRect().width() * scale_factor
@@ -193,7 +193,7 @@ class PositionGlyphRenderer:
             + spacing
         )
 
-        # Center horizontally using v1's calculation (integer division for exact match)
+        # Center horizontally using legacy's calculation (integer division for exact match)
         x_position = self.SCENE_SIZE // 2 - total_width // 2
         y_position = 50  # 50px from top
 

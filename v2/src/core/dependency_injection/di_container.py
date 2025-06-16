@@ -249,4 +249,4 @@ def reset_container() -> None:
 
 
 # Backward compatibility alias
-SimpleContainer = DIContainer
+DIContainer = DIContainer

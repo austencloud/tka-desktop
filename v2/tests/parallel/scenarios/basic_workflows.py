@@ -6,8 +6,8 @@ Fundamental user interaction patterns for TKA parallel testing.
 Based on verified TKA domain model and workflow patterns.
 
 LIFECYCLE: SCAFFOLDING
-DELETE_AFTER: V1 deprecation complete
-PURPOSE: Test core TKA workflows for V1/V2 functional equivalence
+DELETE_AFTER: Legacy deprecation complete
+PURPOSE: Test core TKA workflows for Legacy/V2 functional equivalence
 """
 
 from typing import List, Dict, Any

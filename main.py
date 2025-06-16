@@ -15,18 +15,18 @@ def main():
         return app.run()
     except ImportError as e:
         print(f"Error importing launcher: {e}")
-        print("Falling back to V1 main application...")
+        print("Falling back to Legacy main application...")
 
-        v1_src_path = os.path.join(os.path.dirname(__file__), "v1", "src")
-        if v1_src_path not in sys.path:
-            sys.path.insert(0, v1_src_path)
+        legacy_src_path = os.path.join(os.path.dirname(__file__), "legacy", "src")
+        if legacy_src_path not in sys.path:
+            sys.path.insert(0, legacy_src_path)
 
         try:
-            from main import main as v1_main
+            from main import main as legacy_main
 
-            return v1_main()
-        except ImportError as v1_error:
-            print(f"Error importing V1 main: {v1_error}")
+            return legacy_main()
+        except ImportError as legacy_error:
+            print(f"Error importing Legacy main: {legacy_error}")
             print("Please ensure the application is properly set up.")
             return 1
 

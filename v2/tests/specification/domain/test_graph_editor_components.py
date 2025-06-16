@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton
 from PyQt6.QtCore import Qt
 
-from core.dependency_injection.di_container import SimpleContainer
+from core.dependency_injection.di_container import DIContainer
 from src.application.services.graph_editor_service import GraphEditorService
 from presentation.components.workbench.graph_editor.graph_editor import (
     GraphEditor,

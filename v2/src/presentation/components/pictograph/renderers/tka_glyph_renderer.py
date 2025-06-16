@@ -122,7 +122,7 @@ class TKAGlyphRenderer:
         """
         Position the TKA glyph in the bottom-left area of the pictograph.
 
-        Based on v1 positioning logic from tka_letter.py:
+        Based on legacy positioning logic from tka_letter.py:
         - Positioned in bottom-left area
         - Specific offset from bottom edge
         """

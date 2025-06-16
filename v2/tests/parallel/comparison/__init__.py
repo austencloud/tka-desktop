@@ -2,11 +2,11 @@
 Result Comparison Engine
 ========================
 
-Deep comparison engine for validating V1/V2 functional equivalence.
+Deep comparison engine for validating Legacy/V2 functional equivalence.
 
 LIFECYCLE: SCAFFOLDING
-DELETE_AFTER: V1 deprecation complete
-PURPOSE: Provide result comparison capabilities for V1/V2 parallel testing
+DELETE_AFTER: Legacy deprecation complete
+PURPOSE: Provide result comparison capabilities for Legacy/V2 parallel testing
 """
 
 from .result_comparer import (
@@ -25,11 +25,9 @@ __all__ = [
     "ComparisonRule",
     "FieldDifference",
     "ComparisonResult",
-    
     # Comparison interfaces and implementations
     "IResultComparer",
     "ResultComparer",
-    
     # TKA-specific utilities
     "TKADataNormalizer",
 ]

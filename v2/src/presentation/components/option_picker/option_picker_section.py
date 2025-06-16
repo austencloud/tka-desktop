@@ -10,7 +10,7 @@ class OptionPickerSection(QWidget):
         super().__init__(parent)
         self.letter_type = letter_type
         self.pictographs: List = []
-        self.mw_size_provider = mw_size_provider  # V1-style size provider
+        self.mw_size_provider = mw_size_provider  # Legacy-style size provider
         self._setup_ui()
 
     def _setup_ui(self):
@@ -32,20 +32,20 @@ class OptionPickerSection(QWidget):
 
         layout.addWidget(header_container)
 
-        # V1-style container: simple QFrame with QGridLayout
+        # Legacy-style container: simple QFrame with QGridLayout
         from PyQt6.QtWidgets import QFrame
 
         self.pictograph_container = QFrame()
         self.pictograph_layout = QGridLayout(self.pictograph_container)
 
-        # V1-style layout settings
+        # Legacy-style layout settings
         self.pictograph_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.pictograph_layout.setContentsMargins(0, 0, 0, 0)
-        self.pictograph_layout.setSpacing(8)  # V1 uses spacing from option_scroll
+        self.pictograph_layout.setSpacing(8)  # Legacy uses spacing from option_scroll
 
         layout.addWidget(self.pictograph_container)
 
-        # V1-style: transparent background, no borders
+        # Legacy-style: transparent background, no borders
         self.pictograph_container.setStyleSheet(
             """
             QWidget {
@@ -63,7 +63,7 @@ class OptionPickerSection(QWidget):
         self.pictograph_container.setVisible(self.header_button.is_expanded)
 
     def add_pictograph(self, pictograph_frame):
-        """Add pictograph using V1-style direct layout positioning with lifecycle safety"""
+        """Add pictograph using Legacy-style direct layout positioning with lifecycle safety"""
         if not self._ensure_layout_validity():
             self._recreate_layout_objects()
             if not self._ensure_layout_validity():
@@ -82,7 +82,7 @@ class OptionPickerSection(QWidget):
 
             self.pictograph_layout.addWidget(pictograph_frame, row, col)
             pictograph_frame.setVisible(True)
-            self._update_container_size_for_v1_layout()
+            self._update_container_size_for_legacy_layout()
 
         except RuntimeError:
             if pictograph_frame in self.pictographs:
@@ -107,8 +107,8 @@ class OptionPickerSection(QWidget):
 
         self.pictographs.clear()
 
-    def clear_pictographs_v1_style(self):
-        """Clear pictographs using V1-style approach: hide and remove from layout, don't delete"""
+    def clear_pictographs_legacy_style(self):
+        """Clear pictographs using Legacy-style approach: hide and remove from layout, don't delete"""
         for pictograph in self.pictographs:
             if pictograph is not None:
                 try:
@@ -121,7 +121,7 @@ class OptionPickerSection(QWidget):
         self.pictographs.clear()
 
     def add_pictograph_from_pool(self, pictograph_frame):
-        """Add pictograph from pool using V1-style approach (reuse existing objects)"""
+        """Add pictograph from pool using Legacy-style approach (reuse existing objects)"""
         if not self._ensure_layout_validity():
             self._recreate_layout_objects()
             if not self._ensure_layout_validity():
@@ -148,7 +148,7 @@ class OptionPickerSection(QWidget):
                 pictograph_frame.pictograph_component.show()
 
             self._force_layout_activation()
-            self._update_container_size_for_v1_layout()
+            self._update_container_size_for_legacy_layout()
 
         except RuntimeError:
             if pictograph_frame in self.pictographs:
@@ -209,8 +209,8 @@ class OptionPickerSection(QWidget):
         except Exception:
             pass
 
-    def _update_container_size_for_v1_layout(self):
-        """Update container size to accommodate V1-style 8-column layout with proper scroll area sizing"""
+    def _update_container_size_for_legacy_layout(self):
+        """Update container size to accommodate Legacy-style 8-column layout with proper scroll area sizing"""
         if len(self.pictographs) == 0:
             return
 
@@ -348,7 +348,7 @@ class OptionPickerSection(QWidget):
         return
 
     def _calculate_optimal_columns(self) -> int:
-        """Calculate optimal columns based on V1 behavior and available width"""
+        """Calculate optimal columns based on Legacy behavior and available width"""
         # Get available width from the option picker container
         available_width = 600  # Default fallback
 
@@ -367,9 +367,9 @@ class OptionPickerSection(QWidget):
         # Calculate max columns that fit
         max_possible_columns = max(1, available_width // pictograph_width)
 
-        # Apply V1-style limits based on letter type (but more generous than before)
+        # Apply Legacy-style limits based on letter type (but more generous than before)
         if self.letter_type == LetterType.TYPE1:
-            # Type1 can have more columns like V1's COLUMN_COUNT = 8
+            # Type1 can have more columns like Legacy's COLUMN_COUNT = 8
             max_columns = min(8, max_possible_columns)
         elif self.letter_type in [LetterType.TYPE4, LetterType.TYPE5, LetterType.TYPE6]:
             max_columns = min(6, max_possible_columns)

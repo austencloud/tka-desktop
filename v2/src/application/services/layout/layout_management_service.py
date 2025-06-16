@@ -134,12 +134,14 @@ class LayoutManagementService(ILayoutManagementService, ILayoutService):
         self, sequence: SequenceData, container_size: Tuple[int, int]
     ) -> Dict[str, Any]:
         """Calculate layout for beat frames using enhanced algorithm."""
-        from application.services.layout.enhanced_beat_layout_service import EnhancedBeatLayoutService
-        
+        from application.services.layout.beat_layout_service import BeatLayoutService
+
         # Use enhanced layout system
-        enhanced_service = EnhancedBeatLayoutService()
-        layout_config = enhanced_service.calculate_beat_frame_layout(sequence, container_size)
-        
+        enhanced_service = BeatLayoutService()
+        layout_config = enhanced_service.calculate_beat_frame_layout(
+            sequence, container_size
+        )
+
         return layout_config
 
     def calculate_responsive_scaling(

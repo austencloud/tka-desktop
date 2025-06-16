@@ -61,7 +61,7 @@ class KineticConstructorV2(QMainWindow):
 
         self.container = get_container()
         self._configure_services()
-        self._set_v1_style_dimensions()
+        self._set_legacy_style_dimensions()
         self._setup_ui()
         self._setup_background()
 
@@ -200,8 +200,8 @@ class KineticConstructorV2(QMainWindow):
             PictographManagementService, pictograph_management_service
         )
 
-    def _set_v1_style_dimensions(self):
-        """Set window dimensions to match v1: 90% of screen size"""
+    def _set_legacy_style_dimensions(self):
+        """Set window dimensions to match legacy: 90% of screen size"""
         if self.splash:
             self.splash.update_progress(50, "Setting window dimensions...")
 
@@ -249,14 +249,14 @@ class KineticConstructorV2(QMainWindow):
         layout = QVBoxLayout(central_widget)
         layout.setContentsMargins(20, 20, 20, 20)
 
-        # Header with title and settings button (like v1)
+        # Header with title and settings button (like legacy)
         header_layout = QHBoxLayout()
 
         title = QLabel("🚀 Kinetic Constructor v2")
         title.setFont(QFont("Arial", 20, QFont.Weight.Bold))
         title.setStyleSheet("color: white; margin: 20px; background: transparent;")
 
-        # Settings button positioned in top-right like v1
+        # Settings button positioned in top-right like legacy
         self.settings_button = SettingsButton()
         self.settings_button.settings_requested.connect(self._show_settings)
 
@@ -327,7 +327,7 @@ class KineticConstructorV2(QMainWindow):
                 self.splash.update_progress(76, "Creating construct tab container...")
 
             # Basic container creation
-            from core.dependency_injection.di_container import SimpleContainer
+            from core.dependency_injection.di_container import DIContainer
 
             if self.splash:
                 self.splash.update_progress(78, "Setting up dependency injection...")

@@ -1,7 +1,7 @@
 """
 Letter renderer for pictograph components.
 
-Handles rendering of letter text elements with V1-style positioning and styling.
+Handles rendering of letter text elements with Legacy-style positioning and styling.
 """
 
 from PyQt6.QtWidgets import QGraphicsTextItem
@@ -9,7 +9,7 @@ from PyQt6.QtGui import QFont, QColor
 
 
 class LetterRenderer:
-    """Handles letter rendering for pictographs with V1-style positioning."""
+    """Handles letter rendering for pictographs with Legacy-style positioning."""
 
     def __init__(self, scene):
         self.scene = scene
@@ -18,21 +18,21 @@ class LetterRenderer:
         self.RADIUS = 300
 
     def render_letter(self, letter: str) -> None:
-        """Render the letter with V1-style positioning and styling."""
+        """Render the letter with Legacy-style positioning and styling."""
         if not letter:
             return
 
-        # Create letter text item with V1-style font and positioning
+        # Create letter text item with Legacy-style font and positioning
         letter_item = QGraphicsTextItem(letter)
 
-        # Use V1-style font: larger, bold, and properly positioned
+        # Use Legacy-style font: larger, bold, and properly positioned
         font = QFont("Arial", 48, QFont.Weight.Bold)  # Increased size for visibility
         letter_item.setFont(font)
 
-        # Set V1-style color (black text)
+        # Set Legacy-style color (black text)
         letter_item.setDefaultTextColor(QColor(0, 0, 0))
 
-        # V1-style positioning: center the letter below the grid
+        # Legacy-style positioning: center the letter below the grid
         # Calculate text bounds for proper centering
         text_rect = letter_item.boundingRect()
 

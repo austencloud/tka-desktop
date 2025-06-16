@@ -44,18 +44,18 @@ class StartPositionView(QFrame):
         self._setup_styling()
 
     def _setup_ui(self):
-        """Setup the UI components to match v1 start position layout exactly"""
+        """Setup the UI components to match legacy start position layout exactly"""
         self.setFixedSize(120, 120)
         self.setFrameStyle(QFrame.Shape.Box)
 
-        # Use zero margins and spacing like v1
+        # Use zero margins and spacing like legacy
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # Remove title and position labels - v1 displays "START" text directly on the pictograph scene
+        # Remove title and position labels - legacy displays "START" text directly on the pictograph scene
 
-        # Pictograph component fills the entire container like v1
+        # Pictograph component fills the entire container like legacy
         self._pictograph_component = PictographComponent(parent=self)
         # Remove minimum size constraint to allow responsive scaling
         self._pictograph_component.setMinimumSize(1, 1)
@@ -64,7 +64,7 @@ class StartPositionView(QFrame):
         # Enable mouse tracking for hover effects
         self.setMouseTracking(True)
 
-        # Initialize with START text overlay (always visible like v1)
+        # Initialize with START text overlay (always visible like legacy)
         # Use a timer to ensure the pictograph component is fully initialized
         from PyQt6.QtCore import QTimer
 
@@ -127,7 +127,7 @@ class StartPositionView(QFrame):
             self._show_empty_state()
             return
 
-        # No position label in v1 - "START" text is overlaid on the pictograph scene
+        # No position label in legacy - "START" text is overlaid on the pictograph scene
         # Update pictograph
         self._update_pictograph()
 
@@ -146,12 +146,12 @@ class StartPositionView(QFrame):
             # Show empty state (just grid background)
             self._pictograph_component.clear_pictograph()
 
-        # ALWAYS add START text overlay like v1 (visible in both states)
+        # ALWAYS add START text overlay like legacy (visible in both states)
         self._add_start_text_overlay()
 
     def _show_empty_state(self):
         """Show empty state when no position data"""
-        # No position label in v1 - just clear the pictograph
+        # No position label in legacy - just clear the pictograph
 
         # Mark existing overlay as invalid before clearing
         self._mark_overlay_invalid()
@@ -160,7 +160,7 @@ class StartPositionView(QFrame):
         if self._pictograph_component:
             self._pictograph_component.clear_pictograph()
 
-        # Always show START text overlay, even in empty state (v1 behavior)
+        # Always show START text overlay, even in empty state (legacy behavior)
         self._add_start_text_overlay()
 
     def _initialize_start_text(self):
@@ -175,7 +175,7 @@ class StartPositionView(QFrame):
             QTimer.singleShot(200, self._initialize_start_text)
 
     def _add_start_text_overlay(self):
-        """Add START text overlay to the pictograph like v1"""
+        """Add START text overlay to the pictograph like legacy"""
         if not self._pictograph_component or not self._pictograph_component.scene:
             return
 
@@ -326,7 +326,7 @@ class StartPositionView(QFrame):
     def set_loading_state(self, loading: bool):
         """Set loading state while position is being processed"""
         if loading:
-            # No position label in v1 - could add loading indicator to pictograph if needed
+            # No position label in legacy - could add loading indicator to pictograph if needed
             pass
         else:
             self._update_display()

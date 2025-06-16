@@ -20,7 +20,7 @@ if str(v2_path) not in sys.path:
     sys.path.insert(0, str(v2_path))
 
 try:
-    from core.dependency_injection.di_container import SimpleContainer
+    from core.dependency_injection.di_container import DIContainer
     from src.core.interfaces.core_services import ILayoutService
     from src.application.services.simple_layout_service import SimpleLayoutService
     from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
@@ -47,7 +47,7 @@ def test_workbench_creation():
     """Test if workbench can be created."""
     print("\n🧪 Testing workbench creation...")
     try:
-        container = SimpleContainer()
+        container = DIContainer()
         container.register_singleton(ILayoutService, SimpleLayoutService)
 
         construct_tab = ConstructTabWidget(container)

@@ -2,7 +2,7 @@
 Border Manager for V2 Pictographs.
 
 This manager handles border width calculations and visual border rendering
-to match V1's border behavior exactly.
+to match Legacy's border behavior exactly.
 """
 
 import math
@@ -16,16 +16,16 @@ from domain.models.core_models import LetterType
 
 class PictographBorderManager:
     """
-    Manages border calculations and rendering for V2 pictographs to match V1 behavior.
+    Manages border calculations and rendering for V2 pictographs to match Legacy behavior.
 
-    V1 border patterns:
+    Legacy border patterns:
     - Border width = max(1, int(size * 0.015)) (1.5% of size)
     - Size adjustment = size - (2 * border_width)
     - Different letter types have different border colors
     """
 
     def __init__(self):
-        self.border_width_percentage = 0.015  # 1.5% as used in V1
+        self.border_width_percentage = 0.015  # 1.5% as used in Legacy
         self.minimum_border_width = 1
         self.show_borders = True
         self.primary_color = "#000000"  # Default black
@@ -35,25 +35,25 @@ class PictographBorderManager:
 
     def calculate_border_width(self, size: int) -> int:
         """
-        Calculate border width based on size, matching V1's formula.
+        Calculate border width based on size, matching Legacy's formula.
 
-        V1 formula: border_width = max(1, int(size * 0.015))
+        Legacy formula: border_width = max(1, int(size * 0.015))
         """
         calculated_width = int(size * self.border_width_percentage)
         return max(self.minimum_border_width, calculated_width)
 
     def get_border_adjusted_size(self, target_size: int) -> int:
         """
-        Get size adjusted for border width, matching V1 calculations.
+        Get size adjusted for border width, matching Legacy calculations.
 
-        V1 formula: size -= 2 * border_width
+        Legacy formula: size -= 2 * border_width
         """
         border_width = self.calculate_border_width(target_size)
         adjusted_size = target_size - (2 * border_width)
         return max(50, adjusted_size)  # Minimum viable size
 
     def update_border_colors_for_letter_type(self, letter_type: LetterType) -> None:
-        """Update border colors based on letter type, matching V1 behavior."""
+        """Update border colors based on letter type, matching Legacy behavior."""
         border_colors_map = {
             LetterType.TYPE1: ("#36c3ff", "#6F2DA8"),  # Cyan, Purple
             LetterType.TYPE2: ("#6F2DA8", "#6F2DA8"),  # Purple, Purple
@@ -87,9 +87,9 @@ class PictographBorderManager:
 
     def get_border_dimensions(self, view_width: int) -> Tuple[float, float]:
         """
-        Get border dimensions for drawing, matching V1's floating-point calculations.
+        Get border dimensions for drawing, matching Legacy's floating-point calculations.
 
-        V1 uses: max(1.0, view_width * 0.016) for both outer and inner borders
+        Legacy uses: max(1.0, view_width * 0.016) for both outer and inner borders
         """
         outer_border_width = max(1.0, view_width * 0.016)
         inner_border_width = max(1.0, view_width * 0.016)
@@ -97,9 +97,9 @@ class PictographBorderManager:
 
     def draw_borders(self, painter: QPainter, viewport_rect, view_width: int) -> None:
         """
-        Draw borders on the viewport, exactly matching V1's border drawing logic.
+        Draw borders on the viewport, exactly matching Legacy's border drawing logic.
 
-        CRITICAL: V1 borders are drawn as overlays that don't affect content positioning.
+        CRITICAL: Legacy borders are drawn as overlays that don't affect content positioning.
         The borders are positioned to be visible within the viewport without reducing
         the available content area.
 
@@ -111,7 +111,7 @@ class PictographBorderManager:
         if not self.show_borders:
             return
 
-        # Get border dimensions - exactly matching V1's calculation
+        # Get border dimensions - exactly matching Legacy's calculation
         view_width = viewport_rect.width()  # Use actual viewport width
         outer_border_width = max(1.0, view_width * 0.016)
         inner_border_width = max(1.0, view_width * 0.016)
@@ -120,14 +120,14 @@ class PictographBorderManager:
         half_outer_pen = outer_border_width / 2.0
         half_inner_pen = inner_border_width / 2.0
 
-        # Draw outer border - exactly matching V1's logic
+        # Draw outer border - exactly matching Legacy's logic
         pen = QPen()
         pen.setColor(QColor(self.primary_color))
         pen.setWidthF(outer_border_width)
         pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
         painter.setPen(pen)
 
-        # Convert viewport rect to QRectF - exactly as V1 does
+        # Convert viewport rect to QRectF - exactly as Legacy does
         outer_rect = QRectF(viewport_rect)
         outer_rect = outer_rect.adjusted(
             +half_outer_pen,
@@ -137,7 +137,7 @@ class PictographBorderManager:
         )
         painter.drawRect(outer_rect)
 
-        # Draw inner border - exactly matching V1's logic
+        # Draw inner border - exactly matching Legacy's logic
         pen.setColor(QColor(self.secondary_color))
         pen.setWidthF(inner_border_width)
         pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
@@ -172,7 +172,7 @@ class BorderedPictographMixin:
     """
     Mixin class to add border functionality to V2 pictograph components.
 
-    This mixin provides the same border functionality as V1's BorderedPictographView
+    This mixin provides the same border functionality as Legacy's BorderedPictographView
     but designed for V2's component architecture.
     """
 

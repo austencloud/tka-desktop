@@ -48,7 +48,7 @@ class WorkbenchBeatFrameSection(QWidget):
         self._connect_signals()
 
     def _setup_ui(self):
-        """Setup beat frame + button panel layout matching V1's structure"""
+        """Setup beat frame + button panel layout matching Legacy's structure"""
         layout = QHBoxLayout(self)
         layout.setSpacing(12)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -65,7 +65,7 @@ class WorkbenchBeatFrameSection(QWidget):
         # Create button panel (right side)
         self._button_panel = ModernSequenceWorkbenchButtonPanel(self)
 
-        # Add with proper proportions (10:1 ratio like V1)
+        # Add with proper proportions (10:1 ratio like Legacy)
         layout.addWidget(self._beat_frame, 10)
         layout.addWidget(self._button_panel, 1)
 

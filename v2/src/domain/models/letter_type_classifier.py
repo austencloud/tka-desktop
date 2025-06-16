@@ -1,8 +1,8 @@
 """
-Letter Type Classifier - V1 Compatible Classification System
+Letter Type Classifier - Legacy Compatible Classification System
 
-This module implements V1's exact letter type classification system for sectional assignment
-in the option picker. The classifications are based on V1's letter_condition_mappings.py.
+This module implements Legacy's exact letter type classification system for sectional assignment
+in the option picker. The classifications are based on Legacy's letter_condition_mappings.py.
 """
 
 from typing import Dict, List
@@ -10,49 +10,59 @@ from typing import Dict, List
 
 class LetterTypeClassifier:
     """
-    V1-compatible letter type classifier for option picker sectional assignment.
-    
-    This classifier uses V1's exact letter type definitions to ensure identical
+    Legacy-compatible letter type classifier for option picker sectional assignment.
+
+    This classifier uses Legacy's exact letter type definitions to ensure identical
     sectional assignment behavior in V2's option picker.
     """
-    
-    # V1's exact letter type classifications from letter_condition_mappings.py
+
+    # Legacy's exact letter type classifications from letter_condition_mappings.py
     TYPE1_LETTERS = [
-        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
-        "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V"
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
     ]
-    
-    TYPE2_LETTERS = [
-        "W", "X", "Y", "Z", "Σ", "Δ", "θ", "Ω"
-    ]
-    
-    TYPE3_LETTERS = [
-        "W-", "X-", "Y-", "Z-", "Σ-", "Δ-", "θ-", "Ω-"
-    ]
-    
-    TYPE4_LETTERS = [
-        "Φ", "Ψ", "Λ"
-    ]
-    
-    TYPE5_LETTERS = [
-        "Φ-", "Ψ-", "Λ-"
-    ]
-    
-    TYPE6_LETTERS = [
-        "α", "β", "Γ"
-    ]
-    
+
+    TYPE2_LETTERS = ["W", "X", "Y", "Z", "Σ", "Δ", "θ", "Ω"]
+
+    TYPE3_LETTERS = ["W-", "X-", "Y-", "Z-", "Σ-", "Δ-", "θ-", "Ω-"]
+
+    TYPE4_LETTERS = ["Φ", "Ψ", "Λ"]
+
+    TYPE5_LETTERS = ["Φ-", "Ψ-", "Λ-"]
+
+    TYPE6_LETTERS = ["α", "β", "Γ"]
+
     @classmethod
     def get_letter_type(cls, letter: str) -> str:
         """
-        Get the letter type for sectional assignment using V1's classification.
-        
+        Get the letter type for sectional assignment using Legacy's classification.
+
         Args:
             letter: The letter to classify (e.g., "D", "W", "Φ-", etc.)
-            
+
         Returns:
             Letter type string ("Type1", "Type2", "Type3", "Type4", "Type5", "Type6")
-            Defaults to "Type1" for unknown letters (V1 behavior)
+            Defaults to "Type1" for unknown letters (Legacy behavior)
         """
         if letter in cls.TYPE1_LETTERS:
             return "Type1"
@@ -67,14 +77,14 @@ class LetterTypeClassifier:
         elif letter in cls.TYPE6_LETTERS:
             return "Type6"
         else:
-            # V1 default fallback behavior
+            # Legacy default fallback behavior
             return "Type1"
-    
+
     @classmethod
     def get_all_letter_types(cls) -> List[str]:
         """Get all available letter types."""
         return ["Type1", "Type2", "Type3", "Type4", "Type5", "Type6"]
-    
+
     @classmethod
     def get_letters_for_type(cls, letter_type: str) -> List[str]:
         """Get all letters that belong to a specific type."""
@@ -87,7 +97,7 @@ class LetterTypeClassifier:
             "Type6": cls.TYPE6_LETTERS,
         }
         return type_mapping.get(letter_type, [])
-    
+
     @classmethod
     def get_classification_stats(cls) -> Dict[str, int]:
         """Get statistics about letter type classifications."""

@@ -99,7 +99,7 @@ class ArrowManagementService(IArrowManagementService):
         self.default_placement_service = DefaultPlacementService()
         self.placement_key_service = (
             PlacementKeyService()
-        )  # Initialize V1-compatible dash location service
+        )  # Initialize Legacy-compatible dash location service
         self.dash_location_service = (
             DashLocationService()
         )  # Cache special placement service to avoid reloading JSON files on every call
@@ -254,9 +254,9 @@ class ArrowManagementService(IArrowManagementService):
     def _calculate_dash_arrow_location(
         self, motion: MotionData, pictograph_data: PictographData = None
     ) -> Location:
-        """Calculate location for dash arrows using complete V1-compatible logic."""
+        """Calculate location for dash arrows using complete Legacy-compatible logic."""
 
-        # Extract required parameters for V1 logic
+        # Extract required parameters for Legacy logic
         letter_type = None
         color = "blue"  # Default color
         other_motion = None
@@ -282,7 +282,7 @@ class ArrowManagementService(IArrowManagementService):
                     color = arrow_color
                     break
 
-        # Use the comprehensive V1 dash location service
+        # Use the comprehensive Legacy dash location service
         return self.dash_location_service.calculate_dash_location(
             motion=motion,
             color=color,

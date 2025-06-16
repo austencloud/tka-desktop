@@ -2,14 +2,14 @@
 
 ## 🎯 **Phase 1: Immediate Technical Debt Elimination** (1 Week)
 
-### **Days 1-2: V1 Code Cleanup**
+### **Days 1-2: Legacy Code Cleanup**
 
-- **Day 1**: Remove all V1 compatibility code and comments
+- **Day 1**: Remove all Legacy compatibility code and comments
   - Target files: `src/application/services/arrow_management_service.py`
-  - Remove all references to "V1", "old", "legacy"
-  - Clean up commented-out V1 code blocks
-- **Day 2**: Complete V1 reference removal across codebase
-  - Search and remove: `grep -r "V1\|v1\|old\|legacy" src/ --include="*.py"`
+  - Remove all references to "Legacy", "old", "legacy"
+  - Clean up commented-out Legacy code blocks
+- **Day 2**: Complete Legacy reference removal across codebase
+  - Search and remove: `grep -r "Legacy\|legacy\|old\|legacy" src/ --include="*.py"`
   - Update imports and dependencies
   - Run tests to ensure functionality remains intact
 
@@ -33,7 +33,7 @@
 
 **Expected Outcomes:**
 
-- ✅ Zero V1 compatibility code remaining
+- ✅ Zero Legacy compatibility code remaining
 - ✅ 100% automatic dependency injection
 - ✅ Clean, maintainable codebase foundation
 

@@ -2,12 +2,12 @@
 Master Test Orchestrator
 ========================
 
-Main coordination logic for TKA V1/V2 parallel testing.
+Main coordination logic for TKA Legacy/V2 parallel testing.
 Executes synchronized actions across both versions and manages test lifecycle.
 
 LIFECYCLE: SCAFFOLDING
-DELETE_AFTER: V1 deprecation complete
-PURPOSE: Orchestrate parallel testing between V1 and V2 for functional equivalence validation
+DELETE_AFTER: Legacy deprecation complete
+PURPOSE: Orchestrate parallel testing between Legacy and V2 for functional equivalence validation
 """
 
 import asyncio
@@ -20,7 +20,7 @@ from datetime import datetime
 import uuid
 
 from .drivers import (
-    V1ApplicationDriver,
+    LegacyApplicationDriver,
     V2ApplicationDriver,
     ApplicationState,
     ActionResult,
@@ -53,8 +53,8 @@ class TestExecutionResult:
     successful_actions: int = 0
     failed_actions: int = 0
 
-    # V1/V2 results
-    v1_results: List[ActionResult] = field(default_factory=list)
+    # Legacy/V2 results
+    legacy_results: List[ActionResult] = field(default_factory=list)
     v2_results: List[ActionResult] = field(default_factory=list)
 
     # Comparison results
@@ -102,7 +102,7 @@ class TestConfiguration:
 
 class ParallelTestOrchestrator:
     """
-    Master orchestrator for TKA V1/V2 parallel testing.
+    Master orchestrator for TKA Legacy/V2 parallel testing.
 
     Coordinates execution of identical actions across both versions,
     compares results, and provides comprehensive reporting.
@@ -113,7 +113,7 @@ class ParallelTestOrchestrator:
         self.test_results: List[TestExecutionResult] = []
 
         # Initialize components
-        self.v1_driver = V1ApplicationDriver(config.test_data_dir / "v1")
+        self.legacy_driver = LegacyApplicationDriver(config.test_data_dir / "legacy")
         self.v2_driver = V2ApplicationDriver(config.test_data_dir / "v2")
         self.result_comparer = ResultComparer()
         self.data_normalizer = TKADataNormalizer()
@@ -139,22 +139,22 @@ class ParallelTestOrchestrator:
             )
 
     async def start_applications(self) -> bool:
-        """Start both V1 and V2 applications."""
-        logger.info("Starting TKA V1 and V2 applications for parallel testing...")
+        """Start both Legacy and V2 applications."""
+        logger.info("Starting TKA Legacy and V2 applications for parallel testing...")
 
         try:
             # Start applications concurrently
-            v1_task = asyncio.create_task(self._start_v1_application())
+            legacy_task = asyncio.create_task(self._start_legacy_application())
             v2_task = asyncio.create_task(self._start_v2_application())
 
-            v1_success, v2_success = await asyncio.gather(v1_task, v2_task)
+            legacy_success, v2_success = await asyncio.gather(legacy_task, v2_task)
 
-            if v1_success and v2_success:
+            if legacy_success and v2_success:
                 logger.info("Both applications started successfully")
                 return True
             else:
                 logger.error(
-                    f"Application startup failed: V1={v1_success}, V2={v2_success}"
+                    f"Application startup failed: Legacy={legacy_success}, V2={v2_success}"
                 )
                 return False
 
@@ -162,23 +162,23 @@ class ParallelTestOrchestrator:
             logger.error(f"Failed to start applications: {e}")
             return False
 
-    async def _start_v1_application(self) -> bool:
-        """Start V1 application with timeout."""
+    async def _start_legacy_application(self) -> bool:
+        """Start Legacy application with timeout."""
         try:
-            success = self.v1_driver.start_application()
+            success = self.legacy_driver.start_application()
             if success:
                 # Wait for application to be ready
                 ready = await asyncio.wait_for(
-                    self._wait_for_v1_ready(),
+                    self._wait_for_legacy_ready(),
                     timeout=self.config.application_startup_timeout_ms / 1000,
                 )
                 return ready
             return False
         except asyncio.TimeoutError:
-            logger.error("V1 application startup timed out")
+            logger.error("Legacy application startup timed out")
             return False
         except Exception as e:
-            logger.error(f"V1 application startup failed: {e}")
+            logger.error(f"Legacy application startup failed: {e}")
             return False
 
     async def _start_v2_application(self) -> bool:
@@ -200,9 +200,11 @@ class ParallelTestOrchestrator:
             logger.error(f"V2 application startup failed: {e}")
             return False
 
-    async def _wait_for_v1_ready(self) -> bool:
-        """Wait for V1 to be ready."""
-        return self.v1_driver.wait_for_ready(self.config.application_startup_timeout_ms)
+    async def _wait_for_legacy_ready(self) -> bool:
+        """Wait for Legacy to be ready."""
+        return self.legacy_driver.wait_for_ready(
+            self.config.application_startup_timeout_ms
+        )
 
     async def _wait_for_v2_ready(self) -> bool:
         """Wait for V2 to be ready."""
@@ -214,21 +216,21 @@ class ParallelTestOrchestrator:
 
         try:
             # Stop applications concurrently
-            v1_task = asyncio.create_task(self._stop_v1_application())
+            legacy_task = asyncio.create_task(self._stop_legacy_application())
             v2_task = asyncio.create_task(self._stop_v2_application())
 
-            await asyncio.gather(v1_task, v2_task, return_exceptions=True)
+            await asyncio.gather(legacy_task, v2_task, return_exceptions=True)
             logger.info("Applications stopped")
 
         except Exception as e:
             logger.error(f"Error stopping applications: {e}")
 
-    async def _stop_v1_application(self):
-        """Stop V1 application."""
+    async def _stop_legacy_application(self):
+        """Stop Legacy application."""
         try:
-            self.v1_driver.stop_application()
+            self.legacy_driver.stop_application()
         except Exception as e:
-            logger.error(f"Error stopping V1: {e}")
+            logger.error(f"Error stopping Legacy: {e}")
 
     async def _stop_v2_application(self):
         """Stop V2 application."""
@@ -269,7 +271,7 @@ class ParallelTestOrchestrator:
                         break
 
                 # Store results
-                result.v1_results.append(action_result["v1_result"])
+                result.legacy_results.append(action_result["legacy_result"])
                 result.v2_results.append(action_result["v2_result"])
                 result.comparison_results.append(action_result["comparison_result"])
 
@@ -304,38 +306,38 @@ class ParallelTestOrchestrator:
         return result
 
     async def _execute_parallel_action(self, action: UserAction) -> Dict[str, Any]:
-        """Execute an action on both V1 and V2 and compare results."""
+        """Execute an action on both Legacy and V2 and compare results."""
         logger.debug(f"Executing parallel action: {action.action_type.name}")
 
         # Validate action prerequisites
-        v1_state = self.v1_driver.get_current_state()
+        legacy_state = self.legacy_driver.get_current_state()
         v2_state = self.v2_driver.get_current_state()
 
         validation_result = ActionValidatorFactory.validate_action(
-            action, v1_state.to_dict()
+            action, legacy_state.to_dict()
         )
         if not validation_result.is_valid:
             return {
                 "success": False,
                 "error": f"Action validation failed: {validation_result.errors}",
-                "v1_result": None,
+                "legacy_result": None,
                 "v2_result": None,
                 "comparison_result": None,
             }
 
         try:
             # Execute action on both versions concurrently
-            v1_task = asyncio.create_task(self._execute_v1_action(action))
+            legacy_task = asyncio.create_task(self._execute_legacy_action(action))
             v2_task = asyncio.create_task(self._execute_v2_action(action))
 
-            v1_result, v2_result = await asyncio.gather(v1_task, v2_task)
+            legacy_result, v2_result = await asyncio.gather(legacy_task, v2_task)
 
             # Wait for both versions to stabilize
             await self._wait_for_synchronization(action.action_type)
 
             # Compare results
             comparison_result = self._compare_action_results(
-                action, v1_result, v2_result
+                action, legacy_result, v2_result
             )
 
             # Take screenshots on failure if enabled
@@ -352,7 +354,7 @@ class ParallelTestOrchestrator:
                     if comparison_result.is_equivalent
                     else "Results not equivalent"
                 ),
-                "v1_result": v1_result,
+                "legacy_result": legacy_result,
                 "v2_result": v2_result,
                 "comparison_result": comparison_result,
             }
@@ -362,21 +364,21 @@ class ParallelTestOrchestrator:
             return {
                 "success": False,
                 "error": str(e),
-                "v1_result": None,
+                "legacy_result": None,
                 "v2_result": None,
                 "comparison_result": None,
             }
 
-    async def _execute_v1_action(self, action: UserAction) -> ActionResult:
-        """Execute action on V1 with timeout."""
+    async def _execute_legacy_action(self, action: UserAction) -> ActionResult:
+        """Execute action on Legacy with timeout."""
         try:
             result = await asyncio.wait_for(
-                asyncio.to_thread(self.v1_driver.execute_action, action),
+                asyncio.to_thread(self.legacy_driver.execute_action, action),
                 timeout=self.config.action_timeout_ms / 1000,
             )
             return result
         except asyncio.TimeoutError:
-            logger.error(f"V1 action timed out: {action.action_type.name}")
+            logger.error(f"Legacy action timed out: {action.action_type.name}")
             return ActionResult(
                 success=False,
                 execution_time_ms=self.config.action_timeout_ms,
@@ -414,16 +416,16 @@ class ParallelTestOrchestrator:
         await asyncio.sleep(delay)
 
     def _compare_action_results(
-        self, action: UserAction, v1_result: ActionResult, v2_result: ActionResult
+        self, action: UserAction, legacy_result: ActionResult, v2_result: ActionResult
     ) -> ComparisonResult:
-        """Compare V1 and V2 action results."""
+        """Compare Legacy and V2 action results."""
         try:
             # Convert results to comparable format
-            v1_data = self._normalize_v1_result(v1_result)
+            legacy_data = self._normalize_legacy_result(legacy_result)
             v2_data = self._normalize_v2_result(v2_result)
 
             # Perform comparison
-            comparison = self.result_comparer.compare_results(v1_data, v2_data)
+            comparison = self.result_comparer.compare_results(legacy_data, v2_data)
 
             return comparison
 
@@ -438,7 +440,7 @@ class ParallelTestOrchestrator:
             failed_comparison.add_difference(
                 FieldDifference(
                     field_path="comparison.error",
-                    v1_value="N/A",
+                    legacy_value="N/A",
                     v2_value="N/A",
                     difference_type="comparison_error",
                     is_critical=True,
@@ -447,8 +449,8 @@ class ParallelTestOrchestrator:
             )
             return failed_comparison
 
-    def _normalize_v1_result(self, result: ActionResult) -> Dict[str, Any]:
-        """Normalize V1 result for comparison."""
+    def _normalize_legacy_result(self, result: ActionResult) -> Dict[str, Any]:
+        """Normalize Legacy result for comparison."""
         normalized = {
             "success": result.success,
             "execution_time_ms": result.execution_time_ms,
@@ -463,14 +465,16 @@ class ParallelTestOrchestrator:
                 normalized_beats = []
 
                 for beat in sequence_data.get("beats", []):
-                    normalized_beat = self.data_normalizer.normalize_v1_beat_data(beat)
+                    normalized_beat = self.data_normalizer.normalize_legacy_beat_data(
+                        beat
+                    )
                     normalized_beats.append(normalized_beat)
 
                 normalized["data"]["sequence_data"] = {
                     "beat_count": sequence_data.get("beat_count", 0),
                     "beats": normalized_beats,
                     "start_position": sequence_data.get("start_position", ""),
-                    "version": "V1",
+                    "version": "Legacy",
                 }
 
             # Copy other data as-is
@@ -519,16 +523,16 @@ class ParallelTestOrchestrator:
             timestamp = int(time.time() * 1000)
             action_name = action.action_type.name.lower()
 
-            v1_screenshot = self.v1_driver.capture_screenshot(
-                f"v1_{action_name}_{timestamp}.png"
+            legacy_screenshot = self.legacy_driver.capture_screenshot(
+                f"legacy_{action_name}_{timestamp}.png"
             )
             v2_screenshot = self.v2_driver.capture_screenshot(
                 f"v2_{action_name}_{timestamp}.png"
             )
 
-            if v1_screenshot and v2_screenshot:
+            if legacy_screenshot and v2_screenshot:
                 logger.info(
-                    f"Failure screenshots captured: {v1_screenshot}, {v2_screenshot}"
+                    f"Failure screenshots captured: {legacy_screenshot}, {v2_screenshot}"
                 )
 
         except Exception as e:

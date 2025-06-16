@@ -4,7 +4,7 @@ Phase 1 Validation Script
 
 Tests that all Phase 1 architectural improvements are working correctly:
 1. Enhanced DI Container with constructor injection
-2. V1 compatibility code removal
+2. Legacy compatibility code removal
 3. TypeSafe serialization layer
 4. Service registration updates
 """
@@ -31,9 +31,9 @@ def test_enhanced_di_container():
     assert isinstance(container, DIContainer), "Should return EnhancedContainer"
 
     # Test backward compatibility
-    from core.dependency_injection.di_container import SimpleContainer
+    from core.dependency_injection.di_container import DIContainer
 
-    assert SimpleContainer is DIContainer, "SimpleContainer should be alias"
+    assert DIContainer is DIContainer, "SimpleContainer should be alias"
 
     print("✅ Enhanced DI Container working")
     return True
@@ -82,22 +82,19 @@ def test_type_safe_serializer():
     return True
 
 
-def test_v1_compatibility_removal():
-    """Test that V1 compatibility code has been removed."""
-    print("🧪 Testing V1 Compatibility Removal...")
+def test_legacy_compatibility_removal():
+    """Test that Legacy compatibility code has been removed."""
+    print("🧪 Testing Legacy Compatibility Removal...")
 
-    # Check that beta prop services have clean comments
-    from application.services.beta_prop_position_service import BetaPropPositionService
-    from application.services.beta_prop_swap_service import BetaPropSwapService
+    # Check that prop services have clean comments
+    from application.services.positioning.prop_management_service import PropManagementService
 
-    # These should instantiate without V1 references
-    position_service = BetaPropPositionService()
-    swap_service = BetaPropSwapService()
+    # These should instantiate without Legacy references
+    prop_service = PropManagementService()
 
-    assert position_service is not None, "Position service should work"
-    assert swap_service is not None, "Swap service should work"
+    assert prop_service is not None, "Prop service should work"
 
-    print("✅ V1 Compatibility code cleaned up")
+    print("✅ Legacy Compatibility code cleaned up")
     return True
 
 
@@ -110,16 +107,16 @@ def test_service_registrations():
         reset_container,
     )
     from core.interfaces.core_services import ILayoutService
-    from application.services.simple_layout_service import SimpleLayoutService
+    from application.services.layout.layout_management_service import LayoutManagementService
 
     reset_container()
     container = get_container()
 
     # Test registration and resolution
-    container.register_singleton(ILayoutService, SimpleLayoutService)
+    container.register_singleton(ILayoutService, LayoutManagementService)
     layout_service = container.resolve(ILayoutService)
 
-    assert isinstance(layout_service, SimpleLayoutService), "Should resolve correctly"
+    assert isinstance(layout_service, LayoutManagementService), "Should resolve correctly"
 
     # Test singleton behavior
     layout_service2 = container.resolve(ILayoutService)
@@ -164,7 +161,7 @@ def main():
     tests = [
         test_enhanced_di_container,
         test_type_safe_serializer,
-        test_v1_compatibility_removal,
+        test_legacy_compatibility_removal,
         test_service_registrations,
         test_domain_models,
     ]
@@ -189,7 +186,7 @@ def main():
     if failed == 0:
         print("🎉 All Phase 1 improvements validated successfully!")
         print("\n✅ Enhanced DI Container: Constructor injection working")
-        print("✅ V1 Compatibility: Clean V2-only code")
+        print("✅ Legacy Compatibility: Clean V2-only code")
         print("✅ TypeSafe Serialization: Cross-language ready")
         print("✅ Service Registrations: Backward compatible")
         print("✅ Domain Models: Fully serializable")

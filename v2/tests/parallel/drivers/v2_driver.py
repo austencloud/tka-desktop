@@ -6,8 +6,8 @@ Driver for TKA V2 application in parallel testing.
 Interfaces with V2's consolidated service architecture and main_widget.py.
 
 LIFECYCLE: SCAFFOLDING
-DELETE_AFTER: V1 deprecation complete
-PURPOSE: Control V2 application for parallel testing with V1
+DELETE_AFTER: Legacy deprecation complete
+PURPOSE: Control V2 application for parallel testing with Legacy
 """
 
 import sys

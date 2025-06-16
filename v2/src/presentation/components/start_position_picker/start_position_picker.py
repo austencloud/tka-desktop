@@ -2,7 +2,7 @@
 Start Position Picker Component for Kinetic Constructor v2
 
 This component handles the initial start position selection that precedes the main option picker.
-It replicates v1's start position selection workflow and visual design.
+It replicates legacy's start position selection workflow and visual design.
 """
 
 from typing import Optional, List
@@ -124,7 +124,7 @@ class StartPositionPicker(QWidget):
     """
     Start position picker component that displays available start positions.
 
-    This component replicates v1's start position selection workflow:
+    This component replicates legacy's start position selection workflow:
     1. Shows available start positions based on grid mode
     2. Displays pictograph previews for each position
     3. Emits selection signal when user chooses a position
@@ -132,7 +132,7 @@ class StartPositionPicker(QWidget):
 
     start_position_selected = pyqtSignal(str)  # Emits selected position key
 
-    # Start position keys for different grid modes (from v1)
+    # Start position keys for different grid modes (from legacy)
     DIAMOND_START_POSITIONS = ["alpha1_alpha1", "beta5_beta5", "gamma11_gamma11"]
     BOX_START_POSITIONS = ["alpha2_alpha2", "beta4_beta4", "gamma12_gamma12"]
 
@@ -257,7 +257,7 @@ class StartPositionPicker(QWidget):
                 if widget:
                     widget.setParent(None)
 
-        # If we have enough width, arrange horizontally like v1
+        # If we have enough width, arrange horizontally like legacy
         if container_width >= total_width_needed + 100:  # +100 for margins
             # Single row layout
             for i, option in enumerate(self.position_options):

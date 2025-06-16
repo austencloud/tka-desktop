@@ -1,6 +1,6 @@
 from typing import Optional
 from PyQt6.QtWidgets import QWidget
-from core.dependency_injection.di_container import SimpleContainer
+from core.dependency_injection.di_container import DIContainer
 from core.interfaces.core_services import ILayoutService
 from core.interfaces.workbench_services import (
     ISequenceWorkbenchService,
@@ -23,7 +23,7 @@ from presentation.components.workbench import ModernSequenceWorkbench
 
 
 def create_modern_workbench(
-    container: SimpleContainer, parent: Optional[QWidget] = None
+    container: DIContainer, parent: Optional[QWidget] = None
 ) -> ModernSequenceWorkbench:
     """Factory function to create a fully configured modern sequence workbench"""
 
@@ -50,7 +50,7 @@ def create_modern_workbench(
     )
 
 
-def configure_workbench_services(container: SimpleContainer) -> None:
+def configure_workbench_services(container: DIContainer) -> None:
     """Configure workbench services in the dependency injection container"""
 
     # Register consolidated services directly

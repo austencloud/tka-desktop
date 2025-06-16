@@ -58,15 +58,15 @@ class TestOptionPickerCrashDebug:
         """DELETE: Reproduce the exact crash scenario"""
         pass
 
-# For exploring V1 behavior:
+# For exploring Legacy behavior:
 @pytest.mark.scaffolding
 @pytest.mark.delete_after("2025-01-30")
 @pytest.mark.exploration
-class TestV1BehaviorExploration:
-    """DELETE: Understand V1 graph editor behavior for parity"""
+class TestLegacyBehaviorExploration:
+    """DELETE: Understand Legacy graph editor behavior for parity"""
     
-    def test_v1_animation_timing(self):
-        """DELETE: Explore V1 animation timing patterns"""
+    def test_legacy_animation_timing(self):
+        """DELETE: Explore Legacy animation timing patterns"""
         pass
 
 # For spike/proof of concept:

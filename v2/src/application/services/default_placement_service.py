@@ -70,7 +70,7 @@ class DefaultPlacementService:
         placement_key: Optional[str] = None,
     ) -> QPointF:
         """
-        Get default adjustment using V1's exact system.
+        Get default adjustment using Legacy's exact system.
 
         Args:
             motion_data: The motion data

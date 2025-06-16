@@ -23,7 +23,7 @@ v2_src_path = os.path.join(os.path.dirname(__file__), "src")
 if v2_src_path not in sys.path:
     sys.path.insert(0, v2_src_path)
 
-from core.dependency_injection.di_container import SimpleContainer
+from core.dependency_injection.di_container import DIContainer
 from src.presentation.factories.workbench_factory import (
     create_modern_workbench,
     configure_workbench_services,
@@ -35,13 +35,7 @@ from src.core.interfaces.core_services import (
     ISequenceDataService,
     IValidationService,
 )
-from src.application.services.simple_layout_service import SimpleLayoutService
-from src.application.services.simple_sequence_service import (
-    SequenceService,
-    SimpleSequenceDataService,
-    SimpleSettingsService,
-    SimpleValidationService,
-)
+
 from src.presentation.components.option_picker.clickable_pictograph_frame import (
     ClickablePictographFrame,
 )

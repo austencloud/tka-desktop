@@ -2,12 +2,12 @@
 Result Comparison Engine
 ========================
 
-Deep comparison engine for validating V1/V2 functional equivalence.
+Deep comparison engine for validating Legacy/V2 functional equivalence.
 Performs sequence data, pictograph data, UI state, and arrow rendering validation.
 
 LIFECYCLE: SCAFFOLDING
-DELETE_AFTER: V1 deprecation complete
-PURPOSE: Compare V1/V2 execution results for functional equivalence validation
+DELETE_AFTER: Legacy deprecation complete
+PURPOSE: Compare Legacy/V2 execution results for functional equivalence validation
 """
 
 from typing import Dict, Any, List, Optional, Tuple, Union
@@ -47,7 +47,7 @@ class FieldDifference:
     """Represents a difference between two field values."""
 
     field_path: str
-    v1_value: Any
+    legacy_value: Any
     v2_value: Any
     difference_type: str
     tolerance_used: float = 0.0
@@ -57,7 +57,7 @@ class FieldDifference:
 
 @dataclass
 class ComparisonResult:
-    """Result of comparing V1 and V2 execution results."""
+    """Result of comparing Legacy and V2 execution results."""
 
     # Overall result
     is_equivalent: bool
@@ -107,21 +107,21 @@ class IResultComparer(ABC):
 
     @abstractmethod
     def compare_results(
-        self, v1_result: Dict[str, Any], v2_result: Dict[str, Any]
+        self, legacy_result: Dict[str, Any], v2_result: Dict[str, Any]
     ) -> ComparisonResult:
-        """Compare V1 and V2 execution results."""
+        """Compare Legacy and V2 execution results."""
         pass
 
     @abstractmethod
     def compare_sequence_data(
-        self, v1_data: Dict[str, Any], v2_data: Dict[str, Any]
+        self, legacy_data: Dict[str, Any], v2_data: Dict[str, Any]
     ) -> ComparisonResult:
         """Compare sequence data between versions."""
         pass
 
     @abstractmethod
     def compare_pictograph_data(
-        self, v1_data: Dict[str, Any], v2_data: Dict[str, Any]
+        self, legacy_data: Dict[str, Any], v2_data: Dict[str, Any]
     ) -> ComparisonResult:
         """Compare pictograph data between versions."""
         pass
@@ -234,9 +234,9 @@ class ResultComparer(IResultComparer):
         ]
 
     def compare_results(
-        self, v1_result: Dict[str, Any], v2_result: Dict[str, Any]
+        self, legacy_result: Dict[str, Any], v2_result: Dict[str, Any]
     ) -> ComparisonResult:
-        """Compare complete V1 and V2 execution results."""
+        """Compare complete Legacy and V2 execution results."""
         import time
 
         start_time = time.time()
@@ -245,14 +245,14 @@ class ResultComparer(IResultComparer):
 
         try:
             # Compare execution success
-            v1_success = v1_result.get("success", False)
+            legacy_success = legacy_result.get("success", False)
             v2_success = v2_result.get("success", False)
 
-            if v1_success != v2_success:
+            if legacy_success != v2_success:
                 result.add_difference(
                     FieldDifference(
                         field_path="execution.success",
-                        v1_value=v1_success,
+                        legacy_value=legacy_success,
                         v2_value=v2_success,
                         difference_type="execution_status_mismatch",
                         is_critical=True,
@@ -261,32 +261,32 @@ class ResultComparer(IResultComparer):
                 )
 
             # Compare execution times (with warning for significant differences)
-            v1_time = v1_result.get("execution_time_ms", 0)
+            legacy_time = legacy_result.get("execution_time_ms", 0)
             v2_time = v2_result.get("execution_time_ms", 0)
 
-            if abs(v1_time - v2_time) > 1000:  # More than 1 second difference
+            if abs(legacy_time - v2_time) > 1000:  # More than 1 second difference
                 result.add_warning(
-                    f"Significant execution time difference: V1={v1_time}ms, V2={v2_time}ms"
+                    f"Significant execution time difference: Legacy={legacy_time}ms, V2={v2_time}ms"
                 )
 
             # Compare data if both executions succeeded
-            if v1_success and v2_success:
-                v1_data = v1_result.get("data", {})
+            if legacy_success and v2_success:
+                legacy_data = legacy_result.get("data", {})
                 v2_data = v2_result.get("data", {})
 
                 # Compare sequence data
-                if "sequence_data" in v1_data and "sequence_data" in v2_data:
+                if "sequence_data" in legacy_data and "sequence_data" in v2_data:
                     seq_result = self.compare_sequence_data(
-                        v1_data["sequence_data"], v2_data["sequence_data"]
+                        legacy_data["sequence_data"], v2_data["sequence_data"]
                     )
                     result.differences.extend(seq_result.differences)
                     result.critical_differences.extend(seq_result.critical_differences)
                     result.warnings.extend(seq_result.warnings)
 
                 # Compare pictograph data
-                if "pictograph_data" in v1_data and "pictograph_data" in v2_data:
+                if "pictograph_data" in legacy_data and "pictograph_data" in v2_data:
                     pic_result = self.compare_pictograph_data(
-                        v1_data["pictograph_data"], v2_data["pictograph_data"]
+                        legacy_data["pictograph_data"], v2_data["pictograph_data"]
                     )
                     result.differences.extend(pic_result.differences)
                     result.critical_differences.extend(pic_result.critical_differences)
@@ -311,7 +311,7 @@ class ResultComparer(IResultComparer):
             result.add_difference(
                 FieldDifference(
                     field_path="comparison.error",
-                    v1_value="N/A",
+                    legacy_value="N/A",
                     v2_value="N/A",
                     difference_type="comparison_error",
                     is_critical=True,
@@ -321,21 +321,21 @@ class ResultComparer(IResultComparer):
             return result
 
     def compare_sequence_data(
-        self, v1_data: Dict[str, Any], v2_data: Dict[str, Any]
+        self, legacy_data: Dict[str, Any], v2_data: Dict[str, Any]
     ) -> ComparisonResult:
         """Compare sequence data between versions."""
         result = ComparisonResult(is_equivalent=True, equivalence_score=1.0)
 
         try:
             # Compare beat count
-            v1_beat_count = v1_data.get("beat_count", 0)
+            legacy_beat_count = legacy_data.get("beat_count", 0)
             v2_beat_count = v2_data.get("beat_count", 0)
 
-            if v1_beat_count != v2_beat_count:
+            if legacy_beat_count != v2_beat_count:
                 result.add_difference(
                     FieldDifference(
                         field_path="sequence_data.beat_count",
-                        v1_value=v1_beat_count,
+                        legacy_value=legacy_beat_count,
                         v2_value=v2_beat_count,
                         difference_type="exact_mismatch",
                         is_critical=True,
@@ -344,14 +344,14 @@ class ResultComparer(IResultComparer):
                 )
 
             # Compare start position
-            v1_start_pos = v1_data.get("start_position", "")
+            legacy_start_pos = legacy_data.get("start_position", "")
             v2_start_pos = v2_data.get("start_position", "")
 
-            if v1_start_pos != v2_start_pos:
+            if legacy_start_pos != v2_start_pos:
                 result.add_difference(
                     FieldDifference(
                         field_path="sequence_data.start_position",
-                        v1_value=v1_start_pos,
+                        legacy_value=legacy_start_pos,
                         v2_value=v2_start_pos,
                         difference_type="exact_mismatch",
                         is_critical=True,
@@ -360,12 +360,12 @@ class ResultComparer(IResultComparer):
                 )
 
             # Compare beats
-            v1_beats = v1_data.get("beats", [])
+            legacy_beats = legacy_data.get("beats", [])
             v2_beats = v2_data.get("beats", [])
 
-            min_beats = min(len(v1_beats), len(v2_beats))
+            min_beats = min(len(legacy_beats), len(v2_beats))
             for i in range(min_beats):
-                beat_result = self._compare_beat_data(v1_beats[i], v2_beats[i], i)
+                beat_result = self._compare_beat_data(legacy_beats[i], v2_beats[i], i)
                 result.differences.extend(beat_result.differences)
                 result.critical_differences.extend(beat_result.critical_differences)
 
@@ -377,7 +377,7 @@ class ResultComparer(IResultComparer):
             result.add_difference(
                 FieldDifference(
                     field_path="sequence_data.comparison_error",
-                    v1_value="N/A",
+                    legacy_value="N/A",
                     v2_value="N/A",
                     difference_type="comparison_error",
                     is_critical=True,
@@ -387,20 +387,20 @@ class ResultComparer(IResultComparer):
             return result
 
     def compare_pictograph_data(
-        self, v1_data: Dict[str, Any], v2_data: Dict[str, Any]
+        self, legacy_data: Dict[str, Any], v2_data: Dict[str, Any]
     ) -> ComparisonResult:
         """Compare pictograph data between versions."""
         result = ComparisonResult(is_equivalent=True, equivalence_score=1.0)
 
         try:
             # Compare arrows
-            v1_arrows = v1_data.get("arrows", {})
+            legacy_arrows = legacy_data.get("arrows", {})
             v2_arrows = v2_data.get("arrows", {})
 
-            for color in set(v1_arrows.keys()) | set(v2_arrows.keys()):
-                if color in v1_arrows and color in v2_arrows:
+            for color in set(legacy_arrows.keys()) | set(v2_arrows.keys()):
+                if color in legacy_arrows and color in v2_arrows:
                     arrow_result = self._compare_arrow_data(
-                        v1_arrows[color], v2_arrows[color], color
+                        legacy_arrows[color], v2_arrows[color], color
                     )
                     result.differences.extend(arrow_result.differences)
                     result.critical_differences.extend(
@@ -410,7 +410,7 @@ class ResultComparer(IResultComparer):
                     result.add_difference(
                         FieldDifference(
                             field_path=f"pictograph_data.arrows.{color}",
-                            v1_value=color in v1_arrows,
+                            legacy_value=color in legacy_arrows,
                             v2_value=color in v2_arrows,
                             difference_type="presence_mismatch",
                             is_critical=True,
@@ -419,13 +419,13 @@ class ResultComparer(IResultComparer):
                     )
 
             # Compare props
-            v1_props = v1_data.get("props", {})
+            legacy_props = legacy_data.get("props", {})
             v2_props = v2_data.get("props", {})
 
-            for color in set(v1_props.keys()) | set(v2_props.keys()):
-                if color in v1_props and color in v2_props:
+            for color in set(legacy_props.keys()) | set(v2_props.keys()):
+                if color in legacy_props and color in v2_props:
                     prop_result = self._compare_prop_data(
-                        v1_props[color], v2_props[color], color
+                        legacy_props[color], v2_props[color], color
                     )
                     result.differences.extend(prop_result.differences)
                     result.critical_differences.extend(prop_result.critical_differences)
@@ -433,7 +433,7 @@ class ResultComparer(IResultComparer):
                     result.add_difference(
                         FieldDifference(
                             field_path=f"pictograph_data.props.{color}",
-                            v1_value=color in v1_props,
+                            legacy_value=color in legacy_props,
                             v2_value=color in v2_props,
                             difference_type="presence_mismatch",
                             is_critical=True,
@@ -449,7 +449,7 @@ class ResultComparer(IResultComparer):
             result.add_difference(
                 FieldDifference(
                     field_path="pictograph_data.comparison_error",
-                    v1_value="N/A",
+                    legacy_value="N/A",
                     v2_value="N/A",
                     difference_type="comparison_error",
                     is_critical=True,
@@ -459,20 +459,20 @@ class ResultComparer(IResultComparer):
             return result
 
     def _compare_beat_data(
-        self, v1_beat: Dict[str, Any], v2_beat: Dict[str, Any], beat_index: int
+        self, legacy_beat: Dict[str, Any], v2_beat: Dict[str, Any], beat_index: int
     ) -> ComparisonResult:
         """Compare individual beat data."""
         result = ComparisonResult(is_equivalent=True, equivalence_score=1.0)
 
         # Compare letter
-        v1_letter = v1_beat.get("letter", "")
+        legacy_letter = legacy_beat.get("letter", "")
         v2_letter = v2_beat.get("letter", "")
 
-        if v1_letter != v2_letter:
+        if legacy_letter != v2_letter:
             result.add_difference(
                 FieldDifference(
                     field_path=f"beats[{beat_index}].letter",
-                    v1_value=v1_letter,
+                    legacy_value=legacy_letter,
                     v2_value=v2_letter,
                     difference_type="exact_mismatch",
                     is_critical=True,
@@ -481,16 +481,16 @@ class ResultComparer(IResultComparer):
             )
 
         # Compare duration
-        v1_duration = v1_beat.get("duration", 1)
+        legacy_duration = legacy_beat.get("duration", 1)
         v2_duration = v2_beat.get("duration", 1)
 
         if not self._values_within_tolerance(
-            v1_duration, v2_duration, self.default_tolerance
+            legacy_duration, v2_duration, self.default_tolerance
         ):
             result.add_difference(
                 FieldDifference(
                     field_path=f"beats[{beat_index}].duration",
-                    v1_value=v1_duration,
+                    legacy_value=legacy_duration,
                     v2_value=v2_duration,
                     difference_type="numeric_tolerance_exceeded",
                     tolerance_used=self.default_tolerance,
@@ -500,13 +500,13 @@ class ResultComparer(IResultComparer):
             )
 
         # Compare motions
-        v1_motions = v1_beat.get("motions", {})
+        legacy_motions = legacy_beat.get("motions", {})
         v2_motions = v2_beat.get("motions", {})
 
-        for color in set(v1_motions.keys()) | set(v2_motions.keys()):
-            if color in v1_motions and color in v2_motions:
+        for color in set(legacy_motions.keys()) | set(v2_motions.keys()):
+            if color in legacy_motions and color in v2_motions:
                 motion_result = self._compare_motion_data(
-                    v1_motions[color], v2_motions[color], beat_index, color
+                    legacy_motions[color], v2_motions[color], beat_index, color
                 )
                 result.differences.extend(motion_result.differences)
                 result.critical_differences.extend(motion_result.critical_differences)
@@ -514,7 +514,7 @@ class ResultComparer(IResultComparer):
                 result.add_difference(
                     FieldDifference(
                         field_path=f"beats[{beat_index}].motions.{color}",
-                        v1_value=color in v1_motions,
+                        legacy_value=color in legacy_motions,
                         v2_value=color in v2_motions,
                         difference_type="presence_mismatch",
                         is_critical=True,
@@ -526,7 +526,7 @@ class ResultComparer(IResultComparer):
 
     def _compare_motion_data(
         self,
-        v1_motion: Dict[str, Any],
+        legacy_motion: Dict[str, Any],
         v2_motion: Dict[str, Any],
         beat_index: int,
         color: str,
@@ -537,14 +537,14 @@ class ResultComparer(IResultComparer):
         motion_fields = ["motion_type", "start_ori", "end_ori", "start_loc", "end_loc"]
 
         for field in motion_fields:
-            v1_value = v1_motion.get(field, "")
+            legacy_value = legacy_motion.get(field, "")
             v2_value = v2_motion.get(field, "")
 
-            if v1_value != v2_value:
+            if legacy_value != v2_value:
                 result.add_difference(
                     FieldDifference(
                         field_path=f"beats[{beat_index}].motions.{color}.{field}",
-                        v1_value=v1_value,
+                        legacy_value=legacy_value,
                         v2_value=v2_value,
                         difference_type="exact_mismatch",
                         is_critical=True,
@@ -553,16 +553,16 @@ class ResultComparer(IResultComparer):
                 )
 
         # Compare turns with tolerance
-        v1_turns = v1_motion.get("turns", 0)
+        legacy_turns = legacy_motion.get("turns", 0)
         v2_turns = v2_motion.get("turns", 0)
 
         if not self._values_within_tolerance(
-            v1_turns, v2_turns, self.default_tolerance
+            legacy_turns, v2_turns, self.default_tolerance
         ):
             result.add_difference(
                 FieldDifference(
                     field_path=f"beats[{beat_index}].motions.{color}.turns",
-                    v1_value=v1_turns,
+                    legacy_value=legacy_turns,
                     v2_value=v2_turns,
                     difference_type="numeric_tolerance_exceeded",
                     tolerance_used=self.default_tolerance,
@@ -574,20 +574,20 @@ class ResultComparer(IResultComparer):
         return result
 
     def _compare_arrow_data(
-        self, v1_arrow: Dict[str, Any], v2_arrow: Dict[str, Any], color: str
+        self, legacy_arrow: Dict[str, Any], v2_arrow: Dict[str, Any], color: str
     ) -> ComparisonResult:
         """Compare individual arrow data."""
         result = ComparisonResult(is_equivalent=True, equivalence_score=1.0)
 
         # Compare position with tolerance
-        v1_x = v1_arrow.get("position_x", 0)
+        legacy_x = legacy_arrow.get("position_x", 0)
         v2_x = v2_arrow.get("position_x", 0)
 
-        if not self._values_within_tolerance(v1_x, v2_x, self.position_tolerance):
+        if not self._values_within_tolerance(legacy_x, v2_x, self.position_tolerance):
             result.add_difference(
                 FieldDifference(
                     field_path=f"arrows.{color}.position_x",
-                    v1_value=v1_x,
+                    legacy_value=legacy_x,
                     v2_value=v2_x,
                     difference_type="numeric_tolerance_exceeded",
                     tolerance_used=self.position_tolerance,
@@ -596,14 +596,14 @@ class ResultComparer(IResultComparer):
                 )
             )
 
-        v1_y = v1_arrow.get("position_y", 0)
+        legacy_y = legacy_arrow.get("position_y", 0)
         v2_y = v2_arrow.get("position_y", 0)
 
-        if not self._values_within_tolerance(v1_y, v2_y, self.position_tolerance):
+        if not self._values_within_tolerance(legacy_y, v2_y, self.position_tolerance):
             result.add_difference(
                 FieldDifference(
                     field_path=f"arrows.{color}.position_y",
-                    v1_value=v1_y,
+                    legacy_value=legacy_y,
                     v2_value=v2_y,
                     difference_type="numeric_tolerance_exceeded",
                     tolerance_used=self.position_tolerance,
@@ -613,16 +613,16 @@ class ResultComparer(IResultComparer):
             )
 
         # Compare rotation with tolerance
-        v1_rotation = v1_arrow.get("rotation_angle", 0)
+        legacy_rotation = legacy_arrow.get("rotation_angle", 0)
         v2_rotation = v2_arrow.get("rotation_angle", 0)
 
         if not self._values_within_tolerance(
-            v1_rotation, v2_rotation, self.rotation_tolerance
+            legacy_rotation, v2_rotation, self.rotation_tolerance
         ):
             result.add_difference(
                 FieldDifference(
                     field_path=f"arrows.{color}.rotation_angle",
-                    v1_value=v1_rotation,
+                    legacy_value=legacy_rotation,
                     v2_value=v2_rotation,
                     difference_type="numeric_tolerance_exceeded",
                     tolerance_used=self.rotation_tolerance,
@@ -634,14 +634,14 @@ class ResultComparer(IResultComparer):
         # Compare exact fields
         exact_fields = ["color", "is_mirrored"]
         for field in exact_fields:
-            v1_value = v1_arrow.get(field)
+            legacy_value = legacy_arrow.get(field)
             v2_value = v2_arrow.get(field)
 
-            if v1_value != v2_value:
+            if legacy_value != v2_value:
                 result.add_difference(
                     FieldDifference(
                         field_path=f"arrows.{color}.{field}",
-                        v1_value=v1_value,
+                        legacy_value=legacy_value,
                         v2_value=v2_value,
                         difference_type="exact_mismatch",
                         is_critical=True,
@@ -652,7 +652,7 @@ class ResultComparer(IResultComparer):
         return result
 
     def _compare_prop_data(
-        self, v1_prop: Dict[str, Any], v2_prop: Dict[str, Any], color: str
+        self, legacy_prop: Dict[str, Any], v2_prop: Dict[str, Any], color: str
     ) -> ComparisonResult:
         """Compare individual prop data."""
         result = ComparisonResult(is_equivalent=True, equivalence_score=1.0)
@@ -660,16 +660,16 @@ class ResultComparer(IResultComparer):
         # Compare position with tolerance
         position_fields = ["position_x", "position_y"]
         for field in position_fields:
-            v1_value = v1_prop.get(field, 0)
+            legacy_value = legacy_prop.get(field, 0)
             v2_value = v2_prop.get(field, 0)
 
             if not self._values_within_tolerance(
-                v1_value, v2_value, self.position_tolerance
+                legacy_value, v2_value, self.position_tolerance
             ):
                 result.add_difference(
                     FieldDifference(
                         field_path=f"props.{color}.{field}",
-                        v1_value=v1_value,
+                        legacy_value=legacy_value,
                         v2_value=v2_value,
                         difference_type="numeric_tolerance_exceeded",
                         tolerance_used=self.position_tolerance,
@@ -679,16 +679,16 @@ class ResultComparer(IResultComparer):
                 )
 
         # Compare rotation with tolerance
-        v1_rotation = v1_prop.get("rotation_angle", 0)
+        legacy_rotation = legacy_prop.get("rotation_angle", 0)
         v2_rotation = v2_prop.get("rotation_angle", 0)
 
         if not self._values_within_tolerance(
-            v1_rotation, v2_rotation, self.rotation_tolerance
+            legacy_rotation, v2_rotation, self.rotation_tolerance
         ):
             result.add_difference(
                 FieldDifference(
                     field_path=f"props.{color}.rotation_angle",
-                    v1_value=v1_rotation,
+                    legacy_value=legacy_rotation,
                     v2_value=v2_rotation,
                     difference_type="numeric_tolerance_exceeded",
                     tolerance_used=self.rotation_tolerance,
@@ -700,14 +700,14 @@ class ResultComparer(IResultComparer):
         # Compare exact fields
         exact_fields = ["color", "prop_type"]
         for field in exact_fields:
-            v1_value = v1_prop.get(field, "")
+            legacy_value = legacy_prop.get(field, "")
             v2_value = v2_prop.get(field, "")
 
-            if v1_value != v2_value:
+            if legacy_value != v2_value:
                 result.add_difference(
                     FieldDifference(
                         field_path=f"props.{color}.{field}",
-                        v1_value=v1_value,
+                        legacy_value=legacy_value,
                         v2_value=v2_value,
                         difference_type="exact_mismatch",
                         is_critical=True,
@@ -718,27 +718,30 @@ class ResultComparer(IResultComparer):
         return result
 
     def _values_within_tolerance(
-        self, v1_value: Union[int, float], v2_value: Union[int, float], tolerance: float
+        self,
+        legacy_value: Union[int, float],
+        v2_value: Union[int, float],
+        tolerance: float,
     ) -> bool:
         """Check if two numeric values are within tolerance."""
         try:
-            return abs(float(v1_value) - float(v2_value)) <= tolerance
+            return abs(float(legacy_value) - float(v2_value)) <= tolerance
         except (ValueError, TypeError):
-            return v1_value == v2_value
+            return legacy_value == v2_value
 
 
 class TKADataNormalizer:
     """
     TKA-specific data normalizer based on verified domain model.
 
-    Handles the actual V1/V2 differences discovered through codebase analysis:
-    - V1 uses "shift" as motion type, V2 maps it to "pro"
+    Handles the actual Legacy/V2 differences discovered through codebase analysis:
+    - Legacy uses "shift" as motion type, V2 maps it to "pro"
     - Both versions use "prop_rot_dir" field name (no change needed)
-    - Motion type hierarchy: shift contains [pro, anti, float] in V1
+    - Motion type hierarchy: shift contains [pro, anti, float] in Legacy
     """
 
     def __init__(self):
-        # VERIFIED: V1 and V2 use IDENTICAL motion type values
+        # VERIFIED: Legacy and V2 use IDENTICAL motion type values
         # NO MAPPING NEEDED - both versions use same motion type strings
         self.motion_type_mappings = {
             # Direct 1:1 mappings - no conversion needed
@@ -770,33 +773,35 @@ class TKADataNormalizer:
             "counter_clockwise": "ccw",
         }
 
-    def normalize_v1_motion_data(self, v1_motion: Dict[str, Any]) -> Dict[str, Any]:
+    def normalize_legacy_motion_data(
+        self, legacy_motion: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
-        Normalize V1 motion data to standardized format for comparison.
+        Normalize Legacy motion data to standardized format for comparison.
 
-        Based on verified V1 MotionState structure:
+        Based on verified Legacy MotionState structure:
         - motion_type, turns, start_loc, end_loc, start_ori, end_ori, prop_rot_dir
         """
         normalized = {}
 
-        # Handle motion type (no mapping needed - V1 and V2 use same values)
-        v1_motion_type = v1_motion.get("motion_type", "static")
-        normalized["motion_type"] = v1_motion_type
+        # Handle motion type (no mapping needed - Legacy and V2 use same values)
+        legacy_motion_type = legacy_motion.get("motion_type", "static")
+        normalized["motion_type"] = legacy_motion_type
 
         # Handle turns (can be int, float, or "fl" for float)
-        turns = v1_motion.get("turns", 0)
+        turns = legacy_motion.get("turns", 0)
         if turns == "fl":
             normalized["turns"] = -0.5  # Float motion special case
         else:
             normalized["turns"] = float(turns) if turns is not None else 0.0
 
         # Direct field mappings (verified same in both versions)
-        for v1_field, v2_field in self.field_mappings.items():
-            if v1_field in v1_motion:
-                normalized[v2_field] = v1_motion[v1_field]
+        for legacy_field, v2_field in self.field_mappings.items():
+            if legacy_field in legacy_motion:
+                normalized[v2_field] = legacy_motion[legacy_field]
 
         # Handle rotation direction normalization
-        prop_rot_dir = v1_motion.get("prop_rot_dir", "no_rot")
+        prop_rot_dir = legacy_motion.get("prop_rot_dir", "no_rot")
         normalized["prop_rot_dir"] = self.rotation_mappings.get(
             prop_rot_dir, prop_rot_dir
         )
@@ -842,25 +847,25 @@ class TKADataNormalizer:
 
         return normalized
 
-    def normalize_v1_beat_data(self, v1_beat: Dict[str, Any]) -> Dict[str, Any]:
+    def normalize_legacy_beat_data(self, legacy_beat: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Normalize V1 beat data based on verified V1 structure.
+        Normalize Legacy beat data based on verified Legacy structure.
 
-        V1 beat data comes from beat.state.pictograph_data with structure:
+        Legacy beat data comes from beat.state.pictograph_data with structure:
         - letter, duration, blue_attributes, red_attributes
         """
         normalized = {
-            "letter": v1_beat.get("letter", ""),
-            "duration": float(v1_beat.get("duration", 1.0)),
+            "letter": legacy_beat.get("letter", ""),
+            "duration": float(legacy_beat.get("duration", 1.0)),
             "motions": {},
         }
 
-        # Extract motion data from V1 attributes structure
+        # Extract motion data from Legacy attributes structure
         for color in ["blue", "red"]:
             attr_key = f"{color}_attributes"
-            if attr_key in v1_beat:
-                motion_attrs = v1_beat[attr_key]
-                normalized["motions"][color] = self.normalize_v1_motion_data(
+            if attr_key in legacy_beat:
+                motion_attrs = legacy_beat[attr_key]
+                normalized["motions"][color] = self.normalize_legacy_motion_data(
                     motion_attrs
                 )
 

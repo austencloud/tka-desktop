@@ -30,15 +30,19 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import QTimer, pyqtSignal
 
+from application.services.layout.layout_management_service import (
+    LayoutManagementService,
+)
+from core.interfaces.core_services import ILayoutManagementService
+
 # Add v2 to path
 v2_path = Path(__file__).parent
 if str(v2_path) not in sys.path:
     sys.path.insert(0, str(v2_path))
 
 try:
-    from core.dependency_injection.di_container import SimpleContainer
+    from core.dependency_injection.di_container import DIContainer
     from src.core.interfaces.core_services import ILayoutService
-    from src.application.services.simple_layout_service import SimpleLayoutService
     from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
     from src.domain.models.core_models import SequenceData, BeatData
 except ImportError as e:
@@ -94,8 +98,10 @@ class UIBugTestWindow(QMainWindow):
 
         # Create the construct tab widget for testing
         try:
-            container = SimpleContainer()
-            container.register_singleton(ILayoutService, SimpleLayoutService)
+            container = DIContainer()
+            container.register_singleton(
+                ILayoutManagementService, LayoutManagementService
+            )
 
             self.construct_tab = ConstructTabWidget(container, parent=self)
             layout.addWidget(self.construct_tab)

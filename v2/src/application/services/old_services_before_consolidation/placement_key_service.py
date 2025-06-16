@@ -25,7 +25,7 @@ class PlacementKeyService:
         prop_state: str = "alpha",
     ) -> str:
         """
-        Generate placement key using V1's logic.
+        Generate placement key using Legacy's logic.
 
         Args:
             motion_data: The motion data

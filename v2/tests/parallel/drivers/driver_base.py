@@ -2,12 +2,12 @@
 Base Driver Interface
 ====================
 
-Common interface and utilities for V1 and V2 application drivers.
+Common interface and utilities for Legacy and V2 application drivers.
 Provides standardized methods for application control and data extraction.
 
 LIFECYCLE: SCAFFOLDING
-DELETE_AFTER: V1 deprecation complete
-PURPOSE: Common interface for V1/V2 application drivers in parallel testing
+DELETE_AFTER: Legacy deprecation complete
+PURPOSE: Common interface for Legacy/V2 application drivers in parallel testing
 """
 
 from abc import ABC, abstractmethod

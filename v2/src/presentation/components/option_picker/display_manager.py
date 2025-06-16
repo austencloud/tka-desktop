@@ -8,7 +8,7 @@ from .letter_types import LetterType
 
 
 class OptionPickerDisplayManager:
-    """V1-style simple display manager - just add sections to layout"""
+    """Legacy-style simple display manager - just add sections to layout"""
 
     def __init__(
         self,
@@ -24,7 +24,7 @@ class OptionPickerDisplayManager:
         self._sections: Dict[str, OptionPickerSection] = {}
 
     def create_sections(self) -> None:
-        """V1-style: Create sections with single-row layout for sections 4,5,6"""
+        """Legacy-style: Create sections with single-row layout for sections 4,5,6"""
         from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
         # Create sections 1, 2, 3 normally (vertical layout)
@@ -37,7 +37,7 @@ class OptionPickerDisplayManager:
             self._sections[section_type] = section
             self.sections_layout.addWidget(section)
 
-        # V1-style: Create transparent horizontal container for sections 4, 5, 6
+        # Legacy-style: Create transparent horizontal container for sections 4, 5, 6
         self.bottom_row_container = QWidget(self.sections_container)
         self.bottom_row_container.setStyleSheet(
             "background: transparent; border: none;"
@@ -84,7 +84,7 @@ class OptionPickerDisplayManager:
             self.bottom_row_container.setVisible(True)
             self.bottom_row_container.show()
 
-    # V1 approach: no finalization needed, QVBoxLayout just works!
+    # Legacy approach: no finalization needed, QVBoxLayout just works!
 
     def update_beat_display(self, beat_options: List[BeatData]) -> None:
         """Optimized: Batch update beat display for instant performance"""
@@ -102,7 +102,7 @@ class OptionPickerDisplayManager:
 
         # Step 1: Clear all sections in one pass
         for section in self._sections.values():
-            section.clear_pictographs_v1_style()
+            section.clear_pictographs_legacy_style()
 
         # Step 2: Pre-categorize beats by letter type to minimize lookups
         beats_by_type = {}
@@ -132,7 +132,7 @@ class OptionPickerDisplayManager:
 
         # Clear existing pictographs
         for section in self._sections.values():
-            section.clear_pictographs_v1_style()
+            section.clear_pictographs_legacy_style()
 
         # Add new pictographs to sections
         pool_index = 0
@@ -152,7 +152,7 @@ class OptionPickerDisplayManager:
                         target_section.add_pictograph_from_pool(frame)
                         pool_index += 1
 
-    # V1 approach: no complex visibility forcing needed
+    # Legacy approach: no complex visibility forcing needed
 
     def get_sections(self) -> Dict[str, OptionPickerSection]:
         """Get all sections"""

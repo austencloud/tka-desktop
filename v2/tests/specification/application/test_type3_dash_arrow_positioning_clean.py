@@ -77,8 +77,8 @@ def convert_pictograph_to_beat_data(
     pictograph_data: Dict[str, Any], conversion_service: DataConversionService
 ) -> BeatData:
     """Convert pictograph data from service to BeatData format."""
-    # Create V1-style data structure for conversion
-    v1_data = {
+    # Create Legacy-style data structure for conversion
+    legacy_data = {
         "letter": pictograph_data["letter"],
         "blue_attributes": {
             "motion_type": pictograph_data["blue_motion"]["motion_type"],
@@ -98,7 +98,7 @@ def convert_pictograph_to_beat_data(
         "timing": pictograph_data.get("timing", "together"),
     }
 
-    return conversion_service.convert_v1_pictograph_to_beat_data(v1_data)
+    return conversion_service.convert_legacy_pictograph_to_beat_data(legacy_data)
 
 
 def create_pictograph_from_beat_data(beat_data: BeatData) -> PictographData:
@@ -421,7 +421,7 @@ class TestType3DashArrowPositioning:
         )
 
         # In Type 3, dash should avoid the shift end location (South)
-        # Based on V1 logic, East→West dash should avoid South by going to North
+        # Based on Legacy logic, East→West dash should avoid South by going to North
         assert (
             dash_location == Location.NORTH
         ), f"Expected North but got {dash_location}"
@@ -458,7 +458,7 @@ class TestType3DashArrowPositioning:
 
         dash_location = positioning_service._calculate_dash_arrow_location(dash_motion)
 
-        # Based on V1 logic, North→South dash should go to East (avoiding West)
+        # Based on Legacy logic, North→South dash should go to East (avoiding West)
         assert dash_location == Location.EAST
 
     def test_type3_diagonal_shift_with_dash_avoidance(self, positioning_service):

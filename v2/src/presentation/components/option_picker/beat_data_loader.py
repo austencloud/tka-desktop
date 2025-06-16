@@ -123,7 +123,7 @@ class BeatDataLoader(QObject):
                     elif hasattr(option_data, "get"):
                         # It's a dictionary, convert it to BeatData
                         beat_data = (
-                            conversion_service.convert_v1_pictograph_to_beat_data(
+                            conversion_service.convert_legacy_pictograph_to_beat_data(
                                 option_data
                             )
                         )
@@ -147,7 +147,7 @@ class BeatDataLoader(QObject):
     def _extract_end_position(
         self, last_beat: Dict[str, Any], position_service: "PositionMatchingService"
     ) -> Optional[str]:
-        """Extract end position from last beat data using V1-compatible logic"""
+        """Extract end position from last beat data using Legacy-compatible logic"""
         if "end_pos" in last_beat:
             end_pos = last_beat.get("end_pos")
             return end_pos
@@ -156,7 +156,7 @@ class BeatDataLoader(QObject):
             end_pos = last_beat["metadata"].get("end_pos")
             return end_pos
 
-        # Extract from motion data (V1 logic)
+        # Extract from motion data (Legacy logic)
         if self._has_motion_attributes(last_beat):
             end_pos = self._calculate_end_position_from_motions(last_beat)
             if end_pos:
@@ -267,7 +267,7 @@ class BeatDataLoader(QObject):
     def refresh_options_from_sequence(
         self, sequence_data: List[Dict[str, Any]]
     ) -> List[BeatData]:
-        """Refresh options based on provided sequence data (V1-compatible)"""
+        """Refresh options based on provided sequence data (Legacy-compatible)"""
         if not sequence_data or len(sequence_data) <= 1:
             return self.load_beat_options()
 
@@ -325,7 +325,7 @@ class BeatDataLoader(QObject):
             try:
                 for option_data in dict_objects:
                     beat_data = (
-                        self.conversion_service.convert_v1_pictograph_to_beat_data(
+                        self.conversion_service.convert_legacy_pictograph_to_beat_data(
                             option_data
                         )
                     )

@@ -61,7 +61,7 @@ class VTGGlyphRenderer:
         """
         Position the VTG glyph in the pictograph.
 
-        Based on v1 positioning logic from vtg_glyph.py:
+        Based on legacy positioning logic from vtg_glyph.py:
         - Positioned in the bottom-right area of the pictograph
         - 4% offset from edges
         """

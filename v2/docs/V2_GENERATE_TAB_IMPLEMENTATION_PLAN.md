@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the complete implementation plan for porting the generate tab from V1 to V2, maintaining the exact same left-side sequence workbench while rebuilding the right panel using V2's modern dependency injection architecture.
+This document outlines the complete implementation plan for porting the generate tab from Legacy to V2, maintaining the exact same left-side sequence workbench while rebuilding the right panel using V2's modern dependency injection architecture.
 
 ## Key Requirements Analysis
 
@@ -15,7 +15,7 @@ This document outlines the complete implementation plan for porting the generate
 
 ### 2. Right Panel Transformation
 
-- **V1 Generate Panel** → **V2 Modern Generate Panel**
+- **Legacy Generate Panel** → **V2 Modern Generate Panel**
 - **Legacy widget hierarchy** → **Clean component composition**
 - **Global state access** → **Dependency injection**
 - **Tight coupling** → **Loose coupling via events**
@@ -28,9 +28,9 @@ This document outlines the complete implementation plan for porting the generate
 - **Event-driven communication** between components
 - **Clean separation** of presentation, application, and domain layers
 
-## V1 Generate Tab Analysis
+## Legacy Generate Tab Analysis
 
-### Current V1 Structure
+### Current Legacy Structure
 
 ```
 GenerateTab (QWidget)
@@ -54,7 +54,7 @@ GenerateTab (QWidget)
 └── Settings Integration (persists user choices)
 ```
 
-### Data Flow Pipeline (V1)
+### Data Flow Pipeline (Legacy)
 
 ```
 1. User Selection → UI Components → Settings Storage
@@ -146,7 +146,7 @@ class GenerationResult:
 
 ### Phase 2: Service Implementation (Day 2)
 
-1. **Implement GenerationService** - port V1 sequence builders to service layer
+1. **Implement GenerationService** - port Legacy sequence builders to service layer
 2. **Implement ConfigurationService** - handle user settings and persistence
 3. **Create generation validation logic** - ensure parameter validation
 4. **Set up event system** for generation status updates
@@ -169,7 +169,7 @@ class GenerationResult:
 ### Phase 5: Data Flow & Testing (Day 5)
 
 1. **End-to-end data flow** testing
-2. **V1 parity verification** - exact same functionality
+2. **Legacy parity verification** - exact same functionality
 3. **Performance optimization** - ensure no regression
 4. **Error handling** - comprehensive error states
 
@@ -184,9 +184,9 @@ class GenerationResult:
 - Pass the same service instances to both tabs
 - Ensure state synchronization via shared `ISequenceDataService`
 
-### Challenge 2: V1 Generation Logic Complexity
+### Challenge 2: Legacy Generation Logic Complexity
 
-**Problem**: V1 has complex sequence builders with intricate logic
+**Problem**: Legacy has complex sequence builders with intricate logic
 **Solution**:
 
 - **Port, don't rewrite** the core generation algorithms
@@ -433,7 +433,7 @@ class GenerationModeSelector(QWidget):
 
 ### Week 4: Validation & Deployment
 
-- V1 parity verification
+- Legacy parity verification
 - User acceptance testing
 - Bug fixes and refinements
 - Deployment preparation
@@ -442,10 +442,10 @@ class GenerationModeSelector(QWidget):
 
 ### Functional Requirements
 
-- ✅ **Exact V1 functionality** - no feature regression
+- ✅ **Exact Legacy functionality** - no feature regression
 - ✅ **Identical left-side behavior** - shared workbench works perfectly
 - ✅ **Seamless tab switching** - no visual glitches or state loss
-- ✅ **All generation modes** work identically to V1
+- ✅ **All generation modes** work identically to Legacy
 
 ### Technical Requirements
 
@@ -463,9 +463,9 @@ class GenerationModeSelector(QWidget):
 
 ### Performance Requirements
 
-- ✅ **No speed regression** - generation performance matches V1
+- ✅ **No speed regression** - generation performance matches Legacy
 - ✅ **Responsive UI** - no blocking operations
 - ✅ **Efficient memory usage** - proper resource management
 - ✅ **Fast tab switching** - instant response to user actions
 
-This implementation plan ensures we deliver a beautiful, modern generate tab that maintains perfect V1 functionality while showcasing the power of V2's architecture.
+This implementation plan ensures we deliver a beautiful, modern generate tab that maintains perfect Legacy functionality while showcasing the power of V2's architecture.

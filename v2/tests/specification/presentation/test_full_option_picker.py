@@ -23,7 +23,7 @@ def test_full_option_picker_workflow():
         # Import required modules
         from PyQt6.QtWidgets import QApplication, QWidget
         from PyQt6.QtCore import Qt
-        from core.dependency_injection.di_container import SimpleContainer
+        from core.dependency_injection.di_container import DIContainer
         from presentation.components.option_picker import OptionPicker
 
         # Create QApplication if it doesn't exist
@@ -33,7 +33,7 @@ def test_full_option_picker_workflow():
 
         # Create container and option picker
         print("🏗️ Creating option picker...")
-        container = SimpleContainer()
+        container = DIContainer()
         option_picker = OptionPicker(container)
 
         # Initialize the option picker

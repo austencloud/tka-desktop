@@ -146,7 +146,7 @@ class ClickablePictographFrame(QFrame):
             print(f"❌ Error in resize_frame: {e}")
 
     def update_beat_data(self, beat_data: BeatData) -> None:
-        """Update the frame's content with new beat data (V1-style reuse pattern)"""
+        """Update the frame's content with new beat data (Legacy-style reuse pattern)"""
         self.beat_data = beat_data
         if self.pictograph_component:
             # Reconfigure context for new beat data (important for letter type colors)

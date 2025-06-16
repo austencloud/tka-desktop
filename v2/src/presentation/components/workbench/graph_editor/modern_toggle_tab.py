@@ -171,7 +171,7 @@ class ModernToggleTab(QWidget):
 
         # Initial position based on positioning style
         if self._positioning_style == "left":
-            # V1-style left positioning
+            # Legacy-style left positioning
             x = 20  # 20px margin from left edge
         else:
             # Default center positioning
@@ -186,7 +186,7 @@ class ModernToggleTab(QWidget):
         self.show()
 
     def update_position(self, animate=True):
-        """Update position to hug the top of graph editor frame (V1-exact behavior)"""
+        """Update position to hug the top of graph editor frame (Legacy-exact behavior)"""
         if not self._graph_editor._parent_workbench:
             return
 
@@ -198,7 +198,7 @@ class ModernToggleTab(QWidget):
 
         # Calculate horizontal position based on positioning style
         if self._positioning_style == "left":
-            # V1-style left positioning
+            # Legacy-style left positioning
             x = 20  # 20px margin from left edge
         else:
             # Default center positioning
@@ -232,7 +232,7 @@ class ModernToggleTab(QWidget):
         self.raise_()
 
     def resizeEvent(self, event):
-        """Handle resize events like V1 toggle tab"""
+        """Handle resize events like Legacy toggle tab"""
         super().resizeEvent(event)
         # Update position when the tab itself is resized (no animation during resize)
         self.update_position(animate=False)

@@ -3,11 +3,11 @@
 Data Structure Verification Script
 ==================================
 
-Comprehensive verification of V1/V2 data structures and access patterns
+Comprehensive verification of Legacy/V2 data structures and access patterns
 before deploying parallel testing framework.
 
 LIFECYCLE: SCAFFOLDING
-DELETE_AFTER: V1 deprecation complete
+DELETE_AFTER: Legacy deprecation complete
 PURPOSE: Verify 100% accuracy of data extraction patterns
 """
 
@@ -23,7 +23,7 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(parallel_test_dir))
 
 # Import with absolute paths
-from drivers.v1_driver import V1ApplicationDriver
+from drivers.legacy_driver import LegacyApplicationDriver
 from drivers.v2_driver import V2ApplicationDriver
 from comparison.result_comparer import TKADataNormalizer
 
@@ -40,30 +40,30 @@ def setup_logging():
     )
 
 
-def verify_v1_data_access():
-    """Verify V1 data access patterns work correctly."""
-    print("🔍 VERIFYING V1 DATA ACCESS PATTERNS")
+def verify_legacy_data_access():
+    """Verify Legacy data access patterns work correctly."""
+    print("🔍 VERIFYING Legacy DATA ACCESS PATTERNS")
     print("=" * 50)
 
     try:
-        # Create V1 driver
-        v1_driver = V1ApplicationDriver(Path("test_data/v1"))
+        # Create Legacy driver
+        legacy_driver = LegacyApplicationDriver(Path("test_data/legacy"))
 
-        # Test V1 startup
-        print("1. Testing V1 application startup...")
-        if v1_driver.start_application():
-            print("   ✅ V1 application started successfully")
+        # Test Legacy startup
+        print("1. Testing Legacy application startup...")
+        if legacy_driver.start_application():
+            print("   ✅ Legacy application started successfully")
 
             # Wait for ready
-            if v1_driver.wait_for_ready(timeout_ms=30000):
-                print("   ✅ V1 application ready")
+            if legacy_driver.wait_for_ready(timeout_ms=30000):
+                print("   ✅ Legacy application ready")
 
                 # Test data extraction
-                print("2. Testing V1 data extraction...")
+                print("2. Testing Legacy data extraction...")
 
                 # Extract sequence data
-                sequence_data = v1_driver.extract_sequence_data()
-                print(f"   📊 V1 Sequence Data Structure:")
+                sequence_data = legacy_driver.extract_sequence_data()
+                print(f"   📊 Legacy Sequence Data Structure:")
                 print(f"      - Beat Count: {sequence_data.get('beat_count', 0)}")
                 print(f"      - Version: {sequence_data.get('version', 'Unknown')}")
                 print(
@@ -99,22 +99,22 @@ def verify_v1_data_access():
                         )
                         print(f"        * End Loc: {motion_data.get('end_loc', 'N/A')}")
 
-                print("   ✅ V1 data extraction successful")
+                print("   ✅ Legacy data extraction successful")
 
             else:
-                print("   ❌ V1 application not ready")
+                print("   ❌ Legacy application not ready")
                 return False
         else:
-            print("   ❌ V1 application startup failed")
+            print("   ❌ Legacy application startup failed")
             return False
 
         # Cleanup
-        v1_driver.stop_application()
-        print("   🧹 V1 application stopped")
+        legacy_driver.stop_application()
+        print("   🧹 Legacy application stopped")
         return True
 
     except Exception as e:
-        print(f"   ❌ V1 verification failed: {e}")
+        print(f"   ❌ Legacy verification failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -211,9 +211,9 @@ def verify_data_normalization():
     try:
         normalizer = TKADataNormalizer()
 
-        # Test V1 motion data normalization
-        print("1. Testing V1 motion data normalization...")
-        v1_motion_sample = {
+        # Test Legacy motion data normalization
+        print("1. Testing Legacy motion data normalization...")
+        legacy_motion_sample = {
             "motion_type": "pro",
             "prop_rot_dir": "cw",
             "turns": 1.0,
@@ -223,9 +223,11 @@ def verify_data_normalization():
             "end_ori": "out",
         }
 
-        normalized_v1 = normalizer.normalize_v1_motion_data(v1_motion_sample)
-        print(f"   📊 V1 Motion Normalized:")
-        for key, value in normalized_v1.items():
+        normalized_legacy = normalizer.normalize_legacy_motion_data(
+            legacy_motion_sample
+        )
+        print(f"   📊 Legacy Motion Normalized:")
+        for key, value in normalized_legacy.items():
             print(f"      - {key}: {value}")
 
         # Test V2 motion data normalization
@@ -247,15 +249,15 @@ def verify_data_normalization():
 
         # Verify they match
         print("3. Testing normalization equivalence...")
-        if normalized_v1 == normalized_v2:
-            print("   ✅ V1 and V2 normalization produces identical results")
+        if normalized_legacy == normalized_v2:
+            print("   ✅ Legacy and V2 normalization produces identical results")
         else:
-            print("   ❌ V1 and V2 normalization differs:")
-            for key in set(normalized_v1.keys()) | set(normalized_v2.keys()):
-                v1_val = normalized_v1.get(key, "MISSING")
+            print("   ❌ Legacy and V2 normalization differs:")
+            for key in set(normalized_legacy.keys()) | set(normalized_v2.keys()):
+                legacy_val = normalized_legacy.get(key, "MISSING")
                 v2_val = normalized_v2.get(key, "MISSING")
-                if v1_val != v2_val:
-                    print(f"      - {key}: V1={v1_val} vs V2={v2_val}")
+                if legacy_val != v2_val:
+                    print(f"      - {key}: Legacy={legacy_val} vs V2={v2_val}")
 
         return True
 
@@ -329,12 +331,12 @@ def main():
     # Verify data normalization
     results.append(("Data Normalization", verify_data_normalization()))
 
-    # Verify V1 data access (requires V1 to be available)
+    # Verify Legacy data access (requires Legacy to be available)
     try:
-        results.append(("V1 Data Access", verify_v1_data_access()))
+        results.append(("Legacy Data Access", verify_legacy_data_access()))
     except Exception as e:
-        print(f"⚠️  V1 verification skipped: {e}")
-        results.append(("V1 Data Access", None))
+        print(f"⚠️  Legacy verification skipped: {e}")
+        results.append(("Legacy Data Access", None))
 
     # Verify V2 data access (requires V2 to be available)
     try:

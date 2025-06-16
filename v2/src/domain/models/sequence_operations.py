@@ -63,7 +63,7 @@ class ReflectionOperation(SequenceOperation):
 
     def _reflect_beat(self, beat: BeatData) -> BeatData:
         """Reflect a single beat"""
-        # Implementation would use v1 reflection logic
+        # Implementation would use legacy reflection logic
         return beat  # Placeholder
 
 
@@ -90,5 +90,5 @@ class RotationOperation(SequenceOperation):
 
     def _rotate_beat(self, beat: BeatData) -> BeatData:
         """Rotate a single beat"""
-        # Implementation would use v1 rotation logic
+        # Implementation would use legacy rotation logic
         return beat  # Placeholder

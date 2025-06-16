@@ -1,19 +1,19 @@
 """
 Special Placement Service for V2 Arrow Positioning
 
-This service implements V1's special placement logic using the same JSON configuration data.
+This service implements Legacy's special placement logic using the same JSON configuration data.
 It provides pixel-perfect special placement adjustments for specific pictograph configurations.
 
-IMPLEMENTS V1 SPECIAL PLACEMENT PIPELINE:
+IMPLEMENTS Legacy SPECIAL PLACEMENT PIPELINE:
 - Loads special placement JSON files from data/arrow_placement directory
 - Generates orientation keys (ori_key) for motion classification
 - Applies letter-specific, turn-specific, and motion-type-specific adjustments
 - Handles complex placement rules for specific pictograph patterns
 
 PROVIDES:
-- Complete V1 special placement compatibility
+- Complete Legacy special placement compatibility
 - JSON configuration data loading and caching
-- Orientation key generation matching V1 logic
+- Orientation key generation matching Legacy logic
 - Special adjustment calculation with fallback to default
 """
 
@@ -29,9 +29,9 @@ from domain.models.pictograph_models import ArrowData, PictographData
 
 class SpecialPlacementService:
     """
-    Service for loading and applying special placement adjustments from V1's JSON configuration.
+    Service for loading and applying special placement adjustments from Legacy's JSON configuration.
 
-    This service replicates V1's special placement strategy by:
+    This service replicates Legacy's special placement strategy by:
     1. Loading special placement JSON files organized by grid mode and orientation key
     2. Generating orientation keys based on motion data
     3. Looking up letter-specific, turn-specific adjustments
@@ -46,7 +46,7 @@ class SpecialPlacementService:
         self, arrow_data: ArrowData, pictograph_data: PictographData
     ) -> Optional[QPointF]:
         """
-        Get special adjustment for arrow based on V1's special placement logic.
+        Get special adjustment for arrow based on Legacy's special placement logic.
 
         Args:
             arrow_data: Arrow data containing motion information
@@ -61,7 +61,7 @@ class SpecialPlacementService:
         motion = arrow_data.motion_data
         letter = pictograph_data.letter
 
-        # Generate orientation key using V1's logic
+        # Generate orientation key using Legacy's logic
         ori_key = self._generate_orientation_key(motion, pictograph_data)
 
         # Get grid mode (default to diamond)
@@ -113,7 +113,7 @@ class SpecialPlacementService:
     def _load_special_placements(self) -> None:
         """Load special placement data from JSON configuration files."""
         try:
-            # Define the supported modes and subfolders matching V1's structure
+            # Define the supported modes and subfolders matching Legacy's structure
             supported_modes = ["diamond", "box"]
             subfolders = [
                 "from_layer1",
@@ -155,7 +155,7 @@ class SpecialPlacementService:
         self, motion: MotionData, pictograph_data: PictographData
     ) -> str:
         """
-        Generate orientation key matching V1's ori_key_generator logic.
+        Generate orientation key matching Legacy's ori_key_generator logic.
 
         This determines which subfolder of special placements to use:
         - from_layer1: Basic orientations
@@ -163,8 +163,8 @@ class SpecialPlacementService:
         - from_layer3_blue1_red2: Mixed orientations with blue on layer 1, red on layer 2
         - from_layer3_blue2_red1: Mixed orientations with blue on layer 2, red on layer 1
         """
-        # For now, use simplified logic - can be enhanced based on actual V1 requirements
-        # This would need to be expanded to match V1's exact orientation key generation
+        # For now, use simplified logic - can be enhanced based on actual Legacy requirements
+        # This would need to be expanded to match Legacy's exact orientation key generation
 
         # FIXED: Use V2's actual data structure (blue_arrow.motion_data, red_arrow.motion_data)
         try:
@@ -173,7 +173,7 @@ class SpecialPlacementService:
 
             if blue_motion and red_motion:
                 # Simplified layer detection based on orientations
-                # This matches V1's logic for determining orientation keys
+                # This matches Legacy's logic for determining orientation keys
                 blue_end_ori = getattr(blue_motion, "end_ori", "in")
                 red_end_ori = getattr(red_motion, "end_ori", "in")
 
@@ -202,7 +202,7 @@ class SpecialPlacementService:
 
     def _generate_turns_tuple(self, pictograph_data: PictographData) -> str:
         """
-        Generate turns tuple string matching V1's turns_tuple_generator logic.
+        Generate turns tuple string matching Legacy's turns_tuple_generator logic.
 
         This creates a string representation of the turn values for lookup in JSON data.
         Format: "(blue_turns, red_turns)" e.g., "(0, 1.5)", "(1, 0.5)"

@@ -2,7 +2,7 @@
 Modern Beat Frame Component for V2 Sequence Workbench
 
 This component provides the core beat grid system with dynamic layout,
-replacing V1's SequenceBeatFrame with modern architecture patterns.
+replacing Legacy's SequenceBeatFrame with modern architecture patterns.
 """
 
 from typing import Optional, List, Dict
@@ -22,10 +22,10 @@ from src.domain.models.core_models import SequenceData, BeatData
 from application.services.layout.layout_management_service import (
     LayoutManagementService,
 )
-from application.services.layout.enhanced_beat_resizer_service import (
-    EnhancedBeatResizerService,
+from application.services.layout.beat_resizer_service import (
+    BeatResizerService,
 )
-from .beat_view import ModernBeatView
+from .beat_view import BeatView
 from .start_position_view import StartPositionView
 from .beat_selection_manager import BeatSelectionManager
 
@@ -34,7 +34,7 @@ class SequenceBeatFrame(QScrollArea):
     """
     Modern beat frame with dynamic grid layout and V2 architecture patterns.
 
-    Replaces V1's SequenceBeatFrame with:
+    Replaces Legacy's SequenceBeatFrame with:
     - Dependency injection instead of global state
     - Immutable sequence data
     - Service-based layout calculations
@@ -52,11 +52,11 @@ class SequenceBeatFrame(QScrollArea):
     ):
         super().__init__(parent)  # Injected dependencies
         self._layout_service = layout_service
-        self._resizer_service = EnhancedBeatResizerService()
+        self._resizer_service = BeatResizerService()
 
         # Current state
         self._current_sequence: Optional[SequenceData] = None
-        self._beat_views: List[ModernBeatView] = []
+        self._beat_views: List[BeatView] = []
         self._current_layout: Dict[str, int] = {"rows": 1, "columns": 8}
 
         # UI components (will be initialized in _setup_ui)
@@ -69,7 +69,7 @@ class SequenceBeatFrame(QScrollArea):
         self._setup_styling()
 
     def _setup_ui(self):
-        """Setup the UI layout to match v1 exactly"""
+        """Setup the UI layout to match legacy exactly"""
         # Configure scroll area
         self.setWidgetResizable(True)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
@@ -80,10 +80,10 @@ class SequenceBeatFrame(QScrollArea):
         self._container_widget = QWidget()
         self.setWidget(self._container_widget)
 
-        # Create grid layout directly like v1 - no header section or info labels
+        # Create grid layout directly like legacy - no header section or info labels
         self._grid_layout = QGridLayout(self._container_widget)
-        self._grid_layout.setSpacing(0)  # Zero spacing like v1
-        self._grid_layout.setContentsMargins(0, 0, 0, 0)  # Zero margins like v1
+        self._grid_layout.setSpacing(0)  # Zero spacing like legacy
+        self._grid_layout.setContentsMargins(0, 0, 0, 0)  # Zero margins like legacy
         self._grid_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Initialize beat views (pre-allocate for performance)
@@ -112,10 +112,10 @@ class SequenceBeatFrame(QScrollArea):
         )
 
     def _initialize_beat_views(self):
-        """Pre-allocate beat views for performance (V1 pattern but optimized)"""
+        """Pre-allocate beat views for performance (Legacy pattern but optimized)"""
         # Create 64 beat views (maximum sequence length)
         for i in range(64):
-            beat_view = ModernBeatView(beat_number=i + 1, parent=self._container_widget)
+            beat_view = BeatView(beat_number=i + 1, parent=self._container_widget)
             beat_view.beat_clicked.connect(lambda idx=i: self._on_beat_clicked(idx))
             beat_view.beat_modified.connect(
                 lambda data, idx=i: self._on_beat_modified(idx, data)
@@ -145,7 +145,7 @@ class SequenceBeatFrame(QScrollArea):
         return self._current_sequence
 
     def set_start_position(self, start_position_data: BeatData):
-        """Set the start position data (separate from sequence beats like v1)"""
+        """Set the start position data (separate from sequence beats like legacy)"""
         if self._start_position_view:
             self._start_position_view.set_position_data(start_position_data)
 
@@ -185,13 +185,13 @@ class SequenceBeatFrame(QScrollArea):
         self._apply_layout(rows, columns)
 
     def _apply_layout(self, rows: int, columns: int):
-        """Apply the specified grid layout like v1"""
+        """Apply the specified grid layout like legacy"""
         # Clear existing layout (except start position)
         for i in range(len(self._beat_views)):
             self._grid_layout.removeWidget(self._beat_views[i])
             self._beat_views[i].hide()
 
-        # Update layout info (no label in v1)
+        # Update layout info (no label in legacy)
         self._current_layout = {"rows": rows, "columns": columns}
 
         # Add beats to new layout
@@ -205,15 +205,15 @@ class SequenceBeatFrame(QScrollArea):
             self._grid_layout.addWidget(beat_view, row, col, 1, 1)
             beat_view.show()
 
-        # CRITICAL: Apply V1's beat sizing after layout change
+        # CRITICAL: Apply Legacy's beat sizing after layout change
         self._resizer_service.resize_beat_frame(self, rows, columns)
 
         # Emit layout changed signal
         self.layout_changed.emit(rows, columns)
 
     def _update_display(self):
-        """Update all display elements like v1 (no info labels)"""
-        # Always ensure start position is visible at (0,0) - V1 behavior
+        """Update all display elements like legacy (no info labels)"""
+        # Always ensure start position is visible at (0,0) - Legacy behavior
         if self._start_position_view:
             self._start_position_view.show()
 
@@ -226,7 +226,7 @@ class SequenceBeatFrame(QScrollArea):
             if i < len(self._beat_views):
                 self._beat_views[i].set_beat_data(beat_data)
 
-        # Start position is always separate from sequence beats (V1 behavior)
+        # Start position is always separate from sequence beats (Legacy behavior)
         # Start position data is managed independently via set_start_position()
 
     # Event handlers
@@ -263,7 +263,7 @@ class SequenceBeatFrame(QScrollArea):
         self.clear_selection()  # Responsive design
 
     def resizeEvent(self, event):
-        """Handle resize events with V1's complete resizing logic"""
+        """Handle resize events with Legacy's complete resizing logic"""
         super().resizeEvent(event)
 
         # Recalculate layout if needed for new size
@@ -282,7 +282,7 @@ class SequenceBeatFrame(QScrollArea):
             if layout_changed:
                 self._apply_layout(new_layout["rows"], new_layout["columns"])
 
-            # CRITICAL: Always resize beats using V1's exact sizing logic
+            # CRITICAL: Always resize beats using Legacy's exact sizing logic
             # This was missing in V2 - causing beats to be 1/8 or 1/9 instead of 1/6!
             self._resizer_service.resize_beat_frame(
                 self, new_layout["rows"], new_layout["columns"]

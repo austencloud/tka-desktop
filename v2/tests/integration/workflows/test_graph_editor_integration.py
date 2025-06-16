@@ -118,31 +118,31 @@ class TestGraphEditorIntegration:
         assert result == True
         assert len(movement_spy) == 1
 
-    def test_v1_integration_service_workflow(self, qapp, mock_beat_data):
-        """Test V1 integration service workflow."""
+    def test_legacy_integration_service_workflow(self, qapp, mock_beat_data):
+        """Test Legacy integration service workflow."""
         # Create graphics scene for testing
         scene = QGraphicsScene()
 
         # Test pictograph creation through service
-        v1_integration = self.graph_service._v1_integration
+        legacy_integration = self.graph_service._legacy_integration
 
         # Setup signal spy
-        pictograph_spy = QSignalSpy(v1_integration.pictograph_updated)
+        pictograph_spy = QSignalSpy(legacy_integration.pictograph_updated)
 
         # Attempt to create pictograph
-        success = v1_integration.create_pictograph_for_beat(mock_beat_data, scene)
+        success = legacy_integration.create_pictograph_for_beat(mock_beat_data, scene)
 
-        # Should attempt creation (may fail without full V1 setup)
+        # Should attempt creation (may fail without full Legacy setup)
         assert isinstance(success, bool)
 
         # Test arrow selection methods
-        arrow_list = v1_integration.get_arrow_list()
+        arrow_list = legacy_integration.get_arrow_list()
         assert isinstance(arrow_list, list)
 
         # Test arrow selection
         if arrow_list:
             first_arrow = arrow_list[0]
-            select_result = v1_integration.select_arrow(first_arrow)
+            select_result = legacy_integration.select_arrow(first_arrow)
             assert isinstance(select_result, bool)
 
     def test_pictograph_container_service_integration(self, qapp, mock_beat_data):
@@ -234,8 +234,8 @@ class TestGraphEditorIntegration:
         graph_editor.toggle_visibility()
 
         # Test cleanup
-        v1_integration = self.graph_service._v1_integration
-        v1_integration.cleanup()
+        legacy_integration = self.graph_service._legacy_integration
+        legacy_integration.cleanup()
 
         # Should not raise exception
         assert True

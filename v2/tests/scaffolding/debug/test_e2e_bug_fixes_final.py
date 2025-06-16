@@ -20,7 +20,7 @@ if str(v2_path) not in sys.path:
     sys.path.insert(0, str(v2_path))
 
 try:
-    from core.dependency_injection.di_container import SimpleContainer
+    from core.dependency_injection.di_container import DIContainer
     from src.core.interfaces.core_services import ILayoutService
     from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
     from src.domain.models.core_models import SequenceData, BeatData
@@ -62,7 +62,7 @@ class FinalBugFixTestWindow(QMainWindow):
 
         # Create construct tab for testing
         try:
-            container = SimpleContainer()
+            container = DIContainer()
             container.register_singleton(ILayoutService, SimpleLayoutService)
 
             self.construct_tab = ConstructTabWidget(container, parent=self)

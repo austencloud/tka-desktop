@@ -2,7 +2,7 @@
 Turn Selection Dialog for Graph Editor
 
 This dialog provides a modal interface for selecting turn values for arrows,
-matching V1's turn selection behavior with 7 turn value options.
+matching Legacy's turn selection behavior with 7 turn value options.
 """
 
 from typing import Optional
@@ -18,7 +18,7 @@ from PyQt6.QtGui import QFont
 
 
 class TurnSelectionDialog(QDialog):
-    """Modal dialog for selecting turn values, matching V1 behavior."""
+    """Modal dialog for selecting turn values, matching Legacy behavior."""
 
     turn_selected = pyqtSignal(float)  # Emitted when user selects a turn value
 
@@ -88,7 +88,7 @@ class TurnSelectionDialog(QDialog):
         layout.addLayout(cancel_layout)
 
     def _setup_styling(self):
-        """Apply V1-matching styling to the dialog."""
+        """Apply Legacy-matching styling to the dialog."""
         color_rgb = "100, 150, 255" if self._arrow_color == "blue" else "255, 100, 100"
 
         self.setStyleSheet(

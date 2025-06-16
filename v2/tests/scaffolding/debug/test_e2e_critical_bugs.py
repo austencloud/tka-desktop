@@ -21,7 +21,7 @@ if str(v2_src_path) not in sys.path:
     sys.path.insert(0, str(v2_src_path))
 
 try:
-    from core.dependency_injection.di_container import SimpleContainer
+    from core.dependency_injection.di_container import DIContainer
     from src.core.interfaces.core_services import ILayoutService
     from src.application.services.simple_layout_service import SimpleLayoutService
     from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
@@ -33,7 +33,7 @@ except ImportError as e:
         import sys
 
         sys.path.insert(0, str(Path(__file__).parent))
-        from core.dependency_injection.di_container import SimpleContainer
+        from core.dependency_injection.di_container import DIContainer
         from src.core.interfaces.core_services import ILayoutService
         from src.application.services.simple_layout_service import SimpleLayoutService
         from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
@@ -58,7 +58,7 @@ class CriticalBugTestWindow(QMainWindow):
         self.current_test = None
 
         # Create container and services
-        self.container = SimpleContainer()
+        self.container = DIContainer()
         self.container.register_singleton(ILayoutService, SimpleLayoutService)
 
         self.setup_ui()

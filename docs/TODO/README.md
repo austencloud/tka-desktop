@@ -28,8 +28,8 @@ This action plan has been organized into the following structure for clear navig
 ```
 phase1_technical_debt_elimination/
 ├── 01_overview_and_strategy.md           # Phase 1 overview and approach
-├── 02_v1_code_identification.md          # Task 1.1: Find V1 references
-├── 03_v1_code_cleanup.md                 # Task 1.2: Clean V1 references
+├── 02_legacy_code_identification.md          # Task 1.1: Find Legacy references
+├── 03_legacy_code_cleanup.md                 # Task 1.2: Clean Legacy references
 ├── 04_di_container_enhancement.md        # Task 1.3: Complete auto-injection
 ├── 05_enhanced_error_reporting.md        # Task 1.4: Enhanced error reporting
 ├── 06_validation_and_testing.md          # Task 1.5: Comprehensive DI testing
@@ -82,7 +82,7 @@ All sections have been successfully extracted and organized from the original ac
 ### **Start Here** (Most Critical)
 
 1. [Phase 1 Overview](phase1_technical_debt_elimination/01_overview_and_strategy.md)
-2. [V1 Code Identification](phase1_technical_debt_elimination/02_v1_code_identification.md)
+2. [Legacy Code Identification](phase1_technical_debt_elimination/02_legacy_code_identification.md)
 3. [Getting Started Guide](implementation_support/getting_started.md)
 
 ### **Next Steps**

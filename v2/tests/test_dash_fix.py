@@ -5,12 +5,12 @@ import sys
 import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "v2", "src"))
-sys.path.append(os.path.join(os.path.dirname(__file__), "v1", "src"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "legacy", "src"))
 
 from PyQt6.QtWidgets import QApplication, QGraphicsScene
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from v2.src.domain.models.core_models import GlyphData
-from v1.src.enums.letter.letter_type import LetterType
+from legacy.src.enums.letter.letter_type import LetterType
 from v2.src.presentation.components.pictograph.renderers.tka_glyph_renderer import (
     TKAGlyphRenderer,
 )

@@ -1,4 +1,4 @@
-from typing import List, Optional, Callable
+from typing import TYPE_CHECKING, List, Optional, Callable
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import QObject
 
@@ -11,11 +11,16 @@ from domain.models.core_models import (
 )
 from .clickable_pictograph_frame import ClickablePictographFrame
 
+if TYPE_CHECKING:
+    from application.services.old_services_before_consolidation.pictograph_dataset_service import (
+        PictographDatasetService,
+    )
+
 
 class PictographPoolManager(QObject):
-    """Manages V1-style object pooling for pictograph frames to prevent Qt deletion cascade"""
+    """Manages Legacy-style object pooling for pictograph frames to prevent Qt deletion cascade"""
 
-    MAX_PICTOGRAPHS = 36  # Same as V1's OptionFactory.MAX_PICTOGRAPHS
+    MAX_PICTOGRAPHS = 36  # Same as Legacy's OptionFactory.MAX_PICTOGRAPHS
 
     def __init__(self, parent_widget: QWidget):
         super().__init__()
@@ -34,7 +39,7 @@ class PictographPoolManager(QObject):
         self._beat_data_click_handler = beat_data_handler
 
     def initialize_pool(self, progress_callback: Optional[Callable] = None) -> None:
-        """Initialize V1-style object pool with progress updates"""
+        """Initialize Legacy-style object pool with progress updates"""
         if self._pool_initialized:
             return
 
@@ -45,7 +50,7 @@ class PictographPoolManager(QObject):
             if progress_callback:
                 progress_callback("Loading pictograph dataset service", 0.4)
 
-            from ....application.services.old_services_before_consolidation.pictograph_dataset_service import (
+            from application.services.old_services_before_consolidation.pictograph_dataset_service import (
                 PictographDatasetService,
             )
 
@@ -110,7 +115,9 @@ class PictographPoolManager(QObject):
             f"✅ Pictograph pool initialized with {len(self._pictograph_pool)} objects"
         )
 
-    def _get_fallback_beat_data(self, dataset_service) -> Optional[BeatData]:
+    def _get_fallback_beat_data(
+        self, dataset_service: "PictographDatasetService"
+    ) -> Optional[BeatData]:
         """Get fallback beat data from dataset"""
         if (
             hasattr(dataset_service, "_diamond_dataset")
@@ -178,7 +185,7 @@ class PictographPoolManager(QObject):
         return len(self._pictograph_pool)
 
     def resize_all_frames(self) -> None:
-        """Resize all frames using V1's algorithm"""
+        """Resize all frames using Legacy's algorithm"""
         for frame in self._pictograph_pool:
             if frame and hasattr(frame, "resize_frame"):
                 try:

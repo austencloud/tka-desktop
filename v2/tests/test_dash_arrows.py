@@ -22,7 +22,7 @@ from domain.models.pictograph_models import ArrowData, PictographData
 
 
 def test_dash_arrow_positioning():
-    """Test that dash arrows use the enhanced V1 logic for positioning."""
+    """Test that dash arrows use the enhanced Legacy logic for positioning."""
     print("🧪 Testing enhanced dash arrow positioning logic...")
 
     # Create arrow positioning service

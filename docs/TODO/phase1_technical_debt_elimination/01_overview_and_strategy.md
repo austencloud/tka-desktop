@@ -2,29 +2,29 @@
 
 **Timeline**: 1 Week  
 **Priority**: CRITICAL  
-**Goal**: Clean up remaining V1 cruft and complete core DI infrastructure
+**Goal**: Clean up remaining Legacy cruft and complete core DI infrastructure
 
 ---
 
 ## **Phase 1 Strategy**
 
-This phase focuses on eliminating all remaining technical debt from the V1 → V2 migration. The goal is to achieve a clean, modern codebase foundation that will support the advanced patterns in Phases 2 and 3.
+This phase focuses on eliminating all remaining technical debt from the Legacy → V2 migration. The goal is to achieve a clean, modern codebase foundation that will support the advanced patterns in Phases 2 and 3.
 
 ### **Why Phase 1 is Critical**
 
 1. **Foundation for Advanced Patterns**: Event-driven architecture and command patterns require clean DI
-2. **Performance Impact**: V1 compatibility code creates overhead
-3. **Maintainability**: Mixed V1/V2 patterns confuse developers
+2. **Performance Impact**: Legacy compatibility code creates overhead
+3. **Maintainability**: Mixed Legacy/V2 patterns confuse developers
 4. **Future-Proofing**: Clean foundation prevents technical debt accumulation
 
 ---
 
 ## **Daily Breakdown**
 
-### **Day 1-2: V1 Compatibility Code Removal**
+### **Day 1-2: Legacy Compatibility Code Removal**
 
-- [Task 1.1: Systematic V1 Code Identification](02_v1_code_identification.md)
-- [Task 1.2: Clean V1 References](03_v1_code_cleanup.md)
+- [Task 1.1: Systematic Legacy Code Identification](02_legacy_code_identification.md)
+- [Task 1.2: Clean Legacy References](03_legacy_code_cleanup.md)
 
 ### **Day 3-4: DI Container Enhancement**
 
@@ -42,7 +42,7 @@ This phase focuses on eliminating all remaining technical debt from the V1 → V
 
 By the end of Phase 1, you should have:
 
-- ✅ **Zero V1 references** in the codebase
+- ✅ **Zero Legacy references** in the codebase
 - ✅ **100% automatic dependency injection** working
 - ✅ **Comprehensive error reporting** for DI failures
 - ✅ **All services validated** and working through DI
@@ -56,10 +56,10 @@ By the end of Phase 1, you should have:
 
 ```
 v2/src/application/services/
-├── motion/arrow_management_service.py     # Remove V1 comments
-├── motion/motion_management_service.py    # Clean V1 algorithm references
-├── core/sequence_management_service.py    # Clean V1 compatibility paths
-└── positioning/*.py                       # Remove V1 positioning comments
+├── motion/arrow_management_service.py     # Remove Legacy comments
+├── motion/motion_management_service.py    # Clean Legacy algorithm references
+├── core/sequence_management_service.py    # Clean Legacy compatibility paths
+└── positioning/*.py                       # Remove Legacy positioning comments
 
 v2/src/core/dependency_injection/
 └── di_container.py                        # Enhanced auto-injection
@@ -77,11 +77,11 @@ v2/main.py                                 # Enhanced service registration
 Once Phase 1 is complete:
 
 1. **Validate** all tests pass
-2. **Review** the codebase for any remaining V1 references
+2. **Review** the codebase for any remaining Legacy references
 3. **Proceed to Phase 2** - Event-Driven Architecture
 
 ---
 
 ## 🚀 **Ready to Begin?**
 
-Start with: [Task 1.1: V1 Code Identification](02_v1_code_identification.md)
+Start with: [Task 1.1: Legacy Code Identification](02_legacy_code_identification.md)

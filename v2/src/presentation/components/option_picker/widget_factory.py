@@ -2,7 +2,7 @@ from typing import Optional
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QSizePolicy
 from PyQt6.QtCore import Qt
 
-from ....core.dependency_injection.di_container import SimpleContainer
+from core.dependency_injection.di_container import DIContainer
 from core.interfaces.core_services import ILayoutService
 from .option_picker_widget import ModernOptionPickerWidget
 from .option_picker_filter import OptionPickerFilter
@@ -11,7 +11,7 @@ from .option_picker_filter import OptionPickerFilter
 class OptionPickerWidgetFactory:
     """Factory for creating and configuring the option picker widget"""
 
-    def __init__(self, container: SimpleContainer):
+    def __init__(self, container: DIContainer):
         self.container = container
         self._layout_service: Optional[ILayoutService] = None
 

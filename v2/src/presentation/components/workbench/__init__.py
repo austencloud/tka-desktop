@@ -6,7 +6,7 @@ V2 sequence workbench with modern architecture.
 
 from src.presentation.components.workbench.sequence_beat_frame import (
     SequenceBeatFrame,
-    ModernBeatView,
+    BeatView,
     StartPositionView,
     BeatSelectionManager,
 )
@@ -34,7 +34,7 @@ from .button_interface import (
 __all__ = [
     "ModernSequenceWorkbench",
     "SequenceBeatFrame",
-    "ModernBeatView",
+    "BeatView",
     "StartPositionView",
     "BeatSelectionManager",
     # Core components

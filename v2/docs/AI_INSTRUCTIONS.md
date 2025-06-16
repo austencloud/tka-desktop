@@ -13,7 +13,7 @@
 
 ```
 ├── "I'm debugging a bug" → tests/scaffolding/debug/
-├── "I'm exploring how V1 works" → tests/scaffolding/exploration/
+├── "I'm exploring how Legacy works" → tests/scaffolding/exploration/
 ├── "I'm prototyping a new idea" → tests/scaffolding/spike/
 ├── "This behavior must NEVER change" → tests/specification/
 ├── "This bug must NEVER come back" → tests/regression/
@@ -31,6 +31,7 @@
 ## 🔧 Required Tools Usage
 
 **Before committing any test changes:**
+
 ```bash
 # Validate test placement
 python v2/tests/scripts/validate_test_placement.py
@@ -45,6 +46,7 @@ python v2/tests/test_runner.py --expired
 ## 📝 Required Test Metadata Templates
 
 ### Scaffolding (Temporary)
+
 ```python
 """
 TEST LIFECYCLE: SCAFFOLDING
@@ -57,6 +59,7 @@ RELATED_ISSUE: #123 (if applicable)
 ```
 
 ### Specification (Permanent)
+
 ```python
 """
 TEST LIFECYCLE: SPECIFICATION
@@ -67,6 +70,7 @@ AUTHOR: @username
 ```
 
 ### Regression (Bug Prevention)
+
 ```python
 """
 TEST LIFECYCLE: REGRESSION
@@ -80,6 +84,7 @@ AUTHOR: @username
 ## 🎯 Success Criteria
 
 Your test changes are correct when:
+
 - ✅ Validation scripts pass
 - ✅ Tests are in correct directories
 - ✅ All metadata is present

@@ -1,8 +1,8 @@
 """
 Start Text Overlay Component for V2 Pictographs
 
-This component replicates v1's BeatStartTextItem functionality by adding
-"START" text directly to the pictograph scene, matching v1's exact styling
+This component replicates legacy's BeatStartTextItem functionality by adding
+"START" text directly to the pictograph scene, matching legacy's exact styling
 and positioning.
 """
 
@@ -18,7 +18,7 @@ class StartTextOverlay(QGraphicsTextItem):
         self.parent_scene = parent_scene
         self._is_valid = True
 
-        # Match v1's font styling exactly
+        # Match legacy's font styling exactly
         self.setFont(QFont("Georgia", 60, QFont.Weight.DemiBold))
 
         # Initially hidden
@@ -29,16 +29,16 @@ class StartTextOverlay(QGraphicsTextItem):
             parent_scene.addItem(self)
 
     def show_start_text(self):
-        """Show the START text with v1-style positioning"""
+        """Show the START text with legacy-style positioning"""
         if not self._is_valid or not self.parent_scene:
             return
 
         try:
-            # Calculate padding like v1: scene.height() // 28
+            # Calculate padding like legacy: scene.height() // 28
             scene_height = self.parent_scene.height()
             text_padding = scene_height // 28
 
-            # Position text with padding from top-left like v1
+            # Position text with padding from top-left like legacy
             self.setPos(QPointF(text_padding, text_padding))
 
             # Make visible

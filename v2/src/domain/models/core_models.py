@@ -65,7 +65,7 @@ class Orientation(Enum):
 
 
 class Location(Enum):
-    """Location constants matching v1 exactly."""
+    """Location constants matching legacy exactly."""
 
     NORTH = "n"
     EAST = "e"
@@ -78,7 +78,7 @@ class Location(Enum):
 
 
 class GridPosition(Enum):
-    """Grid positions matching v1 constants exactly."""
+    """Grid positions matching legacy constants exactly."""
 
     # Alpha positions (radial)
     ALPHA1 = "alpha1"
@@ -125,7 +125,7 @@ class MotionData:
     REPLACES: Complex motion attribute dictionaries
 
     Immutable motion data for props and arrows.
-    Matches v1 data structure exactly.
+    Matches legacy data structure exactly.
     """
 
     motion_type: MotionType
@@ -134,7 +134,7 @@ class MotionData:
     end_loc: Location
     turns: float = 0.0
 
-    # Additional v1 fields
+    # Additional legacy fields
     start_ori: str = "in"
     end_ori: str = "in"
 

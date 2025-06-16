@@ -4,7 +4,7 @@
 
 ### **Code Quality Metrics**
 
-- ✅ **Zero V1 References**: No remaining "V1", "v1", "old", or "legacy" comments/code
+- ✅ **Zero Legacy References**: No remaining "Legacy", "legacy", "old", or "legacy" comments/code
 - ✅ **Clean Imports**: All imports point to V2 implementations only
 - ✅ **Consistent Naming**: All services follow consistent naming conventions
 - ✅ **No Dead Code**: All commented-out code blocks removed
@@ -13,8 +13,8 @@
 
 ```bash
 # Should return no results
-grep -r "V1\|v1\|old\|legacy" src/ --include="*.py"
-grep -r "TODO.*V1\|FIXME.*V1" src/ --include="*.py"
+grep -r "Legacy\|legacy\|old\|legacy" src/ --include="*.py"
+grep -r "TODO.*Legacy\|FIXME.*Legacy" src/ --include="*.py"
 ```
 
 ### **Dependency Injection Completeness**

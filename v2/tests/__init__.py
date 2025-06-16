@@ -6,9 +6,9 @@ Comprehensive testing framework for The Kinetic Constructor V2.
 
 Test Categories:
 - unit/: Fast service layer tests (<1s total)
-- integration/: Component communication tests (<10s total)  
+- integration/: Component communication tests (<10s total)
 - ui/: User interface behavior tests (<30s total)
-- parity/: V1 functionality parity tests (<60s total)
+- parity/: Legacy functionality parity tests (<60s total)
 
 Usage:
     python -m pytest tests/                    # Run all tests

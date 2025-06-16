@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 
 from core.dependency_injection.di_container import (
-    SimpleContainer,
+    DIContainer,
     get_container,
 )
 from src.core.interfaces.core_services import (
@@ -58,7 +58,7 @@ class ConstructTabDemo(QMainWindow):
         layout.addWidget(title)
 
         desc = QLabel(
-            "Modern implementation of the Construct tab with v1 layout:\n"
+            "Modern implementation of the Construct tab with legacy layout:\n"
             "• Left: Sequence Workbench (2/3 width) • Right: Start Position + Option Pickers (1/3 width)\n"
             "• Zero technical debt • Clean dependency injection • Modular architecture"
         )

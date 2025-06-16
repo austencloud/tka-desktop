@@ -6,6 +6,7 @@ Handles rendering of prop elements with positioning and rotation.
 
 import os
 import re
+from typing import TYPE_CHECKING
 from PyQt6.QtCore import QPointF
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
@@ -19,12 +20,14 @@ from application.services.motion.motion_management_service import (
 )
 from domain.models.core_models import Orientation
 from application.services.positioning.prop_management_service import PropManagementService
+if TYPE_CHECKING:
+    from presentation.components.pictograph.pictograph_scene import PictographScene
 
 
 class PropRenderer:
     """Handles prop rendering for pictographs."""
 
-    def __init__(self, scene):
+    def __init__(self, scene: "PictographScene"):
         self.scene = scene
         self.CENTER_X = 475
         self.CENTER_Y = 475
@@ -33,7 +36,7 @@ class PropRenderer:
         self.prop_management_service = PropManagementService()
 
         # Store rendered props for overlap detection
-        self.rendered_props = {}
+        self.rendered_props : dict[str, QGraphicsSvgItem] = {}
 
         self.location_coordinates = {
             Location.NORTH.value: (0, -self.HAND_RADIUS),

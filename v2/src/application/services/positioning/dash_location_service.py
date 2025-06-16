@@ -1,7 +1,7 @@
 """
-V1-Compatible Dash Location Service
+Legacy-Compatible Dash Location Service
 
-This service implements the exact dash location calculation logic from V1,
+This service implements the exact dash location calculation logic from Legacy,
 translating the complex dash location maps and calculations.
 """
 
@@ -17,9 +17,9 @@ from domain.models.core_models import (
 
 class DashLocationService:
     """
-    V1-compatible dash location calculation service.
+    Legacy-compatible dash location calculation service.
 
-    Implements the exact logic from V1's DashLocationCalculator including:
+    Implements the exact logic from Legacy's DashLocationCalculator including:
     - Φ_DASH and Ψ_DASH special cases
     - Λ zero turns handling
     - Type 3 shift-aware positioning
@@ -27,7 +27,7 @@ class DashLocationService:
     - Non-zero turns rotation-based calculation
     """
 
-    # V1 Location mappings translated to V2 enums
+    # Legacy Location mappings translated to V2 enums
     PHI_DASH_PSI_DASH_LOCATION_MAP = {
         ("red", (Location.NORTH, Location.SOUTH)): Location.EAST,
         ("red", (Location.EAST, Location.WEST)): Location.NORTH,
@@ -172,7 +172,7 @@ class DashLocationService:
         shift_location: Optional[Location] = None,
     ) -> Location:
         """
-        Calculate dash arrow location using V1 logic.
+        Calculate dash arrow location using Legacy logic.
 
         Args:
             motion: The dash motion data
@@ -296,7 +296,7 @@ class DashLocationService:
             return start_loc
 
     def _get_opposite_location(self, location: Location) -> Location:
-        """Get opposite location (V1 logic)."""
+        """Get opposite location (Legacy logic)."""
         opposite_map = {
             Location.NORTH: Location.SOUTH,
             Location.SOUTH: Location.NORTH,
@@ -314,7 +314,7 @@ class DashLocationService:
     ) -> Location:
         """
         Calculate shift arrow location based on start→end movement pattern.
-        This matches V1's ShiftLocationCalculator logic.
+        This matches Legacy's ShiftLocationCalculator logic.
         """
         direction_pairs = {
             frozenset({Location.NORTH, Location.EAST}): Location.NORTHEAST,
@@ -337,7 +337,7 @@ class DashLocationService:
         """
         Calculate dash location for Type 3 scenarios with proper shift avoidance.
 
-        This implements the V1 logic where:
+        This implements the Legacy logic where:
         1. Calculate where the shift arrow will be positioned
         2. Position the dash to avoid that location using lookup tables
 

@@ -29,7 +29,7 @@ from domain.models.pictograph_models import PropType
 
 
 class SeparationDirection(Enum):
-    """Separation directions for prop positioning (from V1 constants)."""
+    """Separation directions for prop positioning (from Legacy constants)."""
 
     LEFT = "left"
     RIGHT = "right"
@@ -79,7 +79,7 @@ class PropManagementService(IPropManagementService):
     """
 
     def __init__(self):
-        # Beta prop positioning constants (from v1)
+        # Beta prop positioning constants (from legacy)
         self._large_offset_divisor = 60
         self._medium_offset_divisor = 50
         self._small_offset_divisor = 45
@@ -138,7 +138,7 @@ class PropManagementService(IPropManagementService):
         if not beat_data or not beat_data.letter:
             return False
 
-        # Letters that end at beta positions (from v1 LetterCondition.BETA_ENDING)
+        # Letters that end at beta positions (from legacy LetterCondition.BETA_ENDING)
         beta_ending_letters = [
             "G",
             "H",
@@ -258,14 +258,14 @@ class PropManagementService(IPropManagementService):
         """
         Calculate the direction props should be separated.
 
-        CRITICAL: This replicates V1's BetaPropDirectionCalculator logic exactly.
+        CRITICAL: This replicates Legacy's BetaPropDirectionCalculator logic exactly.
         DO NOT SIMPLIFY - this complex logic was carefully crafted for correct arrow positioning.
         """
-        # Replicate V1's get_dir_for_non_shift method exactly
+        # Replicate Legacy's get_dir_for_non_shift method exactly
         location = motion.end_loc
 
         # Determine if prop is radial or nonradial based on end orientation
-        # V1 logic: RADIAL = IN/OUT, NONRADIAL = CLOCK/COUNTER
+        # Legacy logic: RADIAL = IN/OUT, NONRADIAL = CLOCK/COUNTER
         is_radial = motion.end_ori in ["in", "out"]
 
         # Determine grid mode based on location
@@ -276,7 +276,7 @@ class PropManagementService(IPropManagementService):
 
         if grid_mode == "diamond":
             if is_radial:
-                # V1 diamond_layer_reposition_map[RADIAL]
+                # Legacy diamond_layer_reposition_map[RADIAL]
                 direction_map = {
                     (Location.NORTH, "red"): SeparationDirection.RIGHT,
                     (Location.NORTH, "blue"): SeparationDirection.LEFT,
@@ -288,7 +288,7 @@ class PropManagementService(IPropManagementService):
                     (Location.WEST, "red"): SeparationDirection.UP,
                 }
             else:
-                # V1 diamond_layer_reposition_map[NONRADIAL]
+                # Legacy diamond_layer_reposition_map[NONRADIAL]
                 direction_map = {
                     (Location.NORTH, "red"): SeparationDirection.UP,
                     (Location.NORTH, "blue"): SeparationDirection.DOWN,
@@ -301,7 +301,7 @@ class PropManagementService(IPropManagementService):
                 }
         else:  # box grid
             if is_radial:
-                # V1 box_layer_reposition_map[RADIAL]
+                # Legacy box_layer_reposition_map[RADIAL]
                 direction_map = {
                     (Location.NORTHEAST, "red"): SeparationDirection.DOWNRIGHT,
                     (Location.NORTHEAST, "blue"): SeparationDirection.UPLEFT,
@@ -313,7 +313,7 @@ class PropManagementService(IPropManagementService):
                     (Location.NORTHWEST, "blue"): SeparationDirection.DOWNLEFT,
                 }
             else:
-                # V1 box_layer_reposition_map[NONRADIAL]
+                # Legacy box_layer_reposition_map[NONRADIAL]
                 direction_map = {
                     (Location.NORTHEAST, "red"): SeparationDirection.UPRIGHT,
                     (Location.NORTHEAST, "blue"): SeparationDirection.DOWNLEFT,
@@ -333,7 +333,7 @@ class PropManagementService(IPropManagementService):
         """
         Calculate offset based on direction and prop type.
 
-        Uses the same logic as v1 BetaOffsetCalculator.
+        Uses the same logic as legacy BetaOffsetCalculator.
         """
         # Get offset divisor based on prop type
         offset_divisor = self._prop_offset_map.get(
@@ -380,7 +380,7 @@ class PropManagementService(IPropManagementService):
         """
         Generate key for swap override lookup.
 
-        Based on v1 logic for special placement keys.
+        Based on legacy logic for special placement keys.
         """
         if not beat_data.blue_motion or not beat_data.red_motion:
             return ""
@@ -389,7 +389,7 @@ class PropManagementService(IPropManagementService):
         red_type = beat_data.red_motion.motion_type.value
         letter = beat_data.letter or ""
 
-        # Generate key similar to v1 format
+        # Generate key similar to legacy format
         return f"{letter}_{blue_type}_{red_type}"
 
     def _apply_swap_override(self, beat_data: BeatData) -> BeatData:
@@ -410,7 +410,7 @@ class PropManagementService(IPropManagementService):
         """
         Apply algorithmic beta prop positioning.
 
-        Uses classification and repositioning logic similar to v1.
+        Uses classification and repositioning logic similar to legacy.
         """
         if not beat_data.blue_motion or not beat_data.red_motion:
             return beat_data
@@ -433,10 +433,12 @@ class PropManagementService(IPropManagementService):
                 with open(placements_file, "r") as f:
                     self._special_placements = json.load(f)
             else:
-                # Try v1 path as fallback
-                v1_placements_file = Path("v1/src/resources/special_placements.json")
-                if v1_placements_file.exists():
-                    with open(v1_placements_file, "r") as f:
+                # Try legacy path as fallback
+                legacy_placements_file = Path(
+                    "legacy/src/resources/special_placements.json"
+                )
+                if legacy_placements_file.exists():
+                    with open(legacy_placements_file, "r") as f:
                         self._special_placements = json.load(f)
                 else:
                     self._special_placements = {}
@@ -448,7 +450,7 @@ class PropManagementService(IPropManagementService):
         """
         Classify props by size categories (big, small, hands).
 
-        Based on v1 PropClassifier logic.
+        Based on legacy PropClassifier logic.
         """
         classification = {
             "big_props": [],

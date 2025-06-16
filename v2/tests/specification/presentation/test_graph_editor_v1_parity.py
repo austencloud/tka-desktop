@@ -1,7 +1,7 @@
 """
-V1 Parity Tests for Graph Editor
+Legacy Parity Tests for Graph Editor
 
-Tests that V2 graph editor maintains exact V1 functionality.
+Tests that V2 graph editor maintains exact Legacy functionality.
 """
 
 import pytest
@@ -20,8 +20,8 @@ from presentation.components.workbench.graph_editor.graph_editor import (
 
 
 @pytest.mark.parity
-class TestGraphEditorV1Parity:
-    """Test V2 graph editor parity with V1 functionality."""
+class TestGraphEditorLegacyParity:
+    """Test V2 graph editor parity with Legacy functionality."""
 
     def setup_method(self):
         """Setup for each test."""
@@ -29,7 +29,7 @@ class TestGraphEditorV1Parity:
         self.hotkey_service = GraphEditorHotkeyService(self.graph_service)
 
     def test_graph_editor_toggle_behavior(self, qapp, mock_sequence_data):
-        """Test graph editor toggle matches V1 behavior."""
+        """Test graph editor toggle matches Legacy behavior."""
         # Create graph editor
         graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
@@ -60,7 +60,7 @@ class TestGraphEditorV1Parity:
         assert visibility_spy[1][0] == False  # visibility_changed(False)
 
     def test_beat_selection_updates_pictograph(self, qapp, mock_beat_data):
-        """Test beat selection updates pictograph like V1."""
+        """Test beat selection updates pictograph like Legacy."""
         graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Show graph editor
@@ -76,7 +76,7 @@ class TestGraphEditorV1Parity:
         assert pictograph_container._current_beat == mock_beat_data
 
     def test_arrow_selection_workflow(self, qapp, mock_beat_data):
-        """Test arrow selection workflow matches V1."""
+        """Test arrow selection workflow matches Legacy."""
         graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Setup signal spy
@@ -99,7 +99,7 @@ class TestGraphEditorV1Parity:
         assert self.graph_service._selected_arrow_id == test_arrow_id
 
     def test_hotkey_wasd_movement(self, qapp, mock_beat_data):
-        """Test WASD arrow movement hotkeys match V1 behavior."""
+        """Test WASD arrow movement hotkeys match Legacy behavior."""
         # Setup with selected arrow
         self.graph_service.set_selected_beat(mock_beat_data, 0)
         self.graph_service.set_arrow_selection("test_arrow")
@@ -122,7 +122,7 @@ class TestGraphEditorV1Parity:
         assert movement_spy[0][1] == "up"  # direction
 
     def test_hotkey_x_rotation_override(self, qapp, mock_beat_data):
-        """Test X key rotation override matches V1 behavior."""
+        """Test X key rotation override matches Legacy behavior."""
         # Setup with selected arrow
         self.graph_service.set_selected_beat(mock_beat_data, 0)
         self.graph_service.set_arrow_selection("test_arrow")
@@ -144,7 +144,7 @@ class TestGraphEditorV1Parity:
         assert rotation_spy[0][0] == "test_arrow"
 
     def test_hotkey_z_special_placement_removal(self, qapp, mock_beat_data):
-        """Test Z key special placement removal matches V1 behavior."""
+        """Test Z key special placement removal matches Legacy behavior."""
         # Setup with selected arrow
         self.graph_service.set_selected_beat(mock_beat_data, 0)
         self.graph_service.set_arrow_selection("test_arrow")
@@ -167,7 +167,7 @@ class TestGraphEditorV1Parity:
         assert removal_spy[0][1] == "test_arrow"  # arrow_id
 
     def test_hotkey_c_prop_placement_override(self, qapp):
-        """Test C key prop placement override matches V1 behavior."""
+        """Test C key prop placement override matches Legacy behavior."""
         # Setup signal spy
         prop_spy = QSignalSpy(self.hotkey_service.prop_placement_overridden)
 
@@ -184,7 +184,7 @@ class TestGraphEditorV1Parity:
         assert len(prop_spy) == 1
 
     def test_hotkey_modifier_movement_amounts(self, qapp, mock_beat_data):
-        """Test modifier keys affect movement amounts like V1."""
+        """Test modifier keys affect movement amounts like Legacy."""
         # Setup with selected arrow
         self.graph_service.set_selected_beat(mock_beat_data, 0)
         self.graph_service.set_arrow_selection("test_arrow")
@@ -201,8 +201,8 @@ class TestGraphEditorV1Parity:
         large_amount = self.hotkey_service._calculate_movement_amount(True, False)
         assert large_amount == 5.0
 
-    def test_graph_editor_height_calculation_matches_v1(self, qapp):
-        """Test graph editor height calculation matches V1 formula."""
+    def test_graph_editor_height_calculation_matches_legacy(self, qapp):
+        """Test graph editor height calculation matches Legacy formula."""
         # Create mock parent with known dimensions
         mock_parent = Mock()
         mock_parent.height.return_value = 1000
@@ -213,38 +213,38 @@ class TestGraphEditorV1Parity:
         # Calculate preferred height
         height = graph_editor.get_preferred_height()
 
-        # Should use V1 formula: min(parent_height // 3.5, parent_width // 4)
+        # Should use Legacy formula: min(parent_height // 3.5, parent_width // 4)
         expected_height = min(int(1000 // 3.5), 800 // 4)
 
         # Allow for constraint adjustments but verify base calculation
         assert height >= 150  # Minimum height
         assert height <= expected_height + 50  # Allow for constraints
 
-    def test_animation_timing_matches_v1(self, qapp):
-        """Test animation timing matches V1 specifications."""
+    def test_animation_timing_matches_legacy(self, qapp):
+        """Test animation timing matches Legacy specifications."""
         graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Check animation duration
         animation = graph_editor._height_animation
-        assert animation.duration() == 400  # Should match V1 timing
+        assert animation.duration() == 400  # Should match Legacy timing
 
         # Check easing curve
         assert animation.easingCurve().type() == animation.easingCurve().Type.OutCubic
 
-    def test_v1_integration_service_initialization(self):
-        """Test V1 integration service initializes correctly."""
-        # Verify V1 integration service exists
-        assert hasattr(self.graph_service, "_v1_integration")
-        assert self.graph_service._v1_integration is not None
+    def test_legacy_integration_service_initialization(self):
+        """Test Legacy integration service initializes correctly."""
+        # Verify Legacy integration service exists
+        assert hasattr(self.graph_service, "_legacy_integration")
+        assert self.graph_service._legacy_integration is not None
 
         # Verify signal connections
-        v1_integration = self.graph_service._v1_integration
-        assert hasattr(v1_integration, "pictograph_updated")
-        assert hasattr(v1_integration, "arrow_selected")
-        assert hasattr(v1_integration, "arrow_deselected")
+        legacy_integration = self.graph_service._legacy_integration
+        assert hasattr(legacy_integration, "pictograph_updated")
+        assert hasattr(legacy_integration, "arrow_selected")
+        assert hasattr(legacy_integration, "arrow_deselected")
 
     def test_pictograph_creation_workflow(self, qapp, mock_beat_data):
-        """Test pictograph creation workflow matches V1."""
+        """Test pictograph creation workflow matches Legacy."""
         from PyQt6.QtWidgets import QGraphicsScene
 
         # Create scene for pictograph
@@ -253,7 +253,7 @@ class TestGraphEditorV1Parity:
         # Test pictograph creation
         success = self.graph_service.create_pictograph_for_beat(mock_beat_data, scene)
 
-        # Should attempt creation (may fail without full V1 integration)
+        # Should attempt creation (may fail without full Legacy integration)
         assert isinstance(success, bool)
 
         # Verify service method exists and is callable

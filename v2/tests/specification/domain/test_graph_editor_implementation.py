@@ -110,7 +110,7 @@ class TestWindow(QMainWindow):
         test_hotkeys_btn.clicked.connect(self.test_hotkey_service)
         layout.addWidget(test_hotkeys_btn)
 
-        test_adjustment_btn = QPushButton("Test V1-Exact Adjustment Panels")
+        test_adjustment_btn = QPushButton("Test Legacy-Exact Adjustment Panels")
         test_adjustment_btn.clicked.connect(self.test_adjustment_panels)
         layout.addWidget(test_adjustment_btn)
 
@@ -162,8 +162,8 @@ class TestWindow(QMainWindow):
         print(f"✅ Movement keys: {hotkey_service._movement_keys}")
 
     def test_adjustment_panels(self):
-        """Test the V1-exact adjustment panels."""
-        print("🎛️ Testing V1-Exact Adjustment Panels...")
+        """Test the Legacy-exact adjustment panels."""
+        print("🎛️ Testing Legacy-Exact Adjustment Panels...")
 
         # Test left panel (blue)
         left_panel = self.graph_editor._left_adjustment_panel
@@ -181,7 +181,7 @@ class TestWindow(QMainWindow):
         print("✅ Beat data set on both panels")
 
         print(
-            "✅ V1-exact structure: Hand Indicator → Turn Display → +/- Buttons → Motion Type"
+            "✅ Legacy-exact structure: Hand Indicator → Turn Display → +/- Buttons → Motion Type"
         )
 
     def toggle_graph_editor(self):

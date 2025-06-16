@@ -2,7 +2,7 @@
 Data Conversion Service - Focused Data Conversion Operations
 
 Handles all data conversion operations including:
-- V1 to V2 data format conversion
+- Legacy to V2 data format conversion
 - CSV data loading and processing
 - Row-to-pictograph conversion
 - Beat data creation from CSV
@@ -37,8 +37,8 @@ class IDataConversionService(ABC):
     """Interface for data conversion operations."""
 
     @abstractmethod
-    def convert_v1_to_v2(self, v1_data: Dict[str, Any]) -> PictographData:
-        """Convert V1 pictograph data to V2 format."""
+    def convert_legacy_to_v2(self, legacy_data: Dict[str, Any]) -> PictographData:
+        """Convert Legacy pictograph data to V2 format."""
         pass
 
     @abstractmethod
@@ -66,7 +66,7 @@ class DataConversionService(IDataConversionService):
     Focused data conversion service.
 
     Provides comprehensive data conversion including:
-    - V1 to V2 data format conversion
+    - Legacy to V2 data format conversion
     - CSV data loading and processing
     - Row-to-pictograph conversion
     - Beat data creation from CSV
@@ -81,11 +81,11 @@ class DataConversionService(IDataConversionService):
             / "DiamondPictographDataframe.csv"
         )
 
-        # V1 conversion mappings
-        self._v1_conversion_rules = self._load_v1_conversion_rules()
+        # Legacy conversion mappings
+        self._legacy_conversion_rules = self._load_legacy_conversion_rules()
 
-    def convert_v1_to_v2(self, v1_data: Dict[str, Any]) -> PictographData:
-        """Convert V1 pictograph data to V2 format."""
+    def convert_legacy_to_v2(self, legacy_data: Dict[str, Any]) -> PictographData:
+        """Convert Legacy pictograph data to V2 format."""
         # Create base pictograph
         grid_data = GridData(
             grid_mode=GridMode.DIAMOND,
@@ -102,11 +102,11 @@ class DataConversionService(IDataConversionService):
             metadata={"created_by": "data_conversion_service"},
         )
 
-        # Convert V1 arrows to V2 format
+        # Convert Legacy arrows to V2 format
         arrows = {}
 
-        if "blue_arrow" in v1_data:
-            blue_motion = self._convert_v1_motion(v1_data["blue_arrow"])
+        if "blue_arrow" in legacy_data:
+            blue_motion = self._convert_legacy_motion(legacy_data["blue_arrow"])
             if blue_motion:
                 arrows["blue"] = ArrowData(
                     color="blue",
@@ -114,8 +114,8 @@ class DataConversionService(IDataConversionService):
                     is_visible=True,
                 )
 
-        if "red_arrow" in v1_data:
-            red_motion = self._convert_v1_motion(v1_data["red_arrow"])
+        if "red_arrow" in legacy_data:
+            red_motion = self._convert_legacy_motion(legacy_data["red_arrow"])
             if red_motion:
                 arrows["red"] = ArrowData(
                     color="red",
@@ -125,8 +125,8 @@ class DataConversionService(IDataConversionService):
 
         # Convert metadata
         metadata = {
-            "converted_from_v1": True,
-            "original_v1_id": v1_data.get("id"),
+            "converted_from_legacy": True,
+            "original_legacy_id": legacy_data.get("id"),
             "conversion_timestamp": str(uuid.uuid4()),
         }
 
@@ -199,9 +199,11 @@ class DataConversionService(IDataConversionService):
 
         return beat_data_list
 
-    def convert_v1_pictograph_to_beat_data(self, v1_data: Dict[str, Any]) -> BeatData:
-        """Convert V1 pictograph dictionary to BeatData object."""
-        # V1 data has nested structure like:
+    def convert_legacy_pictograph_to_beat_data(
+        self, legacy_data: Dict[str, Any]
+    ) -> BeatData:
+        """Convert Legacy pictograph dictionary to BeatData object."""
+        # Legacy data has nested structure like:
         # {
         #   "letter": "A",
         #   "blue_attributes": {"motion_type": "pro", "prop_rot_dir": "cw", ...},
@@ -211,11 +213,11 @@ class DataConversionService(IDataConversionService):
 
         # Extract nested attributes and flatten to CSV-like structure
         flattened_data = {
-            "letter": v1_data.get("letter", "A"),
+            "letter": legacy_data.get("letter", "A"),
         }
 
         # Flatten blue attributes
-        blue_attrs = v1_data.get("blue_attributes", {})
+        blue_attrs = legacy_data.get("blue_attributes", {})
         flattened_data.update(
             {
                 "blue_motion_type": blue_attrs.get("motion_type", "static"),
@@ -226,7 +228,7 @@ class DataConversionService(IDataConversionService):
         )
 
         # Flatten red attributes
-        red_attrs = v1_data.get("red_attributes", {})
+        red_attrs = legacy_data.get("red_attributes", {})
         flattened_data.update(
             {
                 "red_motion_type": red_attrs.get("motion_type", "static"),
@@ -306,13 +308,13 @@ class DataConversionService(IDataConversionService):
             red_motion=red_motion,
         )
 
-    def _convert_v1_motion(
-        self, v1_motion_data: Dict[str, Any]
+    def _convert_legacy_motion(
+        self, legacy_motion_data: Dict[str, Any]
     ) -> Optional[MotionData]:
-        """Convert V1 motion data to V2 MotionData."""
+        """Convert Legacy motion data to V2 MotionData."""
         try:
-            # Map V1 motion types to V2 (direct mapping - same values)
-            v1_type = v1_motion_data.get("motion_type", "").lower()
+            # Map Legacy motion types to V2 (direct mapping - same values)
+            legacy_type = legacy_motion_data.get("motion_type", "").lower()
             motion_type_map = {
                 "pro": MotionType.PRO,
                 "anti": MotionType.ANTI,
@@ -321,17 +323,17 @@ class DataConversionService(IDataConversionService):
                 "float": MotionType.FLOAT,
             }
 
-            motion_type = motion_type_map.get(v1_type, MotionType.PRO)
+            motion_type = motion_type_map.get(legacy_type, MotionType.PRO)
 
             # Map rotation directions
-            v1_rotation = v1_motion_data.get("rotation", "").lower()
+            legacy_rotation = legacy_motion_data.get("rotation", "").lower()
             rotation_map = {
                 "cw": RotationDirection.CLOCKWISE,
                 "ccw": RotationDirection.COUNTER_CLOCKWISE,
                 "no_rot": RotationDirection.NO_ROTATION,
             }
 
-            rotation = rotation_map.get(v1_rotation, RotationDirection.CLOCKWISE)
+            rotation = rotation_map.get(legacy_rotation, RotationDirection.CLOCKWISE)
 
             # Map locations (simplified)
             start_loc = Location.NORTH  # Default
@@ -342,7 +344,7 @@ class DataConversionService(IDataConversionService):
                 prop_rot_dir=rotation,
                 start_loc=start_loc,
                 end_loc=end_loc,
-                turns=v1_motion_data.get("turns", 1.0),
+                turns=legacy_motion_data.get("turns", 1.0),
             )
 
         except Exception:
@@ -363,7 +365,7 @@ class DataConversionService(IDataConversionService):
             arrows = {}
 
             if "blue_arrow" in row and pd.notna(row["blue_arrow"]):
-                blue_motion = self._convert_v1_motion(eval(row["blue_arrow"]))
+                blue_motion = self._convert_legacy_motion(eval(row["blue_arrow"]))
                 if blue_motion:
                     arrows["blue"] = ArrowData(
                         color="blue",
@@ -372,7 +374,7 @@ class DataConversionService(IDataConversionService):
                     )
 
             if "red_arrow" in row and pd.notna(row["red_arrow"]):
-                red_motion = self._convert_v1_motion(eval(row["red_arrow"]))
+                red_motion = self._convert_legacy_motion(eval(row["red_arrow"]))
                 if red_motion:
                     arrows["red"] = ArrowData(
                         color="red",
@@ -392,8 +394,8 @@ class DataConversionService(IDataConversionService):
             print(f"Error converting row to pictograph: {e}")
             return None
 
-    def _load_v1_conversion_rules(self) -> Dict[str, Any]:
-        """Load V1 to V2 conversion rules."""
+    def _load_legacy_conversion_rules(self) -> Dict[str, Any]:
+        """Load Legacy to V2 conversion rules."""
         return {
             "motion_type_mappings": {
                 "pro": "pro",

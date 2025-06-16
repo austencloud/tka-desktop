@@ -1,20 +1,20 @@
-# **Task 1.2: Clean V1 References**
+# **Task 1.2: Clean Legacy References**
 
 **Timeline**: Day 1-2  
 **Priority**: CRITICAL  
-**Goal**: Remove all V1 compatibility code and replace with clean V2 patterns
+**Goal**: Remove all Legacy compatibility code and replace with clean V2 patterns
 
 ---
 
 ## **Action Plan:**
 
-### **BEFORE (V1 cruft):**
+### **BEFORE (Legacy cruft):**
 
 ```python
 def create_sections(self) -> None:
-    """V1-style: Create sections with single-row layout for sections 4,5,6"""
-    # V1-style: Create transparent horizontal container for sections 4, 5, 6
-    # V1 approach: no finalization needed, QVBoxLayout just works!
+    """Legacy-style: Create sections with single-row layout for sections 4,5,6"""
+    # Legacy-style: Create transparent horizontal container for sections 4, 5, 6
+    # Legacy approach: no finalization needed, QVBoxLayout just works!
 ```
 
 ### **AFTER (Clean V2):**
@@ -29,15 +29,15 @@ def create_sections(self) -> None:
 
 ## **Files to Clean**
 
-### **1. arrow_management_service.py** - Remove V1 positioning comments
+### **1. arrow_management_service.py** - Remove Legacy positioning comments
 
 **Find and Replace Patterns:**
 
 ```python
 # REMOVE THESE PATTERNS:
-# V1-style: Create sections with single-row layout for sections 4,5,6
-# V1-style: Create transparent horizontal container for sections 4, 5, 6
-# V1 approach: no finalization needed, QVBoxLayout just works!
+# Legacy-style: Create sections with single-row layout for sections 4,5,6
+# Legacy-style: Create transparent horizontal container for sections 4, 5, 6
+# Legacy approach: no finalization needed, QVBoxLayout just works!
 
 # REPLACE WITH:
 # Create responsive section layout for option picker components
@@ -50,10 +50,10 @@ def create_sections(self) -> None:
 ```python
 # BEFORE:
 def create_sections(self) -> None:
-    """V1-style: Create sections with single-row layout for sections 4,5,6"""
-    # V1-style: Create transparent horizontal container for sections 4, 5, 6
+    """Legacy-style: Create sections with single-row layout for sections 4,5,6"""
+    # Legacy-style: Create transparent horizontal container for sections 4, 5, 6
     self.sections = {}
-    # V1 approach: no finalization needed, QVBoxLayout just works!
+    # Legacy approach: no finalization needed, QVBoxLayout just works!
 
 # AFTER:
 def create_sections(self) -> None:
@@ -63,7 +63,7 @@ def create_sections(self) -> None:
     # Modern approach: explicit lifecycle management for optimal performance
 ```
 
-### **2. motion_management_service.py** - Remove V1 algorithm references
+### **2. motion_management_service.py** - Remove Legacy algorithm references
 
 **Find and Replace Patterns:**
 
@@ -93,14 +93,14 @@ def get_diamond_coordinates(self):
     return self.coordinate_service.get_diamond_layer2()
 ```
 
-### **3. sequence_management_service.py** - Clean up V1 compatibility paths
+### **3. sequence_management_service.py** - Clean up Legacy compatibility paths
 
 **Find and Replace Patterns:**
 
 ```python
 # REMOVE:
-# V1 compatibility path for legacy sequences
-# TODO: Remove V1 compatibility after migration complete
+# Legacy compatibility path for legacy sequences
+# TODO: Remove Legacy compatibility after migration complete
 
 # REPLACE WITH:
 # Standard sequence processing path
@@ -112,11 +112,11 @@ def get_diamond_coordinates(self):
 ```python
 # BEFORE:
 def process_sequence(self, sequence_data):
-    """Process sequence with V1 compatibility."""
-    # V1 compatibility path for legacy sequences
-    if hasattr(sequence_data, 'v1_format'):
-        return self._process_v1_sequence(sequence_data)
-    # TODO: Remove V1 compatibility after migration complete
+    """Process sequence with Legacy compatibility."""
+    # Legacy compatibility path for legacy sequences
+    if hasattr(sequence_data, 'legacy_format'):
+        return self._process_legacy_sequence(sequence_data)
+    # TODO: Remove Legacy compatibility after migration complete
     return self._process_v2_sequence(sequence_data)
 
 # AFTER:
@@ -134,12 +134,12 @@ def process_sequence(self, sequence_data):
 # FOR EACH FILE, REPLACE:
 
 # Old pattern documentation
-"""V1-style: [description]"""
+"""Legacy-style: [description]"""
 # New pattern documentation
-"""[Clean description without V1 reference]"""
+"""[Clean description without Legacy reference]"""
 
 # Old implementation comments
-# V1 approach: [explanation]
+# Legacy approach: [explanation]
 # Modern approach: [explanation]
 
 # Old working service references
@@ -147,7 +147,7 @@ def process_sequence(self, sequence_data):
 # validated service implementation
 
 # Legacy compatibility notes
-# V1 compatibility [note]
+# Legacy compatibility [note]
 # Standard implementation [note]
 ```
 
@@ -159,8 +159,8 @@ def process_sequence(self, sequence_data):
 
 ```python
 # Lines to change (approximate):
-# Line 45: Remove "V1-style:" from docstring
-# Line 67: Remove "V1 approach:" comment
+# Line 45: Remove "Legacy-style:" from docstring
+# Line 67: Remove "Legacy approach:" comment
 # Line 89: Replace with modern explanation
 # Line 123: Update "old working service" reference
 ```
@@ -171,7 +171,7 @@ def process_sequence(self, sequence_data):
 # Lines to change (approximate):
 # Line 23: Update coordinate system comment
 # Line 156: Modernize hand point coordinate comment
-# Line 189: Remove V1 algorithm reference
+# Line 189: Remove Legacy algorithm reference
 # Line 245: Clean up legacy compatibility note
 ```
 
@@ -179,7 +179,7 @@ def process_sequence(self, sequence_data):
 
 ```python
 # Lines to change (approximate):
-# Line 78: Remove V1 compatibility path
+# Line 78: Remove Legacy compatibility path
 # Line 134: Update TODO comment to be actionable
 # Line 234: Remove migration reference
 # Line 278: Modernize sequence handling comment
@@ -218,8 +218,8 @@ container = DIContainer()
 ### **3. Reference Validation**
 
 ```bash
-# Verify no V1 references remain in cleaned files
-grep -n "V1\|v1\|old\|legacy" src/application/services/motion/arrow_management_service.py
+# Verify no Legacy references remain in cleaned files
+grep -n "Legacy\|legacy\|old\|legacy" src/application/services/motion/arrow_management_service.py
 
 # Should return zero results after cleanup
 ```
@@ -232,11 +232,11 @@ After cleaning all files, run this comprehensive check:
 
 ```bash
 # After cleanup, this should return zero results:
-grep -r "V1\|v1\|old\|legacy" src/application/services/ --include="*.py"
+grep -r "Legacy\|legacy\|old\|legacy" src/application/services/ --include="*.py"
 
 # Verify specific patterns are gone:
-grep -r "V1-style\|v1-style" src/application/services/ --include="*.py"
-grep -r "V1 approach\|v1 approach" src/application/services/ --include="*.py"
+grep -r "Legacy-style\|legacy-style" src/application/services/ --include="*.py"
+grep -r "Legacy approach\|legacy approach" src/application/services/ --include="*.py"
 grep -r "old working service" src/application/services/ --include="*.py"
 ```
 
@@ -248,11 +248,11 @@ grep -r "old working service" src/application/services/ --include="*.py"
 
 ### **Before Proceeding to Task 1.3**
 
-1. ✅ **All V1 references removed** from service files
+1. ✅ **All Legacy references removed** from service files
 2. ✅ **All services compile** without syntax errors
 3. ✅ **Existing tests pass** after cleanup
 4. ✅ **No functionality regression** observed
-5. ✅ **Code is more readable** without V1 cruft
+5. ✅ **Code is more readable** without Legacy cruft
 
 ---
 
@@ -261,18 +261,18 @@ grep -r "old working service" src/application/services/ --include="*.py"
 ### **❌ Don't Do This:**
 
 - Remove comments that explain **why** something is done a certain way
-- Delete functional code that happens to mention V1
+- Delete functional code that happens to mention Legacy
 - Change variable names that work fine (unless they're confusing)
 
 ### **✅ Do This:**
 
-- Remove references to **V1 implementation approaches**
-- Clean up **V1-style documentation**
-- Replace **V1 compatibility paths** with standard implementations
+- Remove references to **Legacy implementation approaches**
+- Clean up **Legacy-style documentation**
+- Replace **Legacy compatibility paths** with standard implementations
 - Update **TODO comments** to be actionable or remove them
 
 ---
 
 ## **Next Step**
 
-After completing V1 cleanup, proceed to: [Task 1.3: Complete Auto-Injection Implementation](04_di_container_enhancement.md)
+After completing Legacy cleanup, proceed to: [Task 1.3: Complete Auto-Injection Implementation](04_di_container_enhancement.md)

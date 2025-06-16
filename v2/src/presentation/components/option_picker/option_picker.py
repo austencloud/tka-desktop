@@ -2,7 +2,7 @@ from typing import List, Optional, Dict, Any
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtCore import pyqtSignal, QObject
 
-from core.dependency_injection.di_container import SimpleContainer
+from core.dependency_injection.di_container import DIContainer
 from core.interfaces.core_services import ILayoutService
 from domain.models.core_models import BeatData, SequenceData
 from .pictograph_pool_manager import PictographPoolManager
@@ -18,13 +18,13 @@ class OptionPicker(QObject):
     Modern V2 Option Picker - Pure V2 Implementation
 
     This class works directly with V2 data structures (BeatData, SequenceData)
-    and never requires V1 format conversions.
+    and never requires Legacy format conversions.
     """
 
     option_selected = pyqtSignal(str)
     beat_data_selected = pyqtSignal(object)  # New signal for actual BeatData
 
-    def __init__(self, container: SimpleContainer, progress_callback=None):
+    def __init__(self, container: DIContainer, progress_callback=None):
         super().__init__()
         self.container = container
         self.progress_callback = progress_callback
@@ -206,7 +206,7 @@ class OptionPicker(QObject):
     def refresh_options_from_sequence(
         self, sequence_data: List[Dict[str, Any]]
     ) -> None:
-        """Refresh options based on sequence state (DEPRECATED - V1-compatible)"""
+        """Refresh options based on sequence state (DEPRECATED - Legacy-compatible)"""
         if self._beat_loader and self._display_manager:
             beat_options = self._beat_loader.refresh_options_from_sequence(
                 sequence_data

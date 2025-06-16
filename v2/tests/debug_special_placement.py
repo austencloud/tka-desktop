@@ -6,7 +6,7 @@ This script will:
 1. Test loading of special placement JSON configuration data
 2. Verify orientation key generation logic
 3. Test special adjustment calculation for sample arrows
-4. Compare with expected V1 behavior
+4. Compare with expected Legacy behavior
 """
 
 import sys

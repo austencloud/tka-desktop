@@ -333,7 +333,7 @@ class TestRunner:
     def suggest_test_placement(self, test_content: str, test_name: str) -> str:
         """Analyze test content and suggest proper placement"""
         debug_patterns = ["debug", "crash", "bug", "reproduce", "minimal", "simple"]
-        exploration_patterns = ["v1", "behavior", "understand", "explore", "learn"]
+        exploration_patterns = ["legacy", "behavior", "understand", "explore", "learn"]
         spike_patterns = ["spike", "prototype", "poc", "experiment", "feasibility"]
         specification_patterns = [
             "contract",

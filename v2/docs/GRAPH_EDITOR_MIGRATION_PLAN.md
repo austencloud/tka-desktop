@@ -1,10 +1,10 @@
-# 🎯 V1 to V2 GraphEditor Migration Game Plan
+# 🎯 Legacy to V2 GraphEditor Migration Game Plan
 
 ## 📊 **Executive Summary**
 
-This document outlines the comprehensive migration strategy for bringing the V1 GraphEditor functionality into V2 architecture, following modern dependency injection patterns and clean architecture principles.
+This document outlines the comprehensive migration strategy for bringing the Legacy GraphEditor functionality into V2 architecture, following modern dependency injection patterns and clean architecture principles.
 
-## 🔍 **V1 GraphEditor Analysis**
+## 🔍 **Legacy GraphEditor Analysis**
 
 ### **Core Components Identified:**
 
@@ -23,7 +23,7 @@ This document outlines the comprehensive migration strategy for bringing the V1 
 - Updates when beat selection changes
 - Complex resize/positioning logic (height = min(parent_height//3.5, parent_width//4))
 - Uses global state management via AppContext
-- Integrates with V1 pictograph rendering system
+- Integrates with Legacy pictograph rendering system
 
 ## 🏗️ **V2 Migration Architecture**
 
@@ -49,7 +49,7 @@ This document outlines the comprehensive migration strategy for bringing the V1 
 
    - Migrate GE_PictographView functionality
    - Implement arrow selection via mouse events
-   - Integrate with V1 pictograph rendering system
+   - Integrate with Legacy pictograph rendering system
    - Add modern styling and responsive design
 
 2. **ModernAdjustmentPanel**
@@ -83,19 +83,19 @@ This document outlines the comprehensive migration strategy for bringing the V1 
    - Add smooth resize transitions
    - Implement responsive height calculations
 
-### **Phase 3: V1 Integration Bridge** 📋 PLANNED
+### **Phase 3: Legacy Integration Bridge** 📋 PLANNED
 
 #### **Data Layer Integration**
 
 1. **Beat Data Mapping**
 
-   - Bridge V2 BeatData with V1 Beat objects
+   - Bridge V2 BeatData with Legacy Beat objects
    - Implement bidirectional data conversion
    - Ensure arrow state preservation
 
 2. **Pictograph System Bridge**
 
-   - Integrate V1 pictograph rendering with V2 components
+   - Integrate Legacy pictograph rendering with V2 components
    - Maintain compatibility with existing arrow/prop systems
    - Preserve visual consistency
 
@@ -107,7 +107,7 @@ This document outlines the comprehensive migration strategy for bringing the V1 
 #### **Event System Bridge**
 
 4. **Signal Migration**
-   - Replace V1 direct method calls with Qt signals
+   - Replace Legacy direct method calls with Qt signals
    - Implement proper event propagation
    - Add error handling and validation
 
@@ -123,7 +123,7 @@ This document outlines the comprehensive migration strategy for bringing the V1 
 
 2. **Migration Validation**
 
-   - Feature parity verification with V1
+   - Feature parity verification with Legacy
    - Performance comparison testing
    - Visual consistency validation
 
@@ -149,13 +149,13 @@ This document outlines the comprehensive migration strategy for bringing the V1 
 - [ ] ModernAdjustmentPanel with TurnsBox/OriPickerBox
 - [ ] ModernToggleTab with positioning logic
 - [ ] Basic arrow selection system
-- [ ] V1 data structure bridging
+- [ ] Legacy data structure bridging
 
 ### **Future Sprints 📅**
 
 - [ ] Advanced animation system
 - [ ] Hotkey integration
-- [ ] V1 pictograph system bridge
+- [ ] Legacy pictograph system bridge
 - [ ] Comprehensive testing suite
 - [ ] Performance optimization
 - [ ] Documentation completion
@@ -166,21 +166,21 @@ This document outlines the comprehensive migration strategy for bringing the V1 
 
 1. **Service-First**: Build robust service layer with clean interfaces
 2. **Component-Second**: Implement UI components using services
-3. **Bridge-Third**: Create V1 integration layer for data/rendering
+3. **Bridge-Third**: Create Legacy integration layer for data/rendering
 4. **Test-Fourth**: Comprehensive validation and optimization
 
 ### **Risk Mitigation**
 
-- **Backward Compatibility**: Maintain V1 functionality during migration
+- **Backward Compatibility**: Maintain Legacy functionality during migration
 - **Progressive Enhancement**: Add V2 features incrementally
-- **Rollback Strategy**: Keep V1 components available as fallback
+- **Rollback Strategy**: Keep Legacy components available as fallback
 - **Validation Gates**: Feature parity checks at each phase
 
 ## 🎯 **Success Metrics**
 
 ### **Technical Metrics**
 
-- 100% feature parity with V1 GraphEditor
+- 100% feature parity with Legacy GraphEditor
 - <300ms animation performance
 - Zero memory leaks in component lifecycle
 - Full test coverage (>90%)
@@ -211,11 +211,11 @@ This document outlines the comprehensive migration strategy for bringing the V1 
 
    - Complete adjustment panel controls
    - Implement arrow selection system
-   - Bridge V1 data structures
+   - Bridge Legacy data structures
 
 3. **Medium-term (Month 2)**:
 
-   - Full V1 integration bridge
+   - Full Legacy integration bridge
    - Comprehensive testing
    - Performance optimization
 

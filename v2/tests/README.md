@@ -42,7 +42,7 @@ python -m pytest -m "not slow"
 - **Target**: <30 seconds total
 - **Subdirectories**:
   - `debug/` - Bug reproduction and debugging
-  - `exploration/` - Code understanding and V1 behavior exploration
+  - `exploration/` - Code understanding and Legacy behavior exploration
   - `spike/` - Proof of concepts and prototypes
 
 **Required Metadata**: DELETE_AFTER date, PURPOSE, AUTHOR
@@ -148,7 +148,7 @@ tests/
 │   ├── components/
 │   ├── layouts/
 │   └── interactions/
-├── parity/                     # V1 functionality parity tests
+├── parity/                     # Legacy functionality parity tests
 │   ├── __init__.py
 │   ├── graph_editor/
 │   ├── sequence_operations/

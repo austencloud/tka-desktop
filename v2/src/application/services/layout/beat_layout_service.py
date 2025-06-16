@@ -1,21 +1,35 @@
 """
-Beat Layout Service - Focused Beat Frame Layout Operations
+Enhanced Beat Layout Service
 
-Handles all beat frame layout calculations including:
-- Beat frame layout for sequences
-- Horizontal beat layout calculations
-- Grid beat layout calculations
-- Beat positioning and sizing
-
-This service provides a clean, focused interface for beat layout operations
-while maintaining the proven layout algorithms.
+Provides intelligent beat frame layout calculations with comprehensive
+default layouts, user override support, and dynamic sequence adaptation.
 """
 
-from typing import Dict, Any, Tuple
 from abc import ABC, abstractmethod
-import math
+import json
+import os
+from typing import Dict, List, Tuple, Optional
+from dataclasses import dataclass
+from PyQt6.QtCore import QSettings
 
 from domain.models.core_models import SequenceData
+
+
+def get_data_path(filename: str) -> str:
+    """Helper function to get data file paths"""
+    import os
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, "..", "..", "..", "..")
+    return os.path.join(project_root, "data", filename)
+
+
+@dataclass
+class LayoutConfig:
+    """Configuration for the enhanced layout system"""
+
+    grow_sequence: bool = True
+    overrides_file: str = "beat_layout_overrides.json"
 
 
 class IBeatLayoutService(ABC):
@@ -24,8 +38,28 @@ class IBeatLayoutService(ABC):
     @abstractmethod
     def calculate_beat_frame_layout(
         self, sequence: SequenceData, container_size: Tuple[int, int]
-    ) -> Dict[str, Any]:
+    ) -> Dict[str, int]:
         """Calculate layout for beat frames in a sequence."""
+        pass
+
+    @abstractmethod
+    def calculate_optimal_layout(self, beat_count: int) -> Dict[str, int]:
+        """Calculate optimal grid layout for given beat count."""
+        pass
+
+    @abstractmethod
+    def get_current_layout(self, sequence: SequenceData) -> Tuple[int, int]:
+        """Get current layout as tuple"""
+        pass
+
+    @abstractmethod
+    def clear_cache(self):
+        """Clear layout cache (for settings changes)"""
+        pass
+
+    @abstractmethod
+    def set_layout_override(self, beat_count: int, rows: int, columns: int):
+        """Set user layout override"""
         pass
 
     @abstractmethod
@@ -35,169 +69,221 @@ class IBeatLayoutService(ABC):
         """Get optimal grid layout (rows, cols) for items."""
         pass
 
+    @abstractmethod
+    def get_layout_configurations(self) -> Dict[int, Dict[str, int]]:
+        """Get all predefined layout configurations"""
+        pass
 
-class BeatLayoutService(IBeatLayoutService):
+    @abstractmethod
+    def update_layout_configuration(self, beat_count: int, rows: int, columns: int):
+        """Update layout configuration for specific beat count"""
+        pass
+
+
+class BeatLayoutService:
     """
-    Focused beat layout service.
-
-    Provides comprehensive beat frame layout including:
-    - Beat frame layout calculations for sequences
-    - Horizontal and grid layout algorithms
-    - Optimal grid layout calculations
-    - Beat positioning and sizing
+    Enhanced beat frame layout service with comprehensive defaults
+    and intelligent sequence adaptation.
     """
 
-    def __init__(self):
-        # Default layout configurations
-        self._default_configs = self._load_default_configs()
+    def __init__(self, config: Optional[LayoutConfig] = None):
+        self.config = config or LayoutConfig()
+        self.settings = QSettings("TKA", "KineticConstructor")
+        self._layout_cache = {}
+        self._overrides_cache = None
+
+        # Complete default layouts (rows, columns) for all beat counts
+        self._default_layouts = {
+            "0": [1, 0],
+            "1": [1, 1],
+            "2": [1, 2],
+            "3": [1, 3],
+            "4": [1, 4],
+            "5": [2, 4],
+            "6": [2, 4],
+            "7": [2, 4],
+            "8": [2, 4],
+            "9": [3, 4],
+            "10": [3, 4],
+            "11": [3, 4],
+            "12": [4, 3],
+            "13": [4, 4],
+            "14": [4, 4],
+            "15": [4, 4],
+            "16": [4, 4],
+            "17": [4, 5],
+            "18": [4, 5],
+            "19": [4, 5],
+            "20": [4, 5],
+            "21": [6, 4],
+            "22": [6, 4],
+            "23": [6, 4],
+            "24": [6, 4],
+            "25": [7, 4],
+            "26": [7, 4],
+            "27": [7, 4],
+            "28": [7, 4],
+            "29": [8, 4],
+            "30": [8, 4],
+            "31": [8, 4],
+            "32": [8, 4],
+            "33": [9, 4],
+            "34": [9, 4],
+            "35": [9, 4],
+            "36": [9, 4],
+            "37": [10, 4],
+            "38": [10, 4],
+            "39": [10, 4],
+            "40": [10, 4],
+            "41": [11, 4],
+            "42": [11, 4],
+            "43": [11, 4],
+            "44": [11, 4],
+            "45": [11, 4],
+            "46": [12, 4],
+            "47": [12, 4],
+            "48": [12, 4],
+            "49": [13, 4],
+            "50": [13, 4],
+            "51": [13, 4],
+            "52": [13, 4],
+            "53": [14, 4],
+            "54": [14, 4],
+            "55": [14, 4],
+            "56": [14, 4],
+            "57": [15, 4],
+            "58": [15, 4],
+            "59": [15, 4],
+            "60": [15, 4],
+            "61": [16, 4],
+            "62": [16, 4],
+            "63": [16, 4],
+            "64": [16, 4],
+        }
 
     def calculate_beat_frame_layout(
         self, sequence: SequenceData, container_size: Tuple[int, int]
-    ) -> Dict[str, Any]:
-        """Calculate layout for beat frames using enhanced algorithm."""
-        from application.services.layout.enhanced_beat_layout_service import EnhancedBeatLayoutService
-        
-        # Use enhanced layout system
-        enhanced_service = EnhancedBeatLayoutService()
-        layout_config = enhanced_service.calculate_beat_frame_layout(sequence, container_size)
-        
-        return layout_config
+    ) -> Dict[str, int]:
+        """
+        Calculate layout using intelligent sequence adaptation.
 
-    def get_optimal_grid_layout(
-        self, item_count: int, container_size: Tuple[int, int]
-    ) -> Tuple[int, int]:
-        """Get optimal grid layout (rows, cols) for items."""
-        if item_count <= 0:
-            return (0, 0)
+        Args:
+            sequence: Current sequence data
+            container_size: Available container size (width, height)
 
-        container_width, container_height = container_size
-        aspect_ratio = container_width / container_height if container_height > 0 else 1.0
+        Returns:
+            Dictionary with 'rows' and 'columns' keys
+        """
+        # Dynamic sequence growth logic
+        beat_count = len(sequence.beats)
+        if self._get_grow_sequence_setting():
+            filled_count = self._count_filled_beats(sequence)
+            beat_count = filled_count if filled_count > 0 else beat_count
 
-        # Calculate optimal number of columns based on aspect ratio
-        cols = max(1, int(math.sqrt(item_count * aspect_ratio)))
-        rows = math.ceil(item_count / cols)
+        return self._get_layout_for_beat_count(beat_count)
 
-        # Adjust if the layout doesn't fit well
-        while cols > 1 and rows * container_height / cols > container_width:
-            cols -= 1
-            rows = math.ceil(item_count / cols)
+    def calculate_optimal_layout(self, beat_count: int) -> Dict[str, int]:
+        """
+        Calculate optimal grid layout for given beat count.
 
-        return (rows, cols)
+        Args:
+            beat_count: Number of beats in sequence
 
-    # Private helper methods
+        Returns:
+            Dictionary with 'rows' and 'columns' keys
+        """
+        return self._get_layout_for_beat_count(beat_count)
 
-    def _calculate_horizontal_beat_layout(
-        self,
-        beat_count: int,
-        container_size: Tuple[int, int],
-        base_size: Tuple[int, int],
-        padding: int,
-        spacing: int,
-    ) -> Dict[str, Any]:
-        """Calculate horizontal layout for beat frames."""
-        container_width, container_height = container_size
-        base_width, base_height = base_size
+    def _get_layout_for_beat_count(self, beat_count: int) -> Dict[str, int]:
+        """Get layout with caching and override support"""
+        # Check cache first
+        cache_key = str(beat_count)
+        if cache_key in self._layout_cache:
+            return self._layout_cache[cache_key]
 
-        # Calculate available space
-        available_width = container_width - 2 * padding
-        available_height = container_height - 2 * padding
-
-        # Calculate beat size with spacing
-        total_spacing = (beat_count - 1) * spacing
-        available_beat_width = available_width - total_spacing
-        beat_width = min(base_width, available_beat_width // beat_count)
-        beat_height = min(base_height, available_height)
-
-        # Maintain aspect ratio
-        if beat_width / beat_height > base_width / base_height:
-            beat_width = int(beat_height * base_width / base_height)
+        # Load overrides (priority system)
+        overrides = self._load_overrides()
+        if cache_key in overrides:
+            layout = overrides[cache_key]
         else:
-            beat_height = int(beat_width * base_height / base_width)
+            # Use built-in default layouts
+            layout = self._default_layouts.get(cache_key, [1, max(1, beat_count)])
 
-        # Calculate positions
-        positions = {}
-        sizes = {}
-        start_x = padding + (available_width - (beat_count * beat_width + total_spacing)) // 2
-        y = padding + (available_height - beat_height) // 2
+        # Convert format [rows, cols] to dictionary
+        result = {"rows": layout[0], "columns": layout[1]}
+        self._layout_cache[cache_key] = result
+        return result
 
-        for i in range(beat_count):
-            x = start_x + i * (beat_width + spacing)
-            positions[f"beat_{i}"] = (x, y)
-            sizes[f"beat_{i}"] = (beat_width, beat_height)
+    def _load_overrides(self) -> Dict[str, List[int]]:
+        """Load user overrides from JSON file"""
+        if self._overrides_cache is not None:
+            return self._overrides_cache
 
-        total_width = beat_count * beat_width + total_spacing + 2 * padding
-        total_height = beat_height + 2 * padding
+        overrides_path = get_data_path(self.config.overrides_file)
+        if not os.path.exists(overrides_path):
+            self._overrides_cache = {}
+            return self._overrides_cache
 
-        return {
-            "positions": positions,
-            "sizes": sizes,
-            "total_size": (total_width, total_height),
-            "scaling_factor": beat_width / base_width,
-        }
+        try:
+            with open(overrides_path, "r") as file:
+                content = file.read().strip()
+                if not content:
+                    self._overrides_cache = {}
+                    return self._overrides_cache
 
-    def _calculate_grid_beat_layout(
-        self,
-        beat_count: int,
-        container_size: Tuple[int, int],
-        base_size: Tuple[int, int],
-        padding: int,
-        spacing: int,
-    ) -> Dict[str, Any]:
-        """Calculate grid layout for beat frames."""
-        rows, cols = self.get_optimal_grid_layout(beat_count, container_size)
+                self._overrides_cache = json.loads(content)
+                return self._overrides_cache
+        except (FileNotFoundError, json.JSONDecodeError):
+            self._overrides_cache = {}
+            return self._overrides_cache
 
-        container_width, container_height = container_size
-        base_width, base_height = base_size
+    def _get_grow_sequence_setting(self) -> bool:
+        """Get grow sequence setting from QSettings"""
+        return self.settings.value("global/grow_sequence", True, type=bool)
 
-        # Calculate available space
-        available_width = container_width - 2 * padding
-        available_height = container_height - 2 * padding
+    def _count_filled_beats(self, sequence: SequenceData) -> int:
+        """Count filled beats in sequence"""
+        return len([beat for beat in sequence.beats if beat is not None])
 
-        # Calculate beat size
-        col_spacing = (cols - 1) * spacing
-        row_spacing = (rows - 1) * spacing
+    def set_layout_override(self, beat_count: int, rows: int, columns: int):
+        """Set user layout override"""
+        overrides = self._load_overrides()
+        overrides[str(beat_count)] = [rows, columns]
+        self._save_overrides(overrides)
 
-        beat_width = min(base_width, (available_width - col_spacing) // cols)
-        beat_height = min(base_height, (available_height - row_spacing) // rows)
+        # Clear cache to force reload
+        self._overrides_cache = None
+        if str(beat_count) in self._layout_cache:
+            del self._layout_cache[str(beat_count)]
 
-        # Maintain aspect ratio
-        if beat_width / beat_height > base_width / base_height:
-            beat_width = int(beat_height * base_width / base_height)
-        else:
-            beat_height = int(beat_width * base_height / base_width)
+    def _save_overrides(self, overrides: Dict[str, List[int]]):
+        """Save overrides to JSON file"""
+        overrides_path = get_data_path(self.config.overrides_file)
+        os.makedirs(os.path.dirname(overrides_path), exist_ok=True)
 
-        # Calculate positions
-        positions = {}
-        sizes = {}
+        # Inline list formatting
+        class InlineListEncoder(json.JSONEncoder):
+            def encode(self, obj):
+                if isinstance(obj, dict):
+                    formatted_items = []
+                    for key, value in obj.items():
+                        if isinstance(value, list):
+                            value_str = json.dumps(value, separators=(",", ":"))
+                        else:
+                            value_str = json.dumps(value)
+                        formatted_items.append(f'  "{key}": {value_str}')
+                    return "{\n" + ",\n".join(formatted_items) + "\n}"
+                return super().encode(obj)
 
-        grid_width = cols * beat_width + col_spacing
-        grid_height = rows * beat_height + row_spacing
-        start_x = padding + (available_width - grid_width) // 2
-        start_y = padding + (available_height - grid_height) // 2
+        with open(overrides_path, "w") as file:
+            json.dump(overrides, file, cls=InlineListEncoder, indent=2)
 
-        for i in range(beat_count):
-            row = i // cols
-            col = i % cols
+    def get_current_layout(self, sequence: SequenceData) -> Tuple[int, int]:
+        """Get current layout as tuple"""
+        layout = self.calculate_beat_frame_layout(sequence, (800, 600))
+        return layout["rows"], layout["columns"]
 
-            x = start_x + col * (beat_width + spacing)
-            y = start_y + row * (beat_height + spacing)
-
-            positions[f"beat_{i}"] = (x, y)
-            sizes[f"beat_{i}"] = (beat_width, beat_height)
-
-        return {
-            "positions": positions,
-            "sizes": sizes,
-            "total_size": (grid_width + 2 * padding, grid_height + 2 * padding),
-            "scaling_factor": beat_width / base_width,
-        }
-
-    def _load_default_configs(self) -> Dict[str, Any]:
-        """Load default configuration values."""
-        return {
-            "min_beat_size": (80, 80),
-            "max_beat_size": (200, 200),
-            "default_padding": 10,
-            "default_spacing": 5,
-            "aspect_ratio_tolerance": 0.1,
-        }
+    def clear_cache(self):
+        """Clear layout cache (for settings changes)"""
+        self._layout_cache.clear()
+        self._overrides_cache = None

@@ -14,7 +14,7 @@ from .motion.motion_generation_service import (
 from .motion.motion_orientation_service import (
     MotionOrientationService,
     IMotionOrientationService,
-)
+) 
 from .layout.beat_layout_service import BeatLayoutService, IBeatLayoutService
 from .layout.responsive_layout_service import (
     ResponsiveLayoutService,

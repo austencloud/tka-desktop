@@ -1,13 +1,13 @@
 """
-V1 Application Driver
+Legacy Application Driver
 ====================
 
-Driver for TKA V1 application in parallel testing.
-Interfaces with V1's main_window.py and existing component structure.
+Driver for TKA Legacy application in parallel testing.
+Interfaces with Legacy's main_window.py and existing component structure.
 
 LIFECYCLE: SCAFFOLDING
-DELETE_AFTER: V1 deprecation complete
-PURPOSE: Control V1 application for parallel testing with V2
+DELETE_AFTER: Legacy deprecation complete
+PURPOSE: Control Legacy application for parallel testing with V2
 """
 
 import sys
@@ -17,10 +17,10 @@ from typing import Dict, Any, Optional
 import logging
 import time
 
-# Add V1 source to path
-v1_src_path = Path(__file__).parent.parent.parent.parent.parent / "v1" / "src"
-if str(v1_src_path) not in sys.path:
-    sys.path.insert(0, str(v1_src_path))
+# Add Legacy source to path
+legacy_src_path = Path(__file__).parent.parent.parent.parent.parent / "legacy" / "src"
+if str(legacy_src_path) not in sys.path:
+    sys.path.insert(0, str(legacy_src_path))
 
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer, QEventLoop
@@ -38,20 +38,20 @@ from actions import UserAction, ActionType, GridPosition, MotionTypeValue
 logger = logging.getLogger(__name__)
 
 
-class V1ApplicationDriver(BaseApplicationDriver):
-    """Driver for TKA V1 application."""
+class LegacyApplicationDriver(BaseApplicationDriver):
+    """Driver for TKA Legacy application."""
 
     def __init__(self, test_data_dir: Path):
-        super().__init__("V1", test_data_dir)
+        super().__init__("Legacy", test_data_dir)
         self.main_window = None
         self.app = None
         self.sequence_widget = None
         self.construct_tab = None
 
     def _start_application_impl(self, **kwargs) -> bool:
-        """Start V1 application."""
+        """Start Legacy application."""
         try:
-            # Import V1 components
+            # Import Legacy components
             from main_window.main_window import MainWindow
             from settings_manager.settings_manager import SettingsManager
             from splash_screen.splash_screen import SplashScreen
@@ -63,12 +63,12 @@ class V1ApplicationDriver(BaseApplicationDriver):
             else:
                 self.app = QApplication.instance()
 
-            # Initialize V1 components
+            # Initialize Legacy components
             settings_manager = SettingsManager()
             splash_screen = SplashScreen(self.app, settings_manager)
             profiler = Profiler()
 
-            # Create app context (V1's dependency injection)
+            # Create app context (Legacy's dependency injection)
             from src.settings_manager.global_settings.app_context import AppContext
 
             app_context = AppContext()
@@ -87,15 +87,15 @@ class V1ApplicationDriver(BaseApplicationDriver):
             # Process events to ensure initialization
             self.app.processEvents()
 
-            logger.info("V1 application started successfully")
+            logger.info("Legacy application started successfully")
             return True
 
         except Exception as e:
-            logger.error(f"Failed to start V1 application: {e}")
+            logger.error(f"Failed to start Legacy application: {e}")
             return False
 
     def _stop_application_impl(self) -> bool:
-        """Stop V1 application."""
+        """Stop Legacy application."""
         try:
             if self.main_window:
                 self.main_window.close()
@@ -105,15 +105,15 @@ class V1ApplicationDriver(BaseApplicationDriver):
                 self.app.quit()
                 self.app = None
 
-            logger.info("V1 application stopped successfully")
+            logger.info("Legacy application stopped successfully")
             return True
 
         except Exception as e:
-            logger.error(f"Failed to stop V1 application: {e}")
+            logger.error(f"Failed to stop Legacy application: {e}")
             return False
 
     def _execute_action_impl(self, action: UserAction) -> ActionResult:
-        """Execute action on V1 application."""
+        """Execute action on Legacy application."""
         try:
             if action.action_type == ActionType.SELECT_START_POSITION:
                 return self._select_start_position(action)
@@ -144,14 +144,14 @@ class V1ApplicationDriver(BaseApplicationDriver):
             )
 
     def _select_start_position(self, action: UserAction) -> ActionResult:
-        """Select start position in V1."""
+        """Select start position in Legacy."""
         try:
             grid_position = action.parameters.grid_position
 
             # Get start position picker from construct tab
             start_pos_picker = self.construct_tab.option_picker.start_pos_picker
 
-            # Map grid position to V1 button
+            # Map grid position to Legacy button
             position_map = {
                 GridPosition.ALPHA: "alpha",
                 GridPosition.BETA: "beta",
@@ -195,7 +195,7 @@ class V1ApplicationDriver(BaseApplicationDriver):
             )
 
     def _select_pictograph_option(self, action: UserAction) -> ActionResult:
-        """Select pictograph option in V1."""
+        """Select pictograph option in Legacy."""
         try:
             # Get option picker
             option_picker = self.construct_tab.option_picker
@@ -242,15 +242,15 @@ class V1ApplicationDriver(BaseApplicationDriver):
             )
 
     def _add_beat(self, action: UserAction) -> ActionResult:
-        """Add beat in V1 (typically done through pictograph selection)."""
-        # In V1, beats are added by selecting pictograph options
+        """Add beat in Legacy (typically done through pictograph selection)."""
+        # In Legacy, beats are added by selecting pictograph options
         return self._select_pictograph_option(action)
 
     def _adjust_turns(self, action: UserAction) -> ActionResult:
-        """Adjust turns in V1."""
+        """Adjust turns in Legacy."""
         try:
-            # This would interact with V1's turn adjustment controls
-            # Implementation depends on V1's specific UI structure
+            # This would interact with Legacy's turn adjustment controls
+            # Implementation depends on Legacy's specific UI structure
             return ActionResult(
                 success=True,
                 execution_time_ms=0,
@@ -265,7 +265,7 @@ class V1ApplicationDriver(BaseApplicationDriver):
             )
 
     def _toggle_graph_editor(self, action: UserAction) -> ActionResult:
-        """Toggle graph editor in V1."""
+        """Toggle graph editor in Legacy."""
         try:
             # Find graph editor toggle button
             if hasattr(self.construct_tab, "graph_editor_toggle_button"):
@@ -298,7 +298,7 @@ class V1ApplicationDriver(BaseApplicationDriver):
             )
 
     def _clear_sequence(self, action: UserAction) -> ActionResult:
-        """Clear sequence in V1."""
+        """Clear sequence in Legacy."""
         try:
             # Clear sequence through sequence widget
             if self.sequence_widget and hasattr(self.sequence_widget, "clear_sequence"):
@@ -328,7 +328,7 @@ class V1ApplicationDriver(BaseApplicationDriver):
             )
 
     def _extract_data(self, action: UserAction) -> ActionResult:
-        """Extract current data from V1."""
+        """Extract current data from Legacy."""
         try:
             sequence_data = self.extract_sequence_data()
             pictograph_data = self.extract_pictograph_data()
@@ -350,9 +350,9 @@ class V1ApplicationDriver(BaseApplicationDriver):
             )
 
     def get_current_state(self) -> ApplicationState:
-        """Get current V1 application state."""
+        """Get current Legacy application state."""
         try:
-            # Update state from V1 components
+            # Update state from Legacy components
             if self.sequence_widget:
                 # Extract beat count and other sequence info
                 if hasattr(self.sequence_widget, "beat_frame"):
@@ -363,23 +363,23 @@ class V1ApplicationDriver(BaseApplicationDriver):
             return self.current_state
 
         except Exception as e:
-            logger.error(f"Failed to get V1 state: {e}")
+            logger.error(f"Failed to get Legacy state: {e}")
             return self.current_state
 
     def extract_sequence_data(self) -> Dict[str, Any]:
-        """Extract sequence data from V1 using verified access patterns."""
+        """Extract sequence data from Legacy using verified access patterns."""
         try:
             if not self.main_window:
                 return {}
 
-            # VERIFIED: V1 access pattern - main_widget.sequence_workbench.beat_frame
+            # VERIFIED: Legacy access pattern - main_widget.sequence_workbench.beat_frame
             beat_frame = self.main_window.main_widget.sequence_workbench.beat_frame
 
-            # VERIFIED: V1 beat_frame has beat_views list with filled beats
+            # VERIFIED: Legacy beat_frame has beat_views list with filled beats
             sequence_data = {
                 "beat_count": 0,
                 "beats": [],
-                "version": "V1",
+                "version": "Legacy",
                 "start_position": None,
             }
 
@@ -396,7 +396,7 @@ class V1ApplicationDriver(BaseApplicationDriver):
                         start_data = start_beat.state.pictograph_data
                         sequence_data["start_position"] = start_data.get("letter", "")
 
-            # VERIFIED: V1 beat_frame.beat_views contains BeatView objects with is_filled property
+            # VERIFIED: Legacy beat_frame.beat_views contains BeatView objects with is_filled property
             if hasattr(beat_frame, "beat_views"):
                 filled_beats = [
                     view
@@ -413,18 +413,18 @@ class V1ApplicationDriver(BaseApplicationDriver):
             return sequence_data
 
         except Exception as e:
-            logger.error(f"Failed to extract V1 sequence data: {e}")
+            logger.error(f"Failed to extract Legacy sequence data: {e}")
             return {}
 
     def extract_pictograph_data(self, beat_index: int = -1) -> Dict[str, Any]:
-        """Extract pictograph data from V1."""
+        """Extract pictograph data from Legacy."""
         try:
             # Extract pictograph data from current beat or specified beat
             pictograph_data = {
                 "beat_index": beat_index,
                 "arrows": {},
                 "props": {},
-                "version": "V1",
+                "version": "Legacy",
             }
 
             # Add specific pictograph extraction logic here
@@ -432,13 +432,13 @@ class V1ApplicationDriver(BaseApplicationDriver):
             return pictograph_data
 
         except Exception as e:
-            logger.error(f"Failed to extract V1 pictograph data: {e}")
+            logger.error(f"Failed to extract Legacy pictograph data: {e}")
             return {}
 
     def _extract_beat_data(self, beat, index: int) -> Dict[str, Any]:
-        """Extract data from a V1 beat based on verified V1 Beat structure."""
+        """Extract data from a Legacy beat based on verified Legacy Beat structure."""
         try:
-            # VERIFIED: V1 Beat extends Pictograph and has state.pictograph_data
+            # VERIFIED: Legacy Beat extends Pictograph and has state.pictograph_data
             if hasattr(beat, "state") and hasattr(beat.state, "pictograph_data"):
                 pictograph_data = beat.state.pictograph_data
 
@@ -449,7 +449,7 @@ class V1ApplicationDriver(BaseApplicationDriver):
                     "motions": {},
                 }
 
-                # VERIFIED: V1 uses blue_attributes/red_attributes structure
+                # VERIFIED: Legacy uses blue_attributes/red_attributes structure
                 for color in ["blue", "red"]:
                     attr_key = f"{color}_attributes"
                     if attr_key in pictograph_data:
@@ -488,13 +488,13 @@ class V1ApplicationDriver(BaseApplicationDriver):
             return beat_data
 
         except Exception as e:
-            logger.error(f"Failed to extract V1 beat data: {e}")
+            logger.error(f"Failed to extract Legacy beat data: {e}")
             return {"index": index, "error": str(e)}
 
     def _extract_motion_data(self, motion) -> Dict[str, Any]:
-        """Extract data from a V1 motion based on verified V1 MotionState structure."""
+        """Extract data from a Legacy motion based on verified Legacy MotionState structure."""
         try:
-            # V1 motion data is stored in motion.state (MotionState)
+            # Legacy motion data is stored in motion.state (MotionState)
             if hasattr(motion, "state"):
                 motion_state = motion.state
                 motion_data = {
@@ -524,11 +524,11 @@ class V1ApplicationDriver(BaseApplicationDriver):
             return motion_data
 
         except Exception as e:
-            logger.error(f"Failed to extract V1 motion data: {e}")
+            logger.error(f"Failed to extract Legacy motion data: {e}")
             return {"error": str(e)}
 
     def wait_for_ready(self, timeout_ms: int = 10000) -> bool:
-        """Wait for V1 application to be ready."""
+        """Wait for Legacy application to be ready."""
         try:
             start_time = time.time()
 
@@ -546,11 +546,11 @@ class V1ApplicationDriver(BaseApplicationDriver):
             return False
 
         except Exception as e:
-            logger.error(f"Failed to wait for V1 ready: {e}")
+            logger.error(f"Failed to wait for Legacy ready: {e}")
             return False
 
     def _capture_screenshot_impl(self, filepath: str) -> bool:
-        """Capture V1 application screenshot."""
+        """Capture Legacy application screenshot."""
         try:
             if self.main_window:
                 pixmap = self.main_window.grab()
@@ -558,5 +558,5 @@ class V1ApplicationDriver(BaseApplicationDriver):
             return False
 
         except Exception as e:
-            logger.error(f"Failed to capture V1 screenshot: {e}")
+            logger.error(f"Failed to capture Legacy screenshot: {e}")
             return False

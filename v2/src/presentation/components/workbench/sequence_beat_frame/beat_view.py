@@ -1,7 +1,7 @@
 """
 Modern Beat View Component
 
-Individual beat widget for the V2 sequence workbench, replacing V1's BeatView
+Individual beat widget for the V2 sequence workbench, replacing Legacy's BeatView
 with modern architecture patterns and V2 pictograph integration.
 """
 
@@ -14,11 +14,11 @@ from presentation.components.pictograph.pictograph_component import PictographCo
 from src.domain.models.core_models import BeatData
 
 
-class ModernBeatView(QFrame):
+class BeatView(QFrame):
     """
     Modern beat view widget with V2 pictograph integration.
 
-    Replaces V1's BeatView with:
+    Replaces Legacy's BeatView with:
     - Clean separation of concerns
     - V2 pictograph rendering integration
     - Modern PyQt6 patterns
@@ -47,19 +47,19 @@ class ModernBeatView(QFrame):
         self._setup_styling()
 
     def _setup_ui(self):
-        """Setup the UI components to match v1 layout exactly"""
+        """Setup the UI components to match legacy layout exactly"""
         self.setFixedSize(120, 120)
         self.setFrameStyle(QFrame.Shape.Box)
 
-        # Use zero margins and spacing like v1
+        # Use zero margins and spacing like legacy
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # Remove beat number label - v1 doesn't have labels above pictographs
+        # Remove beat number label - legacy doesn't have labels above pictographs
         # Beat numbers are rendered directly on the pictograph scene
 
-        # Pictograph component fills the entire container like v1
+        # Pictograph component fills the entire container like legacy
         self._pictograph_component = PictographComponent(parent=self)
         if self._pictograph_component:
             self._pictograph_component.setMinimumSize(120, 120)  # Fill container
@@ -136,7 +136,7 @@ class ModernBeatView(QFrame):
             self._show_empty_state()
             return
 
-        # No beat label in v1 - beat numbers are rendered on the pictograph scene
+        # No beat label in legacy - beat numbers are rendered on the pictograph scene
         # Update pictograph with beat data
         self._update_pictograph()
 
@@ -150,7 +150,7 @@ class ModernBeatView(QFrame):
 
     def _show_empty_state(self):
         """Show empty state when no beat data"""
-        # No beat label in v1 - just clear the pictograph
+        # No beat label in legacy - just clear the pictograph
 
         # Clear pictograph component
         if self._pictograph_component:

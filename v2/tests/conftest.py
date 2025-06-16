@@ -25,7 +25,7 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "ui: User interface tests (now with pytest-qt)"
     )  # Updated marker description
-    config.addinivalue_line("markers", "parity: V1 functionality parity tests")
+    config.addinivalue_line("markers", "parity: Legacy functionality parity tests")
     config.addinivalue_line("markers", "slow: Tests that take >5 seconds")
 
 
