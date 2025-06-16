@@ -1,8 +1,8 @@
 """
 Context-Aware Scaling Service for V2 Pictographs.
 
-This service replicates V1's context-specific scaling logic to ensure V2 pictographs
-achieve the same visual prominence as V1 pictographs in different usage contexts.
+This service replicates context-specific scaling logic to ensure V2 pictographs
+achieve the same visual prominence as proven pictographs in different usage contexts.
 """
 
 from typing import Optional, Tuple
@@ -25,9 +25,9 @@ class ScalingContext(Enum):
 
 class ContextAwareScalingService:
     """
-    Service that provides context-aware scaling calculations matching V1 behavior.
+    Service that provides context-aware scaling calculations matching proven behavior.
 
-    V1 uses different scaling formulas for different contexts:
+    Uses different scaling formulas for different contexts:
     - OptionView: size = max(mw_width//16, option_picker.width//8)
     - StartPosPicker: size = size_provider.width//10
     - AdvancedStartPos: size = size_provider.width//12
@@ -37,7 +37,7 @@ class ContextAwareScalingService:
     """
 
     def __init__(self):
-        self.border_width = 2  # Default border width used in V1 calculations
+        self.border_width = 2  # Default border width used in calculations
 
     def calculate_context_scale(
         self,
