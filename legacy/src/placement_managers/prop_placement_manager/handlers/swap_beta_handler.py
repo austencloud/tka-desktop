@@ -8,7 +8,7 @@ from main_window.main_widget.special_placement_loader import SpecialPlacementLoa
 from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import (
     TurnsTupleGenerator,
 )
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from objects.prop.prop import Prop
 
 if TYPE_CHECKING:

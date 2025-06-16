@@ -163,7 +163,7 @@ class WidgetManager(QObject):
 
                 # Register the sequence beat frame in AppContext for legacy compatibility
                 try:
-                    from src.settings_manager.global_settings.app_context import (
+                    from src.legacy_settings_manager.global_settings.app_context import (
                         AppContext,
                     )
 

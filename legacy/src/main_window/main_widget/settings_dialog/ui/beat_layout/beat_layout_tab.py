@@ -9,13 +9,13 @@ from main_window.main_widget.settings_dialog.ui.beat_layout.layout_controls.layo
 from .layout_beat_frame.layout_beat_frame import LayoutBeatFrame
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
-        ModernSettingsDialog,
+    from legacy.src.main_window.main_widget.settings_dialog.legacy_settings_dialog import (
+        LegacySettingsDialog,
     )
 
 
 class BeatLayoutTab(QWidget):
-    def __init__(self, settings_dialog: "ModernSettingsDialog"):
+    def __init__(self, settings_dialog: "LegacySettingsDialog"):
         super().__init__(settings_dialog)
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget

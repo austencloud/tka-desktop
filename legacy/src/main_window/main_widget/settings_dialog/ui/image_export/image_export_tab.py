@@ -14,14 +14,14 @@ from main_window.main_widget.settings_dialog.ui.image_export.loading_spinner imp
 
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
-        ModernSettingsDialog,
+    from legacy.src.main_window.main_widget.settings_dialog.legacy_settings_dialog import (
+        LegacySettingsDialog,
     )
 
 
 class ImageExportTab(QWidget):
 
-    def __init__(self, settings_dialog: "ModernSettingsDialog"):
+    def __init__(self, settings_dialog: "LegacySettingsDialog"):
         super().__init__(settings_dialog)
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget

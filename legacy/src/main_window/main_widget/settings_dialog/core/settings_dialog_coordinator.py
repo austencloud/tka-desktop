@@ -68,7 +68,7 @@ class SettingsDialogCoordinator(QObject):
                 self.settings_manager = self.app_context.settings_manager
             else:
                 # Fallback to legacy AppContext
-                from src.settings_manager.global_settings.app_context import AppContext
+                from src.legacy_settings_manager.global_settings.app_context import AppContext
 
                 self.settings_manager = AppContext.settings_manager()
 

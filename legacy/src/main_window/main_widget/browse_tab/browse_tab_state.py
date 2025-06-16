@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from settings_manager.browse_tab_settings import BrowseTabSettings
+    from legacy_settings_manager.browse_tab_settings import BrowseTabSettings
 
 
 class BrowseTabState:

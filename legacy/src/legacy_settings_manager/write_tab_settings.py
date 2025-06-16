@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from settings_manager.settings_manager import SettingsManager
+    from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 
 
 class WriteTabSettings:
@@ -11,7 +11,7 @@ class WriteTabSettings:
     }
 
     def __init__(self):
-        self.settings = SettingsManager()
+        self.settings = LegacySettingsManager()
 
     def save_act_title(self, title: str) -> None:
         self.settings.set_value("act_sheet/act_title", title)

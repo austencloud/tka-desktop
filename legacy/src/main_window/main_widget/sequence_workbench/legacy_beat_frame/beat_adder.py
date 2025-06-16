@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from data.constants import BEAT
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from utils.reversal_detector import (
     ReversalDetector,
 )

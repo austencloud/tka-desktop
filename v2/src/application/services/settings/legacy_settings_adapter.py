@@ -31,9 +31,11 @@ class LegacySettingsAdapter(ISettingsService):
             if str(legacy_path) not in sys.path:
                 sys.path.insert(0, str(legacy_path))
 
-            from settings_manager.settings_manager import SettingsManager
+            from legacy.src.legacy_settings_manager.legacy_settings_manager import (
+                LegacySettingsManager,
+            )
 
-            self.legacy_settings = SettingsManager()
+            self.legacy_settings = LegacySettingsManager()
 
         except Exception as e:
             print(f"Warning: Could not initialize legacy settings: {e}")

@@ -10,7 +10,7 @@ from core.application_context import ApplicationContext
 from main_window.main_widget.core.widget_manager import WidgetFactory
 
 if TYPE_CHECKING:
-    from .modern_settings_dialog import ModernSettingsDialog
+    from .legacy_settings_dialog import LegacySettingsDialog
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class SettingsDialogFactory(WidgetFactory):
     @staticmethod
     def create(
         parent: QWidget, app_context: ApplicationContext
-    ) -> "ModernSettingsDialog":
+    ) -> "LegacySettingsDialog":
         """
         Create a ModernSettingsDialog instance with proper dependency injection.
 
@@ -33,12 +33,12 @@ class SettingsDialogFactory(WidgetFactory):
             A new ModernSettingsDialog instance
         """
         try:
-            from .modern_settings_dialog import ModernSettingsDialog
+            from .legacy_settings_dialog import LegacySettingsDialog
 
             # ModernSettingsDialog expects main_widget parameter and app_context
             # The parent should be the MainWidgetCoordinator which has main_widget
             main_widget = getattr(parent, "main_widget", parent)
-            settings_dialog = ModernSettingsDialog(main_widget, app_context)
+            settings_dialog = LegacySettingsDialog(main_widget, app_context)
             logger.info("✅ Created ModernSettingsDialog with dependency injection")
             return settings_dialog
 

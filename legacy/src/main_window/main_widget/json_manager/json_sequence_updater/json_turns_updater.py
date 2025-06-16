@@ -13,7 +13,7 @@ from data.constants import (
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager import (
     SequencePropertiesManager,
 )
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:
@@ -80,7 +80,7 @@ class JsonTurnsUpdater:
         """Get the sequence beat frame using graceful fallbacks for the MainWidgetCoordinator refactoring."""
         try:
             # Try to get sequence beat frame through AppContext
-            from src.settings_manager.global_settings.app_context import AppContext
+            from src.legacy_settings_manager.global_settings.app_context import AppContext
 
             return AppContext.sequence_beat_frame()
         except RuntimeError:

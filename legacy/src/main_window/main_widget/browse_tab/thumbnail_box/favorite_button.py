@@ -4,7 +4,7 @@ from PyQt6.QtGui import QIcon
 from typing import TYPE_CHECKING, Literal
 import os
 
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_image_path
 
 if TYPE_CHECKING:

@@ -13,7 +13,7 @@ from objects.motion.motion import Motion
 
 from .turns_value import TurnsValue
 from .turns_command import AdjustTurnsCommand, SetTurnsCommand, TurnsCommand
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .turns_state import TurnsState

@@ -32,7 +32,7 @@ from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:

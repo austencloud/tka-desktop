@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class ModernSettingsDialog(QDialog):
+class LegacySettingsDialog(QDialog):
     """
     Modern settings dialog - now a lightweight wrapper around SettingsDialogCoordinator.
 

@@ -3,7 +3,7 @@ import os
 from typing import Dict, Any
 
 from enums.letter.letter import Letter
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_data_path
 
 logger = logging.getLogger(__name__)

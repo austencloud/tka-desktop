@@ -5,8 +5,8 @@ from enums.letter.letter import Letter
 from enums.prop_type import PropType
 
 from main_window.main_widget.pictograph_collector import PictographCollector
-from main_window.main_widget.settings_dialog.modern_settings_dialog import (
-    ModernSettingsDialog,
+from legacy.src.main_window.main_widget.settings_dialog.legacy_settings_dialog import (
+    LegacySettingsDialog,
 )
 from main_window.main_widget.startup_dialog import StartupDialog
 from main_window.main_widget.tab_index import TAB_INDEX
@@ -55,7 +55,7 @@ class MainWidget(QWidget):
     main_window: "MainWindow"
     # settings_manager: "SettingsManager"
     splash: "SplashScreen"
-    settings_dialog: "ModernSettingsDialog"
+    settings_dialog: "LegacySettingsDialog"
 
     # Tabs
     construct_tab: "ConstructTab"
@@ -115,7 +115,9 @@ class MainWidget(QWidget):
         # Get dependencies from AppContext safely
         try:
             # Use a consistent import path - always use the src-prefixed version
-            from src.settings_manager.global_settings.app_context import AppContext
+            from src.legacy_settings_manager.global_settings.app_context import (
+                AppContext,
+            )
             from src.utils.logging_config import get_logger
 
             logger = get_logger(__name__)

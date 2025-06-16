@@ -7,7 +7,7 @@ from typing import Dict, Any, Tuple
 from enums.letter.letter import Letter
 from data.constants import BLUE, RED, IN, OUT, CLOCK, COUNTER
 from objects.arrow.arrow import Arrow
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 logger = logging.getLogger(__name__)
 

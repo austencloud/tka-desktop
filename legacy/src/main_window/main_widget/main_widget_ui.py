@@ -58,9 +58,9 @@ class MainWidgetUI:
                 )
             else:
                 # Fallback to direct creation for backward compatibility
-                from .settings_dialog.modern_settings_dialog import ModernSettingsDialog
+                from .settings_dialog.legacy_settings_dialog import LegacySettingsDialog
 
-                mw.settings_dialog = ModernSettingsDialog(mw)
+                mw.settings_dialog = LegacySettingsDialog(mw)
                 print("[SUCCESS] Using modern settings dialog (legacy mode)!")
         except Exception as e:
             print(f"[ERROR] Failed to create settings dialog: {e}")

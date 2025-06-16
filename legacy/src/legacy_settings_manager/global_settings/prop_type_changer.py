@@ -5,11 +5,11 @@ from objects.prop.prop import Prop
 
 if TYPE_CHECKING:
     from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
-    from ..settings_manager import SettingsManager
+    from ..legacy_settings_manager import LegacySettingsManager
 
 
 class PropTypeChanger:
-    def __init__(self, settings_manager: "SettingsManager") -> None:
+    def __init__(self, settings_manager: "LegacySettingsManager") -> None:
         self.settings_manager = settings_manager
 
     def replace_props(self, new_prop_type: PropType, pictograph: "LegacyPictograph"):

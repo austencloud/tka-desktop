@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (
         ImageExportTab,
     )
-    from settings_manager.settings_manager import SettingsManager
+    from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 
 
 class ImageExportTabButton(QPushButton):
@@ -16,7 +16,7 @@ class ImageExportTabButton(QPushButton):
         self,
         name: str,
         setting_key: str,
-        settings_manager: "SettingsManager",
+        settings_manager: "LegacySettingsManager",
         image_export_tab: "ImageExportTab",
     ):
         super().__init__(name, image_export_tab)
@@ -93,9 +93,7 @@ class ImageExportTabButton(QPushButton):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        parent_width = (
-            self.parentWidget().width() if self.parentWidget() else 200
-        )
+        parent_width = self.parentWidget().width() if self.parentWidget() else 200
         font_size = int(parent_width / 60)
         font = QFont()
         font.setPointSize(font_size)

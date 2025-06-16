@@ -5,7 +5,7 @@ Settings for the codex exporter.
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from settings_manager.settings_manager import SettingsManager
+    from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 
 
 class CodexExporterSettings:
@@ -17,7 +17,7 @@ class CodexExporterSettings:
         "grid_mode": "diamond",
     }
 
-    def __init__(self, settings_manager: "SettingsManager") -> None:
+    def __init__(self, settings_manager: "LegacySettingsManager") -> None:
         """Initialize the codex exporter settings.
 
         Args:

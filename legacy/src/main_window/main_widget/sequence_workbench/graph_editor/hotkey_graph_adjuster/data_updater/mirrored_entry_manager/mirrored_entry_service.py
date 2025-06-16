@@ -11,7 +11,7 @@ from main_window.main_widget.turns_tuple_generator.turns_tuple_generator import 
     TurnsTupleGenerator,
 )
 from objects.arrow.arrow import Arrow
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 from .orientation_handler import OrientationHandler
 from .turns_pattern_manager import TurnsPatternManager

@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from main_window.main_widget.settings_dialog.ui.image_export.image_export_tab import (
         ImageExportTab,
     )
-    from settings_manager.settings_manager import SettingsManager
+    from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 
 
 class ImageExportControlPanel(QWidget):
@@ -37,7 +37,9 @@ class ImageExportControlPanel(QWidget):
     settingChanged = pyqtSignal()
 
     def __init__(
-        self, settings_manager: "SettingsManager", image_export_tab: "ImageExportTab"
+        self,
+        settings_manager: "LegacySettingsManager",
+        image_export_tab: "ImageExportTab",
     ):
         super().__init__(image_export_tab)
         self.image_export_tab = image_export_tab

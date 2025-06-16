@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from settings_manager.settings_manager import SettingsManager
+    from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 
 
 class WriteTabSettings:
@@ -10,7 +10,7 @@ class WriteTabSettings:
         "last_saved_act": None,
     }
 
-    def __init__(self, settings_manager: "SettingsManager") -> None:
+    def __init__(self, settings_manager: "LegacySettingsManager") -> None:
         self.settings_manager = settings_manager
         self.settings = self.settings_manager.settings  # QSettings instance
 

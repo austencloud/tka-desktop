@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt
 

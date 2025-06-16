@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         # IMPORTANT: Set the MainWindow reference in AppContext immediately
         # This prevents timing issues during widget initialization
         try:
-            from src.settings_manager.global_settings.app_context import AppContext
+            from src.legacy_settings_manager.global_settings.app_context import AppContext
 
             AppContext.set_main_window(self)
             logger.info("MainWindow reference set in AppContext")

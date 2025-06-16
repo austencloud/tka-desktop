@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QToolButton
 from PyQt6.QtGui import QIcon, QPainter, QPixmap, QColor, QPolygon
 from PyQt6.QtCore import QSize, Qt, QPoint
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (

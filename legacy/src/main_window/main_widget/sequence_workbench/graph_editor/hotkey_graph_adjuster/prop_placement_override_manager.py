@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from enums.letter.letter import Letter
 
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from objects.prop.prop import Prop
 from placement_managers.prop_placement_manager.handlers.beta_offset_calculator import (
     BetaOffsetCalculator,

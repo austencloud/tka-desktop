@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import QApplication
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
     BaseSequenceModifier,
 )
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from data.positions_maps import positions_map
 
 if TYPE_CHECKING:

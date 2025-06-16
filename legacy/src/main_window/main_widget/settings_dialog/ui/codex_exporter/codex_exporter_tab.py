@@ -30,15 +30,15 @@ from main_window.main_widget.settings_dialog.ui.codex_exporter.widgets import (
 from .theme import Colors, Sizing
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
-        ModernSettingsDialog,
+    from legacy.src.main_window.main_widget.settings_dialog.legacy_settings_dialog import (
+        LegacySettingsDialog,
     )
 
 
 class CodexExporterTab(QWidget):
     """Tab for exporting pictographs with turns."""
 
-    def __init__(self, settings_dialog: "ModernSettingsDialog"):
+    def __init__(self, settings_dialog: "LegacySettingsDialog"):
         """Initialize the tab.
 
         Args:

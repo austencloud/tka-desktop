@@ -10,7 +10,7 @@ from main_window.main_widget.browse_tab.sequence_picker.control_panel.sort_widge
 from main_window.main_widget.browse_tab.sequence_picker.control_panel.sort_widget.sort_option import (
     SortOption,
 )
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from ...sequence_picker import SequencePicker

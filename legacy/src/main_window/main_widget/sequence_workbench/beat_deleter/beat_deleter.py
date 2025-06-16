@@ -6,7 +6,7 @@ from base_widgets.pictograph.elements.views.beat_view import (
 from main_window.main_widget.sequence_workbench.legacy_beat_frame.start_pos_beat_view import (
     StartPositionBeatView,
 )
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from .first_beat_deleter import FirstBeatDeleter
 from .non_first_beat_deleter import NonFirstBeatDeleter
 from .all_beats_deleter import AllBeatsDeleter

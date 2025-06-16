@@ -14,7 +14,7 @@ from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_animat
 from main_window.main_widget.sequence_workbench.graph_editor.graph_editor_toggle_tab import (
     GraphEditorToggleTab,
 )
-from settings_manager.settings_manager import pyqtSignal
+from legacy.src.legacy_settings_manager.legacy_settings_manager import pyqtSignal
 
 from .arrow_selection_manager import ArrowSelectionManager
 from .graph_editor_layout_manager import GraphEditorLayoutManager

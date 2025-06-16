@@ -2,7 +2,7 @@
 from typing import TYPE_CHECKING, Optional
 
 
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from .rot_angle_override_manager import RotAngleOverrideManager

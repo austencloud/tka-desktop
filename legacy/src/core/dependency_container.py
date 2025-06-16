@@ -231,9 +231,9 @@ def _register_core_services(container: DependencyContainer) -> None:
     # Settings Manager
     try:
         from interfaces.settings_manager_interface import ISettingsManager
-        from settings_manager.settings_manager import SettingsManager
+        from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 
-        container.register_singleton(ISettingsManager, SettingsManager)
+        container.register_singleton(ISettingsManager, LegacySettingsManager)
     except ImportError as e:
         logger.warning(f"Failed to register Settings Manager: {e}")
 

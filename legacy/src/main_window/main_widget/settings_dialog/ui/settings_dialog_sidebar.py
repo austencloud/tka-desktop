@@ -4,8 +4,8 @@ from PyQt6.QtCore import Qt, pyqtSignal, QSize, QEvent
 from PyQt6.QtGui import QPixmap, QPainter, QColor
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
-        ModernSettingsDialog,
+    from legacy.src.main_window.main_widget.settings_dialog.legacy_settings_dialog import (
+        LegacySettingsDialog,
     )
 
 
@@ -46,7 +46,7 @@ class SidebarItem(QWidget):
 class SettingsDialogSidebar(QListWidget):
     tab_selected = pyqtSignal(int)
 
-    def __init__(self, dialog: "ModernSettingsDialog"):
+    def __init__(self, dialog: "LegacySettingsDialog"):
         super().__init__(dialog)
         self.setFixedWidth(240)  # Wider for better readability
         self.setSpacing(6)  # Slightly tighter spacing for modern look

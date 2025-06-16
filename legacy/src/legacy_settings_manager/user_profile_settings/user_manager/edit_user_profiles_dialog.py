@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 if TYPE_CHECKING:
-    from settings_manager.user_profile_settings.user_manager.user_manager import (
+    from legacy_settings_manager.user_profile_settings.user_manager.user_manager import (
         UserManager,
     )
 

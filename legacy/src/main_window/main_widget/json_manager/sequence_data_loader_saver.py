@@ -18,7 +18,7 @@ from main_window.main_widget.sequence_level_evaluator import SequenceLevelEvalua
 from main_window.main_widget.sequence_properties_manager.sequence_properties_manager_factory import (
     SequencePropertiesManagerFactory,
 )
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from utils.path_helpers import get_user_editable_resource_path
 from utils.word_simplifier import WordSimplifier
 

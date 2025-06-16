@@ -77,7 +77,7 @@ def initialize_legacy_appcontext(app_context):
     This bridges the gap between the new DI system and legacy code that still uses AppContext.
     """
     try:
-        from src.settings_manager.global_settings.app_context import AppContext
+        from src.legacy_settings_manager.global_settings.app_context import AppContext
         from src.utils.logging_config import get_logger
 
         logger = get_logger(__name__)
@@ -206,7 +206,7 @@ def main():
     from PyQt6.QtCore import QTimer
     from src.splash_screen.splash_screen import SplashScreen
     from src.profiler import Profiler
-    from src.settings_manager.settings_manager import SettingsManager
+    from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
     from src.utils.logging_config import get_logger
     from src.utils.startup_silencer import silence_startup_logs
 
@@ -232,7 +232,7 @@ def main():
 
     app = initialize_application()
 
-    settings_manager = SettingsManager()
+    settings_manager = LegacySettingsManager()
     splash_screen = SplashScreen(app, settings_manager)
     app.processEvents()
 

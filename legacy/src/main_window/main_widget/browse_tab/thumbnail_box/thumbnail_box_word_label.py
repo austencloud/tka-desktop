@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.thumbnail_box.thumbnail_box_header import (
         ThumbnailBoxHeader,
     )
-    from settings_manager.settings_manager import SettingsManager
+    from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 
 WORD_LENGTH = 8
 
@@ -20,7 +20,7 @@ class ThumbnailBoxWordLabel(QLabel):
         self,
         text: str,
         header: "ThumbnailBoxHeader",
-        settings_manager: "SettingsManager",
+        settings_manager: "LegacySettingsManager",
     ):
         super().__init__(text, header)
         self.header = header

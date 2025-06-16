@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from data.constants import LETTER, SEQUENCE_START_POSITION
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from utils.reversal_detector import ReversalDetector
 from utils.word_simplifier import WordSimplifier
 

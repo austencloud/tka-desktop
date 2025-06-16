@@ -18,7 +18,9 @@ from .codex_exporter_settings import CodexExporterSettings
 from .sequence_card_tab_settings import SequenceCardTabSettings
 
 
-class SettingsManager(QObject):  # ISettingsManager is a Protocol, no need to inherit
+class LegacySettingsManager(
+    QObject
+):  # ISettingsManager is a Protocol, no need to inherit
     background_changed = pyqtSignal(str)
 
     def __init__(self) -> None:

@@ -14,13 +14,13 @@ from ...core.glassmorphism_styler import GlassmorphismStyler
 
 
 if TYPE_CHECKING:
-    from ...modern_settings_dialog import ModernSettingsDialog
+    from ...legacy_settings_dialog import LegacySettingsDialog
 
 
 class PropTypeTab(QWidget):
     buttons: dict[str, PropButton] = {}
 
-    def __init__(self, settings_dialog: "ModernSettingsDialog"):
+    def __init__(self, settings_dialog: "LegacySettingsDialog"):
         super().__init__()
         self.settings_dialog = settings_dialog
         self.main_widget = settings_dialog.main_widget

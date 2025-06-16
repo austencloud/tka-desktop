@@ -5,7 +5,7 @@ Grid mode selector component for the codex exporter.
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QButtonGroup
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QCursor
-from settings_manager.settings_manager import SettingsManager
+from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 from ..widgets import ModernRadioButton
 from .turn_config_style_provider import TurnConfigStyleProvider
 
@@ -15,7 +15,7 @@ class GridModeSelector(QWidget):
 
     def __init__(self, parent=None, style_provider=None, settings_manager=None):
         """Initialize the grid mode selector.
-        
+
         Args:
             parent: The parent widget
             style_provider: The style provider for consistent styling
@@ -23,7 +23,7 @@ class GridModeSelector(QWidget):
         """
         super().__init__(parent)
         self.style_provider = style_provider or TurnConfigStyleProvider(self)
-        self.settings_manager = settings_manager or SettingsManager()
+        self.settings_manager = settings_manager or LegacySettingsManager()
         self._setup_ui()
 
     def _setup_ui(self):
@@ -32,7 +32,6 @@ class GridModeSelector(QWidget):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(self.style_provider.grid_spacing)
-
 
         # Create radio buttons
         self.grid_mode_group = QButtonGroup(self)
@@ -63,7 +62,7 @@ class GridModeSelector(QWidget):
 
     def get_grid_mode(self):
         """Get the selected grid mode.
-        
+
         Returns:
             str: "box" if box is selected, "diamond" otherwise
         """

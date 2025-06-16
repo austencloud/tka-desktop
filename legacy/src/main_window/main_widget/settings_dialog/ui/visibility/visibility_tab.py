@@ -20,15 +20,15 @@ from .visibility_toggler import VisibilityToggler
 from .buttons_widget.visibility_buttons_widget import VisibilityButtonsWidget
 
 if TYPE_CHECKING:
-    from main_window.main_widget.settings_dialog.modern_settings_dialog import (
-        ModernSettingsDialog,
+    from legacy.src.main_window.main_widget.settings_dialog.legacy_settings_dialog import (
+        LegacySettingsDialog,
     )
 
 
 class VisibilityTab(QWidget):
     """Visibility tab with original layout structure and improved feedback."""
 
-    def __init__(self, settings_dialog: "ModernSettingsDialog"):
+    def __init__(self, settings_dialog: "LegacySettingsDialog"):
         super().__init__()
         self.main_widget = settings_dialog.main_widget
         self.dialog = settings_dialog

@@ -3,14 +3,14 @@ from enums.prop_type import PropType
 from legacy.src.base_widgets.pictograph.legacy_pictograph import LegacyPictograph
 from data.constants import DIAMOND
 from .prop_type_changer import PropTypeChanger
-from settings_manager.settings_logger import log_setting_get, log_setting_set
+from legacy_settings_manager.settings_logger import log_setting_get, log_setting_set
 
 if TYPE_CHECKING:
-    from ..settings_manager import SettingsManager
+    from ..legacy_settings_manager import LegacySettingsManager
 
 
 class GlobalSettings:
-    def __init__(self, settings_manager: "SettingsManager") -> None:
+    def __init__(self, settings_manager: "LegacySettingsManager") -> None:
         self.settings = settings_manager.settings
         self.settings_manager = settings_manager
         self.prop_type_changer = PropTypeChanger(self.settings_manager)

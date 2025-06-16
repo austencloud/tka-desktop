@@ -13,7 +13,7 @@ from .splash_layout_manager import SplashLayoutManager
 from .splash_updater import SplashUpdater
 
 if TYPE_CHECKING:
-    from settings_manager.settings_manager import SettingsManager
+    from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
     from main_window.main_widget.rainbow_progress_bar import (
         RainbowProgressBar,
     )
@@ -26,7 +26,7 @@ class SplashScreen(QWidget):
     progress_bar: "RainbowProgressBar"
     logo_label: QLabel
 
-    def __init__(self, app: QApplication, settings_manager: "SettingsManager"):
+    def __init__(self, app: QApplication, settings_manager: "LegacySettingsManager"):
         super().__init__()
         screens = app.screens()
         dev_environment = not getattr(sys, "frozen", False)

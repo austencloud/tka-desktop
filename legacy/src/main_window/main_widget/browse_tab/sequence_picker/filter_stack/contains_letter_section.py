@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 from data.constants import LETTER
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 from styles.styled_button import StyledButton  # to get data_manager
 
 from .filter_section_base import FilterSectionBase

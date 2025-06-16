@@ -4,7 +4,7 @@ Container component that combines all turn configuration components.
 
 from typing import Dict, Any
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QSizePolicy
-from settings_manager.settings_manager import SettingsManager
+from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 from ..widgets import ModernCard
 from ..theme import Colors
 from .turn_config_style_provider import TurnConfigStyleProvider
@@ -24,7 +24,7 @@ class TurnConfigContainer(QWidget):
             parent: The parent widget
         """
         super().__init__(parent)
-        self.settings_manager = SettingsManager()
+        self.settings_manager = LegacySettingsManager()
         self.style_provider = TurnConfigStyleProvider(self)
         self._setup_ui()
 

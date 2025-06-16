@@ -18,7 +18,7 @@ from main_window.main_widget.grid_mode_checker import GridModeChecker
 from main_window.main_widget.sequence_workbench.base_sequence_modifier import (
     BaseSequenceModifier,
 )
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 
 if TYPE_CHECKING:

@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
 from data.constants import GRID_MODE
-from src.settings_manager.global_settings.app_context import AppContext
+from src.legacy_settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
     from main_window.main_widget.browse_tab.browse_tab import BrowseTab
@@ -96,7 +96,7 @@ class BrowseTabFilterController:
                         return current_tab
 
             # Method 3: Fallback to settings (original method)
-            from src.settings_manager.global_settings.app_context import AppContext
+            from src.legacy_settings_manager.global_settings.app_context import AppContext
 
             current_tab = (
                 AppContext.settings_manager().global_settings.get_current_tab()

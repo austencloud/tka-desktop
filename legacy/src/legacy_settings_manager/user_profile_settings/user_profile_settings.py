@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt6.QtCore import QSettings
 
 if TYPE_CHECKING:
-    from ..settings_manager import SettingsManager
+    from ..legacy_settings_manager import LegacySettingsManager
 
 
 class UserProfileSettings:
@@ -13,7 +13,7 @@ class UserProfileSettings:
         "current_user": "",
     }
 
-    def __init__(self, settings_manager: "SettingsManager") -> None:
+    def __init__(self, settings_manager: "LegacySettingsManager") -> None:
         self.settings_manager = settings_manager
         self.settings: QSettings = settings_manager.settings
 

@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 from utils.path_helpers import get_data_path
 
 if TYPE_CHECKING:
-    from settings_manager.settings_manager import SettingsManager
+    from legacy.src.legacy_settings_manager.legacy_settings_manager import LegacySettingsManager
 
 OVERRIDES_FILE = get_data_path("beat_layout_overrides.json")
 
 
 class SequenceLayoutSettings:
-    def __init__(self, settings_manager: "SettingsManager") -> None:
+    def __init__(self, settings_manager: "LegacySettingsManager") -> None:
         self.settings_manager = settings_manager
         self.settings = settings_manager.settings
 
