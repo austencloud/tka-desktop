@@ -14,33 +14,33 @@ from domain.models.core_models import SequenceData, BeatData
 class SequenceManager(QObject):
     """
     Manages sequence operations and workbench interactions.
-    
+
     Responsibilities:
     - Adding beats to sequences
     - Managing sequence state changes
     - Coordinating with workbench component
     - Handling sequence clearing operations
-    
+
     Signals:
     - sequence_modified: Emitted when sequence is modified
     - sequence_cleared: Emitted when sequence is cleared
     """
-    
+
     sequence_modified = pyqtSignal(object)  # SequenceData object
     sequence_cleared = pyqtSignal()
-    
+
     def __init__(
         self,
         workbench_getter: Optional[Callable[[], object]] = None,
-        workbench_setter: Optional[Callable[[SequenceData], None]] = None
+        workbench_setter: Optional[Callable[[SequenceData], None]] = None,
     ):
         super().__init__()
         self.workbench_getter = workbench_getter
         self.workbench_setter = workbench_setter
-        
+
         # Flag to prevent circular signal emissions during operations
         self._emitting_signal = False
-    
+
     def add_beat_to_sequence(self, beat_data: BeatData):
         """Add a beat to the current sequence"""
         print(f"✅ Sequence manager: Adding beat: {beat_data.letter}")
@@ -69,7 +69,7 @@ class SequenceManager(QObject):
             updated_sequence = current_sequence.update(beats=updated_beats)
 
             print(f"📊 Sequence updated: {len(updated_beats)} beats")
-            
+
             # Update workbench
             if self.workbench_setter:
                 self.workbench_setter(updated_sequence)
@@ -81,6 +81,7 @@ class SequenceManager(QObject):
         except Exception as e:
             print(f"❌ Error adding beat to sequence: {e}")
             import traceback
+
             traceback.print_exc()
 
     def clear_sequence(self):
@@ -109,6 +110,7 @@ class SequenceManager(QObject):
         except Exception as e:
             print(f"❌ Sequence manager: Signal emission failed: {e}")
             import traceback
+
             traceback.print_exc()
         finally:
             self._emitting_signal = False
@@ -118,7 +120,7 @@ class SequenceManager(QObject):
         if self.workbench_getter:
             try:
                 workbench = self.workbench_getter()
-                if workbench and hasattr(workbench, 'get_sequence'):
+                if workbench and hasattr(workbench, "get_sequence"):
                     return workbench.get_sequence()
             except Exception as e:
                 print(f"❌ Error getting current sequence: {e}")
@@ -135,7 +137,7 @@ class SequenceManager(QObject):
                 self._emitting_signal = False
         else:
             print("🔄 Skipping signal emission to prevent circular calls")
-    
+
     def get_current_sequence_length(self) -> int:
         """Get the length of the current sequence"""
         current_sequence = self._get_current_sequence()

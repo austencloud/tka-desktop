@@ -39,6 +39,10 @@ class OptionPickerManager(QObject):
         self.option_picker = option_picker
         self.data_conversion_service = data_conversion_service
         
+        # Track last refresh to prevent duplicates
+        self._last_refresh_sequence_id = None
+        self._last_refresh_length = None
+        
         # Connect option picker signals if available
         if self.option_picker:
             self.option_picker.beat_data_selected.connect(self._handle_beat_data_selected)
