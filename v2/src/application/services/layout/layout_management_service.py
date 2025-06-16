@@ -133,36 +133,14 @@ class LayoutManagementService(ILayoutManagementService, ILayoutService):
     def calculate_beat_frame_layout(
         self, sequence: SequenceData, container_size: Tuple[int, int]
     ) -> Dict[str, Any]:
-        """Calculate layout for beat frames in a sequence."""
-        container_width, container_height = container_size
-        beat_count = len(sequence.beats)
-
-        if beat_count == 0:
-            return {
-                "positions": {},
-                "sizes": {},
-                "total_size": (0, 0),
-                "scaling_factor": 1.0,
-            }
-
-        # Calculate optimal beat frame size
-        base_beat_size = (120, 120)  # Base size for beat frames
-        padding = 10
-        spacing = 5
-
-        # Calculate layout based on container size
-        if container_width > container_height:
-            # Horizontal layout
-            layout = self._calculate_horizontal_beat_layout(
-                beat_count, container_size, base_beat_size, padding, spacing
-            )
-        else:
-            # Vertical or grid layout
-            layout = self._calculate_grid_beat_layout(
-                beat_count, container_size, base_beat_size, padding, spacing
-            )
-
-        return layout
+        """Calculate layout for beat frames using enhanced algorithm."""
+        from application.services.layout.enhanced_beat_layout_service import EnhancedBeatLayoutService
+        
+        # Use enhanced layout system
+        enhanced_service = EnhancedBeatLayoutService()
+        layout_config = enhanced_service.calculate_beat_frame_layout(sequence, container_size)
+        
+        return layout_config
 
     def calculate_responsive_scaling(
         self, content_size: Tuple[int, int], container_size: Tuple[int, int]
