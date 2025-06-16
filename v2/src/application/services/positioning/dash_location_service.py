@@ -183,8 +183,8 @@ class DashLocationService:
             shift_location: Location of shift arrow (for Type 3)
         """
 
-        # Special case: Φ_DASH and Ψ_DASH letters
-        if letter_type in ["Φ_DASH", "Ψ_DASH"]:
+        # Special case: Φ and Ψ letters (both regular and dash versions)
+        if letter_type in ["Φ", "Ψ", "Φ_DASH", "Ψ_DASH"]:
             return self._get_phi_dash_psi_dash_location(
                 motion, color, other_motion
             )  # Special case: Λ letter with zero turns

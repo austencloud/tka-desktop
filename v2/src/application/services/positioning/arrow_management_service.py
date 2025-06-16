@@ -41,6 +41,8 @@ from domain.models.pictograph_models import (
 )
 from ..default_placement_service import DefaultPlacementService
 from ..placement_key_service import PlacementKeyService
+from domain.models.letter_type_classifier import LetterTypeClassifier
+from .dash_location_service import DashLocationService
 
 
 class IArrowManagementService(ABC):
@@ -89,6 +91,9 @@ class ArrowManagementService(IArrowManagementService):
         self.default_placement_service = DefaultPlacementService()
         self.placement_key_service = PlacementKeyService()
 
+        # Initialize V1-compatible dash location service
+        self.dash_location_service = DashLocationService()
+
         # CRITICAL FIX: Use correct coordinates from circle_coords.json (old working service)
         # Hand point coordinates (for STATIC/DASH arrows) - inner grid positions where props are placed
         self.HAND_POINTS = {
@@ -136,28 +141,6 @@ class ArrowManagementService(IArrowManagementService):
         4. Apply adjustments (default placement + special rules)
         5. Return final position and rotation
         """
-        # DEBUGGING: Always log that this method is called
-        print(f"🔧 V2 ARROW MANAGEMENT SERVICE: calculate_arrow_position called")
-        print(f"   Arrow color: {arrow_data.color}")
-        print(
-            f"   Motion type: {arrow_data.motion_data.motion_type.value if arrow_data.motion_data else 'None'}"
-        )
-
-        # DEBUGGING: Always log what we receive for letters G, H, I
-        if (
-            pictograph_data
-            and hasattr(pictograph_data, "letter")
-            and pictograph_data.letter in ["G", "H", "I"]
-        ):
-            print(
-                f"🔧 V2 ARROW MANAGEMENT SERVICE: Received letter {pictograph_data.letter}"
-            )
-        elif pictograph_data:
-            print(
-                f"⚠️ V2 ARROW MANAGEMENT SERVICE: Received pictograph_data but letter is {getattr(pictograph_data, 'letter', 'MISSING')}"
-            )
-        else:
-            print(f"⚠️ V2 ARROW MANAGEMENT SERVICE: Received None pictograph_data")
 
         if not arrow_data.motion_data:
             return self.CENTER_X, self.CENTER_Y, 0.0
@@ -165,7 +148,7 @@ class ArrowManagementService(IArrowManagementService):
         motion = arrow_data.motion_data
 
         # Step 1: Calculate arrow location
-        arrow_location = self._calculate_arrow_location(motion)
+        arrow_location = self._calculate_arrow_location(motion, pictograph_data)
 
         # Step 2: Compute initial position
         initial_position = self._compute_initial_position(motion, arrow_location)
@@ -179,19 +162,6 @@ class ArrowManagementService(IArrowManagementService):
         # Step 5: Apply final positioning formula
         final_x = initial_position.x() + adjustment.x()
         final_y = initial_position.y() + adjustment.y()
-
-        # ARROW POSITION LOGGING: Track calculation steps for letters G, H, I
-        if pictograph_data.letter in ["G", "H", "I"]:
-            print(
-                f"🔧 V2 ARROW CALCULATION: Letter {pictograph_data.letter}, {arrow_data.color} arrow"
-            )
-            print(f"   Motion type: {motion.motion_type.value}")
-            print(f"   Arrow location: {arrow_location.value}")
-            print(
-                f"   Initial pos: ({initial_position.x():.1f}, {initial_position.y():.1f})"
-            )
-            print(f"   Adjustment: ({adjustment.x():.1f}, {adjustment.y():.1f})")
-            print(f"   ⚙️ CALCULATED POS: ({final_x:.1f}, {final_y:.1f})")
 
         return final_x, final_y, rotation
 
@@ -238,7 +208,9 @@ class ArrowManagementService(IArrowManagementService):
 
         return updated_pictograph
 
-    def _calculate_arrow_location(self, motion: MotionData) -> Location:
+    def _calculate_arrow_location(
+        self, motion: MotionData, pictograph_data: PictographData = None
+    ) -> Location:
         """Calculate arrow location using location calculation algorithms."""
         if motion.motion_type == MotionType.STATIC:
             return motion.start_loc
@@ -247,7 +219,7 @@ class ArrowManagementService(IArrowManagementService):
                 motion.start_loc, motion.end_loc
             )
         elif motion.motion_type == MotionType.DASH:
-            return self._calculate_dash_arrow_location(motion)
+            return self._calculate_dash_arrow_location(motion, pictograph_data)
         else:
             return motion.start_loc
 
@@ -268,17 +240,45 @@ class ArrowManagementService(IArrowManagementService):
         }
         return direction_pairs.get(frozenset({start_loc, end_loc}), start_loc)
 
-    def _calculate_dash_arrow_location(self, motion: MotionData) -> Location:
-        """Calculate location for dash arrows based on turns and other factors."""
-        # For now, use simplified dash location calculation
-        # TODO: Implement full dash location calculation with turns handling
-        if motion.turns == 0:
-            return motion.start_loc
-        else:
-            # Non-zero turns dash location calculation
-            return self._calculate_shift_arrow_location(
-                motion.start_loc, motion.end_loc
-            )
+    def _calculate_dash_arrow_location(
+        self, motion: MotionData, pictograph_data: PictographData = None
+    ) -> Location:
+        """Calculate location for dash arrows using complete V1-compatible logic."""
+
+        # Extract required parameters for V1 logic
+        letter_type = None
+        color = "blue"  # Default color
+        other_motion = None
+        grid_mode = "diamond"  # Default for TKA
+
+        if pictograph_data:
+            # Get letter type if available
+            if hasattr(pictograph_data, "letter") and pictograph_data.letter:
+                letter_type = LetterTypeClassifier.get_letter_type(
+                    pictograph_data.letter
+                )
+
+            # Get grid mode from pictograph data
+            if hasattr(pictograph_data, "grid_data") and pictograph_data.grid_data:
+                grid_mode = pictograph_data.grid_data.grid_mode.value.lower()
+
+            # Get other motion for special cases
+            other_motion = self._get_other_motion(motion, pictograph_data)
+
+            # Get arrow color if available
+            for arrow_color, arrow_data in pictograph_data.arrows.items():
+                if arrow_data.motion_data == motion:
+                    color = arrow_color
+                    break
+
+        # Use the comprehensive V1 dash location service
+        return self.dash_location_service.calculate_dash_location(
+            motion=motion,
+            color=color,
+            other_motion=other_motion,
+            letter_type=letter_type,
+            grid_mode=grid_mode,
+        )
 
     def _compute_initial_position(
         self, motion: MotionData, arrow_location: Location
@@ -442,18 +442,7 @@ class ArrowManagementService(IArrowManagementService):
         This implements the complete adjustment pipeline:
         1. Default adjustments based on motion type and placement key
         2. Special adjustments for specific letters and configurations
-        3. Quadrant-based directional adjustments
-        """
-        # DEBUGGING: Always log when this method is called for letters G, H, I
-        if pictograph_data and pictograph_data.letter in ["G", "H", "I"]:
-            print(
-                f"🔧 V2 _calculate_adjustment called for letter {pictograph_data.letter}"
-            )
-            print(f"   Arrow color: {arrow_data.color}")
-            print(
-                f"   Motion type: {arrow_data.motion_data.motion_type.value if arrow_data.motion_data else 'None'}"
-            )
-
+        3. Quadrant-based directional adjustments"""
         motion = arrow_data.motion_data
         if not motion:
             return QPointF(0, 0)
@@ -471,7 +460,9 @@ class ArrowManagementService(IArrowManagementService):
             adjustment = default_adjustment
 
         # Step 3: Apply quadrant-based directional adjustments
-        final_adjustment = self._apply_quadrant_adjustments(arrow_data, adjustment)
+        final_adjustment = self._apply_quadrant_adjustments(
+            arrow_data, adjustment, pictograph_data
+        )
 
         return final_adjustment
 
@@ -482,9 +473,9 @@ class ArrowManagementService(IArrowManagementService):
             return QPointF(0, 0)
 
         # Generate placement key using the key service
-        placement_key = self.placement_key_service.generate_placement_key(motion)
-
-        # Get adjustment from default placement service
+        placement_key = self.placement_key_service.generate_placement_key(
+            motion
+        )  # Get adjustment from default placement service
         adjustment = self.default_placement_service.get_default_adjustment(
             motion, grid_mode="diamond", placement_key=placement_key
         )
@@ -497,37 +488,24 @@ class ArrowManagementService(IArrowManagementService):
         """Get special adjustment for specific letters and configurations."""
         # CRITICAL FIX: Implement special placement logic using V1's JSON configuration
 
-        # DEBUGGING: Always log when this method is called for letters G, H, I
-        if pictograph_data.letter in ["G", "H", "I"]:
-            print(
-                f"🔧 V2 _get_special_adjustment called for letter {pictograph_data.letter}"
-            )
-
         try:
             from ..special_placement_service import SpecialPlacementService
 
             special_service = SpecialPlacementService()
             result = special_service.get_special_adjustment(arrow_data, pictograph_data)
 
-            # DEBUGGING: Log the result for letters G, H, I
-            if pictograph_data.letter in ["G", "H", "I"]:
-                if result:
-                    print(
-                        f"   ✅ Special adjustment returned: ({result.x()}, {result.y()})"
-                    )
-                else:
-                    print(f"   ❌ Special adjustment returned: None")
-
             return result
         except Exception as e:
-            print(f"⚠️ Special placement service error: {e}")
             import traceback
 
             traceback.print_exc()
             return None
 
     def _apply_quadrant_adjustments(
-        self, arrow_data: ArrowData, base_adjustment: QPointF
+        self,
+        arrow_data: ArrowData,
+        base_adjustment: QPointF,
+        pictograph_data: PictographData = None,
     ) -> QPointF:
         """Apply quadrant-based directional adjustments using positioning logic."""
         motion = arrow_data.motion_data
@@ -540,7 +518,7 @@ class ArrowManagementService(IArrowManagementService):
         )
 
         # Step 2: Get quadrant index for this arrow
-        quadrant_index = self._get_quadrant_index(motion)
+        quadrant_index = self._get_quadrant_index(motion, pictograph_data)
 
         # Step 3: Apply the quadrant-specific adjustment
         if directional_tuples and 0 <= quadrant_index < len(directional_tuples):
@@ -647,10 +625,12 @@ class ArrowManagementService(IArrowManagementService):
         # TODO: Implement handpath calculation for proper float direction
         return [(x, y), (-y, x), (-x, -y), (y, -x)]
 
-    def _get_quadrant_index(self, motion: MotionData) -> int:
+    def _get_quadrant_index(
+        self, motion: MotionData, pictograph_data: PictographData = None
+    ) -> int:
         """Get quadrant index for arrow using positioning logic."""
         # For diamond grid (simplified - always diamond for now)
-        arrow_location = self._calculate_arrow_location(motion)
+        arrow_location = self._calculate_arrow_location(motion, pictograph_data)
 
         if motion.motion_type in [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT]:
             # Shift arrows use layer2 quadrant mapping
@@ -670,3 +650,15 @@ class ArrowManagementService(IArrowManagementService):
             }
 
         return location_to_index.get(arrow_location, 0)
+
+    def _get_other_motion(
+        self, current_motion: MotionData, pictograph_data: PictographData
+    ) -> MotionData:
+        """Get the other motion from pictograph data (for Type 3 scenarios)."""
+        if not pictograph_data.arrows:
+            return None
+
+        for arrow in pictograph_data.arrows.values():
+            if arrow.motion_data and arrow.motion_data != current_motion:
+                return arrow.motion_data
+        return None

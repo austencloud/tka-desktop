@@ -8,7 +8,7 @@ The algorithm is simple: find all pictographs where start_pos matches the target
 import pandas as pd
 from typing import Dict, List, Any, Optional
 from ..core.pictograph_management_service import PictographManagementService
-from ..old_services_before_consolidation.data_conversion_service import (
+from ..data.data_conversion_service import (
     DataConversionService,
 )
 from domain.models.core_models import BeatData

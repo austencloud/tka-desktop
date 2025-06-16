@@ -61,10 +61,6 @@ class SpecialPlacementService:
         motion = arrow_data.motion_data
         letter = pictograph_data.letter
 
-        # DEBUGGING: Log special placement lookup for letters G, H, I
-        if letter in ["G", "H", "I"]:
-            print(f"🔍 V2 SPECIAL PLACEMENT LOOKUP: Letter {letter}")
-
         # Generate orientation key using V1's logic
         ori_key = self._generate_orientation_key(motion, pictograph_data)
 
@@ -73,13 +69,6 @@ class SpecialPlacementService:
 
         # Generate turns tuple for lookup
         turns_tuple = self._generate_turns_tuple(pictograph_data)
-
-        # DEBUGGING: Log lookup details for letters G, H, I
-        if letter in ["G", "H", "I"]:
-            print(f"   Grid mode: {grid_mode}")
-            print(f"   Orientation key: {ori_key}")
-            print(f"   Turns tuple: {turns_tuple}")
-            print(f"   Motion type: {motion.motion_type.value}")
 
         # Look up special placement data
         letter_data = (
@@ -108,32 +97,16 @@ class SpecialPlacementService:
             adjustment_values = turn_data[motion_type_key]
             if isinstance(adjustment_values, list) and len(adjustment_values) == 2:
                 result = QPointF(adjustment_values[0], adjustment_values[1])
-                if letter in ["G", "H", "I"]:
-                    print(
-                        f"   ✅ SPECIAL ADJUSTMENT FOUND: ({result.x()}, {result.y()})"
-                    )
                 return result
 
         # If motion type lookup failed, try color-based lookup (for letters like G, H)
         color_key = arrow_data.color.lower()  # "blue" or "red"
 
-        if letter in ["G", "H", "I"]:
-            print(f"   🔍 Trying color-based lookup with key: {color_key}")
-
         if color_key in turn_data:
             adjustment_values = turn_data[color_key]
             if isinstance(adjustment_values, list) and len(adjustment_values) == 2:
                 result = QPointF(adjustment_values[0], adjustment_values[1])
-                if letter in ["G", "H", "I"]:
-                    print(
-                        f"   ✅ SPECIAL ADJUSTMENT FOUND (COLOR): ({result.x()}, {result.y()})"
-                    )
                 return result
-
-        if letter in ["G", "H", "I"]:
-            print(f"   ❌ No motion type data found for {motion_type_key}")
-            print(f"   ❌ No color data found for {color_key}")
-            print(f"   Available keys: {list(turn_data.keys())}")
 
         return None
 

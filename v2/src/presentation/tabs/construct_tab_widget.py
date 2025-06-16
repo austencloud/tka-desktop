@@ -203,20 +203,16 @@ class ConstructTabWidget(QWidget):
         )
 
         # Transition to option picker view
-        self._transition_to_option_picker()
-
-        # Emit signal for external listeners
+        self._transition_to_option_picker()  # Emit signal for external listeners
         self.start_position_set.emit(position_key)
 
     def _transition_to_option_picker(self):
         """Switch from start position picker to option picker - key fix from v1"""
-        print("🔄 Transitioning to option picker view")
         if self.picker_stack:
             self.picker_stack.setCurrentIndex(1)
 
     def _transition_to_start_position_picker(self):
         """Switch back to start position picker"""
-        print("🔄 Transitioning to start position picker view")
         if self.picker_stack:
             self.picker_stack.setCurrentIndex(0)
 
@@ -350,15 +346,11 @@ class ConstructTabWidget(QWidget):
             updated_beats = current_sequence.beats + [new_beat]
             updated_sequence = current_sequence.update(beats=updated_beats)
 
-            print(f"📊 Sequence updated: {len(updated_beats)} beats")
-
-            # Update workbench
+            print(f"📊 Sequence updated: {len(updated_beats)} beats")            # Update workbench
             if self.workbench:
                 self.workbench.set_sequence(updated_sequence)
                 print("✅ Workbench sequence updated")
-
-            # DYNAMIC OPTION PICKER UPDATE: Refresh options after beat addition
-            self._refresh_option_picker_from_sequence(updated_sequence)
+                # Note: Option picker refresh will be triggered by workbench signal
 
             # Emit signal (with protection)
             if not self._emitting_signal:
@@ -480,14 +472,8 @@ class ConstructTabWidget(QWidget):
             sequence_data = [
                 {"metadata": "sequence_info"},  # Metadata entry
                 start_position_dict,  # Start position entry with end_pos
-            ]
-
-            # Load motion combinations into option picker
+            ]  # Load motion combinations into option picker
             self.option_picker.load_motion_combinations(sequence_data)
-
-            print(
-                f"✅ Option picker populated with combinations from start position: {position_key}"
-            )
 
         except Exception as e:
             print(f"❌ Error populating option picker: {e}")

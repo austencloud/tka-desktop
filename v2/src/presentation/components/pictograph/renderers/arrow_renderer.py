@@ -106,29 +106,13 @@ class ArrowRenderer:
                 # POSITIONING FORMULA:
                 # Get bounding rect AFTER all transformations (scaling + rotation)
                 # This ensures we have the correct bounds for positioning calculation
-                final_bounds = arrow_item.boundingRect()
-
-                # final_pos = calculated_pos - bounding_rect_center
+                final_bounds = (
+                    arrow_item.boundingRect()
+                )  # final_pos = calculated_pos - bounding_rect_center
                 # This ensures the arrow's visual center appears exactly at the calculated position
                 # regardless of rotation angle, achieving pixel-perfect positioning accuracy
                 final_x = position_x - final_bounds.center().x()
                 final_y = position_y - final_bounds.center().y()
-
-                # ARROW POSITION LOGGING: Track final coordinates for letters G, H, I
-                if full_pictograph_data and full_pictograph_data.letter in [
-                    "G",
-                    "H",
-                    "I",
-                ]:
-                    print(
-                        f"🎯 V2 ARROW POSITION: Letter {full_pictograph_data.letter}, {color} arrow"
-                    )
-                    print(f"   Calculated pos: ({position_x:.1f}, {position_y:.1f})")
-                    print(f"   Rotation: {rotation:.1f}°")
-                    print(
-                        f"   Final bounds center: ({final_bounds.center().x():.1f}, {final_bounds.center().y():.1f})"
-                    )
-                    print(f"   ✅ FINAL POS: ({final_x:.1f}, {final_y:.1f})")
 
                 arrow_item.setPos(final_x, final_y)
                 arrow_item.setZValue(100)  # Bring arrows to front
@@ -167,23 +151,11 @@ class ArrowRenderer:
             motion_data=motion_data,
             color=color,
             turns=motion_data.turns,
-        )
-
-        # Use full pictograph data if available for Type 3 detection
+        )  # Use full pictograph data if available for Type 3 detection
         if full_pictograph_data:
             pictograph_data = full_pictograph_data
-            # DEBUGGING: Log pictograph data for letters G, H, I
-            if full_pictograph_data.letter in ["G", "H", "I"]:
-                print(
-                    f"🔧 V2 ARROW RENDERER: Using full pictograph data for letter {full_pictograph_data.letter}"
-                )
-                print(f"   Color: {color}")
-                print(f"   Motion type: {motion_data.motion_type.value}")
         else:
             pictograph_data = PictographData(arrows={color: arrow_data})
-            print(
-                f"⚠️ V2 ARROW RENDERER: No full pictograph data, creating fallback (letter will be None)"
-            )
 
         return self.arrow_service.calculate_arrow_position(arrow_data, pictograph_data)
 

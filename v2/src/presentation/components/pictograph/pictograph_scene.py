@@ -8,7 +8,8 @@ from typing import Optional
 from PyQt6.QtWidgets import QGraphicsScene
 from PyQt6.QtGui import QBrush, QColor
 
-from domain.models.core_models import BeatData
+from domain.models.core_models import BeatData, LetterType
+from domain.models.letter_type_classifier import LetterTypeClassifier
 
 from presentation.components.pictograph.renderers.grid_renderer import GridRenderer
 from presentation.components.pictograph.renderers.prop_renderer import PropRenderer
@@ -143,13 +144,15 @@ class PictographScene(QGraphicsScene):
                 self.vtg_glyph_renderer.render_vtg_glyph(
                     glyph_data.vtg_mode,
                     glyph_data.letter_type.value if glyph_data.letter_type else None,
-                )
-
-            # Render TKA glyph
-            if glyph_data.show_tka and self.beat_data.letter and glyph_data.letter_type:
+                )            # Render TKA glyph
+            if glyph_data.show_tka and self.beat_data.letter:
+                # Determine the correct letter type from the actual letter
+                letter_type_str = LetterTypeClassifier.get_letter_type(self.beat_data.letter)
+                letter_type = LetterType(letter_type_str)
+                
                 self.tka_glyph_renderer.render_tka_glyph(
                     self.beat_data.letter,
-                    glyph_data.letter_type,
+                    letter_type,
                     glyph_data.has_dash,
                     glyph_data.turns_data,
                 )
