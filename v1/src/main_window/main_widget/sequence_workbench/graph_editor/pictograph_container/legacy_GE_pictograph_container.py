@@ -9,11 +9,11 @@ from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph impor
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.legacy_beat_frame.beat import Beat
-    from ..graph_editor import GraphEditor
+    from ..legacy_graph_editor import LegacyGraphEditor
 
 
-class GraphEditorPictographContainer(QWidget):
-    def __init__(self, graph_editor: "GraphEditor") -> None:
+class LegacyGraphEditorPictographContainer(QWidget):
+    def __init__(self, graph_editor: "LegacyGraphEditor") -> None:
         super().__init__(graph_editor)
         self.graph_editor = graph_editor
         self.setup_pictograph()

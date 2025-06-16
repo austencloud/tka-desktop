@@ -19,7 +19,9 @@ from settings_manager.settings_manager import pyqtSignal
 from .arrow_selection_manager import ArrowSelectionManager
 from .graph_editor_layout_manager import GraphEditorLayoutManager
 from .adjustment_panel.beat_adjustment_panel import BeatAdjustmentPanel
-from .pictograph_container.GE_pictograph_container import GraphEditorPictographContainer
+from .pictograph_container.legacy_GE_pictograph_container import (
+    LegacyGraphEditorPictographContainer,
+)
 
 if TYPE_CHECKING:
     from main_window.main_widget.sequence_workbench.sequence_workbench import (
@@ -27,7 +29,7 @@ if TYPE_CHECKING:
     )
 
 
-class GraphEditor(QFrame):
+class LegacyGraphEditor(QFrame):
     main_layout: QHBoxLayout
     pictograph_layout: QVBoxLayout
     adjustment_panel_layout: QVBoxLayout
@@ -50,7 +52,7 @@ class GraphEditor(QFrame):
 
     def _setup_components(self) -> None:
         self.selection_manager = ArrowSelectionManager(self)
-        self.pictograph_container = GraphEditorPictographContainer(self)
+        self.pictograph_container = LegacyGraphEditorPictographContainer(self)
         self.adjustment_panel = BeatAdjustmentPanel(self)
         self.layout_manager = GraphEditorLayoutManager(self)
         self.toggle_tab = GraphEditorToggleTab(self)

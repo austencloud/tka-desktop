@@ -22,8 +22,8 @@ from main_window.main_widget.sequence_workbench.graph_editor.GE_pictograph impor
 )
 
 if TYPE_CHECKING:
-    from .....main_window.main_widget.sequence_workbench.graph_editor.pictograph_container.GE_pictograph_container import (
-        GraphEditorPictographContainer,
+    from .....main_window.main_widget.sequence_workbench.graph_editor.pictograph_container.legacy_GE_pictograph_container import (
+        LegacyGraphEditorPictographContainer,
     )
 
 
@@ -33,7 +33,7 @@ class GE_PictographView(BasePictographView):
 
     def __init__(
         self,
-        container: "GraphEditorPictographContainer",
+        container: "LegacyGraphEditorPictographContainer",
         pictograph: "GE_Pictograph",
     ) -> None:
         super().__init__(pictograph)
@@ -68,11 +68,11 @@ class GE_PictographView(BasePictographView):
         QApplication.restoreOverrideCursor()
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        from main_window.main_widget.sequence_workbench.graph_editor.pictograph_container.GE_pictograph_container import (
-            GraphEditorPictographContainer,
+        from v1.src.main_window.main_widget.sequence_workbench.graph_editor.pictograph_container.legacy_GE_pictograph_container import (
+            LegacyGraphEditorPictographContainer,
         )
 
-        if isinstance(self.parent(), GraphEditorPictographContainer):
+        if isinstance(self.parent(), LegacyGraphEditorPictographContainer):
             if self.mouse_event_handler.is_arrow_under_cursor(event):
                 self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             else:

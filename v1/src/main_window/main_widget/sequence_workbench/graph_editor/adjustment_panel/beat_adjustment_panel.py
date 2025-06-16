@@ -5,7 +5,7 @@ from .ori_picker_box.ori_picker_box import OriPickerBox
 from .turns_box.turns_box import TurnsBox
 
 if TYPE_CHECKING:
-    from ..graph_editor import GraphEditor
+    from ..legacy_graph_editor import LegacyGraphEditor
 
 
 ORI_WIDGET_INDEX = 0
@@ -16,7 +16,7 @@ class BeatAdjustmentPanel(QFrame):
     turns_boxes: list[TurnsBox]
     ori_picker_boxes: list[OriPickerBox]
 
-    def __init__(self, graph_editor: "GraphEditor") -> None:
+    def __init__(self, graph_editor: "LegacyGraphEditor") -> None:
         super().__init__(graph_editor)
         self.graph_editor = graph_editor
         self.GE_pictograph = graph_editor.pictograph_container.GE_pictograph

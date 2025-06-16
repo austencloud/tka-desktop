@@ -11,7 +11,7 @@ from application.services.core.pictograph_management_service import (
 from presentation.components.pictograph.pictograph_scene import PictographScene
 
 
-class ModernPictographContainer(QWidget):
+class GraphEditorPictographContainer(QWidget):
     arrow_selected = pyqtSignal(str)
     beat_modified = pyqtSignal(BeatData)
 

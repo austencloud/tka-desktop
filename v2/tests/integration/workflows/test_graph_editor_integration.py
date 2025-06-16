@@ -14,8 +14,8 @@ from src.application.services.graph_editor_service import GraphEditorService
 from src.application.services.graph_editor_hotkey_service import (
     GraphEditorHotkeyService,
 )
-from src.presentation.components.workbench.graph_editor.modern_graph_editor import (
-    ModernGraphEditor,
+from presentation.components.workbench.graph_editor.graph_editor import (
+    GraphEditor,
 )
 
 
@@ -31,7 +31,7 @@ class TestGraphEditorIntegration:
     def test_complete_graph_editor_workflow(self, qapp, mock_sequence_data, test_timer):
         """Test complete graph editor workflow from creation to interaction."""
         # Create graph editor with real service
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Setup signal spies
         visibility_spy = QSignalSpy(graph_editor.visibility_changed)
@@ -73,7 +73,7 @@ class TestGraphEditorIntegration:
 
     def test_service_signal_communication(self, qapp, mock_beat_data):
         """Test signal communication between services and components."""
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Setup signal spies on service
         service_beat_spy = QSignalSpy(self.graph_service.beat_selected)
@@ -98,7 +98,7 @@ class TestGraphEditorIntegration:
         from PyQt6.QtCore import Qt
 
         # Setup graph editor and services
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Setup state for hotkey testing
         self.graph_service.set_selected_beat(mock_beat_data, 0)
@@ -147,7 +147,7 @@ class TestGraphEditorIntegration:
 
     def test_pictograph_container_service_integration(self, qapp, mock_beat_data):
         """Test pictograph container integration with services."""
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         pictograph_container = graph_editor._pictograph_container
 
@@ -166,7 +166,7 @@ class TestGraphEditorIntegration:
 
     def test_adjustment_panel_integration(self, qapp, mock_beat_data):
         """Test adjustment panel integration with services."""
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Get adjustment panels
         left_panel = graph_editor._left_adjustment_panel
@@ -181,7 +181,7 @@ class TestGraphEditorIntegration:
 
     def test_animation_system_integration(self, qapp, test_timer):
         """Test animation system integration."""
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Test animation state tracking
         assert not graph_editor._animating
@@ -202,7 +202,7 @@ class TestGraphEditorIntegration:
 
     def test_error_handling_integration(self, qapp, mock_beat_data):
         """Test error handling across integrated components."""
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Test with None beat data
         graph_editor.set_selected_beat(None, None)
@@ -226,7 +226,7 @@ class TestGraphEditorIntegration:
 
     def test_memory_cleanup_integration(self, qapp, mock_beat_data):
         """Test memory cleanup across integrated components."""
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Setup some state
         graph_editor.set_sequence(mock_beat_data)

@@ -14,11 +14,11 @@ from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QKeyEvent
 
-from src.presentation.components.workbench.graph_editor.modern_graph_editor import (
-    ModernGraphEditor,
+from presentation.components.workbench.graph_editor.graph_editor import (
+    GraphEditor,
 )
-from src.presentation.components.workbench.graph_editor.modern_pictograph_container import (
-    ModernPictographContainer,
+from presentation.components.workbench.graph_editor.pictograph_container import (
+    GraphEditorPictographContainer,
 )
 from src.presentation.components.workbench.graph_editor.modern_adjustment_panel import (
     ModernAdjustmentPanel,
@@ -84,7 +84,7 @@ class TestModernPictographContainer:
         parent._graph_editor = Mock()
         parent._graph_editor._graph_service = mock_graph_service
 
-        container = ModernPictographContainer(parent)
+        container = GraphEditorPictographContainer(parent)
         assert container is not None
         assert hasattr(container, "_pictograph_service")
 
@@ -94,7 +94,7 @@ class TestModernPictographContainer:
         parent._graph_editor = Mock()
         parent._graph_editor._graph_service = mock_graph_service
 
-        container = ModernPictographContainer(parent)
+        container = GraphEditorPictographContainer(parent)
         container.set_beat(sample_beat_data)
 
         assert container._current_beat == sample_beat_data
@@ -105,7 +105,7 @@ class TestModernPictographContainer:
         parent._graph_editor = Mock()
         parent._graph_editor._graph_service = mock_graph_service
 
-        container = ModernPictographContainer(parent)
+        container = GraphEditorPictographContainer(parent)
 
         # Mock signal connection
         signal_received = []
@@ -249,7 +249,7 @@ class TestModernGraphEditor:
 
     def test_graph_editor_creation(self, app, mock_graph_service):
         """Test graph editor can be created with all components."""
-        editor = ModernGraphEditor(mock_graph_service)
+        editor = GraphEditor(mock_graph_service)
         assert editor is not None
         assert editor._graph_service == mock_graph_service
         assert editor._pictograph_container is not None
@@ -258,12 +258,12 @@ class TestModernGraphEditor:
 
     def test_focus_policy_set(self, app, mock_graph_service):
         """Test graph editor has focus policy for hotkeys."""
-        editor = ModernGraphEditor(mock_graph_service)
+        editor = GraphEditor(mock_graph_service)
         assert editor.focusPolicy() == Qt.FocusPolicy.StrongFocus
 
     def test_beat_data_propagation(self, app, mock_graph_service, sample_beat_data):
         """Test beat data is properly propagated to components."""
-        editor = ModernGraphEditor(mock_graph_service)
+        editor = GraphEditor(mock_graph_service)
         editor.set_selected_beat(sample_beat_data, 0)
 
         assert editor._selected_beat == sample_beat_data
@@ -271,7 +271,7 @@ class TestModernGraphEditor:
 
     def test_arrow_selection_propagation(self, app, mock_graph_service):
         """Test arrow selection is properly propagated."""
-        editor = ModernGraphEditor(mock_graph_service)
+        editor = GraphEditor(mock_graph_service)
 
         # Simulate arrow selection
         editor._on_arrow_selected("red")

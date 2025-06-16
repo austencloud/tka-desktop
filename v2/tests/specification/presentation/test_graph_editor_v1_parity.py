@@ -14,8 +14,8 @@ from v2.src.application.services.graph_editor_service import GraphEditorService
 from v2.src.application.services.graph_editor_hotkey_service import (
     GraphEditorHotkeyService,
 )
-from v2.src.presentation.components.workbench.graph_editor.modern_graph_editor import (
-    ModernGraphEditor,
+from presentation.components.workbench.graph_editor.graph_editor import (
+    GraphEditor,
 )
 
 
@@ -31,7 +31,7 @@ class TestGraphEditorV1Parity:
     def test_graph_editor_toggle_behavior(self, qapp, mock_sequence_data):
         """Test graph editor toggle matches V1 behavior."""
         # Create graph editor
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Setup signal spy
         visibility_spy = QSignalSpy(graph_editor.visibility_changed)
@@ -61,7 +61,7 @@ class TestGraphEditorV1Parity:
 
     def test_beat_selection_updates_pictograph(self, qapp, mock_beat_data):
         """Test beat selection updates pictograph like V1."""
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Show graph editor
         graph_editor.toggle_visibility()
@@ -77,7 +77,7 @@ class TestGraphEditorV1Parity:
 
     def test_arrow_selection_workflow(self, qapp, mock_beat_data):
         """Test arrow selection workflow matches V1."""
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Setup signal spy
         arrow_selected_spy = QSignalSpy(graph_editor.arrow_selected)
@@ -208,9 +208,7 @@ class TestGraphEditorV1Parity:
         mock_parent.height.return_value = 1000
         mock_parent.width.return_value = 800
 
-        graph_editor = ModernGraphEditor(
-            graph_service=self.graph_service, parent=mock_parent
-        )
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=mock_parent)
 
         # Calculate preferred height
         height = graph_editor.get_preferred_height()
@@ -224,7 +222,7 @@ class TestGraphEditorV1Parity:
 
     def test_animation_timing_matches_v1(self, qapp):
         """Test animation timing matches V1 specifications."""
-        graph_editor = ModernGraphEditor(graph_service=self.graph_service, parent=None)
+        graph_editor = GraphEditor(graph_service=self.graph_service, parent=None)
 
         # Check animation duration
         animation = graph_editor._height_animation

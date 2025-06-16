@@ -16,8 +16,8 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPu
 from PyQt6.QtCore import Qt
 
 from src.domain.models.core_models import BeatData
-from src.presentation.components.workbench.graph_editor.modern_graph_editor import (
-    ModernGraphEditor,
+from presentation.components.workbench.graph_editor.graph_editor import (
+    GraphEditor,
 )
 from src.presentation.components.workbench.graph_editor.turn_selection_dialog import (
     TurnSelectionDialog,
@@ -119,7 +119,7 @@ class TestWindow(QMainWindow):
         layout.addWidget(toggle_btn)
 
         # Create graph editor
-        self.graph_editor = ModernGraphEditor(self.graph_service, self)
+        self.graph_editor = GraphEditor(self.graph_service, self)
         layout.addWidget(self.graph_editor)
 
         # Set sample beat data
@@ -243,7 +243,7 @@ def main():
     print("3. Graph Editor...")
     try:
         mock_service = create_mock_graph_service()
-        graph_editor = ModernGraphEditor(mock_service)
+        graph_editor = GraphEditor(mock_service)
         print("   ✅ Graph editor created successfully")
 
         # Test focus policy

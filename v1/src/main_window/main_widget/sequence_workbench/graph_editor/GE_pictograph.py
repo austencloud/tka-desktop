@@ -7,15 +7,17 @@ if TYPE_CHECKING:
     from base_widgets.pictograph.elements.views.GE_pictograph_view import (
         GE_PictographView,
     )
-    from main_window.main_widget.sequence_workbench.graph_editor.pictograph_container.GE_pictograph_container import (
-        GraphEditorPictographContainer,
+    from v1.src.main_window.main_widget.sequence_workbench.graph_editor.pictograph_container.legacy_GE_pictograph_container import (
+        LegacyGraphEditorPictographContainer,
     )
 
 
 class GE_Pictograph(Beat):
     view: "GE_PictographView"
 
-    def __init__(self, pictograph_container: "GraphEditorPictographContainer") -> None:
+    def __init__(
+        self, pictograph_container: "LegacyGraphEditorPictographContainer"
+    ) -> None:
         super().__init__(
             pictograph_container.graph_editor.sequence_workbench.beat_frame
         )

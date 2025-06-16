@@ -33,7 +33,7 @@ from .sequence_reflector import SequenceReflector
 from .sequence_rotater import SequenceRotater
 from .sequence_workbench_layout_manager import SequenceWorkbenchLayoutManager
 from .labels.current_word_label import CurrentWordLabel
-from .graph_editor.graph_editor import GraphEditor
+from .graph_editor.legacy_graph_editor import LegacyGraphEditor
 from .sequence_workbench_button_panel import SequenceWorkbenchButtonPanel
 from .sequence_workbench_scroll_area import SequenceWorkbenchScrollArea
 
@@ -77,7 +77,7 @@ class SequenceWorkbench(QWidget):
 
         # Sections
         self.button_panel = SequenceWorkbenchButtonPanel(self)
-        self.graph_editor = GraphEditor(self)
+        self.graph_editor = LegacyGraphEditor(self)
 
         # Full Screen Viewer
         self.full_screen_viewer = FullScreenViewer(self)

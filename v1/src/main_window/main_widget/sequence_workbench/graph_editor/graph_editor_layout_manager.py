@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QStackedLayout, QSizePolicy
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.graph_editor.graph_editor import (
-        GraphEditor,
+    from v1.src.main_window.main_widget.sequence_workbench.graph_editor.legacy_graph_editor import (
+        LegacyGraphEditor,
     )
 
 
 class GraphEditorLayoutManager:
-    def __init__(self, graph_editor: "GraphEditor") -> None:
+    def __init__(self, graph_editor: "LegacyGraphEditor") -> None:
         self.ge = graph_editor
         self.sequence_workbench = graph_editor.sequence_workbench
 

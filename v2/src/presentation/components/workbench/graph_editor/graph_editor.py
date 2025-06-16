@@ -5,7 +5,7 @@ from PyQt6.QtGui import QResizeEvent, QKeyEvent
 
 from src.core.interfaces.workbench_services import IGraphEditorService
 from src.domain.models.core_models import SequenceData, BeatData
-from .modern_pictograph_container import ModernPictographContainer
+from .pictograph_container import GraphEditorPictographContainer
 from .modern_adjustment_panel import ModernAdjustmentPanel
 from .modern_toggle_tab import ModernToggleTab
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     )
 
 
-class ModernGraphEditor(QFrame):
+class GraphEditor(QFrame):
     """Modern graph editor component following v2 architecture patterns"""
 
     # Signals for communication
@@ -44,7 +44,7 @@ class ModernGraphEditor(QFrame):
         self._animations = []
 
         # Components (will be created in setup)
-        self._pictograph_container: Optional[ModernPictographContainer] = None
+        self._pictograph_container: Optional[GraphEditorPictographContainer] = None
         self._adjustment_panel: Optional[ModernAdjustmentPanel] = None
         self._toggle_tab: Optional[ModernToggleTab] = None
 
@@ -89,7 +89,7 @@ class ModernGraphEditor(QFrame):
         self._left_adjustment_panel = ModernAdjustmentPanel(self, side="left")
 
         # Central pictograph container (stretch=0, fixed size like V1)
-        self._pictograph_container = ModernPictographContainer(self)
+        self._pictograph_container = GraphEditorPictographContainer(self)
 
         # Right adjustment controls (stretch=1, like V1's right_stack)
         self._right_adjustment_panel = ModernAdjustmentPanel(self, side="right")

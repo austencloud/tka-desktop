@@ -20,13 +20,7 @@ from src.core.interfaces.tab_settings_interfaces import (
     IBeatLayoutService,
     IImageExportService,
 )
-from src.application.services.tab_settings_services import (
-    UserProfileService,
-    PropTypeService,
-    VisibilityService,
-    BeatLayoutService,
-    ImageExportService,
-)
+
 from .tabs.general_tab import GeneralTab
 from .tabs.prop_type_tab import PropTypeTab
 from .tabs.visibility_tab import VisibilityTab
@@ -46,6 +40,7 @@ class ModernSettingsDialog(QDialog):
         self._apply_styling()
 
     def _initialize_services(self):
+        #  TODO : Create all the services
         self.user_service = UserProfileService(self.settings_service)
         self.prop_service = PropTypeService(self.settings_service)
         self.visibility_service = VisibilityService(self.settings_service)

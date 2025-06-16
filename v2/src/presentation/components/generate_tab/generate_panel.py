@@ -38,7 +38,7 @@ from .generation_controls import (
 )
 
 
-class ModernGeneratePanel(QWidget):
+class GeneratePanel(QWidget):
 
     generate_requested = pyqtSignal(GenerationConfig)
     auto_complete_requested = pyqtSignal()

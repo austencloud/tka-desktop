@@ -5,8 +5,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.graph_editor.graph_editor import (
-        GraphEditor,
+    from v1.src.main_window.main_widget.sequence_workbench.graph_editor.legacy_graph_editor import (
+        LegacyGraphEditor,
     )
 
 # Define transparency value for easy modification
@@ -39,7 +39,7 @@ SILVER_GRADIENT = f"""
 class GraphEditorToggleTab(QWidget):
     """Toggle tab widget to expand/collapse the GraphEditor."""
 
-    def __init__(self, graph_editor: "GraphEditor") -> None:
+    def __init__(self, graph_editor: "LegacyGraphEditor") -> None:
         super().__init__(graph_editor.sequence_workbench)
         self.graph_editor = graph_editor
         self.sequence_workbench = graph_editor.sequence_workbench

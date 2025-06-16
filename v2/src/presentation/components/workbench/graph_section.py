@@ -5,7 +5,7 @@ from domain.models.core_models import SequenceData
 from core.interfaces.workbench_services import IGraphEditorService
 
 if TYPE_CHECKING:
-    from .graph_editor.modern_graph_editor import ModernGraphEditor
+    from .graph_editor.graph_editor import GraphEditor
 
 
 class WorkbenchGraphSection(QWidget):
@@ -21,7 +21,7 @@ class WorkbenchGraphSection(QWidget):
     ):
         super().__init__(parent)
         self._graph_service = graph_service
-        self._graph_editor: Optional["ModernGraphEditor"] = None
+        self._graph_editor: Optional["GraphEditor"] = None
         self._current_sequence: Optional[SequenceData] = None
         self._current_beat_index: int = 0  # Track current beat index
 
@@ -30,11 +30,9 @@ class WorkbenchGraphSection(QWidget):
 
     def _setup_ui(self):
         """Setup graph editor component"""
-        from .graph_editor.modern_graph_editor import ModernGraphEditor
+        from .graph_editor.graph_editor import GraphEditor
 
-        self._graph_editor = ModernGraphEditor(
-            graph_service=self._graph_service, parent=self
-        )
+        self._graph_editor = GraphEditor(graph_service=self._graph_service, parent=self)
 
         # Single child widget, no layout needed
         self._graph_editor.setParent(self)

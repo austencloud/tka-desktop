@@ -3,11 +3,10 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPainter, QColor
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
 
-    from main_window.main_widget.generate_tab.freeform.letter_type_button_widget import (
-        LetterTypeButton,
-    )
+if TYPE_CHECKING:
+    from v1.src.main_window.main_widget.generate_tab.freeform.letter_type_picker_widget.letter_type_button import LetterTypeButton
+
 
 
 class StyledBorderOverlayForButton(QWidget):

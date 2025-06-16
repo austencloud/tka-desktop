@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 from src.settings_manager.global_settings.app_context import AppContext
 
 if TYPE_CHECKING:
-    from main_window.main_widget.sequence_workbench.graph_editor.graph_editor import (
-        GraphEditor,
+    from v1.src.main_window.main_widget.sequence_workbench.graph_editor.legacy_graph_editor import (
+        LegacyGraphEditor,
     )
     from objects.arrow.arrow import Arrow
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class ArrowSelectionManager(QObject):
     selection_changed = pyqtSignal(object)
 
-    def __init__(self, graph_editor: "GraphEditor") -> None:
+    def __init__(self, graph_editor: "LegacyGraphEditor") -> None:
         super().__init__()
         self.graph_editor = graph_editor
 

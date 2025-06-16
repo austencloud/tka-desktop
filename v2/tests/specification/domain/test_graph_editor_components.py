@@ -8,8 +8,8 @@ from PyQt6.QtCore import Qt
 
 from core.dependency_injection.di_container import SimpleContainer
 from src.application.services.graph_editor_service import GraphEditorService
-from src.presentation.components.workbench.graph_editor.modern_graph_editor import (
-    ModernGraphEditor,
+from presentation.components.workbench.graph_editor.graph_editor import (
+    GraphEditor,
 )
 from src.domain.models.core_models import SequenceData, BeatData
 
@@ -47,7 +47,7 @@ class GraphEditorTestWindow(QMainWindow):
         layout.addLayout(btn_layout)
 
         # Create graph editor
-        self.graph_editor = ModernGraphEditor(
+        self.graph_editor = GraphEditor(
             graph_service=self.graph_service, parent=central_widget
         )
 
