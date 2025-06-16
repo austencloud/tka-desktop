@@ -19,7 +19,7 @@ from domain.models.core_models import (
     GlyphData,
 )
 from infrastructure.data_path_handler import DataPathHandler
-from .glyph_data_service import GlyphDataService
+from ..data.glyph_data_service import GlyphDataService
 
 
 class PictographDatasetService:

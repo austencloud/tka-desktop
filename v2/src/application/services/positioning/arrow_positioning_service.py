@@ -38,7 +38,7 @@ from domain.models.core_models import (
     RotationDirection,
 )
 from .default_placement_service import DefaultPlacementService
-from ..old_services_before_consolidation.placement_key_service import PlacementKeyService
+from ..placement_key_service import PlacementKeyService
 from .dash_location_service import DashLocationService
 
 

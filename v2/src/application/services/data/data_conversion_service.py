@@ -18,7 +18,7 @@ try:
         Location,
         GlyphData,
     )
-    from ..old_services_before_consolidation.glyph_data_service import GlyphDataService
+    from .glyph_data_service import GlyphDataService
 except ImportError:
     # Fallback to absolute imports (for standalone tests)
     from domain.models.core_models import (
