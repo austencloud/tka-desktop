@@ -1,8 +1,8 @@
-# 🎯 Legacy to V2 GraphEditor Migration Game Plan
+# 🎯 Legacy to Modern GraphEditor Migration Game Plan
 
 ## 📊 **Executive Summary**
 
-This document outlines the comprehensive migration strategy for bringing the Legacy GraphEditor functionality into V2 architecture, following modern dependency injection patterns and clean architecture principles.
+This document outlines the comprehensive migration strategy for bringing the Legacy GraphEditor functionality into Modern architecture, following modern dependency injection patterns and clean architecture principles.
 
 ## 🔍 **Legacy GraphEditor Analysis**
 
@@ -25,7 +25,7 @@ This document outlines the comprehensive migration strategy for bringing the Leg
 - Uses global state management via AppContext
 - Integrates with Legacy pictograph rendering system
 
-## 🏗️ **V2 Migration Architecture**
+## 🏗️ **Modern Migration Architecture**
 
 ### **Phase 1: Foundation ✅ COMPLETED**
 
@@ -89,13 +89,13 @@ This document outlines the comprehensive migration strategy for bringing the Leg
 
 1. **Beat Data Mapping**
 
-   - Bridge V2 BeatData with Legacy Beat objects
+   - Bridge Modern BeatData with Legacy Beat objects
    - Implement bidirectional data conversion
    - Ensure arrow state preservation
 
 2. **Pictograph System Bridge**
 
-   - Integrate Legacy pictograph rendering with V2 components
+   - Integrate Legacy pictograph rendering with Modern components
    - Maintain compatibility with existing arrow/prop systems
    - Preserve visual consistency
 
@@ -172,7 +172,7 @@ This document outlines the comprehensive migration strategy for bringing the Leg
 ### **Risk Mitigation**
 
 - **Backward Compatibility**: Maintain Legacy functionality during migration
-- **Progressive Enhancement**: Add V2 features incrementally
+- **Progressive Enhancement**: Add Modern features incrementally
 - **Rollback Strategy**: Keep Legacy components available as fallback
 - **Validation Gates**: Feature parity checks at each phase
 

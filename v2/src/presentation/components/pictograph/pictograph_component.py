@@ -1,5 +1,5 @@
 """
-Direct pictograph view for Kinetic Constructor v2 - matches legacy container hierarchy.
+Direct pictograph view for Kinetic Constructor modern - matches legacy container hierarchy.
 """
 
 from typing import Optional
@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import QGraphicsView
 from PyQt6.QtCore import pyqtSignal, Qt, QTimer, QSize, QEvent
 from PyQt6.QtGui import QPainter, QKeyEvent
 
-from application.services.context_aware_scaling_service import ScalingContext
+from application.services.ui.context_aware_scaling_service import ScalingContext
 from domain.models.core_models import BeatData
 
 from .pictograph_scene import PictographScene
@@ -148,10 +148,12 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         """Toggle dimension debugging on/off."""
         self.debug_enabled = not self.debug_enabled
         if self.debug_enabled:
-            print("🔍 V2 Dimension debugging ENABLED - Press Ctrl+D again to disable")
+            print(
+                "🔍 Modern Dimension debugging ENABLED - Press Ctrl+D again to disable"
+            )
             self._trigger_debug_print()
         else:
-            print("🔍 V2 Dimension debugging DISABLED")
+            print("🔍 Modern Dimension debugging DISABLED")
 
     def _trigger_debug_print(self) -> None:
         """Trigger debug print after a short delay to ensure rendering is complete."""
@@ -164,7 +166,7 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
             return
 
         print("\n" + "=" * 80)
-        print("🔍 V2 PICTOGRAPH DIMENSION DEBUG")
+        print("🔍 Modern PICTOGRAPH DIMENSION DEBUG")
         print("=" * 80)
 
         # Component dimensions

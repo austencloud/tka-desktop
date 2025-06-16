@@ -1,8 +1,8 @@
 """
-TKA V2 Test Suite
+TKA Modern Test Suite
 ================
 
-Comprehensive testing framework for The Kinetic Constructor V2.
+Comprehensive testing framework for The Kinetic Constructor Modern.
 
 Test Categories:
 - unit/: Fast service layer tests (<1s total)

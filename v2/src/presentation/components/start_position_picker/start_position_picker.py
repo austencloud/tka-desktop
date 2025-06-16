@@ -21,7 +21,7 @@ from PyQt6.QtGui import QFont
 from ..pictograph.pictograph_component import PictographComponent
 
 from domain.models.core_models import BeatData
-from application.services.old_services_before_consolidation.pictograph_dataset_service import (
+from application.services.data.pictograph_dataset_service import (
     PictographDatasetService,
 )
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple test runner to verify V2 Graph Editor implementation.
+Simple test runner to verify Modern Graph Editor implementation.
 
 This script tests the core functionality without complex test fixtures.
 """
@@ -83,7 +83,7 @@ class TestWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("V2 Graph Editor Test")
+        self.setWindowTitle("Modern Graph Editor Test")
         self.setGeometry(100, 100, 1000, 700)
 
         # Create mock service
@@ -200,7 +200,7 @@ class TestWindow(QMainWindow):
 
 def main():
     """Main test function."""
-    print("🚀 Starting V2 Graph Editor Implementation Test")
+    print("🚀 Starting Modern Graph Editor Implementation Test")
 
     app = QApplication(sys.argv)
 

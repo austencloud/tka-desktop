@@ -26,19 +26,19 @@ from PyQt6.QtCore import QTimer, QPoint, QPointF, Qt
 from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtTest import QTest
 
-# Add V2 source path and main directory
+# Add Modern source path and main directory
 v2_src_path = Path(__file__).parent.parent.parent.parent / "src"
 v2_main_path = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(v2_src_path))
 sys.path.insert(0, str(v2_main_path))
 
-# Import V2 application
+# Import Modern application
 try:
-    from v2.main import KineticConstructorV2
+    from v2.main import KineticConstructorModern
 except ImportError:
     # Fallback import path
     sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "v2"))
-    from main import KineticConstructorV2
+    from main import KineticConstructorModern
 
 
 class GraphEditorUIWorkflowTester:
@@ -46,7 +46,7 @@ class GraphEditorUIWorkflowTester:
 
     def __init__(self):
         self.app: Optional[QApplication] = None
-        self.main_window: Optional[KineticConstructorV2] = None
+        self.main_window: Optional[KineticConstructorModern] = None
         self.construct_tab: Optional[QWidget] = None
         self.workbench: Optional[QWidget] = None
         self.start_position_picker: Optional[QWidget] = None
@@ -73,9 +73,9 @@ class GraphEditorUIWorkflowTester:
             traceback.print_exc()
 
     def setup_application(self) -> bool:
-        """Setup the full V2 application for testing"""
+        """Setup the full Modern application for testing"""
         self.current_test_step = "APPLICATION_SETUP"
-        self.log("🚀 Setting up TKA V2 application for end-to-end testing")
+        self.log("🚀 Setting up TKA Modern application for end-to-end testing")
 
         try:
             # Create QApplication if not exists
@@ -87,7 +87,7 @@ class GraphEditorUIWorkflowTester:
 
             # Create main window without splash screen for testing
             self.log("Creating main window...")
-            self.main_window = KineticConstructorV2(
+            self.main_window = KineticConstructorModern(
                 splash_screen=None, target_screen=None
             )
 

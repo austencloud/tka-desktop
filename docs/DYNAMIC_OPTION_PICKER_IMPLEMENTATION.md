@@ -2,7 +2,7 @@
 
 ## Overview
 
-Successfully implemented dynamic option picker updates in TKA V2 to replicate Legacy's continuous sequence building behavior. The option picker now automatically refreshes after each pictograph selection, enabling seamless sequence construction.
+Successfully implemented dynamic option picker updates in TKA Modern to replicate Legacy's continuous sequence building behavior. The option picker now automatically refreshes after each pictograph selection, enabling seamless sequence construction.
 
 ## Key Features Implemented
 
@@ -33,7 +33,7 @@ def _extract_end_position(self, last_beat: Dict[str, Any], position_service) -> 
 - **Dynamic Refresh**: `refresh_options_from_sequence()` method for Legacy-compatible updates
 - **End Position Detection**: Extracts end position from last beat in sequence
 - **Next Options Loading**: Fetches valid next moves from position service
-- **BeatData Conversion**: Converts Legacy format to V2 BeatData objects
+- **BeatData Conversion**: Converts Legacy format to Modern BeatData objects
 
 ```python
 def refresh_options_from_sequence(self, sequence_data: List[Dict[str, Any]]) -> List[BeatData]:
@@ -58,7 +58,7 @@ def refresh_options_from_sequence(self, sequence_data: List[Dict[str, Any]]) -> 
 - **Workbench Connection**: Connected to workbench sequence modification signals
 - **Automatic Refresh**: Triggers option picker refresh on sequence changes
 - **Circular Protection**: Prevents infinite signal loops during updates
-- **V2 to Legacy Conversion**: Converts V2 SequenceData to Legacy-compatible format
+- **Modern to Legacy Conversion**: Converts Modern SequenceData to Legacy-compatible format
 
 ```python
 def _on_workbench_modified(self, sequence: SequenceData):
@@ -70,7 +70,7 @@ def _on_workbench_modified(self, sequence: SequenceData):
 
 **File**: `v2/src/presentation/tabs/construct_tab_widget.py`
 
-- **V2 to Legacy Mapping**: Converts SequenceData to Legacy sequence format
+- **Modern to Legacy Mapping**: Converts SequenceData to Legacy sequence format
 - **End Position Calculation**: Generates end positions from motion data
 - **Metadata Preservation**: Maintains Legacy-compatible metadata structure
 
@@ -81,7 +81,7 @@ def _on_workbench_modified(self, sequence: SequenceData):
 1. **Pictograph Selection** → Beat added to sequence
 2. **Sequence Modified** → Workbench emits sequence_modified signal
 3. **Signal Handler** → Construct tab receives modification
-4. **Format Conversion** → V2 SequenceData converted to Legacy format
+4. **Format Conversion** → Modern SequenceData converted to Legacy format
 5. **Option Refresh** → Option picker refreshes with new options
 6. **Display Update** → New options displayed to user
 
@@ -140,7 +140,7 @@ position_map = {
 3. **`v2/src/presentation/tabs/construct_tab_widget.py`**
    - Connected sequence modification signals
    - Added automatic option picker refresh
-   - Implemented V2 to Legacy format conversion
+   - Implemented Modern to Legacy format conversion
    - Added circular signal protection
 
 ## Validation
@@ -176,4 +176,4 @@ position_map = {
 - **Maintainability**: Clean interfaces and well-documented methods
 - **Performance**: Efficient refresh mechanism with minimal overhead
 
-The implementation successfully restores V2's sequence building functionality to match Legacy's proven continuous workflow while maintaining modern V2 architecture patterns.
+The implementation successfully restores Modern's sequence building functionality to match Legacy's proven continuous workflow while maintaining modern Modern architecture patterns.

@@ -7,7 +7,7 @@ Interfaces with Legacy's main_window.py and existing component structure.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Control Legacy application for parallel testing with V2
+PURPOSE: Control Legacy application for parallel testing with Modern
 """
 
 import sys

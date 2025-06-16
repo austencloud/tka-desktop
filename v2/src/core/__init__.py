@@ -1,1 +1,1 @@
-# V2 Core Module
+# Modern Core Module

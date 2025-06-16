@@ -1,1 +1,1 @@
-# V2 Core Interfaces Module
+# Modern Core Interfaces Module

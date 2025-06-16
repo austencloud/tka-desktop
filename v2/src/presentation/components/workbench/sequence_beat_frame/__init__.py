@@ -1,7 +1,7 @@
 """
 Beat Frame Components
 
-Modern beat frame system for V2 sequence workbench.
+Modern beat frame system for Modern sequence workbench.
 """
 
 from .sequence_beat_frame import SequenceBeatFrame

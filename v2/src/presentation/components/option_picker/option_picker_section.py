@@ -380,9 +380,9 @@ class OptionPickerSection(QWidget):
         return result
 
     def resizeEvent(self, event):
-        """V2-style resize event to set proper section width"""
+        """Modern-style resize event to set proper section width"""
         if self.mw_size_provider:
-            # V2 pattern: different width handling for bottom row vs vertical sections
+            # Modern pattern: different width handling for bottom row vs vertical sections
             full_width = self.mw_size_provider().width()
 
             # Check if this section is in the bottom row (sections 4, 5, 6)

@@ -1,10 +1,10 @@
 """
 Sequence Workbench Components
 
-V2 sequence workbench with modern architecture.
+Modern sequence workbench with modern architecture.
 """
 
-from src.presentation.components.workbench.sequence_beat_frame import (
+from presentation.components.workbench.sequence_beat_frame import (
     SequenceBeatFrame,
     BeatView,
     StartPositionView,

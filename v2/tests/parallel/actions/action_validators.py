@@ -7,7 +7,7 @@ Ensures actions are executed in valid states and produce expected results.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Validate action prerequisites and outcomes for Legacy/V2 testing
+PURPOSE: Validate action prerequisites and outcomes for Legacy/Modern testing
 """
 
 from typing import Dict, Any, List, Optional, Tuple

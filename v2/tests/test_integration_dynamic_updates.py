@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Integration test for dynamic option picker updates in TKA V2
+Integration test for dynamic option picker updates in TKA Modern
 Tests the complete workflow from start position to continuous sequence building
 """
 

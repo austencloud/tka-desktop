@@ -1,8 +1,8 @@
 """
 Modern Beat View Component
 
-Individual beat widget for the V2 sequence workbench, replacing Legacy's BeatView
-with modern architecture patterns and V2 pictograph integration.
+Individual beat widget for the Modern sequence workbench, replacing Legacy's BeatView
+with modern architecture patterns and Modern pictograph integration.
 """
 
 from typing import Optional
@@ -11,16 +11,16 @@ from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtGui import QFont, QMouseEvent, QPainter, QPen, QColor
 
 from presentation.components.pictograph.pictograph_component import PictographComponent
-from src.domain.models.core_models import BeatData
+from domain.models.core_models import BeatData
 
 
 class BeatView(QFrame):
     """
-    Modern beat view widget with V2 pictograph integration.
+    Modern beat view widget with Modern pictograph integration.
 
     Replaces Legacy's BeatView with:
     - Clean separation of concerns
-    - V2 pictograph rendering integration
+    - Modern pictograph rendering integration
     - Modern PyQt6 patterns
     - Responsive design
     """
@@ -64,7 +64,7 @@ class BeatView(QFrame):
         if self._pictograph_component:
             self._pictograph_component.setMinimumSize(120, 120)  # Fill container
             # CRITICAL FIX: Set proper scaling context for beat frame
-            from application.services.context_aware_scaling_service import (
+            from application.services.ui.context_aware_scaling_service import (
                 ScalingContext,
             )
 
@@ -141,7 +141,7 @@ class BeatView(QFrame):
         self._update_pictograph()
 
     def _update_pictograph(self):
-        """Update pictograph display using V2 pictograph component"""
+        """Update pictograph display using Modern pictograph component"""
         if not self._beat_data or not self._pictograph_component:
             return
 

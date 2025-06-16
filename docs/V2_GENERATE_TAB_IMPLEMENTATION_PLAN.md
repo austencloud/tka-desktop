@@ -1,8 +1,8 @@
-# V2 Generate Tab Implementation Plan
+# Modern Generate Tab Implementation Plan
 
 ## Overview
 
-This document outlines the complete implementation plan for porting the generate tab from Legacy to V2, maintaining the exact same left-side sequence workbench while rebuilding the right panel using V2's modern dependency injection architecture.
+This document outlines the complete implementation plan for porting the generate tab from Legacy to Modern, maintaining the exact same left-side sequence workbench while rebuilding the right panel using Modern's modern dependency injection architecture.
 
 ## Key Requirements Analysis
 
@@ -15,7 +15,7 @@ This document outlines the complete implementation plan for porting the generate
 
 ### 2. Right Panel Transformation
 
-- **Legacy Generate Panel** → **V2 Modern Generate Panel**
+- **Legacy Generate Panel** → **Modern Modern Generate Panel**
 - **Legacy widget hierarchy** → **Clean component composition**
 - **Global state access** → **Dependency injection**
 - **Tight coupling** → **Loose coupling via events**
@@ -64,7 +64,7 @@ GenerateTab (QWidget)
 5. Construct Tab Integration → Option Picker Updates
 ```
 
-## V2 Architecture Design
+## Modern Architecture Design
 
 ### Component Hierarchy
 
@@ -272,7 +272,7 @@ class GenerationModeSelector(QWidget):
 - **Glassmorphism effects** on panels
 - **Smooth animations** for state changes
 - **Clear visual hierarchy** with proper spacing
-- **Consistent color scheme** with V2 design system
+- **Consistent color scheme** with Modern design system
 
 ### Improved User Experience
 
@@ -468,4 +468,4 @@ class GenerationModeSelector(QWidget):
 - ✅ **Efficient memory usage** - proper resource management
 - ✅ **Fast tab switching** - instant response to user actions
 
-This implementation plan ensures we deliver a beautiful, modern generate tab that maintains perfect Legacy functionality while showcasing the power of V2's architecture.
+This implementation plan ensures we deliver a beautiful, modern generate tab that maintains perfect Legacy functionality while showcasing the power of Modern's architecture.

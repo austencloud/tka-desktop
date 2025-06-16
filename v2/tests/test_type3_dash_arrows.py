@@ -5,7 +5,7 @@ Test for Type 3 dash arrow positioning (avoiding shift arrows)
 import sys
 from pathlib import Path
 
-# Add v2 to path for imports
+# Add modern to path for imports
 v2_path = Path(__file__).parent / "src"
 if str(v2_path) not in sys.path:
     sys.path.insert(0, str(v2_path))

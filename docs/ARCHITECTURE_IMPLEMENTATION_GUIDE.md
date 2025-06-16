@@ -1,4 +1,4 @@
-# Kinetic Constructor v2 - Architecture Implementation Guide
+# Kinetic Constructor modern - Architecture Implementation Guide
 
 ## Overview
 
@@ -7,16 +7,19 @@ This guide provides a comprehensive blueprint for rewriting the Kinetic Construc
 ## Core Architectural Principles
 
 ### 1. Dependency Injection First
+
 - **No global state access**: Components receive all dependencies through constructor injection
 - **Interface-based design**: Services implement interfaces, concrete implementations are injected
 - **Testable by design**: Easy to mock dependencies for unit testing
 
 ### 2. Domain-Driven Design
+
 - **Rich domain models**: Business logic lives in domain models, not UI components
 - **Immutable data structures**: Domain models are immutable with update methods
 - **Domain events**: Business operations publish events for loose coupling
 
 ### 3. Clean Architecture Layers
+
 ```
 Presentation Layer (UI Components)
     ↓ depends on
@@ -28,6 +31,7 @@ Infrastructure Layer (Data Access, External Services)
 ```
 
 ### 4. Feature Module Architecture
+
 - **Self-contained features**: Each tab is a complete feature module
 - **Standalone capability**: Features can run independently or embedded
 - **Clear boundaries**: Features communicate through events, not direct references
@@ -37,6 +41,7 @@ Infrastructure Layer (Data Access, External Services)
 ### Phase 1: Foundation (Weeks 1-2)
 
 #### 1.1 Core Framework Setup
+
 ```bash
 # Create new project structure
 kinetic-constructor-v2/
@@ -54,18 +59,21 @@ kinetic-constructor-v2/
 ```
 
 #### 1.2 Dependency Injection Container
+
 - Implement `DependencyContainer` with automatic constructor injection
 - Support singleton, transient, and scoped lifetimes
 - Circular dependency detection
 - Thread-safe operations
 
 #### 1.3 Event Bus System
+
 - Type-safe event publishing and subscription
 - Async and sync event handling
 - Qt integration for UI events
 - Performance monitoring
 
 #### 1.4 Configuration System
+
 - Hierarchical configuration with environment overrides
 - Type-safe configuration classes
 - Hot-reload support
@@ -74,6 +82,7 @@ kinetic-constructor-v2/
 ### Phase 2: Domain Models (Week 3)
 
 #### 2.1 Core Domain Models
+
 ```python
 # Immutable domain models
 @dataclass(frozen=True)
@@ -82,10 +91,10 @@ class SequenceData:
     name: str
     beats: List[BeatData]
     metadata: SequenceMetadata
-    
+
     def add_beat(self, beat: BeatData) -> 'SequenceData':
         # Returns new instance with added beat
-        
+
 @dataclass(frozen=True)
 class BeatData:
     id: str
@@ -97,6 +106,7 @@ class BeatData:
 ```
 
 #### 2.2 Domain Events
+
 ```python
 @dataclass
 class SequenceCreatedEvent(IEvent):
@@ -112,6 +122,7 @@ class BeatAddedEvent(IEvent):
 ### Phase 3: Application Services (Week 4)
 
 #### 3.1 Service Layer
+
 ```python
 class SequenceService(ServiceComponentBase):
     def __init__(
@@ -121,19 +132,20 @@ class SequenceService(ServiceComponentBase):
     ):
         super().__init__(container, config)
         # Dependencies injected automatically
-    
+
     async def create_sequence(self, name: str) -> SequenceData:
         # Business logic for sequence creation
         # Validation, persistence, event publishing
 ```
 
 #### 3.2 Repository Interfaces
+
 ```python
 class ISequenceRepository(ABC):
     @abstractmethod
     async def save(self, sequence: SequenceData) -> SequenceData:
         pass
-    
+
     @abstractmethod
     async def get_by_id(self, sequence_id: str) -> Optional[SequenceData]:
         pass
@@ -142,6 +154,7 @@ class ISequenceRepository(ABC):
 ### Phase 4: Feature Modules (Weeks 5-8)
 
 #### 4.1 Feature Structure
+
 ```
 features/construct/
 ├── domain/                      # Feature-specific models
@@ -158,6 +171,7 @@ features/construct/
 ```
 
 #### 4.2 Feature Coordinator Pattern
+
 ```python
 class ConstructCoordinator(ViewableComponentBase):
     def __init__(
@@ -175,6 +189,7 @@ class ConstructCoordinator(ViewableComponentBase):
 ### Phase 5: UI Components (Weeks 9-10)
 
 #### 5.1 Component Base Classes
+
 ```python
 class ViewableComponentBase(ComponentBase):
     def __init__(
@@ -190,6 +205,7 @@ class ViewableComponentBase(ComponentBase):
 ```
 
 #### 5.2 Modern UI Patterns
+
 - Parameter-based initialization (no global state access)
 - Event-driven communication
 - Responsive design with configuration
@@ -198,19 +214,22 @@ class ViewableComponentBase(ComponentBase):
 ### Phase 6: Integration & Migration (Weeks 11-12)
 
 #### 6.1 Standalone Operation
+
 Each feature can run independently:
+
 ```python
 # Standalone construct feature
 python -m src.features.construct.standalone
 ```
 
 #### 6.2 Main Application Integration
+
 ```python
 class MainApplication:
     def __init__(self):
         self.container = DependencyContainer()
         self.configure_dependencies()
-        
+
     def create_construct_tab(self) -> ConstructCoordinator:
         return ConstructCoordinator(
             container=self.container,
@@ -221,30 +240,35 @@ class MainApplication:
 ## Key Benefits of New Architecture
 
 ### 1. Zero Technical Debt
+
 - Clean separation of concerns
 - No circular dependencies
 - No global state access
 - No patch-based workarounds
 
 ### 2. True Modularity
+
 - Features are self-contained
 - Components accept parameters, not global references
 - Easy to test in isolation
 - Reusable across contexts
 
 ### 3. Maintainability
+
 - Clear dependency flow
 - Interface-based design
 - Comprehensive error handling
 - Extensive logging and monitoring
 
 ### 4. Extensibility
+
 - Easy to add new features
 - Plugin architecture support
 - Configuration-driven behavior
 - Event-driven integration
 
 ### 5. Performance
+
 - Lazy loading support
 - Efficient dependency resolution
 - Optimized event handling
@@ -253,24 +277,28 @@ class MainApplication:
 ## Migration Strategy
 
 ### 1. Parallel Development
+
 - Build new architecture alongside existing code
 - Migrate features one at a time
 - Maintain existing functionality during transition
 
 ### 2. Feature-by-Feature Migration
+
 1. **Construct Tab**: Start with most complex feature
 2. **Generate Tab**: Apply lessons learned
-3. **Browse Tab**: Leverage existing v2 work
+3. **Browse Tab**: Leverage existing modern work
 4. **Learn Tab**: Simplest feature for validation
 5. **Sequence Card Tab**: Final integration
 
 ### 3. Testing Strategy
+
 - Unit tests for all services and components
 - Integration tests for feature modules
 - End-to-end tests for complete workflows
 - Performance benchmarks
 
 ### 4. Deployment Strategy
+
 - Alpha release with construct feature only
 - Beta release with core features
 - Production release with full feature parity
@@ -279,19 +307,21 @@ class MainApplication:
 ## Code Examples
 
 ### Dependency Registration
+
 ```python
 def configure_dependencies(container: DependencyContainer):
     # Core services
     container.register_singleton(IEventBus, EventBus)
     container.register_singleton(ISequenceRepository, JsonSequenceRepository)
     container.register_singleton(SequenceService, SequenceService)
-    
+
     # Feature services
     container.register_singleton(ConstructService, ConstructService)
     container.register_singleton(IOptionGenerator, OptionGenerator)
 ```
 
 ### Component Creation
+
 ```python
 # Old way (tightly coupled)
 construct_tab = ConstructTab(
@@ -310,6 +340,7 @@ construct_coordinator.initialize()
 ```
 
 ### Event-Driven Communication
+
 ```python
 # Publish domain event
 event = BeatAddedEvent(sequence_id, beat_data, position)

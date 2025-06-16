@@ -1,1 +1,1 @@
-# V2 Settings Components
+# Modern Settings Components

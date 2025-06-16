@@ -1,8 +1,9 @@
-# Kinetic Constructor v2 - Implementation Priority Guide
+# Kinetic Constructor modern - Implementation Priority Guide
 
 ## 🎯 CRITICAL: Start with These Files in Order
 
 ### 1. HIGHEST PRIORITY: Dependency Injection Container
+
 **File:** `src/core/dependency_injection/simple_container.py`
 **Why:** This is the FOUNDATION that eliminates AppContext and all global state access.
 
@@ -14,6 +15,7 @@ service = container.resolve(ISettingsService)  # Automatic injection!
 ```
 
 ### 2. SECOND PRIORITY: Core Service Interfaces
+
 **File:** `src/core/interfaces/core_services.py`
 **Why:** These define the contracts that replace tightly-coupled services.
 
@@ -25,6 +27,7 @@ class MyComponent:
 ```
 
 ### 3. THIRD PRIORITY: Domain Models
+
 **File:** `src/domain/models/core_models.py`
 **Why:** Pure business logic without UI coupling.
 
@@ -35,6 +38,7 @@ updated_beat = beat.update(duration=2.0)   # Creates new instance
 ```
 
 ### 4. FOURTH PRIORITY: Service Layer
+
 **File:** `src/application/services/simple_sequence_service.py`
 **Why:** Centralized business logic with dependency injection.
 
@@ -46,6 +50,7 @@ class SequenceService:
 ```
 
 ### 5. FIFTH PRIORITY: Component Base
+
 **File:** `src/presentation/components/component_base.py`
 **Why:** Foundation for UI components without global state access.
 
@@ -57,6 +62,7 @@ class MyComponent(ViewableComponentBase):
 ```
 
 ### 6. SIXTH PRIORITY: Working Example
+
 **File:** `src/presentation/components/option_picker.py`
 **Why:** Shows how to eliminate ALL technical debt from your most problematic component.
 
@@ -66,6 +72,7 @@ class MyComponent(ViewableComponentBase):
 ```
 
 ### 7. SEVENTH PRIORITY: Complete Demo
+
 **File:** `demo_new_architecture.py`
 **Why:** Working demonstration of the entire new architecture.
 
@@ -77,6 +84,7 @@ python demo_new_architecture.py
 ## 🚀 Quick Start Implementation
 
 ### Step 1: Test the Foundation (5 minutes)
+
 ```bash
 cd kinetic-constructor-v2
 python -c "
@@ -87,6 +95,7 @@ print('✅ Dependency injection working!')
 ```
 
 ### Step 2: Test Domain Models (5 minutes)
+
 ```bash
 python -c "
 from src.domain.models.core_models import BeatData, SequenceData
@@ -97,6 +106,7 @@ print(f'✅ Created sequence with {sequence.length} beats!')
 ```
 
 ### Step 3: Test Service Layer (5 minutes)
+
 ```bash
 python -c "
 from src.core.dependency_injection.simple_container import get_container
@@ -111,6 +121,7 @@ print(f'✅ Service layer working! Created: {sequence.name}')
 ```
 
 ### Step 4: Run Complete Demo (2 minutes)
+
 ```bash
 python demo_new_architecture.py
 # See the full new architecture in action!
@@ -119,6 +130,7 @@ python demo_new_architecture.py
 ## 🎯 What This Eliminates
 
 ### ❌ ELIMINATED: Technical Debt
+
 - **AppContext global state access** → Clean dependency injection
 - **self.mw main widget coupling** → Parameter-based components
 - **mw_size_provider() functions** → ILayoutService interface
@@ -129,6 +141,7 @@ python demo_new_architecture.py
 - **Hard-to-test components** → Dependency injection enables easy testing
 
 ### ✅ PROVIDES: Modern Architecture
+
 - **Zero global state access** - Everything through dependency injection
 - **True modularity** - Components work standalone or embedded
 - **Immutable data structures** - No accidental mutations
@@ -141,24 +154,28 @@ python demo_new_architecture.py
 ## 🔄 Migration Strategy
 
 ### Phase 1: Foundation (Week 1)
+
 1. Implement dependency injection container
 2. Define core service interfaces
 3. Create domain models
 4. Test foundation components
 
 ### Phase 2: Services (Week 2)
+
 1. Implement service layer
 2. Create component base classes
 3. Build first modern component (option picker)
 4. Test service integration
 
 ### Phase 3: Feature Migration (Weeks 3-4)
+
 1. Migrate construct tab using new architecture
 2. Migrate other tabs one by one
 3. Replace old components gradually
 4. Remove patches and workarounds
 
 ### Phase 4: Integration (Week 5)
+
 1. Integrate new architecture with main application
 2. Remove old AppContext system
 3. Clean up legacy code

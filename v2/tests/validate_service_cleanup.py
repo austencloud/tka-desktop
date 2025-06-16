@@ -25,7 +25,7 @@ def validate_service_directory_cleanup():
         "pictograph_management_service.py",
         "ui_state_management_service.py",
         "layout_management_service.py",
-        "legacy_pictograph_integration_service.py",  # Keep for Legacy/V2 bridge
+        "legacy_pictograph_integration_service.py",  # Keep for Legacy/Modern bridge
         "position_matching_service.py",  # Keep - not consolidated yet
         "__init__.py",
     }

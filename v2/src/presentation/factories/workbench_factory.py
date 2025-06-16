@@ -1,7 +1,7 @@
 from typing import Optional
 from PyQt6.QtWidgets import QWidget
 from core.dependency_injection.di_container import DIContainer
-from core.interfaces.core_services import ILayoutService
+from src.core.interfaces.core_services import ILayoutService, IUIStateManagementService
 from core.interfaces.workbench_services import (
     ISequenceWorkbenchService,
     IFullScreenService,
@@ -15,9 +15,8 @@ from application.services.core.sequence_management_service import (
 from application.services.ui.ui_state_management_service import (
     UIStateManagementService,
 )
-from application.services.old_services_before_consolidation.graph_editor_service import (
-    GraphEditorService,
-)
+from application.services.ui.full_screen_service import FullScreenService
+from application.services.graph_editor_service import GraphEditorService
 
 from presentation.components.workbench import ModernSequenceWorkbench
 
@@ -53,19 +52,27 @@ def create_modern_workbench(
 def configure_workbench_services(container: DIContainer) -> None:
     """Configure workbench services in the dependency injection container"""
 
+    # Get UI state service for services that need it
+    ui_state_service = container.resolve(IUIStateManagementService)
+
     # Register consolidated services directly
     container.register_singleton(ISequenceWorkbenchService, SequenceManagementService)
     container.register_singleton(IBeatDeletionService, SequenceManagementService)
     container.register_singleton(IDictionaryService, SequenceManagementService)
-    container.register_singleton(IFullScreenService, UIStateManagementService)
-    container.register_singleton(IGraphEditorService, GraphEditorService)
+    container.register_singleton(IFullScreenService, FullScreenService)
+
+    # Register GraphEditorService with UI state service dependency
+    graph_editor_service = GraphEditorService(ui_state_service)
+    container.register_instance(IGraphEditorService, graph_editor_service)
 
     # Note: ILayoutService should already be registered in main.py
     # Only register if not already registered to avoid overriding register_instance with register_singleton
     try:
-        container.resolve(ILayoutService)
+        layout_service = container.resolve(ILayoutService)
+
         # Don't register again - this would override the existing registration
-    except Exception:
+    except Exception as e:
+
         # Register fallback if not found
         from application.services.layout.layout_management_service import (
             LayoutManagementService,

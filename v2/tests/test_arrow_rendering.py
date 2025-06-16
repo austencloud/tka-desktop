@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script to verify arrow rendering pipeline in V2 pictograph system.
+Test script to verify arrow rendering pipeline in Modern pictograph system.
 """
 
 import sys

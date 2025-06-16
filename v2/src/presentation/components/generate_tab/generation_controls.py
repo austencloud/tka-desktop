@@ -1,8 +1,8 @@
 """
-Modern generation control components for V2 Generate Tab.
+Modern generation control components for Modern Generate Tab.
 
 These components provide clean, modern UI controls for sequence generation
-parameters, following V2's architecture patterns.
+parameters, following Modern's architecture patterns.
 """
 
 from PyQt6.QtWidgets import (

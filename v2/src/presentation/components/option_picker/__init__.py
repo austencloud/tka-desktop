@@ -1,8 +1,8 @@
 """
 Modern Option Picker Package
 
-This package contains the V2 option picker implementation that works
-directly with V2 data structures (BeatData, SequenceData) without
+This package contains the Modern option picker implementation that works
+directly with Modern data structures (BeatData, SequenceData) without
 requiring any Legacy format conversions.
 """
 

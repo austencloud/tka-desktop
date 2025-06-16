@@ -5,7 +5,7 @@ Test for Type 3 dash arrow positioning (avoiding shift arrows)
 import sys
 from pathlib import Path
 
-# Add v2 to path for imports
+# Add modern to path for imports
 v2_path = Path(__file__).parent / "src"
 if str(v2_path) not in sys.path:
     sys.path.insert(0, str(v2_path))
@@ -29,9 +29,9 @@ def test_type3_dash_arrow_positioning():
 
     # Type 3 scenario: One motion is shift (PRO), other is dash
     # Example: Theta dash (θ-) - one arrow does a shift, other does a dash
-    
+
     print("\n📍 Test: Type 3 scenario - Shift from NORTH to EAST, Dash avoids")
-    
+
     # Shift motion (PRO): NORTH → EAST (will be positioned at NORTHEAST)
     shift_motion = MotionData(
         motion_type=MotionType.PRO,
@@ -40,7 +40,7 @@ def test_type3_dash_arrow_positioning():
         end_loc=Location.EAST,
         turns=1.0,
     )
-    
+
     # Dash motion (DASH): NORTH → SOUTH (zero turns, should avoid shift location)
     dash_motion = MotionData(
         motion_type=MotionType.DASH,
@@ -55,25 +55,24 @@ def test_type3_dash_arrow_positioning():
         motion_data=shift_motion,
         color="blue",
     )
-    
+
     dash_arrow = ArrowData(
         motion_data=dash_motion,
         color="red",
     )
 
     # Create pictograph with both arrows (Type 3 scenario)
-    pictograph_data = PictographData(arrows={
-        "blue": shift_arrow,
-        "red": dash_arrow
-    })
+    pictograph_data = PictographData(arrows={"blue": shift_arrow, "red": dash_arrow})
 
     # Calculate shift arrow position (should be at NORTHEAST)
     shift_x, shift_y, shift_rotation = positioning_service.calculate_arrow_position(
         shift_arrow, pictograph_data
     )
-    
+
     shift_location = positioning_service._calculate_arrow_location(shift_motion)
-    print(f"   Shift motion: {shift_motion.start_loc.value} → {shift_motion.end_loc.value}")
+    print(
+        f"   Shift motion: {shift_motion.start_loc.value} → {shift_motion.end_loc.value}"
+    )
     print(f"   Shift arrow location: {shift_location.value}")
     print(f"   Shift position: ({shift_x:.1f}, {shift_y:.1f})")
 
@@ -81,9 +80,11 @@ def test_type3_dash_arrow_positioning():
     dash_x, dash_y, dash_rotation = positioning_service.calculate_arrow_position(
         dash_arrow, pictograph_data
     )
-    
+
     dash_location = positioning_service._calculate_arrow_location(dash_motion)
-    print(f"   Dash motion: {dash_motion.start_loc.value} → {dash_motion.end_loc.value}")
+    print(
+        f"   Dash motion: {dash_motion.start_loc.value} → {dash_motion.end_loc.value}"
+    )
     print(f"   Dash arrow location: {dash_location.value}")
     print(f"   Dash position: ({dash_x:.1f}, {dash_y:.1f})")
 
@@ -93,13 +94,13 @@ def test_type3_dash_arrow_positioning():
 
     # Test normal dash arrow (without Type 3 scenario) for comparison
     print("\n📍 Comparison: Normal dash arrow (no shift to avoid)")
-    
+
     normal_pictograph = PictographData(arrows={"red": dash_arrow})
-    
-    normal_dash_x, normal_dash_y, normal_dash_rotation = positioning_service.calculate_arrow_position(
-        dash_arrow, normal_pictograph
+
+    normal_dash_x, normal_dash_y, normal_dash_rotation = (
+        positioning_service.calculate_arrow_position(dash_arrow, normal_pictograph)
     )
-    
+
     normal_dash_location = positioning_service._calculate_arrow_location(dash_motion)
     print(f"   Normal dash location: {normal_dash_location.value}")
     print(f"   Normal dash position: ({normal_dash_x:.1f}, {normal_dash_y:.1f})")

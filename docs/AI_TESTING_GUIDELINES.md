@@ -1,4 +1,4 @@
-# AI Testing Guidelines for TKA V2
+# AI Testing Guidelines for TKA Modern
 
 ## For VS Code Copilot, GitHub Copilot, and Other AI Agents
 

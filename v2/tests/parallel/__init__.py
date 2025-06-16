@@ -3,9 +3,9 @@ TKA Parallel Testing Framework
 =============================
 
 Comprehensive parallel testing system that validates functional equivalence
-between Legacy and V2 implementations during the migration process.
+between Legacy and Modern implementations during the migration process.
 
-This framework ensures V2 maintains exact parity with Legacy's behavior while
+This framework ensures Modern maintains exact parity with Legacy's behavior while
 respecting the consolidated service architecture and preventing regressions
 in critical systems like arrow rendering.
 
@@ -26,6 +26,6 @@ __version__ = "1.0.0"
 # Test lifecycle metadata
 TEST_LIFECYCLE = "SCAFFOLDING"
 DELETE_AFTER = "Legacy deprecation complete"
-PURPOSE = "Validate Legacy/V2 functional equivalence during migration"
+PURPOSE = "Validate Legacy/Modern functional equivalence during migration"
 CREATED = "2025-06-15"
 AUTHOR = "Augment Agent"

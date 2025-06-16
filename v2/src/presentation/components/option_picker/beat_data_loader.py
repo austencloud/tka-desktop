@@ -1,6 +1,7 @@
 from typing import List, Optional, Dict, Any, Callable, TYPE_CHECKING
 from PyQt6.QtCore import QObject
 
+from application.services.data.data_conversion_service import DataConversionService
 from domain.models.core_models import BeatData
 
 if TYPE_CHECKING:
@@ -63,9 +64,6 @@ class BeatDataLoader(QObject):
             from application.services.positioning.position_matching_service import (
                 PositionMatchingService,
             )
-            from application.services.core.data_conversion_service import (
-                DataConversionService,
-            )
 
             self.position_service = PositionMatchingService()
             self.conversion_service = DataConversionService()
@@ -87,27 +85,52 @@ class BeatDataLoader(QObject):
     ) -> List[BeatData]:
         """Load motion combinations using data-driven position matching"""
 
+        print(f"\n🔧 BEAT DATA LOADER: load_motion_combinations called")
+        print(f"   Sequence data length: {len(sequence_data) if sequence_data else 0}")
+
+        if sequence_data:
+            for i, entry in enumerate(sequence_data):
+                print(
+                    f"   [{i}]: {type(entry)} - {entry.get('letter', 'N/A') if hasattr(entry, 'get') else str(entry)[:100]}..."
+                )
+
         try:
             from application.services.positioning.position_matching_service import (
                 PositionMatchingService,
-            )
-            from application.services.core.data_conversion_service import (
-                DataConversionService,
             )
 
             position_service = PositionMatchingService()
             conversion_service = DataConversionService()
 
             if not sequence_data or len(sequence_data) < 2:
+                print(
+                    "   ❌ Insufficient sequence data, falling back to sample options"
+                )
+                print(f"      - sequence_data is None: {sequence_data is None}")
+                print(
+                    f"      - sequence_data length: {len(sequence_data) if sequence_data else 0}"
+                )
                 return self._load_sample_beat_options()
 
             last_beat = sequence_data[-1]
+            print(f"   📍 Last beat data: {last_beat}")
+
             last_end_pos = self._extract_end_position(last_beat, position_service)
+            print(f"   🎯 Extracted end position: {last_end_pos}")
 
             if not last_end_pos:
+                print("   ❌ No end position found, falling back to sample options")
                 return self._load_sample_beat_options()
 
+            print(f"   🔍 Calling position_service.get_next_options({last_end_pos})")
             next_options = position_service.get_next_options(last_end_pos)
+            print(
+                f"   📊 Position service returned {len(next_options) if next_options else 0} options"
+            )
+
+            if not next_options:
+                print("   ❌ No next options found, falling back to sample options")
+                return self._load_sample_beat_options()
             if not next_options:
                 return self._load_sample_beat_options()
 
@@ -128,8 +151,7 @@ class BeatDataLoader(QObject):
                             )
                         )
                         beat_options.append(beat_data)
-                    else:
-                        # Try to use it as BeatData anyway
+                    else:  # Try to use it as BeatData anyway
                         if hasattr(option_data, "letter"):
                             beat_options.append(option_data)
                         else:
@@ -142,6 +164,10 @@ class BeatDataLoader(QObject):
             return beat_options
 
         except Exception as e:
+            print(f"   ❌ Exception in load_motion_combinations: {e}")
+            import traceback
+
+            traceback.print_exc()
             return self._load_sample_beat_options()
 
     def _extract_end_position(
@@ -211,7 +237,7 @@ class BeatDataLoader(QObject):
     def _load_sample_beat_options(self) -> List[BeatData]:
         """Load sample beat options as fallback"""
         try:
-            from application.services.old_services_before_consolidation.pictograph_dataset_service import (
+            from application.services.data.pictograph_dataset_service import (
                 PictographDatasetService,
             )
 
@@ -341,22 +367,22 @@ class BeatDataLoader(QObject):
     def refresh_options_from_v2_sequence(
         self, sequence: "SequenceData"
     ) -> List[BeatData]:
-        """PURE V2: Refresh options based on V2 SequenceData - no conversion needed!"""
+        """PURE Modern: Refresh options based on Modern SequenceData - no conversion needed!"""
         import time
 
         start_time = time.perf_counter()
 
         try:
-            # Work directly with V2 SequenceData
+            # Work directly with Modern SequenceData
             if not sequence or sequence.length == 0:
                 return self._load_sample_beat_options()
 
-            # Get the last beat directly from V2 sequence
+            # Get the last beat directly from Modern sequence
             last_beat = sequence.beats[-1] if sequence.beats else None
             if not last_beat or last_beat.is_blank:
                 return self._load_sample_beat_options()
 
-            # Extract end position directly from V2 BeatData
+            # Extract end position directly from Modern BeatData
             end_position = self._extract_v2_end_position(last_beat)
             if not end_position:
                 return self._load_sample_beat_options()
@@ -371,7 +397,7 @@ class BeatDataLoader(QObject):
 
             # Options are already BeatData objects from position service
             total_time = (time.perf_counter() - start_time) * 1000
-            print(f"⚡ PURE V2 BEAT LOADER: {total_time:.1f}ms")
+            print(f"⚡ PURE Modern BEAT LOADER: {total_time:.1f}ms")
             print(
                 f"🎯 Found {len(next_options)} options for end position: {end_position}"
             )
@@ -379,11 +405,11 @@ class BeatDataLoader(QObject):
             return next_options
 
         except Exception as e:
-            print(f"❌ Error in pure V2 option refresh: {e}")
+            print(f"❌ Error in pure Modern option refresh: {e}")
             return self._load_sample_beat_options()
 
     def _extract_v2_end_position(self, beat_data: "BeatData") -> Optional[str]:
-        """Extract end position directly from V2 BeatData"""
+        """Extract end position directly from Modern BeatData"""
         # First check metadata
         if beat_data.metadata and "end_pos" in beat_data.metadata:
             return beat_data.metadata["end_pos"]
@@ -402,7 +428,9 @@ class BeatDataLoader(QObject):
             )  # Create position key: (blue_location, red_location) where blue=left, red=right
             position_key = (blue_end, red_end)
             end_pos = self._location_to_position_map.get(position_key, "beta5")
-            print(f"🎯 Calculated V2 end_pos: {end_pos} for beat {beat_data.letter}")
+            print(
+                f"🎯 Calculated Modern end_pos: {end_pos} for beat {beat_data.letter}"
+            )
             return end_pos
 
         # Fallback

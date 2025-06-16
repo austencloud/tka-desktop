@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Kinetic Constructor v2 - Construct Tab
+Kinetic Constructor modern - Construct Tab
 
 The foundational Construct tab for the new modular architecture.
 Self-contained widget for sequence construction with start position selection
@@ -33,7 +33,7 @@ from src.presentation.demos.construct_tab_demo import ConstructTabDemo
 
 
 def main():
-    print("🔧 Starting Kinetic Constructor v2 - Construct Tab")
+    print("🔧 Starting Kinetic Constructor modern - Construct Tab")
     print("=" * 50)
 
     app = QApplication(sys.argv)

@@ -3,12 +3,12 @@
 TKA Parallel Testing Launcher
 =============================
 
-Main launcher for TKA Legacy/V2 parallel testing framework.
+Main launcher for TKA Legacy/Modern parallel testing framework.
 Located in root directory for easy access and proper import resolution.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Side-by-side Legacy/V2 testing with visual comparison
+PURPOSE: Side-by-side Legacy/Modern testing with visual comparison
 """
 
 import sys
@@ -22,7 +22,7 @@ from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer, QRect
 from PyQt6.QtGui import QScreen
 
-# Add both Legacy and V2 source paths for cross-version imports
+# Add both Legacy and Modern source paths for cross-version imports
 legacy_src_path = Path(__file__).parent / "legacy" / "src"
 v2_src_path = Path(__file__).parent / "v2" / "src"
 
@@ -54,7 +54,7 @@ class TKAParallelTestLauncher:
         """Print TKA parallel testing banner."""
         print("🚀 TKA PARALLEL TESTING FRAMEWORK")
         print("=" * 50)
-        print("Legacy/V2 Functional Equivalence Validation")
+        print("Legacy/Modern Functional Equivalence Validation")
         print("Side-by-Side Visual Testing")
         print("=" * 50)
 
@@ -122,7 +122,7 @@ class TKAParallelTestLauncher:
                             window_height,
                         )
 
-                        # V2 on physically RIGHT monitor (primary)
+                        # Modern on physically RIGHT monitor (primary)
                         self.v2_window_geometry = QRect(
                             primary_geometry.x() + margin_horizontal,
                             primary_geometry.y() + y_offset,
@@ -134,7 +134,7 @@ class TKAParallelTestLauncher:
                             f"   📍 Legacy (LEFT): {self.legacy_window_geometry.x()},{self.legacy_window_geometry.y()} ({self.legacy_window_geometry.width()}x{self.legacy_window_geometry.height()})"
                         )
                         print(
-                            f"   📍 V2 (RIGHT): {self.v2_window_geometry.x()},{self.v2_window_geometry.y()} ({self.v2_window_geometry.width()}x{self.v2_window_geometry.height()})"
+                            f"   📍 Modern (RIGHT): {self.v2_window_geometry.x()},{self.v2_window_geometry.y()} ({self.v2_window_geometry.width()}x{self.v2_window_geometry.height()})"
                         )
 
                     else:
@@ -151,7 +151,7 @@ class TKAParallelTestLauncher:
                             window_height,
                         )
 
-                        # V2 on physically RIGHT monitor (secondary)
+                        # Modern on physically RIGHT monitor (secondary)
                         self.v2_window_geometry = QRect(
                             secondary_geometry.x() + margin_horizontal,
                             secondary_geometry.y() + y_offset,
@@ -163,7 +163,7 @@ class TKAParallelTestLauncher:
                             f"   📍 Legacy (LEFT): {self.legacy_window_geometry.x()},{self.legacy_window_geometry.y()} ({self.legacy_window_geometry.width()}x{self.legacy_window_geometry.height()})"
                         )
                         print(
-                            f"   📍 V2 (RIGHT): {self.v2_window_geometry.x()},{self.v2_window_geometry.y()} ({self.v2_window_geometry.width()}x{self.v2_window_geometry.height()})"
+                            f"   📍 Modern (RIGHT): {self.v2_window_geometry.x()},{self.v2_window_geometry.y()} ({self.v2_window_geometry.width()}x{self.v2_window_geometry.height()})"
                         )
 
                     return True, "dual_monitor"
@@ -177,7 +177,7 @@ class TKAParallelTestLauncher:
                     f"   📺 Single Monitor: {primary_geometry.width()}x{primary_geometry.height()}"
                 )
 
-                # Split screen - Legacy on left half, V2 on right half
+                # Split screen - Legacy on left half, Modern on right half
                 half_width = primary_geometry.width() // 2
 
                 self.legacy_window_geometry = QRect(
@@ -247,20 +247,20 @@ class TKAParallelTestLauncher:
             return None, None
 
     async def start_v2_application(self):
-        """Start V2 application with proper positioning."""
+        """Start Modern application with proper positioning."""
         try:
-            print("🔧 Starting V2 application...")
+            print("🔧 Starting Modern application...")
 
-            # Use subprocess to start V2 application independently with parallel testing flag
+            # Use subprocess to start Modern application independently with parallel testing flag
             import subprocess
             import os
 
             # Set environment variable for parallel testing mode
             env = os.environ.copy()
             env["TKA_PARALLEL_TESTING"] = "true"
-            env["TKA_PARALLEL_MONITOR"] = "right"  # V2 always goes on right monitor
+            env["TKA_PARALLEL_MONITOR"] = "right"  # Modern always goes on right monitor
 
-            # Add window geometry for V2 (right monitor)
+            # Add window geometry for Modern (right monitor)
             if self.v2_window_geometry:
                 env["TKA_PARALLEL_GEOMETRY"] = (
                     f"{self.v2_window_geometry.x()},{self.v2_window_geometry.y()},{self.v2_window_geometry.width()},{self.v2_window_geometry.height()}"
@@ -277,14 +277,14 @@ class TKAParallelTestLauncher:
                 env=env,
             )
 
-            # Give V2 time to start and position
+            # Give Modern time to start and position
             await asyncio.sleep(6)
 
-            print("✅ V2 application started successfully")
+            print("✅ Modern application started successfully")
             return v2_process, None
 
         except Exception as e:
-            print(f"❌ Failed to start V2 application: {e}")
+            print(f"❌ Failed to start Modern application: {e}")
             import traceback
 
             traceback.print_exc()
@@ -298,7 +298,7 @@ class TKAParallelTestLauncher:
         print("=" * 40)
         print("Both applications are now running side-by-side!")
         print()
-        print("📺 Legacy and V2 should now be visible on your monitors")
+        print("📺 Legacy and Modern should now be visible on your monitors")
         print("🎯 Use this interface to coordinate your testing")
         print()
         print("Available commands:")
@@ -387,11 +387,11 @@ class TKAParallelTestLauncher:
                     else:
                         print("   ❌ Legacy application is not running")
 
-                    # Check V2 process status
+                    # Check Modern process status
                     if v2_process and v2_process.poll() is None:
-                        print("   ✅ V2 application is running")
+                        print("   ✅ Modern application is running")
                     else:
-                        print("   ❌ V2 application is not running")
+                        print("   ❌ Modern application is not running")
 
                     print(
                         "   � Use your operating system's screenshot tools for captures"
@@ -414,7 +414,7 @@ class TKAParallelTestLauncher:
                 print(f"❌ Command failed: {e}")
 
     async def run_automated_equivalence_validation(self, legacy_process, v2_process):
-        """Run automated Legacy/V2 functional equivalence validation."""
+        """Run automated Legacy/Modern functional equivalence validation."""
         print("\n🤖 AUTOMATED EQUIVALENCE VALIDATION")
         print("=" * 50)
 
@@ -466,11 +466,11 @@ class TKAParallelTestLauncher:
             return False
 
         if not v2_process or v2_process.poll() is not None:
-            print("   ❌ V2 process is not running")
+            print("   ❌ Modern process is not running")
             return False
 
         print("   ✅ Legacy process is running")
-        print("   ✅ V2 process is running")
+        print("   ✅ Modern process is running")
 
         # Wait for initialization (based on observed startup times)
         print("   ⏳ Waiting for full initialization (30 seconds)...")
@@ -542,7 +542,7 @@ class TKAParallelTestLauncher:
             ],
         }
 
-        print("   📊 Extracting V2 data...")
+        print("   📊 Extracting Modern data...")
 
         v2_data = {
             "options_count": 36,
@@ -647,7 +647,7 @@ class TKAParallelTestLauncher:
         )
         print(f"   Start: {legacy_data['start_position']}")
 
-        print("\n📈 V2 DATA:")
+        print("\n📈 Modern DATA:")
         v2_data = comparison_result["v2_data"]
         print(f"   Options: {v2_data['options_count']}")
         print(
@@ -660,7 +660,7 @@ class TKAParallelTestLauncher:
         report_filename = f"equivalence_validation_report_{timestamp}.txt"
 
         with open(report_filename, "w") as f:
-            f.write("TKA Legacy/V2 Equivalence Validation Report\n")
+            f.write("TKA Legacy/Modern Equivalence Validation Report\n")
             f.write("=" * 40 + "\n\n")
             f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
             f.write(f"Equivalence Score: {equivalence_score:.2%}\n")
@@ -697,7 +697,7 @@ class TKAParallelTestLauncher:
                 return
 
             if not v2_process or v2_process.poll() is not None:
-                print("❌ V2 process is not running")
+                print("❌ Modern process is not running")
                 return
 
             print("✅ Both processes are running")
@@ -712,9 +712,11 @@ class TKAParallelTestLauncher:
             print(
                 "   🎯 Expected Legacy Behavior: Option picker updates after beat selection"
             )
-            print("   🎯 Expected V2 Behavior: Option picker should update like Legacy")
             print(
-                "   📋 Current V2 Issue: Option picker fails to update after first beat"
+                "   🎯 Expected Modern Behavior: Option picker should update like Legacy"
+            )
+            print(
+                "   📋 Current Modern Issue: Option picker fails to update after first beat"
             )
 
             # Simulate the test workflow
@@ -726,10 +728,10 @@ class TKAParallelTestLauncher:
                 "   🎯 Expected Legacy Behavior: Clear returns to start position selection"
             )
             print(
-                "   🎯 Expected V2 Behavior: Should return to start position like Legacy"
+                "   🎯 Expected Modern Behavior: Should return to start position like Legacy"
             )
             print(
-                "   📋 Current V2 Issue: Clear only clears beats, doesn't reset start position"
+                "   📋 Current Modern Issue: Clear only clears beats, doesn't reset start position"
             )
 
             await self.simulate_sequence_clear_test()
@@ -757,12 +759,14 @@ class TKAParallelTestLauncher:
 
         print("\n📊 Expected Results:")
         print("   ✅ Legacy: Option picker updates to show valid next moves")
-        print("   ❌ V2: Option picker fails to update (ISSUE IDENTIFIED)")
+        print("   ❌ Modern: Option picker fails to update (ISSUE IDENTIFIED)")
 
         print("\n🔍 Root Cause Analysis:")
-        print("   • V2's option picker doesn't read current sequence data")
-        print("   • V2 fails to extract end position from last beat")
-        print("   • V2's position matching service not triggered after beat selection")
+        print("   • Modern's option picker doesn't read current sequence data")
+        print("   • Modern fails to extract end position from last beat")
+        print(
+            "   • Modern's position matching service not triggered after beat selection"
+        )
 
         # Simulate timing
         await asyncio.sleep(2)
@@ -780,13 +784,13 @@ class TKAParallelTestLauncher:
         print("\n📊 Expected Results:")
         print("   ✅ Legacy: Clears beats AND returns to start position selection")
         print(
-            "   ❌ V2: Clears beats but fails to reset start position (ISSUE IDENTIFIED)"
+            "   ❌ Modern: Clears beats but fails to reset start position (ISSUE IDENTIFIED)"
         )
 
         print("\n🔍 Root Cause Analysis:")
-        print("   • V2's clear function only clears beat data")
-        print("   • V2 doesn't reset the UI state to start position selection")
-        print("   • V2 leaves user in inconsistent state")
+        print("   • Modern's clear function only clears beat data")
+        print("   • Modern doesn't reset the UI state to start position selection")
+        print("   • Modern leaves user in inconsistent state")
 
         # Simulate timing
         await asyncio.sleep(2)
@@ -799,14 +803,14 @@ class TKAParallelTestLauncher:
         findings = {
             "option_picker_dynamic_updates": {
                 "status": "ISSUE CONFIRMED",
-                "description": "V2 option picker fails to update after beat selection",
+                "description": "Modern option picker fails to update after beat selection",
                 "impact": "Users cannot build sequences beyond first beat",
                 "root_cause": "Option picker not connected to sequence state changes",
                 "fix_needed": "Connect option picker to sequence modification signals",
             },
             "sequence_clear_functionality": {
                 "status": "ISSUE CONFIRMED",
-                "description": "V2 clear function doesn't return to start position selection",
+                "description": "Modern clear function doesn't return to start position selection",
                 "impact": "Users left in inconsistent state after clearing",
                 "root_cause": "Clear function only clears data, doesn't reset UI state",
                 "fix_needed": "Add UI state reset to start position selection",
@@ -827,13 +831,13 @@ class TKAParallelTestLauncher:
         print("\n🎯 ACTIONABLE DEBUGGING INFORMATION:")
         print("=" * 40)
         print("1. Option Picker Update Issue:")
-        print("   • Check V2's option picker signal connections")
+        print("   • Check Modern's option picker signal connections")
         print("   • Verify sequence_modified signal is emitted after beat selection")
         print("   • Ensure option picker listens for sequence state changes")
         print("   • Debug position matching service trigger logic")
 
         print("\n2. Sequence Clear Issue:")
-        print("   • Check V2's clear sequence implementation")
+        print("   • Check Modern's clear sequence implementation")
         print("   • Verify UI state management after clear operation")
         print("   • Ensure clear function resets to start position selection")
         print("   • Debug state transition logic in construct tab")
@@ -843,7 +847,7 @@ class TKAParallelTestLauncher:
         findings_filename = f"ui_test_findings_{timestamp}.txt"
 
         with open(findings_filename, "w") as f:
-            f.write("TKA Legacy/V2 UI Testing Findings Report\n")
+            f.write("TKA Legacy/Modern UI Testing Findings Report\n")
             f.write("=" * 40 + "\n\n")
             f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n\n")
 
@@ -893,7 +897,7 @@ class TKAParallelTestLauncher:
 
     async def wait_for_application_readiness(self):
         """Wait for both applications to fully initialize."""
-        print("   ⏳ Waiting for Legacy and V2 to complete initialization...")
+        print("   ⏳ Waiting for Legacy and Modern to complete initialization...")
         print("   📊 Monitoring for initialization completion signals...")
 
         # Wait for applications to settle after startup
@@ -904,7 +908,7 @@ class TKAParallelTestLauncher:
     async def clear_sequence_data(self):
         """Clear any existing sequence data in both applications."""
         print("   🧹 Clearing Legacy sequence data...")
-        print("   🧹 Clearing V2 sequence data...")
+        print("   🧹 Clearing Modern sequence data...")
 
         # Note: In a real implementation, this would send clear commands
         # to both applications via a communication protocol
@@ -988,11 +992,11 @@ class TKAParallelTestLauncher:
         return legacy_data
 
     async def capture_v2_arrow_data(self, letter):
-        """Capture V2 arrow position data from logs."""
+        """Capture Modern arrow position data from logs."""
         # Note: In a real implementation, this would parse the actual
         # terminal output or log files to extract arrow position data
 
-        # Simulated V2 arrow data - this is what we need to capture
+        # Simulated Modern arrow data - this is what we need to capture
         v2_data = {
             "blue_arrow": {
                 "calculated_pos": "(583.1, 316.9)",
@@ -1009,7 +1013,7 @@ class TKAParallelTestLauncher:
         }
 
         print(
-            f"   📊 V2 {letter} arrow data: Blue {v2_data['blue_arrow']['final_pos']}, Red {v2_data['red_arrow']['final_pos']}"
+            f"   📊 Modern {letter} arrow data: Blue {v2_data['blue_arrow']['final_pos']}, Red {v2_data['red_arrow']['final_pos']}"
         )
         return v2_data
 
@@ -1022,7 +1026,7 @@ class TKAParallelTestLauncher:
         report_filename = f"arrow_position_comparison_{timestamp}.txt"
 
         with open(report_filename, "w") as f:
-            f.write("TKA Legacy/V2 Arrow Position Comparison Report\n")
+            f.write("TKA Legacy/Modern Arrow Position Comparison Report\n")
             f.write("=" * 50 + "\n\n")
             f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
             f.write("Test: Letters G, H, I Arrow Positioning\n\n")
@@ -1049,8 +1053,8 @@ class TKAParallelTestLauncher:
 
                 if v2_data.get("blue_arrow"):
                     v2_blue = v2_data["blue_arrow"]["final_pos"]
-                    print(f"      V2 Final Position: {v2_blue}")
-                    f.write(f"    V2 Final Position: {v2_blue}\n")
+                    print(f"      Modern Final Position: {v2_blue}")
+                    f.write(f"    Modern Final Position: {v2_blue}\n")
 
                 # Red arrow comparison
                 print("   📕 RED ARROW:")
@@ -1063,15 +1067,15 @@ class TKAParallelTestLauncher:
 
                 if v2_data.get("red_arrow"):
                     v2_red = v2_data["red_arrow"]["final_pos"]
-                    print(f"      V2 Final Position: {v2_red}")
-                    f.write(f"    V2 Final Position: {v2_red}\n")
+                    print(f"      Modern Final Position: {v2_red}")
+                    f.write(f"    Modern Final Position: {v2_red}\n")
 
                 f.write("\n")
 
         print(f"\n💾 Arrow position report saved: {report_filename}")
         print("\n🎯 NEXT STEPS:")
-        print("   1. Review the position differences between Legacy and V2")
-        print("   2. Verify that V2 special placement logic is working")
+        print("   1. Review the position differences between Legacy and Modern")
+        print("   2. Verify that Modern special placement logic is working")
         print("   3. Check if arrow adjustments match Legacy's special placement data")
         print("   4. Investigate any significant position discrepancies")
 
@@ -1094,10 +1098,10 @@ class TKAParallelTestLauncher:
                 v2_process.terminate()
                 try:
                     v2_process.wait(timeout=5)
-                    print("✅ V2 application closed")
+                    print("✅ Modern application closed")
                 except subprocess.TimeoutExpired:
                     v2_process.kill()
-                    print("⚠️  V2 application force-killed")
+                    print("⚠️  Modern application force-killed")
 
         except Exception as e:
             print(f"⚠️  Cleanup error: {e}")
@@ -1113,7 +1117,7 @@ class TKAParallelTestLauncher:
             print("=" * 30)
             print("Checking prerequisites...")
 
-            # Check if Legacy and V2 directories exist
+            # Check if Legacy and Modern directories exist
             legacy_exists = (Path(__file__).parent / "legacy").exists()
             v2_exists = (Path(__file__).parent / "v2").exists()
 
@@ -1121,12 +1125,12 @@ class TKAParallelTestLauncher:
                 f"  {'✅' if legacy_exists else '❌'} Legacy directory: {'Found' if legacy_exists else 'Missing'}"
             )
             print(
-                f"  {'✅' if v2_exists else '❌'} V2 directory: {'Found' if v2_exists else 'Missing'}"
+                f"  {'✅' if v2_exists else '❌'} Modern directory: {'Found' if v2_exists else 'Missing'}"
             )
 
             if not legacy_exists or not v2_exists:
                 print(
-                    "\n❌ Prerequisites not met. Please ensure both Legacy and V2 directories exist."
+                    "\n❌ Prerequisites not met. Please ensure both Legacy and Modern directories exist."
                 )
                 return 1
 
@@ -1144,7 +1148,7 @@ class TKAParallelTestLauncher:
             print("\n🚀 STARTING APPLICATIONS")
             print("=" * 30)
 
-            # Start Legacy and V2 concurrently
+            # Start Legacy and Modern concurrently
             legacy_task = asyncio.create_task(self.start_legacy_application())
             v2_task = asyncio.create_task(self.start_v2_application())
 
@@ -1158,7 +1162,7 @@ class TKAParallelTestLauncher:
 
             print("\n🎉 DEPLOYMENT SUCCESSFUL!")
             print("=" * 30)
-            print("📺 Legacy and V2 applications are now running side-by-side")
+            print("📺 Legacy and Modern applications are now running side-by-side")
             print("🎮 Ready for interactive testing...")
 
             # Run interactive testing

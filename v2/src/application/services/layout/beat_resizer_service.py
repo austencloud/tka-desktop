@@ -1,7 +1,7 @@
 """
 Enhanced Beat Resizer Service
 
-Replicates Legacy's sophisticated beat sizing logic with precise
+Implements sophisticated beat sizing logic with precise
 dimension calculations and intelligent responsive behavior.
 """
 
@@ -22,7 +22,7 @@ def ensure_positive_size(size: int, min_value: int = 1) -> int:
 
 class BeatResizerService:
     """
-    Enhanced beat frame resizer with Legacy's exact sizing algorithms.
+    Enhanced beat frame resizer with validated sizing algorithms.
 
     Provides intelligent beat sizing that considers:
     - Available container space
@@ -39,7 +39,7 @@ class BeatResizerService:
         self, beat_frame: "SequenceBeatFrame", num_rows: int, num_columns: int
     ) -> int:
         """
-        Complete beat frame resize using Legacy's exact algorithm.
+        Complete beat frame resize using validated algorithm.
 
         Args:
             beat_frame: The beat frame widget
@@ -57,9 +57,9 @@ class BeatResizerService:
 
     def calculate_dimensions(self, beat_frame: "SequenceBeatFrame") -> Tuple[int, int]:
         """
-        Calculate available container dimensions using Legacy's exact logic.
+        Calculate available container dimensions using validated logic.
 
-        Legacy Logic:
+        Algorithm:
         - Takes half the main widget width
         - Subtracts button panel and scrollbar widths
         - Applies 0.8 factor for padding
@@ -73,7 +73,7 @@ class BeatResizerService:
             # Fallback to widget size
             return int(beat_frame.width() * 0.8), int(beat_frame.height() * 0.8)
 
-        # Legacy's exact calculation
+        # Validated calculation
         scrollbar_width = scroll_area.verticalScrollBar().width()
 
         # Main widget width divided by 2 (workbench takes half the screen)
@@ -82,7 +82,7 @@ class BeatResizerService:
         # Find button panel width (or estimate if not found)
         button_panel_width = self._get_button_panel_width(main_widget)
 
-        # Calculate available width with Legacy's formula
+        # Calculate available width with validated formula
         available_width = half_main_width - button_panel_width - scrollbar_width
         width = int(available_width * 0.8)
 
@@ -94,14 +94,14 @@ class BeatResizerService:
 
     def calculate_beat_size(self, width: int, height: int, num_columns: int) -> int:
         """
-        Calculate optimal beat size using Legacy's exact algorithm.
+        Calculate optimal beat size using validated algorithm.
 
-        Legacy Logic:
+        Algorithm:
         - Width constraint: available_width // num_columns
         - Height constraint: available_height // 6 (fixed ratio!)
         - Final size: min(width_constraint, height_constraint)
         """
-        # Legacy's caching for performance
+        # Caching for performance
         cache_key = (width, height, num_columns)
         if cache_key in self._size_cache:
             return self._size_cache[cache_key]
@@ -109,12 +109,12 @@ class BeatResizerService:
         if num_columns == 0:
             beat_size = 0
         else:
-            # Legacy's exact calculation - THIS IS THE KEY LOGIC!
+            # Validated calculation - THIS IS THE KEY LOGIC!
             width_constraint = int(width // num_columns)
             height_constraint = int(height // 6)  # Fixed ratio of 6!
             beat_size = min(width_constraint, height_constraint)
 
-        # Ensure positive size (Legacy's safety check)
+        # Ensure positive size (safety check)
         beat_size = ensure_positive_size(beat_size)
 
         self._size_cache[cache_key] = beat_size
@@ -122,14 +122,14 @@ class BeatResizerService:
 
     def resize_beats(self, beat_frame: "SequenceBeatFrame", beat_size: int):
         """
-        Resize beat views using Legacy's exact logic.
+        Resize beat views using validated logic.
 
-        Legacy Logic:
+        Algorithm:
         - Sets fixed size to calculated beat_size
         - Sets minimum size to beat_size - 48 for inner content
         - Applies same sizing to start position view
         """
-        # Legacy's safety check
+        # Safety check
         safe_size = ensure_positive_size(beat_size)
         min_size = ensure_positive_size(safe_size - 48)
 
@@ -140,7 +140,7 @@ class BeatResizerService:
             if hasattr(beat_view, "setMinimumSize"):
                 beat_view.setMinimumSize(min_size, min_size)
 
-        # Also resize start position view (Legacy behavior)
+        # Also resize start position view (consistent behavior)
         start_position_view = getattr(beat_frame, "_start_position_view", None)
         if start_position_view:
             start_position_view.setFixedSize(safe_size, safe_size)
@@ -149,9 +149,9 @@ class BeatResizerService:
 
     def configure_scroll_behavior(self, beat_frame: "SequenceBeatFrame", num_rows: int):
         """
-        Configure scroll bar behavior using Legacy's exact logic.
+        Configure scroll bar behavior using validated logic.
 
-        Legacy Logic:
+        Algorithm:
         - Show scrollbar if rows > 4
         - Hide scrollbar if rows <= 4
         """

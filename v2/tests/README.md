@@ -1,4 +1,4 @@
-# TKA V2 Test Suite - Lifecycle-Based Testing
+# TKA Modern Test Suite - Lifecycle-Based Testing
 
 ## 🎯 Philosophy: Tests as Temporary Scaffolding
 

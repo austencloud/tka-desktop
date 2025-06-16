@@ -1,1 +1,1 @@
-# V2 Domain Module
+# Modern Domain Module

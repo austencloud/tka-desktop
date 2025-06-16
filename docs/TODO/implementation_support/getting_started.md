@@ -114,11 +114,11 @@ def get_arrow_placement_old(self, beat):
 from src.legacy.legacy_module import old_function
 ```
 
-**Good (Clean V2):**
+**Good (Clean Modern):**
 
 ```python
 def get_arrow_placement(self, beat: BeatData) -> ArrowPlacement:
-    """Get arrow placement for beat using V2 logic."""
+    """Get arrow placement for beat using Modern logic."""
     return self.placement_service.calculate_placement(beat)
 ```
 

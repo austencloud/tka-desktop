@@ -40,12 +40,31 @@ class ModernSettingsDialog(QDialog):
         self._apply_styling()
 
     def _initialize_services(self):
-        #  TODO : Create all the services
-        self.user_service = UserProfileService(self.settings_service)
-        self.prop_service = PropTypeService(self.settings_service)
-        self.visibility_service = VisibilityService(self.settings_service)
-        self.layout_service = BeatLayoutService(self.settings_service)
-        self.export_service = ImageExportService(self.settings_service)
+        """Initialize all the tab-specific services"""
+        from src.application.services.settings.user_profile_service import (
+            UserProfileService,
+        )
+        from src.application.services.settings.prop_type_service import PropTypeService
+        from src.application.services.settings.visibility_service import (
+            VisibilityService,
+        )
+        from src.application.services.settings.beat_layout_service import (
+            BeatLayoutService,
+        )
+        from src.application.services.settings.image_export_service import (
+            ImageExportService,
+        )
+
+        # All services need the UI state service, get it from the settings service
+        ui_state_service = getattr(
+            self.settings_service, "ui_state_service", self.settings_service
+        )
+
+        self.user_service = UserProfileService(ui_state_service)
+        self.prop_service = PropTypeService(ui_state_service)
+        self.visibility_service = VisibilityService(ui_state_service)
+        self.layout_service = BeatLayoutService(ui_state_service)
+        self.export_service = ImageExportService(ui_state_service)
 
     def _setup_dialog(self):
         self.setWindowTitle("Settings")

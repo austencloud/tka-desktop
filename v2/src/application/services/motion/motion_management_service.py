@@ -506,7 +506,7 @@ class MotionManagementService(IMotionManagementService):
         prop_rot_dir = motion_data.prop_rot_dir
         location = motion_data.end_loc
 
-        # Diamond grid orientation-based rotation mapping (simplified for V2)
+        # Diamond grid orientation-based rotation mapping (simplified for Modern)
         angle_map = {
             Orientation.IN: {
                 Location.NORTH: 90,

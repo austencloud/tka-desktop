@@ -61,7 +61,7 @@ async def example_single_action_test():
         if result["success"]:
             print("✅ Action executed successfully")
             print(f"   Legacy Success: {result['legacy_result'].success}")
-            print(f"   V2 Success: {result['v2_result'].success}")
+            print(f"   Modern Success: {result['v2_result'].success}")
             print(f"   Equivalent: {result['comparison_result'].is_equivalent}")
         else:
             print(f"❌ Action failed: {result['error']}")

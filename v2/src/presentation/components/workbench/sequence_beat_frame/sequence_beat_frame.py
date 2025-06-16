@@ -1,5 +1,5 @@
 """
-Modern Beat Frame Component for V2 Sequence Workbench
+Modern Beat Frame Component for Modern Sequence Workbench
 
 This component provides the core beat grid system with dynamic layout,
 replacing Legacy's SequenceBeatFrame with modern architecture patterns.
@@ -18,7 +18,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
-from src.domain.models.core_models import SequenceData, BeatData
+from domain.models.core_models import SequenceData, BeatData
 from application.services.layout.layout_management_service import (
     LayoutManagementService,
 )
@@ -32,7 +32,7 @@ from .beat_selection_manager import BeatSelectionManager
 
 class SequenceBeatFrame(QScrollArea):
     """
-    Modern beat frame with dynamic grid layout and V2 architecture patterns.
+    Modern beat frame with dynamic grid layout and Modern architecture patterns.
 
     Replaces Legacy's SequenceBeatFrame with:
     - Dependency injection instead of global state
@@ -283,7 +283,7 @@ class SequenceBeatFrame(QScrollArea):
                 self._apply_layout(new_layout["rows"], new_layout["columns"])
 
             # CRITICAL: Always resize beats using Legacy's exact sizing logic
-            # This was missing in V2 - causing beats to be 1/8 or 1/9 instead of 1/6!
+            # This was missing in Modern - causing beats to be 1/8 or 1/9 instead of 1/6!
             self._resizer_service.resize_beat_frame(
                 self, new_layout["rows"], new_layout["columns"]
             )

@@ -61,10 +61,10 @@ class AppDefinitions:
     def all() -> List[AppDefinition]:
         return [
             AppDefinition("Legacy", "Full legacy TKA", "legacy/main.py", icon="🔧"),
-            AppDefinition("V2", "Modern TKA demo", "v2/main.py", icon="✨"),
+            AppDefinition("Modern", "Modern TKA demo", "v2/main.py", icon="✨"),
             AppDefinition(
                 "Parallel",
-                "Legacy/V2 side-by-side testing",
+                "Legacy/Modern side-by-side testing",
                 "parallel_test_launcher.py",
                 icon="🔄",
             ),

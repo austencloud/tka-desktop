@@ -1,5 +1,5 @@
 """
-End-to-end integration tests for TKA V2 workflows.
+End-to-end integration tests for TKA Modern workflows.
 
 These tests validate complete user workflows from start to finish,
 ensuring all components work together correctly.

@@ -3,7 +3,7 @@
 Data Structure Verification Script
 ==================================
 
-Comprehensive verification of Legacy/V2 data structures and access patterns
+Comprehensive verification of Legacy/Modern data structures and access patterns
 before deploying parallel testing framework.
 
 LIFECYCLE: SCAFFOLDING
@@ -24,7 +24,7 @@ sys.path.insert(0, str(parallel_test_dir))
 
 # Import with absolute paths
 from drivers.legacy_driver import LegacyApplicationDriver
-from drivers.v2_driver import V2ApplicationDriver
+from drivers.v2_driver import ModernApplicationDriver
 from comparison.result_comparer import TKADataNormalizer
 
 
@@ -122,29 +122,29 @@ def verify_legacy_data_access():
 
 
 def verify_v2_data_access():
-    """Verify V2 data access patterns work correctly."""
-    print("\n🔍 VERIFYING V2 DATA ACCESS PATTERNS")
+    """Verify Modern data access patterns work correctly."""
+    print("\n🔍 VERIFYING Modern DATA ACCESS PATTERNS")
     print("=" * 50)
 
     try:
-        # Create V2 driver
-        v2_driver = V2ApplicationDriver(Path("test_data/v2"))
+        # Create Modern driver
+        v2_driver = ModernApplicationDriver(Path("test_data/v2"))
 
-        # Test V2 startup
-        print("1. Testing V2 application startup...")
+        # Test Modern startup
+        print("1. Testing Modern application startup...")
         if v2_driver.start_application():
-            print("   ✅ V2 application started successfully")
+            print("   ✅ Modern application started successfully")
 
             # Wait for ready
             if v2_driver.wait_for_ready(timeout_ms=30000):
-                print("   ✅ V2 application ready")
+                print("   ✅ Modern application ready")
 
                 # Test data extraction
-                print("2. Testing V2 data extraction...")
+                print("2. Testing Modern data extraction...")
 
                 # Extract sequence data
                 sequence_data = v2_driver.extract_sequence_data()
-                print(f"   📊 V2 Sequence Data Structure:")
+                print(f"   📊 Modern Sequence Data Structure:")
                 print(f"      - Beat Count: {sequence_data.get('beat_count', 0)}")
                 print(f"      - Version: {sequence_data.get('version', 'Unknown')}")
                 print(
@@ -181,22 +181,22 @@ def verify_v2_data_access():
                         )
                         print(f"        * End Loc: {motion_data.get('end_loc', 'N/A')}")
 
-                print("   ✅ V2 data extraction successful")
+                print("   ✅ Modern data extraction successful")
 
             else:
-                print("   ❌ V2 application not ready")
+                print("   ❌ Modern application not ready")
                 return False
         else:
-            print("   ❌ V2 application startup failed")
+            print("   ❌ Modern application startup failed")
             return False
 
         # Cleanup
         v2_driver.stop_application()
-        print("   🧹 V2 application stopped")
+        print("   🧹 Modern application stopped")
         return True
 
     except Exception as e:
-        print(f"   ❌ V2 verification failed: {e}")
+        print(f"   ❌ Modern verification failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -230,8 +230,8 @@ def verify_data_normalization():
         for key, value in normalized_legacy.items():
             print(f"      - {key}: {value}")
 
-        # Test V2 motion data normalization
-        print("2. Testing V2 motion data normalization...")
+        # Test Modern motion data normalization
+        print("2. Testing Modern motion data normalization...")
         v2_motion_sample = {
             "motion_type": "pro",
             "prop_rot_dir": "cw",
@@ -243,21 +243,21 @@ def verify_data_normalization():
         }
 
         normalized_v2 = normalizer.normalize_v2_motion_data(v2_motion_sample)
-        print(f"   📊 V2 Motion Normalized:")
+        print(f"   📊 Modern Motion Normalized:")
         for key, value in normalized_v2.items():
             print(f"      - {key}: {value}")
 
         # Verify they match
         print("3. Testing normalization equivalence...")
         if normalized_legacy == normalized_v2:
-            print("   ✅ Legacy and V2 normalization produces identical results")
+            print("   ✅ Legacy and Modern normalization produces identical results")
         else:
-            print("   ❌ Legacy and V2 normalization differs:")
+            print("   ❌ Legacy and Modern normalization differs:")
             for key in set(normalized_legacy.keys()) | set(normalized_v2.keys()):
                 legacy_val = normalized_legacy.get(key, "MISSING")
                 v2_val = normalized_v2.get(key, "MISSING")
                 if legacy_val != v2_val:
-                    print(f"      - {key}: Legacy={legacy_val} vs V2={v2_val}")
+                    print(f"      - {key}: Legacy={legacy_val} vs Modern={v2_val}")
 
         return True
 
@@ -338,12 +338,12 @@ def main():
         print(f"⚠️  Legacy verification skipped: {e}")
         results.append(("Legacy Data Access", None))
 
-    # Verify V2 data access (requires V2 to be available)
+    # Verify Modern data access (requires Modern to be available)
     try:
-        results.append(("V2 Data Access", verify_v2_data_access()))
+        results.append(("Modern Data Access", verify_v2_data_access()))
     except Exception as e:
-        print(f"⚠️  V2 verification skipped: {e}")
-        results.append(("V2 Data Access", None))
+        print(f"⚠️  Modern verification skipped: {e}")
+        results.append(("Modern Data Access", None))
 
     # Print final results
     print("\n🎯 VERIFICATION RESULTS")

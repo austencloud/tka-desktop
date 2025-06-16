@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TKA V2 Test Runner
+TKA Modern Test Runner
 =================
 
 Advanced test execution with lifecycle-based test management.
@@ -262,7 +262,7 @@ class TestRunner:
         results = {}
         total_start = time.time()
 
-        print("🧪 TKA V2 Test Suite - Lifecycle-Based Testing")
+        print("🧪 TKA Modern Test Suite - Lifecycle-Based Testing")
         print("=" * 60)
 
         # Check test health first
@@ -411,7 +411,7 @@ class TestRunner:
 
 def main():
     """Main test runner entry point."""
-    parser = argparse.ArgumentParser(description="TKA V2 Test Runner")
+    parser = argparse.ArgumentParser(description="TKA Modern Test Runner")
     parser.add_argument(
         "categories",
         nargs="*",

@@ -49,7 +49,7 @@ class DocumentationGenerator:
 
     def generate_all(self) -> None:
         """Generate all documentation."""
-        print("📚 Generating TKA v2 Documentation...")
+        print("📚 Generating TKA modern Documentation...")
 
         # Generate API documentation
         self._generate_api_docs()
@@ -118,11 +118,11 @@ class DocumentationGenerator:
     def _generate_architecture_docs(self) -> None:
         """Generate architecture documentation."""
         content = [
-            "# TKA Desktop v2 Architecture",
+            "# TKA Desktop modern Architecture",
             "",
             "## Overview",
             "",
-            "TKA Desktop v2 follows Clean Architecture principles with clear separation of concerns:",
+            "TKA Desktop modern follows Clean Architecture principles with clear separation of concerns:",
             "",
             "```",
             "src/",
@@ -229,7 +229,7 @@ class DocumentationGenerator:
     def _generate_user_guide(self) -> None:
         """Generate user guide."""
         content = [
-            "# TKA Desktop v2 User Guide",
+            "# TKA Desktop modern User Guide",
             "",
             "## Getting Started",
             "",
@@ -250,7 +250,7 @@ class DocumentationGenerator:
             "",
             "### Command Line Interface",
             "",
-            "TKA v2 includes a powerful CLI for automation:",
+            "TKA modern includes a powerful CLI for automation:",
             "",
             "```bash",
             "# Generate API bindings",
@@ -265,7 +265,7 @@ class DocumentationGenerator:
             "",
             "### API Integration",
             "",
-            "TKA v2 provides a REST API for external integrations. See [API.md](API.md) for details.",
+            "TKA modern provides a REST API for external integrations. See [API.md](API.md) for details.",
             "",
             "### Performance Monitoring",
             "",
@@ -334,7 +334,7 @@ def main():
     """CLI entry point for documentation generation."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Generate TKA v2 documentation")
+    parser = argparse.ArgumentParser(description="Generate TKA modern documentation")
     parser.add_argument("--project-root", default=".", help="Project root directory")
     parser.add_argument("--type", choices=["all", "api", "architecture", "services", "user"],
                        default="all", help="Documentation type to generate")

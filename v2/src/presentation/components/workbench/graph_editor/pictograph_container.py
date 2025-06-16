@@ -72,7 +72,7 @@ class ModernPictographView(QGraphicsView):
         self._setup_view()
 
     def _setup_view(self):
-        # Use V2's PictographScene instead of basic QGraphicsScene
+        # Use Modern's PictographScene instead of basic QGraphicsScene
         self._pictograph_scene = PictographScene()
         self.setScene(self._pictograph_scene)
         self.setRenderHint(QPainter.RenderHint.Antialiasing)
@@ -89,7 +89,7 @@ class ModernPictographView(QGraphicsView):
             self.scene().clear()
             return
 
-        # Use V2's native pictograph scene to render the beat
+        # Use Modern's native pictograph scene to render the beat
         self._pictograph_scene.update_beat(self._current_beat)
 
         # Enable arrow selection for graph editor mode
@@ -112,7 +112,7 @@ class ModernPictographView(QGraphicsView):
                 item.setCursor(Qt.CursorShape.PointingHandCursor)
 
     def _on_arrow_clicked(self, arrow_color: str):
-        """Handle arrow click from V2 pictograph scene."""
+        """Handle arrow click from Modern pictograph scene."""
         self.arrow_clicked.emit(arrow_color)
 
     def get_selected_arrow_data(self) -> Optional[dict]:

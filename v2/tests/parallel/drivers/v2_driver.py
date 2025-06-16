@@ -1,13 +1,13 @@
 """
-V2 Application Driver
+Modern Application Driver
 ====================
 
-Driver for TKA V2 application in parallel testing.
-Interfaces with V2's consolidated service architecture and main_widget.py.
+Driver for TKA Modern application in parallel testing.
+Interfaces with Modern's consolidated service architecture and main_widget.py.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Control V2 application for parallel testing with Legacy
+PURPOSE: Control Modern application for parallel testing with Legacy
 """
 
 import sys
@@ -17,7 +17,7 @@ from typing import Dict, Any, Optional
 import logging
 import time
 
-# Add V2 source to path
+# Add Modern source to path
 v2_src_path = Path(__file__).parent.parent.parent / "src"
 if str(v2_src_path) not in sys.path:
     sys.path.insert(0, str(v2_src_path))
@@ -33,11 +33,11 @@ from ..actions import UserAction, ActionType, GridPosition, MotionTypeValue
 logger = logging.getLogger(__name__)
 
 
-class V2ApplicationDriver(BaseApplicationDriver):
-    """Driver for TKA V2 application."""
+class ModernApplicationDriver(BaseApplicationDriver):
+    """Driver for TKA Modern application."""
 
     def __init__(self, test_data_dir: Path):
-        super().__init__("V2", test_data_dir)
+        super().__init__("Modern", test_data_dir)
         self.main_window = None
         self.app = None
         self.container = None
@@ -46,10 +46,10 @@ class V2ApplicationDriver(BaseApplicationDriver):
         self.ui_state_service = None
 
     def _start_application_impl(self, **kwargs) -> bool:
-        """Start V2 application."""
+        """Start Modern application."""
         try:
-            # Import V2 components
-            from main import KineticConstructorV2
+            # Import Modern components
+            from main import KineticConstructorModern
             from infrastructure.dependency_injection.container import get_container
 
             # Create QApplication if not exists
@@ -62,7 +62,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             self.container = get_container()
 
             # Create main window
-            self.main_window = KineticConstructorV2()
+            self.main_window = KineticConstructorModern()
 
             # Get services from container
             self._initialize_services()
@@ -73,15 +73,15 @@ class V2ApplicationDriver(BaseApplicationDriver):
             # Process events to ensure initialization
             self.app.processEvents()
 
-            logger.info("V2 application started successfully")
+            logger.info("Modern application started successfully")
             return True
 
         except Exception as e:
-            logger.error(f"Failed to start V2 application: {e}")
+            logger.error(f"Failed to start Modern application: {e}")
             return False
 
     def _initialize_services(self):
-        """Initialize V2 services from container."""
+        """Initialize Modern services from container."""
         try:
             from application.services import (
                 SequenceManagementService,
@@ -95,13 +95,13 @@ class V2ApplicationDriver(BaseApplicationDriver):
             )
             self.ui_state_service = self.container.resolve(UIStateManagementService)
 
-            logger.debug("V2 services initialized successfully")
+            logger.debug("Modern services initialized successfully")
 
         except Exception as e:
-            logger.error(f"Failed to initialize V2 services: {e}")
+            logger.error(f"Failed to initialize Modern services: {e}")
 
     def _stop_application_impl(self) -> bool:
-        """Stop V2 application."""
+        """Stop Modern application."""
         try:
             if self.main_window:
                 self.main_window.close()
@@ -111,15 +111,15 @@ class V2ApplicationDriver(BaseApplicationDriver):
                 self.app.quit()
                 self.app = None
 
-            logger.info("V2 application stopped successfully")
+            logger.info("Modern application stopped successfully")
             return True
 
         except Exception as e:
-            logger.error(f"Failed to stop V2 application: {e}")
+            logger.error(f"Failed to stop Modern application: {e}")
             return False
 
     def _execute_action_impl(self, action: UserAction) -> ActionResult:
-        """Execute action on V2 application."""
+        """Execute action on Modern application."""
         try:
             if action.action_type == ActionType.SELECT_START_POSITION:
                 return self._select_start_position(action)
@@ -150,11 +150,11 @@ class V2ApplicationDriver(BaseApplicationDriver):
             )
 
     def _select_start_position(self, action: UserAction) -> ActionResult:
-        """Select start position in V2."""
+        """Select start position in Modern."""
         try:
             grid_position = action.parameters.grid_position
 
-            # Map grid position to V2 format
+            # Map grid position to Modern format
             position_map = {
                 GridPosition.ALPHA: "alpha",
                 GridPosition.BETA: "beta",
@@ -169,7 +169,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
                     error_message=f"Invalid grid position: {grid_position}",
                 )
 
-            # Use V2 service to set start position
+            # Use Modern service to set start position
             if self.sequence_service:
                 success = self.sequence_service.set_start_position(position_name)
 
@@ -185,7 +185,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return ActionResult(
                 success=False,
                 execution_time_ms=0,
-                error_message="Failed to set start position in V2",
+                error_message="Failed to set start position in Modern",
             )
 
         except Exception as e:
@@ -196,9 +196,9 @@ class V2ApplicationDriver(BaseApplicationDriver):
             )
 
     def _select_pictograph_option(self, action: UserAction) -> ActionResult:
-        """Select pictograph option in V2."""
+        """Select pictograph option in Modern."""
         try:
-            # Use V2 pictograph service to get and select options
+            # Use Modern pictograph service to get and select options
             if self.pictograph_service:
                 # Get available options
                 options = self.pictograph_service.get_available_options()
@@ -223,7 +223,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return ActionResult(
                 success=False,
                 execution_time_ms=0,
-                error_message="No pictograph options available in V2",
+                error_message="No pictograph options available in Modern",
             )
 
         except Exception as e:
@@ -234,7 +234,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             )
 
     def _add_beat(self, action: UserAction) -> ActionResult:
-        """Add beat in V2."""
+        """Add beat in Modern."""
         try:
             if self.sequence_service:
                 success = self.sequence_service.add_beat()
@@ -254,7 +254,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return ActionResult(
                 success=False,
                 execution_time_ms=0,
-                error_message="Failed to add beat in V2",
+                error_message="Failed to add beat in Modern",
             )
 
         except Exception as e:
@@ -265,7 +265,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             )
 
     def _adjust_turns(self, action: UserAction) -> ActionResult:
-        """Adjust turns in V2."""
+        """Adjust turns in Modern."""
         try:
             turns = action.parameters.turns
             beat_index = action.parameters.beat_index or -1  # Default to last beat
@@ -283,7 +283,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return ActionResult(
                 success=False,
                 execution_time_ms=0,
-                error_message="Failed to adjust turns in V2",
+                error_message="Failed to adjust turns in Modern",
             )
 
         except Exception as e:
@@ -294,7 +294,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             )
 
     def _toggle_graph_editor(self, action: UserAction) -> ActionResult:
-        """Toggle graph editor in V2."""
+        """Toggle graph editor in Modern."""
         try:
             if self.ui_state_service:
                 success = self.ui_state_service.toggle_graph_editor()
@@ -315,7 +315,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return ActionResult(
                 success=False,
                 execution_time_ms=0,
-                error_message="Failed to toggle graph editor in V2",
+                error_message="Failed to toggle graph editor in Modern",
             )
 
         except Exception as e:
@@ -326,7 +326,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             )
 
     def _clear_sequence(self, action: UserAction) -> ActionResult:
-        """Clear sequence in V2."""
+        """Clear sequence in Modern."""
         try:
             if self.sequence_service:
                 success = self.sequence_service.clear_sequence()
@@ -345,7 +345,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return ActionResult(
                 success=False,
                 execution_time_ms=0,
-                error_message="Failed to clear sequence in V2",
+                error_message="Failed to clear sequence in Modern",
             )
 
         except Exception as e:
@@ -356,7 +356,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
             )
 
     def _extract_data(self, action: UserAction) -> ActionResult:
-        """Extract current data from V2."""
+        """Extract current data from Modern."""
         try:
             sequence_data = self.extract_sequence_data()
             pictograph_data = self.extract_pictograph_data()
@@ -378,9 +378,9 @@ class V2ApplicationDriver(BaseApplicationDriver):
             )
 
     def get_current_state(self) -> ApplicationState:
-        """Get current V2 application state."""
+        """Get current Modern application state."""
         try:
-            # Update state from V2 services
+            # Update state from Modern services
             if self.sequence_service:
                 sequence_data = self.sequence_service.get_current_sequence()
                 if sequence_data:
@@ -397,24 +397,24 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return self.current_state
 
         except Exception as e:
-            logger.error(f"Failed to get V2 state: {e}")
+            logger.error(f"Failed to get Modern state: {e}")
             return self.current_state
 
     def extract_sequence_data(self) -> Dict[str, Any]:
-        """Extract sequence data from V2."""
+        """Extract sequence data from Modern."""
         try:
             if not self.sequence_service:
                 return {}
 
-            # Extract sequence data from V2 service
+            # Extract sequence data from Modern service
             sequence_data = self.sequence_service.get_current_sequence()
 
             if sequence_data:
-                # Convert V2 sequence data to standardized format
+                # Convert Modern sequence data to standardized format
                 standardized_data = {
                     "beat_count": len(sequence_data.get("beats", [])),
                     "beats": [],
-                    "version": "V2",
+                    "version": "Modern",
                     "start_position": sequence_data.get("start_position"),
                     "word": sequence_data.get("word", ""),
                 }
@@ -426,28 +426,28 @@ class V2ApplicationDriver(BaseApplicationDriver):
 
                 return standardized_data
 
-            return {"beat_count": 0, "beats": [], "version": "V2"}
+            return {"beat_count": 0, "beats": [], "version": "Modern"}
 
         except Exception as e:
-            logger.error(f"Failed to extract V2 sequence data: {e}")
+            logger.error(f"Failed to extract Modern sequence data: {e}")
             return {}
 
     def extract_pictograph_data(self, beat_index: int = -1) -> Dict[str, Any]:
-        """Extract pictograph data from V2."""
+        """Extract pictograph data from Modern."""
         try:
             if not self.pictograph_service:
                 return {}
 
-            # Extract pictograph data from V2 service
+            # Extract pictograph data from Modern service
             pictograph_data = self.pictograph_service.get_pictograph_data(beat_index)
 
             if pictograph_data:
-                # Convert V2 pictograph data to standardized format
+                # Convert Modern pictograph data to standardized format
                 standardized_data = {
                     "beat_index": beat_index,
                     "arrows": {},
                     "props": {},
-                    "version": "V2",
+                    "version": "Modern",
                     "grid_data": pictograph_data.get("grid_data", {}),
                     "letter": pictograph_data.get("letter", ""),
                 }
@@ -472,17 +472,17 @@ class V2ApplicationDriver(BaseApplicationDriver):
                 "beat_index": beat_index,
                 "arrows": {},
                 "props": {},
-                "version": "V2",
+                "version": "Modern",
             }
 
         except Exception as e:
-            logger.error(f"Failed to extract V2 pictograph data: {e}")
+            logger.error(f"Failed to extract Modern pictograph data: {e}")
             return {}
 
     def _extract_v2_beat_data(self, beat, index: int) -> Dict[str, Any]:
-        """Extract data from a V2 beat based on verified V2 BeatData structure."""
+        """Extract data from a Modern beat based on verified Modern BeatData structure."""
         try:
-            # VERIFIED: V2 uses BeatData with blue_motion/red_motion MotionData objects
+            # VERIFIED: Modern uses BeatData with blue_motion/red_motion MotionData objects
             beat_data = {
                 "index": index,
                 "letter": beat.get("letter", ""),
@@ -490,7 +490,7 @@ class V2ApplicationDriver(BaseApplicationDriver):
                 "motions": {},
             }
 
-            # VERIFIED: V2 BeatData has blue_motion/red_motion MotionData objects
+            # VERIFIED: Modern BeatData has blue_motion/red_motion MotionData objects
             blue_motion = beat.get("blue_motion")
             if blue_motion:
                 beat_data["motions"]["blue"] = self._extract_v2_motion_data(blue_motion)
@@ -502,13 +502,13 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return beat_data
 
         except Exception as e:
-            logger.error(f"Failed to extract V2 beat data: {e}")
+            logger.error(f"Failed to extract Modern beat data: {e}")
             return {"index": index, "error": str(e)}
 
     def _extract_v2_motion_data(self, motion) -> Dict[str, Any]:
-        """Extract data from a V2 motion."""
+        """Extract data from a Modern motion."""
         try:
-            # VERIFIED: V2 MotionData has to_dict() method that returns enum values as strings
+            # VERIFIED: Modern MotionData has to_dict() method that returns enum values as strings
             if hasattr(motion, "to_dict"):
                 return motion.to_dict()
             elif isinstance(motion, dict):
@@ -537,11 +537,11 @@ class V2ApplicationDriver(BaseApplicationDriver):
                 return motion_data
 
         except Exception as e:
-            logger.error(f"Failed to extract V2 motion data: {e}")
+            logger.error(f"Failed to extract Modern motion data: {e}")
             return {"error": str(e)}
 
     def _extract_v2_arrow_data(self, arrow_data) -> Dict[str, Any]:
-        """Extract data from a V2 arrow."""
+        """Extract data from a Modern arrow."""
         try:
             return {
                 "position_x": arrow_data.get("position_x", 0),
@@ -553,11 +553,11 @@ class V2ApplicationDriver(BaseApplicationDriver):
             }
 
         except Exception as e:
-            logger.error(f"Failed to extract V2 arrow data: {e}")
+            logger.error(f"Failed to extract Modern arrow data: {e}")
             return {"error": str(e)}
 
     def _extract_v2_prop_data(self, prop_data) -> Dict[str, Any]:
-        """Extract data from a V2 prop."""
+        """Extract data from a Modern prop."""
         try:
             return {
                 "position_x": prop_data.get("position_x", 0),
@@ -569,11 +569,11 @@ class V2ApplicationDriver(BaseApplicationDriver):
             }
 
         except Exception as e:
-            logger.error(f"Failed to extract V2 prop data: {e}")
+            logger.error(f"Failed to extract Modern prop data: {e}")
             return {"error": str(e)}
 
     def wait_for_ready(self, timeout_ms: int = 10000) -> bool:
-        """Wait for V2 application to be ready."""
+        """Wait for Modern application to be ready."""
         try:
             start_time = time.time()
 
@@ -589,11 +589,11 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return False
 
         except Exception as e:
-            logger.error(f"Failed to wait for V2 ready: {e}")
+            logger.error(f"Failed to wait for Modern ready: {e}")
             return False
 
     def _capture_screenshot_impl(self, filepath: str) -> bool:
-        """Capture V2 application screenshot."""
+        """Capture Modern application screenshot."""
         try:
             if self.main_window:
                 pixmap = self.main_window.grab()
@@ -601,5 +601,5 @@ class V2ApplicationDriver(BaseApplicationDriver):
             return False
 
         except Exception as e:
-            logger.error(f"Failed to capture V2 screenshot: {e}")
+            logger.error(f"Failed to capture Modern screenshot: {e}")
             return False

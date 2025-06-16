@@ -1,6 +1,6 @@
 """
-Pytest configuration for V2 tests.
-This conftest.py is placed at the v2 level to be discovered by tests in the v2 directory.
+Pytest configuration for Modern tests.
+This conftest.py is placed at the modern level to be discovered by tests in the modern directory.
 """
 
 import pytest
@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from unittest.mock import Mock
 
-# Add v2 src to path for imports
+# Add modern src to path for imports
 v2_src_path = Path(__file__).parent / "src"
 if str(v2_src_path) not in sys.path:
     sys.path.insert(0, str(v2_src_path))

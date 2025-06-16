@@ -520,7 +520,7 @@ class QualityGateRunner:
 
     def run_all_checks(self) -> bool:
         """Run all quality checks."""
-        print("🔍 Running TKA v2 Quality Gates...")
+        print("🔍 Running TKA modern Quality Gates...")
 
         # Architecture checks
         print("  📐 Checking architecture compliance...")
@@ -576,7 +576,7 @@ def main():
     """CLI entry point for quality gates."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Run TKA v2 quality gates")
+    parser = argparse.ArgumentParser(description="Run TKA modern quality gates")
     parser.add_argument("--project-root", default=".", help="Project root directory")
     parser.add_argument("--fail-on-warning", action="store_true",
                        help="Fail on warnings as well as errors")

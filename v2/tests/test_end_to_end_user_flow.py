@@ -18,7 +18,7 @@ import os
 import time
 import pytest  # Added import
 
-# Add the v2 src directory to the path
+# Add the modern src directory to the path
 v2_src_path = os.path.join(os.path.dirname(__file__), "src")
 if v2_src_path not in sys.path:
     sys.path.insert(0, v2_src_path)

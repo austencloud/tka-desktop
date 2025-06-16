@@ -1,8 +1,8 @@
-# V2 Option Selection Performance Debugging Guide
+# Modern Option Selection Performance Debugging Guide
 
 ## 🎯 Executive Summary
 
-The V2 option picker exhibits a **300-500ms delay** when loading next options after a user selection, compared to Legacy's near-instant response. The comprehensive execution pipeline analysis reveals **3 major bottlenecks** responsible for this performance issue.
+The Modern option picker exhibits a **300-500ms delay** when loading next options after a user selection, compared to Legacy's near-instant response. The comprehensive execution pipeline analysis reveals **3 major bottlenecks** responsible for this performance issue.
 
 ## 🔍 Critical Breakpoint Locations
 
@@ -25,7 +25,7 @@ The V2 option picker exhibits a **300-500ms delay** when loading next options af
    ```
 
    - **Expected Time**: 50-100ms (HIGH IMPACT)
-   - **Purpose**: Complex V2→Legacy data format conversion
+   - **Purpose**: Complex Modern→Legacy data format conversion
    - **Debug Focus**: Position calculation logic and mapping operations
 
 3. **BREAKPOINT 6** - `beat_data_loader.py:236`
@@ -60,18 +60,18 @@ The V2 option picker exhibits a **300-500ms delay** when loading next options af
 
 ### Timing Breakdown (Total: ~300-500ms)
 
-| Component                   | Time Range | Impact    | Optimization Priority |
-| --------------------------- | ---------- | --------- | --------------------- |
-| Legacy/V2 Format Conversion | 50-100ms   | 🔴 HIGH   | **Priority 1**        |
-| Data Conversion Loop        | 80-150ms   | 🔴 HIGH   | **Priority 2**        |
-| Display Manager Update      | 50-100ms   | 🔴 HIGH   | **Priority 3**        |
-| Position Calculations       | 20-50ms    | 🟡 MEDIUM | Priority 4            |
-| UI Layout Updates           | 30-60ms    | 🟡 MEDIUM | Priority 5            |
-| Signal Processing           | <10ms      | 🟢 LOW    | Priority 6            |
+| Component                       | Time Range | Impact    | Optimization Priority |
+| ------------------------------- | ---------- | --------- | --------------------- |
+| Legacy/Modern Format Conversion | 50-100ms   | 🔴 HIGH   | **Priority 1**        |
+| Data Conversion Loop            | 80-150ms   | 🔴 HIGH   | **Priority 2**        |
+| Display Manager Update          | 50-100ms   | 🔴 HIGH   | **Priority 3**        |
+| Position Calculations           | 20-50ms    | 🟡 MEDIUM | Priority 4            |
+| UI Layout Updates               | 30-60ms    | 🟡 MEDIUM | Priority 5            |
+| Signal Processing               | <10ms      | 🟢 LOW    | Priority 6            |
 
 ### Root Cause Analysis
 
-1. **Legacy/V2 Format Conversion Bottleneck**
+1. **Legacy/Modern Format Conversion Bottleneck**
 
    - **Location**: `_convert_sequence_to_legacy_format` method
    - **Issue**: Complex position mapping logic executed for every option refresh
@@ -154,7 +154,7 @@ The V2 option picker exhibits a **300-500ms delay** when loading next options af
 2. Click an option and measure total time in `_refresh_option_picker_from_sequence`
 3. If >150ms, proceed to Step 2
 
-### Step 2: Isolate Legacy/V2 Conversion
+### Step 2: Isolate Legacy/Modern Conversion
 
 1. Set breakpoint at `construct_tab_widget.py:565`
 2. Measure time in `_convert_sequence_to_legacy_format`
@@ -177,7 +177,7 @@ The V2 option picker exhibits a **300-500ms delay** when loading next options af
 ### Performance Targets
 
 - **Total Option Loading Time**: <100ms (currently 300-500ms)
-- **Legacy/V2 Conversion**: <20ms (currently 50-100ms)
+- **Legacy/Modern Conversion**: <20ms (currently 50-100ms)
 - **Data Conversion**: <30ms total (currently 80-150ms)
 - **UI Updates**: <30ms (currently 50-100ms)
 
@@ -205,4 +205,4 @@ The V2 option picker exhibits a **300-500ms delay** when loading next options af
 - [ ] Test edge cases and memory usage
 - [ ] Document final performance characteristics
 
-This debugging guide provides the exact locations and strategies needed to eliminate the half-second delay and achieve Legacy-level performance in the V2 option picker.
+This debugging guide provides the exact locations and strategies needed to eliminate the half-second delay and achieve Legacy-level performance in the Modern option picker.

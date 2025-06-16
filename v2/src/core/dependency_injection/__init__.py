@@ -1,1 +1,1 @@
-# V2 Dependency Injection Module
+# Modern Dependency Injection Module

@@ -98,7 +98,7 @@ By the end of Task 2.6:
 
 ## **🎉 Phase 2 Complete!**
 
-Congratulations! You have successfully completed Phase 2 of the TKA v2 implementation plan.
+Congratulations! You have successfully completed Phase 2 of the TKA modern implementation plan.
 
 **Achievements:**
 

@@ -1,1 +1,1 @@
-# V2 Core Serialization Module
+# Modern Core Serialization Module

@@ -1,4 +1,4 @@
-# V2 Coding Standards & Best Practices
+# Modern Coding Standards & Best Practices
 
 ## 📋 **Core Principles**
 

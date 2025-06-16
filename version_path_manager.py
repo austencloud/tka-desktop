@@ -5,7 +5,7 @@ from typing import Optional
 
 class Version(Enum):
     Legacy = "legacy"
-    V2 = "v2"
+    Modern = "v2"
 
 
 class PathManager:
@@ -19,7 +19,7 @@ class PathManager:
         filename: str,
         version: Version = Version.Legacy,
     ) -> str:
-        if version == Version.V2:
+        if version == Version.Modern:
             base_path = self.root / "data" / "arrow_placements" / grid_mode
         else:
             base_path = self.root / "data" / "arrow_placements" / grid_mode

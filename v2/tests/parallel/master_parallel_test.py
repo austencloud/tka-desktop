@@ -3,12 +3,12 @@
 Master Parallel Test Runner
 ===========================
 
-Main entry point for TKA Legacy/V2 parallel testing.
+Main entry point for TKA Legacy/Modern parallel testing.
 Provides CLI interface for running parallel tests and generating reports.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Main test runner for Legacy/V2 functional equivalence validation
+PURPOSE: Main test runner for Legacy/Modern functional equivalence validation
 
 Usage:
     python master_parallel_test.py --scenario start_position_selection
@@ -142,7 +142,7 @@ def generate_html_report(test_results, output_file: str):
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TKA Legacy/V2 Parallel Test Results</title>
+    <title>TKA Legacy/Modern Parallel Test Results</title>
     <style>
         body {{ font-family: Arial, sans-serif; margin: 20px; }}
         .header {{ background: #f0f0f0; padding: 20px; border-radius: 5px; }}
@@ -157,7 +157,7 @@ def generate_html_report(test_results, output_file: str):
 </head>
 <body>
     <div class="header">
-        <h1>TKA Legacy/V2 Parallel Test Results</h1>
+        <h1>TKA Legacy/Modern Parallel Test Results</h1>
         <p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
     </div>
 """
@@ -277,7 +277,7 @@ def save_json_results(test_results, output_file: str):
 async def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="TKA Legacy/V2 Parallel Testing Framework",
+        description="TKA Legacy/Modern Parallel Testing Framework",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -354,7 +354,7 @@ Examples:
 
     try:
         # Start applications
-        print("🔧 Starting TKA Legacy and V2 applications...")
+        print("🔧 Starting TKA Legacy and Modern applications...")
         if not await orchestrator.start_applications():
             print("❌ Failed to start applications")
             return 1

@@ -2,12 +2,12 @@
 Master Test Orchestrator
 ========================
 
-Main coordination logic for TKA Legacy/V2 parallel testing.
+Main coordination logic for TKA Legacy/Modern parallel testing.
 Executes synchronized actions across both versions and manages test lifecycle.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Orchestrate parallel testing between Legacy and V2 for functional equivalence validation
+PURPOSE: Orchestrate parallel testing between Legacy and Modern for functional equivalence validation
 """
 
 import asyncio
@@ -21,7 +21,7 @@ import uuid
 
 from .drivers import (
     LegacyApplicationDriver,
-    V2ApplicationDriver,
+    ModernApplicationDriver,
     ApplicationState,
     ActionResult,
 )
@@ -53,7 +53,7 @@ class TestExecutionResult:
     successful_actions: int = 0
     failed_actions: int = 0
 
-    # Legacy/V2 results
+    # Legacy/Modern results
     legacy_results: List[ActionResult] = field(default_factory=list)
     v2_results: List[ActionResult] = field(default_factory=list)
 
@@ -102,7 +102,7 @@ class TestConfiguration:
 
 class ParallelTestOrchestrator:
     """
-    Master orchestrator for TKA Legacy/V2 parallel testing.
+    Master orchestrator for TKA Legacy/Modern parallel testing.
 
     Coordinates execution of identical actions across both versions,
     compares results, and provides comprehensive reporting.
@@ -114,7 +114,7 @@ class ParallelTestOrchestrator:
 
         # Initialize components
         self.legacy_driver = LegacyApplicationDriver(config.test_data_dir / "legacy")
-        self.v2_driver = V2ApplicationDriver(config.test_data_dir / "v2")
+        self.v2_driver = ModernApplicationDriver(config.test_data_dir / "v2")
         self.result_comparer = ResultComparer()
         self.data_normalizer = TKADataNormalizer()
         self.scenario_provider = BasicWorkflowScenarios()
@@ -139,8 +139,10 @@ class ParallelTestOrchestrator:
             )
 
     async def start_applications(self) -> bool:
-        """Start both Legacy and V2 applications."""
-        logger.info("Starting TKA Legacy and V2 applications for parallel testing...")
+        """Start both Legacy and Modern applications."""
+        logger.info(
+            "Starting TKA Legacy and Modern applications for parallel testing..."
+        )
 
         try:
             # Start applications concurrently
@@ -154,7 +156,7 @@ class ParallelTestOrchestrator:
                 return True
             else:
                 logger.error(
-                    f"Application startup failed: Legacy={legacy_success}, V2={v2_success}"
+                    f"Application startup failed: Legacy={legacy_success}, Modern={v2_success}"
                 )
                 return False
 
@@ -182,7 +184,7 @@ class ParallelTestOrchestrator:
             return False
 
     async def _start_v2_application(self) -> bool:
-        """Start V2 application with timeout."""
+        """Start Modern application with timeout."""
         try:
             success = self.v2_driver.start_application()
             if success:
@@ -194,10 +196,10 @@ class ParallelTestOrchestrator:
                 return ready
             return False
         except asyncio.TimeoutError:
-            logger.error("V2 application startup timed out")
+            logger.error("Modern application startup timed out")
             return False
         except Exception as e:
-            logger.error(f"V2 application startup failed: {e}")
+            logger.error(f"Modern application startup failed: {e}")
             return False
 
     async def _wait_for_legacy_ready(self) -> bool:
@@ -207,7 +209,7 @@ class ParallelTestOrchestrator:
         )
 
     async def _wait_for_v2_ready(self) -> bool:
-        """Wait for V2 to be ready."""
+        """Wait for Modern to be ready."""
         return self.v2_driver.wait_for_ready(self.config.application_startup_timeout_ms)
 
     async def stop_applications(self):
@@ -233,11 +235,11 @@ class ParallelTestOrchestrator:
             logger.error(f"Error stopping Legacy: {e}")
 
     async def _stop_v2_application(self):
-        """Stop V2 application."""
+        """Stop Modern application."""
         try:
             self.v2_driver.stop_application()
         except Exception as e:
-            logger.error(f"Error stopping V2: {e}")
+            logger.error(f"Error stopping Modern: {e}")
 
     async def execute_scenario(self, scenario_name: str) -> TestExecutionResult:
         """Execute a test scenario and return results."""
@@ -306,7 +308,7 @@ class ParallelTestOrchestrator:
         return result
 
     async def _execute_parallel_action(self, action: UserAction) -> Dict[str, Any]:
-        """Execute an action on both Legacy and V2 and compare results."""
+        """Execute an action on both Legacy and Modern and compare results."""
         logger.debug(f"Executing parallel action: {action.action_type.name}")
 
         # Validate action prerequisites
@@ -386,7 +388,7 @@ class ParallelTestOrchestrator:
             )
 
     async def _execute_v2_action(self, action: UserAction) -> ActionResult:
-        """Execute action on V2 with timeout."""
+        """Execute action on Modern with timeout."""
         try:
             result = await asyncio.wait_for(
                 asyncio.to_thread(self.v2_driver.execute_action, action),
@@ -394,7 +396,7 @@ class ParallelTestOrchestrator:
             )
             return result
         except asyncio.TimeoutError:
-            logger.error(f"V2 action timed out: {action.action_type.name}")
+            logger.error(f"Modern action timed out: {action.action_type.name}")
             return ActionResult(
                 success=False,
                 execution_time_ms=self.config.action_timeout_ms,
@@ -418,7 +420,7 @@ class ParallelTestOrchestrator:
     def _compare_action_results(
         self, action: UserAction, legacy_result: ActionResult, v2_result: ActionResult
     ) -> ComparisonResult:
-        """Compare Legacy and V2 action results."""
+        """Compare Legacy and Modern action results."""
         try:
             # Convert results to comparable format
             legacy_data = self._normalize_legacy_result(legacy_result)
@@ -485,7 +487,7 @@ class ParallelTestOrchestrator:
         return normalized
 
     def _normalize_v2_result(self, result: ActionResult) -> Dict[str, Any]:
-        """Normalize V2 result for comparison."""
+        """Normalize Modern result for comparison."""
         normalized = {
             "success": result.success,
             "execution_time_ms": result.execution_time_ms,
@@ -507,7 +509,7 @@ class ParallelTestOrchestrator:
                     "beat_count": sequence_data.get("beat_count", 0),
                     "beats": normalized_beats,
                     "start_position": sequence_data.get("start_position", ""),
-                    "version": "V2",
+                    "version": "Modern",
                 }
 
             # Copy other data as-is

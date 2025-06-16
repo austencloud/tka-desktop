@@ -87,7 +87,9 @@ def test_legacy_compatibility_removal():
     print("🧪 Testing Legacy Compatibility Removal...")
 
     # Check that prop services have clean comments
-    from application.services.positioning.prop_management_service import PropManagementService
+    from application.services.positioning.prop_management_service import (
+        PropManagementService,
+    )
 
     # These should instantiate without Legacy references
     prop_service = PropManagementService()
@@ -107,7 +109,9 @@ def test_service_registrations():
         reset_container,
     )
     from core.interfaces.core_services import ILayoutService
-    from application.services.layout.layout_management_service import LayoutManagementService
+    from application.services.layout.layout_management_service import (
+        LayoutManagementService,
+    )
 
     reset_container()
     container = get_container()
@@ -116,7 +120,9 @@ def test_service_registrations():
     container.register_singleton(ILayoutService, LayoutManagementService)
     layout_service = container.resolve(ILayoutService)
 
-    assert isinstance(layout_service, LayoutManagementService), "Should resolve correctly"
+    assert isinstance(
+        layout_service, LayoutManagementService
+    ), "Should resolve correctly"
 
     # Test singleton behavior
     layout_service2 = container.resolve(ILayoutService)
@@ -186,7 +192,7 @@ def main():
     if failed == 0:
         print("🎉 All Phase 1 improvements validated successfully!")
         print("\n✅ Enhanced DI Container: Constructor injection working")
-        print("✅ Legacy Compatibility: Clean V2-only code")
+        print("✅ Legacy Compatibility: Clean Modern-only code")
         print("✅ TypeSafe Serialization: Cross-language ready")
         print("✅ Service Registrations: Backward compatible")
         print("✅ Domain Models: Fully serializable")

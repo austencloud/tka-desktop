@@ -1,7 +1,7 @@
 """
 TypeSafe Event Bus for Decoupled Component Communication
 
-Provides a type-safe, high-performance event system for V2 architecture:
+Provides a type-safe, high-performance event system for Modern architecture:
 - Type-safe event definitions with dataclasses
 - Async and sync event handling
 - Event filtering and priority handling

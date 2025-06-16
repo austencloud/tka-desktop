@@ -11,7 +11,7 @@ REPLACES AND CONSOLIDATES:
 PROVIDES:
 - Unified pictograph management interface
 - Dataset operations and querying
-- Legacy to V2 data conversion
+- V1 to Modern data conversion
 - Context-aware pictograph configuration
 - CSV data loading and pictograph creation
 """
@@ -71,11 +71,6 @@ class IPictographManagementService(ABC):
         """Search pictograph dataset with query."""
         pass
 
-    @abstractmethod
-    def convert_legacy_to_v2(self, legacy_data: Dict[str, Any]) -> PictographData:
-        """Convert Legacy pictograph data to V2 format."""
-        pass
-
 
 class PictographContext(Enum):
     """Pictograph context types."""
@@ -93,7 +88,7 @@ class PictographManagementService(IPictographManagementService):
     Provides comprehensive pictograph management including:
     - Pictograph creation and manipulation
     - Dataset management and querying
-    - Data conversion between Legacy and V2 formats
+    - Data conversion between V1 and Modern formats
     - Context-aware configuration
     - Glyph data handling
     """
@@ -117,9 +112,6 @@ class PictographManagementService(IPictographManagementService):
 
         # Glyph data
         self._glyph_mappings = self._load_glyph_mappings()
-
-        # Legacy conversion mappings
-        self._legacy_conversion_rules = self._load_legacy_conversion_rules()
 
     def create_pictograph(
         self, grid_mode: GridMode = GridMode.DIAMOND
@@ -198,45 +190,6 @@ class PictographManagementService(IPictographManagementService):
                     break
 
         return results
-
-    def convert_legacy_to_v2(self, legacy_data: Dict[str, Any]) -> PictographData:
-        """Convert Legacy pictograph data to V2 format."""
-        # Create base pictograph
-        pictograph = self.create_pictograph()
-
-        # Convert Legacy arrows to V2 format
-        arrows = {}
-
-        if "blue_arrow" in legacy_data:
-            blue_motion = self._convert_legacy_motion(legacy_data["blue_arrow"])
-            if blue_motion:
-                arrows["blue"] = ArrowData(
-                    color="blue",
-                    motion_data=blue_motion,
-                    is_visible=True,
-                )
-
-        if "red_arrow" in legacy_data:
-            red_motion = self._convert_legacy_motion(legacy_data["red_arrow"])
-            if red_motion:
-                arrows["red"] = ArrowData(
-                    color="red",
-                    motion_data=red_motion,
-                    is_visible=True,
-                )
-
-        # Convert metadata
-        metadata = {
-            "converted_from_legacy": True,
-            "original_legacy_id": legacy_data.get("id"),
-            "conversion_timestamp": str(uuid.uuid4()),
-        }
-
-        return pictograph.update(
-            arrows=arrows,
-            is_blank=len(arrows) == 0,
-            metadata=metadata,
-        )
 
     def configure_for_context(
         self, pictograph: PictographData, context: PictographContext
@@ -347,7 +300,7 @@ class PictographManagementService(IPictographManagementService):
         self, position_key: str, grid_mode: str = "diamond"
     ) -> Optional[BeatData]:
         """Get start position pictograph by position key and grid mode."""
-        # Map position keys to letters (from Legacy start position mapping)
+        # Map position keys to letters
         position_to_letter = {
             "alpha1_alpha1": "A",
             "beta5_beta5": "B",
@@ -493,54 +446,6 @@ class PictographManagementService(IPictographManagementService):
 
         return True
 
-    def _convert_legacy_motion(
-        self, legacy_motion_data: Dict[str, Any]
-    ) -> Optional[MotionData]:
-        """Convert Legacy motion data to V2 MotionData."""
-        try:
-            from domain.models.core_models import (
-                MotionType,
-                RotationDirection,
-                Location,
-            )
-
-            # Map Legacy motion types to V2 (direct mapping - same values)
-            legacy_type = legacy_motion_data.get("motion_type", "").lower()
-            motion_type_map = {
-                "pro": MotionType.PRO,
-                "anti": MotionType.ANTI,
-                "static": MotionType.STATIC,
-                "dash": MotionType.DASH,
-                "float": MotionType.FLOAT,
-            }
-
-            motion_type = motion_type_map.get(legacy_type, MotionType.PRO)
-
-            # Map rotation directions
-            legacy_rotation = legacy_motion_data.get("rotation", "").lower()
-            rotation_map = {
-                "cw": RotationDirection.CLOCKWISE,
-                "ccw": RotationDirection.COUNTER_CLOCKWISE,
-                "no_rot": RotationDirection.NO_ROTATION,
-            }
-
-            rotation = rotation_map.get(legacy_rotation, RotationDirection.CLOCKWISE)
-
-            # Map locations (simplified)
-            start_loc = Location.NORTH  # Default
-            end_loc = Location.SOUTH  # Default
-
-            return MotionData(
-                motion_type=motion_type,
-                prop_rot_dir=rotation,
-                start_loc=start_loc,
-                end_loc=end_loc,
-                turns=legacy_motion_data.get("turns", 1.0),
-            )
-
-        except Exception:
-            return None
-
     def _generate_glyph_key(self, pictograph: PictographData) -> str:
         """Generate glyph key for pictograph."""
         # Simplified glyph key generation
@@ -556,9 +461,9 @@ class PictographManagementService(IPictographManagementService):
 
     def _determine_letter_type(self, letter: str) -> Optional[LetterType]:
         """Determine the letter type from the letter string."""
-        # Letter type mapping from old glyph service
+        # Use the same letter type mapping as LetterTypeClassifier to ensure consistency
         letter_type_map = {
-            # Type 1 letters (show elemental and VTG)
+            # Type 1 letters (show elemental and VTG glyphs)
             "A": LetterType.TYPE1,
             "B": LetterType.TYPE1,
             "C": LetterType.TYPE1,
@@ -581,10 +486,32 @@ class PictographManagementService(IPictographManagementService):
             "T": LetterType.TYPE1,
             "U": LetterType.TYPE1,
             "V": LetterType.TYPE1,
-            "W": LetterType.TYPE1,
-            "X": LetterType.TYPE1,
-            "Y": LetterType.TYPE1,
-            "Z": LetterType.TYPE1,
+            # Type 2 letters (no elemental/VTG glyphs)
+            "W": LetterType.TYPE2,
+            "X": LetterType.TYPE2,
+            "Y": LetterType.TYPE2,
+            "Z": LetterType.TYPE2,
+            "Σ": LetterType.TYPE2,
+            "Δ": LetterType.TYPE2,
+            "θ": LetterType.TYPE2,
+            "Ω": LetterType.TYPE2,
+            # Type 3 letters (no elemental/VTG glyphs)
+            "W-": LetterType.TYPE3,
+            "X-": LetterType.TYPE3,
+            "Y-": LetterType.TYPE3,
+            "Z-": LetterType.TYPE3,
+            "Σ-": LetterType.TYPE3,
+            "Δ-": LetterType.TYPE3,
+            "θ-": LetterType.TYPE3,
+            "Ω-": LetterType.TYPE3,
+            # Type 4 letters (no elemental/VTG glyphs)
+            "Φ": LetterType.TYPE4,
+            "Ψ": LetterType.TYPE4,
+            "Λ": LetterType.TYPE4,
+            # Type 5 letters (no elemental/VTG glyphs)
+            "Φ-": LetterType.TYPE5,
+            "Ψ-": LetterType.TYPE5,
+            "Λ-": LetterType.TYPE5,
             # Type 6 letters (don't show positions)
             "α": LetterType.TYPE6,
             "β": LetterType.TYPE6,
@@ -710,51 +637,14 @@ class PictographManagementService(IPictographManagementService):
             "blank": "○",
         }
 
-    def _load_legacy_conversion_rules(self) -> Dict[str, Any]:
-        """Load Legacy to V2 conversion rules."""
-        return {
-            "motion_type_mappings": {
-                "pro": "pro",
-                "anti": "anti",
-                "static": "static",
-                "dash": "dash",
-                "float": "float",
-            },
-            "location_mappings": {
-                "n": "north",
-                "ne": "northeast",
-                "e": "east",
-                "se": "southeast",
-                "s": "south",
-                "sw": "southwest",
-                "w": "west",
-                "nw": "northwest",
-            },
-        }
-
     def _convert_row_to_pictograph(self, row: pd.Series) -> Optional[PictographData]:
         """Convert a CSV row to PictographData."""
         try:
             # Extract arrow data
             arrows = {}
 
-            if "blue_arrow" in row and pd.notna(row["blue_arrow"]):
-                blue_motion = self._convert_legacy_motion(eval(row["blue_arrow"]))
-                if blue_motion:
-                    arrows["blue"] = ArrowData(
-                        color="blue",
-                        motion_data=blue_motion,
-                        is_visible=True,
-                    )
-
-            if "red_arrow" in row and pd.notna(row["red_arrow"]):
-                red_motion = self._convert_legacy_motion(eval(row["red_arrow"]))
-                if red_motion:
-                    arrows["red"] = ArrowData(
-                        color="red",
-                        motion_data=red_motion,
-                        is_visible=True,
-                    )
+            # Modern native data processing - no V1 conversion needed
+            # This method should only process Modern native CSV data
 
             # Create pictograph
             pictograph = self.create_pictograph()

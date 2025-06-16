@@ -3,7 +3,7 @@ Test Dynamic Option Picker Updates - Scaffolding Test
 Expiration: 2025-01-15
 
 Tests the dynamic option picker update functionality to ensure Legacy-compatible
-continuous sequence building behavior in V2.
+continuous sequence building behavior in Modern.
 
 This test validates:
 1. Option picker refreshes after each pictograph selection
@@ -14,13 +14,17 @@ This test validates:
 
 import sys
 import os
+from typing import Any, Generator
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QCoreApplication, QTimer
 
-# Add project root to path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+# Add modern src to path
+from pathlib import Path
+
+v2_src_path = Path(__file__).parent.parent.parent / "src"
+sys.path.insert(0, str(v2_src_path))
 
 from domain.models.core_models import (
     BeatData,
@@ -30,7 +34,6 @@ from domain.models.core_models import (
     MotionType,
 )
 from presentation.components.option_picker.beat_data_loader import BeatDataLoader
-from presentation.components.option_picker import OptionPickerWidget
 from presentation.tabs.construct_tab_widget import ConstructTabWidget
 
 
@@ -38,7 +41,7 @@ class TestDynamicOptionPickerUpdates:
     """Test dynamic option picker updates for continuous sequence building"""
 
     @pytest.fixture
-    def app(self):
+    def app(self) -> Generator[QApplication | QCoreApplication | None, Any, None]:
         """Create QApplication for testing"""
         if not QApplication.instance():
             app = QApplication([])
@@ -158,7 +161,7 @@ class TestDynamicOptionPickerUpdates:
         assert all(isinstance(opt, BeatData) for opt in options)
 
     def test_sequence_to_legacy_format_conversion(self, app):
-        """Test conversion of V2 SequenceData to Legacy format"""
+        """Test conversion of Modern SequenceData to Legacy format"""
         # Create mock construct tab
         construct_tab = Mock(spec=ConstructTabWidget)
 

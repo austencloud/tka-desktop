@@ -1,8 +1,8 @@
 """
-Interface definitions for V2 Generate Tab services.
+Interface definitions for Modern Generate Tab services.
 
 These interfaces define the contracts for generation-related services,
-following V2's dependency injection and clean architecture patterns.
+following Modern's dependency injection and clean architecture patterns.
 """
 
 from __future__ import annotations

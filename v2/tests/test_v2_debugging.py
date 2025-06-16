@@ -1,7 +1,7 @@
 """
-Test V2 dimension debugging functionality.
+Test Modern dimension debugging functionality.
 
-This test validates that the V2 debugging system works correctly.
+This test validates that the Modern debugging system works correctly.
 """
 
 import sys
@@ -10,24 +10,24 @@ from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QKeyEvent
 
-# Add V2 source path
+# Add Modern source path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 v2_src_path = os.path.join(current_dir, "..", "src")
 sys.path.insert(0, v2_src_path)
 
-print(f"V2 path: {v2_src_path}")
-print(f"V2 exists: {os.path.exists(v2_src_path)}")
+print(f"Modern path: {v2_src_path}")
+print(f"Modern exists: {os.path.exists(v2_src_path)}")
 
 
 def test_v2_debugging():
-    """Test V2 pictograph debugging functionality."""
-    print("🚀 Testing V2 Debugging Functionality")
+    """Test Modern pictograph debugging functionality."""
+    print("🚀 Testing Modern Debugging Functionality")
 
     try:
         # Create QApplication
         app = QApplication(sys.argv)
 
-        # Import V2 components
+        # Import Modern components
         from presentation.components.pictograph.pictograph_component import (
             PictographComponent,
         )
@@ -77,7 +77,7 @@ def test_v2_debugging():
         widget.show()
         widget.setFocus()
 
-        print("✅ V2 pictograph created successfully")
+        print("✅ Modern pictograph created successfully")
         print("📝 Testing debug functionality...")
 
         # Test debug toggle
@@ -90,11 +90,11 @@ def test_v2_debugging():
         QTimer.singleShot(200, app.quit)
         app.exec()
 
-        print("✅ V2 debugging test completed successfully")
+        print("✅ Modern debugging test completed successfully")
         return True
 
     except Exception as e:
-        print(f"❌ V2 debugging test failed: {e}")
+        print(f"❌ Modern debugging test failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -102,8 +102,8 @@ def test_v2_debugging():
 
 
 def test_v2_key_events():
-    """Test V2 key event handling for debugging."""
-    print("\n🔑 Testing V2 Key Event Handling")
+    """Test Modern key event handling for debugging."""
+    print("\n🔑 Testing Modern Key Event Handling")
 
     try:
         app = QApplication(sys.argv)
@@ -141,8 +141,8 @@ def test_v2_key_events():
 
 
 def run_all_tests():
-    """Run all V2 debugging tests."""
-    print("🧪 Running V2 Debugging Tests")
+    """Run all Modern debugging tests."""
+    print("🧪 Running Modern Debugging Tests")
     print("=" * 50)
 
     success = True
@@ -157,9 +157,9 @@ def run_all_tests():
 
     print("\n" + "=" * 50)
     if success:
-        print("🎉 All V2 debugging tests passed!")
+        print("🎉 All Modern debugging tests passed!")
     else:
-        print("❌ Some V2 debugging tests failed")
+        print("❌ Some Modern debugging tests failed")
 
     return success
 

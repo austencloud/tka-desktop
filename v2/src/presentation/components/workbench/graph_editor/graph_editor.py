@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class GraphEditor(QFrame):
-    """Modern graph editor component following v2 architecture patterns"""
+    """Modern graph editor component following modern architecture patterns"""
 
     # Signals for communication
     beat_modified = pyqtSignal(BeatData)

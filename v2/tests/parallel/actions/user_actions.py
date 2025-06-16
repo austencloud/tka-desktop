@@ -2,12 +2,12 @@
 User Action Abstraction Layer
 ============================
 
-Standardized action system for parallel testing between Legacy and V2.
+Standardized action system for parallel testing between Legacy and Modern.
 Provides enum-based action types, parameters, expected outcomes, and validation.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Standardize user actions for Legacy/V2 comparison testing
+PURPOSE: Standardize user actions for Legacy/Modern comparison testing
 """
 
 from dataclasses import dataclass, field
@@ -149,7 +149,7 @@ class UserAction:
     Standardized user action for parallel testing.
 
     Represents a single user interaction that can be executed
-    on both Legacy and V2 for comparison testing.
+    on both Legacy and Modern for comparison testing.
     """
 
     # Core identity

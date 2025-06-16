@@ -614,7 +614,7 @@ class LegacyDataMigrator:
     """Migrate existing data to support new unified system."""
 
     def migrate_v2_to_unified(self, old_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Migrate V2 data to unified format."""
+        """Migrate Modern data to unified format."""
 
         # Add new fields with defaults
         new_data = old_data.copy()
@@ -746,8 +746,8 @@ Solution: Absolute compass orientation
   @dataclass(frozen=True)
   class RelativeOrientation:
   """Orientation relative to center point."""
-      radial: RadialOrientation  # IN, OUT
-      rotational: RotationalOrientation  # CLOCK, COUNTER, STATIC
+  radial: RadialOrientation # IN, OUT
+  rotational: RotationalOrientation # CLOCK, COUNTER, STATIC
 
 class RadialOrientation(Enum):
 IN = "in" # Toward center
@@ -2583,7 +2583,7 @@ While higher levels are exponentially complex, each level represents an achievab
 
 This documentation provides the foundation for understanding how each level builds upon previous levels while adding specific mathematical and expressive capabilities to create a comprehensive kinetic notation system.
 
-Name: **************\_**************
+Name: ******\*\*******\_******\*\*******
 Created by Austen Cloud
 v 0.5
 The

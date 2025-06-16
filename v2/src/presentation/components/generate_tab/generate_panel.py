@@ -1,8 +1,8 @@
 """
-Modern Generate Panel for V2 Generate Tab.
+Modern Generate Panel for Modern Generate Tab.
 
 This panel contains all the generation controls and orchestrates the generation workflow
-following V2's modern UI patterns and clean architecture.
+following Modern's modern UI patterns and clean architecture.
 """
 
 from PyQt6.QtWidgets import (

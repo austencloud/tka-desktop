@@ -1,5 +1,5 @@
 """
-Pytest configuration and shared fixtures for TKA V2 test suite.
+Pytest configuration and shared fixtures for TKA Modern test suite.
 """
 
 import pytest
@@ -9,7 +9,7 @@ from unittest.mock import Mock, MagicMock
 from PyQt6.QtCore import QTimer
 from hypothesis import strategies as st
 
-# Add v2 src to path for imports
+# Add modern src to path for imports
 v2_src_path = Path(__file__).parent.parent / "src"
 if str(v2_src_path) not in sys.path:
     sys.path.insert(0, str(v2_src_path))

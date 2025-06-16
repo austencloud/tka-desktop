@@ -9,7 +9,7 @@ from core.interfaces.workbench_services import (
     IDictionaryService,
 )
 from domain.models.core_models import SequenceData, BeatData
-from core.interfaces.core_services import ILayoutService
+from src.core.interfaces.core_services import ILayoutService
 from .indicator_section import WorkbenchIndicatorSection
 from .beat_frame_section import WorkbenchBeatFrameSection
 from .graph_section import WorkbenchGraphSection
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 
 class ModernSequenceWorkbench(QWidget):
-    """Modern sequence workbench component following v2 architecture patterns"""
+    """Modern sequence workbench component following modern architecture patterns"""
 
     # Signals for communication with other components
     sequence_modified = pyqtSignal(object)  # SequenceData object

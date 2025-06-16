@@ -2,7 +2,7 @@
 Start Position View Component
 
 Displays the start position in the sequence workbench beat frame,
-integrating with V2's start position picker and pictograph system.
+integrating with Modern's start position picker and pictograph system.
 """
 
 from typing import Optional
@@ -20,7 +20,7 @@ class StartPositionView(QFrame):
     Start position display widget for the sequence workbench.
 
     Shows the initial position of a sequence with pictograph rendering
-    and integrates with the V2 start position picker workflow.
+    and integrates with the Modern start position picker workflow.
     """
 
     # Signals
@@ -132,7 +132,7 @@ class StartPositionView(QFrame):
         self._update_pictograph()
 
     def _update_pictograph(self):
-        """Update pictograph display using V2 pictograph component with START text overlay"""
+        """Update pictograph display using Modern pictograph component with START text overlay"""
         if not self._pictograph_component:
             return
 

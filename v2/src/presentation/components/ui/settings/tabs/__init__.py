@@ -1,1 +1,1 @@
-# V2 Settings Tabs
+# Modern Settings Tabs

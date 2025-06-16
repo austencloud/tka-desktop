@@ -1,8 +1,8 @@
 """
-Domain models for V2 Generate Tab.
+Domain models for Modern Generate Tab.
 
 These immutable data classes represent the core business entities
-for sequence generation, following V2's clean architecture principles.
+for sequence generation, following Modern's clean architecture principles.
 """
 
 from typing import Optional, Set, List

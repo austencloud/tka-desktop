@@ -8,9 +8,7 @@ The algorithm is simple: find all pictographs where start_pos matches the target
 import pandas as pd
 from typing import Dict, List, Any, Optional
 from ..core.pictograph_management_service import PictographManagementService
-from ..data.data_conversion_service import (
-    DataConversionService,
-)
+
 from domain.models.core_models import BeatData
 
 
@@ -25,16 +23,16 @@ class PositionMatchingService:
     """
 
     def __init__(self):
-        """Initialize position matching service with V2's native dataset."""
+        """Initialize position matching service with Modern's native dataset."""
         self.pictograph_management_service = PictographManagementService()
-        self.data_conversion_service = DataConversionService()
+
         self.pictograph_dataset: Optional[Dict[str, List[Dict[str, Any]]]] = None
         self._load_dataset()
 
     def _load_dataset(self):
-        """Load dataset using V2's native pictograph management service."""
+        """Load dataset using Modern's native pictograph management service."""
         try:
-            # Get the raw CSV dataset from V2's service
+            # Get the raw CSV dataset from Modern's service
             raw_dataset = self.pictograph_management_service._load_csv_data()
 
             if raw_dataset is None or raw_dataset.empty:
@@ -108,9 +106,9 @@ class PositionMatchingService:
 
     def get_next_options(self, last_beat_end_pos: str) -> List[BeatData]:
         """
-        Legacy's exact algorithm: find all pictographs where start_pos matches.
+        Validated algorithm: find all pictographs where start_pos matches.
 
-        This is the complete algorithm from Legacy's option_getter.py lines 120-131:
+        This is the complete algorithm from the option_getter.py lines 120-131:
         ```python
         for group in self.pictograph_dataset.values():
             for item in group:
@@ -124,7 +122,7 @@ class PositionMatchingService:
         Returns:
             List of BeatData objects that can follow the given position
         """
-        print(f"\n🔍 Legacy POSITION MATCHING ANALYSIS")
+        print(f"\n🔍 POSITION MATCHING ANALYSIS")
         print(f"🎯 Searching for options with start_pos = '{last_beat_end_pos}'")
 
         if not self.pictograph_dataset:
@@ -136,7 +134,7 @@ class PositionMatchingService:
         total_items_checked = 0
         matches_found = 0
 
-        # Legacy's exact algorithm implementation
+        # Validated algorithm implementation
         for group_key, group in self.pictograph_dataset.items():
             dataset_groups_checked += 1
             for item in group:
@@ -148,9 +146,8 @@ class PositionMatchingService:
 
                     # Convert dictionary to BeatData object
                     try:
-                        beat_data = self.data_conversion_service.convert_legacy_pictograph_to_beat_data(
-                            item
-                        )
+                        # Convert dictionary to BeatData using native Modern methods
+                        beat_data = self._convert_dict_to_beat_data(item)
                         next_opts.append(beat_data)  # ← ADD TO VALID OPTIONS
                         print(
                             f"   ✅ Match {matches_found}: {letter} ({last_beat_end_pos} → {end_pos})"
@@ -177,6 +174,125 @@ class PositionMatchingService:
         print("=" * 60)
 
         return next_opts
+
+    def _convert_dict_to_beat_data(self, item: Dict[str, Any]) -> BeatData:
+        """Convert dictionary item to BeatData using actual motion data from the dictionary."""
+        from domain.models.core_models import (
+            MotionData,
+            MotionType,
+            Location,
+            RotationDirection,
+        )
+
+        # Extract basic data
+        letter = item.get("letter", "")
+
+        # Extract actual motion data from the dictionary
+        blue_attrs = item.get("blue_attributes", {})
+        red_attrs = item.get("red_attributes", {})
+
+        # Convert blue motion
+        blue_motion = MotionData(
+            motion_type=self._parse_motion_type(
+                blue_attrs.get("motion_type", "static")
+            ),
+            prop_rot_dir=self._parse_rotation_direction(
+                blue_attrs.get("prop_rot_dir", "no_rot")
+            ),
+            start_loc=self._parse_location(blue_attrs.get("start_loc", "s")),
+            end_loc=self._parse_location(blue_attrs.get("end_loc", "s")),
+            turns=float(blue_attrs.get("turns", 0.0)),
+            start_ori=blue_attrs.get("start_ori", "in"),
+            end_ori=blue_attrs.get("end_ori", "in"),
+        )
+
+        # Convert red motion
+        red_motion = MotionData(
+            motion_type=self._parse_motion_type(red_attrs.get("motion_type", "static")),
+            prop_rot_dir=self._parse_rotation_direction(
+                red_attrs.get("prop_rot_dir", "no_rot")
+            ),
+            start_loc=self._parse_location(red_attrs.get("start_loc", "s")),
+            end_loc=self._parse_location(red_attrs.get("end_loc", "s")),
+            turns=float(red_attrs.get("turns", 0.0)),
+            start_ori=red_attrs.get("start_ori", "in"),
+            end_ori=red_attrs.get("end_ori", "in"),
+        )
+
+        # Create initial BeatData object with position info in metadata
+        beat_data = BeatData(
+            beat_number=1,
+            letter=letter,
+            blue_motion=blue_motion,
+            red_motion=red_motion,
+            metadata={
+                "start_pos": item.get("start_pos", "unknown"),
+                "end_pos": item.get("end_pos", "unknown"),
+            },
+        )
+
+        # Generate glyph data using the glyph data service
+        glyph_data = self._generate_glyph_data(beat_data)
+
+        # Return final BeatData object with glyph data
+        return BeatData(
+            beat_number=1,
+            letter=letter,
+            blue_motion=blue_motion,
+            red_motion=red_motion,
+            glyph_data=glyph_data,
+            metadata={
+                "start_pos": item.get("start_pos", "unknown"),
+                "end_pos": item.get("end_pos", "unknown"),
+            },
+        )
+
+    def _generate_glyph_data(self, beat_data: "BeatData") -> Optional["GlyphData"]:
+        """Generate glyph data for beat data using the glyph data service."""
+        from application.services.data.glyph_data_service import GlyphDataService
+
+        glyph_service = GlyphDataService()
+        return glyph_service.determine_glyph_data(beat_data)
+
+    def _parse_motion_type(self, motion_type_str: str) -> "MotionType":
+        """Parse motion type string to MotionType enum."""
+        from domain.models.core_models import MotionType
+
+        motion_type_map = {
+            "pro": MotionType.PRO,
+            "anti": MotionType.ANTI,
+            "static": MotionType.STATIC,
+            "dash": MotionType.DASH,
+            "float": MotionType.FLOAT,
+        }
+        return motion_type_map.get(motion_type_str.lower(), MotionType.STATIC)
+
+    def _parse_rotation_direction(self, rot_dir_str: str) -> "RotationDirection":
+        """Parse rotation direction string to RotationDirection enum."""
+        from domain.models.core_models import RotationDirection
+
+        rot_dir_map = {
+            "cw": RotationDirection.CLOCKWISE,
+            "ccw": RotationDirection.COUNTER_CLOCKWISE,
+            "no_rot": RotationDirection.NO_ROTATION,
+        }
+        return rot_dir_map.get(rot_dir_str.lower(), RotationDirection.NO_ROTATION)
+
+    def _parse_location(self, location_str: str) -> "Location":
+        """Parse location string to Location enum."""
+        from domain.models.core_models import Location
+
+        location_map = {
+            "n": Location.NORTH,
+            "ne": Location.NORTHEAST,
+            "e": Location.EAST,
+            "se": Location.SOUTHEAST,
+            "s": Location.SOUTH,
+            "sw": Location.SOUTHWEST,
+            "w": Location.WEST,
+            "nw": Location.NORTHWEST,
+        }
+        return location_map.get(location_str.lower(), Location.SOUTH)
 
     def get_alpha1_options(self) -> List[BeatData]:
         """

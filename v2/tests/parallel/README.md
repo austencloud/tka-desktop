@@ -1,14 +1,14 @@
 # TKA Parallel Testing Framework
 
-Comprehensive parallel testing system that validates functional equivalence between TKA Legacy and V2 implementations during the migration process.
+Comprehensive parallel testing system that validates functional equivalence between TKA Legacy and Modern implementations during the migration process.
 
 ## Overview
 
-This framework executes identical user actions simultaneously on both Legacy and V2 applications and compares results to ensure V2 maintains exact parity with Legacy's behavior while respecting the existing consolidated service architecture.
+This framework executes identical user actions simultaneously on both Legacy and Modern applications and compares results to ensure Modern maintains exact parity with Legacy's behavior while respecting the existing consolidated service architecture.
 
 **Lifecycle**: SCAFFOLDING  
 **Delete After**: Legacy deprecation complete  
-**Purpose**: Validate Legacy/V2 functional equivalence during migration
+**Purpose**: Validate Legacy/Modern functional equivalence during migration
 
 ## Architecture
 
@@ -22,7 +22,7 @@ tests/parallel/
 ├── drivers/
 │   ├── driver_base.py             # Common driver interface
 │   ├── legacy_driver.py              # Legacy-specific test driver
-│   └── v2_driver.py              # V2-specific test driver
+│   └── v2_driver.py              # Modern-specific test driver
 ├── comparison/
 │   └── result_comparer.py        # Deep comparison engine
 ├── scenarios/
@@ -34,7 +34,7 @@ tests/parallel/
 
 ### 🎯 Action Mirroring System
 
-- Executes synchronized actions across both Legacy and V2 applications
+- Executes synchronized actions across both Legacy and Modern applications
 - Handles timing differences and state synchronization
 - Provides rollback capabilities for failed test scenarios
 
@@ -42,13 +42,13 @@ tests/parallel/
 
 - **Sequence Data Comparison**: Beat count, motion positions, turn values with exact matching
 - **Pictograph Data Comparison**: SVG file paths, arrow positioning, motion-type-specific rendering
-- **Arrow Rendering Validation**: Ensures V2 correctly loads motion-type-specific SVG files
+- **Arrow Rendering Validation**: Ensures Modern correctly loads motion-type-specific SVG files
 - **Numeric Tolerance**: Floating-point comparisons with ±0.001 precision for turn values
 
 ### 📊 Comprehensive Reporting
 
 - Step-by-step action execution results with visual pass/fail indicators
-- Side-by-side comparison views for Legacy vs V2 outputs
+- Side-by-side comparison views for Legacy vs Modern outputs
 - Detailed difference breakdowns with exact field-level mismatches
 - HTML reports with actionable debugging information
 
@@ -58,14 +58,14 @@ tests/parallel/
 
 Based on codebase analysis, the framework handles:
 
-- **Legacy → V2 Motion Types**: `shift` → `pro`, direct mappings for `anti`, `dash`, `static`, `float`
+- **Legacy → Modern Motion Types**: `shift` → `pro`, direct mappings for `anti`, `dash`, `static`, `float`
 - **Field Names**: Both versions use `prop_rot_dir` (no mapping needed)
 - **Turn Values**: Special handling for float motion (`"fl"` → `-0.5`)
 
 ### Data Extraction Patterns
 
 - **Legacy**: Extracts from `beat.state.pictograph_data` with `blue_attributes`/`red_attributes` structure
-- **V2**: Uses `BeatData` with `blue_motion`/`red_motion` MotionData objects
+- **Modern**: Uses `BeatData` with `blue_motion`/`red_motion` MotionData objects
 - **Normalization**: Converts enum values to strings for comparison
 
 ## Quick Start
@@ -73,7 +73,7 @@ Based on codebase analysis, the framework handles:
 ### Prerequisites
 
 - Python 3.8+
-- TKA Legacy and V2 source code available
+- TKA Legacy and Modern source code available
 - PyQt6 installed
 
 ### Basic Usage
@@ -159,7 +159,7 @@ python master_parallel_test.py --all --verbose --no-screenshots
 ### Phase 1 (Weeks 1-2): Infrastructure & Single Action
 
 - ✅ Core action abstraction layer
-- ✅ Legacy/V2 application drivers
+- ✅ Legacy/Modern application drivers
 - ✅ Basic comparison framework
 - ✅ Single action (start position) working reliably
 

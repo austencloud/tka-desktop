@@ -1,7 +1,7 @@
 """
-Automated comparison testing for Legacy vs V2 pictograph dimensions.
+Automated comparison testing for Legacy vs Modern pictograph dimensions.
 
-This test creates side-by-side renderings of identical pictographs in both Legacy and V2
+This test creates side-by-side renderings of identical pictographs in both Legacy and Modern
 and compares their dimensions to identify discrepancies.
 """
 
@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLa
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QPixmap, QPainter
 
-# Add paths for both Legacy and V2
+# Add paths for both Legacy and Modern
 current_dir = os.path.dirname(os.path.abspath(__file__))
 legacy_src_path = os.path.join(current_dir, "..", "..", "legacy", "src")
 v2_src_path = os.path.join(current_dir, "..", "src")
@@ -22,14 +22,14 @@ sys.path.insert(0, legacy_src_path)
 sys.path.insert(0, v2_src_path)
 
 print(f"Legacy path: {legacy_src_path}")
-print(f"V2 path: {v2_src_path}")
+print(f"Modern path: {v2_src_path}")
 print(f"Legacy exists: {os.path.exists(legacy_src_path)}")
-print(f"V2 exists: {os.path.exists(v2_src_path)}")
+print(f"Modern exists: {os.path.exists(v2_src_path)}")
 
 
 @dataclass
 class DimensionComparison:
-    """Results of comparing Legacy and V2 pictograph dimensions."""
+    """Results of comparing Legacy and Modern pictograph dimensions."""
 
     legacy_component_size: Tuple[int, int]
     v2_component_size: Tuple[int, int]
@@ -62,7 +62,7 @@ class DimensionComparison:
 
 
 class PictographComparisonTest:
-    """Automated testing framework for comparing Legacy and V2 pictograph dimensions."""
+    """Automated testing framework for comparing Legacy and Modern pictograph dimensions."""
 
     def __init__(self):
         self.app = None
@@ -71,7 +71,7 @@ class PictographComparisonTest:
         self.comparison_widget = None
 
     def setup_test_environment(self) -> bool:
-        """Setup the test environment with both Legacy and V2 components."""
+        """Setup the test environment with both Legacy and Modern components."""
         try:
             # Create QApplication if it doesn't exist
             if not QApplication.instance():
@@ -85,7 +85,7 @@ class PictographComparisonTest:
                 BasePictographView,
             )
 
-            # Import V2 components
+            # Import Modern components
             from presentation.components.pictograph.pictograph_component import (
                 PictographComponent,
             )
@@ -101,7 +101,7 @@ class PictographComparisonTest:
             self.legacy_view = BasePictographView(self.legacy_pictograph)
             self.legacy_view.setFixedSize(400, 400)
 
-            # Create V2 pictograph
+            # Create Modern pictograph
             self.v2_pictograph = PictographComponent()
             self.v2_pictograph.setFixedSize(400, 400)
 
@@ -153,9 +153,9 @@ class PictographComparisonTest:
             return None
 
     def update_pictographs_with_test_data(self, beat_data: Any) -> bool:
-        """Update both Legacy and V2 pictographs with the same test data."""
+        """Update both Legacy and Modern pictographs with the same test data."""
         try:
-            # Update V2 pictograph
+            # Update Modern pictograph
             self.v2_pictograph.update_from_beat(beat_data)
 
             # Update Legacy pictograph (convert beat_data to Legacy format)
@@ -170,7 +170,7 @@ class PictographComparisonTest:
             return False
 
     def _convert_beat_data_to_legacy_format(self, beat_data: Any) -> Dict[str, Any]:
-        """Convert V2 BeatData to Legacy pictograph data format."""
+        """Convert Modern BeatData to Legacy pictograph data format."""
         # This is a simplified conversion - in a real test, this would need
         # to be more comprehensive to match Legacy's exact data structure
         return {
@@ -220,7 +220,7 @@ class PictographComparisonTest:
                 legacy_scene_size[1] * legacy_scale[1],
             )
 
-            # Capture V2 dimensions
+            # Capture Modern dimensions
             v2_component_size = (
                 self.v2_pictograph.size().width(),
                 self.v2_pictograph.size().height(),
@@ -271,7 +271,7 @@ class PictographComparisonTest:
         return None
 
     def _get_v2_tka_dimensions(self) -> Optional[Tuple[float, float]]:
-        """Get V2 TKA glyph dimensions."""
+        """Get Modern TKA glyph dimensions."""
         try:
             if self.v2_pictograph.scene:
                 for item in self.v2_pictograph.scene.items():
@@ -294,7 +294,7 @@ class PictographComparisonTest:
             f"   Legacy: {comparison.legacy_component_size[0]}x{comparison.legacy_component_size[1]}"
         )
         print(
-            f"   V2: {comparison.v2_component_size[0]}x{comparison.v2_component_size[1]}"
+            f"   Modern: {comparison.v2_component_size[0]}x{comparison.v2_component_size[1]}"
         )
 
         print(f"\n📐 SCENE SIZES:")
@@ -302,21 +302,21 @@ class PictographComparisonTest:
             f"   Legacy: {comparison.legacy_scene_size[0]:.1f}x{comparison.legacy_scene_size[1]:.1f}"
         )
         print(
-            f"   V2: {comparison.v2_scene_size[0]:.1f}x{comparison.v2_scene_size[1]:.1f}"
+            f"   Modern: {comparison.v2_scene_size[0]:.1f}x{comparison.v2_scene_size[1]:.1f}"
         )
 
         print(f"\n📐 VIEW SCALES:")
         print(
             f"   Legacy: {comparison.legacy_scale[0]:.4f}x{comparison.legacy_scale[1]:.4f}"
         )
-        print(f"   V2: {comparison.v2_scale[0]:.4f}x{comparison.v2_scale[1]:.4f}")
+        print(f"   Modern: {comparison.v2_scale[0]:.4f}x{comparison.v2_scale[1]:.4f}")
 
         print(f"\n📐 EFFECTIVE SIZES:")
         print(
             f"   Legacy: {comparison.legacy_effective_size[0]:.1f}x{comparison.legacy_effective_size[1]:.1f}"
         )
         print(
-            f"   V2: {comparison.v2_effective_size[0]:.1f}x{comparison.v2_effective_size[1]:.1f}"
+            f"   Modern: {comparison.v2_effective_size[0]:.1f}x{comparison.v2_effective_size[1]:.1f}"
         )
 
         size_diff = comparison.size_difference_percentage()
@@ -328,7 +328,7 @@ class PictographComparisonTest:
                 f"   Legacy: {comparison.legacy_tka_size[0]:.1f}x{comparison.legacy_tka_size[1]:.1f}"
             )
             print(
-                f"   V2: {comparison.v2_tka_size[0]:.1f}x{comparison.v2_tka_size[1]:.1f}"
+                f"   Modern: {comparison.v2_tka_size[0]:.1f}x{comparison.v2_tka_size[1]:.1f}"
             )
 
             tka_diff = comparison.tka_size_difference_percentage()

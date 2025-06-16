@@ -13,7 +13,7 @@ class LetterTypeClassifier:
     Legacy-compatible letter type classifier for option picker sectional assignment.
 
     This classifier uses Legacy's exact letter type definitions to ensure identical
-    sectional assignment behavior in V2's option picker.
+    sectional assignment behavior in Modern's option picker.
     """
 
     # Legacy's exact letter type classifications from letter_condition_mappings.py

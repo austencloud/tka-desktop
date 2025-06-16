@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Debug script to test V2 special placement service implementation.
+Debug script to test Modern special placement service implementation.
 
 This script will:
 1. Test loading of special placement JSON configuration data
@@ -16,13 +16,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
 
 
 def debug_special_placement_service():
-    """Debug V2 special placement service implementation."""
-    print("🔍 DEBUGGING V2 SPECIAL PLACEMENT SERVICE")
+    """Debug Modern special placement service implementation."""
+    print("🔍 DEBUGGING Modern SPECIAL PLACEMENT SERVICE")
     print("=" * 60)
 
     try:
-        # Import V2 special placement service
-        from application.services.special_placement_service import (
+        # Import Modern special placement service
+        from application.services.positioning.special_placement_service import (
             SpecialPlacementService,
         )
 

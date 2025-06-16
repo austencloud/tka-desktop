@@ -8,7 +8,7 @@ Ensures 100% confidence before running parallel tests.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Safe launcher for Legacy/V2 parallel testing with verification
+PURPOSE: Safe launcher for Legacy/Modern parallel testing with verification
 """
 
 import sys
@@ -21,7 +21,7 @@ def print_banner():
     """Print TKA parallel testing banner."""
     print("🚀 TKA PARALLEL TESTING FRAMEWORK")
     print("=" * 50)
-    print("Legacy/V2 Functional Equivalence Validation")
+    print("Legacy/Modern Functional Equivalence Validation")
     print("Side-by-Side Visual Testing")
     print("=" * 50)
 
@@ -65,7 +65,7 @@ async def run_deployment():
     """Run side-by-side deployment."""
     print("\n🚀 PHASE 2: SIDE-BY-SIDE DEPLOYMENT")
     print("=" * 40)
-    print("Deploying Legacy and V2 applications for visual testing...")
+    print("Deploying Legacy and Modern applications for visual testing...")
 
     try:
         # Import and run deployment
@@ -94,7 +94,7 @@ def show_pre_deployment_checklist():
     print("=" * 30)
     print("Before running parallel tests, ensure:")
     print("  ✅ Legacy TKA application is available and functional")
-    print("  ✅ V2 TKA application is available and functional")
+    print("  ✅ Modern TKA application is available and functional")
     print("  ✅ Both applications can start without errors")
     print("  ✅ Monitor configuration supports side-by-side viewing")
     print("  ✅ No other TKA instances are running")
@@ -209,12 +209,12 @@ def show_usage():
     print()
     print("This launcher will:")
     print("  1. Verify data structure accuracy (100% confidence)")
-    print("  2. Deploy Legacy and V2 applications side-by-side")
+    print("  2. Deploy Legacy and Modern applications side-by-side")
     print("  3. Provide interactive testing interface")
     print()
     print("Requirements:")
     print("  - TKA Legacy application available")
-    print("  - TKA V2 application available")
+    print("  - TKA Modern application available")
     print("  - PyQt6 installed")
     print("  - Dual monitor setup (recommended)")
     print()

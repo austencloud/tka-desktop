@@ -206,7 +206,7 @@ class TestMigrator:
             "unknown": [],
         }
 
-        # Find all test files in the v2 directory
+        # Find all test files in the modern directory
         test_files = []
 
         # Root level test files

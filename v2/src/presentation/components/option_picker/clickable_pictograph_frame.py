@@ -82,7 +82,7 @@ class ClickablePictographFrame(QFrame):
         try:
             # CRITICAL FIX: Set appropriate scaling context for option picker
             # This prevents the over-scaling issue seen in the option picker
-            from application.services.context_aware_scaling_service import (
+            from application.services.ui.context_aware_scaling_service import (
                 ScalingContext,
             )
 
@@ -101,7 +101,7 @@ class ClickablePictographFrame(QFrame):
         except Exception as e:
             print(f"⚠️  Failed to configure Option Picker context: {e}")
             # Fallback: enable borders with letter type colors and set scaling context
-            from application.services.context_aware_scaling_service import (
+            from application.services.ui.context_aware_scaling_service import (
                 ScalingContext,
             )
 

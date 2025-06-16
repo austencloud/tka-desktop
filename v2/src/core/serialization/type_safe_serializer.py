@@ -1,5 +1,5 @@
 """
-TypeSafe Serialization for V2 Kinetic Constructor
+TypeSafe Serialization for Modern Kinetic Constructor
 
 Ensures data integrity for cross-language communication and provides
 validation for all domain model serialization operations.

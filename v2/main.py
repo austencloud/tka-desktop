@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Kinetic Constructor v2 - Main Application Entry Point
+Kinetic Constructor modern - Main Application Entry Point
 
 Modern modular architecture with dependency injection and clean separation of concerns.
 """
@@ -40,7 +40,7 @@ from src.presentation.widgets.background_widget import MainBackgroundWidget
 from src.presentation.widgets.splash_screen import SplashScreen
 
 
-class KineticConstructorV2(QMainWindow):
+class KineticConstructorModern(QMainWindow):
     def __init__(
         self,
         splash_screen=None,
@@ -55,7 +55,7 @@ class KineticConstructorV2(QMainWindow):
         self.parallel_geometry = parallel_geometry
 
         if parallel_mode:
-            self.setWindowTitle("TKA V2 - Parallel Testing")
+            self.setWindowTitle("TKA Modern - Parallel Testing")
         else:
             self.setWindowTitle("🚀 Kinetic Constructor v2")
 
@@ -73,11 +73,9 @@ class KineticConstructorV2(QMainWindow):
         layout_management_service = LayoutManagementService()
         self.container.register_instance(
             ILayoutManagementService, layout_management_service
-        )
-        # Register the same service instance for ILayoutService interface
-        from core.interfaces.core_services import ILayoutService
-
+        )  # Register the same service instance for ILayoutService interface
         self.container.register_instance(ILayoutService, layout_management_service)
+
         self.container.register_singleton(
             IUIStateManagementService, UIStateManagementService
         )
@@ -89,11 +87,10 @@ class KineticConstructorV2(QMainWindow):
         self._register_layout_services()
 
         # Register new focused pictograph services
-        self._register_pictograph_services()
-
-        # Get UI state service for settings functionality
+        self._register_pictograph_services()  # Get UI state service for settings functionality
         self.ui_state_service = self.container.resolve(IUIStateManagementService)
 
+        # Configure workbench services after UI state service is available
         configure_workbench_services(self.container)
 
         if self.splash:
@@ -211,7 +208,7 @@ class KineticConstructorV2(QMainWindow):
                 x, y, width, height = map(int, self.parallel_geometry.split(","))
                 self.setGeometry(x, y, width, height)
                 self.setMinimumSize(1400, 900)
-                print(f"🔄 V2 positioned at: {x},{y} ({width}x{height})")
+                print(f"🔄 Modern positioned at: {x},{y} ({width}x{height})")
                 return
             except Exception as e:
                 print(f"⚠️ Failed to apply parallel testing geometry: {e}")
@@ -378,9 +375,7 @@ class KineticConstructorV2(QMainWindow):
             if self.splash:
                 self.splash.update_progress(
                     85, "Construct tab load failed, using fallback..."
-                )
-
-            # Create fallback placeholder
+                )  # Create fallback placeholder
             fallback_placeholder = QLabel("🚧 Construct tab loading failed...")
             fallback_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
             fallback_placeholder.setStyleSheet(
@@ -403,26 +398,36 @@ class KineticConstructorV2(QMainWindow):
 
     def _show_settings(self):
         """Open the settings dialog"""
-        # Use the UI state service to show settings
-        print("🔧 Settings requested - using UI State Management Service")
-        print("Current settings:")
+        try:
+            # Create the settings service
+            from src.application.services.settings.settings_service import (
+                SettingsService,
+            )
+            from src.presentation.components.ui.settings.modern_settings_dialog import (
+                ModernSettingsDialog,
+            )
 
-        # Show some current settings
-        settings_to_show = [
-            "theme",
-            "auto_save",
-            "show_grid",
-            "animation_speed",
-            "default_sequence_length",
-            "graph_editor_auto_open",
-        ]
+            settings_service = SettingsService(self.ui_state_service)
 
-        for setting in settings_to_show:
-            value = self.ui_state_service.get_setting(setting, "Not set")
-            print(f"  {setting}: {value}")
+            # Create and show the settings dialog
+            dialog = ModernSettingsDialog(settings_service, self)
 
-        print("\nTo modify settings, use the UI State Management Service methods.")
-        print("Settings are automatically saved to user_settings.json")
+            # Connect to settings changes if needed
+            dialog.settings_changed.connect(self._on_setting_changed)
+
+            # Show the dialog
+            dialog.exec()
+
+        except Exception as e:
+            print(f"⚠️ Failed to open settings dialog: {e}")
+            import traceback
+
+            traceback.print_exc()
+
+    def _on_setting_changed(self, key: str, value):
+        """Handle settings changes from the dialog"""
+        print(f"🔧 Setting changed: {key} = {value}")
+        # You can add any additional handling here if needed
 
 
 def detect_parallel_testing_mode():
@@ -445,7 +450,7 @@ def detect_parallel_testing_mode():
     monitor = args.monitor or env_monitor
 
     if parallel_mode:
-        print(f"🔄 V2 Parallel Testing Mode: {monitor} monitor")
+        print(f"🔄 Modern Parallel Testing Mode: {monitor} monitor")
         if env_geometry:
             print(f"   📐 Target geometry: {env_geometry}")
 
@@ -453,7 +458,7 @@ def detect_parallel_testing_mode():
 
 
 def create_application():
-    """Create V2 application for external use (like parallel testing)."""
+    """Create Modern application for external use (like parallel testing)."""
     app = QApplication.instance()
     if not app:
         app = QApplication(sys.argv)
@@ -474,7 +479,7 @@ def create_application():
         )
 
     # Create window without splash for external use
-    window = KineticConstructorV2(
+    window = KineticConstructorModern(
         splash_screen=None,
         target_screen=target_screen,
         parallel_mode=parallel_mode,
@@ -485,7 +490,7 @@ def create_application():
 
 
 def main():
-    print("🚀 Kinetic Constructor v2 - Starting...")
+    print("🚀 Kinetic Constructor modern - Starting...")
 
     # Detect parallel testing mode early
     parallel_mode, monitor, geometry = detect_parallel_testing_mode()
@@ -506,10 +511,14 @@ def main():
             # If secondary has higher X coordinate, it's on the right
             if secondary_screen.geometry().x() > primary_screen.geometry().x():
                 target_screen = secondary_screen
-                print(f"🔄 V2 forced to RIGHT monitor (secondary) for parallel testing")
+                print(
+                    f"🔄 Modern forced to RIGHT monitor (secondary) for parallel testing"
+                )
             else:
                 target_screen = primary_screen
-                print(f"🔄 V2 forced to RIGHT monitor (primary) for parallel testing")
+                print(
+                    f"🔄 Modern forced to RIGHT monitor (primary) for parallel testing"
+                )
 
         elif monitor in ["primary", "left"]:
             # Determine which screen is physically on the left
@@ -519,10 +528,14 @@ def main():
             # If secondary has lower X coordinate, it's on the left
             if secondary_screen.geometry().x() < primary_screen.geometry().x():
                 target_screen = secondary_screen
-                print(f"🔄 V2 forced to LEFT monitor (secondary) for parallel testing")
+                print(
+                    f"🔄 Modern forced to LEFT monitor (secondary) for parallel testing"
+                )
             else:
                 target_screen = primary_screen
-                print(f"🔄 V2 forced to LEFT monitor (primary) for parallel testing")
+                print(
+                    f"🔄 Modern forced to LEFT monitor (primary) for parallel testing"
+                )
         else:
             target_screen = screens[1]  # Default to secondary
     else:
@@ -546,7 +559,7 @@ def main():
             app.setWindowIcon(QIcon(str(icon_path)))
 
         splash.update_progress(15, "Creating main window...")
-        window = KineticConstructorV2(
+        window = KineticConstructorModern(
             splash_screen=splash,
             target_screen=target_screen,
             parallel_mode=parallel_mode,
@@ -563,9 +576,10 @@ def main():
             # Show main window after splash starts hiding
             QTimer.singleShot(300, lambda: window.show())
 
-        QTimer.singleShot(200, complete_startup)
+        QTimer.singleShot(
+            200, complete_startup
+        )  # Connect to fade-in completion to start initialization
 
-    # Connect to fade-in completion to start initialization
     fade_in_animation.finished.connect(start_initialization)
 
     print("✅ Application started successfully!")

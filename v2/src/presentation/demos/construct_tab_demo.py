@@ -28,7 +28,7 @@ from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
 class ConstructTabDemo(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("🔧 Kinetic Constructor v2 - Construct Tab")
+        self.setWindowTitle("🔧 Kinetic Constructor modern - Construct Tab")
         self.setMinimumSize(1400, 900)
 
         self.container = get_container()
@@ -51,7 +51,7 @@ class ConstructTabDemo(QMainWindow):
 
         layout = QVBoxLayout(central_widget)
 
-        title = QLabel("🔧 Kinetic Constructor v2 - Construct Tab")
+        title = QLabel("🔧 Kinetic Constructor modern - Construct Tab")
         title.setFont(QFont("Arial", 18, QFont.Weight.Bold))
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("color: #2c3e50; margin: 20px;")

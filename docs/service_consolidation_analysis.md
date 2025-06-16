@@ -29,7 +29,7 @@
 - `pictograph_dataset_service.py` - Dataset management
 - `pictograph_context_configurator.py` - Context configuration
 - `glyph_data_service.py` - Glyph data handling
-- `data_conversion_service.py` - Legacy to V2 data conversion
+- `data_conversion_service.py` - Legacy to Modern data conversion
 
 **Consolidation Target**: `PictographManagementService`
 
@@ -65,7 +65,7 @@
 
 - `legacy_pictograph_integration_service.py` - Legacy integration bridge
 
-**Keep Separate**: Critical for Legacy/V2 bridge during transition
+**Keep Separate**: Critical for Legacy/Modern bridge during transition
 
 ## 📊 **Consolidation Summary**
 
@@ -86,7 +86,7 @@ Integration Services (1) = 30+ services
 4. SequenceManagementService   - Sequences, beats, generation, workbench
 5. UIStateManagementService    - Settings, state, graph editor, dialogs
 6. LayoutManagementService     - Layout calculations, scaling, positioning
-7. LegacyIntegrationService        - Legacy/V2 bridge (unchanged)
+7. LegacyIntegrationService        - Legacy/Modern bridge (unchanged)
 ```
 
 ## 🏗️ **Consolidation Strategy**
@@ -127,7 +127,7 @@ Integration Services (1) = 30+ services
 
 - Pictograph creation and manipulation
 - Dataset management and querying
-- Data conversion between Legacy and V2 formats
+- Data conversion between Legacy and Modern formats
 - Glyph data handling and context configuration
 
 ### Phase 2.5: Sequence Management Consolidation

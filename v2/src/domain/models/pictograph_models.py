@@ -2,7 +2,7 @@
 Pictograph Domain Models for Kinetic Constructor v2
 
 These models represent the pure business logic for pictograph rendering and positioning.
-They integrate with the existing v2 architecture and eliminate UI coupling from the
+They integrate with the existing modern architecture and eliminate UI coupling from the
 original pictograph implementation.
 
 REPLACES:

@@ -189,7 +189,7 @@ class PerformanceMonitor:
     def generate_report(self) -> str:
         """Generate a performance report."""
         report_lines = [
-            "🔍 TKA v2 Performance Report",
+            "🔍 TKA modern Performance Report",
             "=" * 40,
             f"📊 Total Metrics Collected: {len(self.metrics)}",
             f"🔢 Functions Monitored: {len(self.aggregates)}",
@@ -397,7 +397,7 @@ def print_performance_dashboard():
 
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("🚀 TKA v2 Performance Dashboard")
+        print("🚀 TKA modern Performance Dashboard")
         print("=" * 50)
         print(_monitor.generate_report())
         print("\nPress Ctrl+C to exit...")
@@ -411,7 +411,7 @@ def main():
     """CLI entry point for performance monitoring."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="TKA v2 Performance Monitor")
+    parser = argparse.ArgumentParser(description="TKA modern Performance Monitor")
     parser.add_argument("--dashboard", action="store_true",
                        help="Show real-time performance dashboard")
     parser.add_argument("--report", action="store_true",

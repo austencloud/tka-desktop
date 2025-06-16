@@ -15,10 +15,13 @@ from typing import (
     Union,
     get_type_hints,
     Protocol,
+    List,
+    Set,
 )
 import logging
 import inspect
-from dataclasses import is_dataclass
+from pathlib import Path
+from datetime import datetime, timedelta
 
 T = TypeVar("T")
 logger = logging.getLogger(__name__)
@@ -37,13 +40,21 @@ class DIContainer:
     - Protocol compliance validation
     - Circular dependency detection
     - Type safety validation
+    - Service lifecycle management
+    - Enhanced error reporting
     """
 
     def __init__(self):
         self._services: Dict[Type, Type] = {}
         self._singletons: Dict[Type, Any] = {}
         self._factories: Dict[Type, Type] = {}
-        self._resolution_stack: set = set()
+        self._resolution_stack: Set[Type] = set()
+        self._cleanup_handlers: List[Callable[[], None]] = (
+            []
+        )  # For lifecycle management
+        self._creation_stack: List[Type] = (
+            []
+        )  # For enhanced circular dependency detection
 
     def register_singleton(self, interface: Type[T], implementation: Type[T]) -> None:
         """Register a service as singleton (one instance per container)."""
@@ -85,6 +96,7 @@ class DIContainer:
             ValueError: If the service is not registered
             RuntimeError: If circular dependency is detected
         """
+
         # Check for circular dependencies
         if interface in self._resolution_stack:
             raise RuntimeError(f"Circular dependency detected for {interface.__name__}")
@@ -116,7 +128,7 @@ class DIContainer:
         raise ValueError(f"Service {interface.__name__} is not registered")
 
     def _create_instance(self, implementation_class: Type) -> Any:
-        """Create instance with automatic constructor injection."""
+        """Create instance with comprehensive automatic constructor injection."""
         try:
             signature = inspect.signature(implementation_class.__init__)
             type_hints = get_type_hints(implementation_class.__init__)
@@ -128,32 +140,49 @@ class DIContainer:
 
                 param_type = type_hints.get(param_name, param.annotation)
 
-                # If parameter has a default value, use it and skip dependency resolution
+                # Enhanced dependency resolution
                 if param.default != inspect.Parameter.empty:
+                    # Has default value - use it and skip dependency resolution
                     dependencies[param_name] = param.default
                     continue
 
-                # Skip if no type annotation or annotation is empty
+                # Skip if no type annotation
                 if not param_type or param_type == inspect.Parameter.empty:
                     continue
 
-                # Skip primitive types - these should not be resolved as dependencies
+                # Skip primitive types
                 if self._is_primitive_type(param_type):
                     continue
 
+                # Enhanced error handling for dependency resolution
                 try:
                     dependencies[param_name] = self.resolve(param_type)
-                except ValueError:
+                except ValueError as e:
+                    available_services = list(self._services.keys()) + list(
+                        self._factories.keys()
+                    )
+                    available_names = [svc.__name__ for svc in available_services]
                     raise ValueError(
-                        f"Cannot resolve dependency {param_type} for {param_name} in {implementation_class.__name__}"
+                        f"Cannot resolve dependency {param_type.__name__} for parameter "
+                        f"'{param_name}' in {implementation_class.__name__}. "
+                        f"Original error: {e}. "
+                        f"Available registrations: {available_names}"
                     )
 
             return implementation_class(**dependencies)
+
         except Exception as e:
+            available_services = list(self._services.keys()) + list(
+                self._factories.keys()
+            )
+            available_names = [svc.__name__ for svc in available_services]
             logger.error(
                 f"Failed to create instance of {implementation_class.__name__}: {e}"
             )
-            raise
+            logger.error(f"Available services: {available_names}")
+            raise RuntimeError(
+                f"Dependency injection failed for {implementation_class.__name__}: {e}"
+            )
 
     def _validate_registration(self, interface: Type, implementation: Type) -> None:
         """Validate that implementation can fulfill interface contract."""
@@ -202,7 +231,20 @@ class DIContainer:
 
     def get_registrations(self) -> Dict[Type, Type]:
         """Get all registered services for testing/debugging."""
-        return {**self._services, **self._factories}
+        # Include singletons (instances), services, and factories
+        registrations = {}
+
+        # Add singleton instances
+        for interface in self._singletons.keys():
+            registrations[interface] = type(self._singletons[interface])
+
+        # Add service registrations
+        registrations.update(self._services)
+
+        # Add factory registrations
+        registrations.update(self._factories)
+
+        return registrations
 
     def _is_primitive_type(self, param_type: Type) -> bool:
         """Check if a type is a primitive type that should not be resolved as a dependency."""
@@ -218,20 +260,203 @@ class DIContainer:
             tuple,
             set,
             frozenset,
+            # Add common standard library types
+            Path,
+            datetime,
+            timedelta,
         }
 
         # Handle Union types (like Optional[str] which is Union[str, None])
         if hasattr(param_type, "__origin__"):
             origin = param_type.__origin__
             if origin is Union:
-                # For Union types, check if all args are primitive
+                # Check if it's Optional[T] (Union[T, None])
                 args = getattr(param_type, "__args__", ())
+                if len(args) == 2 and type(None) in args:
+                    # It's Optional[T], check the non-None type
+                    non_none_type = next(arg for arg in args if arg is not type(None))
+                    return self._is_primitive_type(non_none_type)
+                # For other Union types, check if all args are primitive
                 return all(arg in primitive_types for arg in args)
             # Other generic types like List[str], Dict[str, int] are considered primitive
             if origin in primitive_types:
                 return True
 
+        # Check if it's a builtin type
+        if hasattr(param_type, "__module__") and param_type.__module__ == "builtins":
+            return True
+
         return param_type in primitive_types
+
+    def auto_register_with_validation(
+        self, interface: Type[T], implementation: Type[T]
+    ) -> None:
+        """Register service with comprehensive validation."""
+        # Step 1: Validate Protocol implementation
+        self._validate_protocol_implementation(interface, implementation)
+
+        # Step 2: Validate dependency chain can be resolved
+        self._validate_dependency_chain(implementation)
+
+        # Step 3: Register if validation passes
+        self.register_singleton(interface, implementation)
+
+        logger.info(
+            f"✅ Successfully registered {interface.__name__} -> {implementation.__name__}"
+        )
+
+    def _validate_dependency_chain(self, implementation: Type) -> None:
+        """Validate that all constructor dependencies can be resolved."""
+        signature = inspect.signature(implementation.__init__)
+        type_hints = get_type_hints(implementation.__init__)
+
+        for param_name, param in signature.parameters.items():
+            if param_name == "self":
+                continue
+
+            # Skip if has default value
+            if param.default != inspect.Parameter.empty:
+                continue
+
+            param_type = type_hints.get(param_name, param.annotation)
+
+            # Skip if no type annotation
+            if not param_type or param_type == inspect.Parameter.empty:
+                continue
+
+            # Skip primitives
+            if self._is_primitive_type(param_type):
+                continue
+
+            # Check if dependency is registered
+            if param_type not in self._services and param_type not in self._factories:
+                raise ValueError(
+                    f"Dependency {param_type.__name__} for {implementation.__name__} "
+                    f"is not registered. Register it first or make parameter optional."
+                )
+
+    def validate_all_registrations(self) -> None:
+        """Validate that all registered services can be instantiated."""
+        errors = []
+
+        for interface, implementation in self._services.items():
+            try:
+                self.resolve(interface)
+                logger.info(f"✅ {interface.__name__} -> {implementation.__name__}")
+            except Exception as e:
+                errors.append(f"❌ {interface.__name__}: {e}")
+
+        if errors:
+            logger.error("Registration validation failed:")
+            for error in errors:
+                logger.error(f"  {error}")
+            raise ValueError(
+                f"Service registration validation failed: {len(errors)} errors"
+            )
+
+        logger.info(
+            f"✅ All {len(self._services)} service registrations validated successfully"
+        )
+
+    def _get_constructor_dependencies(self, implementation: Type) -> List[Type]:
+        """Get list of constructor dependencies for a class."""
+        try:
+            signature = inspect.signature(implementation.__init__)
+            type_hints = get_type_hints(implementation.__init__)
+            dependencies = []
+
+            for param_name, param in signature.parameters.items():
+                if param_name == "self":
+                    continue
+
+                # Skip if has default value
+                if param.default != inspect.Parameter.empty:
+                    continue
+
+                param_type = type_hints.get(param_name, param.annotation)
+
+                # Skip if no type annotation
+                if not param_type or param_type == inspect.Parameter.empty:
+                    continue
+
+                # Skip primitive types
+                if self._is_primitive_type(param_type):
+                    continue
+
+                dependencies.append(param_type)
+
+            return dependencies
+
+        except Exception:
+            return []
+
+    def _detect_circular_dependencies(
+        self, start_type: Type, visited: Optional[Set[Type]] = None
+    ) -> None:
+        """Detect circular dependencies in the service graph."""
+        if visited is None:
+            visited = set()
+
+        if start_type in visited:
+            cycle_path = (
+                " -> ".join(t.__name__ for t in visited) + f" -> {start_type.__name__}"
+            )
+            raise ValueError(f"Circular dependency detected: {cycle_path}")
+
+        visited.add(start_type)
+
+        # Get implementation for this type
+        implementation = self._services.get(start_type) or self._factories.get(
+            start_type
+        )
+        if implementation:
+            dependencies = self._get_constructor_dependencies(implementation)
+            for dep in dependencies:
+                self._detect_circular_dependencies(dep, visited.copy())
+
+    def get_dependency_graph(self) -> Dict[str, List[str]]:
+        """Generate dependency graph for debugging."""
+        graph = {}
+
+        for interface, implementation in self._services.items():
+            deps = self._get_constructor_dependencies(implementation)
+            graph[f"{interface.__name__} -> {implementation.__name__}"] = [
+                dep.__name__ for dep in deps if not self._is_primitive_type(dep)
+            ]
+
+        for interface, implementation in self._factories.items():
+            deps = self._get_constructor_dependencies(implementation)
+            graph[f"{interface.__name__} -> {implementation.__name__} (transient)"] = [
+                dep.__name__ for dep in deps if not self._is_primitive_type(dep)
+            ]
+
+        return graph
+
+    def _create_with_lifecycle(self, implementation_class: Type) -> Any:
+        """Create instance with proper lifecycle management."""
+        instance = self._create_instance(implementation_class)
+
+        # Call initialization method if it exists
+        if hasattr(instance, "initialize") and callable(
+            getattr(instance, "initialize")
+        ):
+            instance.initialize()
+
+        # Register for cleanup if it has cleanup method
+        if hasattr(instance, "cleanup") and callable(getattr(instance, "cleanup")):
+            self._cleanup_handlers.append(instance.cleanup)
+
+        return instance
+
+    def cleanup_all(self) -> None:
+        """Cleanup all registered services."""
+        for cleanup_handler in reversed(self._cleanup_handlers):
+            try:
+                cleanup_handler()
+            except Exception as e:
+                logger.error(f"Error during service cleanup: {e}")
+
+        self._cleanup_handlers.clear()
 
 
 def get_container() -> DIContainer:

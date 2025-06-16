@@ -3,12 +3,12 @@
 Side-by-Side Parallel Testing Deployment
 ========================================
 
-Deploy and run TKA Legacy and V2 applications side-by-side for visual parallel testing.
-Opens Legacy on one monitor and V2 on another monitor for real-time comparison.
+Deploy and run TKA Legacy and Modern applications side-by-side for visual parallel testing.
+Opens Legacy on one monitor and Modern on another monitor for real-time comparison.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Visual validation of Legacy/V2 functional equivalence
+PURPOSE: Visual validation of Legacy/Modern functional equivalence
 """
 
 import asyncio
@@ -30,7 +30,7 @@ from scenarios.basic_workflows import BasicWorkflowScenarios
 
 
 class SideBySideTestDeployer:
-    """Deploys Legacy and V2 applications side-by-side for visual testing."""
+    """Deploys Legacy and Modern applications side-by-side for visual testing."""
 
     def __init__(self):
         self.orchestrator: Optional[ParallelTestOrchestrator] = None
@@ -89,7 +89,7 @@ class SideBySideTestDeployer:
                         primary_geometry.height() - 100,
                     )
 
-                    # V2 on secondary monitor (right side)
+                    # Modern on secondary monitor (right side)
                     self.v2_window_geometry = QRect(
                         secondary_geometry.x() + 50,
                         secondary_geometry.y() + 50,
@@ -108,7 +108,7 @@ class SideBySideTestDeployer:
                     f"   📺 Single Monitor: {primary_geometry.width()}x{primary_geometry.height()}"
                 )
 
-                # Split screen - Legacy on left half, V2 on right half
+                # Split screen - Legacy on left half, Modern on right half
                 half_width = primary_geometry.width() // 2
 
                 self.legacy_window_geometry = QRect(
@@ -158,7 +158,7 @@ class SideBySideTestDeployer:
         return config
 
     async def deploy_applications(self) -> bool:
-        """Deploy both Legacy and V2 applications with optimal window positioning."""
+        """Deploy both Legacy and Modern applications with optimal window positioning."""
         print("\n🚀 DEPLOYING SIDE-BY-SIDE APPLICATIONS")
         print("=" * 50)
 
@@ -191,7 +191,7 @@ class SideBySideTestDeployer:
             return False
 
     async def _position_windows(self):
-        """Position Legacy and V2 windows for optimal side-by-side viewing."""
+        """Position Legacy and Modern windows for optimal side-by-side viewing."""
         try:
             # Give applications time to fully load
             await asyncio.sleep(3)
@@ -207,13 +207,13 @@ class SideBySideTestDeployer:
                 legacy_window.raise_()
                 print(f"   📍 Legacy positioned at: {self.legacy_window_geometry}")
 
-            # Position V2 window
+            # Position Modern window
             if self.orchestrator.v2_driver.main_window and self.v2_window_geometry:
                 v2_window = self.orchestrator.v2_driver.main_window
                 v2_window.setGeometry(self.v2_window_geometry)
-                v2_window.setWindowTitle("TKA V2 - Parallel Testing")
+                v2_window.setWindowTitle("TKA Modern - Parallel Testing")
                 v2_window.raise_()
-                print(f"   📍 V2 positioned at: {self.v2_window_geometry}")
+                print(f"   📍 Modern positioned at: {self.v2_window_geometry}")
 
             # Process events to ensure positioning takes effect
             if QApplication.instance():
@@ -372,7 +372,7 @@ async def main():
 
         print("\n🎉 DEPLOYMENT SUCCESSFUL!")
         print("=" * 30)
-        print("📺 Legacy and V2 applications are now running side-by-side")
+        print("📺 Legacy and Modern applications are now running side-by-side")
         print("🎮 Ready for interactive testing...")
 
         # Run interactive session

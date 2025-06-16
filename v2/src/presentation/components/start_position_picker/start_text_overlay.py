@@ -1,5 +1,5 @@
 """
-Start Text Overlay Component for V2 Pictographs
+Start Text Overlay Component for Modern Pictographs
 
 This component replicates legacy's BeatStartTextItem functionality by adding
 "START" text directly to the pictograph scene, matching legacy's exact styling

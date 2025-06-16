@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtCore import pyqtSignal, QObject
 
 from core.dependency_injection.di_container import DIContainer
-from core.interfaces.core_services import ILayoutService
+from src.core.interfaces.core_services import ILayoutService
 from domain.models.core_models import BeatData, SequenceData
 from .pictograph_pool_manager import PictographPoolManager
 from .beat_data_loader import BeatDataLoader
@@ -15,9 +15,9 @@ from .option_picker_filter import OptionPickerFilter
 
 class OptionPicker(QObject):
     """
-    Modern V2 Option Picker - Pure V2 Implementation
+    Modern Modern Option Picker - Pure Modern Implementation
 
-    This class works directly with V2 data structures (BeatData, SequenceData)
+    This class works directly with Modern data structures (BeatData, SequenceData)
     and never requires Legacy format conversions.
     """
 
@@ -81,7 +81,7 @@ class OptionPicker(QObject):
 
             # Get actual available width from the option picker widget hierarchy
             if self.widget and self.widget.width() > 0:
-                # In V2, the option picker IS the full available space
+                # In Modern, the option picker IS the full available space
                 # So sections should use the full widget width, not half
                 actual_width = self.widget.width()
                 actual_height = self.widget.height()
@@ -217,12 +217,12 @@ class OptionPicker(QObject):
             )
 
     def refresh_options_from_v2_sequence(self, sequence: SequenceData) -> None:
-        """PURE V2: Refresh options based on V2 SequenceData - no conversion needed!"""
+        """PURE Modern: Refresh options based on Modern SequenceData - no conversion needed!"""
         if self._beat_loader and self._display_manager:
             beat_options = self._beat_loader.refresh_options_from_v2_sequence(sequence)
             self._display_manager.update_beat_display(beat_options)
             print(
-                f"🔄 PURE V2: Option picker refreshed with {len(beat_options)} options"
+                f"🔄 PURE Modern: Option picker refreshed with {len(beat_options)} options"
             )
 
     def _on_widget_resize(self) -> None:

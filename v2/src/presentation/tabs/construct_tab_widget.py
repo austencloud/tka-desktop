@@ -12,7 +12,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
 from core.dependency_injection.di_container import DIContainer
-from src.domain.models.core_models import SequenceData, BeatData
+from domain.models.core_models import SequenceData, BeatData
 from presentation.components.option_picker.option_picker import (
     OptionPicker,
 )
@@ -21,7 +21,7 @@ from presentation.components.option_picker.option_picker import (
 from application.services.ui.ui_state_management_service import (
     UIStateManagementService,
 )
-from src.presentation.factories.workbench_factory import create_modern_workbench
+from presentation.factories.workbench_factory import create_modern_workbench
 
 
 class ConstructTabWidget(QWidget):
@@ -380,7 +380,7 @@ class ConstructTabWidget(QWidget):
     def _create_start_position_data(self, position_key: str) -> BeatData:
         """Create start position data from position key using real dataset (separate from sequence beats)"""
         try:
-            from ...application.services.old_services_before_consolidation.pictograph_dataset_service import (
+            from ...application.services.data.pictograph_dataset_service import (
                 PictographDatasetService,
             )
 
@@ -509,22 +509,35 @@ class ConstructTabWidget(QWidget):
             return
 
         try:
+            print(f"\n🔍 DEBUG: Populating option picker for start position")
+            print(f"   Position key: {position_key}")
+            print(f"   Start position data: {start_position_data}")
+
             # Convert start position data to sequence format for motion combination service
             start_position_dict = start_position_data.to_dict()
 
             # CRITICAL FIX: Ensure end_pos is in the start position data
+            extracted_end_pos = self._extract_end_position_from_position_key(
+                position_key
+            )
             if "end_pos" not in start_position_dict:
-                start_position_dict["end_pos"] = (
-                    self._extract_end_position_from_position_key(position_key)
-                )
+                start_position_dict["end_pos"] = extracted_end_pos
                 print(
                     f"🔧 Added missing end_pos to start position: {start_position_dict['end_pos']}"
                 )
+
+            print(f"   Extracted end position: {extracted_end_pos}")
+            print(f"   Complete start position dict: {start_position_dict}")
 
             sequence_data = [
                 {"metadata": "sequence_info"},  # Metadata entry
                 start_position_dict,  # Start position entry with end_pos
             ]  # Load motion combinations into option picker
+
+            print(f"   Sequence data being passed to option picker:")
+            for i, entry in enumerate(sequence_data):
+                print(f"      [{i}]: {entry}")
+
             self.option_picker.load_motion_combinations(sequence_data)
 
         except Exception as e:
@@ -539,7 +552,7 @@ class ConstructTabWidget(QWidget):
 
     def _create_start_sequence(self, position_key: str) -> SequenceData:
         """Create empty sequence (deprecated - start position should not create sequence)"""
-        print("⚠️ _create_start_sequence called - this should not happen in V2")
+        print("⚠️ _create_start_sequence called - this should not happen in Modern")
         return SequenceData.empty()
 
     def clear_sequence(self):
@@ -588,7 +601,7 @@ class ConstructTabWidget(QWidget):
             self._emitting_signal = False
 
     def _refresh_option_picker_from_sequence(self, sequence: SequenceData):
-        """Refresh option picker based on current sequence state - PURE V2 IMPLEMENTATION"""
+        """Refresh option picker based on current sequence state - PURE Modern IMPLEMENTATION"""
         if not self.option_picker or not sequence or sequence.length == 0:
             return
 
@@ -597,11 +610,11 @@ class ConstructTabWidget(QWidget):
         start_time = time.perf_counter()
 
         try:
-            # PURE V2: Work directly with SequenceData - no conversion needed!
+            # PURE Modern: Work directly with SequenceData - no conversion needed!
             self.option_picker.refresh_options_from_v2_sequence(sequence)
 
             total_time = (time.perf_counter() - start_time) * 1000
-            print(f"⚡ PURE V2 OPTION REFRESH: {total_time:.1f}ms")
+            print(f"⚡ PURE Modern OPTION REFRESH: {total_time:.1f}ms")
             print(
                 f"🔄 Option picker refreshed for sequence with {sequence.length} beats"
             )
@@ -615,7 +628,7 @@ class ConstructTabWidget(QWidget):
     def _convert_sequence_to_legacy_format(
         self, sequence: SequenceData
     ) -> List[Dict[str, Any]]:
-        """Convert V2 SequenceData to Legacy-compatible format for option picker with caching"""
+        """Convert Modern SequenceData to Legacy-compatible format for option picker with caching"""
         # Create cache key from sequence hash
         sequence_hash = hash(
             tuple(beat.letter + str(beat.beat_number) for beat in sequence.beats)

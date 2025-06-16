@@ -1,5 +1,5 @@
 """
-Integration Tests for TKA V2
+Integration Tests for TKA Modern
 ============================
 
 Tests for component communication and service integration.

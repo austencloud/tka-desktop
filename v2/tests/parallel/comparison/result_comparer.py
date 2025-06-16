@@ -2,12 +2,12 @@
 Result Comparison Engine
 ========================
 
-Deep comparison engine for validating Legacy/V2 functional equivalence.
+Deep comparison engine for validating Legacy/Modern functional equivalence.
 Performs sequence data, pictograph data, UI state, and arrow rendering validation.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Compare Legacy/V2 execution results for functional equivalence validation
+PURPOSE: Compare Legacy/Modern execution results for functional equivalence validation
 """
 
 from typing import Dict, Any, List, Optional, Tuple, Union
@@ -57,7 +57,7 @@ class FieldDifference:
 
 @dataclass
 class ComparisonResult:
-    """Result of comparing Legacy and V2 execution results."""
+    """Result of comparing Legacy and Modern execution results."""
 
     # Overall result
     is_equivalent: bool
@@ -109,7 +109,7 @@ class IResultComparer(ABC):
     def compare_results(
         self, legacy_result: Dict[str, Any], v2_result: Dict[str, Any]
     ) -> ComparisonResult:
-        """Compare Legacy and V2 execution results."""
+        """Compare Legacy and Modern execution results."""
         pass
 
     @abstractmethod
@@ -236,7 +236,7 @@ class ResultComparer(IResultComparer):
     def compare_results(
         self, legacy_result: Dict[str, Any], v2_result: Dict[str, Any]
     ) -> ComparisonResult:
-        """Compare complete Legacy and V2 execution results."""
+        """Compare complete Legacy and Modern execution results."""
         import time
 
         start_time = time.time()
@@ -266,7 +266,7 @@ class ResultComparer(IResultComparer):
 
             if abs(legacy_time - v2_time) > 1000:  # More than 1 second difference
                 result.add_warning(
-                    f"Significant execution time difference: Legacy={legacy_time}ms, V2={v2_time}ms"
+                    f"Significant execution time difference: Legacy={legacy_time}ms, Modern={v2_time}ms"
                 )
 
             # Compare data if both executions succeeded
@@ -734,14 +734,14 @@ class TKADataNormalizer:
     """
     TKA-specific data normalizer based on verified domain model.
 
-    Handles the actual Legacy/V2 differences discovered through codebase analysis:
-    - Legacy uses "shift" as motion type, V2 maps it to "pro"
+    Handles the actual Legacy/Modern differences discovered through codebase analysis:
+    - Legacy uses "shift" as motion type, Modern maps it to "pro"
     - Both versions use "prop_rot_dir" field name (no change needed)
     - Motion type hierarchy: shift contains [pro, anti, float] in Legacy
     """
 
     def __init__(self):
-        # VERIFIED: Legacy and V2 use IDENTICAL motion type values
+        # VERIFIED: Legacy and Modern use IDENTICAL motion type values
         # NO MAPPING NEEDED - both versions use same motion type strings
         self.motion_type_mappings = {
             # Direct 1:1 mappings - no conversion needed
@@ -784,7 +784,7 @@ class TKADataNormalizer:
         """
         normalized = {}
 
-        # Handle motion type (no mapping needed - Legacy and V2 use same values)
+        # Handle motion type (no mapping needed - Legacy and Modern use same values)
         legacy_motion_type = legacy_motion.get("motion_type", "static")
         normalized["motion_type"] = legacy_motion_type
 
@@ -810,20 +810,20 @@ class TKADataNormalizer:
 
     def normalize_v2_motion_data(self, v2_motion: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Normalize V2 motion data to standardized format for comparison.
+        Normalize Modern motion data to standardized format for comparison.
 
-        V2 uses MotionData with enum values that need to be converted to strings.
+        Modern uses MotionData with enum values that need to be converted to strings.
         """
         normalized = {}
 
-        # Handle enum values from V2 MotionData
+        # Handle enum values from Modern MotionData
         motion_type = v2_motion.get("motion_type")
         if hasattr(motion_type, "value"):
             normalized["motion_type"] = motion_type.value
         else:
             normalized["motion_type"] = str(motion_type) if motion_type else "static"
 
-        # Handle turns (should be float in V2)
+        # Handle turns (should be float in Modern)
         normalized["turns"] = float(v2_motion.get("turns", 0.0))
 
         # Handle rotation direction enum
@@ -873,9 +873,9 @@ class TKADataNormalizer:
 
     def normalize_v2_beat_data(self, v2_beat: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Normalize V2 beat data based on verified V2 BeatData structure.
+        Normalize Modern beat data based on verified Modern BeatData structure.
 
-        V2 uses BeatData with blue_motion/red_motion MotionData objects.
+        Modern uses BeatData with blue_motion/red_motion MotionData objects.
         """
         normalized = {
             "letter": v2_beat.get("letter", ""),
@@ -883,7 +883,7 @@ class TKADataNormalizer:
             "motions": {},
         }
 
-        # Extract motion data from V2 BeatData structure
+        # Extract motion data from Modern BeatData structure
         for color in ["blue", "red"]:
             motion_key = f"{color}_motion"
             if motion_key in v2_beat and v2_beat[motion_key]:

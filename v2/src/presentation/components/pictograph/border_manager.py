@@ -1,5 +1,5 @@
 """
-Border Manager for V2 Pictographs.
+Border Manager for Modern Pictographs.
 
 This manager handles border width calculations and visual border rendering
 to match Legacy's border behavior exactly.
@@ -16,7 +16,7 @@ from domain.models.core_models import LetterType
 
 class PictographBorderManager:
     """
-    Manages border calculations and rendering for V2 pictographs to match Legacy behavior.
+    Manages border calculations and rendering for Modern pictographs to match Legacy behavior.
 
     Legacy border patterns:
     - Border width = max(1, int(size * 0.015)) (1.5% of size)
@@ -170,10 +170,10 @@ class PictographBorderManager:
 
 class BorderedPictographMixin:
     """
-    Mixin class to add border functionality to V2 pictograph components.
+    Mixin class to add border functionality to Modern pictograph components.
 
     This mixin provides the same border functionality as Legacy's BorderedPictographView
-    but designed for V2's component architecture.
+    but designed for Modern's component architecture.
     """
 
     def __init__(self):

@@ -1,7 +1,7 @@
 """
 Pictograph Dataset Service for Kinetic Constructor v2
 
-This service provides access to the actual legacy pictograph dataset,
+This service provides access to the actual pictograph dataset,
 enabling pixel-perfect accuracy for start position selection and motion combinations.
 """
 
@@ -19,17 +19,17 @@ from domain.models.core_models import (
     GlyphData,
 )
 from infrastructure.data_path_handler import DataPathHandler
-from ..data.glyph_data_service import GlyphDataService
+from .glyph_data_service import GlyphDataService
 
 
 class PictographDatasetService:
     """
-    Service for accessing the legacy pictograph dataset.
+    Service for accessing the pictograph dataset.
 
     Provides methods to:
     1. Load diamond and box pictograph datasets
     2. Find specific start position entries
-    3. Convert dataset entries to v2 BeatData format
+    3. Convert dataset entries to modern BeatData format
     4. Generate accurate glyph data from dataset entries
     """
 

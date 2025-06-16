@@ -1,5 +1,5 @@
 """
-Performance benchmarks for TKA V2 core services.
+Performance benchmarks for TKA Modern core services.
 
 These tests establish baseline performance metrics and detect regressions
 in critical operations.

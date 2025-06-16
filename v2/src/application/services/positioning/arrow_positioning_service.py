@@ -14,7 +14,7 @@ IMPLEMENTS COMPLETE POSITIONING PIPELINE:
 PROVIDES:
 - Pixel-perfect arrow positioning accuracy
 - Complete positioning system integration
-- Clean service interface for v2 architecture
+- Clean service interface for modern architecture
 """
 
 from typing import TYPE_CHECKING
@@ -38,7 +38,7 @@ from domain.models.core_models import (
     RotationDirection,
 )
 from .default_placement_service import DefaultPlacementService
-from ..placement_key_service import PlacementKeyService
+from .placement_key_service import PlacementKeyService
 from .dash_location_service import DashLocationService
 
 
@@ -242,7 +242,7 @@ class ArrowPositioningService(IArrowPositioningService):
     def _calculate_dash_arrow_location(
         self, motion: MotionData, pictograph_data: PictographData = None
     ) -> Location:
-        """Calculate location for dash arrows using Legacy-compatible logic with Type 3 detection."""
+        """Calculate location for dash arrows using validated logic with Type 3 detection."""
 
         # Detect Type 3 scenario: one DASH with zero turns + one shift motion
         if (
@@ -475,7 +475,7 @@ class ArrowPositioningService(IArrowPositioningService):
     ) -> QPointF | None:
         """Get special adjustment for specific letters and configurations."""
         # For now, return None (no special adjustments)
-        # TODO: Load from Legacy special placement JSON files
+        # TODO: Load from special placement JSON files
         return None
 
     def _apply_quadrant_adjustments(

@@ -1,7 +1,7 @@
 """
-Context-Aware Scaling Service for V2 Pictographs.
+Context-Aware Scaling Service for Modern Pictographs.
 
-This service replicates context-specific scaling logic to ensure V2 pictographs
+This service replicates context-specific scaling logic to ensure Modern pictographs
 achieve the same visual prominence as proven pictographs in different usage contexts.
 """
 
@@ -91,7 +91,7 @@ class ContextAwareScalingService:
         self, container_size: QSize, scene_size: QSize, **context_params
     ) -> Tuple[float, float]:
         """Calculate scaling for option view context."""
-        # Legacy logic: size = max(mw_width//16, option_picker.width//8)
+        # Calculate optimal size based on container dimensions
         main_window_width = context_params.get(
             "main_window_width", container_size.width() * 4
         )
@@ -103,9 +103,9 @@ class ContextAwareScalingService:
         size_option_2 = option_picker_width // 8
         target_size = max(size_option_1, size_option_2)
 
-        # Apply Legacy's border width calculation: border_width = max(1, int(size * 0.015))
+        # Apply responsive border width calculation
         border_width = max(1, int(target_size * 0.015))
-        # Legacy adjustment: size -= 2 * border_width + spacing
+        # Adjust for border and spacing
         spacing = context_params.get("spacing", 0)
         adjusted_size = target_size - (2 * border_width) - spacing
         adjusted_size = max(adjusted_size, 100)  # Minimum size
@@ -120,15 +120,15 @@ class ContextAwareScalingService:
         self, container_size: QSize, scene_size: QSize, **context_params
     ) -> Tuple[float, float]:
         """Calculate scaling for start position picker context."""
-        # Legacy logic: size = size_provider.width//10
+        # Calculate size based on provider width
         size_provider_width = context_params.get(
             "size_provider_width", container_size.width()
         )
         target_size = size_provider_width // 10
 
-        # Apply Legacy's border width calculation: border_width = max(1, int(size * 0.015))
+        # Apply responsive border width calculation
         border_width = max(1, int(target_size * 0.015))
-        # Legacy adjustment: size -= 2 * border_width
+        # Adjust for border width
         adjusted_size = target_size - (2 * border_width)
         adjusted_size = max(adjusted_size, 80)  # Minimum size
 
@@ -141,7 +141,7 @@ class ContextAwareScalingService:
         self, container_size: QSize, scene_size: QSize, **context_params
     ) -> Tuple[float, float]:
         """Calculate scaling for advanced start position context."""
-        # Legacy logic: size = size_provider.width//12
+        # Calculate size for advanced positioning
         size_provider_width = context_params.get(
             "size_provider_width", container_size.width()
         )
@@ -160,7 +160,7 @@ class ContextAwareScalingService:
         self, container_size: QSize, scene_size: QSize, **context_params
     ) -> Tuple[float, float]:
         """Calculate scaling for codex view context."""
-        # Legacy logic: size = codex.main_widget.width//16
+        # Calculate size based on main widget dimensions
         main_widget_width = context_params.get(
             "main_widget_width", container_size.width() * 2
         )
@@ -179,7 +179,7 @@ class ContextAwareScalingService:
         self, container_size: QSize, scene_size: QSize, **context_params
     ) -> Tuple[float, float]:
         """Calculate scaling for beat view context."""
-        # Legacy logic: view_scale = min(view_size/beat_scene_size)
+        # Calculate scale maintaining aspect ratio
         view_width = container_size.width()
         view_height = container_size.height()
 
@@ -189,7 +189,7 @@ class ContextAwareScalingService:
         # Use minimum scale to maintain aspect ratio
         min_scale = min(scale_x, scale_y)
 
-        # Apply Legacy-style enhancement factor
+        # Apply visual enhancement factor
         enhancement_factor = context_params.get("enhancement_factor", 1.1)
         enhanced_scale = min_scale * enhancement_factor
 
@@ -199,7 +199,7 @@ class ContextAwareScalingService:
         self, container_size: QSize, scene_size: QSize, **context_params
     ) -> Tuple[float, float]:
         """Calculate scaling for graph editor view context."""
-        # Legacy logic: scale_factor = min(view_size/scene_size)
+        # Calculate scale factor maintaining aspect ratio
         view_width = container_size.width()
         view_height = container_size.height()
 
@@ -219,15 +219,15 @@ class ContextAwareScalingService:
         self, container_size: QSize, scene_size: QSize
     ) -> Tuple[float, float]:
         """Calculate default scaling when no specific context is provided."""
-        # Enhanced default scaling to match Legacy's general behavior
+        # Enhanced default scaling for optimal visual presentation
         scale_x = container_size.width() / scene_size.width()
         scale_y = container_size.height() / scene_size.height()
 
         # Use minimum scale to maintain aspect ratio
         min_scale = min(scale_x, scale_y)
 
-        # Apply general enhancement factor to match Legacy visual prominence
-        default_enhancement = 1.08  # 8% enhancement to match Legacy behavior
+        # Apply general enhancement factor for optimal visual prominence
+        default_enhancement = 1.08  # 8% enhancement for better visibility
         enhanced_scale = min_scale * default_enhancement
 
         return (enhanced_scale, enhanced_scale)
@@ -235,7 +235,7 @@ class ContextAwareScalingService:
     def get_border_adjusted_size(
         self, target_size: int, border_width: Optional[int] = None
     ) -> int:
-        """Get size adjusted for border width, matching Legacy calculations."""
+        """Get size adjusted for border width with responsive calculations."""
         if border_width is None:
             border_width = self.border_width
 

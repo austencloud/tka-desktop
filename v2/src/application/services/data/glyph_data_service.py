@@ -2,7 +2,7 @@
 Glyph Data Service for Kinetic Constructor v2
 
 This service determines glyph information (VTG mode, elemental type, letter type, etc.)
-from beat data and motion information, following the same logic as the legacy system.
+from beat data and motion information, following validated glyph classification logic.
 """
 
 from typing import Optional, Dict, Any
@@ -20,7 +20,7 @@ from domain.models.core_models import (
 class GlyphDataService:
     """Service for determining glyph data from beat information."""
 
-    # COMPLETE mapping from letters to letter types (matching Legacy exactly)
+    # Complete mapping from letters to letter types
     LETTER_TYPE_MAP = {
         # TYPE1 letters (Dual-Shift: A-V)
         "A": LetterType.TYPE1,
@@ -125,7 +125,7 @@ class GlyphDataService:
         """
         Determine VTG mode from motion data.
 
-        This is a simplified implementation. The full legacy logic is quite complex
+        This is a simplified implementation. The full logic is quite complex
         and involves grid mode checking, position analysis, etc.
         """
         if not beat_data.blue_motion or not beat_data.red_motion:
@@ -135,7 +135,7 @@ class GlyphDataService:
         red_motion = beat_data.red_motion
 
         # Simplified VTG determination based on motion patterns
-        # This would need to be expanded with the full legacy logic
+        # This would need to be expanded with the full classification logic
 
         # Check if motions are in same or opposite directions
         same_direction = self._motions_same_direction(blue_motion, red_motion)
@@ -156,14 +156,14 @@ class GlyphDataService:
         self, blue_motion: MotionData, red_motion: MotionData
     ) -> bool:
         """Check if two motions are in the same direction."""
-        # Simplified check - would need full legacy logic
+        # Simplified check - would need full directional logic
         return blue_motion.prop_rot_dir == red_motion.prop_rot_dir
 
     def _determine_motion_pattern(
         self, blue_motion: MotionData, red_motion: MotionData
     ) -> str:
         """Determine if motions are split, together, or quarter pattern."""
-        # Simplified pattern detection - would need full legacy logic
+        # Simplified pattern detection - would need full pattern analysis logic
         blue_start = blue_motion.start_loc
         red_start = red_motion.start_loc
 

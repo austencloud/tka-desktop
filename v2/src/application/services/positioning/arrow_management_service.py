@@ -18,6 +18,10 @@ from abc import ABC, abstractmethod
 from PyQt6.QtCore import QPointF
 from PyQt6.QtGui import QTransform
 
+from application.services.positioning.default_placement_service import (
+    DefaultPlacementService,
+)
+
 try:
     from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 except ImportError:
@@ -39,13 +43,12 @@ from domain.models.pictograph_models import (
     GridData,
     GridMode,
 )
-from ..default_placement_service import DefaultPlacementService
-from ..placement_key_service import PlacementKeyService
+from .placement_key_service import PlacementKeyService
 from domain.models.letter_type_classifier import LetterTypeClassifier
 from .dash_location_service import DashLocationService
 
 if TYPE_CHECKING:
-    from ..special_placement_service import SpecialPlacementService
+    from .special_placement_service import SpecialPlacementService
 
 
 class IArrowManagementService(ABC):
@@ -99,13 +102,13 @@ class ArrowManagementService(IArrowManagementService):
         self.default_placement_service = DefaultPlacementService()
         self.placement_key_service = (
             PlacementKeyService()
-        )  # Initialize Legacy-compatible dash location service
+        )  # Initialize dash location service
         self.dash_location_service = (
             DashLocationService()
         )  # Cache special placement service to avoid reloading JSON files on every call
         self._special_placement_service: Optional["SpecialPlacementService"] = None
 
-        # CRITICAL FIX: Use correct coordinates from circle_coords.json (old working service)
+        # CRITICAL FIX: Use correct coordinates from circle_coords.json
         # Hand point coordinates (for STATIC/DASH arrows) - inner grid positions where props are placed
         self.HAND_POINTS = {
             Location.NORTH: QPointF(475.0, 331.9),
@@ -254,9 +257,9 @@ class ArrowManagementService(IArrowManagementService):
     def _calculate_dash_arrow_location(
         self, motion: MotionData, pictograph_data: PictographData = None
     ) -> Location:
-        """Calculate location for dash arrows using complete Legacy-compatible logic."""
+        """Calculate location for dash arrows using complete validated logic."""
 
-        # Extract required parameters for Legacy logic
+        # Extract required parameters for calculation
         letter_type = None
         color = "blue"  # Default color
         other_motion = None
@@ -282,7 +285,7 @@ class ArrowManagementService(IArrowManagementService):
                     color = arrow_color
                     break
 
-        # Use the comprehensive Legacy dash location service
+        # Use the comprehensive dash location service
         return self.dash_location_service.calculate_dash_location(
             motion=motion,
             color=color,
@@ -313,7 +316,7 @@ class ArrowManagementService(IArrowManagementService):
     def _calculate_arrow_rotation(
         self, motion: MotionData, arrow_location: Location
     ) -> float:
-        """Calculate arrow rotation using proven rotation calculators from old service."""
+        """Calculate arrow rotation using validated rotation calculators."""
         if motion.motion_type == MotionType.STATIC:
             return self._calculate_static_rotation(arrow_location)
         elif motion.motion_type == MotionType.PRO:
@@ -448,7 +451,7 @@ class ArrowManagementService(IArrowManagementService):
         self, arrow_data: ArrowData, pictograph_data: PictographData
     ) -> QPointF:
         """
-        Calculate adjustment using complete adjustment system from old service.
+        Calculate adjustment using complete validated adjustment system.
 
         This implements the complete adjustment pipeline:
         1. Default adjustments based on motion type and placement key
@@ -502,7 +505,7 @@ class ArrowManagementService(IArrowManagementService):
         try:
             # Use cached service instance to avoid expensive JSON reloading
             if self._special_placement_service is None:
-                from ..special_placement_service import SpecialPlacementService
+                from .special_placement_service import SpecialPlacementService
 
                 self._special_placement_service = SpecialPlacementService()
 

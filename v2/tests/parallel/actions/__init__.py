@@ -2,11 +2,11 @@
 Action Abstraction Layer
 ========================
 
-Standardized action system for parallel testing between Legacy and V2.
+Standardized action system for parallel testing between Legacy and Modern.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Provide standardized action abstractions for Legacy/V2 comparison
+PURPOSE: Provide standardized action abstractions for Legacy/Modern comparison
 """
 
 from .user_actions import (

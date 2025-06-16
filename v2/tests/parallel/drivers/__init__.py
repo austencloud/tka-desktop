@@ -6,7 +6,7 @@ Version-specific application drivers for parallel testing.
 
 LIFECYCLE: SCAFFOLDING
 DELETE_AFTER: Legacy deprecation complete
-PURPOSE: Provide application control interfaces for Legacy/V2 parallel testing
+PURPOSE: Provide application control interfaces for Legacy/Modern parallel testing
 """
 
 from .driver_base import (
@@ -17,7 +17,7 @@ from .driver_base import (
 )
 
 from .legacy_driver import LegacyApplicationDriver
-from .v2_driver import V2ApplicationDriver
+from .v2_driver import ModernApplicationDriver
 
 __all__ = [
     # Base interfaces and data structures
@@ -27,5 +27,5 @@ __all__ = [
     "BaseApplicationDriver",
     # Version-specific drivers
     "LegacyApplicationDriver",
-    "V2ApplicationDriver",
+    "ModernApplicationDriver",
 ]

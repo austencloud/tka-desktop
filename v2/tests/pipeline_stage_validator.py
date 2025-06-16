@@ -1,5 +1,5 @@
 """
-Pipeline Stage Validator for Legacy and V2 Pictograph Rendering.
+Pipeline Stage Validator for Legacy and Modern Pictograph Rendering.
 
 This validator tests dimensions at each major stage of the pictograph rendering pipeline
 to identify exactly where discrepancies are introduced.
@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
 
-# Add paths for both Legacy and V2
+# Add paths for both Legacy and Modern
 current_dir = os.path.dirname(os.path.abspath(__file__))
 legacy_src_path = os.path.join(current_dir, "..", "..", "legacy", "src")
 v2_src_path = os.path.join(current_dir, "..", "src")
@@ -21,9 +21,9 @@ sys.path.insert(0, legacy_src_path)
 sys.path.insert(0, v2_src_path)
 
 print(f"Legacy path: {legacy_src_path}")
-print(f"V2 path: {v2_src_path}")
+print(f"Modern path: {v2_src_path}")
 print(f"Legacy exists: {os.path.exists(legacy_src_path)}")
-print(f"V2 exists: {os.path.exists(v2_src_path)}")
+print(f"Modern exists: {os.path.exists(v2_src_path)}")
 
 
 @dataclass
@@ -63,7 +63,7 @@ class PipelineStageValidator:
                 BasePictographView,
             )
 
-            # Import V2 components
+            # Import Modern components
             from presentation.components.pictograph.pictograph_component import (
                 PictographComponent,
             )
@@ -102,7 +102,7 @@ class PipelineStageValidator:
                 "height": self.legacy_view.size().height(),
             }
 
-            # V2 dimensions after initialization
+            # Modern dimensions after initialization
             v2_dims["scene_rect"] = {
                 "width": self.v2_pictograph.scene.sceneRect().width(),
                 "height": self.v2_pictograph.scene.sceneRect().height(),
@@ -115,12 +115,12 @@ class PipelineStageValidator:
             # Check for discrepancies
             if legacy_dims["scene_rect"] != v2_dims["scene_rect"]:
                 discrepancies.append(
-                    f"Scene rect mismatch: Legacy={legacy_dims['scene_rect']}, V2={v2_dims['scene_rect']}"
+                    f"Scene rect mismatch: Legacy={legacy_dims['scene_rect']}, Modern={v2_dims['scene_rect']}"
                 )
 
             if legacy_dims["component_size"] != v2_dims["component_size"]:
                 discrepancies.append(
-                    f"Component size mismatch: Legacy={legacy_dims['component_size']}, V2={v2_dims['component_size']}"
+                    f"Component size mismatch: Legacy={legacy_dims['component_size']}, Modern={v2_dims['component_size']}"
                 )
 
         except Exception as e:
@@ -148,7 +148,7 @@ class PipelineStageValidator:
                     stage_name, legacy_dims, v2_dims, discrepancies
                 )
 
-            # Update V2
+            # Update Modern
             self.v2_pictograph.update_from_beat(beat_data)
 
             # Update Legacy
@@ -177,7 +177,7 @@ class PipelineStageValidator:
                 abs(legacy_dims["items_count"] - v2_dims["items_count"]) > 2
             ):  # Allow small difference
                 discrepancies.append(
-                    f"Item count significant difference: Legacy={legacy_dims['items_count']}, V2={v2_dims['items_count']}"
+                    f"Item count significant difference: Legacy={legacy_dims['items_count']}, Modern={v2_dims['items_count']}"
                 )
 
         except Exception as e:
@@ -215,7 +215,7 @@ class PipelineStageValidator:
                 "height": self.legacy_view.viewport().size().height(),
             }
 
-            # V2 scaling information
+            # Modern scaling information
             v2_transform = self.v2_pictograph.transform()
             v2_dims["transform_scale"] = {
                 "x": v2_transform.m11(),
@@ -259,7 +259,7 @@ class PipelineStageValidator:
 
             if scale_diff_x > 0.01 or scale_diff_y > 0.01:  # 1% tolerance
                 discrepancies.append(
-                    f"Transform scale difference: Legacy={legacy_dims['transform_scale']}, V2={v2_dims['transform_scale']}"
+                    f"Transform scale difference: Legacy={legacy_dims['transform_scale']}, Modern={v2_dims['transform_scale']}"
                 )
 
             # Check effective size difference
@@ -268,7 +268,7 @@ class PipelineStageValidator:
 
             if size_diff_w > 10 or size_diff_h > 10:  # 10px tolerance
                 discrepancies.append(
-                    f"Effective size difference: Legacy={legacy_dims['effective_size']}, V2={v2_dims['effective_size']}"
+                    f"Effective size difference: Legacy={legacy_dims['effective_size']}, Modern={v2_dims['effective_size']}"
                 )
 
         except Exception as e:
@@ -321,7 +321,7 @@ class PipelineStageValidator:
                 legacy_dims["tka_found"] = False
                 discrepancies.append("Legacy TKA glyph not found")
 
-            # V2 TKA glyph analysis
+            # Modern TKA glyph analysis
             v2_tka_found = False
             if self.v2_pictograph.scene:
                 for item in self.v2_pictograph.scene.items():
@@ -361,7 +361,7 @@ class PipelineStageValidator:
 
             if not v2_tka_found:
                 v2_dims["tka_found"] = False
-                discrepancies.append("V2 TKA glyph not found")
+                discrepancies.append("Modern TKA glyph not found")
 
             # Compare TKA dimensions if both found
             if legacy_dims.get("tka_bounding_rect") and v2_dims.get(
@@ -375,7 +375,7 @@ class PipelineStageValidator:
 
                 if width_diff > 5 or height_diff > 5:  # 5px tolerance
                     discrepancies.append(
-                        f"TKA size difference: Legacy={legacy_tka}, V2={v2_tka}"
+                        f"TKA size difference: Legacy={legacy_tka}, Modern={v2_tka}"
                     )
 
                 # Compare positions
@@ -386,7 +386,7 @@ class PipelineStageValidator:
 
                 if pos_diff_x > 10 or pos_diff_y > 10:  # 10px tolerance
                     discrepancies.append(
-                        f"TKA position difference: Legacy={legacy_pos}, V2={v2_pos}"
+                        f"TKA position difference: Legacy={legacy_pos}, Modern={v2_pos}"
                     )
 
         except Exception as e:
@@ -428,7 +428,7 @@ class PipelineStageValidator:
             return None
 
     def _convert_beat_data_to_legacy_format(self, beat_data) -> Dict[str, Any]:
-        """Convert V2 BeatData to Legacy format."""
+        """Convert Modern BeatData to Legacy format."""
         return {
             "letter": beat_data.letter,
             "start_pos": "alpha1",

@@ -12,7 +12,7 @@ from domain.models.core_models import (
 from .clickable_pictograph_frame import ClickablePictographFrame
 
 if TYPE_CHECKING:
-    from application.services.old_services_before_consolidation.pictograph_dataset_service import (
+    from application.services.data.pictograph_dataset_service import (
         PictographDatasetService,
     )
 
@@ -50,7 +50,7 @@ class PictographPoolManager(QObject):
             if progress_callback:
                 progress_callback("Loading pictograph dataset service", 0.4)
 
-            from application.services.old_services_before_consolidation.pictograph_dataset_service import (
+            from application.services.data.pictograph_dataset_service import (
                 PictographDatasetService,
             )
 
