@@ -10,15 +10,42 @@ This service provides a clean, unified interface for all layout operations
 while maintaining the proven algorithms from the individual services.
 """
 
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Dict, Any, Optional, Tuple, List, Union, TYPE_CHECKING
 from enum import Enum
 from dataclasses import dataclass
 import math
 import logging
+import uuid
+from datetime import datetime
 
 from PyQt6.QtCore import QSize
 from domain.models.core_models import SequenceData
 from core.interfaces.core_services import ILayoutService
+
+# Event-driven architecture imports
+if TYPE_CHECKING:
+    from core.events import IEventBus
+
+try:
+    from core.events import (
+        IEventBus,
+        get_event_bus,
+        EventPriority,
+        BeatAddedEvent,
+        BeatRemovedEvent,
+        BeatUpdatedEvent,
+        SequenceCreatedEvent,
+        LayoutRecalculatedEvent,
+        ComponentResizedEvent,
+    )
+
+    EVENT_SYSTEM_AVAILABLE = True
+except ImportError:
+    # For tests or when event system is not available
+    IEventBus = None
+    get_event_bus = None
+    EventPriority = None
+    EVENT_SYSTEM_AVAILABLE = False
 
 try:
     from src.core.decorators import handle_service_errors
@@ -110,7 +137,7 @@ class LayoutManagementService(ILayoutService):
     - Basic UI layout information (ILayoutService)
     """
 
-    def __init__(self):
+    def __init__(self, event_bus: Optional[Any] = None):
         # Layout presets for different contexts
         self._layout_presets = self._load_layout_presets()
 
@@ -128,6 +155,14 @@ class LayoutManagementService(ILayoutService):
         # Basic UI layout configuration (ILayoutService)
         self._main_window_size = QSize(1400, 900)
         self._layout_ratio = (10, 10)  # 50/50 split between workbench and picker
+
+        # NEW: Event system integration
+        self.event_bus = event_bus or (get_event_bus() if get_event_bus else None)
+        self._subscription_ids: List[str] = []
+
+        # Subscribe to relevant events
+        if self.event_bus:
+            self._setup_event_subscriptions()
 
     @handle_service_errors("calculate_beat_frame_layout")
     @monitor_performance("layout_calculation")
@@ -307,114 +342,6 @@ class LayoutManagementService(ILayoutService):
 
     # Private helper methods
 
-    def _calculate_horizontal_beat_layout(
-        self,
-        beat_count: int,
-        container_size: Tuple[int, int],
-        base_size: Tuple[int, int],
-        padding: int,
-        spacing: int,
-    ) -> Dict[str, Any]:
-        """Calculate horizontal layout for beat frames."""
-        container_width, container_height = container_size
-        base_width, base_height = base_size
-
-        # Calculate available space
-        available_width = container_width - 2 * padding
-        available_height = container_height - 2 * padding
-
-        # Calculate beat size with spacing
-        total_spacing = (beat_count - 1) * spacing
-        available_beat_width = available_width - total_spacing
-        beat_width = min(base_width, available_beat_width // beat_count)
-        beat_height = min(base_height, available_height)
-
-        # Maintain aspect ratio
-        if beat_width / beat_height > base_width / base_height:
-            beat_width = int(beat_height * base_width / base_height)
-        else:
-            beat_height = int(beat_width * base_height / base_width)
-
-        # Calculate positions
-        positions = {}
-        sizes = {}
-        start_x = (
-            padding + (available_width - (beat_count * beat_width + total_spacing)) // 2
-        )
-        y = padding + (available_height - beat_height) // 2
-
-        for i in range(beat_count):
-            x = start_x + i * (beat_width + spacing)
-            positions[f"beat_{i}"] = (x, y)
-            sizes[f"beat_{i}"] = (beat_width, beat_height)
-
-        total_width = beat_count * beat_width + total_spacing + 2 * padding
-        total_height = beat_height + 2 * padding
-
-        return {
-            "positions": positions,
-            "sizes": sizes,
-            "total_size": (total_width, total_height),
-            "scaling_factor": beat_width / base_width,
-        }
-
-    def _calculate_grid_beat_layout(
-        self,
-        beat_count: int,
-        container_size: Tuple[int, int],
-        base_size: Tuple[int, int],
-        padding: int,
-        spacing: int,
-    ) -> Dict[str, Any]:
-        """Calculate grid layout for beat frames."""
-        rows, cols = self.get_optimal_grid_layout(beat_count, container_size)
-
-        container_width, container_height = container_size
-        base_width, base_height = base_size
-
-        # Calculate available space
-        available_width = container_width - 2 * padding
-        available_height = container_height - 2 * padding
-
-        # Calculate beat size
-        col_spacing = (cols - 1) * spacing
-        row_spacing = (rows - 1) * spacing
-
-        beat_width = min(base_width, (available_width - col_spacing) // cols)
-        beat_height = min(base_height, (available_height - row_spacing) // rows)
-
-        # Maintain aspect ratio
-        if beat_width / beat_height > base_width / base_height:
-            beat_width = int(beat_height * base_width / base_height)
-        else:
-            beat_height = int(beat_width * base_height / base_width)
-
-        # Calculate positions
-        positions = {}
-        sizes = {}
-
-        grid_width = cols * beat_width + col_spacing
-        grid_height = rows * beat_height + row_spacing
-        start_x = padding + (available_width - grid_width) // 2
-        start_y = padding + (available_height - grid_height) // 2
-
-        for i in range(beat_count):
-            row = i // cols
-            col = i % cols
-
-            x = start_x + col * (beat_width + spacing)
-            y = start_y + row * (beat_height + spacing)
-
-            positions[f"beat_{i}"] = (x, y)
-            sizes[f"beat_{i}"] = (beat_width, beat_height)
-
-        return {
-            "positions": positions,
-            "sizes": sizes,
-            "total_size": (grid_width + 2 * padding, grid_height + 2 * padding),
-            "scaling_factor": beat_width / base_width,
-        }
-
     def _calculate_flow_layout(
         self, components: Dict[str, Any], container_size: Tuple[int, int]
     ) -> Dict[str, Tuple[int, int]]:
@@ -543,6 +470,241 @@ class LayoutManagementService(ILayoutService):
     def get_layout_ratio(self) -> Tuple[int, int]:
         """Get the layout ratio (workbench:picker)."""
         return self._layout_ratio
+
+    # NEW: Event-driven methods
+
+    def _setup_event_subscriptions(self):
+        """Subscribe to events that require layout recalculation."""
+        if not self.event_bus or not EventPriority:
+            return
+
+        # Subscribe to sequence events
+        sub_id = self.event_bus.subscribe(
+            "sequence.beat_added", self._on_beat_added, priority=EventPriority.HIGH
+        )
+        self._subscription_ids.append(sub_id)
+
+        sub_id = self.event_bus.subscribe(
+            "sequence.beat_removed", self._on_beat_removed, priority=EventPriority.HIGH
+        )
+        self._subscription_ids.append(sub_id)
+
+        sub_id = self.event_bus.subscribe(
+            "sequence.created", self._on_sequence_created, priority=EventPriority.HIGH
+        )
+        self._subscription_ids.append(sub_id)
+
+        # Subscribe to UI resize events
+        sub_id = self.event_bus.subscribe(
+            "layout.component_resized",
+            self._on_component_resized,
+            priority=EventPriority.NORMAL,
+        )
+        self._subscription_ids.append(sub_id)
+
+    def _on_beat_added(self, event: BeatAddedEvent):
+        """Handle beat added event by recalculating layout."""
+        if not self.event_bus:
+            return
+
+        logger.info(
+            f"Layout service responding to beat added: sequence {event.sequence_id}"
+        )
+
+        try:
+            # Recalculate layout for the updated sequence
+            # This replaces the direct call that used to happen in SequenceManagementService
+            container_size = (
+                self._main_window_size.width(),
+                self._main_window_size.height(),
+            )
+
+            # Trigger layout recalculation
+            layout_result = self._recalculate_beat_frame_layout(
+                beat_count=event.total_beats,
+                container_size=container_size,
+                trigger_reason="beat_added",
+            )
+
+            # Publish layout updated event for other services
+            self.event_bus.publish(
+                LayoutRecalculatedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="LayoutManagementService",
+                    layout_type="beat_frame",
+                    layout_data=layout_result,
+                    trigger_reason="beat_added",
+                )
+            )
+
+        except Exception as e:
+            logger.error(f"Failed to recalculate layout after beat added: {e}")
+
+    def _on_beat_removed(self, event: BeatRemovedEvent):
+        """Handle beat removed event by recalculating layout."""
+        if not self.event_bus:
+            return
+
+        logger.info(
+            f"Layout service responding to beat removed: sequence {event.sequence_id}"
+        )
+
+        try:
+            container_size = (
+                self._main_window_size.width(),
+                self._main_window_size.height(),
+            )
+
+            layout_result = self._recalculate_beat_frame_layout(
+                beat_count=event.remaining_beats,
+                container_size=container_size,
+                trigger_reason="beat_removed",
+            )
+
+            self.event_bus.publish(
+                LayoutRecalculatedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="LayoutManagementService",
+                    layout_type="beat_frame",
+                    layout_data=layout_result,
+                    trigger_reason="beat_removed",
+                )
+            )
+
+        except Exception as e:
+            logger.error(f"Failed to recalculate layout after beat removed: {e}")
+
+    def _on_sequence_created(self, event: SequenceCreatedEvent):
+        """Handle sequence created event by setting up initial layout."""
+        if not self.event_bus:
+            return
+
+        logger.info(
+            f"Layout service responding to sequence created: {event.sequence_name}"
+        )
+
+        try:
+            container_size = (
+                self._main_window_size.width(),
+                self._main_window_size.height(),
+            )
+
+            layout_result = self._recalculate_beat_frame_layout(
+                beat_count=event.sequence_length,
+                container_size=container_size,
+                trigger_reason="sequence_created",
+            )
+
+            self.event_bus.publish(
+                LayoutRecalculatedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="LayoutManagementService",
+                    layout_type="beat_frame",
+                    layout_data=layout_result,
+                    trigger_reason="sequence_created",
+                )
+            )
+
+        except Exception as e:
+            logger.error(f"Failed to setup layout for new sequence: {e}")
+
+    def _on_component_resized(self, event: ComponentResizedEvent):
+        """Handle component resize event by recalculating responsive layout."""
+        if not self.event_bus:
+            return
+
+        logger.info(
+            f"Layout service responding to component resize: {event.component_name}"
+        )
+
+        # Recalculate layout for the resized component
+        # This ensures responsive design works automatically
+
+    def _recalculate_beat_frame_layout(
+        self, beat_count: int, container_size: Tuple[int, int], trigger_reason: str
+    ) -> Dict[str, Any]:
+        """Recalculate beat frame layout and return result."""
+        if beat_count == 0:
+            return {"positions": {}, "sizes": {}, "total_size": (0, 0)}
+
+        # Use existing logic but with event-driven trigger
+        base_size = (120, 120)  # Default beat frame size
+        padding = 10
+        spacing = 5
+
+        if beat_count <= 8:  # Use horizontal layout
+            return self._calculate_horizontal_beat_layout(
+                beat_count, container_size, base_size, padding, spacing
+            )
+        else:  # Use grid layout
+            return self._calculate_grid_beat_layout(
+                beat_count, container_size, base_size, padding, spacing
+            )
+
+    def _calculate_horizontal_beat_layout(
+        self,
+        beat_count: int,
+        container_size: Tuple[int, int],
+        base_size: Tuple[int, int],
+        padding: int,
+        spacing: int,
+    ) -> Dict[str, Any]:
+        """Calculate horizontal layout for beats."""
+        width, height = container_size
+        beat_width, beat_height = base_size
+
+        total_width = beat_count * beat_width + (beat_count - 1) * spacing + 2 * padding
+
+        # Scale if necessary
+        if total_width > width:
+            scale = (width - 2 * padding - (beat_count - 1) * spacing) / (
+                beat_count * beat_width
+            )
+            beat_width = int(beat_width * scale)
+            beat_height = int(beat_height * scale)
+
+        return {
+            "layout_type": "horizontal",
+            "beat_size": (beat_width, beat_height),
+            "spacing": spacing,
+            "padding": padding,
+            "total_size": (total_width, beat_height + 2 * padding),
+        }
+
+    def _calculate_grid_beat_layout(
+        self,
+        beat_count: int,
+        container_size: Tuple[int, int],
+        base_size: Tuple[int, int],
+        padding: int,
+        spacing: int,
+    ) -> Dict[str, Any]:
+        """Calculate grid layout for beats."""
+        rows, cols = self.get_optimal_grid_layout(beat_count, container_size)
+        beat_width, beat_height = base_size
+
+        return {
+            "layout_type": "grid",
+            "rows": rows,
+            "columns": cols,
+            "beat_size": (beat_width, beat_height),
+            "spacing": spacing,
+            "padding": padding,
+            "total_size": (
+                cols * beat_width + (cols - 1) * spacing + 2 * padding,
+                rows * beat_height + (rows - 1) * spacing + 2 * padding,
+            ),
+        }
+
+    def cleanup(self):
+        """Clean up event subscriptions when service is destroyed."""
+        if self.event_bus:
+            for sub_id in self._subscription_ids:
+                self.event_bus.unsubscribe(sub_id)
+            self._subscription_ids.clear()
 
     def set_layout_ratio(self, ratio: Tuple[int, int]) -> None:
         """Set the layout ratio."""

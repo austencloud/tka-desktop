@@ -29,6 +29,12 @@ from core.interfaces.core_services import (
     IUIStateManagementService,
     ILayoutService,
 )
+
+# Import for event system (with fallback for compatibility)
+try:
+    from core.events import IEventBus
+except ImportError:
+    IEventBus = None
 from application.services.layout.layout_management_service import (
     LayoutManagementService,
 )
@@ -70,8 +76,15 @@ class KineticConstructorModern(QMainWindow):
         if self.splash:
             self.splash.update_progress(20, "Configuring services...")
 
-        # Register consolidated layout service (unified interface)
-        layout_management_service = LayoutManagementService()
+        # NEW: Register event system and commands first
+        self._register_event_system()
+
+        # Register consolidated layout service (unified interface) with event bus
+        event_bus = None
+        if IEventBus and IEventBus in self.container._singletons:
+            event_bus = self.container.resolve(IEventBus)
+
+        layout_management_service = LayoutManagementService(event_bus=event_bus)
         self.container.register_instance(
             ILayoutService, layout_management_service
         )  # Register UI state management service as instance to ensure immediate availability
@@ -94,6 +107,27 @@ class KineticConstructorModern(QMainWindow):
         if self.splash:
             self.splash.update_progress(40, "Services configured")
 
+    def _register_event_system(self):
+        """Register event system and command infrastructure."""
+        try:
+            from core.events import IEventBus, get_event_bus
+            from core.commands import CommandProcessor
+
+            # Get or create event bus
+            event_bus = get_event_bus()
+            self.container.register_instance(IEventBus, event_bus)
+
+            # Register command processor
+            command_processor = CommandProcessor(event_bus)
+            self.container.register_instance(CommandProcessor, command_processor)
+
+            if self.splash:
+                self.splash.update_progress(25, "Event system registered")
+
+        except ImportError as e:
+            print(f"⚠️ Event system not available: {e}")
+            # Continue without event system for backward compatibility
+
     def _register_motion_services(self):
         """Register the new focused motion services."""
         from application.services.motion.motion_validation_service import (
@@ -109,12 +143,16 @@ class KineticConstructorModern(QMainWindow):
             IMotionOrientationService,
         )
 
-        # Register focused motion services
+        # Register focused motion services with event bus
+        event_bus = None
+        if IEventBus and IEventBus in self.container._singletons:
+            event_bus = self.container.resolve(IEventBus)
+
         validation_service = MotionValidationService()
         self.container.register_instance(IMotionValidationService, validation_service)
 
         generation_service = MotionGenerationService(
-            validation_service=validation_service
+            validation_service=validation_service, event_bus=event_bus
         )
         self.container.register_instance(IMotionGenerationService, generation_service)
 

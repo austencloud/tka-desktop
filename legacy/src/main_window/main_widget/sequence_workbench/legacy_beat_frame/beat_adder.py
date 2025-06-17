@@ -51,7 +51,7 @@ class BeatAdder:
             new_beat.state.blue_reversal = reversal_info.get("blue_reversal", False)
             new_beat.state.red_reversal = reversal_info.get("red_reversal", False)
             self.beats[next_beat_index].set_beat(new_beat, next_beat_number)
-            new_beat.state.pictograph_data[BEAT] = next_beat_number
+            new_beat.state.pictograph_data[BEAT] = str(next_beat_number)
             if grow_sequence and not override_grow_sequence:
                 self._adjust_layout_and_update_sequence_builder(next_beat_index)
             elif not grow_sequence or override_grow_sequence:
@@ -111,7 +111,7 @@ class BeatAdder:
         current_beat_number = 1
         for beat_view in self.beats:
             if beat_view.is_filled and beat_view.beat:
-                current_beat_number += beat_view.beat.duration
+                current_beat_number += int(beat_view.beat.duration)
             else:
                 break
         return current_beat_number

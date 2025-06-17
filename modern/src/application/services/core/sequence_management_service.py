@@ -11,12 +11,13 @@ This service provides a clean, unified interface for all sequence operations
 while maintaining the proven algorithms from the individual services.
 """
 
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Union, TYPE_CHECKING, cast
 from abc import ABC, abstractmethod
 from enum import Enum
 import uuid
 import logging
 from copy import deepcopy
+from datetime import datetime
 
 from domain.models.core_models import (
     SequenceData,
@@ -27,6 +28,35 @@ from domain.models.core_models import (
     RotationDirection,
 )
 from domain.models.pictograph_models import PictographData
+
+# Event-driven architecture imports
+if TYPE_CHECKING:
+    from core.events import IEventBus
+    from core.commands import CommandProcessor
+
+try:
+    from core.events import (
+        IEventBus,
+        get_event_bus,
+        SequenceCreatedEvent,
+        BeatAddedEvent,
+        BeatUpdatedEvent,
+        BeatRemovedEvent,
+    )
+    from core.commands import (
+        CommandProcessor,
+        AddBeatCommand,
+        RemoveBeatCommand,
+        UpdateBeatCommand,
+    )
+
+    EVENT_SYSTEM_AVAILABLE = True
+except ImportError:
+    # For tests or when event system is not available
+    IEventBus = None
+    get_event_bus = None
+    CommandProcessor = None
+    EVENT_SYSTEM_AVAILABLE = False
 
 try:
     from src.core.decorators import handle_service_errors
@@ -90,6 +120,71 @@ class ISequenceManagementService(ABC):
         """Apply workbench transformation to sequence."""
         pass
 
+    # NEW: Event-driven methods with undo support
+    @abstractmethod
+    def create_sequence_with_events(self, name: str, length: int = 16) -> SequenceData:
+        """Create sequence and publish creation event."""
+        pass
+
+    @abstractmethod
+    def add_beat_with_undo(
+        self, beat: BeatData, position: Optional[int] = None
+    ) -> SequenceData:
+        """Add beat using command pattern with undo support."""
+        pass
+
+    @abstractmethod
+    def remove_beat_with_undo(self, position: int) -> SequenceData:
+        """Remove beat using command pattern with undo support."""
+        pass
+
+    @abstractmethod
+    def update_beat_with_undo(
+        self, beat_number: int, field_name: str, new_value: Any
+    ) -> SequenceData:
+        """Update beat field using command pattern with undo support."""
+        pass
+
+    @abstractmethod
+    def undo_last_operation(self) -> Optional[SequenceData]:
+        """Undo the last operation."""
+        pass
+
+    @abstractmethod
+    def redo_last_operation(self) -> Optional[SequenceData]:
+        """Redo the last undone operation."""
+        pass
+
+    @abstractmethod
+    def can_undo(self) -> bool:
+        """Check if undo is available."""
+        pass
+
+    @abstractmethod
+    def can_redo(self) -> bool:
+        """Check if redo is available."""
+        pass
+
+    @abstractmethod
+    def get_undo_description(self) -> Optional[str]:
+        """Get description of operation that would be undone."""
+        pass
+
+    @abstractmethod
+    def get_redo_description(self) -> Optional[str]:
+        """Get description of operation that would be redone."""
+        pass
+
+    @abstractmethod
+    def set_current_sequence(self, sequence: SequenceData) -> None:
+        """Set the current sequence for event-driven operations."""
+        pass
+
+    @abstractmethod
+    def get_current_sequence(self) -> Optional[SequenceData]:
+        """Get the current sequence."""
+        pass
+
 
 class SequenceType(Enum):
     """Types of sequence generation algorithms."""
@@ -124,7 +219,17 @@ class SequenceManagementService(ISequenceManagementService):
     - Sequence validation and optimization
     """
 
-    def __init__(self):
+    def __init__(self, event_bus: Optional[Any] = None):
+        # Event system integration
+        self.event_bus = event_bus or (get_event_bus() if get_event_bus else None)
+        self.command_processor = (
+            CommandProcessor(self.event_bus)
+            if CommandProcessor and self.event_bus
+            else None
+        )
+
+        # Current state (will be managed by commands)
+        self._current_sequence: Optional[SequenceData] = None
 
         # Workbench transformation matrices
         self._transformation_matrices = self._load_transformation_matrices()
@@ -269,29 +374,197 @@ class SequenceManagementService(ISequenceManagementService):
         else:
             raise ValueError(f"Unknown workbench operation: {operation}")
 
+    # NEW: Event-driven methods with undo capability
+
+    def create_sequence_with_events(self, name: str, length: int = 16) -> SequenceData:
+        """Create sequence and publish creation event."""
+        sequence = self.create_sequence(name, length)  # Use existing logic
+
+        if self.event_bus:
+            # Publish creation event instead of calling other services directly
+            self.event_bus.publish(
+                SequenceCreatedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="SequenceManagementService",
+                    sequence_id=sequence.id,
+                    sequence_name=sequence.name,
+                    sequence_length=sequence.length,
+                )
+            )
+
+        self._current_sequence = sequence
+        return sequence
+
+    def add_beat_with_undo(
+        self, beat: BeatData, position: Optional[int] = None
+    ) -> SequenceData:
+        """Add beat using command pattern with undo support."""
+        if not self._current_sequence:
+            raise ValueError("No active sequence")
+
+        if not self.command_processor:
+            raise ValueError(
+                "Command processor not available - event system not initialized"
+            )
+
+        if not self.event_bus:
+            raise ValueError("Event bus not available - event system not initialized")
+
+        if position is None:
+            position = len(self._current_sequence.beats)
+
+        # Create and execute command (this publishes events automatically)
+        command = AddBeatCommand(
+            sequence=self._current_sequence,
+            beat=beat,
+            position=position,
+            event_bus=self.event_bus,
+        )
+
+        result = self.command_processor.execute(command)
+        if result.success:
+            assert result.result is not None, "Command succeeded but result is None"
+            self._current_sequence = cast(SequenceData, result.result)
+            return cast(SequenceData, result.result)
+        else:
+            raise RuntimeError(f"Failed to add beat: {result.error_message}")
+
+    def remove_beat_with_undo(self, position: int) -> SequenceData:
+        """Remove beat using command pattern with undo support."""
+        if not self._current_sequence:
+            raise ValueError("No active sequence")
+
+        if not self.command_processor:
+            raise ValueError(
+                "Command processor not available - event system not initialized"
+            )
+
+        if not self.event_bus:
+            raise ValueError("Event bus not available - event system not initialized")
+
+        command = RemoveBeatCommand(
+            sequence=self._current_sequence, position=position, event_bus=self.event_bus
+        )
+
+        result = self.command_processor.execute(command)
+        if result.success:
+            assert result.result is not None, "Command succeeded but result is None"
+            self._current_sequence = cast(SequenceData, result.result)
+            return cast(SequenceData, result.result)
+        else:
+            raise RuntimeError(f"Failed to remove beat: {result.error_message}")
+
+    def update_beat_with_undo(
+        self, beat_number: int, field_name: str, new_value: Any
+    ) -> SequenceData:
+        """Update beat field using command pattern with undo support."""
+        if not self._current_sequence:
+            raise ValueError("No active sequence")
+
+        if not self.command_processor:
+            raise ValueError(
+                "Command processor not available - event system not initialized"
+            )
+
+        if not self.event_bus:
+            raise ValueError("Event bus not available - event system not initialized")
+
+        command = UpdateBeatCommand(
+            sequence=self._current_sequence,
+            beat_number=beat_number,
+            field_name=field_name,
+            new_value=new_value,
+            event_bus=self.event_bus,
+        )
+
+        result = self.command_processor.execute(command)
+        if result.success:
+            assert result.result is not None, "Command succeeded but result is None"
+            self._current_sequence = cast(SequenceData, result.result)
+            return cast(SequenceData, result.result)
+        else:
+            raise RuntimeError(f"Failed to update beat: {result.error_message}")
+
+    # NEW: Undo/Redo methods
+
+    def undo_last_operation(self) -> Optional[SequenceData]:
+        """Undo the last operation."""
+        if not self.command_processor:
+            return None
+
+        result = self.command_processor.undo()
+        if result.success:
+            self._current_sequence = cast(SequenceData, result.result)
+            return cast(SequenceData, result.result)
+        return None
+
+    def redo_last_operation(self) -> Optional[SequenceData]:
+        """Redo the last undone operation."""
+        if not self.command_processor:
+            return None
+
+        result = self.command_processor.redo()
+        if result.success:
+            self._current_sequence = cast(SequenceData, result.result)
+            return cast(SequenceData, result.result)
+        return None
+
+    def can_undo(self) -> bool:
+        """Check if undo is available."""
+        return self.command_processor.can_undo() if self.command_processor else False
+
+    def can_redo(self) -> bool:
+        """Check if redo is available."""
+        return self.command_processor.can_redo() if self.command_processor else False
+
+    def get_undo_description(self) -> Optional[str]:
+        """Get description of operation that would be undone."""
+        return (
+            self.command_processor.get_undo_description()
+            if self.command_processor
+            else None
+        )
+
+    def get_redo_description(self) -> Optional[str]:
+        """Get description of operation that would be redone."""
+        return (
+            self.command_processor.get_redo_description()
+            if self.command_processor
+            else None
+        )
+
+    def set_current_sequence(self, sequence: SequenceData) -> None:
+        """Set the current sequence for event-driven operations."""
+        self._current_sequence = sequence
+
+    def get_current_sequence(self) -> Optional[SequenceData]:
+        """Get the current sequence."""
+        return self._current_sequence
+
     # Private sequence generation methods
 
-    def _generate_freeform_sequence(self, length: int, **kwargs) -> SequenceData:
+    def _generate_freeform_sequence(self, length: int, **_kwargs) -> SequenceData:
         """Generate freeform sequence with random valid motions."""
         sequence = self.create_sequence("Freeform Sequence", length)
         return sequence
 
-    def _generate_circular_sequence(self, length: int, **kwargs) -> SequenceData:
+    def _generate_circular_sequence(self, length: int, **_kwargs) -> SequenceData:
         """Generate circular sequence where end connects to beginning."""
         sequence = self.create_sequence("Circular Sequence", length)
         return sequence
 
-    def _generate_auto_complete_sequence(self, length: int, **kwargs) -> SequenceData:
+    def _generate_auto_complete_sequence(self, length: int, **_kwargs) -> SequenceData:
         """Generate auto-completed sequence based on pattern recognition."""
         sequence = self.create_sequence("Auto Complete Sequence", length)
         return sequence
 
-    def _generate_mirror_sequence(self, length: int, **kwargs) -> SequenceData:
+    def _generate_mirror_sequence(self, length: int, **_kwargs) -> SequenceData:
         """Generate mirror sequence (palindromic pattern)."""
         sequence = self.create_sequence("Mirror Sequence", length)
         return sequence
 
-    def _generate_continuous_sequence(self, length: int, **kwargs) -> SequenceData:
+    def _generate_continuous_sequence(self, length: int, **_kwargs) -> SequenceData:
         """Generate continuous sequence where each beat flows into the next."""
         sequence = self.create_sequence("Continuous Sequence", length)
         return sequence
@@ -389,7 +662,7 @@ class SequenceManagementService(ISequenceManagementService):
 
         # Add complexity factors from analysis
         complexity_bonus = 0
-        for beat in sequence.beats:
+        for _ in sequence.beats:
             # Analyze beat complexity (placeholder)
             complexity_bonus += 1
 

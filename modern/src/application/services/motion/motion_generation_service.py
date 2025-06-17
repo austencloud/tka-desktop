@@ -11,9 +11,11 @@ This service provides a clean, focused interface for motion generation
 while maintaining the proven generation algorithms.
 """
 
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 import logging
+import uuid
+from datetime import datetime
 
 from domain.models.core_models import (
     MotionData,
@@ -21,6 +23,28 @@ from domain.models.core_models import (
     Location,
     RotationDirection,
 )
+
+# Event-driven architecture imports
+if TYPE_CHECKING:
+    from core.events import IEventBus
+
+try:
+    from core.events import (
+        IEventBus,
+        get_event_bus,
+        EventPriority,
+        BeatUpdatedEvent,
+        MotionGeneratedEvent,
+        MotionValidatedEvent,
+    )
+
+    EVENT_SYSTEM_AVAILABLE = True
+except ImportError:
+    # For tests or when event system is not available
+    IEventBus = None
+    get_event_bus = None
+    EventPriority = None
+    EVENT_SYSTEM_AVAILABLE = False
 
 try:
     from src.core.decorators import handle_service_errors
@@ -86,13 +110,25 @@ class MotionGenerationService(IMotionGenerationService):
     - Motion dataset management
     """
 
-    def __init__(self, validation_service=None):
+    def __init__(
+        self,
+        validation_service=None,
+        event_bus: Optional[Any] = None,
+    ):
         # Motion generation datasets
         self._motion_datasets = self._load_motion_datasets()
         self._letter_specific_rules = self._load_letter_specific_rules()
 
         # Optional validation service for filtering
         self._validation_service = validation_service
+
+        # NEW: Event system integration
+        self.event_bus = event_bus or (get_event_bus() if get_event_bus else None)
+        self._subscription_ids: List[str] = []
+
+        # Subscribe to relevant events
+        if self.event_bus:
+            self._setup_event_subscriptions()
 
     @handle_service_errors("get_valid_motion_combinations")
     @monitor_performance("motion_combination_generation")
@@ -191,6 +227,152 @@ class MotionGenerationService(IMotionGenerationService):
             return location_order[end_index]
         except ValueError:
             return start_loc
+
+    # NEW: Event-driven methods
+
+    def _setup_event_subscriptions(self):
+        """Subscribe to events that require motion generation."""
+        if not self.event_bus or not EventPriority:
+            return
+
+        # Subscribe to beat update events that might need motion generation
+        sub_id = self.event_bus.subscribe(
+            "sequence.beat_updated",
+            self._on_beat_updated,
+            priority=EventPriority.NORMAL,
+        )
+        self._subscription_ids.append(sub_id)
+
+    def _on_beat_updated(self, event: BeatUpdatedEvent):
+        """Handle beat updated event by generating motion if needed."""
+        if not self.event_bus:
+            return
+
+        logger.info(
+            f"Motion service responding to beat update: beat {event.beat_number}, field {event.field_changed}"
+        )
+
+        try:
+            # Check if the update requires motion generation
+            if self._should_generate_motion_for_update(event):
+                self._generate_motion_for_beat_update(event)
+
+        except Exception as e:
+            logger.error(f"Failed to generate motion for beat update: {e}")
+
+    def _should_generate_motion_for_update(self, event: BeatUpdatedEvent) -> bool:
+        """Determine if motion generation is needed for this beat update."""
+        # Generate motion when letter changes (might need new motion combinations)
+        if event.field_changed == "letter":
+            return True
+
+        # Generate motion when motion fields are cleared/reset
+        if (
+            event.field_changed in ["blue_motion", "red_motion"]
+            and event.new_value is None
+        ):
+            return True
+
+        return False
+
+    def _generate_motion_for_beat_update(self, event: BeatUpdatedEvent):
+        """Generate appropriate motion for the updated beat."""
+        if not self.event_bus:
+            return
+
+        # If letter was updated, generate new motion combinations
+        if event.field_changed == "letter" and event.new_value:
+            letter = str(event.new_value)
+            combinations = self.generate_motion_combinations_for_letter(letter)
+
+            if combinations:
+                # Take the first valid combination
+                blue_motion, red_motion = combinations[0]
+
+                # Publish motion generated events
+                self.event_bus.publish(
+                    MotionGeneratedEvent(
+                        event_id=str(uuid.uuid4()),
+                        timestamp=datetime.now(),
+                        source="MotionGenerationService",
+                        sequence_id=event.sequence_id,
+                        beat_number=event.beat_number,
+                        color="blue",
+                        motion_data=blue_motion.to_dict(),
+                        generation_method="letter_based_auto",
+                    )
+                )
+
+                self.event_bus.publish(
+                    MotionGeneratedEvent(
+                        event_id=str(uuid.uuid4()),
+                        timestamp=datetime.now(),
+                        source="MotionGenerationService",
+                        sequence_id=event.sequence_id,
+                        beat_number=event.beat_number,
+                        color="red",
+                        motion_data=red_motion.to_dict(),
+                        generation_method="letter_based_auto",
+                    )
+                )
+
+                logger.info(
+                    f"Generated motion for letter '{letter}' in beat {event.beat_number}"
+                )
+
+    def generate_motion_with_events(
+        self,
+        sequence_id: str,
+        beat_number: int,
+        letter: str,
+        generation_method: str = "manual",
+    ) -> Tuple[MotionData, MotionData]:
+        """Generate motion and publish events."""
+        combinations = self.generate_motion_combinations_for_letter(letter)
+
+        if not combinations:
+            raise ValueError(
+                f"No valid motion combinations found for letter '{letter}'"
+            )
+
+        blue_motion, red_motion = combinations[0]
+
+        # Publish events if event bus is available
+        if self.event_bus:
+            self.event_bus.publish(
+                MotionGeneratedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="MotionGenerationService",
+                    sequence_id=sequence_id,
+                    beat_number=beat_number,
+                    color="blue",
+                    motion_data=blue_motion.to_dict(),
+                    generation_method=generation_method,
+                )
+            )
+
+            self.event_bus.publish(
+                MotionGeneratedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="MotionGenerationService",
+                    sequence_id=sequence_id,
+                    beat_number=beat_number,
+                    color="red",
+                    motion_data=red_motion.to_dict(),
+                    generation_method=generation_method,
+                )
+            )
+
+        return blue_motion, red_motion
+
+    def cleanup(self):
+        """Clean up event subscriptions when service is destroyed."""
+        if self.event_bus:
+            for sub_id in self._subscription_ids:
+                self.event_bus.unsubscribe(sub_id)
+            self._subscription_ids.clear()
 
     # Private validation methods
 

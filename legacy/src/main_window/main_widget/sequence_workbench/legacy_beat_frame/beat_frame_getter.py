@@ -38,7 +38,9 @@ class BeatFrameGetter:
             if beat_view.is_filled:
                 if beat_view.beat.state.pictograph_data.get("is_placeholder", False):
                     continue
-                word += beat_view.beat.state.pictograph_data.get(LETTER, "")
+                letter = beat_view.beat.state.pictograph_data.get(LETTER, "")
+                if isinstance(letter, str):
+                    word += letter
         return WordSimplifier.simplify_repeated_word(word)
 
     def index_of_currently_selected_beat(self) -> int:
@@ -61,19 +63,19 @@ class BeatFrameGetter:
         return self.currently_selected_beat_view().number
 
     def duration_of_currently_selected_beat(self) -> int:
-        return self.currently_selected_beat_view().beat.duration
+        return int(self.currently_selected_beat_view().beat.duration)
 
-    def beat_view_by_number(self, beat_number: int) -> "LegacyBeatView":
+    def beat_view_by_number(self, beat_number: int) -> Union["LegacyBeatView", None]:
         for beat_view in self.beat_frame.beat_views:
             if beat_view.number == beat_number:
                 return beat_view
         return None
 
-    def beat_number(self, beat_view: QGraphicsView) -> int:
+    def beat_number(self, beat_view: "LegacyBeatView") -> int:
         """Get the beat number for a given beat view."""
         return self.beat_frame.beat_views.index(beat_view) + 1
 
-    def index_of_beat(self, beat_view: QGraphicsView) -> int:
+    def index_of_beat(self, beat_view: "LegacyBeatView") -> int:
         """Get the index of a given beat view."""
         return self.beat_frame.beat_views.index(beat_view)
 

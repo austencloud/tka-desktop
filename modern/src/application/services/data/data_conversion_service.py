@@ -20,40 +20,57 @@ try:
         GlyphData,
     )
     from .glyph_data_service import GlyphDataService
-    from src.core.decorators import handle_service_errors
-    from src.core.monitoring import monitor_performance
-    from src.core.exceptions import DataProcessingError, ValidationError
+    from core.decorators import handle_service_errors
+    from core.monitoring import monitor_performance
+    from core.exceptions import DataProcessingError, ValidationError
 except ImportError:
     # Fallback to absolute imports (for standalone tests)
-    from domain.models.core_models import (
-        BeatData,
-        MotionData,
-        MotionType,
-        HandMotionType,
-        RotationDirection,
-        Location,
-        GlyphData,
-    )
-    from glyph_data_service import GlyphDataService
+    try:
+        from domain.models.core_models import (
+            BeatData,
+            MotionData,
+            MotionType,
+            HandMotionType,
+            RotationDirection,
+            Location,
+            GlyphData,
+        )
+        from .glyph_data_service import GlyphDataService
+        from core.decorators import handle_service_errors
+        from core.monitoring import monitor_performance
+        from core.exceptions import DataProcessingError, ValidationError
+    except ImportError:
+        # For tests, create dummy decorators if imports fail
+        def handle_service_errors(*args, **kwargs):
+            def decorator(func):
+                return func
 
-    # For tests, create dummy decorators if imports fail
-    def handle_service_errors(*args, **kwargs):
-        def decorator(func):
-            return func
+            return decorator
 
-        return decorator
+        def monitor_performance(*args, **kwargs):
+            def decorator(func):
+                return func
 
-    def monitor_performance(*args, **kwargs):
-        def decorator(func):
-            return func
+            return decorator
 
-        return decorator
+        class DataProcessingError(Exception):
+            def __init__(
+                self,
+                message: str,
+                data_type: Optional[str] = None,
+                processing_stage: Optional[str] = None,
+            ):
+                super().__init__(message)
+                self.data_type = data_type
+                self.processing_stage = processing_stage
 
-    class DataProcessingError(Exception):
-        pass
-
-    class ValidationError(Exception):
-        pass
+        class ValidationError(Exception):
+            def __init__(
+                self, message: str, field: Optional[str] = None, value: Any = None
+            ):
+                super().__init__(message)
+                self.field = field
+                self.value = value
 
 
 logger = logging.getLogger(__name__)

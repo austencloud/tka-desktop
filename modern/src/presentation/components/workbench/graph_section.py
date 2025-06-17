@@ -23,16 +23,14 @@ class WorkbenchGraphSection(QWidget):
         self._graph_service = graph_service
         self._graph_editor: Optional["GraphEditor"] = None
         self._current_sequence: Optional[SequenceData] = None
-        self._current_beat_index: int = 0  # Track current beat index
-
-        self._setup_ui()
+        self._current_beat_index: int = 0  # Track current beat index        self._setup_ui()
         self._connect_signals()
 
     def _setup_ui(self):
         """Setup graph editor component"""
         from .graph_editor.graph_editor import GraphEditor
 
-        self._graph_editor = GraphEditor(graph_service=self._graph_service, parent=self)
+        self._graph_editor = GraphEditor(graph_service=self._graph_service, parent=None)
 
         # Single child widget, no layout needed
         self._graph_editor.setParent(self)

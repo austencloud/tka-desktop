@@ -33,7 +33,7 @@ class BeatFrameResizer:
             - scrollbar_width
         )
         width = int(available_width * 0.8)
-        available_height = (
+        available_height = int(
             self.sequence_workbench.height()
             - self.sequence_workbench.graph_editor.get_graph_editor_height() * 0.8
         )

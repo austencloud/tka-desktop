@@ -55,10 +55,23 @@ def configure_workbench_services(container: DIContainer) -> None:
     # Get UI state service for services that need it
     ui_state_service = container.resolve(IUIStateManagementService)
 
-    # Register consolidated services directly
-    container.register_singleton(ISequenceWorkbenchService, SequenceManagementService)
-    container.register_singleton(IBeatDeletionService, SequenceManagementService)
-    container.register_singleton(IDictionaryService, SequenceManagementService)
+    # Register consolidated services directly with event bus support
+    try:
+        from core.events import IEventBus
+
+        event_bus = (
+            container.resolve(IEventBus)
+            if hasattr(container, "_singletons") and IEventBus in container._singletons
+            else None
+        )
+    except ImportError:
+        event_bus = None
+
+    # Create sequence management service with event bus
+    sequence_service = SequenceManagementService(event_bus=event_bus)
+    container.register_instance(ISequenceWorkbenchService, sequence_service)
+    container.register_instance(IBeatDeletionService, sequence_service)
+    container.register_instance(IDictionaryService, sequence_service)
     container.register_singleton(
         IFullScreenService, FullScreenService
     )  # Register GraphEditorService with UI state service dependency

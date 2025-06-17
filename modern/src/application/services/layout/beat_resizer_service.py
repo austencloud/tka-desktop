@@ -5,7 +5,7 @@ Implements sophisticated beat sizing logic with precise
 dimension calculations and intelligent responsive behavior.
 """
 
-from typing import Tuple, Optional, TYPE_CHECKING
+from typing import Tuple, Optional, TYPE_CHECKING, Union
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea, QWidget
 
@@ -13,6 +13,12 @@ if TYPE_CHECKING:
     from presentation.components.workbench.sequence_beat_frame.sequence_beat_frame import (
         SequenceBeatFrame,
     )
+    from presentation.components.workbench.beat_frame.beat_frame import (
+        BeatFrame,
+    )
+
+# Type alias for beat frame components
+BeatFrameType = Union["SequenceBeatFrame", "BeatFrame"]
 
 
 def ensure_positive_size(size: int, min_value: int = 1) -> int:
@@ -25,8 +31,7 @@ class BeatResizerService:
     Enhanced beat frame resizer with validated sizing algorithms.
 
     Provides intelligent beat sizing that considers:
-    - Available container space
-    - Number of columns in current layout
+    - Available container space    - Number of columns in current layout
     - Fixed height ratio for optimal display
     - Dynamic scroll bar management
     """
@@ -36,7 +41,7 @@ class BeatResizerService:
         self._size_cache = {}
 
     def resize_beat_frame(
-        self, beat_frame: "SequenceBeatFrame", num_rows: int, num_columns: int
+        self, beat_frame: BeatFrameType, num_rows: int, num_columns: int
     ) -> int:
         """
         Complete beat frame resize using validated algorithm.
@@ -55,7 +60,7 @@ class BeatResizerService:
         self.configure_scroll_behavior(beat_frame, num_rows)
         return beat_size
 
-    def calculate_dimensions(self, beat_frame: "SequenceBeatFrame") -> Tuple[int, int]:
+    def calculate_dimensions(self, beat_frame: BeatFrameType) -> Tuple[int, int]:
         """
         Calculate available container dimensions using validated logic.
 
@@ -120,7 +125,7 @@ class BeatResizerService:
         self._size_cache[cache_key] = beat_size
         return beat_size
 
-    def resize_beats(self, beat_frame: "SequenceBeatFrame", beat_size: int):
+    def resize_beats(self, beat_frame: BeatFrameType, beat_size: int):
         """
         Resize beat views using validated logic.
 
@@ -147,7 +152,7 @@ class BeatResizerService:
             if hasattr(start_position_view, "setMinimumSize"):
                 start_position_view.setMinimumSize(min_size, min_size)
 
-    def configure_scroll_behavior(self, beat_frame: "SequenceBeatFrame", num_rows: int):
+    def configure_scroll_behavior(self, beat_frame: BeatFrameType, num_rows: int):
         """
         Configure scroll bar behavior using validated logic.
 
