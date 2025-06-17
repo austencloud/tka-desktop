@@ -1,11 +1,11 @@
 {
   "user_settings": {
     "graph_editor_sequence_info": {
-      "beat_count": 2,
-      "sequence_id": "d9e1f9b0-68df-4372-8f75-4395f78a458b"
+      "beat_count": 3,
+      "sequence_id": "5aeb9395-9dbe-4b60-b3f3-f197d4eedd92"
     },
     "prop_type": "Fan",
-    "background_type": "Snowfall"
+    "background_type": "Starfield"
   },
   "window_geometry": {},
   "window_maximized": false,

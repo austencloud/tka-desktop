@@ -11,7 +11,9 @@ This script will:
 import sys
 import os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "modern", "src"))
+# Add the modern src directory to the Python path
+modern_src_path = os.path.join(os.path.dirname(__file__), "..", "src")
+sys.path.insert(0, os.path.abspath(modern_src_path))
 
 
 def debug_position_glyph_data():
@@ -36,6 +38,33 @@ def debug_position_glyph_data():
 
         # Get sample position-matched beats
         print("\n🎯 Getting sample beats from position matching service...")
+        sample_beats = position_service.get_next_options("alpha1")
+        
+        # Find a cross-position example
+        cross_position_beat = None
+        for beat in sample_beats:
+            start = beat.metadata.get("start_pos", "")
+            end = beat.metadata.get("end_pos", "")
+            if start.startswith("alpha") and end.startswith("beta"):
+                cross_position_beat = beat
+                break
+        
+        if cross_position_beat:
+            print(f"\n🎯 Found cross-position example: {cross_position_beat.letter}")
+            print(f"   {cross_position_beat.metadata.get('start_pos')} → {cross_position_beat.metadata.get('end_pos')}")
+            
+            # Test this specific case
+            glyph_data = cross_position_beat.glyph_data
+            if glyph_data:
+                print(f"   Glyph start_position: {glyph_data.start_position}")
+                print(f"   Glyph end_position: {glyph_data.end_position}")
+                
+                # Extract alphabetic parts (what the renderer will use)
+                start_symbol = "".join(filter(str.isalpha, glyph_data.start_position or ""))
+                end_symbol = "".join(filter(str.isalpha, glyph_data.end_position or ""))
+                print(f"   Rendered as: {start_symbol} → {end_symbol}")
+        
+        # Reset to alpha1 for main test
         sample_beats = position_service.get_next_options("alpha1")
 
         if not sample_beats:
@@ -66,7 +95,7 @@ def debug_position_glyph_data():
             # Test glyph generation manually
             print(f"🔧 Testing manual glyph generation...")
             try:
-                manual_glyph = pictograph_service.determine_glyph_data(beat_data)
+                manual_glyph = pictograph_service._generate_glyph_data(beat_data)
                 if manual_glyph:
                     print(f"   Manual start_position: {manual_glyph.start_position}")
                     print(f"   Manual end_position: {manual_glyph.end_position}")

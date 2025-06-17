@@ -236,8 +236,7 @@ class PositionMatchingService:
 
         # Return final BeatData object with glyph data
         return BeatData(
-            beat_number=1,
-            letter=letter,
+            beat_number=1,            letter=letter,
             blue_motion=blue_motion,
             red_motion=red_motion,
             glyph_data=glyph_data,
@@ -248,11 +247,11 @@ class PositionMatchingService:
         )
 
     def _generate_glyph_data(self, beat_data: "BeatData") -> Optional["GlyphData"]:
-        """Generate glyph data for beat data using the glyph data service."""
-        from application.services.data.glyph_data_service import GlyphDataService
+        """Generate glyph data for beat data using the consolidated pictograph management service."""
+        from application.services.core.pictograph_management_service import PictographManagementService
 
-        glyph_service = GlyphDataService()
-        return glyph_service.determine_glyph_data(beat_data)
+        pictograph_service = PictographManagementService()
+        return pictograph_service._generate_glyph_data(beat_data)
 
     def _parse_motion_type(self, motion_type_str: str) -> "MotionType":
         """Parse motion type string to MotionType enum."""

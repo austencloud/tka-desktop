@@ -26,7 +26,6 @@ sys.path.insert(0, str(modern_src_path))
 
 from core.dependency_injection.di_container import get_container
 from core.interfaces.core_services import (
-    ILayoutManagementService,
     IUIStateManagementService,
     ILayoutService,
 )
@@ -71,11 +70,8 @@ class KineticConstructorModern(QMainWindow):
         if self.splash:
             self.splash.update_progress(20, "Configuring services...")
 
-        # Register consolidated services
+        # Register consolidated layout service (unified interface)
         layout_management_service = LayoutManagementService()
-        self.container.register_instance(
-            ILayoutManagementService, layout_management_service
-        )  # Register the same service instance for ILayoutService interface
         self.container.register_instance(
             ILayoutService, layout_management_service
         )  # Register UI state management service as instance to ensure immediate availability
@@ -125,16 +121,8 @@ class KineticConstructorModern(QMainWindow):
         orientation_service = MotionOrientationService()
         self.container.register_instance(IMotionOrientationService, orientation_service)
 
-        # Register bridge service for backward compatibility
-        from application.services.motion.motion_management_bridge_service import (
-            MotionManagementBridgeService,
-        )
-        from core.interfaces.core_services import IMotionManagementService
-
-        bridge_service = MotionManagementBridgeService(
-            validation_service, generation_service, orientation_service
-        )
-        self.container.register_instance(IMotionManagementService, bridge_service)
+        # Bridge service removed - consumers should use focused services directly
+        # (MotionValidationService, MotionGenerationService, MotionOrientationService)
 
     def _register_layout_services(self):
         """Register the new focused layout services."""
@@ -326,7 +314,6 @@ class KineticConstructorModern(QMainWindow):
                 self.splash.update_progress(76, "Creating construct tab container...")
 
             # Basic container creation
-            from core.dependency_injection.di_container import DIContainer
 
             if self.splash:
                 self.splash.update_progress(78, "Setting up dependency injection...")

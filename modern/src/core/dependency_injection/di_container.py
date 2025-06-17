@@ -11,11 +11,8 @@ from typing import (
     Dict,
     Any,
     Optional,
-    Callable,
     Union,
     get_type_hints,
-    Protocol,
-    List,
     Set,
 )
 import logging
@@ -49,12 +46,7 @@ class DIContainer:
         self._singletons: Dict[Type, Any] = {}
         self._factories: Dict[Type, Type] = {}
         self._resolution_stack: Set[Type] = set()
-        self._cleanup_handlers: List[Callable[[], None]] = (
-            []
-        )  # For lifecycle management
-        self._creation_stack: List[Type] = (
-            []
-        )  # For enhanced circular dependency detection
+        # Removed _cleanup_handlers and _creation_stack - were unused
 
     def register_singleton(self, interface: Type[T], implementation: Type[T]) -> None:
         """Register a service as singleton (one instance per container)."""
@@ -288,175 +280,26 @@ class DIContainer:
 
         return param_type in primitive_types
 
-    def auto_register_with_validation(
-        self, interface: Type[T], implementation: Type[T]
-    ) -> None:
-        """Register service with comprehensive validation."""
-        # Step 1: Validate Protocol implementation
-        self._validate_protocol_implementation(interface, implementation)
+    # auto_register_with_validation removed - was unused and over-engineered
+    # Use register_singleton or register_transient directly for simpler registration
 
-        # Step 2: Validate dependency chain can be resolved
-        self._validate_dependency_chain(implementation)
+    # _validate_dependency_chain removed - was unused and over-engineered
+    # Dependencies are validated at resolution time, not registration time
 
-        # Step 3: Register if validation passes
-        self.register_singleton(interface, implementation)
+    # validate_all_registrations removed - was unused and over-engineered
+    # Services are validated when they are resolved, not upfront
 
-        logger.info(
-            f"✅ Successfully registered {interface.__name__} -> {implementation.__name__}"
-        )
+    # _get_constructor_dependencies removed - was unused and over-engineered
+    # Dependencies are resolved dynamically at runtime
 
-    def _validate_dependency_chain(self, implementation: Type) -> None:
-        """Validate that all constructor dependencies can be resolved."""
-        signature = inspect.signature(implementation.__init__)
-        type_hints = get_type_hints(implementation.__init__)
+    # _detect_circular_dependencies removed - was unused and over-engineered
+    # Circular dependencies are detected at resolution time via _resolution_stack
 
-        for param_name, param in signature.parameters.items():
-            if param_name == "self":
-                continue
+    # get_dependency_graph removed - was unused and over-engineered
+    # Use debug_info() for basic container debugging instead
 
-            # Skip if has default value
-            if param.default != inspect.Parameter.empty:
-                continue
-
-            param_type = type_hints.get(param_name, param.annotation)
-
-            # Skip if no type annotation
-            if not param_type or param_type == inspect.Parameter.empty:
-                continue
-
-            # Skip primitives
-            if self._is_primitive_type(param_type):
-                continue
-
-            # Check if dependency is registered
-            if param_type not in self._services and param_type not in self._factories:
-                raise ValueError(
-                    f"Dependency {param_type.__name__} for {implementation.__name__} "
-                    f"is not registered. Register it first or make parameter optional."
-                )
-
-    def validate_all_registrations(self) -> None:
-        """Validate that all registered services can be instantiated."""
-        errors = []
-
-        for interface, implementation in self._services.items():
-            try:
-                self.resolve(interface)
-                logger.info(f"✅ {interface.__name__} -> {implementation.__name__}")
-            except Exception as e:
-                errors.append(f"❌ {interface.__name__}: {e}")
-
-        if errors:
-            logger.error("Registration validation failed:")
-            for error in errors:
-                logger.error(f"  {error}")
-            raise ValueError(
-                f"Service registration validation failed: {len(errors)} errors"
-            )
-
-        logger.info(
-            f"✅ All {len(self._services)} service registrations validated successfully"
-        )
-
-    def _get_constructor_dependencies(self, implementation: Type) -> List[Type]:
-        """Get list of constructor dependencies for a class."""
-        try:
-            signature = inspect.signature(implementation.__init__)
-            type_hints = get_type_hints(implementation.__init__)
-            dependencies = []
-
-            for param_name, param in signature.parameters.items():
-                if param_name == "self":
-                    continue
-
-                # Skip if has default value
-                if param.default != inspect.Parameter.empty:
-                    continue
-
-                param_type = type_hints.get(param_name, param.annotation)
-
-                # Skip if no type annotation
-                if not param_type or param_type == inspect.Parameter.empty:
-                    continue
-
-                # Skip primitive types
-                if self._is_primitive_type(param_type):
-                    continue
-
-                dependencies.append(param_type)
-
-            return dependencies
-
-        except Exception:
-            return []
-
-    def _detect_circular_dependencies(
-        self, start_type: Type, visited: Optional[Set[Type]] = None
-    ) -> None:
-        """Detect circular dependencies in the service graph."""
-        if visited is None:
-            visited = set()
-
-        if start_type in visited:
-            cycle_path = (
-                " -> ".join(t.__name__ for t in visited) + f" -> {start_type.__name__}"
-            )
-            raise ValueError(f"Circular dependency detected: {cycle_path}")
-
-        visited.add(start_type)
-
-        # Get implementation for this type
-        implementation = self._services.get(start_type) or self._factories.get(
-            start_type
-        )
-        if implementation:
-            dependencies = self._get_constructor_dependencies(implementation)
-            for dep in dependencies:
-                self._detect_circular_dependencies(dep, visited.copy())
-
-    def get_dependency_graph(self) -> Dict[str, List[str]]:
-        """Generate dependency graph for debugging."""
-        graph = {}
-
-        for interface, implementation in self._services.items():
-            deps = self._get_constructor_dependencies(implementation)
-            graph[f"{interface.__name__} -> {implementation.__name__}"] = [
-                dep.__name__ for dep in deps if not self._is_primitive_type(dep)
-            ]
-
-        for interface, implementation in self._factories.items():
-            deps = self._get_constructor_dependencies(implementation)
-            graph[f"{interface.__name__} -> {implementation.__name__} (transient)"] = [
-                dep.__name__ for dep in deps if not self._is_primitive_type(dep)
-            ]
-
-        return graph
-
-    def _create_with_lifecycle(self, implementation_class: Type) -> Any:
-        """Create instance with proper lifecycle management."""
-        instance = self._create_instance(implementation_class)
-
-        # Call initialization method if it exists
-        if hasattr(instance, "initialize") and callable(
-            getattr(instance, "initialize")
-        ):
-            instance.initialize()
-
-        # Register for cleanup if it has cleanup method
-        if hasattr(instance, "cleanup") and callable(getattr(instance, "cleanup")):
-            self._cleanup_handlers.append(instance.cleanup)
-
-        return instance
-
-    def cleanup_all(self) -> None:
-        """Cleanup all registered services."""
-        for cleanup_handler in reversed(self._cleanup_handlers):
-            try:
-                cleanup_handler()
-            except Exception as e:
-                logger.error(f"Error during service cleanup: {e}")
-
-        self._cleanup_handlers.clear()
+    # _create_with_lifecycle and cleanup_all removed - were unused and over-engineered
+    # Services can implement their own cleanup if needed
 
 
 def get_container() -> DIContainer:

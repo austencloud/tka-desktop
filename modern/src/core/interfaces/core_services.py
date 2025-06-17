@@ -10,8 +10,14 @@ from PyQt6.QtCore import QSize
 
 
 class ILayoutService(ABC):
-    """Interface for layout management services."""
+    """
+    Unified interface for all layout management operations.
 
+    Consolidates both basic UI layout and advanced layout calculations
+    into a single cohesive interface to reduce complexity.
+    """
+
+    # Basic UI Layout Methods (formerly ILayoutService)
     @abstractmethod
     def get_main_window_size(self) -> QSize:
         """Get the main window size."""
@@ -42,6 +48,35 @@ class ILayoutService(ABC):
         self, component_type: str, parent_size: QSize
     ) -> QSize:
         """Calculate component size based on parent and type."""
+        pass
+
+    # Advanced Layout Methods (formerly ILayoutManagementService)
+    @abstractmethod
+    def calculate_beat_frame_layout(
+        self, sequence: Any, container_size: Tuple[int, int]
+    ) -> Dict[str, Any]:
+        """Calculate layout for beat frames in a sequence."""
+        pass
+
+    @abstractmethod
+    def calculate_responsive_scaling(
+        self, content_size: Tuple[int, int], container_size: Tuple[int, int]
+    ) -> float:
+        """Calculate responsive scaling factor."""
+        pass
+
+    @abstractmethod
+    def get_optimal_grid_layout(
+        self, item_count: int, container_size: Tuple[int, int]
+    ) -> Tuple[int, int]:
+        """Get optimal grid layout (rows, cols) for items."""
+        pass
+
+    @abstractmethod
+    def calculate_component_positions(
+        self, layout_config: Dict[str, Any]
+    ) -> Dict[str, Tuple[int, int]]:
+        """Calculate positions for UI components."""
         pass
 
 
@@ -148,34 +183,11 @@ class IArrowManagementService(ABC):
         pass
 
 
-class IMotionManagementService(ABC):
-    """Interface for unified motion management operations."""
-
-    @abstractmethod
-    def validate_motion_combination(self, blue_motion: Any, red_motion: Any) -> bool:
-        """Validate that two motions can be combined in a beat."""
-        pass
-
-    @abstractmethod
-    def get_valid_motion_combinations(
-        self, motion_type: Any, location: Any
-    ) -> List[Any]:
-        """Get all valid motion combinations for a given type and location."""
-        pass
-
-    @abstractmethod
-    def calculate_motion_orientation(
-        self, motion: Any, start_orientation: Any = None
-    ) -> Any:
-        """Calculate end orientation for a motion."""
-        pass
-
-    @abstractmethod
-    def get_motion_validation_errors(
-        self, blue_motion: Any, red_motion: Any
-    ) -> List[str]:
-        """Get detailed validation errors for motion combination."""
-        pass
+# IMotionManagementService removed - bridge service eliminated
+# Consumers should use focused services directly:
+# - IMotionValidationService for validation
+# - IMotionGenerationService for generation
+# - IMotionOrientationService for orientation
 
 
 class ISequenceManagementService(ABC):
@@ -250,26 +262,5 @@ class IUIStateManagementService(ABC):
         pass
 
 
-class ILayoutManagementService(ABC):
-    """Interface for unified layout management operations."""
-
-    @abstractmethod
-    def calculate_beat_frame_layout(
-        self, sequence: Any, container_size: Tuple[int, int]
-    ) -> Dict[str, Any]:
-        """Calculate layout for beat frames in a sequence."""
-        pass
-
-    @abstractmethod
-    def calculate_responsive_scaling(
-        self, content_size: Tuple[int, int], container_size: Tuple[int, int]
-    ) -> float:
-        """Calculate responsive scaling factor."""
-        pass
-
-    @abstractmethod
-    def get_optimal_grid_layout(
-        self, item_count: int, container_size: Tuple[int, int]
-    ) -> Tuple[int, int]:
-        """Get optimal grid layout (rows, cols) for items."""
-        pass
+# ILayoutManagementService has been consolidated into ILayoutService above
+# This removes the duplicate interface definition to reduce complexity

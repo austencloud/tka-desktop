@@ -11,46 +11,17 @@ while maintaining the proven algorithms from the individual services.
 """
 
 from typing import Dict, Any, Optional, Tuple, List
-from abc import ABC, abstractmethod
 from enum import Enum
 from dataclasses import dataclass
 import math
 
 from PyQt6.QtCore import QSize
-from domain.models.core_models import SequenceData, BeatData
+from domain.models.core_models import SequenceData
 from core.interfaces.core_services import ILayoutService
 
 
-class ILayoutManagementService(ABC):
-    """Unified interface for all layout management operations."""
-
-    @abstractmethod
-    def calculate_beat_frame_layout(
-        self, sequence: SequenceData, container_size: Tuple[int, int]
-    ) -> Dict[str, Any]:
-        """Calculate layout for beat frames in a sequence."""
-        pass
-
-    @abstractmethod
-    def calculate_responsive_scaling(
-        self, content_size: Tuple[int, int], container_size: Tuple[int, int]
-    ) -> float:
-        """Calculate responsive scaling factor."""
-        pass
-
-    @abstractmethod
-    def get_optimal_grid_layout(
-        self, item_count: int, container_size: Tuple[int, int]
-    ) -> Tuple[int, int]:
-        """Get optimal grid layout (rows, cols) for items."""
-        pass
-
-    @abstractmethod
-    def calculate_component_positions(
-        self, layout_config: Dict[str, Any]
-    ) -> Dict[str, Tuple[int, int]]:
-        """Calculate positions for UI components."""
-        pass
+# ILayoutManagementService has been consolidated into ILayoutService in core_services.py
+# This removes the duplicate interface definition
 
 
 class LayoutMode(Enum):
@@ -98,7 +69,7 @@ class LayoutResult:
     overflow: bool = False
 
 
-class LayoutManagementService(ILayoutManagementService, ILayoutService):
+class LayoutManagementService(ILayoutService):
     """
     Unified layout management service consolidating all layout operations.
 
@@ -264,7 +235,7 @@ class LayoutManagementService(ILayoutManagementService, ILayoutService):
 
     def get_layout_for_screen_size(self, screen_size: Tuple[int, int]) -> LayoutConfig:
         """Get appropriate layout configuration for screen size."""
-        width, height = screen_size
+        width, _ = screen_size
 
         # Categorize screen size
         if width < 800:

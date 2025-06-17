@@ -16,7 +16,6 @@ NOTE: This service is being split into focused services:
 """
 
 from typing import List, Dict, Any, Optional, Tuple, Set
-from abc import ABC, abstractmethod
 from enum import Enum
 import warnings
 
@@ -26,47 +25,14 @@ from domain.models.core_models import (
     Location,
     RotationDirection,
     Orientation,
-    BeatData,
 )
 
 
-class IMotionManagementService(ABC):
-    """Unified interface for all motion management operations."""
-
-    @abstractmethod
-    def validate_motion_combination(
-        self, blue_motion: MotionData, red_motion: MotionData
-    ) -> bool:
-        """Validate that two motions can be combined in a beat."""
-        pass
-
-    @abstractmethod
-    def get_valid_motion_combinations(
-        self, motion_type: MotionType, location: Location
-    ) -> List[MotionData]:
-        """Get all valid motion combinations for a given type and location."""
-        pass
-
-    @abstractmethod
-    def calculate_motion_orientation(
-        self, motion: MotionData, start_orientation: Orientation = Orientation.IN
-    ) -> Orientation:
-        """Calculate end orientation for a motion."""
-        pass
-
-    @abstractmethod
-    def get_motion_validation_errors(
-        self, blue_motion: MotionData, red_motion: MotionData
-    ) -> List[str]:
-        """Get detailed validation errors for motion combination."""
-        pass
-
-    @abstractmethod
-    def generate_motion_combinations_for_letter(
-        self, letter: str, start_position: str = "alpha1"
-    ) -> List[Tuple[MotionData, MotionData]]:
-        """Generate valid motion combinations for a specific letter."""
-        pass
+# IMotionManagementService interface removed - consolidated into core_services.py
+# This service is deprecated - use focused services instead:
+# - MotionValidationService for validation
+# - MotionGenerationService for generation
+# - MotionOrientationService for orientation
 
 
 class MotionValidationError(Enum):
@@ -79,7 +45,7 @@ class MotionValidationError(Enum):
     CONFLICTING_ORIENTATIONS = "conflicting_orientations"
 
 
-class MotionManagementService(IMotionManagementService):
+class MotionManagementService:
     """
     Unified motion management service consolidating all motion operations.
 
@@ -164,7 +130,7 @@ class MotionManagementService(IMotionManagementService):
         # Get base motions from dataset
         base_motions = self._motion_datasets.get(motion_type, [])
 
-        for base_motion in base_motions:
+        for _ in base_motions:
             # Create variations with different locations and rotations
             for rot_dir in RotationDirection:
                 for turns in [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]:
@@ -282,8 +248,8 @@ class MotionManagementService(IMotionManagementService):
         self, blue_motion: MotionData, red_motion: MotionData
     ) -> bool:
         """Check if orientation combination is valid."""
-        blue_end_orientation = self.calculate_motion_orientation(blue_motion)
-        red_end_orientation = self.calculate_motion_orientation(red_motion)
+        _ = self.calculate_motion_orientation(blue_motion)
+        _ = self.calculate_motion_orientation(red_motion)
 
         # Most orientation combinations are valid
         # Add specific rules here if needed
@@ -330,7 +296,7 @@ class MotionManagementService(IMotionManagementService):
             )
 
     def _calculate_half_turns_orientation(
-        self, motion_type: MotionType, turns: float, start_orientation: Orientation
+        self, _motion_type: MotionType, _turns: float, start_orientation: Orientation
     ) -> Orientation:
         """Calculate orientation for half turns."""
         # Half turns always flip orientation regardless of motion type
