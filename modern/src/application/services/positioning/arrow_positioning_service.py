@@ -18,6 +18,7 @@ PROVIDES:
 """
 
 from typing import TYPE_CHECKING
+import logging
 from PyQt6.QtGui import QTransform
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 
@@ -29,6 +30,33 @@ if TYPE_CHECKING:
 from typing import Dict, Tuple, Optional, Union
 from abc import ABC, abstractmethod
 from PyQt6.QtCore import QPointF
+
+try:
+    from src.core.decorators import handle_service_errors
+    from src.core.monitoring import monitor_performance
+    from src.core.exceptions import ServiceOperationError, ValidationError
+except ImportError:
+    # For tests, create dummy decorators if imports fail
+    def handle_service_errors(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    def monitor_performance(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    class ServiceOperationError(Exception):
+        pass
+
+    class ValidationError(Exception):
+        pass
+
+
+logger = logging.getLogger(__name__)
 
 from domain.models.pictograph_models import PictographData, ArrowData, GridMode
 from domain.models.core_models import (
@@ -160,6 +188,8 @@ class ArrowPositioningService(IArrowPositioningService):
 
         arrow_item.setTransform(transform)
 
+    @handle_service_errors("calculate_arrow_position")
+    @monitor_performance("arrow_positioning")
     def calculate_arrow_position(
         self, arrow_data: ArrowData, pictograph_data: PictographData
     ) -> Tuple[float, float, float]:
@@ -189,6 +219,8 @@ class ArrowPositioningService(IArrowPositioningService):
 
         return final_x, final_y, rotation
 
+    @handle_service_errors("calculate_all_arrow_positions")
+    @monitor_performance("batch_arrow_positioning")
     def calculate_all_arrow_positions(
         self, pictograph_data: PictographData
     ) -> PictographData:

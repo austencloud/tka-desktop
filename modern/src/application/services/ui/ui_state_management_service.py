@@ -152,7 +152,7 @@ class UIStateManagementService(IUIStateManagementService):
 
     def set_active_tab(self, tab_name: str) -> None:
         """Set the active tab."""
-        old_tab = self._ui_state.active_tab
+        previous_tab = self._ui_state.active_tab
         self._ui_state.active_tab = tab_name
         self._save_state()
 
@@ -160,7 +160,7 @@ class UIStateManagementService(IUIStateManagementService):
         event = UIEvent(
             component="tab",
             action="changed",
-            state_data={"old_tab": old_tab, "new_tab": tab_name},
+            state_data={"previous_tab": previous_tab, "new_tab": tab_name},
             source="ui_state_management_service",
             priority=EventPriority.HIGH,
         )

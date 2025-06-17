@@ -13,6 +13,7 @@ while maintaining the proven generation algorithms.
 
 from typing import List, Dict, Any, Tuple
 from abc import ABC, abstractmethod
+import logging
 
 from domain.models.core_models import (
     MotionData,
@@ -20,6 +21,33 @@ from domain.models.core_models import (
     Location,
     RotationDirection,
 )
+
+try:
+    from src.core.decorators import handle_service_errors
+    from src.core.monitoring import monitor_performance
+    from src.core.exceptions import ServiceOperationError, ValidationError
+except ImportError:
+    # For tests, create dummy decorators if imports fail
+    def handle_service_errors(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    def monitor_performance(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    class ServiceOperationError(Exception):
+        pass
+
+    class ValidationError(Exception):
+        pass
+
+
+logger = logging.getLogger(__name__)
 
 
 class IMotionGenerationService(ABC):
@@ -62,10 +90,12 @@ class MotionGenerationService(IMotionGenerationService):
         # Motion generation datasets
         self._motion_datasets = self._load_motion_datasets()
         self._letter_specific_rules = self._load_letter_specific_rules()
-        
+
         # Optional validation service for filtering
         self._validation_service = validation_service
 
+    @handle_service_errors("get_valid_motion_combinations")
+    @monitor_performance("motion_combination_generation")
     def get_valid_motion_combinations(
         self, motion_type: MotionType, location: Location
     ) -> List[MotionData]:
@@ -94,6 +124,8 @@ class MotionGenerationService(IMotionGenerationService):
 
         return combinations
 
+    @handle_service_errors("generate_motion_combinations_for_letter")
+    @monitor_performance("letter_motion_generation")
     def generate_motion_combinations_for_letter(
         self, letter: str
     ) -> List[Tuple[MotionData, MotionData]]:
@@ -131,6 +163,7 @@ class MotionGenerationService(IMotionGenerationService):
 
         return combinations[:50]  # Limit to prevent excessive combinations
 
+    @handle_service_errors("calculate_end_location")
     def calculate_end_location(
         self, start_loc: Location, motion_type: MotionType, turns: float
     ) -> Location:

@@ -14,11 +14,34 @@ from typing import (
     Union,
     get_type_hints,
     Set,
+    List,
 )
 import logging
 import inspect
 from pathlib import Path
 from datetime import datetime, timedelta
+
+try:
+    from ..exceptions import DependencyInjectionError, di_error
+except ImportError:
+    # Fallback for tests
+    class DependencyInjectionError(Exception):
+        def __init__(
+            self,
+            message: str,
+            interface_name: Optional[str] = None,
+            dependency_chain: Optional[list] = None,
+            context: Optional[Dict[str, Any]] = None,
+        ):
+            super().__init__(message)
+            self.interface_name = interface_name
+            self.dependency_chain = dependency_chain or []
+
+    def di_error(
+        message: str, interface_name: str, **context
+    ) -> DependencyInjectionError:
+        return DependencyInjectionError(message, interface_name)
+
 
 T = TypeVar("T")
 logger = logging.getLogger(__name__)
@@ -85,13 +108,18 @@ class DIContainer:
             An instance of the requested type
 
         Raises:
-            ValueError: If the service is not registered
-            RuntimeError: If circular dependency is detected
+            DependencyInjectionError: If the service is not registered or circular dependency detected
         """
 
         # Check for circular dependencies
         if interface in self._resolution_stack:
-            raise RuntimeError(f"Circular dependency detected for {interface.__name__}")
+            dependency_chain = list(self._resolution_stack) + [interface]
+            chain_names = [dep.__name__ for dep in dependency_chain]
+            raise DependencyInjectionError(
+                f"Circular dependency detected: {' -> '.join(chain_names)}",
+                interface_name=interface.__name__,
+                dependency_chain=chain_names,
+            )
 
         # Check for existing singleton instance
         if interface in self._singletons:
@@ -105,6 +133,11 @@ class DIContainer:
                 instance = self._create_instance(implementation)
                 self._singletons[interface] = instance
                 return instance
+            except Exception as e:
+                raise DependencyInjectionError(
+                    f"Failed to create singleton instance: {e}",
+                    interface_name=interface.__name__,
+                ) from e
             finally:
                 self._resolution_stack.discard(interface)
 
@@ -114,10 +147,26 @@ class DIContainer:
             self._resolution_stack.add(interface)
             try:
                 return self._create_instance(implementation)
+            except Exception as e:
+                raise DependencyInjectionError(
+                    f"Failed to create transient instance: {e}",
+                    interface_name=interface.__name__,
+                ) from e
             finally:
                 self._resolution_stack.discard(interface)
 
-        raise ValueError(f"Service {interface.__name__} is not registered")
+        # Service not registered - provide helpful error message
+        available_services = (
+            list(self._services.keys())
+            + list(self._factories.keys())
+            + list(self._singletons.keys())
+        )
+        available_names = [svc.__name__ for svc in available_services]
+
+        raise DependencyInjectionError(
+            f"Service {interface.__name__} is not registered. Available services: {available_names}",
+            interface_name=interface.__name__,
+        )
 
     def _create_instance(self, implementation_class: Type) -> Any:
         """Create instance with comprehensive automatic constructor injection."""
@@ -142,39 +191,64 @@ class DIContainer:
                 if not param_type or param_type == inspect.Parameter.empty:
                     continue
 
-                # Skip primitive types
-                if self._is_primitive_type(param_type):
+                # Skip primitive types, optional parameters, and special parameters
+                if (
+                    param_type == inspect.Parameter.empty
+                    or param_type == inspect._empty
+                    or str(param_type) == "_empty"
+                    or self._is_primitive_type(param_type)
+                    or param.default != inspect.Parameter.empty
+                    or param.kind
+                    in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+                ):
                     continue
 
                 # Enhanced error handling for dependency resolution
                 try:
                     dependencies[param_name] = self.resolve(param_type)
-                except ValueError as e:
-                    available_services = list(self._services.keys()) + list(
-                        self._factories.keys()
+                except DependencyInjectionError as e:
+                    # Re-raise DI errors with additional context
+                    raise DependencyInjectionError(
+                        f"Cannot resolve dependency {param_type.__name__} for parameter "
+                        f"'{param_name}' in {implementation_class.__name__}. {e}",
+                        interface_name=param_type.__name__,
+                        dependency_chain=e.dependency_chain,
+                    ) from e
+                except Exception as e:
+                    available_services = (
+                        list(self._services.keys())
+                        + list(self._factories.keys())
+                        + list(self._singletons.keys())
                     )
                     available_names = [svc.__name__ for svc in available_services]
-                    raise ValueError(
+                    raise DependencyInjectionError(
                         f"Cannot resolve dependency {param_type.__name__} for parameter "
                         f"'{param_name}' in {implementation_class.__name__}. "
-                        f"Original error: {e}. "
-                        f"Available registrations: {available_names}"
-                    )
+                        f"Error: {e}. Available registrations: {available_names}",
+                        interface_name=param_type.__name__,
+                    ) from e
 
             return implementation_class(**dependencies)
 
+        except DependencyInjectionError:
+            # Re-raise DI errors as-is
+            raise
         except Exception as e:
-            available_services = list(self._services.keys()) + list(
-                self._factories.keys()
+            available_services = (
+                list(self._services.keys())
+                + list(self._factories.keys())
+                + list(self._singletons.keys())
             )
             available_names = [svc.__name__ for svc in available_services]
             logger.error(
                 f"Failed to create instance of {implementation_class.__name__}: {e}"
             )
             logger.error(f"Available services: {available_names}")
-            raise RuntimeError(
-                f"Dependency injection failed for {implementation_class.__name__}: {e}"
-            )
+            raise DependencyInjectionError(
+                f"Dependency injection failed for {implementation_class.__name__}: {e}. "
+                f"Available services: {available_names}",
+                interface_name=implementation_class.__name__,
+            ) from e
 
     def _validate_registration(self, interface: Type, implementation: Type) -> None:
         """Validate that implementation can fulfill interface contract."""
@@ -295,11 +369,148 @@ class DIContainer:
     # _detect_circular_dependencies removed - was unused and over-engineered
     # Circular dependencies are detected at resolution time via _resolution_stack
 
-    # get_dependency_graph removed - was unused and over-engineered
-    # Use debug_info() for basic container debugging instead
+    def validate_all_registrations(self) -> None:
+        """
+        Validate all service registrations can be resolved.
 
-    # _create_with_lifecycle and cleanup_all removed - were unused and over-engineered
-    # Services can implement their own cleanup if needed
+        Raises:
+            DependencyInjectionError: If any registration cannot be resolved
+        """
+        errors = []
+
+        # Validate singleton registrations
+        for interface, implementation in self._services.items():
+            try:
+                self._validate_single_registration(interface, implementation)
+            except Exception as e:
+                errors.append(f"{interface.__name__}: {e}")
+
+        # Validate transient registrations
+        for interface, implementation in self._factories.items():
+            try:
+                self._validate_single_registration(interface, implementation)
+            except Exception as e:
+                errors.append(f"{interface.__name__}: {e}")
+
+        if errors:
+            raise DependencyInjectionError(
+                f"Registration validation failed: {'; '.join(errors)}"
+            )
+
+    def _validate_single_registration(
+        self, interface: Type, implementation: Type
+    ) -> None:
+        """Validate a single registration without creating instances."""
+        # Check if implementation is a class
+        if not inspect.isclass(implementation):
+            raise DependencyInjectionError(
+                f"Implementation {implementation} must be a class",
+                interface_name=interface.__name__,
+            )
+
+        # Check constructor dependencies
+        try:
+            signature = inspect.signature(implementation.__init__)
+            type_hints = get_type_hints(implementation.__init__)
+
+            for param_name, param in signature.parameters.items():
+                if param_name == "self":
+                    continue
+
+                param_type = type_hints.get(param_name, param.annotation)
+
+                # Skip primitive types, optional parameters, and special parameters
+                if (
+                    param_type == inspect.Parameter.empty
+                    or param_type == inspect._empty
+                    or str(param_type) == "_empty"
+                    or self._is_primitive_type(param_type)
+                    or param.default != inspect.Parameter.empty
+                    or param.kind
+                    in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+                ):
+                    continue
+
+                # Check if dependency is registered
+                if (
+                    param_type not in self._services
+                    and param_type not in self._factories
+                    and param_type not in self._singletons
+                ):
+                    available_services = (
+                        list(self._services.keys())
+                        + list(self._factories.keys())
+                        + list(self._singletons.keys())
+                    )
+                    available_names = [svc.__name__ for svc in available_services]
+                    raise DependencyInjectionError(
+                        f"Dependency {param_type.__name__} for parameter '{param_name}' "
+                        f"is not registered. Available: {available_names}",
+                        interface_name=interface.__name__,
+                    )
+
+        except Exception as e:
+            if isinstance(e, DependencyInjectionError):
+                raise
+            raise DependencyInjectionError(
+                f"Validation failed for {interface.__name__}: {e}",
+                interface_name=interface.__name__,
+            ) from e
+
+    def get_dependency_graph(self) -> Dict[str, List[str]]:
+        """
+        Generate dependency graph for debugging.
+
+        Returns:
+            Dictionary mapping service names to their dependencies
+        """
+        graph = {}
+
+        # Analyze singleton services
+        for interface, implementation in self._services.items():
+            dependencies = self._get_service_dependencies(implementation)
+            graph[interface.__name__] = [dep.__name__ for dep in dependencies]
+
+        # Analyze transient services
+        for interface, implementation in self._factories.items():
+            dependencies = self._get_service_dependencies(implementation)
+            graph[interface.__name__] = [dep.__name__ for dep in dependencies]
+
+        return graph
+
+    def _get_service_dependencies(self, implementation: Type) -> List[Type]:
+        """Get list of dependencies for a service implementation."""
+        dependencies = []
+
+        try:
+            signature = inspect.signature(implementation.__init__)
+            type_hints = get_type_hints(implementation.__init__)
+
+            for param_name, param in signature.parameters.items():
+                if param_name == "self":
+                    continue
+
+                param_type = type_hints.get(param_name, param.annotation)
+
+                # Skip primitive types, optional parameters, and special parameters
+                if (
+                    param_type == inspect.Parameter.empty
+                    or param_type == inspect._empty
+                    or str(param_type) == "_empty"
+                    or self._is_primitive_type(param_type)
+                    or param.default != inspect.Parameter.empty
+                    or param.kind
+                    in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+                ):
+                    continue
+
+                dependencies.append(param_type)
+
+        except Exception:
+            # If we can't analyze dependencies, return empty list
+            pass
+
+        return dependencies
 
 
 def get_container() -> DIContainer:

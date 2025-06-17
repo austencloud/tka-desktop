@@ -15,7 +15,7 @@ class GraphEditorService(IGraphEditorService):
         self._selected_arrow_id: Optional[str] = None
         self._is_visible: bool = False
 
-        # Graph editor settings based on legacy
+        # Graph editor settings with proven ratios
         self._graph_height_ratio = 3.5  # parent_height // 3.5
         self._max_width_ratio = 4  # parent_width // 4
 
@@ -106,12 +106,12 @@ class GraphEditorService(IGraphEditorService):
 
     def get_available_turns(self, arrow_color: str) -> List[float]:
         """Get available turn values for specified arrow color"""
-        # Based on legacy turn values - these are common turn increments
+        # Standard turn values - these are common turn increments
         return [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0]
 
     def get_available_orientations(self, arrow_color: str) -> List[str]:
         """Get available orientations for specified arrow color"""
-        # Based on legacy orientation options
+        # Standard orientation options
         return ["in", "counter", "out", "clock", "dash", "static", "float"]
 
     def apply_turn_adjustment(self, arrow_color: str, turn_value: float) -> bool:
@@ -167,7 +167,7 @@ class GraphEditorService(IGraphEditorService):
     # Additional helper methods for graph editor functionality
 
     def get_graph_editor_height(self, parent_height: int, parent_width: int) -> int:
-        """Calculate appropriate graph editor height based on legacy formula"""
+        """Calculate appropriate graph editor height using proven sizing formula"""
         height_from_parent = int(parent_height // self._graph_height_ratio)
         width_constraint = int(parent_width // self._max_width_ratio)
         return min(height_from_parent, width_constraint)

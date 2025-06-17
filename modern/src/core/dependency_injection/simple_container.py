@@ -20,6 +20,28 @@ import logging
 import inspect
 from dataclasses import is_dataclass
 
+try:
+    from ..exceptions import DependencyInjectionError, di_error
+except ImportError:
+    # Fallback for tests
+    class DependencyInjectionError(Exception):
+        def __init__(
+            self,
+            message: str,
+            interface_name: Optional[str] = None,
+            dependency_chain: Optional[list] = None,
+            context: Optional[Dict[str, Any]] = None,
+        ):
+            super().__init__(message)
+            self.interface_name = interface_name
+            self.dependency_chain = dependency_chain or []
+
+    def di_error(
+        message: str, interface_name: str, **context
+    ) -> DependencyInjectionError:
+        return DependencyInjectionError(message, interface_name)
+
+
 T = TypeVar("T")
 logger = logging.getLogger(__name__)
 

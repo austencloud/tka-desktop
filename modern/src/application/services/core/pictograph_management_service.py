@@ -16,7 +16,7 @@ PROVIDES:
 - CSV data loading and pictograph creation
 """
 
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Union, TypedDict
 from abc import ABC, abstractmethod
 from enum import Enum
 import uuid
@@ -44,6 +44,16 @@ from domain.models.pictograph_models import (
 )
 
 
+class PictographSearchQuery(TypedDict, total=False):
+    """Type definition for pictograph search queries."""
+
+    letter: Optional[str]
+    motion_type: Optional[str]
+    start_position: Optional[str]
+    max_results: Optional[int]
+    categories: Optional[List[str]]
+
+
 class IPictographManagementService(ABC):
     """Unified interface for all pictograph management operations."""
 
@@ -67,7 +77,7 @@ class IPictographManagementService(ABC):
         pass
 
     @abstractmethod
-    def search_dataset(self, query: Dict[str, Any]) -> List[PictographData]:
+    def search_dataset(self, query: PictographSearchQuery) -> List[PictographData]:
         """Search pictograph dataset with query."""
         pass
 
@@ -171,15 +181,14 @@ class PictographManagementService(IPictographManagementService):
             is_blank=len(arrows) == 0,
         )
 
-    def search_dataset(self, query: Dict[str, Any]) -> List[PictographData]:
+    def search_dataset(self, query: PictographSearchQuery) -> List[PictographData]:
         """Search pictograph dataset with query."""
         results = []
 
-        # Extract search criteria
-        letter = query.get("letter")
-        motion_type = query.get("motion_type")
-        start_position = query.get("start_position")
+        # Extract search criteria with proper type handling
         max_results = query.get("max_results", 50)
+        if max_results is None:
+            max_results = 50
 
         # Search through cached pictographs
         for pictograph_id, pictograph in self._pictograph_cache.items():
@@ -419,7 +428,9 @@ class PictographManagementService(IPictographManagementService):
             show_positions=letter_type != LetterType.TYPE6 if letter_type else True,
         )
 
-    def _matches_query(self, pictograph: PictographData, query: Dict[str, Any]) -> bool:
+    def _matches_query(
+        self, pictograph: PictographData, query: PictographSearchQuery
+    ) -> bool:
         """Check if pictograph matches search query."""
         # Letter matching
         if "letter" in query:
@@ -607,7 +618,9 @@ class PictographManagementService(IPictographManagementService):
 
         return vtg_to_elemental_map.get(vtg_mode)
 
-    def _load_context_configs(self) -> Dict[PictographContext, Dict[str, Any]]:
+    def _load_context_configs(
+        self,
+    ) -> Dict[PictographContext, Dict[str, Union[str, int, bool]]]:
         """Load context-specific configurations."""
         return {
             PictographContext.SEQUENCE_EDITOR: {

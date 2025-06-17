@@ -71,6 +71,9 @@ class StartPositionView(QFrame):
         # Enable mouse tracking for hover effects
         self.setMouseTracking(True)
 
+        # CRITICAL FIX: Always show the start position view like legacy
+        self.show()
+
         # Initialize with START text overlay (always visible like legacy)
         # Use a timer to ensure the pictograph component is fully initialized
         from PyQt6.QtCore import QTimer

@@ -1,15 +1,15 @@
 🔍 TKA DESKTOP MODERN - METHOD USAGE ANALYSIS REPORT
-Generated: 2025-06-17 02:55:51
+Generated: 2025-06-17 03:11:13
 ============================================================
 
 📊 LAYOUT MANAGEMENT SERVICE ANALYSIS:
 ----------------------------------------
 🔍 calculate_context_aware_scaling:
-   ✅ Well used (12 times)
+   ✅ Well used (10 times)
 🔍 get_layout_for_screen_size:
-   ✅ Well used (11 times)
+   ✅ Well used (9 times)
 🔍 calculate_component_positions:
-   ✅ Well used (12 times)
+   ✅ Well used (11 times)
 🔍 _calculate_horizontal_beat_layout:
    ✅ Well used (4 times)
 🔍 _calculate_grid_beat_layout:
@@ -19,11 +19,11 @@ Generated: 2025-06-17 02:55:51
 🔍 _calculate_grid_layout:
    ✅ Well used (4 times)
 🔍 calculate_beat_frame_layout:
-   ✅ Well used (27 times)
+   ✅ Well used (24 times)
 🔍 calculate_responsive_scaling:
-   ✅ Well used (17 times)
+   ✅ Well used (14 times)
 🔍 get_optimal_grid_layout:
-   ✅ Well used (15 times)
+   ✅ Well used (12 times)
 🔍 get_main_window_size:
    ✅ Well used (6 times)
 🔍 get_workbench_size:
@@ -40,40 +40,40 @@ Generated: 2025-06-17 02:55:51
 📊 MOTION MANAGEMENT SERVICE ANALYSIS:
 ----------------------------------------
 🔍 generate_motion_combinations_for_letter:
-   ✅ Well used (12 times)
+   ✅ Well used (9 times)
 🔍 calculate_prop_rotation_angle:
    ✅ Well used (5 times)
 🔍 _load_letter_specific_rules:
    ✅ Well used (8 times)
 🔍 _validate_dependency_chain:
-   ⚠️  Low usage (3 times) - Review necessity
+   ⚠️  Used only once - Verify necessity
 🔍 validate_motion_combination:
-   ✅ Well used (18 times)
+   ✅ Well used (13 times)
 🔍 get_valid_motion_combinations:
-   ✅ Well used (18 times)
+   ✅ Well used (13 times)
 🔍 calculate_motion_orientation:
-   ✅ Well used (17 times)
+   ✅ Well used (12 times)
 🔍 get_motion_validation_errors:
-   ✅ Well used (16 times)
+   ✅ Well used (11 times)
 
 📊 DI CONTAINER FEATURES ANALYSIS:
 ----------------------------------------
 🔍 auto_register_with_validation:
-   ⚠️  Low usage (2 times) - Review necessity
+   ⚠️  Used only once - Verify necessity
 🔍 validate_all_registrations:
-   ⚠️  Low usage (2 times) - Review necessity
+   ⚠️  Used only once - Verify necessity
 🔍 _detect_circular_dependencies:
-   ⚠️  Low usage (3 times) - Review necessity
+   ⚠️  Used only once - Verify necessity
 🔍 _create_with_lifecycle:
-   ⚠️  Low usage (2 times) - Review necessity
+   ⚠️  Used only once - Verify necessity
 🔍 cleanup_all:
-   ⚠️  Low usage (2 times) - Review necessity
+   ⚠️  Used only once - Verify necessity
 🔍 _validate_protocol_implementation:
-   ✅ Well used (7 times)
+   ✅ Well used (6 times)
 🔍 _validate_dependency_chain:
-   ⚠️  Low usage (3 times) - Review necessity
+   ⚠️  Used only once - Verify necessity
 🔍 register_transient:
-   ✅ Well used (4 times)
+   ✅ Well used (5 times)
 🔍 register_singleton:
    ✅ Well used (13 times)
 🔍 register_instance:
@@ -82,15 +82,12 @@ Generated: 2025-06-17 02:55:51
 📊 BRIDGE SERVICES ANALYSIS:
 ----------------------------------------
 🔍 MotionManagementBridgeService:
-   ⚠️  Low usage (3 times) - Review necessity
+   ⚠️  Low usage (2 times) - Review necessity
 🔍 LayoutManagementBridgeService:
-   ⚠️  Low usage (3 times) - Review necessity
+   ⚠️  Low usage (2 times) - Review necessity
 
 📊 INTERFACE HIERARCHY ANALYSIS:
 ----------------------------------------
-⚠️  Multiple interface implementation found:
-   ILayoutManagementService + ILayoutService
-   Instances: 1
 
 🎯 ANALYSIS SUMMARY & RECOMMENDATIONS:
 ==================================================

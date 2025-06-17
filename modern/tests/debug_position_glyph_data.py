@@ -39,7 +39,7 @@ def debug_position_glyph_data():
         # Get sample position-matched beats
         print("\n🎯 Getting sample beats from position matching service...")
         sample_beats = position_service.get_next_options("alpha1")
-        
+
         # Find a cross-position example
         cross_position_beat = None
         for beat in sample_beats:
@@ -48,22 +48,26 @@ def debug_position_glyph_data():
             if start.startswith("alpha") and end.startswith("beta"):
                 cross_position_beat = beat
                 break
-        
+
         if cross_position_beat:
             print(f"\n🎯 Found cross-position example: {cross_position_beat.letter}")
-            print(f"   {cross_position_beat.metadata.get('start_pos')} → {cross_position_beat.metadata.get('end_pos')}")
-            
+            print(
+                f"   {cross_position_beat.metadata.get('start_pos')} → {cross_position_beat.metadata.get('end_pos')}"
+            )
+
             # Test this specific case
             glyph_data = cross_position_beat.glyph_data
             if glyph_data:
                 print(f"   Glyph start_position: {glyph_data.start_position}")
                 print(f"   Glyph end_position: {glyph_data.end_position}")
-                
+
                 # Extract alphabetic parts (what the renderer will use)
-                start_symbol = "".join(filter(str.isalpha, glyph_data.start_position or ""))
+                start_symbol = "".join(
+                    filter(str.isalpha, glyph_data.start_position or "")
+                )
                 end_symbol = "".join(filter(str.isalpha, glyph_data.end_position or ""))
                 print(f"   Rendered as: {start_symbol} → {end_symbol}")
-        
+
         # Reset to alpha1 for main test
         sample_beats = position_service.get_next_options("alpha1")
 

@@ -14,10 +14,38 @@ from typing import Dict, Any, Optional, Tuple, List
 from enum import Enum
 from dataclasses import dataclass
 import math
+import logging
 
 from PyQt6.QtCore import QSize
 from domain.models.core_models import SequenceData
 from core.interfaces.core_services import ILayoutService
+
+try:
+    from src.core.decorators import handle_service_errors
+    from src.core.monitoring import monitor_performance
+    from src.core.exceptions import ServiceOperationError, ValidationError
+except ImportError:
+    # For tests, create dummy decorators if imports fail
+    def handle_service_errors(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    def monitor_performance(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    class ServiceOperationError(Exception):
+        pass
+
+    class ValidationError(Exception):
+        pass
+
+
+logger = logging.getLogger(__name__)
 
 
 # ILayoutManagementService has been consolidated into ILayoutService in core_services.py
@@ -101,6 +129,8 @@ class LayoutManagementService(ILayoutService):
         self._main_window_size = QSize(1400, 900)
         self._layout_ratio = (10, 10)  # 50/50 split between workbench and picker
 
+    @handle_service_errors("calculate_beat_frame_layout")
+    @monitor_performance("layout_calculation")
     def calculate_beat_frame_layout(
         self, sequence: SequenceData, container_size: Tuple[int, int]
     ) -> Dict[str, Any]:
@@ -135,6 +165,8 @@ class LayoutManagementService(ILayoutService):
         # Clamp scaling factor to reasonable bounds
         return max(0.1, min(3.0, scale))
 
+    @handle_service_errors("get_optimal_grid_layout")
+    @monitor_performance("grid_layout_optimization")
     def get_optimal_grid_layout(
         self, item_count: int, container_size: Tuple[int, int]
     ) -> Tuple[int, int]:
@@ -158,6 +190,8 @@ class LayoutManagementService(ILayoutService):
 
         return (rows, cols)
 
+    @handle_service_errors("calculate_component_positions")
+    @monitor_performance("component_positioning")
     def calculate_component_positions(
         self, layout_config: Dict[str, Any]
     ) -> Dict[str, Tuple[int, int]]:
@@ -189,6 +223,8 @@ class LayoutManagementService(ILayoutService):
 
         return positions
 
+    @handle_service_errors("calculate_context_aware_scaling")
+    @monitor_performance("context_aware_scaling")
     def calculate_context_aware_scaling(
         self, context: str, base_size: Tuple[int, int], container_size: Tuple[int, int]
     ) -> float:

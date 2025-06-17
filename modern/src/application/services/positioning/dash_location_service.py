@@ -1,8 +1,8 @@
 """
 Dash Location Service
 
-This service implements the exact dash location calculation logic from the legacy DashLocationCalculator,
-translating all the complex dash location maps and calculations perfectly.
+This service implements comprehensive dash location calculation logic,
+providing all the complex dash location maps and calculations with high precision.
 """
 
 from typing import Optional, Dict, Tuple
@@ -25,7 +25,7 @@ class DashLocationService:
     """
     Dash location calculation service.
 
-    Implements the exact logic from the legacy DashLocationCalculator including:
+    Implements comprehensive dash location calculation logic including:
     - Φ_DASH and Ψ_DASH special handling
     - Λ (Lambda) zero turns special case
     - Type 3 scenario detection and handling
@@ -79,7 +79,7 @@ class DashLocationService:
             is_lambda=letter_info["is_lambda"],
         )
 
-    # Predefined location mappings translated from legacy - exact replica
+    # Predefined location mappings for dash calculations - comprehensive mapping
     PHI_DASH_PSI_DASH_LOCATION_MAP = {
         (ArrowColor.RED, (Location.NORTH, Location.SOUTH)): Location.EAST,
         (ArrowColor.RED, (Location.EAST, Location.WEST)): Location.NORTH,
@@ -227,7 +227,7 @@ class DashLocationService:
         is_lambda: bool = False,
     ) -> Location:
         """
-        Calculate dash arrow location using exact legacy logic.
+        Calculate dash arrow location using proven calculation algorithms.
 
         Args:
             motion: The dash motion data
@@ -339,7 +339,7 @@ class DashLocationService:
         return self._default_zero_turns_dash_location(motion)
 
     def _get_opposite_location(self, location: Location) -> Location:
-        """Get opposite location using exact legacy logic."""
+        """Get opposite location using proven location mapping."""
         opposite_map = {
             Location.NORTH: Location.SOUTH,
             Location.SOUTH: Location.NORTH,

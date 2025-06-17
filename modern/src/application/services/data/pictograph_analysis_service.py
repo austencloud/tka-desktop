@@ -3,7 +3,7 @@ Pictograph Analysis Service
 
 This service analyzes pictograph data to extract information needed for
 arrow positioning, dash location calculations, and other pictograph operations.
-It replaces the legacy PictographChecker functionality.
+It provides comprehensive pictograph analysis functionality.
 """
 
 from typing import Optional
@@ -104,10 +104,10 @@ class PictographAnalysisService:
 
     def _get_shift_location(self, beat_data: BeatData) -> Optional[Location]:
         """
-        Extract shift arrow location for Type 3 calculations using the exact legacy logic.
+        Extract shift arrow location for Type 3 calculations using proven algorithms.
 
         In Type 3 scenarios, we need the calculated location of the shift (non-dash) arrow
-        using the frozen set quadrant mapping from the legacy ShiftLocationCalculator.
+        using the frozen set quadrant mapping from the shift location calculation system.
         """
         blue_motion = beat_data.blue_motion
         red_motion = beat_data.red_motion
@@ -130,7 +130,7 @@ class PictographAnalysisService:
         if not shift_motion:
             return None
 
-        # Use the exact legacy shift location calculation logic
+        # Use the proven shift location calculation algorithm
         # Direction pairs mapping from ShiftLocationCalculator
         direction_pairs = {
             frozenset({Location.NORTH, Location.EAST}): Location.NORTHEAST,

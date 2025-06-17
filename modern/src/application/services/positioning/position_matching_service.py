@@ -9,7 +9,13 @@ import pandas as pd
 from typing import Dict, List, Any, Optional
 from ..core.pictograph_management_service import PictographManagementService
 
-from domain.models.core_models import BeatData, GlyphData, Location, MotionType, RotationDirection
+from domain.models.core_models import (
+    BeatData,
+    GlyphData,
+    Location,
+    MotionType,
+    RotationDirection,
+)
 
 
 class PositionMatchingService:
@@ -236,7 +242,8 @@ class PositionMatchingService:
 
         # Return final BeatData object with glyph data
         return BeatData(
-            beat_number=1,            letter=letter,
+            beat_number=1,
+            letter=letter,
             blue_motion=blue_motion,
             red_motion=red_motion,
             glyph_data=glyph_data,
@@ -248,7 +255,9 @@ class PositionMatchingService:
 
     def _generate_glyph_data(self, beat_data: "BeatData") -> Optional["GlyphData"]:
         """Generate glyph data for beat data using the consolidated pictograph management service."""
-        from application.services.core.pictograph_management_service import PictographManagementService
+        from application.services.core.pictograph_management_service import (
+            PictographManagementService,
+        )
 
         pictograph_service = PictographManagementService()
         return pictograph_service._generate_glyph_data(beat_data)

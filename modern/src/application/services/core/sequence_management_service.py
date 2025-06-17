@@ -15,6 +15,7 @@ from typing import List, Dict, Any, Optional, Tuple
 from abc import ABC, abstractmethod
 from enum import Enum
 import uuid
+import logging
 from copy import deepcopy
 
 from domain.models.core_models import (
@@ -26,6 +27,33 @@ from domain.models.core_models import (
     RotationDirection,
 )
 from domain.models.pictograph_models import PictographData
+
+try:
+    from src.core.decorators import handle_service_errors
+    from src.core.monitoring import monitor_performance
+    from src.core.exceptions import ServiceOperationError, ValidationError
+except ImportError:
+    # For tests, create dummy decorators if imports fail
+    def handle_service_errors(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    def monitor_performance(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    class ServiceOperationError(Exception):
+        pass
+
+    class ValidationError(Exception):
+        pass
+
+
+logger = logging.getLogger(__name__)
 
 
 class ISequenceManagementService(ABC):
@@ -108,8 +136,17 @@ class SequenceManagementService(ISequenceManagementService):
         self._dictionary_cache = {}
         self._difficulty_cache = {}
 
+    @handle_service_errors("create_sequence")
+    @monitor_performance("sequence_creation")
     def create_sequence(self, name: str, length: int = 16) -> SequenceData:
         """Create a new sequence with specified length."""
+        # Validate inputs
+        if not isinstance(name, str) or not name.strip():
+            raise ValidationError("Sequence name must be a non-empty string")
+
+        if not isinstance(length, int) or length < 1 or length > 64:
+            raise ValidationError("Sequence length must be an integer between 1 and 64")
+
         beats = []
 
         # Create empty beats for the sequence
@@ -130,12 +167,22 @@ class SequenceManagementService(ISequenceManagementService):
             metadata={"created_by": "sequence_management_service"},
         )
 
+    @handle_service_errors("add_beat")
+    @monitor_performance("beat_addition")
     def add_beat(
         self, sequence: SequenceData, beat: BeatData, position: int
     ) -> SequenceData:
         """Add beat to sequence at specified position."""
+        # Validate inputs
+        if not isinstance(sequence, SequenceData):
+            raise ValidationError("Sequence must be a SequenceData instance")
+        if not isinstance(beat, BeatData):
+            raise ValidationError("Beat must be a BeatData instance")
+        if not isinstance(position, int):
+            raise ValidationError("Position must be an integer")
+
         if position < 0 or position > len(sequence.beats):
-            raise ValueError(
+            raise ValidationError(
                 f"Invalid position {position} for sequence of length {len(sequence.beats)}"
             )
 
@@ -150,10 +197,18 @@ class SequenceManagementService(ISequenceManagementService):
             beats=new_beats,
         )
 
+    @handle_service_errors("remove_beat")
+    @monitor_performance("beat_removal")
     def remove_beat(self, sequence: SequenceData, position: int) -> SequenceData:
         """Remove beat from sequence at specified position."""
+        # Validate inputs
+        if not isinstance(sequence, SequenceData):
+            raise ValidationError("Sequence must be a SequenceData instance")
+        if not isinstance(position, int):
+            raise ValidationError("Position must be an integer")
+
         if position < 0 or position >= len(sequence.beats):
-            raise ValueError(
+            raise ValidationError(
                 f"Invalid position {position} for sequence of length {len(sequence.beats)}"
             )
 
@@ -168,6 +223,8 @@ class SequenceManagementService(ISequenceManagementService):
             beats=new_beats,
         )
 
+    @handle_service_errors("generate_sequence")
+    @monitor_performance("sequence_generation")
     def generate_sequence(
         self, sequence_type: str, length: int, **kwargs
     ) -> SequenceData:
@@ -187,6 +244,8 @@ class SequenceManagementService(ISequenceManagementService):
         else:
             raise ValueError(f"Unknown sequence type: {sequence_type}")
 
+    @handle_service_errors("apply_workbench_operation")
+    @monitor_performance("workbench_operation")
     def apply_workbench_operation(
         self, sequence: SequenceData, operation: str, **kwargs
     ) -> SequenceData:
@@ -221,19 +280,21 @@ class SequenceManagementService(ISequenceManagementService):
         """Generate circular sequence where end connects to beginning."""
         sequence = self.create_sequence("Circular Sequence", length)
         return sequence
+
     def _generate_auto_complete_sequence(self, length: int, **kwargs) -> SequenceData:
         """Generate auto-completed sequence based on pattern recognition."""
         sequence = self.create_sequence("Auto Complete Sequence", length)
         return sequence
+
     def _generate_mirror_sequence(self, length: int, **kwargs) -> SequenceData:
         """Generate mirror sequence (palindromic pattern)."""
         sequence = self.create_sequence("Mirror Sequence", length)
         return sequence
+
     def _generate_continuous_sequence(self, length: int, **kwargs) -> SequenceData:
         """Generate continuous sequence where each beat flows into the next."""
         sequence = self.create_sequence("Continuous Sequence", length)
         return sequence
-
 
     def _apply_color_swap(self, sequence: SequenceData) -> SequenceData:
         """Swap blue and red motions in all beats."""
@@ -257,13 +318,14 @@ class SequenceManagementService(ISequenceManagementService):
     def _apply_horizontal_reflection(self, sequence: SequenceData) -> SequenceData:
         """Apply horizontal reflection to all motions."""
         return sequence
-    
+
     def _apply_reverse_sequence(self, sequence: SequenceData) -> SequenceData:
         """Reverse the order of beats in sequence."""
         new_beats = list(reversed(sequence.beats))
         for i, beat in enumerate(new_beats):
             new_beats[i] = beat.update(beat_number=i + 1)
         return sequence.update(beats=new_beats)
+
     def _load_transformation_matrices(self) -> Dict[str, Any]:
         """Load transformation matrices for workbench operations."""
         return {
@@ -298,6 +360,8 @@ class SequenceManagementService(ISequenceManagementService):
         sequence_hash = self._hash_sequence(sequence)
         return self._dictionary_cache.get(sequence_hash)
 
+    @handle_service_errors("calculate_difficulty")
+    @monitor_performance("difficulty_calculation")
     def calculate_difficulty(self, sequence: SequenceData) -> int:
         """Calculate sequence difficulty level using validated algorithm"""
         sequence_hash = self._hash_sequence(sequence)

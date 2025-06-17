@@ -1,11 +1,12 @@
 """
-Data Conversion Service - Convert Legacy Data to modern Format
+Data Conversion Service - Convert External Data to Modern Format
 
-This service converts Legacy's pictograph data format to modern's BeatData format
+This service converts external pictograph data formats to modern BeatData format
 while preserving all motion information and ensuring compatibility.
 """
 
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
+import logging
 
 try:
     # Try relative imports first (for normal package usage)
@@ -19,6 +20,9 @@ try:
         GlyphData,
     )
     from .glyph_data_service import GlyphDataService
+    from src.core.decorators import handle_service_errors
+    from src.core.monitoring import monitor_performance
+    from src.core.exceptions import DataProcessingError, ValidationError
 except ImportError:
     # Fallback to absolute imports (for standalone tests)
     from domain.models.core_models import (
@@ -32,20 +36,42 @@ except ImportError:
     )
     from glyph_data_service import GlyphDataService
 
+    # For tests, create dummy decorators if imports fail
+    def handle_service_errors(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    def monitor_performance(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+    class DataProcessingError(Exception):
+        pass
+
+    class ValidationError(Exception):
+        pass
+
+
+logger = logging.getLogger(__name__)
+
 
 class DataConversionService:
     """
-    Converts Legacy pictograph data to modern BeatData format.
+    Converts external pictograph data to modern BeatData format.
 
-    This service handles the mapping between Legacy's string-based data format
-    and modern's enum-based data structures while preserving all motion information.
+    This service handles the mapping between string-based data formats
+    and modern enum-based data structures while preserving all motion information.
     """
 
     def __init__(self):
         """Initialize the data conversion service with glyph data service."""
         self.glyph_data_service = GlyphDataService()
 
-    # Legacy to modern motion type mappings (for props)
+    # String to modern motion type mappings (for props)
     MOTION_TYPE_MAPPING = {
         "pro": MotionType.PRO,
         "anti": MotionType.ANTI,
@@ -54,14 +80,14 @@ class DataConversionService:
         "static": MotionType.STATIC,
     }
 
-    # Legacy to modern hand motion type mappings (for hands without props)
+    # String to modern hand motion type mappings (for hands without props)
     HAND_MOTION_TYPE_MAPPING = {
         "shift": HandMotionType.SHIFT,
         "dash": HandMotionType.DASH,
         "static": HandMotionType.STATIC,
     }
 
-    # Legacy to modern rotation direction mappings
+    # String to modern rotation direction mappings
     ROTATION_DIRECTION_MAPPING = {
         "cw": RotationDirection.CLOCKWISE,
         "ccw": RotationDirection.COUNTER_CLOCKWISE,
@@ -69,7 +95,7 @@ class DataConversionService:
         "": RotationDirection.NO_ROTATION,
     }
 
-    # Legacy to modern location mappings
+    # String to modern location mappings
     LOCATION_MAPPING = {
         "n": Location.NORTH,
         "ne": Location.NORTHEAST,
@@ -81,33 +107,43 @@ class DataConversionService:
         "nw": Location.NORTHWEST,
     }
 
-    def convert_legacy_pictograph_to_beat_data(
-        self, legacy_data: Dict[str, Any]
+    @handle_service_errors("convert_external_pictograph_to_beat_data")
+    @monitor_performance("data_conversion")
+    def convert_external_pictograph_to_beat_data(
+        self, external_data: Dict[str, Any]
     ) -> BeatData:
         """
-        Convert Legacy pictograph data to modern BeatData format.
+        Convert external pictograph data to modern BeatData format.
 
         Args:
-            legacy_data: Legacy pictograph data dictionary
+            external_data: External pictograph data dictionary
 
         Returns:
             BeatData object with converted motion information
 
         Raises:
-            ValueError: If required data is missing or invalid
+            DataProcessingError: If required data is missing or invalid
+            ValidationError: If data format is invalid
         """
+        # Validate input data
+        if not isinstance(external_data, dict):
+            raise ValidationError("External data must be a dictionary")
+
+        if not external_data:
+            raise ValidationError("External data cannot be empty")
+
         try:
             # Extract basic information
-            letter = legacy_data.get("letter", "Unknown")
-            start_pos = legacy_data.get("start_pos", "unknown")
-            end_pos = legacy_data.get("end_pos", "unknown")
+            letter = external_data.get("letter", "Unknown")
+            start_pos = external_data.get("start_pos", "unknown")
+            end_pos = external_data.get("end_pos", "unknown")
 
             # Convert blue motion attributes
-            blue_attrs = legacy_data.get("blue_attributes", {})
+            blue_attrs = external_data.get("blue_attributes", {})
             blue_motion = self._convert_motion_attributes(blue_attrs, "blue")
 
             # Convert red motion attributes
-            red_attrs = legacy_data.get("red_attributes", {})
+            red_attrs = external_data.get("red_attributes", {})
             red_motion = self._convert_motion_attributes(red_attrs, "red")
 
             # Create initial BeatData object with position info in metadata
@@ -138,19 +174,29 @@ class DataConversionService:
 
             return final_beat_data
 
+        except (ValidationError, DataProcessingError):
+            # Re-raise our custom exceptions
+            raise
         except Exception as e:
-            print(f"❌ Failed to convert Legacy data to BeatData: {e}")
-            print(f"   Legacy data: {legacy_data}")
-            raise ValueError(f"Data conversion failed: {e}")
+            logger.error(
+                f"Failed to convert external data to BeatData: {e}",
+                extra={"external_data": external_data},
+            )
+            raise DataProcessingError(
+                f"Data conversion failed: {e}",
+                data_type="external_pictograph",
+                processing_stage="conversion",
+            ) from e
 
+    @handle_service_errors("convert_motion_attributes")
     def _convert_motion_attributes(
-        self, legacy_attrs: Dict[str, Any], color: str
+        self, external_attrs: Dict[str, Any], color: str
     ) -> MotionData:
         """
-        Convert Legacy motion attributes to modern MotionData.
+        Convert external motion attributes to modern MotionData.
 
         Args:
-            legacy_attrs: Legacy motion attributes dictionary
+            external_attrs: External motion attributes dictionary
             color: Color identifier for error reporting ("blue" or "red")
 
         Returns:
@@ -158,7 +204,7 @@ class DataConversionService:
         """
         try:
             # Convert motion type (handle both prop and hand motions)
-            motion_type_str = str(legacy_attrs.get("motion_type", "static")).lower()
+            motion_type_str = str(external_attrs.get("motion_type", "static")).lower()
 
             # Check if it's a hand motion (shift) or prop motion
             if motion_type_str == "shift":
@@ -171,21 +217,21 @@ class DataConversionService:
                 )
 
             # Convert rotation direction
-            rot_dir_str = str(legacy_attrs.get("prop_rot_dir", "no_rotation")).lower()
+            rot_dir_str = str(external_attrs.get("prop_rot_dir", "no_rotation")).lower()
             prop_rot_dir = self.ROTATION_DIRECTION_MAPPING.get(
                 rot_dir_str, RotationDirection.NO_ROTATION
             )
 
             # Convert locations
-            start_loc_str = str(legacy_attrs.get("start_loc", "n")).lower()
+            start_loc_str = str(external_attrs.get("start_loc", "n")).lower()
             start_loc = self.LOCATION_MAPPING.get(start_loc_str, Location.NORTH)
 
-            end_loc_str = str(legacy_attrs.get("end_loc", "n")).lower()
+            end_loc_str = str(external_attrs.get("end_loc", "n")).lower()
             end_loc = self.LOCATION_MAPPING.get(end_loc_str, Location.NORTH)
 
-            # Preserve orientations as strings (Legacy format)
-            start_ori = str(legacy_attrs.get("start_ori", "in"))
-            end_ori = str(legacy_attrs.get("end_ori", "in"))
+            # Preserve orientations as strings from external format
+            start_ori = str(external_attrs.get("start_ori", "in"))
+            end_ori = str(external_attrs.get("end_ori", "in"))
 
             return MotionData(
                 motion_type=motion_type,
@@ -197,9 +243,15 @@ class DataConversionService:
             )
 
         except Exception as e:
-            print(f"❌ Failed to convert {color} motion attributes: {e}")
-            print(f"   Attributes: {legacy_attrs}")
-            raise ValueError(f"Motion attribute conversion failed for {color}: {e}")
+            logger.error(
+                f"Failed to convert {color} motion attributes: {e}",
+                extra={"attributes": external_attrs, "color": color},
+            )
+            raise DataProcessingError(
+                f"Motion attribute conversion failed for {color}: {e}",
+                data_type="motion_attributes",
+                processing_stage="attribute_conversion",
+            ) from e
 
     def _generate_glyph_data(self, beat_data: BeatData) -> Optional[GlyphData]:
         """
@@ -219,80 +271,104 @@ class DataConversionService:
             return pictograph_service._generate_glyph_data(beat_data)
         except Exception as e:
             print(f"⚠️ Failed to generate glyph data: {e}")
-            # Fallback to old service if consolidated service fails
+            # Fallback to alternative service if primary service fails
             try:
                 return self.glyph_data_service.determine_glyph_data(beat_data)
             except Exception as fallback_e:
                 print(f"⚠️ Fallback glyph generation also failed: {fallback_e}")
                 return None
 
-    def convert_multiple_legacy_pictographs(
-        self, legacy_pictographs: list[Dict[str, Any]]
-    ) -> list[BeatData]:
+    @handle_service_errors("convert_multiple_external_pictographs")
+    @monitor_performance("batch_data_conversion")
+    def convert_multiple_external_pictographs(
+        self, external_pictographs: List[Dict[str, Any]]
+    ) -> List[BeatData]:
         """
-        Convert multiple Legacy pictographs to modern BeatData format.
+        Convert multiple external pictographs to modern BeatData format.
 
         Args:
-            legacy_pictographs: List of Legacy pictograph data dictionaries
+            external_pictographs: List of external pictograph data dictionaries
 
         Returns:
             List of BeatData objects
+
+        Raises:
+            ValidationError: If input list is invalid
+            DataProcessingError: If conversion fails for any pictograph
         """
+        # Validate input
+        if not isinstance(external_pictographs, list):
+            raise ValidationError("External pictographs must be a list")
+
+        if not external_pictographs:
+            logger.warning("Empty pictograph list provided for conversion")
+            return []
+
         converted_beats = []
         conversion_errors = []
 
-        for i, legacy_data in enumerate(legacy_pictographs):
+        for i, external_data in enumerate(external_pictographs):
             try:
-                beat_data = self.convert_legacy_pictograph_to_beat_data(legacy_data)
+                beat_data = self.convert_external_pictograph_to_beat_data(external_data)
                 converted_beats.append(beat_data)
             except Exception as e:
                 error_msg = f"Pictograph {i}: {e}"
                 conversion_errors.append(error_msg)
-                print(f"⚠️ {error_msg}")
+                logger.warning(f"Conversion error for pictograph {i}: {e}")
 
         if conversion_errors:
-            print(
-                f"⚠️ Conversion completed with {len(conversion_errors)} errors out of {len(legacy_pictographs)} pictographs"
+            logger.warning(
+                f"Conversion completed with {len(conversion_errors)} errors out of {len(external_pictographs)} pictographs"
             )
         else:
-            print(f"✅ Successfully converted {len(converted_beats)} pictographs")
+            logger.info(f"Successfully converted {len(converted_beats)} pictographs")
 
         return converted_beats
 
+    @handle_service_errors("validate_conversion")
     def validate_conversion(
-        self, legacy_data: Dict[str, Any], beat_data: BeatData
+        self, external_data: Dict[str, Any], beat_data: BeatData
     ) -> Dict[str, Any]:
         """
         Validate that conversion preserved all important data.
 
         Args:
-            legacy_data: Original Legacy data
+            external_data: Original external data
             beat_data: Converted BeatData
 
         Returns:
-            Dictionary with validation results
+            Dictionary with validation results including 'valid', 'issues', and 'total_issues'
+
+        Raises:
+            ValidationError: If input parameters are invalid
         """
+        # Validate inputs
+        if not isinstance(external_data, dict):
+            raise ValidationError("External data must be a dictionary")
+        if not isinstance(beat_data, BeatData):
+            raise ValidationError("Beat data must be a BeatData instance")
+
         issues = []
 
         # Check letter preservation
-        if legacy_data.get("letter") != beat_data.letter:
+        if external_data.get("letter") != beat_data.letter:
             issues.append(
-                f"Letter mismatch: {legacy_data.get('letter')} → {beat_data.letter}"
+                f"Letter mismatch: {external_data.get('letter')} → {beat_data.letter}"
             )
 
         # Check position preservation (stored in metadata)
-        if legacy_data.get("start_pos") != beat_data.metadata.get("start_pos"):
+        if external_data.get("start_pos") != beat_data.metadata.get("start_pos"):
             issues.append(
-                f"Start position mismatch: {legacy_data.get('start_pos')} → {beat_data.metadata.get('start_pos')}"
+                f"Start position mismatch: {external_data.get('start_pos')} → {beat_data.metadata.get('start_pos')}"
             )
 
-        if legacy_data.get("end_pos") != beat_data.metadata.get("end_pos"):
+        if external_data.get("end_pos") != beat_data.metadata.get("end_pos"):
             issues.append(
-                f"End position mismatch: {legacy_data.get('end_pos')} → {beat_data.metadata.get('end_pos')}"
+                f"End position mismatch: {external_data.get('end_pos')} → {beat_data.metadata.get('end_pos')}"
             )
 
         # Check motion type preservation
-        blue_attrs = legacy_data.get("blue_attributes", {})
+        blue_attrs = external_data.get("blue_attributes", {})
         if blue_attrs.get("motion_type") and beat_data.blue_motion:
             expected_motion_type = self.MOTION_TYPE_MAPPING.get(
                 blue_attrs["motion_type"].lower()
