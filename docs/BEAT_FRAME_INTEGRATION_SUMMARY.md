@@ -1,8 +1,8 @@
-# Beat Frame Integration Summary - Kinetic Constructor v2
+# Beat Frame Integration Summary - Kinetic Constructor
 
 ## Overview
 
-Successfully implemented missing beat frame functionality in the Kinetic Constructor modern sequence workbench, achieving feature parity with legacy. The beat frame now displays actual pictographs instead of placeholder text and integrates seamlessly with the modern architecture.
+Successfully implemented missing beat frame functionality in the Kinetic Constructor sequence workbench, achieving feature parity with legacy. The beat frame now displays actual pictographs instead of placeholder text and integrates seamlessly with the modern architecture.
 
 ## Implementation Completed
 
@@ -18,7 +18,7 @@ Successfully implemented missing beat frame functionality in the Kinetic Constru
 
 **Files Modified**:
 
-- `v2/src/presentation/components/modern_sequence_workbench.py`
+- `modern/src/presentation/components/modern_sequence_workbench.py`
   - Added imports for `ModernBeatFrame` and `BeatFrameLayoutService`
   - Replaced placeholder `_beat_frame_container` with actual `ModernBeatFrame` instance
   - Added signal connections and handlers
@@ -26,7 +26,7 @@ Successfully implemented missing beat frame functionality in the Kinetic Constru
 
 ### ✅ 2. Pictograph Rendering Integration
 
-**Objective**: Integrate v2's pictograph rendering system to display actual pictographs
+**Objective**: Integrate modern's pictograph rendering system to display actual pictographs
 **Implementation**:
 
 - Replaced placeholder text displays with `SimplePictographComponent` instances
@@ -36,14 +36,14 @@ Successfully implemented missing beat frame functionality in the Kinetic Constru
 
 **Files Modified**:
 
-- `v2/src/presentation/components/sequence_workbench/beat_frame/beat_view.py`
+- `modern/src/presentation/components/sequence_workbench/beat_frame/beat_view.py`
 
   - Added import for `SimplePictographComponent`
   - Replaced `_pictograph_container` with `_pictograph_component`
   - Updated `_update_pictograph()` to use `update_from_beat()`
   - Simplified `_show_empty_state()` to use `clear_pictograph()`
 
-- `v2/src/presentation/components/sequence_workbench/beat_frame/start_position_view.py`
+- `modern/src/presentation/components/sequence_workbench/beat_frame/start_position_view.py`
   - Added import for `SimplePictographComponent`
   - Replaced placeholder container with actual pictograph component
   - Updated pictograph rendering methods
@@ -60,7 +60,7 @@ Successfully implemented missing beat frame functionality in the Kinetic Constru
 
 **Files Modified**:
 
-- `v2/src/presentation/components/sequence_workbench/beat_frame/modern_beat_frame.py`
+- `modern/src/presentation/components/sequence_workbench/beat_frame/modern_beat_frame.py`
   - Updated `set_sequence()` method signature to accept `Optional[SequenceData]`
   - Enhanced sequence data handling for proper beat display
 
@@ -86,7 +86,7 @@ Successfully implemented missing beat frame functionality in the Kinetic Constru
 ### Architecture Compliance
 
 - ✅ **Dependency Injection**: All components use proper DI patterns
-- ✅ **Immutable Data Models**: Maintains v2's immutable `SequenceData` and `BeatData`
+- ✅ **Immutable Data Models**: Maintains modern's immutable `SequenceData` and `BeatData`
 - ✅ **Clean Separation**: Presentation layer cleanly separated from business logic
 - ✅ **Signal-Based Communication**: Uses Qt signals for loose coupling
 
@@ -115,7 +115,7 @@ Sequence Selection → ModernSequenceWorkbench.set_sequence()
 
 ### ✅ Integration Test Successful
 
-**Test File**: `v2/test_beat_frame_integration.py`
+**Test File**: `modern/test_beat_frame_integration.py`
 
 **Verification Points**:
 
@@ -179,4 +179,4 @@ The modern sequence workbench now has full feature parity with legacy's beat fra
 - Build sequences with multiple beats
 - Experience pixel-perfect visual compatibility with legacy
 
-The implementation maintains v2's clean architecture while delivering the expected user experience from legacy.
+The implementation maintains modern's clean architecture while delivering the expected user experience from legacy.

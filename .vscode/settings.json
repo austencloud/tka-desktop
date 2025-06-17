@@ -1,5 +1,9 @@
 {
-  "python.analysis.extraPaths": ["${workspaceFolder}/src", "./v2/src"],
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/src",
+    "./v2/src",
+    "./modern/src"
+  ],
   "settings": {
     "files.associations": {
       "test_*.py": "python"

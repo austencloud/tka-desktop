@@ -32,7 +32,9 @@ class MainWindow(QMainWindow):
         # IMPORTANT: Set the MainWindow reference in AppContext immediately
         # This prevents timing issues during widget initialization
         try:
-            from src.legacy_settings_manager.global_settings.app_context import AppContext
+            from src.legacy_settings_manager.global_settings.app_context import (
+                AppContext,
+            )
 
             AppContext.set_main_window(self)
             logger.info("MainWindow reference set in AppContext")
@@ -81,7 +83,9 @@ class MainWindow(QMainWindow):
         self.profiler.enable()
         result = app.exec()
         self.profiler.disable()
-        self.profiler.write_profiling_stats_to_file("profiling_output.txt", "legacy/src/")
+        self.profiler.write_profiling_stats_to_file(
+            "legacy/profiling_output.txt", "legacy/src/"
+        )
         return result
 
     def closeEvent(self, event):

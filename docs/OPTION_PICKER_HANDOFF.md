@@ -98,26 +98,26 @@
 
 ### **Key Components Implemented:**
 
-1. **`PictographBorderManager`** (`v2/src/presentation/components/pictograph/border_manager.py`)
+1. **`PictographBorderManager`** (`modern/src/presentation/components/pictograph/border_manager.py`)
 
    - Border width calculations matching Legacy formulas
    - Letter type color mapping (TYPE1-TYPE6)
    - Gold hover effects
    - Border positioning and rendering
 
-2. **`ContextAwareScalingService`** (`v2/src/application/services/context_aware_scaling_service.py`)
+2. **`ContextAwareScalingService`** (`modern/src/application/services/context_aware_scaling_service.py`)
 
    - Multiple scaling contexts (OPTION_VIEW, START_POS_PICKER, etc.)
    - Border-aware size calculations
    - Context-specific parameter handling
 
-3. **`PictographContextConfigurator`** (`v2/src/application/services/pictograph_context_configurator.py`)
+3. **`PictographContextConfigurator`** (`modern/src/application/services/pictograph_context_configurator.py`)
 
    - Easy configuration for different Legacy view types
    - Hover effects integration
    - Context-specific parameter handling
 
-4. **`ClickablePictographFrame`** (`v2/src/presentation/components/option_picker/clickable_pictograph_frame.py`)
+4. **`ClickablePictographFrame`** (`modern/src/presentation/components/option_picker/clickable_pictograph_frame.py`)
    - Zero-margin container for Option Picker
    - Automatic letter type color configuration
    - DEFAULT scaling context for proper frame filling
@@ -182,10 +182,10 @@ TYPE6: ("#eb7d00", "#eb7d00")  # Orange, Orange
 
 **Key Files Modified:**
 
-- `v2/src/presentation/components/pictograph/border_manager.py` (NEW)
-- `v2/src/application/services/context_aware_scaling_service.py` (ENHANCED)
-- `v2/src/application/services/pictograph_context_configurator.py` (NEW)
-- `v2/src/presentation/components/option_picker/clickable_pictograph_frame.py` (FIXED)
-- `v2/src/presentation/components/pictograph/pictograph_component.py` (ENHANCED)
+- `modern/src/presentation/components/pictograph/border_manager.py` (NEW)
+- `modern/src/application/services/context_aware_scaling_service.py` (ENHANCED)
+- `modern/src/application/services/pictograph_context_configurator.py` (NEW)
+- `modern/src/presentation/components/option_picker/clickable_pictograph_frame.py` (FIXED)
+- `modern/src/presentation/components/pictograph/pictograph_component.py` (ENHANCED)
 
 The Option Picker implementation is **stable, complete, and ready for production use**. All scaling and border issues have been resolved with comprehensive validation.

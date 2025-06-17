@@ -1,4 +1,4 @@
-# Legacy Beat Frame Parity Implementation Summary - Kinetic Constructor v2
+# Legacy Beat Frame Parity Implementation Summary - Kinetic Constructor
 
 ## Overview
 
@@ -34,7 +34,7 @@ Successfully analyzed the exact legacy beat frame implementation and modified th
 
 **Files Modified**:
 
-- `v2/src/presentation/components/sequence_workbench/beat_frame/beat_view.py`
+- `modern/src/presentation/components/sequence_workbench/beat_frame/beat_view.py`
   - Removed `_beat_label` component and related UI setup
   - Updated `_setup_ui()` to use zero margins/spacing
   - Removed label updates in `_update_display()` and `_show_empty_state()`
@@ -46,7 +46,7 @@ Successfully analyzed the exact legacy beat frame implementation and modified th
 
 **Files Modified**:
 
-- `v2/src/presentation/components/sequence_workbench/beat_frame/modern_beat_frame.py`
+- `modern/src/presentation/components/sequence_workbench/beat_frame/modern_beat_frame.py`
   - Removed `_sequence_info_label` and `_layout_info_label`
   - Removed `_setup_header_section()` method entirely
   - Updated `_setup_ui()` to create grid layout directly
@@ -77,14 +77,14 @@ self._pictograph_component.setMinimumSize(120, 120)  # Fill container
 
 **Created StartTextOverlay Component**:
 
-- **File**: `v2/src/presentation/components/start_text_overlay.py`
+- **File**: `modern/src/presentation/components/start_text_overlay.py`
 - **Functionality**: Replicates legacy's `BeatStartTextItem` exactly
 - **Font**: Georgia, size 60, DemiBold weight (matching legacy)
 - **Positioning**: Dynamic padding based on scene size (`scene.height() // 28`)
 
 **Integration**:
 
-- **File**: `v2/src/presentation/components/sequence_workbench/beat_frame/start_position_view.py`
+- **File**: `modern/src/presentation/components/sequence_workbench/beat_frame/start_position_view.py`
 - **Method**: `_add_start_text_overlay()` adds "START" text to pictograph scene
 - **Behavior**: Text overlaid directly on pictograph, not as separate label
 
@@ -126,7 +126,7 @@ self._pictograph_component.setMinimumSize(120, 120)  # Fill container
 
 ### ✅ Legacy Parity Test Successful
 
-**Test File**: `v2/test_legacy_beat_frame_parity.py`
+**Test File**: `modern/test_legacy_beat_frame_parity.py`
 
 **Verification Points**:
 
@@ -186,9 +186,9 @@ The modern beat frame now achieves **complete pixel-perfect visual and functiona
 
 ### Architecture Benefits ✅
 
-- Maintained v2's clean dependency injection
+- Maintained modern's clean dependency injection
 - Preserved immutable data models
 - Enhanced component reusability
 - Improved performance through UI simplification
 
-**The modern beat frame is now visually indistinguishable from legacy and provides identical user experience while maintaining v2's superior architecture.**
+**The modern beat frame is now visually indistinguishable from legacy and provides identical user experience while maintaining modern's superior architecture.**

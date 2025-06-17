@@ -8,7 +8,7 @@ Successfully implemented dynamic option picker updates in TKA Modern to replicat
 
 ### 1. Enhanced End Position Extraction
 
-**File**: `v2/src/presentation/components/option_picker/beat_data_loader.py`
+**File**: `modern/src/presentation/components/option_picker/beat_data_loader.py`
 
 - **Legacy Format Support**: Direct extraction from `end_pos` field
 - **Motion Data Calculation**: Automatic calculation from `blue_attributes` and `red_attributes`
@@ -28,7 +28,7 @@ def _extract_end_position(self, last_beat: Dict[str, Any], position_service) -> 
 
 ### 2. Sequence-Based Option Refresh
 
-**File**: `v2/src/presentation/components/option_picker/beat_data_loader.py`
+**File**: `modern/src/presentation/components/option_picker/beat_data_loader.py`
 
 - **Dynamic Refresh**: `refresh_options_from_sequence()` method for Legacy-compatible updates
 - **End Position Detection**: Extracts end position from last beat in sequence
@@ -45,7 +45,7 @@ def refresh_options_from_sequence(self, sequence_data: List[Dict[str, Any]]) -> 
 
 ### 3. Option Picker Integration
 
-**File**: `v2/src/presentation/components/option_picker/__init__.py`
+**File**: `modern/src/presentation/components/option_picker/__init__.py`
 
 - **Refresh Interface**: Added `refresh_options_from_sequence()` method to ModernOptionPicker
 - **Display Updates**: Automatic display manager updates with new options
@@ -53,7 +53,7 @@ def refresh_options_from_sequence(self, sequence_data: List[Dict[str, Any]]) -> 
 
 ### 4. Signal Flow Integration
 
-**File**: `v2/src/presentation/tabs/construct_tab_widget.py`
+**File**: `modern/src/presentation/tabs/construct_tab_widget.py`
 
 - **Workbench Connection**: Connected to workbench sequence modification signals
 - **Automatic Refresh**: Triggers option picker refresh on sequence changes
@@ -68,7 +68,7 @@ def _on_workbench_modified(self, sequence: SequenceData):
 
 ### 5. Format Conversion
 
-**File**: `v2/src/presentation/tabs/construct_tab_widget.py`
+**File**: `modern/src/presentation/tabs/construct_tab_widget.py`
 
 - **Modern to Legacy Mapping**: Converts SequenceData to Legacy sequence format
 - **End Position Calculation**: Generates end positions from motion data
@@ -125,19 +125,19 @@ position_map = {
 
 ## Files Modified
 
-1. **`v2/src/presentation/components/option_picker/beat_data_loader.py`**
+1. **`modern/src/presentation/components/option_picker/beat_data_loader.py`**
 
    - Enhanced end position extraction
    - Added sequence-based refresh method
    - Improved motion data calculation
 
-2. **`v2/src/presentation/components/option_picker/__init__.py`**
+2. **`modern/src/presentation/components/option_picker/__init__.py`**
 
    - Added dynamic refresh interface
    - Fixed duplicate method definitions
    - Improved import structure
 
-3. **`v2/src/presentation/tabs/construct_tab_widget.py`**
+3. **`modern/src/presentation/tabs/construct_tab_widget.py`**
    - Connected sequence modification signals
    - Added automatic option picker refresh
    - Implemented Modern to Legacy format conversion
@@ -147,9 +147,9 @@ position_map = {
 
 ### Test Scripts Created
 
-- `v2/test_dynamic_updates.py` - Core logic validation
-- `v2/test_integration_dynamic_updates.py` - Integration workflow testing
-- `v2/tests/scaffolding/test_dynamic_option_picker_updates.py` - Comprehensive unit tests
+- `modern/test_dynamic_updates.py` - Core logic validation
+- `modern/test_integration_dynamic_updates.py` - Integration workflow testing
+- `modern/tests/scaffolding/test_dynamic_option_picker_updates.py` - Comprehensive unit tests
 
 ### Success Criteria Met
 

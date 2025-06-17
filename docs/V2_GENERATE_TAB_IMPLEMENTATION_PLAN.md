@@ -139,8 +139,8 @@ class GenerationResult:
 
 ### Phase 1: Foundation (Day 1)
 
-1. **Create service interfaces** in `v2/src/core/interfaces/generation_services.py`
-2. **Create domain models** in `v2/src/domain/models/generation_models.py`
+1. **Create service interfaces** in `modern/src/core/interfaces/generation_services.py`
+2. **Create domain models** in `modern/src/domain/models/generation_models.py`
 3. **Set up dependency injection** configuration for generation services
 4. **Create base component structure** for the generate tab
 

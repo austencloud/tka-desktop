@@ -82,8 +82,14 @@ def get_dev_path(filename) -> str:
     - settings json
     - saved words
     """
+    # Special case: current_sequence.json should live in legacy directory
+    if filename == "current_sequence.json":
+        # Get the legacy directory path from the current file location
+        legacy_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        base_path = legacy_root
+    else:
+        base_path = os.path.abspath(".")
 
-    base_path = os.path.abspath(".")
     os.makedirs(base_path, exist_ok=True)
     return os.path.join(base_path, filename)
 

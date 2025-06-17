@@ -6,72 +6,16 @@ from PyQt6.QtWidgets import (
     QApplication,
     QPushButton,
     QMessageBox,
-    QLabel,  # Added QLabel
+    QLabel,
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QKeySequence, QShortcut
-from typing import List, Dict, Optional
+from typing import List
 import sys
 import subprocess
 
-
-class AccessibilityManager:
-    """Singleton helper to keep widgets keyboard‑ and screen‑reader‑friendly."""
-
-    _instance: Optional["AccessibilityManager"] = None
-
-    def __init__(self) -> None:
-        if AccessibilityManager._instance is not None:
-            raise RuntimeError("AccessibilityManager is a singleton")
-        AccessibilityManager._instance = self
-
-    @classmethod
-    def instance(cls) -> "AccessibilityManager":
-        if cls._instance is None:
-            cls._instance = AccessibilityManager()
-        return cls._instance
-
-    # -------- helpers -----------------------------------------------------
-    def configure(self, widget: QWidget, name: str, desc: str = "") -> None:
-        widget.setAccessibleName(name)
-        widget.setAccessibleDescription(desc)
-        widget.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-
-
-class AppDefinition:
-    def __init__(
-        self,
-        title: str,
-        description: str,
-        script_path: str = "",
-        command: str = "",
-        icon: str | None = "",
-    ) -> None:
-        self.title = title
-        self.description = description
-        self.script_path = script_path
-        self.command = command
-        self.icon = icon or "💻"
-
-
-class AppDefinitions:
-    """Central place to list launch targets."""
-
-    @staticmethod
-    def all() -> List[AppDefinition]:
-        return [
-            AppDefinition("Legacy", "Full legacy TKA", "legacy/main.py", icon="🔧"),
-            AppDefinition("Modern", "Modern TKA demo", "v2/main.py", icon="✨"),
-            AppDefinition(
-                "Parallel",
-                "Legacy/Modern side-by-side testing",
-                "parallel_test_launcher.py",
-                icon="🔄",
-            ),
-            AppDefinition(
-                "Dev", "Debug helpers", "test_dev_tools.py", icon="🛠"
-            ),  # Changed "Dev Tools" to "Dev"
-        ]
+from .accessibility import AccessibilityManager
+from .apps import AppDefinitions, AppDefinition
 
 
 class LauncherWindow(QMainWindow):
@@ -86,9 +30,8 @@ class LauncherWindow(QMainWindow):
         self._setup_window()
         self._setup_layout()
         self._setup_shortcuts()
-        self.position_overlay_taskbar_secondary_left_fifth()  # Updated method call
+        self.position_overlay_taskbar_secondary_left_fifth()
 
-    # ---- Window chrome ---------------------------------------------------
     def _setup_window(self) -> None:
         self.setWindowTitle("TKA Launcher")
         # Frameless & always on top keeps it minimal and unobtrusive
@@ -98,7 +41,6 @@ class LauncherWindow(QMainWindow):
         # High‑contrast palette for accessibility; relies on system colors
         self.setStyleSheet("background: palette(window);")
 
-    # ---- Layout ----------------------------------------------------------
     def _setup_layout(self) -> None:
         central = QWidget(self)
         layout = QHBoxLayout(central)
@@ -150,13 +92,11 @@ class LauncherWindow(QMainWindow):
             )
             layout.addWidget(btn)
 
-    # ---- Shortcuts -------------------------------------------------------
     def _setup_shortcuts(self) -> None:
         QShortcut(QKeySequence("Ctrl+Q"), self, self.close)
         QShortcut(QKeySequence("F5"), self, self._refresh)
 
-    # ---- Geometry helpers -----------------------------------------------
-    def position_overlay_taskbar_secondary_left_fifth(self) -> None:  # Renamed method
+    def position_overlay_taskbar_secondary_left_fifth(self) -> None:
         """Moves the launcher to overlay the taskbar area on the secondary screen,
         positioned 1/5 from the left edge of the full screen geometry."""
         screens = QApplication.screens()
@@ -179,7 +119,6 @@ class LauncherWindow(QMainWindow):
 
         self.setGeometry(x_position, y_position, self.WIDTH, self.HEIGHT)
 
-    # ---- Actions ---------------------------------------------------------
     def _launch(self, app: AppDefinition) -> None:
         try:
             if app.script_path:
@@ -197,11 +136,6 @@ class LauncherWindow(QMainWindow):
         new.show()
 
 
-# ---------------------------------------------------------------------------
-#  Application entry‑point
-# ---------------------------------------------------------------------------
-
-
 class LauncherApplication(QApplication):
     def __init__(self, argv: List[str]) -> None:
         super().__init__(argv)
@@ -213,12 +147,3 @@ class LauncherApplication(QApplication):
         window = LauncherWindow()
         window.show()
         return self.exec()
-
-
-def main() -> int:
-    app = LauncherApplication(sys.argv)
-    return app.run()
-
-
-if __name__ == "__main__":
-    sys.exit(main())

@@ -3,10 +3,10 @@ name: Test Organization Validation
 on:
   pull_request:
     paths:
-      - "v2/tests/**/*.py"
+      - "modern/tests/**/*.py"
   push:
     paths:
-      - "v2/tests/**/*.py"
+      - "modern/tests/**/*.py"
 
 jobs:
   validate-test-organization:
@@ -21,12 +21,12 @@ jobs:
 
       - name: Validate Test Placement
         run: |
-          cd v2
+          cd modern
           python tests/scripts/validate_test_placement.py
 
       - name: Check Test Health
         run: |
-          cd v2
+          cd modern
           python tests/test_runner.py --health
 
       - name: Comment on PR with Issues
@@ -45,7 +45,7 @@ jobs:
               - All tests have proper lifecycle metadata
               - Scaffolding tests have DELETE_AFTER dates
               
-              Run locally: \`python v2/tests/scripts/validate_test_placement.py\`
+              Run locally: \`python modern/tests/scripts/validate_test_placement.py\`
               
-              See: \`v2/tests/TEST_ORGANIZATION_GUIDE.md\``
+              See: \`modern/tests/TEST_ORGANIZATION_GUIDE.md\``
             })

@@ -20,9 +20,9 @@ if TYPE_CHECKING:
     from .sequence_workbench import SequenceWorkbench
 
 
-# Correctly calculate project root (parent of src/ directory)
-# Navigate up from current file: sequence_workbench -> main_widget -> main_window -> src -> project_root
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
+# Legacy directory path - current_sequence.json lives in legacy/
+# Navigate up from current file: sequence_workbench -> main_widget -> main_window -> src -> legacy
+LEGACY_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
 
 
 class SequenceWorkbenchButtonPanel(QFrame):
@@ -130,7 +130,7 @@ class SequenceWorkbenchButtonPanel(QFrame):
     def _copy_sequence_json(self):
         """Copies the content of current_sequence.json to the clipboard and updates indicator."""
         try:
-            sequence_file_path = os.path.join(PROJECT_ROOT, "current_sequence.json")
+            sequence_file_path = os.path.join(LEGACY_ROOT, "current_sequence.json")
             if os.path.exists(sequence_file_path):
                 with open(sequence_file_path, "r", encoding="utf-8") as file:
                     sequence_data = json.load(file)

@@ -1,0 +1,6 @@
+{
+  "include": ["modern/src"],
+  "extraPaths": ["modern/src"],
+  "pythonVersion": "3.12",
+  "pythonPlatform": "Windows"
+}

@@ -1,0 +1,166 @@
+name: Test Lifecycle Management
+
+on:
+  schedule:
+    # Run every Monday at 9 AM UTC
+    - cron: "0 9 * * MON"
+  workflow_dispatch:
+    # Allow manual triggering
+  pull_request:
+    # Run on PRs to check test health
+    paths:
+      - "tests/**"
+      - ".github/workflows/test-lifecycle.yml"
+
+jobs:
+  test-lifecycle-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run test lifecycle analysis
+        id: lifecycle-check
+        run: |
+          cd modern
+          python tests/scripts/test_lifecycle_manager.py --report --output test_lifecycle_report.md
+
+          # Check for expired tests
+          EXPIRED_COUNT=$(python tests/scripts/test_lifecycle_manager.py --expired | grep -c "Expired Tests:" || echo "0")
+          echo "expired_count=$EXPIRED_COUNT" >> $GITHUB_OUTPUT
+
+          # Check for problematic tests
+          PROBLEM_COUNT=$(python tests/scripts/test_lifecycle_manager.py --problems | grep -c "Problematic Tests:" || echo "0")
+          echo "problem_count=$PROBLEM_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Upload test lifecycle report
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-lifecycle-report
+          path: modern/test_lifecycle_report.md
+
+      - name: Create cleanup PR if needed
+        if: steps.lifecycle-check.outputs.expired_count > 0
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "🧹 Cleanup expired scaffolding tests"
+          title: "🧹 Automated Test Cleanup - ${{ steps.lifecycle-check.outputs.expired_count }} expired tests"
+          body: |
+            ## 🧹 Automated Test Lifecycle Cleanup
+
+            This PR was automatically created because expired scaffolding tests were detected.
+
+            ### Summary
+            - **Expired tests**: ${{ steps.lifecycle-check.outputs.expired_count }}
+            - **Tests needing attention**: ${{ steps.lifecycle-check.outputs.problem_count }}
+
+            ### What This PR Does
+            - Identifies scaffolding tests that have passed their DELETE_AFTER date
+            - Provides recommendations for test cleanup
+            - Maintains test suite health and prevents test debt accumulation
+
+            ### Review Instructions
+            1. Review the attached test lifecycle report
+            2. Verify that expired tests have indeed served their purpose
+            3. Delete expired scaffolding tests that are no longer needed
+            4. Create regression tests if any expired tests revealed important bugs
+
+            ### Files to Review
+            See the test lifecycle report artifact for detailed analysis.
+
+            ---
+
+            **Note**: This is an automated PR created by the test lifecycle management system.
+            The goal is to keep our test suite clean and maintainable by removing temporary scaffolding tests that have served their purpose.
+          branch: automated/test-cleanup-${{ github.run_number }}
+          delete-branch: true
+
+      - name: Comment on PR with test health
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const expiredCount = '${{ steps.lifecycle-check.outputs.expired_count }}';
+            const problemCount = '${{ steps.lifecycle-check.outputs.problem_count }}';
+
+            let message = '## 🧪 Test Lifecycle Health Check\n\n';
+
+            if (expiredCount > 0) {
+              message += `⚠️ **${expiredCount} expired scaffolding tests** found that should be reviewed for deletion.\n\n`;
+            } else {
+              message += '✅ No expired scaffolding tests found.\n\n';
+            }
+
+            if (problemCount > 0) {
+              message += `⚠️ **${problemCount} tests** need attention (missing metadata, unclear purpose, etc.).\n\n`;
+            } else {
+              message += '✅ All tests have proper lifecycle metadata.\n\n';
+            }
+
+            message += 'See the test lifecycle report artifact for detailed analysis.';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
+
+  test-health-dashboard:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Generate test health dashboard
+        run: |
+          cd modern
+          python tests/scripts/test_lifecycle_manager.py --report
+
+      - name: Create GitHub Issue for test maintenance
+        if: always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'modern/test_lifecycle_report.md';
+
+            if (fs.existsSync(path)) {
+              const report = fs.readFileSync(path, 'utf8');
+              
+              // Check if there are any issues that need attention
+              const hasExpired = report.includes('🗑️ Expired Tests');
+              const hasProblems = report.includes('⚠️ Tests Needing Attention');
+              
+              if (hasExpired || hasProblems) {
+                const title = `🧹 Weekly Test Maintenance - ${new Date().toISOString().split('T')[0]}`;
+                const body = `# Weekly Test Lifecycle Maintenance\n\n${report}\n\n---\n\n**This issue was automatically created by the test lifecycle management system.**`;
+                
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  body: body,
+                  labels: ['maintenance', 'testing', 'automated']
+                });
+              }
+            }

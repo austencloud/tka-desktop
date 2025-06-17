@@ -38,11 +38,15 @@ class SequenceDataLoaderSaver:
         import os
 
         possible_paths = [
-            get_user_editable_resource_path("current_sequence.json"),  # Original logic
+            get_user_editable_resource_path(
+                "current_sequence.json"
+            ),  # Primary: legacy directory
             os.path.join(
-                os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                os.path.dirname(
+                    os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+                ),
                 "current_sequence.json",
-            ),  # Project root
+            ),  # Legacy directory root
             os.path.abspath("current_sequence.json"),  # Current directory
             os.path.join("..", "current_sequence.json"),  # Parent directory
             os.path.join("..", "..", "current_sequence.json"),  # Grandparent directory
