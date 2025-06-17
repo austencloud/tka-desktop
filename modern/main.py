@@ -390,10 +390,10 @@ class KineticConstructorModern(QMainWindow):
     def _setup_background(self):
         if self.splash:
             self.splash.update_progress(95, "Setting up background...")
-        
+
         # Get background type from settings
         background_type = self.ui_state_service.get_setting("background_type", "Aurora")
-        
+
         self.background_widget = MainBackgroundWidget(self, background_type)
         self.background_widget.setGeometry(self.rect())
         self.background_widget.lower()
@@ -407,24 +407,18 @@ class KineticConstructorModern(QMainWindow):
     def _show_settings(self):
         """Open the settings dialog"""
         try:
-            # Create the settings service
-            from src.application.services.settings.settings_service import (
-                SettingsService,
-            )
             from src.presentation.components.ui.settings.modern_settings_dialog import (
                 ModernSettingsDialog,
             )
 
-            settings_service = SettingsService(self.ui_state_service)
-
-            # Create and show the settings dialog
-            dialog = ModernSettingsDialog(settings_service, self)
+            # Create and show the settings dialog - pass UI state service directly
+            dialog = ModernSettingsDialog(self.ui_state_service, self)
 
             # Connect to settings changes if needed
             dialog.settings_changed.connect(self._on_setting_changed)
 
             # Show the dialog
-            result = dialog.exec()
+            _ = dialog.exec()
 
             # Clean up dialog resources after it closes
             dialog.deleteLater()
@@ -446,10 +440,14 @@ class KineticConstructorModern(QMainWindow):
     def _apply_background_change(self, background_type: str):
         """Apply a background change immediately"""
         try:
-            # Remove old background widget
+            # Remove old background widget with proper cleanup
             if hasattr(self, "background_widget") and self.background_widget:
+                if hasattr(self.background_widget, "cleanup"):
+                    self.background_widget.cleanup()
                 self.background_widget.hide()
-                self.background_widget.deleteLater()            # Create new background widget
+                self.background_widget.deleteLater()
+
+            # Create new background widget
             self.background_widget = MainBackgroundWidget(self, background_type)
             self.background_widget.setGeometry(self.rect())
             self.background_widget.lower()

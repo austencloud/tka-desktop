@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
-from src.core.interfaces.settings_interfaces import ISettingsService
+from src.core.interfaces.core_services import IUIStateManagementService
 from src.core.interfaces.tab_settings_interfaces import (
     IUserProfileService,
     IPropTypeService,
@@ -33,9 +33,9 @@ from .tabs.background_tab import BackgroundTab
 class ModernSettingsDialog(QDialog):
     settings_changed = pyqtSignal(str, object)
 
-    def __init__(self, settings_service: ISettingsService, parent=None):
+    def __init__(self, ui_state_service: IUIStateManagementService, parent=None):
         super().__init__(parent)
-        self.settings_service = settings_service
+        self.ui_state_service = ui_state_service
         self._initialize_services()
         self._setup_dialog()
         self._create_ui()
@@ -60,17 +60,13 @@ class ModernSettingsDialog(QDialog):
             BackgroundService,
         )
 
-        # All services need the UI state service, get it from the settings service
-        ui_state_service = getattr(
-            self.settings_service, "ui_state_service", self.settings_service
-        )
-
-        self.user_service = UserProfileService(ui_state_service)
-        self.prop_service = PropTypeService(ui_state_service)
-        self.visibility_service = VisibilityService(ui_state_service)
-        self.layout_service = BeatLayoutService(ui_state_service)
-        self.export_service = ImageExportService(ui_state_service)
-        self.background_service = BackgroundService(ui_state_service)
+        # All services use the UI state service directly
+        self.user_service = UserProfileService(self.ui_state_service)
+        self.prop_service = PropTypeService(self.ui_state_service)
+        self.visibility_service = VisibilityService(self.ui_state_service)
+        self.layout_service = BeatLayoutService(self.ui_state_service)
+        self.export_service = ImageExportService(self.ui_state_service)
+        self.background_service = BackgroundService(self.ui_state_service)
 
     def _setup_dialog(self):
         self.setWindowTitle("Settings")
@@ -360,7 +356,8 @@ class ModernSettingsDialog(QDialog):
         pass
 
     def _apply_settings(self):
-        self.settings_service.save_settings()
+        # Save settings through the UI state service
+        self.ui_state_service.save_state()
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:

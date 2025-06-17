@@ -250,7 +250,7 @@ class SequenceBeatFrame(QScrollArea):
         new_beats = list(self._current_sequence.beats)
         new_beats[beat_index] = beat_data
 
-        new_sequence = SequenceData(name=self._current_sequence.name, beats=new_beats)
+        new_sequence = self._current_sequence.update(beats=new_beats)
 
         self._current_sequence = new_sequence
         self.beat_modified.emit(beat_index, beat_data)

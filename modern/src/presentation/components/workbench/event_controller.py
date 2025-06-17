@@ -44,7 +44,7 @@ class WorkbenchEventController(QObject):
 
         try:
             result = self._dictionary_service.add_sequence_to_dictionary(
-                self._current_sequence
+                self._current_sequence, ""
             )
             if result:
                 return True, "Added to dictionary!"

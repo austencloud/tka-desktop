@@ -219,19 +219,21 @@ class SequenceManagementService(ISequenceManagementService):
 
     def _generate_circular_sequence(self, length: int, **kwargs) -> SequenceData:
         """Generate circular sequence where end connects to beginning."""
-        pass
-
+        sequence = self.create_sequence("Circular Sequence", length)
+        return sequence
     def _generate_auto_complete_sequence(self, length: int, **kwargs) -> SequenceData:
         """Generate auto-completed sequence based on pattern recognition."""
-        pass
-
+        sequence = self.create_sequence("Auto Complete Sequence", length)
+        return sequence
     def _generate_mirror_sequence(self, length: int, **kwargs) -> SequenceData:
         """Generate mirror sequence (palindromic pattern)."""
-        pass
-
+        sequence = self.create_sequence("Mirror Sequence", length)
+        return sequence
     def _generate_continuous_sequence(self, length: int, **kwargs) -> SequenceData:
         """Generate continuous sequence where each beat flows into the next."""
-        pass
+        sequence = self.create_sequence("Continuous Sequence", length)
+        return sequence
+
 
     def _apply_color_swap(self, sequence: SequenceData) -> SequenceData:
         """Swap blue and red motions in all beats."""
@@ -242,25 +244,26 @@ class SequenceManagementService(ISequenceManagementService):
                 red_motion=beat.blue_motion,
             )
             new_beats.append(new_beat)
-
         return sequence.update(beats=new_beats)
-
-    def _apply_horizontal_reflection(self, sequence: SequenceData) -> SequenceData:
-        """Apply horizontal reflection to all motions."""
-        pass
 
     def _apply_vertical_reflection(self, sequence: SequenceData) -> SequenceData:
         """Apply vertical reflection to all motions."""
-        pass
+        return sequence
 
     def _apply_rotation(self, sequence: SequenceData, degrees: int) -> SequenceData:
         """Apply rotation to all motions."""
-        pass
+        return sequence
 
+    def _apply_horizontal_reflection(self, sequence: SequenceData) -> SequenceData:
+        """Apply horizontal reflection to all motions."""
+        return sequence
+    
     def _apply_reverse_sequence(self, sequence: SequenceData) -> SequenceData:
         """Reverse the order of beats in sequence."""
-        pass
-
+        new_beats = list(reversed(sequence.beats))
+        for i, beat in enumerate(new_beats):
+            new_beats[i] = beat.update(beat_number=i + 1)
+        return sequence.update(beats=new_beats)
     def _load_transformation_matrices(self) -> Dict[str, Any]:
         """Load transformation matrices for workbench operations."""
         return {

@@ -1,30 +1,20 @@
 from typing import Optional
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPainter, QPixmap
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer
 
 from src.presentation.components.backgrounds.starfield_background import (
     StarfieldBackground,
 )
 from src.presentation.components.backgrounds.aurora_background import AuroraBackground
+from src.presentation.components.backgrounds.aurora_borealis_background import (
+    AuroraBorealisBackground,
+)
 from src.presentation.components.backgrounds.snowfall_background import (
     SnowfallBackground,
 )
 from src.presentation.components.backgrounds.bubbles_background import BubblesBackground
-
-
-class BaseBackground:
-    def __init__(self, widget: QWidget):
-        self.widget = widget
-
-    def paint_background(self, widget: QWidget, painter: QPainter):
-        pass
-
-    def animate_background(self):
-        pass
-
-    def stop_animation(self):
-        pass
+from src.presentation.components.backgrounds.base_background import BaseBackground
 
 
 class MainBackgroundWidget(QWidget):
@@ -38,20 +28,42 @@ class MainBackgroundWidget(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground)
         self.setGeometry(main_widget.rect())
 
-        self._cached_background_pixmap: Optional[QPixmap] = None
+        # Animation timer for calling animate_background()
+        self.animation_timer = QTimer(self)
+        self.animation_timer.timeout.connect(self._animate_background)
+        self.animation_timer.start(50)  # 20 FPS animation
+
         self._painting_active = False
 
         self.apply_background()
 
     def apply_background(self):
+        # Disconnect old background if it exists
+        if self.background:
+            try:
+                self.background.update_required.disconnect(self.update)
+            except TypeError:
+                pass  # Signal wasn't connected
+
+        # Create new background
         self.background = self._get_background(self.background_type)
-        self._cached_background_pixmap = None
+
+        # Connect to update signal if background exists
+        if self.background:
+            self.background.update_required.connect(self.update)
+
         self.update()
+
+    def _animate_background(self):
+        """Called by animation timer to update background animation."""
+        if self.background:
+            self.background.animate_background()
 
     def _get_background(self, bg_type: str) -> Optional[BaseBackground]:
         background_map = {
             "Starfield": StarfieldBackground,
             "Aurora": AuroraBackground,
+            "AuroraBorealis": AuroraBorealisBackground,
             "Snowfall": SnowfallBackground,
             "Bubbles": BubblesBackground,
         }
@@ -59,6 +71,7 @@ class MainBackgroundWidget(QWidget):
         return manager_class(self.main_widget) if manager_class else None
 
     def paintEvent(self, event):
+        """Paint the background directly without caching for animation support."""
         if self._painting_active:
             return
         self._painting_active = True
@@ -69,28 +82,37 @@ class MainBackgroundWidget(QWidget):
                 return
 
             painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-            painter.save()
 
-            try:
-                if self._cached_background_pixmap is None:
-                    self._cached_background_pixmap = QPixmap(self.size())
-                    self._cached_background_pixmap.fill(Qt.GlobalColor.transparent)
+            # Paint background directly for animation support
+            if self.background:
+                self.background.paint_background(self, painter)
 
-                    cache_painter = QPainter(self._cached_background_pixmap)
-                    if cache_painter.isActive() and self.background:
-                        cache_painter.save()
-                        try:
-                            self.background.paint_background(self, cache_painter)
-                        finally:
-                            cache_painter.restore()
-                    cache_painter.end()
-
-                painter.drawPixmap(0, 0, self._cached_background_pixmap)
-            finally:
-                painter.restore()
         finally:
             self._painting_active = False
 
-    def resizeEvent(self, a0):
-        super().resizeEvent(a0)
-        self._cached_background_pixmap = None
+    def resizeEvent(self, event):
+        """Handle widget resize."""
+        super().resizeEvent(event)
+        # No cached pixmap to clear since we paint directly
+
+    def cleanup(self):
+        """Clean up resources when widget is destroyed."""
+        if hasattr(self, "animation_timer") and self.animation_timer:
+            self.animation_timer.stop()
+            self.animation_timer.deleteLater()
+            self.animation_timer = None
+
+        if self.background:
+            try:
+                self.background.update_required.disconnect(self.update)
+            except TypeError:
+                pass  # Signal wasn't connected
+
+    def closeEvent(self, event):
+        """Handle widget close event."""
+        self.cleanup()
+        super().closeEvent(event)
+
+    def __del__(self):
+        """Destructor to ensure cleanup."""
+        self.cleanup()

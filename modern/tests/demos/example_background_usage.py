@@ -3,17 +3,17 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow
 import sys
 
-from src.presentation.components.backgrounds.background_widget import BackgroundWidget
+from src.presentation.components.backgrounds.background_widget import (
+    MainBackgroundWidget,
+)
 
 
 class ExampleWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Modern Background System Demo")
-        self.setGeometry(100, 100, 800, 600)
-
-        # Create background widget
-        self.background_widget = BackgroundWidget("Aurora", self)
+        self.setGeometry(100, 100, 800, 600)  # Create background widget
+        self.background_widget = MainBackgroundWidget(self, "Aurora")
         self.background_widget.setGeometry(self.rect())
 
         # Example of switching backgrounds
@@ -26,8 +26,8 @@ class ExampleWindow(QMainWindow):
 
         print("Available backgrounds:", BackgroundFactory.get_available_backgrounds())
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
+    def resizeEvent(self, a0):
+        super().resizeEvent(a0)
         if hasattr(self, "background_widget"):
             self.background_widget.setGeometry(self.rect())
 

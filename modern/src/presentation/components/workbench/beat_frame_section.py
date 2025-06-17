@@ -4,7 +4,7 @@ from PyQt6.QtCore import pyqtSignal
 
 from .button_panel import ModernSequenceWorkbenchButtonPanel
 from domain.models.core_models import SequenceData, BeatData
-from core.interfaces.core_services import ILayoutService
+from application.services.layout.layout_management_service import LayoutManagementService
 from application.services.layout.beat_layout_service import BeatLayoutService
 from .sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
 
@@ -33,7 +33,7 @@ class WorkbenchBeatFrameSection(QWidget):
     clear_sequence_requested = pyqtSignal()
 
     def __init__(
-        self, layout_service: ILayoutService, parent: Optional[QWidget] = None
+        self, layout_service: LayoutManagementService, parent: Optional[QWidget] = None
     ):
         super().__init__(parent)
         self._layout_service = layout_service
@@ -53,12 +53,9 @@ class WorkbenchBeatFrameSection(QWidget):
         layout.setSpacing(12)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        # Create beat frame layout service
-        beat_frame_layout_service = BeatLayoutService()
-
         # Create beat frame (left side)
         self._beat_frame = SequenceBeatFrame(
-            layout_service=beat_frame_layout_service, parent=self
+            layout_service=self._layout_service, parent=self
         )
         self._beat_frame.setMinimumHeight(400)
 

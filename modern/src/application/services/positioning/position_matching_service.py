@@ -9,7 +9,7 @@ import pandas as pd
 from typing import Dict, List, Any, Optional
 from ..core.pictograph_management_service import PictographManagementService
 
-from domain.models.core_models import BeatData
+from domain.models.core_models import BeatData, GlyphData, Location, MotionType, RotationDirection
 
 
 class PositionMatchingService:

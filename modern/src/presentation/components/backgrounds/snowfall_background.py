@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from PyQt6.QtCore import QThread, pyqtSignal, pyqtSlot, QTimer
+from PyQt6.QtCore import QThread, pyqtSignal, pyqtSlot, QTimer, Qt
 from PyQt6.QtGui import QPainter, QPixmap, QColor, QLinearGradient
 from PyQt6.QtWidgets import QWidget
 
@@ -43,7 +43,9 @@ class SnowfallBackground(BaseBackground):
         )
         self.worker.moveToThread(self.worker_thread)
         self.worker.update_snowflakes.connect(self._update_snowflakes_from_worker)
-        self.worker_thread.started.connect(self.worker.process)
+        self.worker_thread.started.connect(
+            self.worker.start
+        )  # Call start() instead of process()
 
         self.shooting_star_manager = ShootingStarManager()
         self.santa_manager = SantaManager()
@@ -65,10 +67,12 @@ class SnowfallBackground(BaseBackground):
                 scaled_image = image.scaled(
                     size,
                     size,
-                    aspectRatioMode=1,  # Qt.AspectRatioMode.KeepAspectRatio
-                    transformMode=1,
-                )  # Qt.TransformationMode.SmoothTransformation
-                painter.drawPixmap(snowflake["x"], snowflake["y"], scaled_image)
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+                painter.drawPixmap(
+                    int(snowflake["x"]), int(snowflake["y"]), scaled_image
+                )
 
         # Draw shooting stars and Santa
         self.shooting_star_manager.draw_shooting_star(painter, widget)
@@ -94,3 +98,11 @@ class SnowfallBackground(BaseBackground):
         self.widget_height = height
         if hasattr(self, "worker"):
             self.worker.update_bounds(width, height)
+
+    def cleanup(self):
+        """Clean up the worker thread when background is destroyed."""
+        if hasattr(self, "worker"):
+            self.worker.stop()
+        if hasattr(self, "worker_thread"):
+            self.worker_thread.quit()
+            self.worker_thread.wait(1000)  # Wait up to 1 second for thread to finish

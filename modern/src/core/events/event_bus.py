@@ -369,7 +369,9 @@ class TypeSafeEventBus(IEventBus):
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
-                loop.run_until_complete(handler(event))
+                result = handler(event)
+                if result is not None:
+                    loop.run_until_complete(result)
             finally:
                 loop.close()
         else:

@@ -6,6 +6,7 @@ Handles rendering of arrow elements with positioning, rotation, and mirroring.
 
 import os
 import re
+from typing import Optional, TYPE_CHECKING
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
 
@@ -16,11 +17,14 @@ from application.services.positioning.arrow_management_service import (
     ArrowManagementService,
 )
 
+if TYPE_CHECKING:
+    from presentation.components.pictograph.pictograph_scene import PictographScene
+
 
 class ArrowRenderer:
     """Handles arrow rendering for pictographs."""
 
-    def __init__(self, scene):
+    def __init__(self, scene: "PictographScene"):
         self.scene = scene
         self.CENTER_X = 475
         self.CENTER_Y = 475
@@ -55,7 +59,7 @@ class ArrowRenderer:
         self,
         color: str,
         motion_data: MotionData,
-        full_pictograph_data: PictographData = None,
+        full_pictograph_data: Optional[PictographData] = None,
     ) -> None:
         """Render an arrow using SVG files."""
         # CRITICAL FIX: Static motions with 0 turns should be completely invisible
@@ -73,10 +77,7 @@ class ArrowRenderer:
 
             renderer = QSvgRenderer(bytearray(colored_svg_data, encoding="utf-8"))
             if renderer.isValid():
-                arrow_item.setSharedRenderer(
-                    renderer
-                )  # NO INDIVIDUAL SCALING - positioning service assumes full-size scene
-                # All scaling will be applied to the entire scene as final step
+                arrow_item.setSharedRenderer(renderer)
 
                 position_x, position_y, rotation = (
                     self._calculate_arrow_position_with_service(
@@ -144,7 +145,7 @@ class ArrowRenderer:
         self,
         color: str,
         motion_data: MotionData,
-        full_pictograph_data: PictographData = None,
+        full_pictograph_data: Optional[PictographData] = None,
     ) -> tuple[float, float, float]:
         """Calculate arrow position using the complete positioning service."""
         arrow_data = ArrowData(
@@ -170,18 +171,17 @@ class ArrowRenderer:
                 content = file.read()
 
                 # Extract dimensions from SVG content for debugging
-                import re
-
                 width_match = re.search(r'width="([^"]*)"', content)
                 height_match = re.search(r'height="([^"]*)"', content)
                 viewbox_match = re.search(r'viewBox="([^"]*)"', content)
 
-                width = width_match.group(1) if width_match else "not found"
-                height = height_match.group(1) if height_match else "not found"
-                viewbox = viewbox_match.group(1) if viewbox_match else "not found"
+                # Store for potential debugging use
+                _ = width_match.group(1) if width_match else "not found"
+                _ = height_match.group(1) if height_match else "not found"
+                _ = viewbox_match.group(1) if viewbox_match else "not found"
 
                 return content
-        except Exception as e:
+        except Exception:
             return ""
 
     def _apply_color_transformation(self, svg_data: str, color: str) -> str:

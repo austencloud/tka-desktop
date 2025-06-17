@@ -39,7 +39,7 @@ class ClickablePictographFrame(QFrame):
 
         try:
             self.pictograph_component: Optional[PictographComponent] = (
-                PictographComponent(parent=self)
+                PictographComponent(parent=None)
             )
             self.pictograph_component.setSizePolicy(
                 QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding

@@ -100,8 +100,7 @@ class ConstructTabWidget(QWidget):
 
     def _connect_external_signals(self):
         """Connect external signals from the signal coordinator to this widget"""
-        if self.signal_coordinator:
-            # Forward signals from signal coordinator to external listeners
+        if self.signal_coordinator:            # Forward signals from signal coordinator to external listeners
             self.signal_coordinator.sequence_created.connect(self.sequence_created.emit)
             self.signal_coordinator.sequence_modified.connect(
                 self.sequence_modified.emit
@@ -109,6 +108,9 @@ class ConstructTabWidget(QWidget):
             self.signal_coordinator.start_position_set.connect(
                 self.start_position_set.emit
             )
+
+            # NOTE: Workbench signals are already connected in signal_coordinator._setup_signal_connections()
+            # No need for additional external connections here
 
     def _get_workbench_getter(self):
         """Get a function that returns the workbench"""
@@ -136,6 +138,11 @@ class ConstructTabWidget(QWidget):
         """Clear the current sequence and reset to start position picker"""
         if self.signal_coordinator:
             self.signal_coordinator.clear_sequence()
+
+    def force_picker_update(self):
+        """Force an update of the picker state based on current sequence state"""
+        if self.signal_coordinator:
+            self.signal_coordinator.force_picker_state_update()
 
     @property
     def workbench(self):

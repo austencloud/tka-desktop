@@ -13,11 +13,11 @@ class DataPathHandler:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
+            cls._instance._data_dir = cls._instance._resolve_data_directory()
         return cls._instance
 
     def __init__(self):
-        if self._data_dir is None:
-            self._data_dir = self._resolve_data_directory()
+        pass
 
     def _resolve_data_directory(self) -> Path:
         """Resolve the root data directory path."""
@@ -27,6 +27,8 @@ class DataPathHandler:
     @property
     def data_dir(self) -> Path:
         """Get the data directory path."""
+        if self._data_dir is None:
+            self._data_dir = self._resolve_data_directory()
         return self._data_dir
 
     @property

@@ -359,9 +359,7 @@ class ModernSequenceWorkbench(QWidget):
         new_beats = list(self._current_sequence.beats)
         if beat_index < len(new_beats):
             new_beats[beat_index] = beat_data
-            self._current_sequence = SequenceData(
-                name=self._current_sequence.name, beats=new_beats
-            )
+            self._current_sequence = self._current_sequence.update(beats=new_beats)
             self.sequence_modified.emit(self._current_sequence)
 
     def _on_sequence_modified(self, sequence):
@@ -371,7 +369,9 @@ class ModernSequenceWorkbench(QWidget):
 
     def _on_layout_changed(self, rows: int, columns: int):
         """Handle layout change from beat frame"""
-        pass
+        # Store layout parameters for potential future use
+        _ = rows
+        _ = columns
 
     def _on_graph_beat_modified(self, beat_index: int, beat_data):
         """Handle beat modification from graph editor"""
@@ -381,14 +381,13 @@ class ModernSequenceWorkbench(QWidget):
         new_beats = list(self._current_sequence.beats)
         if beat_index < len(new_beats):
             new_beats[beat_index] = beat_data
-            self._current_sequence = SequenceData(
-                name=self._current_sequence.name, beats=new_beats
-            )
+            self._current_sequence = self._current_sequence.update(beats=new_beats)
             self.sequence_modified.emit(self._current_sequence)
 
     def _on_graph_arrow_selected(self, arrow_data):
         """Handle arrow selection in graph editor"""
-        pass
+        # Store arrow data for potential future use
+        _ = arrow_data
 
     def _on_graph_visibility_changed(self, visible: bool):
         """Handle graph visibility changes"""

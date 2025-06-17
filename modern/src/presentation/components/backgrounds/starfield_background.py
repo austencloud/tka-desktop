@@ -1,53 +1,58 @@
 from .base_background import BaseBackground
 from PyQt6.QtGui import QColor, QPainter
 from PyQt6.QtWidgets import QWidget
-import random
+
+from .starfield.star_manager import StarManager
+from .starfield.comet_manager import CometManager
+from .starfield.moon_manager import MoonManager
+from .starfield.ufo_manager import UFOManager
 
 
 class StarfieldBackground(BaseBackground):
+    """
+    Enhanced starfield background with stars, comets, moon, and UFOs.
+
+    This is the full-featured starfield that matches the legacy implementation
+    with all the sophisticated space scene elements.
+    """
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.stars = []
-        self._initialize_stars()
 
-    def _initialize_stars(self):
-        """Initialize stars with random positions and properties."""
-        self.stars = [
-            {
-                "x": random.uniform(0, 1),
-                "y": random.uniform(0, 1),
-                "size": random.uniform(1, 3),
-                "opacity": random.uniform(0.3, 1.0),
-                "twinkle_speed": random.uniform(0.01, 0.03),
-            }
-            for _ in range(200)
-        ]
+        # Initialize all starfield components
+        self.star_manager = StarManager()
+        self.comet_manager = CometManager()
+        self.moon_manager = MoonManager()
+        self.ufo_manager = UFOManager()
 
     def animate_background(self):
-        # Animate star twinkling
-        for star in self.stars:
-            star["opacity"] += star["twinkle_speed"]
-            if star["opacity"] > 1.0 or star["opacity"] < 0.3:
-                star["twinkle_speed"] *= -1  # Reverse the twinkle direction
+        """Animate all starfield components."""
+        # Animate stars and UFO
+        self.star_manager.animate_stars()
+        self.ufo_manager.animate_ufo()
+
+        # Handle comet activation and movement
+        if self.comet_manager.comet_active:
+            self.comet_manager.move_comet()
+        else:
+            self.comet_manager.comet_timer -= 1
+            if self.comet_manager.comet_timer <= 0:
+                self.comet_manager.activate_comet()
 
         self.update_required.emit()
 
     def paint_background(self, widget: QWidget, painter: QPainter):
+        """Paint the complete starfield scene."""
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # Paint black background
-        painter.fillRect(widget.rect(), QColor(0, 0, 0))
+        # Paint deep space background
+        painter.fillRect(widget.rect(), QColor(5, 5, 15))  # Very dark blue-black
 
-        # Paint stars
-        for star in self.stars:
-            x = int(star["x"] * widget.width())
-            y = int(star["y"] * widget.height())
-            size = int(star["size"])
-            opacity = star["opacity"]
+        # Get cursor position for UFO interaction
+        cursor_position = widget.mapFromGlobal(widget.cursor().pos())
 
-            painter.setOpacity(opacity)
-            painter.setBrush(QColor(255, 255, 255))
-            painter.setPen(QColor(255, 255, 255))
-            painter.drawEllipse(x, y, size, size)
-
-        painter.setOpacity(1.0)  # Reset opacity
+        # Paint all starfield elements in proper order (back to front)
+        self.star_manager.draw_stars(painter, widget)
+        self.comet_manager.draw_comet(painter, widget)
+        self.moon_manager.draw_moon(painter, widget)
+        self.ufo_manager.draw_ufo(painter, widget, cursor_position)

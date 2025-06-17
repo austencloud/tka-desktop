@@ -70,13 +70,13 @@ class SequenceManager(QObject):
 
             print(f"📊 Sequence updated: {len(updated_beats)} beats")
 
-            # Update workbench
+            # Update workbench (this will trigger the workbench signal, which will flow back to us)
             if self.workbench_setter:
                 self.workbench_setter(updated_sequence)
                 print("✅ Workbench sequence updated")
-
-            # Emit signal (with protection)
-            self._emit_sequence_modified(updated_sequence)
+            else:
+                # If no workbench setter, emit signal directly
+                self._emit_sequence_modified(updated_sequence)
 
         except Exception as e:
             print(f"❌ Error adding beat to sequence: {e}")
@@ -103,8 +103,11 @@ class SequenceManager(QObject):
             self._emitting_signal = True
 
             print(
-                f"📡 Sequence manager: Emitting sequence_modified for {sequence.length if sequence else 0} beats"
+                f"📡 Sequence manager: Handling workbench modification for {sequence.length if sequence else 0} beats"
             )
+            
+            # Emit the sequence_modified signal for the signal coordinator to handle reactivity
+            self.sequence_modified.emit(sequence)
             print("✅ Sequence manager: Signal emitted successfully")
         except Exception as e:
             print(f"❌ Sequence manager: Signal emission failed: {e}")

@@ -203,10 +203,7 @@ class MotionValidationService(IMotionValidationService):
         """Load invalid motion type combinations from data."""
         # In production, this would load from JSON/database
         # For now, return some example invalid combinations
-        return {
-            # Example: Some combinations might be invalid
-            # (MotionType.STATIC, MotionType.STATIC),  # Both static might be invalid
-        }
+        return set()
 
     def _load_valid_rotation_combinations(
         self,

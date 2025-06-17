@@ -18,6 +18,7 @@ NOTE: This service is being split into focused services:
 from typing import List, Dict, Any, Optional, Tuple, Set
 from abc import ABC, abstractmethod
 from enum import Enum
+import warnings
 
 from domain.models.core_models import (
     MotionData,
@@ -90,6 +91,13 @@ class MotionManagementService(IMotionManagementService):
     """
 
     def __init__(self):
+        warnings.warn(
+            "MotionManagementService is deprecated. Use focused services: "
+            "MotionValidationService, MotionGenerationService, MotionOrientationService",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         # Motion validation rules
         self._invalid_location_combinations = self._load_invalid_location_combinations()
         self._invalid_motion_type_combinations = (
@@ -380,10 +388,7 @@ class MotionManagementService(IMotionManagementService):
         """Load invalid motion type combinations from data."""
         # In production, this would load from JSON/database
         # For now, return some example invalid combinations
-        return {
-            # Example: Some combinations might be invalid
-            # (MotionType.STATIC, MotionType.STATIC),  # Both static might be invalid
-        }
+        return set()
 
     def _load_valid_rotation_combinations(
         self,

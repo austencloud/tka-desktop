@@ -2,10 +2,10 @@
 Direct pictograph view for Kinetic Constructor - matches legacy container hierarchy.
 """
 
-from typing import Optional
+from typing import Optional, Any
 from PyQt6.QtWidgets import QGraphicsView
 from PyQt6.QtCore import pyqtSignal, Qt, QTimer, QSize, QEvent
-from PyQt6.QtGui import QPainter, QKeyEvent
+from PyQt6.QtGui import QPainter, QKeyEvent, QResizeEvent, QEnterEvent
 
 from application.services.ui.context_aware_scaling_service import ScalingContext
 from domain.models.core_models import BeatData
@@ -99,15 +99,15 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
             except RuntimeError:
                 pass
 
-    def resizeEvent(self, event) -> None:
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
         self._fit_view()
 
-    def showEvent(self, event) -> None:
+    def showEvent(self, event: Any) -> None:
         super().showEvent(event)
         self._fit_view()
 
-    def paintEvent(self, event) -> None:
+    def paintEvent(self, event: Any) -> None:
         """Handle paint events and draw borders if enabled."""
         super().paintEvent(event)
 
@@ -130,7 +130,7 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
         else:
             super().keyPressEvent(event)
 
-    def enterEvent(self, event: QEvent) -> None:
+    def enterEvent(self, event: QEnterEvent) -> None:
         """Handle mouse enter events for hover effects."""
         super().enterEvent(event)
         # Default hover behavior - can be overridden by context configurator
@@ -253,7 +253,9 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
             effective_height = scene_rect.height() * transform.m22()
             print(f"     Effective Size: {effective_width:.1f}x{effective_height:.1f}")
 
-    def set_scaling_context(self, context: ScalingContext, **context_params) -> None:
+    def set_scaling_context(
+        self, context: ScalingContext, **context_params: Any
+    ) -> None:
         """Set the scaling context and parameters for context-aware scaling."""
         self.scaling_context = context
         self.context_params = context_params
@@ -263,15 +265,3 @@ class PictographComponent(QGraphicsView, BorderedPictographMixin):
     def get_scaling_context(self) -> ScalingContext:
         """Get the current scaling context."""
         return self.scaling_context
-
-    def update_from_beat(self, beat_data: BeatData) -> None:
-        self.current_beat = beat_data
-        if self.scene:
-            self.scene.update_beat(beat_data)
-            self._fit_view()
-
-        # Update border colors based on letter type if available
-        if beat_data.glyph_data and beat_data.glyph_data.letter_type:
-            self.update_border_colors_for_letter_type(beat_data.glyph_data.letter_type)
-
-        self.pictograph_updated.emit(beat_data)

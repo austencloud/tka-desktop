@@ -172,7 +172,7 @@ class BeatResizerService:
         while parent:
             # Look for a widget that looks like a main widget
             if (
-                hasattr(parent, "width") and parent.width() > 1000
+                isinstance(parent, QWidget) and parent.width() > 1000
             ):  # Reasonable main window size
                 return parent
             parent = parent.parent()

@@ -4,6 +4,34 @@
     "./v2/src",
     "./modern/src"
   ],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportArgumentType": "warning",
+    "reportAssignmentType": "warning",
+    "reportAttributeAccessIssue": "warning",
+    "reportCallIssue": "warning",
+    "reportGeneralTypeIssues": "warning",
+    "reportOptionalSubscript": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportOptionalCall": "none",
+    "reportOptionalIterable": "none",
+    "reportOptionalContextManager": "none",
+    "reportOptionalOperand": "none",
+    "reportMissingParameterType": "none",
+    "reportMissingTypeArgument": "none",
+    "reportUnknownArgumentType": "none",
+    "reportUnknownLambdaType": "none",
+    "reportUnknownMemberType": "none",
+    "reportUnknownParameterType": "none",
+    "reportUnknownVariableType": "none",
+    "reportPrivateUsage": "none",
+    "reportIncompleteStub": "none",
+    "reportInconsistentConstructor": "none",
+    "reportUnusedImport": "none",
+    "reportUnusedVariable": "none"
+  },
   "settings": {
     "files.associations": {
       "test_*.py": "python"

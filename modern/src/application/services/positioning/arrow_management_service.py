@@ -223,7 +223,7 @@ class ArrowManagementService(IArrowManagementService):
         return updated_pictograph
 
     def _calculate_arrow_location(
-        self, motion: MotionData, pictograph_data: PictographData = None
+        self, motion: MotionData, pictograph_data: Optional[PictographData] = None
     ) -> Location:
         """Calculate arrow location using location calculation algorithms."""
         if motion.motion_type == MotionType.STATIC:
@@ -255,7 +255,7 @@ class ArrowManagementService(IArrowManagementService):
         return direction_pairs.get(frozenset({start_loc, end_loc}), start_loc)
 
     def _calculate_dash_arrow_location(
-        self, motion: MotionData, pictograph_data: PictographData = None
+        self, motion: MotionData, pictograph_data: Optional[PictographData] = None
     ) -> Location:
         """Calculate location for dash arrows using complete validated logic."""
 
@@ -520,7 +520,7 @@ class ArrowManagementService(IArrowManagementService):
         self,
         arrow_data: ArrowData,
         base_adjustment: QPointF,
-        pictograph_data: PictographData = None,
+        pictograph_data: Optional[PictographData] = None,
     ) -> QPointF:
         """Apply quadrant-based directional adjustments using positioning logic."""
         motion = arrow_data.motion_data
@@ -641,7 +641,7 @@ class ArrowManagementService(IArrowManagementService):
         return [(x, y), (-y, x), (-x, -y), (y, -x)]
 
     def _get_quadrant_index(
-        self, motion: MotionData, pictograph_data: PictographData = None
+        self, motion: MotionData, pictograph_data: Optional[PictographData] = None
     ) -> int:
         """Get quadrant index for arrow using positioning logic."""
         # For diamond grid (simplified - always diamond for now)
@@ -668,7 +668,7 @@ class ArrowManagementService(IArrowManagementService):
 
     def _get_other_motion(
         self, current_motion: MotionData, pictograph_data: PictographData
-    ) -> MotionData:
+    ) -> Optional[MotionData]:
         """Get the other motion from pictograph data (for Type 3 scenarios)."""
         if not pictograph_data.arrows:
             return None

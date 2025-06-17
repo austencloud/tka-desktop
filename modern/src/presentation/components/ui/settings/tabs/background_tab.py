@@ -96,6 +96,8 @@ class AnimatedBackgroundTile(QWidget):
         # Create animated preview based on background type
         if self.background_type == "Aurora":
             self._paint_aurora(painter)
+        elif self.background_type == "AuroraBorealis":
+            self._paint_aurora_borealis(painter)
         elif self.background_type == "Starfield":
             self._paint_starfield(painter)
         elif self.background_type == "Snowfall":
@@ -133,6 +135,31 @@ class AnimatedBackgroundTile(QWidget):
                 30 + i * 25 + math.cos(self.animation_frame * 0.03 + i) * 15
             ) % self.height()
             painter.drawEllipse(int(x), int(y), 2, 2)
+
+    def _paint_aurora_borealis(self, painter):
+        """Paint animated aurora borealis background."""
+        from PyQt6.QtGui import QLinearGradient, QColor
+        import math
+
+        # Animated light wave effect
+        wave_offset = math.sin(self.animation_frame * 0.03) * 0.2
+
+        gradient = QLinearGradient(0, 0, self.width(), self.height())
+        gradient.setColorAt(max(0, 0 + wave_offset), QColor("#0a0a20"))  # Deep blue
+        gradient.setColorAt(min(1, 0.3 + wave_offset), QColor("#1a2040"))  # Medium blue
+        gradient.setColorAt(min(1, 0.6 + wave_offset), QColor("#20ff80"))  # Green
+        gradient.setColorAt(min(1, 0.8 + wave_offset), QColor("#80ffff"))  # Light blue
+        gradient.setColorAt(min(1, 1 + wave_offset), QColor("#ffffff"))  # White
+        painter.fillRect(self.rect(), gradient)
+
+        # Add flowing light waves
+        painter.setPen(QColor(255, 255, 255, 100))
+        for i in range(3):
+            wave_y = (
+                self.height() * 0.3
+                + math.sin(self.animation_frame * 0.04 + i * 2) * self.height() * 0.2
+            )
+            painter.drawLine(0, int(wave_y), self.width(), int(wave_y))
 
     def _paint_starfield(self, painter):
         """Paint animated starfield background."""

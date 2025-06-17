@@ -12,7 +12,13 @@ class BackgroundService(IBackgroundService):
 
     def __init__(self, ui_state_service: IUIStateManagementService):
         self.ui_state_service = ui_state_service
-        self._available_backgrounds = ["Aurora", "Bubbles", "Snowfall", "Starfield"]
+        self._available_backgrounds = [
+            "Aurora",
+            "AuroraBorealis",
+            "Bubbles",
+            "Snowfall",
+            "Starfield",
+        ]
 
     def get_available_backgrounds(self) -> List[str]:
         """Get list of available background types."""

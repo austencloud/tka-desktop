@@ -2,10 +2,9 @@ from PyQt6.QtGui import QLinearGradient, QColor, QPainter
 from PyQt6.QtWidgets import QWidget
 import math
 
-from presentation.components.backgrounds.aurora.blob_manager import BlobManager
-from presentation.components.backgrounds.aurora.sparkle_manager import SparkleManager
-from presentation.components.backgrounds.base_background import BaseBackground
-
+from .aurora.blob_manager import BlobManager
+from .aurora.sparkle_manager import SparkleManager
+from .base_background import BaseBackground
 
 
 class AuroraBackground(BaseBackground):

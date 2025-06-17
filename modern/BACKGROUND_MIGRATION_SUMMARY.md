@@ -93,10 +93,10 @@ modern/src/presentation/components/backgrounds/
 ### Basic Usage
 
 ```python
-from src.presentation.components.backgrounds.background_widget import BackgroundWidget
+from src.presentation.components.backgrounds.background_widget import MainBackgroundWidget
 
 # Create animated background widget
-background = BackgroundWidget("Aurora", parent_widget)
+background = MainBackgroundWidget(parent_widget, "Aurora")
 background.setGeometry(parent_widget.rect())
 ```
 

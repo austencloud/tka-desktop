@@ -6,7 +6,7 @@ Handles rendering of prop elements with positioning and rotation.
 
 import os
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from PyQt6.QtCore import QPointF
 from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 from PyQt6.QtSvg import QSvgRenderer
@@ -19,7 +19,10 @@ from application.services.motion.motion_management_service import (
     MotionManagementService,
 )
 from domain.models.core_models import Orientation
-from application.services.positioning.prop_management_service import PropManagementService
+from application.services.positioning.prop_management_service import (
+    PropManagementService,
+)
+
 if TYPE_CHECKING:
     from presentation.components.pictograph.pictograph_scene import PictographScene
 
@@ -36,7 +39,7 @@ class PropRenderer:
         self.prop_management_service = PropManagementService()
 
         # Store rendered props for overlap detection
-        self.rendered_props : dict[str, QGraphicsSvgItem] = {}
+        self.rendered_props: dict[str, QGraphicsSvgItem] = {}
 
         self.location_coordinates = {
             Location.NORTH.value: (0, -self.HAND_RADIUS),
@@ -87,7 +90,7 @@ class PropRenderer:
                 f"Warning: Invalid location {motion_data.end_loc}, using default position"
             )
             # Use a valid default position instead of center
-            end_pos = self.location_coordinates[Location.NORTH]
+            end_pos = self.location_coordinates[Location.NORTH.value]
 
         target_hand_point_x = self.CENTER_X + end_pos[0]
         target_hand_point_y = self.CENTER_Y + end_pos[1]
@@ -175,7 +178,7 @@ class PropRenderer:
 
         return svg_data
 
-    def apply_beta_positioning(self, beat_data) -> None:
+    def apply_beta_positioning(self, beat_data: Any) -> None:
         """
         Apply beta prop positioning if conditions are met.
 
