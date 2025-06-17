@@ -39,11 +39,11 @@ class MainBackgroundWidget(QWidget):
 
     def apply_background(self):
         # Disconnect old background if it exists
-        if self.background:
+        if hasattr(self, "background") and self.background:
             try:
                 self.background.update_required.disconnect(self.update)
-            except TypeError:
-                pass  # Signal wasn't connected
+            except (TypeError, RuntimeError, AttributeError):
+                pass  # Signal wasn't connected or object already deleted
 
         # Create new background
         self.background = self._get_background(self.background_type)
@@ -102,11 +102,12 @@ class MainBackgroundWidget(QWidget):
             self.animation_timer.deleteLater()
             self.animation_timer = None
 
-        if self.background:
+        if hasattr(self, "background") and self.background:
             try:
                 self.background.update_required.disconnect(self.update)
-            except TypeError:
-                pass  # Signal wasn't connected
+            except (TypeError, RuntimeError, AttributeError):
+                pass  # Signal wasn't connected or object already deleted
+            self.background = None
 
     def closeEvent(self, event):
         """Handle widget close event."""

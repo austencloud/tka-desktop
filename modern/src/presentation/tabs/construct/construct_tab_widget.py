@@ -100,7 +100,9 @@ class ConstructTabWidget(QWidget):
 
     def _connect_external_signals(self):
         """Connect external signals from the signal coordinator to this widget"""
-        if self.signal_coordinator:            # Forward signals from signal coordinator to external listeners
+        if (
+            self.signal_coordinator
+        ):  # Forward signals from signal coordinator to external listeners
             self.signal_coordinator.sequence_created.connect(self.sequence_created.emit)
             self.signal_coordinator.sequence_modified.connect(
                 self.sequence_modified.emit

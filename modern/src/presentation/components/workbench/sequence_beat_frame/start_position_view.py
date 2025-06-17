@@ -58,7 +58,7 @@ class StartPositionView(QFrame):
         # Remove title and position labels - legacy displays "START" text directly on the pictograph scene
 
         # Pictograph component fills the entire container like legacy
-        self._pictograph_component = PictographComponent(parent=self)
+        self._pictograph_component = PictographComponent(parent=None)
         # Remove minimum size constraint to allow responsive scaling
         self._pictograph_component.setMinimumSize(1, 1)
 

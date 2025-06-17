@@ -14,47 +14,13 @@ while maintaining the proven algorithms from the individual services.
 """
 
 from typing import Dict, Any, Optional, List, Callable
-from abc import ABC, abstractmethod
 from enum import Enum
 from dataclasses import dataclass, field
 import json
 from pathlib import Path
 
 from core.events.event_bus import get_event_bus, UIEvent, EventPriority
-
-
-class IUIStateManagementService(ABC):
-    """Unified interface for all UI state management operations."""
-
-    @abstractmethod
-    def get_setting(self, key: str, default: Any = None) -> Any:
-        """Get a setting value."""
-        pass
-
-    @abstractmethod
-    def set_setting(self, key: str, value: Any) -> None:
-        """Set a setting value."""
-        pass
-
-    @abstractmethod
-    def get_tab_state(self, tab_name: str) -> Dict[str, Any]:
-        """Get state for a specific tab."""
-        pass
-
-    @abstractmethod
-    def update_tab_state(self, tab_name: str, state: Dict[str, Any]) -> None:
-        """Update state for a specific tab."""
-        pass
-
-    @abstractmethod
-    def get_graph_editor_state(self) -> Dict[str, Any]:
-        """Get graph editor state."""
-        pass
-
-    @abstractmethod
-    def toggle_graph_editor(self) -> bool:
-        """Toggle graph editor visibility."""
-        pass
+from core.interfaces.core_services import IUIStateManagementService
 
 
 class UIComponent(Enum):
@@ -227,6 +193,23 @@ class UIStateManagementService(IUIStateManagementService):
         self._event_bus.publish(event)
 
         return self._ui_state.graph_editor_visible
+
+    def get_all_settings(self) -> Dict[str, Any]:
+        """Get all settings."""
+        return self._ui_state.user_settings.copy()
+
+    def clear_settings(self) -> None:
+        """Clear all settings."""
+        self._ui_state.user_settings.clear()
+        self._save_state()
+
+    def save_state(self) -> None:
+        """Save state to persistent storage."""
+        self._save_state()
+
+    def load_state(self) -> None:
+        """Load state from persistent storage."""
+        self._load_state()
 
     def set_graph_editor_height(self, height: int) -> None:
         """Set graph editor height."""

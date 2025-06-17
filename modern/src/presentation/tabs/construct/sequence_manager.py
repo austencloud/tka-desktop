@@ -105,7 +105,7 @@ class SequenceManager(QObject):
             print(
                 f"📡 Sequence manager: Handling workbench modification for {sequence.length if sequence else 0} beats"
             )
-            
+
             # Emit the sequence_modified signal for the signal coordinator to handle reactivity
             self.sequence_modified.emit(sequence)
             print("✅ Sequence manager: Signal emitted successfully")

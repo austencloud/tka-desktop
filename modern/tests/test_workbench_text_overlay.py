@@ -39,7 +39,7 @@ try:
     from core.dependency_injection.di_container import DIContainer
     from domain.models.core_models import SequenceData, BeatData
 
-    Modern_IMPORTS_AVAILABLE = True
+    MODERN_IMPORTS_AVAILABLE = True
     print("✅ Modern imports successful - using real construct tab")
 except ImportError as e:
     print(f"❌ Modern imports failed: {e}")
@@ -47,7 +47,7 @@ except ImportError as e:
     import traceback
 
     traceback.print_exc()
-    Modern_IMPORTS_AVAILABLE = False
+    MODERN_IMPORTS_AVAILABLE = False
 
 
 # The exact sequence data provided
@@ -216,7 +216,7 @@ class WorkbenchTextOverlayTest(QMainWindow):
         self.setMinimumSize(1600, 1000)
 
         # Initialize components
-        self.container = DIContainer() if Modern_IMPORTS_AVAILABLE else None
+        self.container = DIContainer() if MODERN_IMPORTS_AVAILABLE else None
         self.construct_tab = None
         self.sequence_data = None
 
@@ -440,7 +440,7 @@ class WorkbenchTextOverlayTest(QMainWindow):
             sequence_json = json.loads(SEQUENCE_JSON)
             self.sequence_display.setPlainText(json.dumps(sequence_json, indent=2))
 
-            if Modern_IMPORTS_AVAILABLE:
+            if MODERN_IMPORTS_AVAILABLE:
                 # For now, just create a simple sequence data structure
                 # We'll load it into the construct tab when it's created
                 self.sequence_json = sequence_json
@@ -470,7 +470,7 @@ class WorkbenchTextOverlayTest(QMainWindow):
 
     def _create_construct_tab(self):
         """Create the real Modern construct tab instance"""
-        if not Modern_IMPORTS_AVAILABLE:
+        if not MODERN_IMPORTS_AVAILABLE or self.container is None:
             self.status_label.setText(
                 "❌ Cannot create construct tab - missing dependencies"
             )

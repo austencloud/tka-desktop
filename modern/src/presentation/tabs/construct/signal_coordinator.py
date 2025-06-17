@@ -104,12 +104,14 @@ class SignalCoordinator(QObject):
     def _handle_sequence_modified(self, sequence: SequenceData):
         """Handle sequence modification from sequence manager with cascade prevention"""
         if self._handling_sequence_modification:
-            print("🔄 Signal coordinator: Preventing cascade refresh (already handling)")
+            print(
+                "🔄 Signal coordinator: Preventing cascade refresh (already handling)"
+            )
             return
 
         try:
             self._handling_sequence_modification = True
-            
+
             print(
                 f"✅ Signal coordinator: Sequence modified with {sequence.length if sequence else 0} beats"
             )
@@ -136,7 +138,7 @@ class SignalCoordinator(QObject):
 
             # Emit external signal
             self.sequence_modified.emit(sequence)
-            
+
         finally:
             self._handling_sequence_modification = False
 
