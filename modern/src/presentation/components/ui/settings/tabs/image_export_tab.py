@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Union
 from PyQt6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -17,7 +17,7 @@ from src.core.interfaces.tab_settings_interfaces import IImageExportService
 
 
 class ExportToggle(QCheckBox):
-    def __init__(self, label: str, tooltip: str | None = None, parent=None):
+    def __init__(self, label: str, tooltip: Union[str, None] = None, parent=None):
         super().__init__(label, parent)
         if tooltip:
             self.setToolTip(tooltip)

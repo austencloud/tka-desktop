@@ -140,65 +140,29 @@ class KineticConstructorModern(QMainWindow):
             MotionValidationService,
             IMotionValidationService,
         )
-        from application.services.motion.motion_generation_service import (
-            MotionGenerationService,
-            IMotionGenerationService,
-        )
         from application.services.motion.motion_orientation_service import (
             MotionOrientationService,
             IMotionOrientationService,
         )
 
-        # Register focused motion services with event bus
-        event_bus = None
-        if IEventBus and IEventBus in self.container._singletons:
-            event_bus = self.container.resolve(IEventBus)
-
+        # Register focused motion services
         validation_service = MotionValidationService()
         self.container.register_instance(IMotionValidationService, validation_service)
-
-        generation_service = MotionGenerationService(
-            validation_service=validation_service, event_bus=event_bus
-        )
-        self.container.register_instance(IMotionGenerationService, generation_service)
 
         orientation_service = MotionOrientationService()
         self.container.register_instance(IMotionOrientationService, orientation_service)
 
         # Bridge service removed - consumers should use focused services directly
-        # (MotionValidationService, MotionGenerationService, MotionOrientationService)
+        # (MotionValidationService, MotionOrientationService)
 
     def _register_layout_services(self):
-        """Register the new focused layout services."""
-        from application.services.layout.beat_layout_service import (
-            BeatLayoutService,
-            IBeatLayoutService,
-        )
-        from application.services.layout.responsive_layout_service import (
-            ResponsiveLayoutService,
-            IResponsiveLayoutService,
-        )
-        from application.services.layout.component_layout_service import (
-            ComponentLayoutService,
-            IComponentLayoutService,
-        )
-
-        # Register focused layout services
-        beat_layout_service = BeatLayoutService()
-        self.container.register_instance(IBeatLayoutService, beat_layout_service)
-
-        responsive_layout_service = ResponsiveLayoutService()
-        self.container.register_instance(
-            IResponsiveLayoutService, responsive_layout_service
-        )
-
-        component_layout_service = ComponentLayoutService()
-        self.container.register_instance(
-            IComponentLayoutService, component_layout_service
-        )
-
-        # Note: ILayoutManagementService is already registered in _configure_services()
-        # with the consolidated LayoutManagementService that also implements ILayoutService
+        """Register the consolidated layout services."""
+        # Note: Layout services have been consolidated into LayoutManagementService
+        # which is already registered in _configure_services() as ILayoutService
+        #
+        # The old separate services (BeatLayoutService, ResponsiveLayoutService,
+        # ComponentLayoutService) have been consolidated for better maintainability
+        pass
 
     def _register_pictograph_services(self):
         """Register the new focused pictograph services."""

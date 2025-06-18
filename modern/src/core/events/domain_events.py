@@ -102,21 +102,6 @@ class MotionValidatedEvent(BaseEvent):
         return "motion.validated"
 
 
-@dataclass(frozen=True)
-class MotionGeneratedEvent(BaseEvent):
-    """Published when new motion is generated."""
-
-    sequence_id: str = ""
-    beat_number: int = 0
-    color: str = ""  # "blue" or "red"
-    motion_data: Dict[str, Any] = field(default_factory=dict)
-    generation_method: str = ""  # "manual", "random", "smart_fill", etc.
-
-    @property
-    def event_type(self) -> str:
-        return "motion.generated"
-
-
 # === Layout Domain Events ===
 
 
@@ -161,6 +146,21 @@ class ArrowPositionedEvent(BaseEvent):
     @property
     def event_type(self) -> str:
         return "arrow.positioned"
+
+
+@dataclass(frozen=True)
+class PropPositionedEvent(BaseEvent):
+    """Published when prop positioning or separation is calculated."""
+
+    sequence_id: str = ""
+    beat_number: int = 0
+    prop_color: str = ""
+    positioning_type: str = ""  # "beta_positioning", "separation", "overlap_detected"
+    position_data: Dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def event_type(self) -> str:
+        return f"prop.{self.positioning_type}"
 
 
 @dataclass(frozen=True)

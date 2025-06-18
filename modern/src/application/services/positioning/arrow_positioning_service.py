@@ -492,7 +492,7 @@ class ArrowPositioningService(IArrowPositioningService):
 
     def _get_special_adjustment(
         self, arrow_data: ArrowData, pictograph_data: PictographData
-    ) -> QPointF | None:
+    ) -> Union[QPointF, None]:
         """Get special adjustment for specific letters and configurations."""
         # For now, return None (no special adjustments)
         # TODO: Load from special placement JSON files

@@ -1,0 +1,245 @@
+COMPREHENSIVE PERFORMANCE AUDIT REPORT
+================================================================================
+
+1. APPLICATION STARTUP PERFORMANCE:
+================================================================================
+PERFORMANCE AUDIT REPORT
+================================================================================
+
+OPERATION TIMING SUMMARY:
+----------------------------------------
+Total Application Startup:
+  Calls: 1
+  Total: 1.942081s
+  Average: 1.942081s
+  Min: 1.942081s
+  Max: 1.942081s
+
+Main Window Creation:
+  Calls: 1
+  Total: 1.136889s
+  Average: 1.136889s
+  Min: 1.136889s
+  Max: 1.136889s
+
+UI Initialization:
+  Calls: 1
+  Total: 0.415354s
+  Average: 0.415354s
+  Min: 0.415354s
+  Max: 0.415354s
+
+Module Imports:
+  Calls: 1
+  Total: 0.376043s
+  Average: 0.376043s
+  Min: 0.376043s
+  Max: 0.376043s
+
+QApplication Creation:
+  Calls: 1
+  Total: 0.012994s
+  Average: 0.012994s
+  Min: 0.012994s
+  Max: 0.012994s
+
+Service Registration:
+  Calls: 1
+  Total: 0.000085s
+  Average: 0.000085s
+  Min: 0.000085s
+  Max: 0.000085s
+
+Event Bus Initialization:
+  Calls: 1
+  Total: 0.000078s
+  Average: 0.000078s
+  Min: 0.000078s
+  Max: 0.000078s
+
+DI Container Creation:
+  Calls: 1
+  Total: 0.000026s
+  Average: 0.000026s
+  Min: 0.000026s
+  Max: 0.000026s
+
+TOP 5 PERFORMANCE BOTTLENECKS:
+----------------------------------------
+1. Total Application Startup: 1.942081s
+2. Main Window Creation: 1.136889s
+3. UI Initialization: 0.415354s
+4. Module Imports: 0.376043s
+5. QApplication Creation: 0.012994s
+
+DETAILED EXECUTION LOG:
+----------------------------------------
+[9499.309475] START: Total Application Startup
+[9499.309526] Starting application startup profiling...
+[9499.309565] START: Module Imports
+[9499.685612] END: Module Imports - Duration: 0.376043s
+[9499.685707] START: QApplication Creation
+[9499.698706] END: QApplication Creation - Duration: 0.012994s
+[9499.698768] START: Event Bus Initialization
+[9499.698849] END: Event Bus Initialization - Duration: 0.000078s
+[9499.698878] START: DI Container Creation
+[9499.698904] END: DI Container Creation - Duration: 0.000026s
+[9499.698937] START: Main Window Creation
+[9500.835833] END: Main Window Creation - Duration: 1.136889s
+[9500.835877] START: Service Registration
+[9500.835965] END: Service Registration - Duration: 0.000085s
+[9500.836012] START: UI Initialization
+[9501.251375] END: UI Initialization - Duration: 0.415354s
+[9501.251499] Application startup profiling completed
+[9501.251559] END: Total Application Startup - Duration: 1.942081s
+
+2. START POSITION PICKER PERFORMANCE:
+================================================================================
+PERFORMANCE AUDIT REPORT
+================================================================================
+
+OPERATION TIMING SUMMARY:
+----------------------------------------
+Start Position Picker Detailed Profiling:
+  Calls: 1
+  Total: 0.059010s
+  Average: 0.059010s
+  Min: 0.059010s
+  Max: 0.059010s
+
+Start Position Picker Creation:
+  Calls: 1
+  Total: 0.016089s
+  Average: 0.016089s
+  Min: 0.016089s
+  Max: 0.016089s
+
+Load Start Positions Method:
+  Calls: 1
+  Total: 0.015525s
+  Average: 0.015525s
+  Min: 0.015525s
+  Max: 0.015525s
+
+Grid Mode Switch:
+  Calls: 1
+  Total: 0.015147s
+  Average: 0.015147s
+  Min: 0.015147s
+  Max: 0.015147s
+
+Individual Start Position Option Creation:
+  Calls: 1
+  Total: 0.004855s
+  Average: 0.004855s
+  Min: 0.004855s
+  Max: 0.004855s
+
+QApplication Setup:
+  Calls: 1
+  Total: 0.003929s
+  Average: 0.003929s
+  Min: 0.003929s
+  Max: 0.003929s
+
+Dataset Service Initialization:
+  Calls: 1
+  Total: 0.003020s
+  Average: 0.003020s
+  Min: 0.003020s
+  Max: 0.003020s
+
+Start Position Imports:
+  Calls: 1
+  Total: 0.000051s
+  Average: 0.000051s
+  Min: 0.000051s
+  Max: 0.000051s
+
+TOP 5 PERFORMANCE BOTTLENECKS:
+----------------------------------------
+1. Start Position Picker Detailed Profiling: 0.059010s
+2. Start Position Picker Creation: 0.016089s
+3. Load Start Positions Method: 0.015525s
+4. Grid Mode Switch: 0.015147s
+5. Individual Start Position Option Creation: 0.004855s
+
+DETAILED EXECUTION LOG:
+----------------------------------------
+[9501.302265] START: Start Position Picker Detailed Profiling
+[9501.302300] Starting detailed start position picker profiling...
+[9501.302339] START: Start Position Imports
+[9501.302393] END: Start Position Imports - Duration: 0.000051s
+[9501.302429] START: QApplication Setup
+[9501.306360] END: QApplication Setup - Duration: 0.003929s
+[9501.306406] START: Dataset Service Initialization
+[9501.309381] Dataset service created: <class 'application.services.data.pictograph_dataset_service.PictographDatasetService'>
+[9501.309428] END: Dataset Service Initialization - Duration: 0.003020s
+[9501.309465] START: Start Position Picker Creation
+[9501.325491] Start position picker created: <class 'presentation.components.start_position_picker.start_position_picker.StartPositionPicker'>
+[9501.325559] END: Start Position Picker Creation - Duration: 0.016089s
+[9501.325606] START: Individual Start Position Option Creation
+[9501.330405] Single start position option created: <class 'presentation.components.start_position_picker.start_position_picker.StartPositionOption'>
+[9501.330463] END: Individual Start Position Option Creation - Duration: 0.004855s
+[9501.330504] START: Load Start Positions Method
+[9501.345973] Start positions loaded
+[9501.346031] END: Load Start Positions Method - Duration: 0.015525s
+[9501.346066] START: Grid Mode Switch
+[9501.361141] Grid mode switched to box
+[9501.361218] END: Grid Mode Switch - Duration: 0.015147s
+[9501.361275] END: Start Position Picker Detailed Profiling - Duration: 0.059010s
+
+3. START POSITION TRANSITION PERFORMANCE:
+================================================================================
+PERFORMANCE AUDIT REPORT
+================================================================================
+
+OPERATION TIMING SUMMARY:
+----------------------------------------
+Start Position Transition Profiling:
+  Calls: 1
+  Total: 0.004518s
+  Average: 0.004518s
+  Min: 0.004518s
+  Max: 0.004518s
+
+QApplication Setup:
+  Calls: 1
+  Total: 0.004144s
+  Average: 0.004144s
+  Min: 0.004144s
+  Max: 0.004144s
+
+Layout Manager Creation:
+  Calls: 1
+  Total: 0.000043s
+  Average: 0.000043s
+  Min: 0.000043s
+  Max: 0.000043s
+
+Transition Imports:
+  Calls: 1
+  Total: 0.000035s
+  Average: 0.000035s
+  Min: 0.000035s
+  Max: 0.000035s
+
+TOP 5 PERFORMANCE BOTTLENECKS:
+----------------------------------------
+1. Start Position Transition Profiling: 0.004518s
+2. QApplication Setup: 0.004144s
+3. Layout Manager Creation: 0.000043s
+4. Transition Imports: 0.000035s
+
+DETAILED EXECUTION LOG:
+----------------------------------------
+[9501.363764] START: Start Position Transition Profiling
+[9501.363800] Starting start position transition profiling...
+[9501.363842] START: Transition Imports
+[9501.363878] END: Transition Imports - Duration: 0.000035s
+[9501.363935] START: QApplication Setup
+[9501.368083] END: QApplication Setup - Duration: 0.004144s
+[9501.368182] START: Layout Manager Creation
+[9501.368227] END: Layout Manager Creation - Duration: 0.000043s
+[9501.368285] END: Start Position Transition Profiling - Duration: 0.004518s
+[9501.368327] Error during start position transition profiling: ConstructTabLayoutManager.__init__() missing 1 required positional argument: 'container'

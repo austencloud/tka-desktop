@@ -4,8 +4,7 @@ from PyQt6.QtCore import pyqtSignal
 
 from .button_panel import ModernSequenceWorkbenchButtonPanel
 from domain.models.core_models import SequenceData, BeatData
-from application.services.layout.layout_management_service import LayoutManagementService
-from application.services.layout.beat_layout_service import BeatLayoutService
+from core.interfaces.core_services import ILayoutService
 from .sequence_beat_frame.sequence_beat_frame import SequenceBeatFrame
 
 if TYPE_CHECKING:
@@ -33,7 +32,7 @@ class WorkbenchBeatFrameSection(QWidget):
     clear_sequence_requested = pyqtSignal()
 
     def __init__(
-        self, layout_service: LayoutManagementService, parent: Optional[QWidget] = None
+        self, layout_service: ILayoutService, parent: Optional[QWidget] = None
     ):
         super().__init__(parent)
         self._layout_service = layout_service

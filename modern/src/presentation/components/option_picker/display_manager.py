@@ -97,34 +97,48 @@ class OptionPickerDisplayManager:
             self._fallback_update_beat_display(beat_options)
 
     def _batch_update_beat_display(self, beat_options: List[BeatData]) -> None:
-        """Optimized batch update implementation"""
+        """PERFORMANCE OPTIMIZED: Batch update implementation with deferred rendering"""
         from domain.models.letter_type_classifier import LetterTypeClassifier
 
-        # Step 1: Clear all sections in one pass
-        for section in self._sections.values():
-            section.clear_pictographs_legacy_style()
+        # OPTIMIZATION 1: Disable updates during batch operation
+        self.sections_container.setUpdatesEnabled(False)
 
-        # Step 2: Pre-categorize beats by letter type to minimize lookups
-        beats_by_type = {}
-        for i, beat in enumerate(beat_options):
-            if i >= self.pool_manager.get_pool_size():
-                break
-            if beat.letter:
-                letter_type = LetterTypeClassifier.get_letter_type(beat.letter)
-                if letter_type in self._sections:
-                    if letter_type not in beats_by_type:
-                        beats_by_type[letter_type] = []
-                    beats_by_type[letter_type].append((i, beat))
+        try:
+            # Step 1: Clear all sections in one pass
+            for section in self._sections.values():
+                section.clear_pictographs_legacy_style()
 
-        # Step 3: Batch update frames and add to sections
-        for letter_type, beat_list in beats_by_type.items():
-            target_section = self._sections[letter_type]
-            for pool_index, beat in beat_list:
-                frame = self.pool_manager.get_pool_frame(pool_index)
-                if frame:
-                    frame.update_beat_data(beat)
-                    frame.setParent(target_section.pictograph_container)
-                    target_section.add_pictograph_from_pool(frame)
+            # Step 2: Pre-categorize beats by letter type to minimize lookups
+            beats_by_type = {}
+            for i, beat in enumerate(beat_options):
+                if i >= self.pool_manager.get_pool_size():
+                    break
+                if beat.letter:
+                    letter_type = LetterTypeClassifier.get_letter_type(beat.letter)
+                    if letter_type in self._sections:
+                        if letter_type not in beats_by_type:
+                            beats_by_type[letter_type] = []
+                        beats_by_type[letter_type].append((i, beat))
+
+            # Step 3: OPTIMIZED - Batch update frames with deferred rendering
+            for letter_type, beat_list in beats_by_type.items():
+                target_section = self._sections[letter_type]
+                for pool_index, beat in beat_list:
+                    frame = self.pool_manager.get_pool_frame(pool_index)
+                    if frame:
+                        # OPTIMIZATION 2: Defer expensive pictograph rendering
+                        frame.update_beat_data_deferred(beat)
+                        frame.setParent(target_section.pictograph_container)
+                        target_section.add_pictograph_from_pool(frame)
+
+            # OPTIMIZATION 3: Force single layout update at the end
+            self.sections_container.setUpdatesEnabled(True)
+            self.sections_container.update()
+
+        except Exception as e:
+            # Ensure updates are re-enabled even if there's an error
+            self.sections_container.setUpdatesEnabled(True)
+            raise e
 
     def _fallback_update_beat_display(self, beat_options: List[BeatData]) -> None:
         """Fallback to original implementation if batch update fails"""

@@ -15,9 +15,6 @@ from domain.models.core_models import MotionData, Location
 
 from presentation.components.pictograph.asset_utils import get_image_path
 
-from application.services.motion.motion_management_service import (
-    MotionManagementService,
-)
 from domain.models.core_models import Orientation
 from application.services.positioning.prop_management_service import (
     PropManagementService,
@@ -35,7 +32,6 @@ class PropRenderer:
         self.CENTER_X = 475
         self.CENTER_Y = 475
         self.HAND_RADIUS = 143.1
-        self.motion_service = MotionManagementService()
         self.prop_management_service = PropManagementService()
 
         # Store rendered props for overlap detection
@@ -133,7 +129,7 @@ class PropRenderer:
         """Calculate prop rotation using orientation-based system."""
         # Use the orientation service to calculate the correct rotation angle
         # This follows the reference implementation's orientation calculation
-        return self.motion_service.calculate_prop_rotation_angle(
+        return self.prop_management_service.calculate_prop_rotation_angle(
             motion_data, Orientation.IN
         )
 

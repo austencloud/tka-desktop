@@ -107,13 +107,17 @@ def validate_consolidated_services():
         arrow_service = ArrowManagementService()
         print("✅ ArrowManagementService imported and instantiated")
 
-        # Test MotionManagementService
-        from application.services.motion.motion_management_service import (
-            MotionManagementService,
+        # Test focused motion services (MotionManagementService is deprecated)
+        from application.services.motion.motion_validation_service import (
+            MotionValidationService,
+        )
+        from application.services.motion.motion_orientation_service import (
+            MotionOrientationService,
         )
 
-        motion_service = MotionManagementService()
-        print("✅ MotionManagementService imported and instantiated")
+        validation_service = MotionValidationService()
+        orientation_service = MotionOrientationService()
+        print("✅ Motion focused services imported and instantiated")
 
         # Test SequenceManagementService
         from application.services.core.sequence_management_service import (

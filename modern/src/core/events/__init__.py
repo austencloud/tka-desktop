@@ -1,37 +1,32 @@
 """Event system exports for easy importing."""
 
 from .event_bus import (
-    TypeSafeEventBus, 
-    IEventBus, 
-    get_event_bus, 
+    TypeSafeEventBus,
+    IEventBus,
+    get_event_bus,
     reset_event_bus,
     BaseEvent,
-    EventPriority
+    EventPriority,
 )
 
 from .domain_events import (
     # Sequence events
     SequenceCreatedEvent,
-    SequenceUpdatedEvent, 
+    SequenceUpdatedEvent,
     BeatAddedEvent,
     BeatUpdatedEvent,
     BeatRemovedEvent,
-    
     # Motion events
     MotionValidatedEvent,
-    MotionGeneratedEvent,
-    
     # Layout events
     LayoutRecalculatedEvent,
     ComponentResizedEvent,
-    
     # Arrow/Pictograph events
     ArrowPositionedEvent,
+    PropPositionedEvent,
     PictographUpdatedEvent,
-    
     # UI events
     UIStateChangedEvent,
-    
     # Command events
     CommandExecutedEvent,
     CommandUndoneEvent,
@@ -40,13 +35,26 @@ from .domain_events import (
 
 __all__ = [
     # Event bus core
-    "TypeSafeEventBus", "IEventBus", "get_event_bus", "reset_event_bus",
-    "BaseEvent", "EventPriority",
-    
+    "TypeSafeEventBus",
+    "IEventBus",
+    "get_event_bus",
+    "reset_event_bus",
+    "BaseEvent",
+    "EventPriority",
     # Domain events
-    "SequenceCreatedEvent", "SequenceUpdatedEvent", "BeatAddedEvent",
-    "BeatUpdatedEvent", "BeatRemovedEvent", "MotionValidatedEvent",
-    "MotionGeneratedEvent", "LayoutRecalculatedEvent", "ComponentResizedEvent",
-    "ArrowPositionedEvent", "PictographUpdatedEvent", "UIStateChangedEvent",
-    "CommandExecutedEvent", "CommandUndoneEvent", "CommandRedoneEvent",
+    "SequenceCreatedEvent",
+    "SequenceUpdatedEvent",
+    "BeatAddedEvent",
+    "BeatUpdatedEvent",
+    "BeatRemovedEvent",
+    "MotionValidatedEvent",
+    "LayoutRecalculatedEvent",
+    "ComponentResizedEvent",
+    "ArrowPositionedEvent",
+    "PropPositionedEvent",
+    "PictographUpdatedEvent",
+    "UIStateChangedEvent",
+    "CommandExecutedEvent",
+    "CommandUndoneEvent",
+    "CommandRedoneEvent",
 ]

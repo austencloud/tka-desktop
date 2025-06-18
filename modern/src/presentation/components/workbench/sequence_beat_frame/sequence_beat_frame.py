@@ -15,9 +15,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal
 
 from domain.models.core_models import SequenceData, BeatData
-from application.services.layout.layout_management_service import (
-    LayoutManagementService,
-)
+from core.interfaces.core_services import ILayoutService
 from application.services.layout.beat_resizer_service import (
     BeatResizerService,
 )
@@ -44,7 +42,7 @@ class SequenceBeatFrame(QScrollArea):
     layout_changed = pyqtSignal(int, int)  # rows, columns
 
     def __init__(
-        self, layout_service: LayoutManagementService, parent: Optional[QWidget] = None
+        self, layout_service: ILayoutService, parent: Optional[QWidget] = None
     ):
         super().__init__(parent)  # Injected dependencies
         self._layout_service = layout_service

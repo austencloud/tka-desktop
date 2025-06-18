@@ -70,14 +70,15 @@ class BeatView(QFrame):
         # Use zero margins and spacing like legacy
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-
-        # Remove beat number label - legacy doesn't have labels above pictographs
+        layout.setSpacing(
+            0
+        )  # Remove beat number label - legacy doesn't have labels above pictographs
         # Beat numbers are rendered directly on the pictograph scene
 
         # Pictograph component fills the entire container like legacy
-        self._pictograph_component = PictographComponent(parent=self)
+        self._pictograph_component = PictographComponent(parent=None)
         if self._pictograph_component:
+            self._pictograph_component.setParent(self)
             self._pictograph_component.setMinimumSize(120, 120)  # Fill container
             # CRITICAL FIX: Set proper scaling context for beat frame
             from application.services.ui.context_aware_scaling_service import (

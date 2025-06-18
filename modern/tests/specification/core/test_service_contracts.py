@@ -19,11 +19,16 @@ import inspect
 
 from src.core.interfaces.core_services import (
     IArrowManagementService,
-    IMotionManagementService,
     ISequenceManagementService,
     IPictographManagementService,
     IUIStateManagementService,
     ILayoutManagementService,
+)
+from application.services.motion.motion_validation_service import (
+    IMotionValidationService,
+)
+from application.services.motion.motion_orientation_service import (
+    IMotionOrientationService,
 )
 
 

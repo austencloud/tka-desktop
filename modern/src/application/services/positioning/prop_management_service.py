@@ -11,12 +11,14 @@ This service is responsible for determining when and how to separate props
 to avoid overlaps, particularly for beta-ending letters.
 """
 
-from typing import Tuple, Dict, Any, Optional
+from typing import Tuple, Dict, Any, Optional, List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 from PyQt6.QtCore import QPointF
 import json
 from pathlib import Path
 from enum import Enum
+import uuid
+from datetime import datetime
 
 from domain.models.core_models import (
     BeatData,
@@ -25,6 +27,25 @@ from domain.models.core_models import (
     Location,
     Orientation,
 )
+
+# Event-driven architecture imports
+if TYPE_CHECKING:
+    from core.events import IEventBus
+
+try:
+    from core.events import (
+        get_event_bus,
+        PropPositionedEvent,
+        EventPriority,
+    )
+
+    EVENT_SYSTEM_AVAILABLE = True
+except ImportError:
+    # For tests or when event system is not available
+    get_event_bus = None
+    PropPositionedEvent = None
+    EventPriority = None
+    EVENT_SYSTEM_AVAILABLE = False
 from domain.models.pictograph_models import PropType
 
 
@@ -78,7 +99,13 @@ class PropManagementService(IPropManagementService):
     - Prop overlap detection and resolution
     """
 
-    def __init__(self):
+    def __init__(self, event_bus: Optional["IEventBus"] = None):
+        # Event system integration
+        self.event_bus = event_bus or (
+            get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
+        )
+        self._subscription_ids: List[str] = []
+
         # Beta prop positioning constants
         self._large_offset_divisor = 60
         self._medium_offset_divisor = 50
@@ -178,7 +205,27 @@ class PropManagementService(IPropManagementService):
         red_end_ori = self._calculate_end_orientation(red_motion)
 
         # Props overlap if they end at same location with same orientation
-        return blue_end_ori == red_end_ori
+        overlap_detected = blue_end_ori == red_end_ori
+
+        # Publish overlap detection event
+        if self.event_bus and PropPositionedEvent and overlap_detected:
+            self.event_bus.publish(
+                PropPositionedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="PropManagementService",
+                    positioning_type="overlap_detected",
+                    position_data={
+                        "blue_end_location": blue_motion.end_loc.value,
+                        "red_end_location": red_motion.end_loc.value,
+                        "blue_end_orientation": blue_end_ori.value,
+                        "red_end_orientation": red_end_ori.value,
+                        "letter": beat_data.letter,
+                    },
+                )
+            )
+
+        return overlap_detected
 
     def apply_beta_positioning(self, beat_data: BeatData) -> BeatData:
         """
@@ -191,10 +238,39 @@ class PropManagementService(IPropManagementService):
 
         # Check for swap overrides first
         if self._has_swap_override(beat_data):
-            return self._apply_swap_override(beat_data)
+            result = self._apply_swap_override(beat_data)
+            positioning_method = "swap_override"
+        else:
+            # Apply algorithmic beta positioning
+            result = self._apply_algorithmic_beta_positioning(beat_data)
+            positioning_method = "algorithmic"
 
-        # Apply algorithmic beta positioning
-        return self._apply_algorithmic_beta_positioning(beat_data)
+        # Publish beta positioning event
+        if self.event_bus and PropPositionedEvent:
+            self.event_bus.publish(
+                PropPositionedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="PropManagementService",
+                    positioning_type="beta_positioning",
+                    position_data={
+                        "letter": beat_data.letter,
+                        "positioning_method": positioning_method,
+                        "blue_motion_type": (
+                            beat_data.blue_motion.motion_type.value
+                            if beat_data.blue_motion
+                            else None
+                        ),
+                        "red_motion_type": (
+                            beat_data.red_motion.motion_type.value
+                            if beat_data.red_motion
+                            else None
+                        ),
+                    },
+                )
+            )
+
+        return result
 
     def calculate_separation_offsets(
         self, beat_data: BeatData
@@ -222,6 +298,25 @@ class PropManagementService(IPropManagementService):
         red_offset = self._calculate_directional_offset(
             red_direction, self._get_current_prop_type()
         )
+
+        # Publish separation calculation event
+        if self.event_bus and PropPositionedEvent:
+            self.event_bus.publish(
+                PropPositionedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="PropManagementService",
+                    positioning_type="separation",
+                    position_data={
+                        "blue_offset": {"x": blue_offset.x(), "y": blue_offset.y()},
+                        "red_offset": {"x": red_offset.x(), "y": red_offset.y()},
+                        "blue_direction": blue_direction.value,
+                        "red_direction": red_direction.value,
+                        "letter": beat_data.letter,
+                        "prop_type": self._get_current_prop_type().value,
+                    },
+                )
+            )
 
         return blue_offset, red_offset
 
@@ -484,3 +579,43 @@ class PropManagementService(IPropManagementService):
             return "hand_repositioning"
         else:
             return "default_repositioning"
+
+    def calculate_prop_rotation_angle(
+        self, motion_data: MotionData, start_orientation: Orientation = Orientation.IN
+    ) -> float:
+        """Calculate prop rotation angle based on motion data and orientation."""
+        location = motion_data.end_loc
+
+        # Diamond grid orientation-based rotation mapping (simplified for Modern)
+        angle_map = {
+            Orientation.IN: {
+                Location.NORTH: 90,
+                Location.SOUTH: 270,
+                Location.WEST: 0,
+                Location.EAST: 180,
+            },
+            Orientation.OUT: {
+                Location.NORTH: 270,
+                Location.SOUTH: 90,
+                Location.WEST: 180,
+                Location.EAST: 0,
+            },
+        }
+
+        # Calculate end orientation for this motion
+        end_orientation = self._calculate_end_orientation(
+            motion_data, start_orientation
+        )
+
+        # Get rotation angle from mapping
+        orientation_map = angle_map.get(end_orientation, angle_map[Orientation.IN])
+        rotation_angle = orientation_map.get(location, 0)
+
+        return float(rotation_angle)
+
+    def cleanup(self):
+        """Clean up event subscriptions when service is destroyed."""
+        if self.event_bus:
+            for sub_id in self._subscription_ids:
+                self.event_bus.unsubscribe(sub_id)
+            self._subscription_ids.clear()

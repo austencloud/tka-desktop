@@ -10,11 +10,12 @@ import pytest
 from typing import Protocol, Optional, runtime_checkable
 from dataclasses import dataclass
 
-from core.dependency_injection.di_container import (
+from src.core.dependency_injection.di_container import (
     DIContainer,
     get_container,
     reset_container,
 )
+from src.core.exceptions import DependencyInjectionError
 
 
 # Test interfaces and implementations
@@ -134,8 +135,10 @@ class TestEnhancedContainerBasics:
         assert resolved is repo_instance
 
     def test_unregistered_service_raises_error(self, container):
-        """Test that resolving unregistered service raises ValueError."""
-        with pytest.raises(ValueError, match="Service ITestService is not registered"):
+        """Test that resolving unregistered service raises DependencyInjectionError."""
+        with pytest.raises(
+            DependencyInjectionError, match="Service ITestService is not registered"
+        ):
             container.resolve(ITestService)
 
 
@@ -178,7 +181,9 @@ class TestConstructorInjection:
         """Test that circular dependencies are detected and raise error."""
         container.register_singleton(ITestService, TestServiceWithCircularDependency)
 
-        with pytest.raises(RuntimeError, match="Circular dependency detected"):
+        with pytest.raises(
+            DependencyInjectionError, match="Circular dependency detected"
+        ):
             container.resolve(ITestService)
 
 
@@ -256,7 +261,7 @@ class TestErrorHandling:
         # Register service that needs unregistered dependency
         container.register_singleton(ITestService, TestService)
 
-        with pytest.raises(ValueError, match="Cannot resolve dependency"):
+        with pytest.raises(DependencyInjectionError, match="Cannot resolve dependency"):
             container.resolve(ITestService)
 
     def test_creation_failure_handling(self, container):
@@ -268,7 +273,7 @@ class TestErrorHandling:
 
         container.register_singleton(ITestService, FailingService)
 
-        with pytest.raises(RuntimeError, match="Creation failed"):
+        with pytest.raises(DependencyInjectionError, match="Creation failed"):
             container.resolve(ITestService)
 
 
@@ -277,7 +282,7 @@ class TestBackwardCompatibility:
 
     def test_simple_container_alias(self):
         """Test that SimpleContainer alias works."""
-        from core.dependency_injection.di_container import DIContainer
+        from src.core.dependency_injection.di_container import DIContainer
 
         # Should be the same as EnhancedContainer
         assert DIContainer is DIContainer

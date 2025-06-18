@@ -13,10 +13,12 @@ while maintaining the proven algorithms from the individual services.
 Prop positioning has been moved to PropManagementService.
 """
 
-from typing import Tuple, Dict, Any, Optional, TYPE_CHECKING
+from typing import Tuple, Dict, Any, Optional, Union, TYPE_CHECKING, List
 from abc import ABC, abstractmethod
 from PyQt6.QtCore import QPointF
 from PyQt6.QtGui import QTransform
+import uuid
+from datetime import datetime
 
 from application.services.positioning.default_placement_service import (
     DefaultPlacementService,
@@ -47,8 +49,25 @@ from .placement_key_service import PlacementKeyService
 from domain.models.letter_type_classifier import LetterTypeClassifier
 from .dash_location_service import DashLocationService
 
+# Event-driven architecture imports
 if TYPE_CHECKING:
+    from core.events import IEventBus
     from .special_placement_service import SpecialPlacementService
+
+try:
+    from core.events import (
+        get_event_bus,
+        ArrowPositionedEvent,
+        EventPriority,
+    )
+
+    EVENT_SYSTEM_AVAILABLE = True
+except ImportError:
+    # For tests or when event system is not available
+    get_event_bus = None
+    ArrowPositionedEvent = None
+    EventPriority = None
+    EVENT_SYSTEM_AVAILABLE = False
 
 
 class IArrowManagementService(ABC):
@@ -91,12 +110,18 @@ class ArrowManagementService(IArrowManagementService):
     Prop positioning has been moved to PropManagementService.
     """
 
-    def __init__(self):
+    def __init__(self, event_bus: Optional["IEventBus"] = None):
         # CRITICAL FIX: Use correct scene coordinates matching PictographScene
         # Arrow positioning constants - must match PictographScene dimensions
         self.CENTER_X = 475
         self.CENTER_Y = 475
         self.SCENE_SIZE = 950
+
+        # Event system integration
+        self.event_bus = event_bus or (
+            get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
+        )
+        self._subscription_ids: List[str] = []
 
         # Initialize placement services
         self.default_placement_service = DefaultPlacementService()
@@ -177,6 +202,24 @@ class ArrowManagementService(IArrowManagementService):
         final_x = initial_position.x() + adjustment.x()
         final_y = initial_position.y() + adjustment.y()
 
+        # Publish arrow positioned event
+        if self.event_bus and ArrowPositionedEvent:
+            self.event_bus.publish(
+                ArrowPositionedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="ArrowManagementService",
+                    arrow_color=arrow_data.color,
+                    position_data={
+                        "x": final_x,
+                        "y": final_y,
+                        "rotation": rotation,
+                        "motion_type": motion.motion_type.value,
+                        "arrow_location": arrow_location.value,
+                    },
+                )
+            )
+
         return final_x, final_y, rotation
 
     def should_mirror_arrow(self, arrow_data: ArrowData) -> bool:
@@ -221,6 +264,13 @@ class ArrowManagementService(IArrowManagementService):
                 )
 
         return updated_pictograph
+
+    def cleanup(self):
+        """Clean up event subscriptions when service is destroyed."""
+        if self.event_bus:
+            for sub_id in self._subscription_ids:
+                self.event_bus.unsubscribe(sub_id)
+            self._subscription_ids.clear()
 
     def _calculate_arrow_location(
         self, motion: MotionData, pictograph_data: Optional[PictographData] = None
@@ -494,7 +544,7 @@ class ArrowManagementService(IArrowManagementService):
 
     def _get_special_adjustment(
         self, arrow_data: ArrowData, pictograph_data: PictographData
-    ) -> QPointF | None:
+    ) -> Union[QPointF, None]:
         """Get special adjustment for specific letters and configurations."""
         # CRITICAL FIX: Use cached service instance to avoid reloading JSON files on every call
 

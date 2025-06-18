@@ -297,9 +297,14 @@ class SplashScreen(QWidget):
         self.percentage_label.setText(f"{value}%")
         self.status_label.setText(self.current_message)
 
-        from PyQt6.QtWidgets import QApplication
+        # PERFORMANCE FIX: Only process events in release mode to avoid debug delays
+        # In debug mode, QApplication.processEvents() has significant overhead
+        import sys
 
-        QApplication.processEvents()
+        if not sys.flags.debug and not __debug__:
+            from PyQt6.QtWidgets import QApplication
+
+            QApplication.processEvents()
 
     def hide_animated(self, callback=None):
         if self.is_closing:

@@ -51,7 +51,7 @@ def get_sequence_service():
     return None
 
 # Simple conversion functions
-def domain_to_api_sequence(sequence) -> SequenceAPI:
+def domain_to_api_sequence(sequence) -> Optional[SequenceAPI]:
     """Convert domain SequenceData to API SequenceAPI."""
     if not sequence:
         return None

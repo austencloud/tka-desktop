@@ -15,6 +15,7 @@ from typing import Dict, Any
 from abc import ABC, abstractmethod
 
 from domain.models.core_models import (
+    Location,
     MotionData,
     MotionType,
     Orientation,
@@ -77,6 +78,39 @@ class MotionOrientationService(IMotionOrientationService):
     def flip_orientation(self, orientation: Orientation) -> Orientation:
         """Flip orientation between IN and OUT."""
         return Orientation.OUT if orientation == Orientation.IN else Orientation.IN
+
+    def calculate_prop_rotation_angle(
+        self, motion_data: MotionData, start_orientation: Orientation = Orientation.IN
+    ) -> float:
+        """Calculate prop rotation angle based on motion data and orientation."""
+        location = motion_data.end_loc
+
+        # Diamond grid orientation-based rotation mapping (simplified for Modern)
+        angle_map = {
+            Orientation.IN: {
+                Location.NORTH: 90,
+                Location.SOUTH: 270,
+                Location.WEST: 0,
+                Location.EAST: 180,
+            },
+            Orientation.OUT: {
+                Location.NORTH: 270,
+                Location.SOUTH: 90,
+                Location.WEST: 180,
+                Location.EAST: 0,
+            },
+        }
+
+        # Calculate end orientation for this motion
+        end_orientation = self.calculate_motion_orientation(
+            motion_data, start_orientation
+        )
+
+        # Get rotation angle from mapping
+        orientation_map = angle_map.get(end_orientation, angle_map[Orientation.IN])
+        rotation_angle = orientation_map.get(location, 0)
+
+        return float(rotation_angle)
 
     # Private orientation calculation methods
 
