@@ -54,12 +54,14 @@ class KineticConstructorModern(QMainWindow):
         target_screen=None,
         parallel_mode=False,
         parallel_geometry=None,
+        enable_api=True,
     ):
         super().__init__()
         self.splash = splash_screen
         self.target_screen = target_screen
         self.parallel_mode = parallel_mode
         self.parallel_geometry = parallel_geometry
+        self.enable_api = enable_api
 
         if parallel_mode:
             self.setWindowTitle("TKA Modern - Parallel Testing")
@@ -71,6 +73,10 @@ class KineticConstructorModern(QMainWindow):
         self._set_legacy_style_dimensions()
         self._setup_ui()
         self._setup_background()
+
+        # Start API server if enabled
+        if self.enable_api:
+            self._start_api_server()
 
     def _configure_services(self):
         if self.splash:
@@ -482,6 +488,22 @@ class KineticConstructorModern(QMainWindow):
 
         except Exception as e:
             print(f"⚠️ Failed to change background: {e}")
+
+    def _start_api_server(self):
+        """Start the API server if dependencies are available."""
+        try:
+            from src.infrastructure.api.api_integration import start_api_server
+
+            if start_api_server():
+                print("🌐 TKA API server started successfully")
+            else:
+                print("⚠️ Failed to start TKA API server")
+
+        except ImportError as e:
+            print(f"⚠️ API server dependencies not available: {e}")
+            print("   To enable API: pip install fastapi uvicorn")
+        except Exception as e:
+            print(f"⚠️ Failed to start API server: {e}")
 
 
 def detect_parallel_testing_mode():
