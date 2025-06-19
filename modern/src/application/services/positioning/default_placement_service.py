@@ -9,7 +9,27 @@ import json
 import codecs
 from pathlib import Path
 from typing import Dict, Any, Optional
-from PyQt6.QtCore import QPointF
+
+# Conditional Qt imports to avoid DLL loading issues during testing
+try:
+    from PyQt6.QtCore import QPointF
+
+    QT_AVAILABLE = True
+except ImportError:
+    # Fallback for testing or when Qt is not available
+    class MockQPointF:
+        def __init__(self, x=0.0, y=0.0):
+            self._x = x
+            self._y = y
+
+        def x(self):
+            return self._x
+
+        def y(self):
+            return self._y
+
+    QPointF = MockQPointF
+    QT_AVAILABLE = False
 
 from domain.models.core_models import MotionData, MotionType
 
@@ -68,7 +88,7 @@ class DefaultPlacementService:
         motion_data: MotionData,
         grid_mode: str = "diamond",
         placement_key: Optional[str] = None,
-    ) -> QPointF:
+    ) -> Any:
         """
         Get default adjustment using validated placement system.
 

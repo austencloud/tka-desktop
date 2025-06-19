@@ -19,15 +19,11 @@ def demo_event_driven_workflow():
 
     # Import components
     from core.events import get_event_bus, reset_event_bus
-    from core.commands import CommandProcessor
     from application.services.core.sequence_management_service import (
         SequenceManagementService,
     )
     from application.services.layout.layout_management_service import (
         LayoutManagementService,
-    )
-    from application.services.motion.motion_generation_service import (
-        MotionGenerationService,
     )
     from domain.models.core_models import (
         BeatData,
@@ -45,7 +41,6 @@ def demo_event_driven_workflow():
     # Create services with event integration
     sequence_service = SequenceManagementService(event_bus=event_bus)
     layout_service = LayoutManagementService(event_bus=event_bus)
-    motion_service = MotionGenerationService(event_bus=event_bus)
     print("✅ Services created with event integration")
 
     # Track events for demonstration
@@ -60,11 +55,7 @@ def demo_event_driven_workflow():
         "sequence.beat_added",
         "sequence.beat_removed",
         "sequence.beat_updated",
-        "layout.beat_frame_recalculated",
-        "motion.generated",
-        "command.executed",
-        "command.undone",
-        "command.redone",
+        "layout.recalculated",
     ]
 
     subscriptions = []

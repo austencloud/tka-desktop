@@ -15,10 +15,38 @@ Prop positioning has been moved to PropManagementService.
 
 from typing import Tuple, Dict, Any, Optional, Union, TYPE_CHECKING, List
 from abc import ABC, abstractmethod
-from PyQt6.QtCore import QPointF
-from PyQt6.QtGui import QTransform
 import uuid
 from datetime import datetime
+
+# Conditional Qt imports to avoid DLL loading issues during testing
+try:
+    from PyQt6.QtCore import QPointF
+    from PyQt6.QtGui import QTransform
+
+    QT_AVAILABLE = True
+except ImportError:
+    # Fallback for testing or when Qt is not available
+    class MockQPointF:
+        def __init__(self, x=0.0, y=0.0):
+            self._x = x
+            self._y = y
+
+        def x(self):
+            return self._x
+
+        def y(self):
+            return self._y
+
+    class MockQTransform:
+        def translate(self, x, y):
+            pass
+
+        def scale(self, x, y):
+            pass
+
+    QPointF = MockQPointF
+    QTransform = MockQTransform
+    QT_AVAILABLE = False
 
 from application.services.positioning.default_placement_service import (
     DefaultPlacementService,
@@ -342,7 +370,7 @@ class ArrowManagementService(IArrowManagementService):
 
     def _compute_initial_position(
         self, motion: MotionData, arrow_location: Location
-    ) -> QPointF:
+    ) -> Any:
         """Compute initial position using placement strategy."""
         if motion.motion_type in [MotionType.PRO, MotionType.ANTI, MotionType.FLOAT]:
             return self._get_layer2_coords(arrow_location)
@@ -351,11 +379,11 @@ class ArrowManagementService(IArrowManagementService):
         else:
             return QPointF(self.CENTER_X, self.CENTER_Y)
 
-    def _get_layer2_coords(self, location: Location) -> QPointF:
+    def _get_layer2_coords(self, location: Location) -> Any:
         """Get layer2 point coordinates for shift arrows."""
         return self.LAYER2_POINTS.get(location, QPointF(self.CENTER_X, self.CENTER_Y))
 
-    def _get_hand_point_coords(self, location: Location) -> QPointF:
+    def _get_hand_point_coords(self, location: Location) -> Any:
         """Get hand point coordinates for static/dash arrows."""
         return self.HAND_POINTS.get(location, QPointF(self.CENTER_X, self.CENTER_Y))
 
@@ -495,7 +523,7 @@ class ArrowManagementService(IArrowManagementService):
 
     def _calculate_adjustment(
         self, arrow_data: ArrowData, pictograph_data: PictographData
-    ) -> QPointF:
+    ) -> Any:
         """
         Calculate adjustment using complete validated adjustment system.
 
@@ -526,7 +554,7 @@ class ArrowManagementService(IArrowManagementService):
 
         return final_adjustment
 
-    def _get_default_adjustment(self, arrow_data: ArrowData) -> QPointF:
+    def _get_default_adjustment(self, arrow_data: ArrowData) -> Any:
         """Get default adjustment using data-driven placement system."""
         motion = arrow_data.motion_data
         if not motion:
@@ -544,7 +572,7 @@ class ArrowManagementService(IArrowManagementService):
 
     def _get_special_adjustment(
         self, arrow_data: ArrowData, pictograph_data: PictographData
-    ) -> Union[QPointF, None]:
+    ) -> Union[Any, None]:
         """Get special adjustment for specific letters and configurations."""
         # CRITICAL FIX: Use cached service instance to avoid reloading JSON files on every call
 
@@ -560,7 +588,7 @@ class ArrowManagementService(IArrowManagementService):
             )
 
             return result
-        except Exception as e:
+        except Exception:
             import traceback
 
             traceback.print_exc()

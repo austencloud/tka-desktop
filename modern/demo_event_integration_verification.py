@@ -11,16 +11,22 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
-from src.core.events import (
+from core.events import (
     TypeSafeEventBus,
     SequenceCreatedEvent,
     BeatAddedEvent,
     BeatRemovedEvent,
 )
-from src.application.services.core.sequence_management_service import (
+from application.services.core.sequence_management_service import (
     SequenceManagementService,
 )
-from src.domain.models.core_models import BeatData
+from domain.models.core_models import (
+    BeatData,
+    MotionData,
+    MotionType,
+    Location,
+    RotationDirection,
+)
 
 
 def main():
@@ -70,8 +76,26 @@ def main():
     # Demo 2: Add beat
     print("\n2️⃣ Adding beat...")
     new_beat = BeatData(
-        beat_number=4, letter="A", duration=1.0, blue_motion=None, red_motion=None
+        beat_number=4,
+        letter="A",
+        duration=1.0,
+        blue_motion=MotionData(
+            motion_type=MotionType.PRO,
+            prop_rot_dir=RotationDirection.CLOCKWISE,
+            start_loc=Location.NORTH,
+            end_loc=Location.EAST,
+            turns=0.25,
+        ),
+        red_motion=MotionData(
+            motion_type=MotionType.ANTI,
+            prop_rot_dir=RotationDirection.COUNTER_CLOCKWISE,
+            start_loc=Location.SOUTH,
+            end_loc=Location.WEST,
+            turns=0.25,
+        ),
     )
+    print(f"   🔍 Beat type: {type(new_beat)}")
+    print(f"   🔍 Is BeatData instance: {isinstance(new_beat, BeatData)}")
     sequence = sequence_service.add_beat(sequence, new_beat, 3)
     print(f"   ✅ Added beat, sequence now has {sequence.length} beats")
 
