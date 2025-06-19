@@ -19,24 +19,24 @@ import time
 import pytest  # Added import
 
 # Add the modern src directory to the path
-modern_src_path = os.path.join(os.path.dirname(__file__), "src")
+modern_src_path = os.path.join(os.path.dirname(__file__), "..", "src")
 if modern_src_path not in sys.path:
     sys.path.insert(0, modern_src_path)
 
 from core.dependency_injection.di_container import DIContainer
-from src.presentation.factories.workbench_factory import (
+from presentation.factories.workbench_factory import (
     create_modern_workbench,
     configure_workbench_services,
 )
 from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
-from src.core.interfaces.core_services import (
+from core.interfaces.core_services import (
     ILayoutService,
     ISettingsService,
     ISequenceDataService,
     IValidationService,
 )
 
-from src.presentation.components.option_picker.clickable_pictograph_frame import (
+from presentation.components.option_picker.clickable_pictograph_frame import (
     ClickablePictographFrame,
 )
 from PyQt6.QtCore import Qt

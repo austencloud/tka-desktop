@@ -59,9 +59,9 @@ except ImportError:
     EVENT_SYSTEM_AVAILABLE = False
 
 try:
-    from src.core.decorators import handle_service_errors
-    from src.core.monitoring import monitor_performance
-    from src.core.exceptions import ServiceOperationError, ValidationError
+    from core.decorators import handle_service_errors
+    from core.monitoring import monitor_performance
+    from core.exceptions import ServiceOperationError, ValidationError
 except ImportError:
     # For tests, create dummy decorators if imports fail
     def handle_service_errors(*args, **kwargs):

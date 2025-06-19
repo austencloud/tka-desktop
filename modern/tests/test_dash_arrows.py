@@ -5,10 +5,10 @@ Test for the enhanced dash arrow location calculation
 import sys
 from pathlib import Path
 
-# Add modern to path for imports
-modern_path = Path(__file__).parent / "src"
-if str(modern_path) not in sys.path:
-    sys.path.insert(0, str(modern_path))
+# Add modern src to path for imports
+modern_src_path = Path(__file__).parent.parent / "src"
+if str(modern_src_path) not in sys.path:
+    sys.path.insert(0, str(modern_src_path))
 
 from domain.models.core_models import (
     MotionData,
@@ -17,7 +17,9 @@ from domain.models.core_models import (
     Location,
     BeatData,
 )
-from application.services.arrow_positioning_service import ArrowPositioningService
+from application.services.positioning.arrow_management_service import (
+    ArrowManagementService,
+)
 from domain.models.pictograph_models import ArrowData, PictographData
 
 
@@ -25,8 +27,8 @@ def test_dash_arrow_positioning():
     """Test that dash arrows use the enhanced Legacy logic for positioning."""
     print("🧪 Testing enhanced dash arrow positioning logic...")
 
-    # Create arrow positioning service
-    positioning_service = ArrowPositioningService()
+    # Create arrow management service
+    positioning_service = ArrowManagementService()
 
     # Test case 1: Zero turns dash arrow (should use default mapping)
     print("\n📍 Test 1: Zero turns dash arrow")
@@ -46,7 +48,15 @@ def test_dash_arrow_positioning():
         turns=0.0,
     )
 
-    pictograph_data = PictographData(arrows={"blue": arrow_data})
+    from domain.models.pictograph_models import GridData, GridMode
+
+    grid_data = GridData(
+        grid_mode=GridMode.DIAMOND, center_x=475.0, center_y=475.0, radius=100.0
+    )
+
+    pictograph_data = PictographData(
+        grid_data=grid_data, arrows={"blue": arrow_data}, is_blank=False
+    )
 
     # Calculate position using the enhanced service
     pos_x, pos_y, rotation = positioning_service.calculate_arrow_position(
@@ -80,7 +90,13 @@ def test_dash_arrow_positioning():
         turns=1.0,
     )
 
-    pictograph_data_cw = PictographData(arrows={"red": arrow_data_cw})
+    grid_data_cw = GridData(
+        grid_mode=GridMode.DIAMOND, center_x=475.0, center_y=475.0, radius=100.0
+    )
+
+    pictograph_data_cw = PictographData(
+        grid_data=grid_data_cw, arrows={"red": arrow_data_cw}, is_blank=False
+    )
 
     pos_x_cw, pos_y_cw, rotation_cw = positioning_service.calculate_arrow_position(
         arrow_data_cw, pictograph_data_cw
@@ -113,7 +129,13 @@ def test_dash_arrow_positioning():
         turns=1.0,
     )
 
-    pictograph_data_ccw = PictographData(arrows={"blue": arrow_data_ccw})
+    grid_data_ccw = GridData(
+        grid_mode=GridMode.DIAMOND, center_x=475.0, center_y=475.0, radius=100.0
+    )
+
+    pictograph_data_ccw = PictographData(
+        grid_data=grid_data_ccw, arrows={"blue": arrow_data_ccw}, is_blank=False
+    )
 
     pos_x_ccw, pos_y_ccw, rotation_ccw = positioning_service.calculate_arrow_position(
         arrow_data_ccw, pictograph_data_ccw

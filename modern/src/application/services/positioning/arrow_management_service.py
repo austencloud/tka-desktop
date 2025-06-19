@@ -48,6 +48,20 @@ except ImportError:
     QTransform = MockQTransform
     QT_AVAILABLE = False
 
+if TYPE_CHECKING:
+    from PyQt6.QtCore import QPointF as QPointFType
+    from PyQt6.QtGui import QTransform as QTransformType
+
+    # Use Any to avoid type conflicts between real Qt types and mock types
+    from typing import Any
+    PointType = Any
+    TransformType = Any
+else:
+    # Runtime: Allow both real Qt types and mock types
+    from typing import Any
+    PointType = Any
+    TransformType = Any
+    
 from application.services.positioning.default_placement_service import (
     DefaultPlacementService,
 )
@@ -597,9 +611,9 @@ class ArrowManagementService(IArrowManagementService):
     def _apply_quadrant_adjustments(
         self,
         arrow_data: ArrowData,
-        base_adjustment: QPointF,
+        base_adjustment: PointType,
         pictograph_data: Optional[PictographData] = None,
-    ) -> QPointF:
+    ) -> PointType:
         """Apply quadrant-based directional adjustments using positioning logic."""
         motion = arrow_data.motion_data
         if not motion:
