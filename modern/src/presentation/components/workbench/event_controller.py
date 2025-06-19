@@ -129,10 +129,9 @@ class WorkbenchEventController(QObject):
 
     def handle_clear(self) -> tuple[bool, str, Optional[SequenceData]]:
         try:
-            if not self._current_sequence or self._current_sequence.length == 0:
-                # No sequence to clear
-                return False, "No sequence to clear", None
-
+            # Allow clearing even when no sequence exists - the workbench will handle
+            # clearing start position data. This enables clearing when only a start
+            # position is selected (no beats added yet).
             empty_sequence = SequenceData.empty()
             self._current_sequence = empty_sequence
             return True, "Sequence cleared!", empty_sequence

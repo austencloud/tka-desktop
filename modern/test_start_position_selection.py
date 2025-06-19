@@ -181,12 +181,12 @@ class StartPositionTestMonitor(QObject):
                 # Method 2: Try mouse press event
                 else:
                     from PyQt6.QtGui import QMouseEvent
-                    from PyQt6.QtCore import Qt, QPointF
+                    from PyQt6.QtCore import Qt, QPoint
 
                     print(f"   Simulating mouse press event")
                     press_event = QMouseEvent(
                         QMouseEvent.Type.MouseButtonPress,
-                        QPointF(first_option.width() // 2, first_option.height() // 2),
+                        QPoint(first_option.width() // 2, first_option.height() // 2),
                         Qt.MouseButton.LeftButton,
                         Qt.MouseButton.LeftButton,
                         Qt.KeyboardModifier.NoModifier,
@@ -239,10 +239,9 @@ class StartPositionTestMonitor(QObject):
                     return
 
             # Check if we're still on start position picker (no transition happened)
-            if self.selection_time:
-                elapsed = time.perf_counter() - self.selection_time
-                if elapsed > 2.0:  # If more than 2 seconds, something might be wrong
-                    print(f"⚠️ Still waiting for options after {elapsed:.1f}s...")
+            elapsed = time.perf_counter() - self.selection_time
+            if elapsed > 2.0:  # If more than 2 seconds, something might be wrong
+                print(f"⚠️ Still waiting for options after {elapsed:.1f}s...")
 
         except Exception as e:
             print(f"❌ Error checking option picker: {e}")
@@ -283,10 +282,8 @@ class StartPositionTestMonitor(QObject):
         """Complete the test with success."""
         self.cleanup_timers()
 
-        total_time = (self.options_loaded_time or 0) - (self.start_time or 0)
-        selection_to_load_time = (self.options_loaded_time or 0) - (
-            self.selection_time or 0
-        )
+        total_time = self.options_loaded_time - self.start_time
+        selection_to_load_time = self.options_loaded_time - self.selection_time
 
         self.test_results = {
             "success": True,

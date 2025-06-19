@@ -144,12 +144,14 @@ class PictographScene(QGraphicsScene):
                 self.vtg_glyph_renderer.render_vtg_glyph(
                     glyph_data.vtg_mode,
                     glyph_data.letter_type.value if glyph_data.letter_type else None,
-                )            # Render TKA glyph
+                )  # Render TKA glyph
             if glyph_data.show_tka and self.beat_data.letter:
                 # Determine the correct letter type from the actual letter
-                letter_type_str = LetterTypeClassifier.get_letter_type(self.beat_data.letter)
+                letter_type_str = LetterTypeClassifier.get_letter_type(
+                    self.beat_data.letter
+                )
                 letter_type = LetterType(letter_type_str)
-                
+
                 self.tka_glyph_renderer.render_tka_glyph(
                     self.beat_data.letter,
                     letter_type,

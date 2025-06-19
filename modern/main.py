@@ -461,13 +461,18 @@ class KineticConstructorModern(QMainWindow):
             if start_api_server():
                 print("🌐 TKA API server started successfully")
             else:
-                print("⚠️ Failed to start TKA API server")
+                print("⚠️ Failed to start TKA API server - continuing without API")
 
         except ImportError as e:
             print(f"⚠️ API server dependencies not available: {e}")
             print("   To enable API: pip install fastapi uvicorn")
+        except PermissionError as e:
+            print(f"⚠️ Permission denied for API server: {e}")
+            print("   Try running as administrator or check Windows Firewall settings")
+            print("   Continuing without API server...")
         except Exception as e:
             print(f"⚠️ Failed to start API server: {e}")
+            print("   Continuing without API server...")
 
 
 def detect_parallel_testing_mode():

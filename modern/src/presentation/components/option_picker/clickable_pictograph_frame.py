@@ -30,10 +30,6 @@ class ClickablePictographFrame(QFrame):
 
         self.container_widget: Optional[QWidget] = None
 
-        # PERFORMANCE OPTIMIZATION: Initialize deferred update flags
-        self._needs_pictograph_update: bool = False
-        self._pending_beat_data: Optional[BeatData] = None
-
         square_size: int = 160
         self.setFixedSize(square_size, square_size)
 
@@ -157,27 +153,6 @@ class ClickablePictographFrame(QFrame):
             self._configure_option_picker_context(beat_data)
             self.pictograph_component.update_from_beat(beat_data)
 
-    def update_beat_data_deferred(self, beat_data: BeatData) -> None:
-        """PERFORMANCE OPTIMIZED: Update beat data with deferred pictograph rendering"""
-        self.beat_data = beat_data
-        self._pending_beat_data = beat_data
-        self._needs_pictograph_update = True
-
-        # Only update context immediately (fast operation)
-        if self.pictograph_component:
-            self._configure_option_picker_context(beat_data)
-
-        # Defer expensive pictograph rendering until frame becomes visible
-        # This will be triggered by showEvent or when explicitly requested
-
-    def _apply_deferred_update(self) -> None:
-        """Apply the deferred pictograph update when needed"""
-        if self._needs_pictograph_update and self._pending_beat_data is not None:
-            if self.pictograph_component:
-                self.pictograph_component.update_from_beat(self._pending_beat_data)
-            self._needs_pictograph_update = False
-            self._pending_beat_data = None
-
     def cleanup(self) -> None:
         if self.pictograph_component:
             self.pictograph_component.cleanup()
@@ -203,10 +178,3 @@ class ClickablePictographFrame(QFrame):
     def leaveEvent(self, event: QEvent) -> None:
         self.setCursor(Qt.CursorShape.ArrowCursor)
         super().leaveEvent(event)
-
-    def showEvent(self, event) -> None:
-        """PERFORMANCE OPTIMIZATION: Apply deferred updates when frame becomes visible"""
-        super().showEvent(event)
-        # Apply any pending deferred updates when the frame becomes visible
-        if hasattr(self, "_needs_pictograph_update") and self._needs_pictograph_update:
-            self._apply_deferred_update()

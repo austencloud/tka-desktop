@@ -18,7 +18,9 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
-from application.services.layout.layout_management_service import LayoutManagementService
+from application.services.layout.layout_management_service import (
+    LayoutManagementService,
+)
 from presentation.components.workbench.sequence_beat_frame.beat_selection_manager import (
     BeatSelectionManager,
 )
@@ -170,12 +172,17 @@ class BeatFrame(QScrollArea):
         if self._selection_manager:
             self._selection_manager.clear_selection()
 
-    # Layout management
-    def _update_layout(self):
+        # Layout management    def _update_layout(self):
         """Update grid layout based on sequence length"""
         if not self._current_sequence:
             self._apply_layout(1, 8)  # Default layout
             return  # Calculate optimal layout using service
+
+        # Special case: empty sequence should still show start position with minimal layout
+        if self._current_sequence.length == 0:
+            self._apply_layout(1, 1)  # 1 row, 1 column for start position only
+            return
+
         container_size = (self.width(), self.height())
         layout_config = self._layout_service.calculate_beat_frame_layout(
             self._current_sequence, container_size
@@ -200,16 +207,20 @@ class BeatFrame(QScrollArea):
         # Add beats to new layout
         beat_count = self._current_sequence.length if self._current_sequence else 0
 
-        for i in range(min(beat_count, len(self._beat_views))):
-            row = i // columns
-            col = (i % columns) + 1  # +1 to account for start position
+        # Only add beat views if there are beats and columns > 0
+        if beat_count > 0 and columns > 0:
+            for i in range(min(beat_count, len(self._beat_views))):
+                row = i // columns
+                col = (i % columns) + 1  # +1 to account for start position
 
-            beat_view = self._beat_views[i]
-            self._grid_layout.addWidget(beat_view, row, col, 1, 1)
-            beat_view.show()
+                beat_view = self._beat_views[i]
+                self._grid_layout.addWidget(beat_view, row, col, 1, 1)
+                beat_view.show()
 
         # CRITICAL: Apply Legacy's beat sizing after layout change
-        self._resizer_service.resize_beat_frame(self, rows, columns)
+        # Ensure we have at least 1 column for resizing calculations
+        resize_columns = max(columns, 1)
+        self._resizer_service.resize_beat_frame(self, rows, resize_columns)
 
         # Emit layout changed signal
         self.layout_changed.emit(rows, columns)

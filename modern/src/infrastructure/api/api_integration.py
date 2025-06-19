@@ -85,9 +85,7 @@ class TKAAPIIntegration:
 
         # Convert localhost to 127.0.0.1 for consistency on Windows
         if host.lower() == "localhost":
-            host = "127.0.0.1"
-
-        # Find available port if requested port is in use
+            host = "127.0.0.1"  # Find available port if requested port is in use
         actual_port = port
         if auto_port:
             try:
@@ -97,6 +95,44 @@ class TKAAPIIntegration:
                     test_socket.bind((host, port))
                     # If we get here, port is available
                     actual_port = port
+            except PermissionError as e:
+                # Windows permission error - try alternative ports
+                logger.warning(f"Permission denied for port {port}: {e}")
+                logger.info(
+                    "Trying alternative ports due to Windows permission restrictions..."
+                )
+                try:
+                    # Try some common safe ports that usually don't require elevated permissions
+                    safe_ports = [8080, 8888, 9000, 9090, 3000, 5000, 7000]
+                    actual_port = None
+                    for safe_port in safe_ports:
+                        try:
+                            with socket.socket(
+                                socket.AF_INET, socket.SOCK_STREAM
+                            ) as test_socket:
+                                test_socket.setsockopt(
+                                    socket.SOL_SOCKET, socket.SO_REUSEADDR, 1
+                                )
+                                test_socket.bind((host, safe_port))
+                                actual_port = safe_port
+                                logger.info(
+                                    f"Using safe port {actual_port} instead of {port}"
+                                )
+                                break
+                        except (OSError, PermissionError):
+                            continue
+
+                    if actual_port is None:
+                        logger.error(
+                            "Could not find any available port due to permission restrictions"
+                        )
+                        logger.info(
+                            "Try running as administrator or check Windows Firewall/Antivirus settings"
+                        )
+                        return
+                except Exception as fallback_error:
+                    logger.error(f"Failed to find alternative port: {fallback_error}")
+                    return
             except (OSError, socket.error):
                 # Port is in use, find alternative
                 try:
@@ -156,6 +192,11 @@ class TKAAPIIntegration:
                 logger.error(f"API server dependencies not available: {e}")
                 logger.error(
                     "Please install FastAPI and uvicorn: pip install fastapi uvicorn"
+                )
+            except PermissionError as e:
+                logger.error(f"Permission denied starting API server: {e}")
+                logger.info(
+                    "Try running as administrator or check Windows Firewall/Antivirus settings"
                 )
             except OSError as e:
                 if "Address already in use" in str(e) or "10048" in str(e):
@@ -333,7 +374,11 @@ def get_process_using_port(port: int) -> Optional[Tuple[int, str]]:
     """Get the process ID and name using a specific port."""
     try:
         for conn in psutil.net_connections():
-            if conn.laddr.port == port and conn.status == psutil.CONN_LISTEN and conn.pid is not None:
+            if (
+                conn.laddr.port == port
+                and conn.status == psutil.CONN_LISTEN
+                and conn.pid is not None
+            ):
                 try:
                     process = psutil.Process(conn.pid)
                     return conn.pid, process.name()

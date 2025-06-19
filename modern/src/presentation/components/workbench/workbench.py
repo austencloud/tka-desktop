@@ -305,7 +305,7 @@ class ModernSequenceWorkbench(QWidget):
 
         if success and updated_sequence:
             self._current_sequence = updated_sequence
-            # CRITICAL FIX: Clear start position data when clearing sequence (legacy behavior)
+            # Clear start position data and show cleared state (legacy behavior)
             self.clear_start_position()
             self._update_all_components()
             self.sequence_modified.emit(updated_sequence)
