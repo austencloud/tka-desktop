@@ -1,5 +1,5 @@
 from typing import Optional, TYPE_CHECKING
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from PyQt6.QtCore import pyqtSignal
 from domain.models.core_models import SequenceData
 from core.interfaces.workbench_services import IGraphEditorService
@@ -23,19 +23,29 @@ class WorkbenchGraphSection(QWidget):
         self._graph_service = graph_service
         self._graph_editor: Optional["GraphEditor"] = None
         self._current_sequence: Optional[SequenceData] = None
-        self._current_beat_index: int = (
-            0  # Track current beat index        self._setup_ui()
-        )
+        self._current_beat_index: int = 0  # Track current beat index
+        
+        self._setup_ui()
         self._connect_signals()
 
     def _setup_ui(self):
-        """Setup graph editor component"""
+        """Setup graph editor component with proper layout"""
         from .graph_editor.graph_editor import GraphEditor
 
-        self._graph_editor = GraphEditor(graph_service=self._graph_service, parent=None)
+        # Create layout for this section
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
-        # Single child widget, no layout needed
-        self._graph_editor.setParent(self)
+        # Create graph editor with this section as parent context
+        self._graph_editor = GraphEditor(graph_service=self._graph_service, parent=None)
+        
+        # Add graph editor to layout
+        layout.addWidget(self._graph_editor)
+        
+        # Set initial size - important for toggle tab visibility!
+        self.setMinimumHeight(60)  # Minimum height for toggle tab visibility
+        self.setMaximumHeight(400)  # Reasonable maximum
 
     def _connect_signals(self):
         """Connect graph editor signals"""

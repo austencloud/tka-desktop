@@ -146,8 +146,7 @@ class ModernToggleTab(QWidget):
                         stop: 0 rgba(235, 235, 235, 0.85),
                         stop: 0.5 rgba(215, 215, 215, 0.80),
                         stop: 1 rgba(195, 195, 195, 0.75)
-                    );
-                    border: 2px solid rgba(235, 235, 235, 0.90);
+                    );                    border: 2px solid rgba(235, 235, 235, 0.90);
                     color: rgba(20, 20, 20, 1.0);
                 }
             """
@@ -155,16 +154,22 @@ class ModernToggleTab(QWidget):
 
     def _position_tab(self):
         """Position the toggle tab initially at the bottom center of workbench"""
-        if not self._graph_editor._parent_workbench:
+        # Find the right parent - should be the workbench
+        workbench_parent = self._graph_editor.parent()
+        if workbench_parent:
+            # Go up to find the actual workbench (graph_section -> workbench)
+            while workbench_parent and not hasattr(workbench_parent, '_beat_frame_section'):
+                workbench_parent = workbench_parent.parent()
+        
+        if not workbench_parent:
             # Defer positioning until parent is available
             QTimer.singleShot(100, self._position_tab)
             return
 
-        parent = self._graph_editor._parent_workbench
-        self.setParent(parent)
+        self.setParent(workbench_parent)
 
         # Ensure parent has valid dimensions before positioning
-        if parent.width() <= 0 or parent.height() <= 0:
+        if workbench_parent.width() <= 0 or workbench_parent.height() <= 0:
             # Defer positioning until parent has valid size
             QTimer.singleShot(100, self._position_tab)
             return
@@ -175,15 +180,16 @@ class ModernToggleTab(QWidget):
             x = 20  # 20px margin from left edge
         else:
             # Default center positioning
-            x = (parent.width() - self.width()) // 2
+            x = (workbench_parent.width() - self.width()) // 2
 
-        y = parent.height() - self.height() - 10  # 10px margin from bottom
+        y = workbench_parent.height() - self.height() - 10  # 10px margin from bottom
 
         self.move(x, y)
         self.raise_()
 
         # Ensure button is visible
         self.show()
+        print(f"🎯 Toggle tab positioned at ({x}, {y}) in parent {type(workbench_parent).__name__}")
 
     def update_position(self, animate=True):
         """Update position to hug the top of graph editor frame (Legacy-exact behavior)"""

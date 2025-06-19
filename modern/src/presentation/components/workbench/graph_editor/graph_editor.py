@@ -106,10 +106,12 @@ class GraphEditor(QFrame):
         )  # Right controls (stretch=1)
 
         # Keep reference to both panels for compatibility
-        self._adjustment_panel = self._right_adjustment_panel
-
-        # Toggle tab (positioned absolutely)
+        self._adjustment_panel = self._right_adjustment_panel        # Toggle tab (positioned absolutely)
         self._toggle_tab = ModernToggleTab(self)
+        
+        # Ensure toggle tab is visible immediately
+        self._toggle_tab.show()
+        self._toggle_tab.raise_()
 
         # Set size policy to prevent unwanted expansion beyond allocated space
         from PyQt6.QtWidgets import QSizePolicy
