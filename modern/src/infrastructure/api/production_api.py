@@ -553,7 +553,7 @@ async def get_command_status(
         return CommandResponse(
             success=True,
             message="Command status retrieved",
-            command_id=command_processor.get_current_command_id() or "",
+            command_id="",  # Current command ID not available
             can_undo=command_processor.can_undo(),
             can_redo=command_processor.can_redo(),
             undo_description=command_processor.get_undo_description(),
