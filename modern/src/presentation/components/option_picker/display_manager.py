@@ -155,8 +155,8 @@ class OptionPickerDisplayManager:
     # Legacy approach: no complex visibility forcing needed
 
     def get_sections(self) -> Dict[str, OptionPickerSection]:
-        """Get all sections"""
-        return self._sections
+        """Get all created sections"""
+        return self._sections.copy()
 
     def resize_bottom_row_sections(self):
         """Resize bottom row sections to proper 1/3 width when window resizes"""

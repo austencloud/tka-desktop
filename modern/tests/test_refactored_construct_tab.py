@@ -15,22 +15,29 @@ from PyQt6.QtCore import Qt
 modern_src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(modern_src_path))
 
-from core.dependency_injection.di_container import DIContainer
-from src.core.interfaces.core_services import (
+# Updated imports for standardized patterns
+from core.dependency_injection.di_container import (
+    DIContainer,
+    get_container,
+    reset_container,
+)
+from core.interfaces.core_services import (
     ILayoutService,
-    ISettingsService,
-    ISequenceDataService,
-    IValidationService,
+    IUIStateManagementService,
 )
-from src.application.services.simple_layout_service import SimpleLayoutService
-from src.application.services.simple_sequence_service import (
-    SequenceService,
-    SimpleSequenceDataService,
-    SimpleSettingsService,
-    SimpleValidationService,
+from core.interfaces.workbench_services import (
+    ISequenceWorkbenchService,
+    IFullScreenService,
+    IBeatDeletionService,
+    IGraphEditorService,
+    IDictionaryService,
 )
-from src.presentation.factories.workbench_factory import configure_workbench_services
-from src.presentation.tabs.construct_tab_widget import ConstructTabWidget
+from application.services.layout.layout_management_service import (
+    LayoutManagementService,
+)
+from application.services.ui.ui_state_management_service import UIStateManagementService
+from presentation.factories.workbench_factory import configure_workbench_services
+from presentation.tabs.construct.construct_tab_widget import ConstructTabWidget
 
 
 class TestWindow(QMainWindow):
@@ -48,13 +55,17 @@ class TestWindow(QMainWindow):
 
     def _configure_services(self):
         """Configure dependency injection services"""
-        self.container.register_singleton(ILayoutService, SimpleLayoutService)
-        self.container.register_singleton(ISettingsService, SimpleSettingsService)
+        # Reset container to clean state
+        reset_container()
+        self.container = get_container()
+
+        # Register core services
+        self.container.register_singleton(ILayoutService, LayoutManagementService)
         self.container.register_singleton(
-            ISequenceDataService, SimpleSequenceDataService
+            IUIStateManagementService, UIStateManagementService
         )
-        self.container.register_singleton(IValidationService, SimpleValidationService)
-        self.container.register_singleton(SequenceService, SequenceService)
+
+        # Configure workbench services
         configure_workbench_services(self.container)
 
     def _setup_ui(self):

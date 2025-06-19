@@ -13,25 +13,26 @@ from pathlib import Path
 src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(src_path))
 
+
 async def test_production_api():
     """Test the production API endpoints."""
     print("🚀 Testing TKA Desktop Production API")
     print("=" * 50)
-    
+
     try:
-        # Import the production API
+        # Import the production API (standardized import)
         from infrastructure.api.production_api import app, initialize_services
-        
+
         # Initialize services
         print("📋 Initializing services...")
         initialize_services()
         print("✅ Services initialized successfully")
-        
+
         # Test basic imports and service availability
         from fastapi.testclient import TestClient
-        
+
         client = TestClient(app)
-        
+
         # Test health endpoint
         print("\n🏥 Testing health endpoint...")
         response = client.get("/api/health")
@@ -44,7 +45,7 @@ async def test_production_api():
         else:
             print("❌ Health check failed")
             return False
-        
+
         # Test status endpoint
         print("\n📊 Testing status endpoint...")
         response = client.get("/api/status")
@@ -57,7 +58,7 @@ async def test_production_api():
         else:
             print("❌ Status check failed")
             return False
-        
+
         # Test performance metrics endpoint
         print("\n⚡ Testing performance metrics...")
         response = client.get("/api/performance")
@@ -69,13 +70,10 @@ async def test_production_api():
         else:
             print("❌ Performance metrics failed")
             return False
-        
+
         # Test sequence creation
         print("\n📝 Testing sequence creation...")
-        sequence_data = {
-            "name": "Test Sequence",
-            "length": 4
-        }
+        sequence_data = {"name": "Test Sequence", "length": 4}
         response = client.post("/api/sequences", json=sequence_data)
         print(f"Status: {response.status_code}")
         if response.status_code == 200:
@@ -87,7 +85,7 @@ async def test_production_api():
         else:
             print(f"❌ Sequence creation failed: {response.text}")
             return False
-        
+
         # Test command status
         print("\n🎮 Testing command status...")
         response = client.get("/api/commands/status")
@@ -101,7 +99,7 @@ async def test_production_api():
         else:
             print("❌ Command status failed")
             return False
-        
+
         # Test event stats
         print("\n📡 Testing event statistics...")
         response = client.get("/api/events/stats")
@@ -113,10 +111,10 @@ async def test_production_api():
         else:
             print("❌ Event statistics failed")
             return False
-        
+
         print("\n🎉 All API tests passed!")
         return True
-        
+
     except ImportError as e:
         print(f"❌ Import error: {e}")
         print("Make sure FastAPI is installed: pip install fastapi uvicorn")
@@ -124,77 +122,82 @@ async def test_production_api():
     except Exception as e:
         print(f"❌ Test failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
+
 
 def test_api_documentation():
     """Test API documentation generation."""
     print("\n📚 Testing API Documentation...")
-    
+
     try:
         from infrastructure.api.production_api import app
-        
+
         # Get OpenAPI schema
         openapi_schema = app.openapi()
-        
+
         print(f"API Title: {openapi_schema.get('info', {}).get('title')}")
         print(f"API Version: {openapi_schema.get('info', {}).get('version')}")
         print(f"API Description: {openapi_schema.get('info', {}).get('description')}")
-        
+
         # Count endpoints
-        paths = openapi_schema.get('paths', {})
+        paths = openapi_schema.get("paths", {})
         endpoint_count = sum(len(methods) for methods in paths.values())
-        
+
         print(f"Total endpoints: {endpoint_count}")
         print(f"Endpoint paths: {list(paths.keys())}")
-        
+
         # Check for required endpoints
         required_endpoints = [
             "/api/health",
-            "/api/status", 
+            "/api/status",
             "/api/performance",
             "/api/sequences",
             "/api/commands/undo",
             "/api/commands/redo",
-            "/api/events/stats"
+            "/api/events/stats",
         ]
-        
+
         missing_endpoints = []
         for endpoint in required_endpoints:
             if endpoint not in paths:
                 missing_endpoints.append(endpoint)
-        
+
         if missing_endpoints:
             print(f"❌ Missing endpoints: {missing_endpoints}")
             return False
         else:
             print("✅ All required endpoints present")
             return True
-            
+
     except Exception as e:
         print(f"❌ Documentation test failed: {e}")
         return False
+
 
 async def main():
     """Run all API tests."""
     print("🔧 TKA Desktop Production API Test Suite")
     print("=" * 60)
-    
+
     # Test API functionality
     api_test_passed = await test_production_api()
-    
+
     # Test API documentation
     doc_test_passed = test_api_documentation()
-    
+
     print("\n" + "=" * 60)
     print("📊 TEST SUMMARY")
     print("=" * 60)
     print(f"API Functionality: {'✅ PASS' if api_test_passed else '❌ FAIL'}")
     print(f"API Documentation: {'✅ PASS' if doc_test_passed else '❌ FAIL'}")
-    
+
     overall_success = api_test_passed and doc_test_passed
-    print(f"\nOverall Result: {'✅ ALL TESTS PASSED' if overall_success else '❌ SOME TESTS FAILED'}")
-    
+    print(
+        f"\nOverall Result: {'✅ ALL TESTS PASSED' if overall_success else '❌ SOME TESTS FAILED'}"
+    )
+
     if overall_success:
         print("\n🎉 Production API is ready for deployment!")
         print("📋 Next steps:")
@@ -203,8 +206,9 @@ async def main():
         print("  3. Access health check at: http://localhost:8000/api/health")
     else:
         print("\n⚠️ API needs fixes before production deployment")
-    
+
     return overall_success
+
 
 if __name__ == "__main__":
     success = asyncio.run(main())

@@ -29,7 +29,7 @@ class OptionPicker(
 
     This works directly with Modern data structures (BeatData, SequenceData)
     and never requires Legacy format conversions.
-    """ 
+    """
 
     option_selected = pyqtSignal(str)
     beat_data_selected = pyqtSignal(object)  # New signal for actual BeatData
