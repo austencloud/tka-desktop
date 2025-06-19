@@ -14,7 +14,7 @@ from .component_base import (
 
 __all__ = [
     "ViewableComponentBase",
-    "AsyncViewableComponentBase",
+    "AsyncViewableComponentBase", 
     "ComponentBase",
     "IComponent",
 ]

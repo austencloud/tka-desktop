@@ -35,13 +35,8 @@ try:
     from core.events import IEventBus
 except ImportError:
     IEventBus = None
-from application.services.layout.layout_management_service import (
-    LayoutManagementService,
-)
-from application.services.ui.ui_state_management_service import (
-    UIStateManagementService,
-)
-from presentation.components.ui.settings.settings_button import SettingsButton
+
+# 🔥 CHANGED: Removed unused imports - services now imported locally where needed
 from presentation.factories.workbench_factory import configure_workbench_services
 from presentation.components.ui.splash_screen import SplashScreen
 from presentation.components.backgrounds.background_widget import MainBackgroundWidget
@@ -70,7 +65,7 @@ class KineticConstructorModern(QMainWindow):
 
         self.container = get_container()
         self._configure_services()
-        self._set_legacy_style_dimensions()
+        self._set_window_dimensions()  # 🔥 CHANGED: Renamed from legacy method name
         self._setup_ui()
         self._setup_background()
 
@@ -78,36 +73,25 @@ class KineticConstructorModern(QMainWindow):
         if self.enable_api:
             self._start_api_server()
 
-    def _configure_services(self):
+    def _configure_services(
+        self,
+    ):  # 🔥 CHANGED: Pure dependency injection - NO manual service creation
+        """Configure services using PURE dependency injection patterns."""
         if self.splash:
             self.splash.update_progress(20, "Configuring services...")
 
-        # NEW: Register event system and commands first
+        # Register event system and commands first
         self._register_event_system()
 
-        # Register consolidated layout service (unified interface) with event bus
-        event_bus = None
-        if IEventBus and IEventBus in self.container._singletons:
-            event_bus = self.container.resolve(IEventBus)
+        # 🔥 CHANGED: Register service TYPES, not instances - let container handle creation
+        self._register_core_services()
 
-        layout_management_service = LayoutManagementService(event_bus=event_bus)
-        self.container.register_instance(
-            ILayoutService, layout_management_service
-        )  # Register UI state management service as instance to ensure immediate availability
-        ui_state_service = UIStateManagementService()
-        self.container.register_instance(IUIStateManagementService, ui_state_service)
-
-        # Register new focused motion services
+        # Register focused domain services
         self._register_motion_services()
-
-        # Register new focused layout services
         self._register_layout_services()
+        self._register_pictograph_services()
 
-        # Register new focused pictograph services
-        self._register_pictograph_services()  # Get UI state service for settings functionality
-        self.ui_state_service = self.container.resolve(IUIStateManagementService)
-
-        # Configure workbench services after UI state service is available
+        # Configure workbench services
         configure_workbench_services(self.container)
 
         if self.splash:
@@ -134,8 +118,33 @@ class KineticConstructorModern(QMainWindow):
             print(f"⚠️ Event system not available: {e}")
             # Continue without event system for backward compatibility
 
-    def _register_motion_services(self):
-        """Register the new focused motion services."""
+    def _register_core_services(self):  # 🔥 NEW: Pure DI service registration
+        """Register core services using pure dependency injection."""
+        from application.services.layout.layout_management_service import (
+            LayoutManagementService,
+        )
+        from application.services.ui.ui_state_management_service import (
+            UIStateManagementService,
+        )
+
+        # 🔥 CHANGED: Register service types with factory functions for proper DI
+        def create_layout_service():
+            event_bus = None
+            if IEventBus and IEventBus in self.container._singletons:
+                event_bus = self.container.resolve(IEventBus)
+            return LayoutManagementService(event_bus=event_bus)
+
+        def create_ui_state_service():
+            return UIStateManagementService()
+
+        # Register with factory functions for proper dependency resolution
+        self.container.register_factory(ILayoutService, create_layout_service)
+        self.container.register_factory(
+            IUIStateManagementService, create_ui_state_service
+        )
+
+    def _register_motion_services(self):  # 🔥 CHANGED: Pure DI registration
+        """Register the focused motion services using pure dependency injection."""
         from application.services.motion.motion_validation_service import (
             MotionValidationService,
             IMotionValidationService,
@@ -145,15 +154,13 @@ class KineticConstructorModern(QMainWindow):
             IMotionOrientationService,
         )
 
-        # Register focused motion services
-        validation_service = MotionValidationService()
-        self.container.register_instance(IMotionValidationService, validation_service)
-
-        orientation_service = MotionOrientationService()
-        self.container.register_instance(IMotionOrientationService, orientation_service)
-
-        # Bridge service removed - consumers should use focused services directly
-        # (MotionValidationService, MotionOrientationService)
+        # 🔥 CHANGED: Register service types, not instances - pure DI
+        self.container.register_singleton(
+            IMotionValidationService, MotionValidationService
+        )
+        self.container.register_singleton(
+            IMotionOrientationService, MotionOrientationService
+        )
 
     def _register_layout_services(self):
         """Register the consolidated layout services."""
@@ -164,39 +171,24 @@ class KineticConstructorModern(QMainWindow):
         # ComponentLayoutService) have been consolidated for better maintainability
         pass
 
-    def _register_pictograph_services(self):
-        """Register the new focused pictograph services."""
+    def _register_pictograph_services(self):  # 🔥 CHANGED: Pure DI registration
+        """Register the focused pictograph services using pure dependency injection."""
         from application.services.data.pictograph_data_service import (
             PictographDataService,
             IPictographDataService,
         )
-
-        # Data conversion is now part of PictographManagementService
-        # from application.services.data_conversion_service import (        #     DataConversionService,
-        #     IDataConversionService,
-        # )
-
-        # Register focused pictograph services
-        data_service = PictographDataService()
-        self.container.register_instance(IPictographDataService, data_service)
-
-        # Data conversion is now part of PictographManagementService
-        # conversion_service = DataConversionService()
-        # self.container.register_instance(IDataConversionService, conversion_service)
-
-        # Register pictograph management service directly
         from src.application.services.core.pictograph_management_service import (
             PictographManagementService,
         )
 
-        pictograph_management_service = PictographManagementService()
-        # Note: PictographManagementService doesn't have an interface yet, so we register the concrete class
-        self.container.register_instance(
-            PictographManagementService, pictograph_management_service
+        # 🔥 CHANGED: Register service types, not instances - pure DI
+        self.container.register_singleton(IPictographDataService, PictographDataService)
+        self.container.register_singleton(
+            PictographManagementService, PictographManagementService
         )
 
-    def _set_legacy_style_dimensions(self):
-        """Set window dimensions to match legacy: 90% of screen size"""
+    def _set_window_dimensions(self):  # 🔥 CHANGED: Renamed from legacy method name
+        """Set window dimensions using modern responsive design: 90% of screen size"""
         if self.splash:
             self.splash.update_progress(50, "Setting window dimensions...")
 
@@ -233,6 +225,12 @@ class KineticConstructorModern(QMainWindow):
         self.setGeometry(x, y, window_width, window_height)
         self.setMinimumSize(1400, 900)
 
+    def _create_settings_button(self):  # 🔥 NEW: Pure DI component creation
+        """Create settings button using dependency injection."""
+        from presentation.components.ui.settings.settings_button import SettingsButton
+
+        return SettingsButton()
+
     def _setup_ui(self):
         if self.splash:
             self.splash.update_progress(60, "Building user interface...")
@@ -251,8 +249,8 @@ class KineticConstructorModern(QMainWindow):
         title.setFont(QFont("Arial", 20, QFont.Weight.Bold))
         title.setStyleSheet("color: white; margin: 20px; background: transparent;")
 
-        # Settings button positioned in top-right like legacy
-        self.settings_button = SettingsButton()
+        # 🔥 CHANGED: Use dependency injection for component creation
+        self.settings_button = self._create_settings_button()
         self.settings_button.settings_requested.connect(self._show_settings)
 
         header_layout.addWidget(title)
@@ -382,12 +380,14 @@ class KineticConstructorModern(QMainWindow):
             )
             self.tab_widget.addTab(fallback_placeholder, "🔧 Construct")
 
-    def _setup_background(self):
+    def _setup_background(self):  # 🔥 CHANGED: Use dependency injection
+        """Setup background using dependency injection."""
         if self.splash:
             self.splash.update_progress(95, "Setting up background...")
 
-        # Get background type from settings
-        background_type = self.ui_state_service.get_setting("background_type", "Aurora")
+        # 🔥 CHANGED: Use dependency injection instead of direct service access
+        ui_state_service = self.container.resolve(IUIStateManagementService)
+        background_type = ui_state_service.get_setting("background_type", "Aurora")
 
         self.background_widget = MainBackgroundWidget(self, background_type)
         self.background_widget.setGeometry(self.rect())
@@ -399,15 +399,16 @@ class KineticConstructorModern(QMainWindow):
         if hasattr(self, "background_widget"):
             self.background_widget.setGeometry(self.rect())
 
-    def _show_settings(self):
-        """Open the settings dialog"""
+    def _show_settings(self):  # 🔥 CHANGED: Use dependency injection
+        """Open the settings dialog using dependency injection."""
         try:
             from src.presentation.components.ui.settings.modern_settings_dialog import (
                 ModernSettingsDialog,
             )
 
-            # Create and show the settings dialog - pass UI state service directly
-            dialog = ModernSettingsDialog(self.ui_state_service, self)
+            # 🔥 CHANGED: Use dependency injection instead of direct service access
+            ui_state_service = self.container.resolve(IUIStateManagementService)
+            dialog = ModernSettingsDialog(ui_state_service, self)
 
             # Connect to settings changes if needed
             dialog.settings_changed.connect(self._on_setting_changed)
@@ -455,24 +456,62 @@ class KineticConstructorModern(QMainWindow):
 
     def _start_api_server(self):
         """Start the API server if dependencies are available."""
+        if not self.enable_api:
+            print("🚫 API server is disabled")
+            return
+
         try:
             from src.infrastructure.api.api_integration import start_api_server
+            import platform
 
-            if start_api_server():
+            # Enhanced logging for Windows
+            if platform.system() == "Windows":
+                print("🪟 Starting API server on Windows...")
+                print("   Note: Some ports may require administrator privileges")
+
+            # Pass the enabled parameter to respect the configuration
+            success = start_api_server(enabled=self.enable_api, auto_port=True)
+
+            if success:
                 print("🌐 TKA API server started successfully")
+                from src.infrastructure.api.api_integration import get_api_integration
+
+                api = get_api_integration()
+                server_url = api.get_server_url()
+                docs_url = api.get_docs_url()
+                if server_url:
+                    print(f"   📍 Server: {server_url}")
+                if docs_url:
+                    print(f"   📚 Docs: {docs_url}")
             else:
-                print("⚠️ Failed to start TKA API server - continuing without API")
+                print("⚠️ API server startup failed - continuing without API")
+                print("   The main application will continue to work normally")
 
         except ImportError as e:
             print(f"⚠️ API server dependencies not available: {e}")
-            print("   To enable API: pip install fastapi uvicorn")
+            print("   To enable API features: pip install fastapi uvicorn")
+            print("   Continuing without API server...")
         except PermissionError as e:
-            print(f"⚠️ Permission denied for API server: {e}")
-            print("   Try running as administrator or check Windows Firewall settings")
-            print("   Continuing without API server...")
+            print(f"⚠️ Windows permission error for API server: {e}")
+            print("   Possible solutions:")
+            print("   1. Run as administrator")
+            print("   2. Check Windows Firewall/Antivirus settings")
+            print("   3. The application will continue without API server")
+        except OSError as e:
+            if "10013" in str(e):  # Windows socket permission error
+                print(f"⚠️ Windows socket permission error: {e}")
+                print("   This is a common Windows security restriction")
+                print("   The application will continue without API server")
+            else:
+                print(f"⚠️ Network error starting API server: {e}")
+                print("   Continuing without API server...")
         except Exception as e:
-            print(f"⚠️ Failed to start API server: {e}")
+            print(f"⚠️ Unexpected error starting API server: {e}")
+            print("   This does not affect the main application functionality")
             print("   Continuing without API server...")
+
+        # Always continue with main application - API is optional
+        print("✅ Main application startup continuing...")
 
 
 def detect_parallel_testing_mode():

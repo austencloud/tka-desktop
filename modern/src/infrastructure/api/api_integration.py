@@ -67,89 +67,52 @@ def is_port_in_use(host: str, port: int) -> bool:
 class TKAAPIIntegration:
     """Manages API server integration with TKA Desktop."""
 
-    def __init__(self):
+    def __init__(self, enabled: bool = True):
         self.api_thread: Optional[threading.Thread] = None
         self.should_stop = threading.Event()
         self._server_started = False
         self._actual_port: Optional[int] = None
         self._actual_host: Optional[str] = None
         self._server_instance = None
+        self.enabled = enabled
+        self._startup_failed = False
 
     def start_api_server(
         self, host: str = "localhost", port: int = 8000, auto_port: bool = True
     ):
         """Start API server in background thread."""
+        if not self.enabled:
+            logger.info("API server is disabled - skipping startup")
+            return
+
         if self._server_started:
             logger.warning("API server already started")
             return
 
+        if self._startup_failed:
+            logger.info("API server startup previously failed - skipping retry")
+            return
+
         # Convert localhost to 127.0.0.1 for consistency on Windows
         if host.lower() == "localhost":
-            host = "127.0.0.1"  # Find available port if requested port is in use
+            host = "127.0.0.1"
+
+        # Find available port if requested port is in use
         actual_port = port
         if auto_port:
-            try:
-                # Test if we can bind to the requested port
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as test_socket:
-                    test_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                    test_socket.bind((host, port))
-                    # If we get here, port is available
-                    actual_port = port
-            except PermissionError as e:
-                # Windows permission error - try alternative ports
-                logger.warning(f"Permission denied for port {port}: {e}")
-                logger.info(
-                    "Trying alternative ports due to Windows permission restrictions..."
-                )
-                try:
-                    # Try some common safe ports that usually don't require elevated permissions
-                    safe_ports = [8080, 8888, 9000, 9090, 3000, 5000, 7000]
-                    actual_port = None
-                    for safe_port in safe_ports:
-                        try:
-                            with socket.socket(
-                                socket.AF_INET, socket.SOCK_STREAM
-                            ) as test_socket:
-                                test_socket.setsockopt(
-                                    socket.SOL_SOCKET, socket.SO_REUSEADDR, 1
-                                )
-                                test_socket.bind((host, safe_port))
-                                actual_port = safe_port
-                                logger.info(
-                                    f"Using safe port {actual_port} instead of {port}"
-                                )
-                                break
-                        except (OSError, PermissionError):
-                            continue
-
-                    if actual_port is None:
-                        logger.error(
-                            "Could not find any available port due to permission restrictions"
-                        )
-                        logger.info(
-                            "Try running as administrator or check Windows Firewall/Antivirus settings"
-                        )
-                        return
-                except Exception as fallback_error:
-                    logger.error(f"Failed to find alternative port: {fallback_error}")
-                    return
-            except (OSError, socket.error):
-                # Port is in use, find alternative
-                try:
-                    actual_port = find_free_port(port + 1)  # Start from next port
-                    logger.info(f"Port {port} in use, using port {actual_port} instead")
-                except RuntimeError as e:
-                    # Check what's using the port
-                    process_info = get_process_using_port(port)
-                    if process_info:
-                        pid, name = process_info
-                        logger.error(
-                            f"Port {port} is being used by {name} (PID: {pid})"
-                        )
-                        logger.info(f"You can kill it with: taskkill /PID {pid} /F")
-                    else:
-                        logger.error(f"Could not find free port: {e}")
-                    return
+            actual_port = self._find_safe_port(host, port)
+            if actual_port is None:
+                logger.error("Could not find any safe port for API server")
+                logger.info("API server will be disabled for this session")
+                self._startup_failed = True
+                return
+        else:
+            # Check if specific port is available
+            if not self._test_port_availability(host, port):
+                logger.error(f"Port {port} is not available and auto_port is disabled")
+                self._startup_failed = True
+                return
+            actual_port = port
 
         def run_server():
             try:
@@ -225,6 +188,117 @@ class TKAAPIIntegration:
         if self._server_started:
             logger.info(f"🌐 TKA API started at http://{host}:{actual_port}")
             logger.info(f"📚 API docs: http://{host}:{actual_port}/docs")
+
+    def _test_port_availability(self, host: str, port: int) -> bool:
+        """Test if a specific port is available for binding with comprehensive error handling."""
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as test_socket:
+                test_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                # Set a short timeout to avoid hanging
+                test_socket.settimeout(1.0)
+                test_socket.bind((host, port))
+                return True
+        except PermissionError as e:
+            # Windows WinError 10013 - Access forbidden
+            logger.debug(f"Permission denied for port {port}: {e}")
+            return False
+        except OSError as e:
+            # Handle various OS-level socket errors (includes socket.error)
+            if hasattr(e, "errno"):
+                if e.errno == 10013:  # Windows permission error
+                    logger.debug(f"Windows permission error for port {port}: {e}")
+                elif e.errno == 10048:  # Address already in use
+                    logger.debug(f"Port {port} already in use: {e}")
+                elif e.errno == 10049:  # Cannot assign requested address
+                    logger.debug(f"Cannot assign address for port {port}: {e}")
+                else:
+                    logger.debug(f"OS error for port {port} (errno {e.errno}): {e}")
+            else:
+                logger.debug(f"OS error for port {port}: {e}")
+            return False
+        except Exception as e:
+            # Catch any other unexpected errors
+            logger.debug(f"Unexpected error testing port {port}: {e}")
+            return False
+
+    def _find_safe_port(self, host: str, preferred_port: int) -> Optional[int]:
+        """Find a safe port to use, handling Windows permission restrictions with bulletproof error handling."""
+        try:
+            # First try the preferred port
+            if self._test_port_availability(host, preferred_port):
+                return preferred_port
+
+            # Define safe ports that typically don't require elevated permissions on Windows
+            # These are commonly available user ports
+            safe_ports = [
+                8080,
+                8888,
+                9000,
+                9090,
+                3000,
+                5000,
+                7000,
+                8000,
+                8001,
+                8002,
+                8003,
+                8004,
+                8005,
+                8006,
+                8007,
+                8008,
+                8009,
+                8010,
+                8011,
+                8012,
+            ]
+
+            # Remove the preferred port if it's already in the list to avoid duplicate testing
+            if preferred_port in safe_ports:
+                safe_ports.remove(preferred_port)
+
+            logger.debug("Trying alternative ports due to permission restrictions...")
+
+            for safe_port in safe_ports:
+                try:
+                    if self._test_port_availability(host, safe_port):
+                        logger.info(
+                            f"Using safe port {safe_port} instead of {preferred_port}"
+                        )
+                        return safe_port
+                except Exception as e:
+                    # Continue to next port if this one fails
+                    logger.debug(f"Failed to test port {safe_port}: {e}")
+                    continue
+
+            # Last resort: try system-assigned port with comprehensive error handling
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                    s.settimeout(2.0)  # Short timeout
+                    s.bind((host, 0))
+                    port = s.getsockname()[1]
+                    logger.info(f"Using system-assigned port {port}")
+                    return port
+            except PermissionError as e:
+                logger.debug(f"Permission error getting system-assigned port: {e}")
+            except OSError as e:
+                logger.debug(f"OS error getting system-assigned port: {e}")
+            except Exception as e:
+                logger.debug(f"Unexpected error getting system-assigned port: {e}")
+
+            # All methods failed - log but don't raise exception
+            logger.warning(
+                "Could not find any available port due to permission restrictions"
+            )
+            logger.info("API server will be disabled for this session")
+            return None
+
+        except Exception as e:
+            # Ultimate fallback - catch any unexpected errors in the entire method
+            logger.debug(f"Unexpected error in _find_safe_port: {e}")
+            logger.warning("Port finding failed due to system restrictions")
+            return None
 
     async def _run_with_shutdown(self, server):
         """Run server with shutdown monitoring."""
@@ -302,44 +376,82 @@ class TKAAPIIntegration:
 _api_integration: Optional[TKAAPIIntegration] = None
 
 
-def get_api_integration() -> TKAAPIIntegration:
+def get_api_integration(enabled: bool = True) -> TKAAPIIntegration:
     """Get the global API integration instance."""
     global _api_integration
     if _api_integration is None:
-        _api_integration = TKAAPIIntegration()
+        _api_integration = TKAAPIIntegration(enabled=enabled)
     return _api_integration
 
 
 def start_api_server(
-    host: str = "localhost", port: int = 8000, auto_port: bool = True
+    host: str = "localhost",
+    port: int = 8000,
+    auto_port: bool = True,
+    enabled: bool = True,
 ) -> bool:
-    """Convenience function to start the API server."""
+    """Convenience function to start the API server with bulletproof error handling."""
     try:
-        integration = get_api_integration()
+        integration = get_api_integration(enabled=enabled)
+
+        if not integration.enabled:
+            logger.info("API server is disabled")
+            return False
 
         # Check if port is in use before starting
         if host.lower() == "localhost":
             host = "127.0.0.1"
 
         if not auto_port:
-            process_info = get_process_using_port(port)
-            if process_info:
-                pid, name = process_info
-                logger.error(
-                    f"Cannot start API server: Port {port} is being used by {name} (PID: {pid})"
-                )
-                logger.info(f"Either kill the process with: taskkill /PID {pid} /F")
-                logger.info(f"Or enable auto_port to find an alternative port")
-                return False
+            try:
+                process_info = get_process_using_port(port)
+                if process_info:
+                    pid, name = process_info
+                    logger.warning(
+                        f"Cannot start API server: Port {port} is being used by {name} (PID: {pid})"
+                    )
+                    logger.info(f"Either kill the process with: taskkill /PID {pid} /F")
+                    logger.info(f"Or enable auto_port to find an alternative port")
+                    return False
+            except Exception as e:
+                logger.debug(f"Error checking port usage: {e}")
+                # Continue anyway - let the server startup handle it
 
-        integration.start_api_server(host, port, auto_port)
+        try:
+            integration.start_api_server(host, port, auto_port)
+        except PermissionError as e:
+            logger.debug(f"Permission error starting API server: {e}")
+            logger.warning("API server disabled due to permission restrictions")
+            return False
+        except OSError as e:
+            logger.debug(f"OS error starting API server: {e}")
+            logger.warning("API server disabled due to system restrictions")
+            return False
+        except Exception as e:
+            logger.debug(f"Unexpected error starting API server: {e}")
+            logger.warning("API server disabled due to unexpected error")
+            return False
 
         # Give it a moment to start
         time.sleep(1)
-        return integration.is_running()
 
+        try:
+            return integration.is_running()
+        except Exception as e:
+            logger.debug(f"Error checking if API server is running: {e}")
+            return False
+
+    except PermissionError as e:
+        logger.debug(f"Permission error in start_api_server: {e}")
+        logger.warning("API server startup failed due to permission restrictions")
+        return False
+    except OSError as e:
+        logger.debug(f"OS error in start_api_server: {e}")
+        logger.warning("API server startup failed due to system restrictions")
+        return False
     except Exception as e:
-        logger.error(f"Failed to start API server: {e}")
+        logger.debug(f"Unexpected error in start_api_server: {e}")
+        logger.warning("API server startup failed due to unexpected error")
         return False
 
 

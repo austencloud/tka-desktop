@@ -92,6 +92,12 @@ class DIContainer:
         self._singletons[interface] = instance
         logger.debug(f"Registered instance: {interface.__name__}")
 
+    def register_factory(self, interface: Type[T], factory_func: callable) -> None:
+        """Register a factory function for creating instances."""
+        # Store the factory function in a special way
+        self._factories[interface] = factory_func
+        logger.debug(f"Registered factory: {interface.__name__}")
+
     def auto_register(self, interface: Type[T], implementation: Type[T]) -> None:
         """Register with automatic Protocol validation."""
         self._validate_protocol_implementation(interface, implementation)
@@ -141,12 +147,20 @@ class DIContainer:
             finally:
                 self._resolution_stack.discard(interface)
 
-        # Check for transient registration
+        # Check for transient registration or factory function
         if interface in self._factories:
-            implementation = self._factories[interface]
+            factory_or_implementation = self._factories[interface]
             self._resolution_stack.add(interface)
             try:
-                return self._create_instance(implementation)
+                # Check if it's a callable factory function
+                if callable(factory_or_implementation) and not inspect.isclass(
+                    factory_or_implementation
+                ):
+                    # It's a factory function, call it directly
+                    return factory_or_implementation()
+                else:
+                    # It's a class, create instance with dependency injection
+                    return self._create_instance(factory_or_implementation)
             except Exception as e:
                 raise DependencyInjectionError(
                     f"Failed to create transient instance: {e}",

@@ -1,7 +1,9 @@
 from typing import List, Optional, Dict, Any
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
-from PyQt6.QtCore import pyqtSignal, QObject
+from PyQt6.QtCore import pyqtSignal
 
+# Import the new base class
+from ..component_base import ViewableComponentBase
 from core.dependency_injection.di_container import DIContainer
 from core.interfaces.core_services import ILayoutService
 from domain.models.core_models import BeatData, SequenceData
@@ -13,24 +15,34 @@ from .dimension_analyzer import OptionPickerDimensionAnalyzer
 from .option_picker_filter import OptionPickerFilter
 
 
-class OptionPicker(QObject):
+class OptionPicker(
+    ViewableComponentBase
+):  # 🔥 CHANGED: Now inherits from ViewableComponentBase
     """
-    Modern Modern Option Picker - Pure Modern Implementation
+    Modern Option Picker - WORLD-CLASS Component Implementation
 
-    This class works directly with Modern data structures (BeatData, SequenceData)
+    This class now inherits from ViewableComponentBase, making it a pure modern component with:
+    - ZERO global state access
+    - Pure dependency injection
+    - Event-driven communication
+    - Proper lifecycle management
+
+    This works directly with Modern data structures (BeatData, SequenceData)
     and never requires Legacy format conversions.
-    """
+    """ 
 
     option_selected = pyqtSignal(str)
     beat_data_selected = pyqtSignal(object)  # New signal for actual BeatData
 
-    def __init__(self, container: DIContainer, progress_callback=None):
-        super().__init__()
-        self.container = container
+    def __init__(self, container: DIContainer, progress_callback=None, parent=None):
+        # 🔥 CHANGED: Call ViewableComponentBase constructor
+        super().__init__(container, parent)
+
+        # Component-specific properties
         self.progress_callback = progress_callback
 
-        # Core components
-        self.widget: Optional[QWidget] = None
+        # Core components (will be initialized in initialize())
+        # Note: self._widget is now managed by base class
         self.sections_container: Optional[QWidget] = None
         self.sections_layout: Optional[QVBoxLayout] = None
         self.filter_widget: Optional[OptionPickerFilter] = None
@@ -43,98 +55,148 @@ class OptionPicker(QObject):
         self._widget_factory: Optional[OptionPickerWidgetFactory] = None
         self._dimension_analyzer: Optional[OptionPickerDimensionAnalyzer] = None
 
-    def initialize(self) -> None:
-        """Initialize the option picker with all components"""
-        if self.progress_callback:
-            self.progress_callback("Resolving layout service", 0.1)
+    def initialize(
+        self,
+    ) -> None:  # 🔥 CHANGED: Implement abstract method from base class
+        """Initialize the option picker with all components - PURE DEPENDENCY INJECTION"""
+        try:
+            if self.progress_callback:
+                self.progress_callback("Resolving layout service", 0.1)
 
-        self._layout_service = self.container.resolve(ILayoutService)
+            # 🔥 CHANGED: Use base class service resolution method
+            self._layout_service = self.resolve_service(ILayoutService)
 
-        if self.progress_callback:
-            self.progress_callback("Creating widget factory", 0.15)
+            if self.progress_callback:
+                self.progress_callback("Creating widget factory", 0.15)
 
-        self._widget_factory = OptionPickerWidgetFactory(self.container)
+            self._widget_factory = OptionPickerWidgetFactory(self.container)
 
-        if self.progress_callback:
-            self.progress_callback("Creating option picker widget", 0.2)
+            if self.progress_callback:
+                self.progress_callback("Creating option picker widget", 0.2)
 
-        (
-            self.widget,
-            self.sections_container,
-            self.sections_layout,
-            self.filter_widget,
-        ) = self._widget_factory.create_widget(self._on_widget_resize)
+            (
+                self._widget,  # 🔥 CHANGED: Store in base class _widget property
+                self.sections_container,
+                self.sections_layout,
+                self.filter_widget,
+            ) = self._widget_factory.create_widget(self._on_widget_resize)
 
-        if self.progress_callback:
-            self.progress_callback("Initializing pool manager", 0.25)
+            if self.progress_callback:
+                self.progress_callback("Initializing pool manager", 0.25)
 
-        self._pool_manager = PictographPoolManager(self.widget)
-        self._pool_manager.set_click_handler(self._handle_beat_click)
-        self._pool_manager.set_beat_data_click_handler(self._handle_beat_data_click)
+            self._pool_manager = PictographPoolManager(self._widget)
+            self._pool_manager.set_click_handler(self._handle_beat_click)
+            self._pool_manager.set_beat_data_click_handler(self._handle_beat_data_click)
 
-        if self.progress_callback:
-            self.progress_callback("Initializing display manager", 0.3)
+            if self.progress_callback:
+                self.progress_callback("Initializing display manager", 0.3)
 
-        # Create size provider that gives sections the full available width
-        def mw_size_provider():
-            from PyQt6.QtCore import QSize
+            # Create size provider that gives sections the full available width
+            def mw_size_provider():
+                from PyQt6.QtCore import QSize
 
-            # Get actual available width from the option picker widget hierarchy
-            if self.widget and self.widget.width() > 0:
-                # In Modern, the option picker IS the full available space
-                # So sections should use the full widget width, not half
-                actual_width = self.widget.width()
-                actual_height = self.widget.height()
-                # Return the actual size - sections will use full width
-                return QSize(actual_width, actual_height)
-            else:
-                # Fallback for initialization phase
-                return QSize(1200, 800)
+                # Get actual available width from the option picker widget hierarchy
+                if self._widget and self._widget.width() > 0:
+                    # In Modern, the option picker IS the full available space
+                    # So sections should use the full widget width, not half
+                    actual_width = self._widget.width()
+                    actual_height = self._widget.height()
+                    # Return the actual size - sections will use full width
+                    return QSize(actual_width, actual_height)
+                else:
+                    # Fallback for initialization phase
+                    return QSize(1200, 800)
 
-        self._display_manager = OptionPickerDisplayManager(
-            self.sections_container,
-            self.sections_layout,
-            self._pool_manager,
-            mw_size_provider,
-        )
+            self._display_manager = OptionPickerDisplayManager(
+                self.sections_container,
+                self.sections_layout,
+                self._pool_manager,
+                mw_size_provider,
+            )
 
-        if self.progress_callback:
-            self.progress_callback("Initializing beat data loader", 0.35)
+            if self.progress_callback:
+                self.progress_callback("Initializing beat data loader", 0.35)
 
-        self._beat_loader = BeatDataLoader()
+            self._beat_loader = BeatDataLoader()
 
-        if self.progress_callback:
-            self.progress_callback("Initializing dimension analyzer", 0.4)
+            if self.progress_callback:
+                self.progress_callback("Initializing dimension analyzer", 0.4)
 
-        self._dimension_analyzer = OptionPickerDimensionAnalyzer(
-            self.widget,
-            self.sections_container,
-            self.sections_layout,
-            self._display_manager.get_sections(),
-        )
+            self._dimension_analyzer = OptionPickerDimensionAnalyzer(
+                self._widget,
+                self.sections_container,
+                self.sections_layout,
+                self._display_manager.get_sections(),
+            )
 
-        if self.progress_callback:
-            self.progress_callback("Initializing pictograph pool", 0.45)
+            if self.progress_callback:
+                self.progress_callback("Initializing pictograph pool", 0.45)
 
-        self._pool_manager.initialize_pool(self.progress_callback)
+            self._pool_manager.initialize_pool(self.progress_callback)
 
-        if self.progress_callback:
-            self.progress_callback("Creating sections", 0.85)
+            if self.progress_callback:
+                self.progress_callback("Creating sections", 0.85)
 
-        self._display_manager.create_sections()
+            self._display_manager.create_sections()
 
-        if self.progress_callback:
-            self.progress_callback("Setting up filter connections", 0.9)
+            if self.progress_callback:
+                self.progress_callback("Setting up filter connections", 0.9)
 
-        self.filter_widget.filter_changed.connect(self._on_filter_changed)
+            self.filter_widget.filter_changed.connect(self._on_filter_changed)
 
-        if self.progress_callback:
-            self.progress_callback("Loading initial beat options", 0.95)
+            if self.progress_callback:
+                self.progress_callback("Loading initial beat options", 0.95)
 
-        self._load_beat_options()
+            self._load_beat_options()
 
-        if self.progress_callback:
-            self.progress_callback("Option picker initialization complete", 1.0)
+            if self.progress_callback:
+                self.progress_callback("Option picker initialization complete", 1.0)
+
+            # 🔥 CHANGED: Mark as initialized and emit signal
+            self._initialized = True
+            self.component_ready.emit()
+
+        except Exception as e:
+            # 🔥 CHANGED: Use base class error handling
+            self.emit_error(f"Failed to initialize option picker: {e}", e)
+            raise
+
+    def get_widget(
+        self,
+    ) -> QWidget:  # 🔥 CHANGED: Implement abstract method from base class
+        """Get the main widget for this component."""
+        if not self._widget:
+            raise RuntimeError("OptionPicker not initialized - call initialize() first")
+        return self._widget
+
+    # 🔥 CHANGED: Override cleanup to handle component-specific cleanup
+    def cleanup(self) -> None:
+        """Clean up option picker resources."""
+        try:
+            # Component-specific cleanup
+            if self._pool_manager:
+                # Add pool manager cleanup if it has a cleanup method
+                if hasattr(self._pool_manager, "cleanup"):
+                    self._pool_manager.cleanup()
+                self._pool_manager = None
+
+            if self._display_manager:
+                # Add display manager cleanup if it has a cleanup method
+                if hasattr(self._display_manager, "cleanup"):
+                    self._display_manager.cleanup()
+                self._display_manager = None
+
+            # Clear references
+            self._beat_loader = None
+            self._widget_factory = None
+            self._dimension_analyzer = None
+            self._layout_service = None
+
+            # Call parent cleanup
+            super().cleanup()
+
+        except Exception as e:
+            self.emit_error(f"Error during cleanup: {e}", e)
 
     def load_motion_combinations(self, sequence_data: List[Dict[str, Any]]) -> None:
         """Load motion combinations using data-driven position matching"""
@@ -244,8 +306,8 @@ class OptionPicker(QObject):
 
     def set_enabled(self, enabled: bool) -> None:
         """Enable or disable the widget"""
-        if self.widget:
-            self.widget.setEnabled(enabled)
+        if self._widget:
+            self._widget.setEnabled(enabled)
 
     def get_size(self) -> tuple[int, int]:
         """Get widget size"""
