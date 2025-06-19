@@ -265,12 +265,27 @@ class SequenceManagementService(ISequenceManagementService):
             )
             beats.append(beat)
 
-        return SequenceData(
+        sequence = SequenceData(
             id=str(uuid.uuid4()),
             name=name,
             beats=beats,
             metadata={"created_by": "sequence_management_service"},
         )
+
+        # Publish sequence created event
+        if self.event_bus:
+            self.event_bus.publish(
+                SequenceCreatedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="SequenceManagementService",
+                    sequence_id=sequence.id,
+                    sequence_name=sequence.name,
+                    sequence_length=sequence.length,
+                )
+            )
+
+        return sequence
 
     @handle_service_errors("add_beat")
     @monitor_performance("beat_addition")
@@ -298,9 +313,23 @@ class SequenceManagementService(ISequenceManagementService):
         for i, beat in enumerate(new_beats):
             new_beats[i] = beat.update(beat_number=i + 1)
 
-        return sequence.update(
-            beats=new_beats,
-        )
+        updated_sequence = sequence.update(beats=new_beats)
+
+        # Publish beat added event
+        if self.event_bus:
+            self.event_bus.publish(
+                BeatAddedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="SequenceManagementService",
+                    sequence_id=sequence.id,
+                    beat_data={"beat_number": beat.beat_number, "position": position},
+                    beat_position=position,
+                    total_beats=len(new_beats),
+                )
+            )
+
+        return updated_sequence
 
     @handle_service_errors("remove_beat")
     @monitor_performance("beat_removal")
@@ -318,15 +347,29 @@ class SequenceManagementService(ISequenceManagementService):
             )
 
         new_beats = sequence.beats.copy()
-        new_beats.pop(position)
+        removed_beat = new_beats.pop(position)
 
         # Update beat numbers
         for i, beat in enumerate(new_beats):
             new_beats[i] = beat.update(beat_number=i + 1)
 
-        return sequence.update(
-            beats=new_beats,
-        )
+        updated_sequence = sequence.update(beats=new_beats)
+
+        # Publish beat removed event
+        if self.event_bus:
+            self.event_bus.publish(
+                BeatRemovedEvent(
+                    event_id=str(uuid.uuid4()),
+                    timestamp=datetime.now(),
+                    source="SequenceManagementService",
+                    sequence_id=sequence.id,
+                    removed_beat_data={"beat_number": removed_beat.beat_number},
+                    old_position=position,
+                    remaining_beats=len(new_beats),
+                )
+            )
+
+        return updated_sequence
 
     @handle_service_errors("generate_sequence")
     @monitor_performance("sequence_generation")

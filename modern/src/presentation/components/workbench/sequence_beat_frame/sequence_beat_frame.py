@@ -5,7 +5,7 @@ This component provides the core beat grid system with dynamic layout,
 replacing Legacy's SequenceBeatFrame with modern architecture patterns.
 """
 
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, TYPE_CHECKING
 from PyQt6.QtWidgets import (
     QWidget,
     QGridLayout,
@@ -22,6 +22,27 @@ from application.services.layout.beat_resizer_service import (
 from .beat_view import BeatView
 from .start_position_view import StartPositionView
 from .beat_selection_manager import BeatSelectionManager
+
+# Event-driven architecture imports
+if TYPE_CHECKING:
+    from core.events import IEventBus
+
+try:
+    from core.events import (
+        get_event_bus,
+        SequenceCreatedEvent,
+        BeatAddedEvent,
+        BeatRemovedEvent,
+        BeatUpdatedEvent,
+        LayoutRecalculatedEvent,
+        EventPriority,
+    )
+
+    EVENT_SYSTEM_AVAILABLE = True
+except ImportError:
+    # For tests or when event system is not available
+    get_event_bus = None
+    EVENT_SYSTEM_AVAILABLE = False
 
 
 class SequenceBeatFrame(QScrollArea):
@@ -42,11 +63,20 @@ class SequenceBeatFrame(QScrollArea):
     layout_changed = pyqtSignal(int, int)  # rows, columns
 
     def __init__(
-        self, layout_service: ILayoutService, parent: Optional[QWidget] = None
+        self,
+        layout_service: ILayoutService,
+        event_bus: Optional["IEventBus"] = None,
+        parent: Optional[QWidget] = None,
     ):
         super().__init__(parent)  # Injected dependencies
         self._layout_service = layout_service
         self._resizer_service = BeatResizerService()
+
+        # Event system integration
+        self.event_bus = event_bus or (
+            get_event_bus() if EVENT_SYSTEM_AVAILABLE else None
+        )
+        self._subscription_ids: List[str] = []
 
         # Current state
         self._current_sequence: Optional[SequenceData] = None
@@ -61,6 +91,7 @@ class SequenceBeatFrame(QScrollArea):
 
         self._setup_ui()
         self._setup_styling()
+        self._setup_event_subscriptions()
 
     def _setup_ui(self):
         """Setup the UI layout to match legacy exactly"""
@@ -126,6 +157,51 @@ class SequenceBeatFrame(QScrollArea):
 
         # Add to grid at (0, 0)
         self._grid_layout.addWidget(self._start_position_view, 0, 0, 1, 1)
+
+    def _setup_event_subscriptions(self):
+        """Setup event subscriptions for reactive UI updates."""
+        if not self.event_bus or not EVENT_SYSTEM_AVAILABLE:
+            return
+
+        # Subscribe to sequence events
+        sub_id = self.event_bus.subscribe(
+            "sequence.created", self._on_sequence_created, priority=EventPriority.NORMAL
+        )
+        self._subscription_ids.append(sub_id)
+
+        sub_id = self.event_bus.subscribe(
+            "sequence.beat_added", self._on_beat_added, priority=EventPriority.NORMAL
+        )
+        self._subscription_ids.append(sub_id)
+
+        sub_id = self.event_bus.subscribe(
+            "sequence.beat_removed",
+            self._on_beat_removed,
+            priority=EventPriority.NORMAL,
+        )
+        self._subscription_ids.append(sub_id)
+
+        sub_id = self.event_bus.subscribe(
+            "sequence.beat_updated",
+            self._on_beat_updated,
+            priority=EventPriority.NORMAL,
+        )
+        self._subscription_ids.append(sub_id)
+
+        # Subscribe to layout events
+        sub_id = self.event_bus.subscribe(
+            "layout.beat_frame_recalculated",
+            self._on_layout_recalculated,
+            priority=EventPriority.NORMAL,
+        )
+        self._subscription_ids.append(sub_id)
+
+    def cleanup(self):
+        """Clean up event subscriptions when component is destroyed."""
+        if self.event_bus:
+            for sub_id in self._subscription_ids:
+                self.event_bus.unsubscribe(sub_id)
+            self._subscription_ids.clear()
 
     # Public API methods
     def set_sequence(self, sequence: Optional[SequenceData]):
@@ -299,3 +375,53 @@ class SequenceBeatFrame(QScrollArea):
             self._resizer_service.resize_beat_frame(
                 self, new_layout["rows"], new_layout["columns"]
             )
+
+    # Event handlers for domain events
+    def _on_sequence_created(self, event: SequenceCreatedEvent):
+        """Handle sequence created event by updating display."""
+        # Note: We don't automatically load the sequence here since the UI
+        # should explicitly call set_sequence() when ready
+        pass
+
+    def _on_beat_added(self, event: BeatAddedEvent):
+        """Handle beat added event by refreshing layout if this is our sequence."""
+        if (
+            self._current_sequence
+            and hasattr(event, "sequence_id")
+            and self._current_sequence.id == event.sequence_id
+        ):
+            # Refresh layout to accommodate new beat
+            self._update_layout()
+            self._update_display()
+
+    def _on_beat_removed(self, event: BeatRemovedEvent):
+        """Handle beat removed event by refreshing layout if this is our sequence."""
+        if (
+            self._current_sequence
+            and hasattr(event, "sequence_id")
+            and self._current_sequence.id == event.sequence_id
+        ):
+            # Refresh layout to accommodate removed beat
+            self._update_layout()
+            self._update_display()
+
+    def _on_beat_updated(self, event: BeatUpdatedEvent):
+        """Handle beat updated event by refreshing display if this is our sequence."""
+        if (
+            self._current_sequence
+            and hasattr(event, "sequence_id")
+            and self._current_sequence.id == event.sequence_id
+        ):
+            # Refresh display to show updated beat
+            self._update_display()
+
+    def _on_layout_recalculated(self, event: LayoutRecalculatedEvent):
+        """Handle layout recalculated event by applying new layout."""
+        if (
+            hasattr(event, "layout_type")
+            and event.layout_type == "beat_frame"
+            and hasattr(event, "layout_data")
+        ):
+            layout_data = event.layout_data
+            if "rows" in layout_data and "columns" in layout_data:
+                self._apply_layout(layout_data["rows"], layout_data["columns"])

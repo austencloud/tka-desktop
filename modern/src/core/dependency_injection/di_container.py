@@ -69,7 +69,7 @@ class DIContainer:
         self._singletons: Dict[Type, Any] = {}
         self._factories: Dict[Type, Type] = {}
         self._resolution_stack: Set[Type] = set()
-        # Removed _cleanup_handlers and _creation_stack - were unused
+        self._cleanup_handlers: List[Any] = []  # Re-added for lifecycle management
 
     def register_singleton(self, interface: Type[T], implementation: Type[T]) -> None:
         """Register a service as singleton (one instance per container)."""
@@ -163,9 +163,8 @@ class DIContainer:
         )
         available_names = [svc.__name__ for svc in available_services]
 
-        raise DependencyInjectionError(
-            f"Service {interface.__name__} is not registered. Available services: {available_names}",
-            interface_name=interface.__name__,
+        raise ValueError(
+            f"Service {interface.__name__} is not registered. Available services: {available_names}"
         )
 
     def _create_instance(self, implementation_class: Type) -> Any:
@@ -207,12 +206,10 @@ class DIContainer:
                 try:
                     dependencies[param_name] = self.resolve(param_type)
                 except DependencyInjectionError as e:
-                    # Re-raise DI errors with additional context
-                    raise DependencyInjectionError(
+                    # Re-raise DI errors as RuntimeError for _create_instance
+                    raise RuntimeError(
                         f"Cannot resolve dependency {param_type.__name__} for parameter "
-                        f"'{param_name}' in {implementation_class.__name__}. {e}",
-                        interface_name=param_type.__name__,
-                        dependency_chain=e.dependency_chain,
+                        f"'{param_name}' in {implementation_class.__name__}. {e}"
                     ) from e
                 except Exception as e:
                     available_services = (
@@ -221,11 +218,10 @@ class DIContainer:
                         + list(self._singletons.keys())
                     )
                     available_names = [svc.__name__ for svc in available_services]
-                    raise DependencyInjectionError(
+                    raise RuntimeError(
                         f"Cannot resolve dependency {param_type.__name__} for parameter "
                         f"'{param_name}' in {implementation_class.__name__}. "
-                        f"Error: {e}. Available registrations: {available_names}",
-                        interface_name=param_type.__name__,
+                        f"Error: {e}. Available registrations: {available_names}"
                     ) from e
 
             return implementation_class(**dependencies)
@@ -244,10 +240,9 @@ class DIContainer:
                 f"Failed to create instance of {implementation_class.__name__}: {e}"
             )
             logger.error(f"Available services: {available_names}")
-            raise DependencyInjectionError(
+            raise RuntimeError(
                 f"Dependency injection failed for {implementation_class.__name__}: {e}. "
-                f"Available services: {available_names}",
-                interface_name=implementation_class.__name__,
+                f"Available services: {available_names}"
             ) from e
 
     def _validate_registration(self, interface: Type, implementation: Type) -> None:
@@ -354,20 +349,130 @@ class DIContainer:
 
         return param_type in primitive_types
 
-    # auto_register_with_validation removed - was unused and over-engineered
-    # Use register_singleton or register_transient directly for simpler registration
+    def auto_register_with_validation(
+        self, interface: Type[T], implementation: Type[T]
+    ) -> None:
+        """Register service with comprehensive validation."""
+        # Step 1: Validate Protocol implementation
+        self._validate_protocol_implementation(interface, implementation)
 
-    # _validate_dependency_chain removed - was unused and over-engineered
-    # Dependencies are validated at resolution time, not registration time
+        # Step 2: Validate dependency chain can be resolved
+        self._validate_dependency_chain(implementation)
 
-    # validate_all_registrations removed - was unused and over-engineered
-    # Services are validated when they are resolved, not upfront
+        # Step 3: Register if validation passes
+        self.register_singleton(interface, implementation)
 
-    # _get_constructor_dependencies removed - was unused and over-engineered
-    # Dependencies are resolved dynamically at runtime
+        logger.info(
+            f"✅ Successfully registered {interface.__name__} -> {implementation.__name__}"
+        )
 
-    # _detect_circular_dependencies removed - was unused and over-engineered
-    # Circular dependencies are detected at resolution time via _resolution_stack
+    def _validate_dependency_chain(self, implementation: Type) -> None:
+        """Validate that all constructor dependencies can be resolved."""
+        signature = inspect.signature(implementation.__init__)
+        type_hints = get_type_hints(implementation.__init__)
+
+        for param_name, param in signature.parameters.items():
+            if param_name == "self":
+                continue
+
+            # Skip if has default value
+            if param.default != inspect.Parameter.empty:
+                continue
+
+            param_type = type_hints.get(param_name, param.annotation)
+
+            # Skip primitives
+            if self._is_primitive_type(param_type):
+                continue
+
+            # Check if dependency is registered
+            if param_type not in self._services and param_type not in self._factories:
+                raise ValueError(
+                    f"Dependency {param_type.__name__} for {implementation.__name__} "
+                    f"is not registered. Register it first or make parameter optional."
+                )
+
+    def _get_constructor_dependencies(self, implementation: Type) -> List[Type]:
+        """Get list of constructor dependencies for a class."""
+        try:
+            signature = inspect.signature(implementation.__init__)
+            type_hints = get_type_hints(implementation.__init__)
+            dependencies = []
+
+            for param_name, param in signature.parameters.items():
+                if param_name == "self":
+                    continue
+
+                # Skip if has default value
+                if param.default != inspect.Parameter.empty:
+                    continue
+
+                param_type = type_hints.get(param_name, param.annotation)
+
+                # Skip if no type annotation
+                if not param_type or param_type == inspect.Parameter.empty:
+                    continue
+
+                # Skip primitive types
+                if self._is_primitive_type(param_type):
+                    continue
+
+                dependencies.append(param_type)
+
+            return dependencies
+
+        except Exception:
+            return []
+
+    def _create_with_lifecycle(self, implementation_class: Type) -> Any:
+        """Create instance with proper lifecycle management."""
+        instance = self._create_instance(implementation_class)
+
+        # Call initialization method if it exists
+        if hasattr(instance, "initialize") and callable(
+            getattr(instance, "initialize")
+        ):
+            instance.initialize()
+
+        # Register for cleanup if it has cleanup method
+        if hasattr(instance, "cleanup") and callable(getattr(instance, "cleanup")):
+            self._cleanup_handlers.append(instance.cleanup)
+
+        return instance
+
+    def cleanup_all(self) -> None:
+        """Cleanup all registered services."""
+        for cleanup_handler in reversed(self._cleanup_handlers):
+            try:
+                cleanup_handler()
+            except Exception as e:
+                logger.error(f"Error during service cleanup: {e}")
+
+        self._cleanup_handlers.clear()
+
+    def _detect_circular_dependencies(
+        self, start_type: Type, visited: Optional[Set[Type]] = None
+    ) -> None:
+        """Detect circular dependencies in the service graph."""
+        if visited is None:
+            visited = set()
+
+        if start_type in visited:
+            cycle_path = (
+                " -> ".join(t.__name__ for t in visited) + f" -> {start_type.__name__}"
+            )
+            raise ValueError(f"Circular dependency detected: {cycle_path}")
+
+        visited.add(start_type)
+
+        # Get implementation for this type
+        implementation = self._services.get(start_type) or self._factories.get(
+            start_type
+        )
+        if implementation:
+            dependencies = self._get_constructor_dependencies(implementation)
+            for dep in dependencies:
+                self._detect_circular_dependencies(dep, visited.copy())
 
     def validate_all_registrations(self) -> None:
         """
@@ -469,12 +574,16 @@ class DIContainer:
         # Analyze singleton services
         for interface, implementation in self._services.items():
             dependencies = self._get_service_dependencies(implementation)
-            graph[interface.__name__] = [dep.__name__ for dep in dependencies]
+            graph[f"{interface.__name__} -> {implementation.__name__}"] = [
+                dep.__name__ for dep in dependencies
+            ]
 
         # Analyze transient services
         for interface, implementation in self._factories.items():
             dependencies = self._get_service_dependencies(implementation)
-            graph[interface.__name__] = [dep.__name__ for dep in dependencies]
+            graph[f"{interface.__name__} -> {implementation.__name__}"] = [
+                dep.__name__ for dep in dependencies
+            ]
 
         return graph
 
