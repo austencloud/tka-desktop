@@ -4,13 +4,15 @@ from PyQt6.QtGui import QColor, QPainter, QPainterPath
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import Qt
 
-# A+ Enhancement: Import Qt resource pooling for performance optimization
-try:
-    from core.qt_integration import qt_resources, pooled_pen, pooled_brush
+# A+ Enhancement: Import Qt resource pooling - Temporarily disabled
+# try:
+#     from core.qt_integration import qt_resources, pooled_pen, pooled_brush
+#     QT_RESOURCES_AVAILABLE = True
+# except ImportError:
+#     QT_RESOURCES_AVAILABLE = False
 
-    QT_RESOURCES_AVAILABLE = True
-except ImportError:
-    QT_RESOURCES_AVAILABLE = False
+# Temporary fallback
+QT_RESOURCES_AVAILABLE = False
 
 
 class StarManager:
@@ -70,14 +72,14 @@ class StarManager:
             color = QColor(star["color"])
             color.setAlphaF(twinkle)
 
-            # A+ Enhancement: Use resource pooling for better performance
-            if QT_RESOURCES_AVAILABLE:
-                with pooled_brush(color) as brush:
-                    painter.setBrush(brush)
-                    painter.setPen(Qt.PenStyle.NoPen)
-            else:
-                painter.setBrush(color)
-                painter.setPen(Qt.PenStyle.NoPen)
+            # A+ Enhancement: Use resource pooling - Temporarily disabled
+            # if QT_RESOURCES_AVAILABLE:
+            #     with pooled_brush(color) as brush:
+            #         painter.setBrush(brush)
+            #         painter.setPen(Qt.PenStyle.NoPen)
+            # else:
+            painter.setBrush(color)
+            painter.setPen(Qt.PenStyle.NoPen)
 
             # Draw star based on its type
             if star["spikiness"] == 0:  # Round stars
@@ -103,14 +105,14 @@ class StarManager:
             path.moveTo(x, y)
             path.lineTo(x1, y1)
 
-        # A+ Enhancement: Use resource pooling for pen
-        if QT_RESOURCES_AVAILABLE:
-            with pooled_pen(color, 1) as pen:
-                painter.setPen(pen)
-                painter.drawPath(path)
-        else:
-            painter.setPen(color)
-            painter.drawPath(path)
+        # A+ Enhancement: Use resource pooling - Temporarily disabled
+        # if QT_RESOURCES_AVAILABLE:
+        #     with pooled_pen(color, 1) as pen:
+        #         painter.setPen(pen)
+        #         painter.drawPath(path)
+        # else:
+        painter.setPen(color)
+        painter.drawPath(path)
 
     def _draw_spiky_star(
         self, painter: QPainter, x: int, y: int, size: int, color: QColor
@@ -133,13 +135,13 @@ class StarManager:
                 path.lineTo(x1, y1)
         path.closeSubpath()
 
-        # A+ Enhancement: Use resource pooling for brush
-        if QT_RESOURCES_AVAILABLE:
-            with pooled_brush(color) as brush:
-                painter.setBrush(brush)
-                painter.setPen(Qt.PenStyle.NoPen)
-                painter.drawPath(path)
-        else:
-            painter.setBrush(color)
-            painter.setPen(Qt.PenStyle.NoPen)
-            painter.drawPath(path)
+        # A+ Enhancement: Use resource pooling - Temporarily disabled
+        # if QT_RESOURCES_AVAILABLE:
+        #     with pooled_brush(color) as brush:
+        #         painter.setBrush(brush)
+        #         painter.setPen(Qt.PenStyle.NoPen)
+        #         painter.drawPath(path)
+        # else:
+        painter.setBrush(color)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.drawPath(path)

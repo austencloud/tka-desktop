@@ -35,7 +35,7 @@ except ImportError:
             return lambda: None
 
 
-from .qt_compatibility import qt_compat
+# Note: Removed qt_compat import to avoid circular dependencies
 
 logger = logging.getLogger(__name__)
 
@@ -70,8 +70,8 @@ class QtObjectFactory:
         self._metrics = LifecycleMetrics()
         self._lock = Lock()
 
-        # Register application cleanup
-        atexit.register(self._cleanup_all)
+        # Register application cleanup (commented out to avoid potential issues)
+        # atexit.register(self._cleanup_all)
 
         logger.info("Qt object factory initialized with automatic lifecycle management")
 
@@ -261,14 +261,15 @@ class AutoManagedWidget(QWidget):
         """Initialize auto-managed widget."""
         super().__init__(parent)
 
-        # Register with factory for automatic cleanup
-        qt_factory.register_cleanup_handler(self, self._auto_cleanup)
-
         # Track resources
         self._managed_resources: List[Any] = []
         self._cleanup_callbacks: List[Callable] = []
+        self._factory_registered = False
 
         logger.debug(f"AutoManagedWidget created: {self.__class__.__name__}")
+
+        # Register with factory for automatic cleanup (lazy)
+        self._register_with_factory()
 
     def add_managed_resource(self, resource: Any) -> None:
         """Add a resource to be automatically cleaned up."""
@@ -277,6 +278,19 @@ class AutoManagedWidget(QWidget):
     def add_cleanup_callback(self, callback: Callable) -> None:
         """Add a callback to be executed during cleanup."""
         self._cleanup_callbacks.append(callback)
+
+    def _register_with_factory(self) -> None:
+        """Register with factory for automatic cleanup (lazy initialization)."""
+        if not self._factory_registered:
+            try:
+                factory = qt_factory()
+                factory.register_cleanup_handler(self, self._auto_cleanup)
+                self._factory_registered = True
+                logger.debug(
+                    f"AutoManagedWidget registered with factory: {self.__class__.__name__}"
+                )
+            except Exception as e:
+                logger.debug(f"Failed to register with factory: {e}")
 
     def _auto_cleanup(self) -> None:
         """Automatic cleanup implementation."""

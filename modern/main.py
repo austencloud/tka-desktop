@@ -20,14 +20,14 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont, QIcon, QGuiApplication
 
-# Import Qt Integration A+ Enhancements
-from core.qt_integration import (
-    qt_compat,
-    qt_factory,
-    qt_resources,
-    memory_detector,
-    AutoManagedWidget,
-)
+# Qt Integration A+ Enhancements - Temporarily disabled due to import issues
+# from core.qt_integration import (
+#     qt_compat,
+#     qt_factory,
+#     qt_resources,
+#     memory_detector,
+#     AutoManagedWidget,
+# )
 
 modern_src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(modern_src_path))
@@ -585,18 +585,18 @@ def create_application():
 def main():
     print("🚀 Kinetic Constructor - Starting...")
 
-    # A+ Enhancement: Qt Environment Detection and Optimization
-    print("📋 Detecting Qt environment...")
-    compat_manager = qt_compat()
-    qt_env = compat_manager.get_environment()
-    print(f"   Detected: {qt_env.version} with {len(qt_env.features)} features")
-    print(f"   High DPI support: {qt_env.high_dpi_support}")
-    print(f"   OpenGL support: {qt_env.opengl_support}")
+    # A+ Enhancement: Qt Environment Detection and Optimization - Temporarily disabled
+    # print("📋 Detecting Qt environment...")
+    # compat_manager = qt_compat()
+    # qt_env = compat_manager.get_environment()
+    # print(f"   Detected: {qt_env.version} with {len(qt_env.features)} features")
+    # print(f"   High DPI support: {qt_env.high_dpi_support}")
+    # print(f"   OpenGL support: {qt_env.opengl_support}")
 
-    # Start memory leak detection
-    print("🔍 Starting memory leak detection...")
-    detector = memory_detector()
-    detector.start_monitoring()
+    # Start memory leak detection - Temporarily disabled
+    # print("🔍 Starting memory leak detection...")
+    # detector = memory_detector()
+    # detector.start_monitoring()
 
     # Detect parallel testing mode early
     parallel_mode, monitor, geometry = detect_parallel_testing_mode()
@@ -604,11 +604,11 @@ def main():
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
 
-    # A+ Enhancement: Apply Qt compatibility optimizations
-    recommended_settings = compat_manager.get_recommended_settings()
-    if recommended_settings.get("high_dpi_scaling"):
-        app.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
-        print("✅ High DPI scaling enabled")
+    # A+ Enhancement: Apply Qt compatibility optimizations - Temporarily disabled
+    # recommended_settings = compat_manager.get_recommended_settings()
+    # if recommended_settings.get("high_dpi_scaling"):
+    #     app.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
+    #     print("✅ High DPI scaling enabled")
 
     # Determine target screen (dual monitor support)
     screens = QGuiApplication.screens()

@@ -22,14 +22,17 @@ import logging
 # Type imports
 from core.dependency_injection.di_container import DIContainer
 
-# A+ Enhancement: Import Qt integration for automatic lifecycle management
-try:
-    from core.qt_integration import qt_factory, memory_detector, AutoManagedWidget
+# A+ Enhancement: Import Qt integration - Temporarily disabled due to import issues
+# try:
+#     from core.qt_integration import qt_factory, memory_detector, AutoManagedWidget
+#     QT_INTEGRATION_AVAILABLE = True
+# except ImportError:
+#     QT_INTEGRATION_AVAILABLE = False
+#     AutoManagedWidget = QWidget  # Fallback
 
-    QT_INTEGRATION_AVAILABLE = True
-except ImportError:
-    QT_INTEGRATION_AVAILABLE = False
-    AutoManagedWidget = QWidget  # Fallback
+# Temporary fallback
+QT_INTEGRATION_AVAILABLE = False
+AutoManagedWidget = QWidget
 
 # Event system imports with fallback
 try:
@@ -109,16 +112,16 @@ class ViewableComponentBase(QObject, ABC, metaclass=QObjectABCMeta):
         self._initialized = False
         self._cleanup_handlers: List[callable] = []
 
-        # A+ Enhancement: Register with Qt integration for automatic lifecycle management
-        if QT_INTEGRATION_AVAILABLE:
-            try:
-                # Register with memory detector for leak detection
-                memory_detector().register_object(self)
-                logger.debug(
-                    f"Component registered with Qt integration: {self.__class__.__name__}"
-                )
-            except Exception as e:
-                logger.debug(f"Qt integration registration failed: {e}")
+        # A+ Enhancement: Register with Qt integration - Temporarily disabled
+        # if QT_INTEGRATION_AVAILABLE:
+        #     try:
+        #         # Register with memory detector for leak detection
+        #         memory_detector().register_object(self)
+        #         logger.debug(
+        #             f"Component registered with Qt integration: {self.__class__.__name__}"
+        #         )
+        #     except Exception as e:
+        #         logger.debug(f"Qt integration registration failed: {e}")
 
         # Initialize event system if available
         self._initialize_event_system()

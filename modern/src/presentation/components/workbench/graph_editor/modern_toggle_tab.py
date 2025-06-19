@@ -158,9 +158,11 @@ class ModernToggleTab(QWidget):
         workbench_parent = self._graph_editor.parent()
         if workbench_parent:
             # Go up to find the actual workbench (graph_section -> workbench)
-            while workbench_parent and not hasattr(workbench_parent, '_beat_frame_section'):
+            while workbench_parent and not hasattr(
+                workbench_parent, "_beat_frame_section"
+            ):
                 workbench_parent = workbench_parent.parent()
-        
+
         if not workbench_parent:
             # Defer positioning until parent is available
             QTimer.singleShot(100, self._position_tab)
@@ -189,7 +191,9 @@ class ModernToggleTab(QWidget):
 
         # Ensure button is visible
         self.show()
-        print(f"🎯 Toggle tab positioned at ({x}, {y}) in parent {type(workbench_parent).__name__}")
+        print(
+            f"🎯 Toggle tab positioned at ({x}, {y}) in parent {type(workbench_parent).__name__}"
+        )
 
     def update_position(self, animate=True):
         """Update position to hug the top of graph editor frame (Legacy-exact behavior)"""

@@ -1,11 +1,11 @@
 {
   "user_settings": {
     "graph_editor_sequence_info": {
-      "beat_count": 0,
-      "sequence_id": "8abaa0e0-992d-42a0-af2b-c71cb613c4fe"
+      "beat_count": 2,
+      "sequence_id": "b8e62c68-637d-4bab-ab3e-d35a85c344b4"
     },
     "prop_type": "Fan",
-    "background_type": "Starfield",
+    "background_type": "Aurora",
     "graph_editor_visible": true,
     "graph_editor_selected_beat_index": 0,
     "graph_editor_selected_arrow": "blue"
